@@ -1,0 +1,543 @@
+<!--
+    Copyright (c) 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Equipment.FlatDeviceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:flatdevice="clr-namespace:NINA.View.Equipment.FlatDevice"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GroupBox>
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblFlatDevice}" />
+                    <equip:Connector
+                        Grid.Column="1"
+                        CancelCommand="{Binding CancelConnectCommand}"
+                        ConnectCommand="{Binding ConnectCommand}"
+                        Connected="{Binding FlatDeviceInfo.Connected}"
+                        Devices="{Binding FlatDeviceChooserVM.Devices}"
+                        DisconnectCommand="{Binding DisconnectCommand}"
+                        HasSetupDialog="{Binding FlatDeviceChooserVM.SelectedDevice.HasSetupDialog}"
+                        RefreshCommand="{Binding RefreshFlatDeviceListCommand}"
+                        SelectedDevice="{Binding FlatDeviceChooserVM.SelectedDevice, Mode=TwoWay}"
+                        SetupCommand="{Binding FlatDeviceChooserVM.SetupDialogCommand}" />
+                </Grid>
+            </GroupBox.Header>
+            <Grid>
+                <StackPanel>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.Name}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblDescription}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.Description}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverInfo}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.DriverInfo}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverVersion}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.DriverVersion}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceLight}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding ToggleLightCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding FlatDeviceInfo.LightOn}"
+                                IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.LocalizedLightOnState}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceBrightness}" />
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="0.7*" />
+                                    <ColumnDefinition Width="15px" />
+                                    <ColumnDefinition Width="1.2*" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                    IsSnapToTickEnabled="True"
+                                    Maximum="1"
+                                    Minimum="0"
+                                    TickFrequency=".05"
+                                    TickPlacement="Both"
+                                    Value="{Binding Brightness, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    x:Name="BrightnessInput"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Center"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                    Text="{Binding Brightness, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}, ConverterParameter=2, StringFormat={}{0:F1}}" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Text="%" />
+                                <Button
+                                    Grid.Column="3"
+                                    Margin="5"
+                                    Command="{Binding SetBrightnessCommand}"
+                                    CommandParameter="{Binding Text, ElementName=BrightnessInput}"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceSetBrightness}" />
+                                </Button>
+                            </Grid>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding FlatDeviceInfo.Brightness, Converter={StaticResource PercentageConverter}, ConverterParameter=2}" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Text="%" />
+                            </StackPanel>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCover}" />
+                            <StackPanel MinHeight="25" Orientation="Horizontal">
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <Button
+                                        MinWidth="80"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding OpenCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceOpenButton}" />
+                                    </Button>
+                                </Grid>
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <Button
+                                        MinWidth="80"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding CloseCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceClose}" />
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.LocalizedCoverState}" />
+                        </UniformGrid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="1"
+            Grid.Column="0"
+            Header="{ns:Loc LblFlatDeviceFlatPanelSettings}">
+            <Grid>
+                <StackPanel Orientation="Vertical">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Top"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceOpenForDarkFlats}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Top"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceCloseAtSequenceEnd}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Top"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceUseWizardTrainedValues}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1">
+            <GroupBox.Header>
+                <TextBlock
+                    MinHeight="40"
+                    Margin="0,10,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    Text="{ns:Loc LblFlatDeviceTrainedFilterTimes}" />
+            </GroupBox.Header>
+            <GroupBox.Resources>
+                <DataTemplate x:Key="BrightnessTemplate">
+                    <StackPanel
+                        Margin="5,0,5,0"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding Time, StringFormat={}{0:N2}}" />
+                        <TextBlock VerticalAlignment="Center" Text="s" />
+                        <TextBlock VerticalAlignment="Center" Text=" @ " />
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding Brightness, Converter={StaticResource PercentageConverter}}" />
+                        <TextBlock VerticalAlignment="Center" Text="%" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="BrightnessEditTemplate">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <TextBox VerticalAlignment="Center" Text="{Binding Time}" />
+                        <TextBox
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Right"
+                            Text="{Binding Brightness, Converter={StaticResource PercentageConverter}}" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="FilterNameTemplate">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{Binding FilterName}"
+                            Visibility="{Binding Key.Position, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblNoFilterwheel}"
+                            Visibility="{Binding Key.Position, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="HeaderTemplate">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                            Visibility="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}">
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Path=DataContext.Gain, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="EmptyCellTemplate">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="-" />
+                </DataTemplate>
+                <flatdevice:WizardGridCellTemplateSelector
+                    x:Key="CellTemplateSelector"
+                    EmptyCell="{StaticResource EmptyCellTemplate}"
+                    FilterNameCell="{StaticResource FilterNameTemplate}"
+                    TimingCell="{StaticResource BrightnessTemplate}" />
+                <flatdevice:WizardGridCellTemplateSelector
+                    x:Key="CellEditTemplateSelector"
+                    EmptyCell="{StaticResource BrightnessEditTemplate}"
+                    FilterNameCell="{StaticResource FilterNameTemplate}"
+                    TimingCell="{StaticResource BrightnessEditTemplate}" />
+            </GroupBox.Resources>
+            <Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ItemsControl Grid.Row="0" ItemsSource="{Binding WizardGrid.Blocks}">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel HorizontalAlignment="Left" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="5">
+                                    <Grid>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel
+                                                Margin="0,0,0,5"
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblBinning}" />
+                                                <TextBlock Text=" " />
+                                                <TextBlock Text="{Binding Binning}" Visibility="{Binding Path=Binning, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                                                <TextBlock Text="{ns:Loc LblNone}" Visibility="{Binding Path=Binning, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                                            </StackPanel>
+                                            <ItemsControl ItemsSource="{Binding Columns}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Grid ninactrl:GridHelpers.ColumnCount="{Binding Columns.Count}" ninactrl:GridHelpers.RowCount="1" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemContainerStyle>
+                                                    <Style TargetType="ContentPresenter">
+                                                        <Setter Property="Grid.Column" Value="{Binding ColumnNumber}" />
+                                                    </Style>
+                                                </ItemsControl.ItemContainerStyle>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <DataGrid
+                                                            Name="DataGrid"
+                                                            AutoGenerateColumns="False"
+                                                            CanUserAddRows="False"
+                                                            CanUserDeleteRows="False"
+                                                            CanUserReorderColumns="False"
+                                                            ItemsSource="{Binding Settings}">
+                                                            <DataGrid.Columns>
+                                                                <DataGridTemplateColumn
+                                                                    CellEditingTemplateSelector="{StaticResource CellEditTemplateSelector}"
+                                                                    CellTemplateSelector="{StaticResource CellTemplateSelector}"
+                                                                    HeaderTemplate="{StaticResource HeaderTemplate}" />
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <WrapPanel
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox
+                                x:Name="GainInput"
+                                Height="25"
+                                MinWidth="50"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Right" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding AddGainCommand}"
+                                CommandParameter="{Binding Text, ElementName=GainInput}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceAddGain}" />
+                            </Button>
+                            <ComboBox
+                                x:Name="GainCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                ItemsSource="{Binding Gains}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding DeleteGainCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=GainCombobox}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceDeleteGain}" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox
+                                x:Name="CameraBinningModesCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Connected, FallbackValue=false}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding AddBinningCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=CameraBinningModesCombobox}"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Connected, FallbackValue=false}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceAddBinningMode}" />
+                            </Button>
+                            <ComboBox
+                                x:Name="StoredBinningModesCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                ItemsSource="{Binding BinningModes}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding DeleteBinningCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=StoredBinningModesCombobox}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceDeleteBinningMode}" />
+                            </Button>
+                        </StackPanel>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+        </GroupBox>
+    </Grid>
+</UserControl>

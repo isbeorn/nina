@@ -1,38 +1,26 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using Altair;
 using NINA.Model.ImageData;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
 
@@ -40,13 +28,13 @@ namespace NINA.Model.MyCamera {
         private AltairCam.eFLAG flags;
         private AltairCam camera;
 
-        public AltairCamera(AltairCam.InstanceV2 instance, IProfileService profileService) {
+        public AltairCamera(AltairCam.DeviceV2 instance, IProfileService profileService) {
             this.profileService = profileService;
             this.Id = instance.id;
             this.Name = instance.displayname;
             this.Description = instance.model.name;
-            this.PixelSizeX = instance.model.xpixsz;
-            this.PixelSizeY = instance.model.ypixsz;
+            this.PixelSizeX = Math.Round(instance.model.xpixsz, 2);
+            this.PixelSizeY = Math.Round(instance.model.ypixsz, 2);
 
             this.flags = (AltairCam.eFLAG)instance.model.flag;
         }
@@ -119,6 +107,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public SensorType SensorType { get; private set; }
+
+        public short BayerOffsetX => 0;
+
+        public short BayerOffsetY => 0;
 
         public int CameraXSize { get; private set; }
 
@@ -373,24 +365,24 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 camera.get_ExpoAGainRange(out var min, out var max, out var def);
-                return (short)max;
+                return max;
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 camera.get_ExpoAGainRange(out var min, out var max, out var def);
-                return (short)min;
+                return min;
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 camera.get_ExpoAGain(out var gain);
-                return (short)gain;
+                return gain;
             }
 
             set {
@@ -401,9 +393,14 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes => new List<string> { "Default" };
 
-        private short _readoutModeForSnapImages;
+        public short ReadoutMode {
+            get => 0;
+            set { }
+        }
+
+        private short _readoutModeForSnapImages = 0;
 
         public short ReadoutModeForSnapImages {
             get => _readoutModeForSnapImages;
@@ -413,7 +410,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private short _readoutModeForNormalImages;
+        private short _readoutModeForNormalImages = 0;
 
         public short ReadoutModeForNormalImages {
             get => _readoutModeForNormalImages;
@@ -423,9 +420,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList Gains {
+        public IList<int> Gains {
             get {
-                return new ArrayList();
+                return new List<int>();
             }
         }
 
@@ -531,11 +528,10 @@ namespace NINA.Model.MyCamera {
             return Task<bool>.Run(() => {
                 var success = false;
                 try {
-                    downloadExposure?.TrySetCanceled();
-                    downloadExposure = null;
+                    imageReadyTCS?.TrySetCanceled();
+                    imageReadyTCS = null;
 
-                    camera = new AltairCam();
-                    camera.Open(this.Id);
+                    camera = AltairCam.Open(this.Id);
                     success = true;
 
                     /* Use maximum bit depth */
@@ -573,6 +569,14 @@ namespace NINA.Model.MyCamera {
                         CanSetOffset = true;
                     }
 
+                    if (((this.flags & AltairCam.eFLAG.FLAG_CG) != 0) || ((this.flags & AltairCam.eFLAG.FLAG_CGHDR) != 0)) {
+                        Logger.Trace("AltairCamera - Camera has High Conversion Gain option");
+                        HasHighGain = true;
+                        HighGainMode = true;
+                    } else {
+                        HasHighGain = false;
+                    }
+
                     if ((this.flags & AltairCam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
                         throw new Exception("AltairCamera - This camera is not capable to be triggered by software and is not supported");
                     }
@@ -587,16 +591,15 @@ namespace NINA.Model.MyCamera {
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
                         throw new Exception("AltairCamera - Unable to get format information");
+                    } else {
+                        if (camera.MonoMode) {
+                            SensorType = SensorType.Monochrome;
+                        } else {
+                            SensorType = GetSensorType(fourCC);
+                        }
                     }
 
                     this.BitDepth = (int)bitDepth;
-
-                    if (camera.MonoMode) {
-                        SensorType = SensorType.Monochrome;
-                    } else {
-                        /* Todo Determine color matrix */
-                        SensorType = SensorType.RGGB;
-                    }
 
                     Connected = true;
                     RaiseAllPropertiesChanged();
@@ -608,21 +611,61 @@ namespace NINA.Model.MyCamera {
             });
         }
 
+        private SensorType GetSensorType(uint fourCC) {
+            var bytes = BitConverter.GetBytes(fourCC);
+            if (!BitConverter.IsLittleEndian) { Array.Reverse(bytes); }
+
+            var sensor = System.Text.Encoding.ASCII.GetString(bytes);
+            if (Enum.TryParse(sensor, true, out SensorType sensorType)) {
+                return sensorType;
+            }
+            return SensorType.RGGB;
+        }
+
+        private bool _hasHighGain;
+
+        public bool HasHighGain {
+            get => _hasHighGain;
+            set {
+                _hasHighGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HighGainMode {
+            get {
+                if (HasHighGain) {
+                    camera.get_Option(AltairCam.eOPTION.OPTION_CG, out var value);
+                    Logger.Trace($"AltairCamera - Conversion Gain is set to {value}");
+                    return value == 1 ? true : false;
+                } else {
+                    return false;
+                }
+            }
+            set {
+                if (HasHighGain) {
+                    Logger.Trace($"AltairCamera - Setting Conversion Gain to {value}");
+                    camera.put_Option(AltairCam.eOPTION.OPTION_CG, value ? 1 : 0);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private void OnEventCallback(AltairCam.eEVENT nEvent) {
             Logger.Trace($"AltairCamera - OnEventCallback {nEvent}");
             switch (nEvent) {
                 case AltairCam.eEVENT.EVENT_IMAGE: // Live View Image
-                    Logger.Trace($"AltairCamera - Setting DownloadExposure Result on Task {downloadExposure.Task.Id}");
-                    var success = downloadExposure?.TrySetResult(true);
-                    Logger.Trace($"AltairCamera - DownloadExposure Result on Task {downloadExposure.Task.Id} set successfully: {success}");
+                    Logger.Trace($"AltairCamera - Setting DownloadExposure Result on Task {imageReadyTCS.Task.Id}");
+                    var success = imageReadyTCS?.TrySetResult(true);
+                    Logger.Trace($"AltairCamera - DownloadExposure Result on Task {imageReadyTCS.Task.Id} set successfully: {success}");
                     break;
 
                 case AltairCam.eEVENT.EVENT_STILLIMAGE: // Still Image
                     Logger.Warning("AltairCamera - Still image event received, but not expected to get one!");
-                    downloadExposure?.TrySetResult(true);
+                    imageReadyTCS?.TrySetResult(true);
                     break;
 
-                case AltairCam.eEVENT.EVENT_TIMEOUT:
+                case AltairCam.eEVENT.EVENT_NOFRAMETIMEOUT:
                     Logger.Error("AltairCamera - Timout event occurred!");
                     break;
 
@@ -644,23 +687,36 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private IImageData PullImage() {
+        private IExposureData PullImage() {
             /* peek the width and height */
             camera.get_Option(AltairCam.eOPTION.OPTION_BINNING, out var binning);
             var width = CameraXSize / binning;
             var height = CameraYSize / binning;
 
-            var size = width * height * 2;
-            var pointer = Marshal.AllocHGlobal(size);
+            var size = width * height;
+            var data = new ushort[size];
 
-            if (!camera.PullImageV2(pointer, BitDepth, out var info)) {
+            if (!camera.PullImageV2(data, BitDepth, out var info)) {
                 Logger.Error("AltairCamera - Failed to pull image");
                 return null;
             }
-            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, BitDepth);
-            var arr = cameraDataToManaged.GetData();
-            var imageData = new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
-            Marshal.FreeHGlobal(pointer);
+
+            var bitScaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
+            if (bitScaling) {
+                var shift = 16 - BitDepth;
+                for (var i = 0; i < data.Length; i++) {
+                    data[i] = (ushort)(data[i] << shift);
+                }
+            }
+
+            var imageData = new ImageArrayExposureData(
+                    input: data,
+                    width: width,
+                    height: height,
+                    bitDepth: bitScaling ? 16 : this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
+
             return imageData;
         }
 
@@ -671,18 +727,25 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
-            using (token.Register(() => downloadExposure.TrySetCanceled())) {
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                await imageReadyTCS.Task;
+            }
+        }
+
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
+            if (imageReadyTCS.Task.IsCanceled) { return null; }
+            using (token.Register(() => imageReadyTCS.TrySetCanceled())) {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15))) {
-                    using (cts.Token.Register(() => { Logger.Error("AltairCamera - No Image Callback Event received"); downloadExposure.TrySetResult(true); })) {
-                        var imageReady = await downloadExposure.Task;
+                    using (cts.Token.Register(() => { Logger.Error("AltairCamera - No Image Callback Event received"); imageReadyTCS.TrySetResult(true); })) {
+                        var imageReady = await imageReadyTCS.Task;
                         return PullImage();
                     }
                 }
             }
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             return DownloadExposure(token);
         }
 
@@ -714,9 +777,9 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(CaptureSequence sequence) {
-            downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            Logger.Trace($"AltairCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
+            imageReadyTCS?.TrySetCanceled();
+            imageReadyTCS = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Logger.Trace($"AltairCamera - created new downloadExposure Task with Id {imageReadyTCS.Task.Id}");
 
             SetExposureTime(sequence.ExposureTime);
 
@@ -725,7 +788,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private TaskCompletionSource<bool> downloadExposure;
+        private TaskCompletionSource<bool> imageReadyTCS;
         private int bitDepth;
 
         public int BitDepth {
@@ -747,8 +810,8 @@ namespace NINA.Model.MyCamera {
             if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 0)) {
                 throw new Exception("AltairCamera - Could not set Trigger video mode");
             }
-            downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            imageReadyTCS?.TrySetCanceled();
+            imageReadyTCS = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             LiveViewEnabled = true;
         }
 
@@ -756,10 +819,11 @@ namespace NINA.Model.MyCamera {
             if (!camera.Trigger(0)) {
                 Logger.Warning("AltairCamera - Could not stop exposure");
             }
+            imageReadyTCS.TrySetCanceled();
         }
 
         public void StopLiveView() {
-            downloadExposure.Task.ContinueWith((Task<bool> o) => {
+            imageReadyTCS.Task.ContinueWith((Task<bool> o) => {
                 if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
                     Disconnect();
                     throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");

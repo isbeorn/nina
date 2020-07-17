@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -50,6 +41,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.Date, Locale.Loc.Instance["LblDateFormatDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.DateMinus12, Locale.Loc.Instance["LblDateFormatDescription2"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.DateTime, Locale.Loc.Instance["LblDateTimeFormatDescription"]);
             patterns.Add(p.Key, p);
 
@@ -80,6 +74,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.Offset, Locale.Loc.Instance["LblOffsetDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.USBLimit, Locale.Loc.Instance["LbLUsbLimitDescription"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.RMS, Locale.Loc.Instance["LblGuidingRMSDescription"]);
             patterns.Add(p.Key, p);
 
@@ -94,11 +91,17 @@ namespace NINA.Model {
 
             p = new ImagePattern(ImagePatternKeys.HFR, Locale.Loc.Instance["LblHFRPatternDescription"]);
             patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.SQM, Locale.Loc.Instance["LblSQMPatternDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.ReadoutMode, Locale.Loc.Instance["LblReadoutModePatternDescription"]);
+            patterns.Add(p.Key, p);
         }
 
         public bool Set(string key, string value) {
-            if (patterns.ContainsKey(key)) {
-                patterns[key].Value = value;
+            if (patterns.ContainsKey(key) && value != null) {
+                patterns[key].Value = value.Trim();
                 return true;
             }
 
@@ -127,8 +130,23 @@ namespace NINA.Model {
             foreach (ImagePattern p in patterns.Values) {
                 s = s.Replace(p.Key, p.Value);
             }
-            s = Path.Combine(s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
-            return s;
+            var path = s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+
+            var imageFileString = string.Empty;
+            for (int i = 0; i < path.Length; i++) {
+                imageFileString = Path.Combine(imageFileString, ReplaceInvalidChars(path[i]));
+            }
+
+            return imageFileString;
+        }
+
+        /// <summary>
+        /// Replace invalid characters from filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private string ReplaceInvalidChars(string filename) {
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
         }
 
         internal static ImagePatterns CreateExample() {
@@ -136,10 +154,11 @@ namespace NINA.Model {
 
             p.Set(ImagePatternKeys.Filter, "L");
             p.Set(ImagePatternKeys.Date, "2016-01-01");
+            p.Set(ImagePatternKeys.DateMinus12, "2015-12-31");
             p.Set(ImagePatternKeys.DateTime, "2016-01-01_12-00-00");
             p.Set(ImagePatternKeys.Time, "12-00-00");
             p.Set(ImagePatternKeys.FrameNr, "0001");
-            p.Set(ImagePatternKeys.ImageType, "Light");
+            p.Set(ImagePatternKeys.ImageType, "LIGHT");
             p.Set(ImagePatternKeys.Binning, "1x1");
             p.Set(ImagePatternKeys.SensorTemp, "-15");
             p.Set(ImagePatternKeys.ExposureTime, 10.21234);
@@ -152,6 +171,10 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.FocuserTemp, "3.94");
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.HFR, 3.25);
+            p.Set(ImagePatternKeys.SQM, 21.83);
+            p.Set(ImagePatternKeys.ReadoutMode, "42 MHz");
+            p.Set(ImagePatternKeys.USBLimit, 55);
+
             return p;
         }
     }
@@ -163,6 +186,7 @@ namespace NINA.Model {
 
         public static readonly string Filter = "$$FILTER$$";
         public static readonly string Date = "$$DATE$$";
+        public static readonly string DateMinus12 = "$$DATEMINUS12$$";
         public static readonly string DateTime = "$$DATETIME$$";
         public static readonly string Time = "$$TIME$$";
         public static readonly string FrameNr = "$$FRAMENR$$";
@@ -179,6 +203,9 @@ namespace NINA.Model {
         public static readonly string FocuserTemp = "$$FOCUSERTEMP$$";
         public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
         public static readonly string HFR = "$$HFR$$";
+        public static readonly string SQM = "$$SQM$$";
+        public static readonly string ReadoutMode = "$$READOUTMODE$$";
+        public static readonly string USBLimit = "$$USBLIMIT$$";
     }
 
     public class ImagePattern {

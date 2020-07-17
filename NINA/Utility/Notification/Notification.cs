@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -70,14 +61,14 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowInformation(string message) {
-            ShowInformation(message, TimeSpan.FromSeconds(3));
+            ShowInformation(message, TimeSpan.FromSeconds(5));
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
             lock (_lock) {
                 if (notifier != null) {
                     dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, lifetime));
                     }));
                 }
             }
@@ -88,14 +79,14 @@ namespace NINA.Utility.Notification {
                 if (notifier != null) {
                     dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
-                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, TimeSpan.FromSeconds(5)));
                     }));
                 }
             }
         }
 
         public static void ShowWarning(string message) {
-            ShowWarning(message, TimeSpan.FromSeconds(3));
+            ShowWarning(message, TimeSpan.FromSeconds(30));
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
@@ -105,7 +96,7 @@ namespace NINA.Utility.Notification {
                         var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
                         var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
                         var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
-                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, lifetime));
                     }));
                 }
             }
@@ -118,7 +109,7 @@ namespace NINA.Utility.Notification {
                         var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
                         var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
                         var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
-                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, TimeSpan.FromHours(24)));
                     }));
                 }
             }
@@ -140,27 +131,29 @@ namespace NINA.Utility.Notification {
 
         public override NotificationDisplayPart DisplayPart => _displayPart ?? (_displayPart = new CustomDisplayPart(this));
 
-        public CustomNotification(string message, bool isNeverEnding = false) : base(message, new MessageOptions()) {
+        public CustomNotification(string message, TimeSpan lifetime) : base(message, new MessageOptions()) {
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
             ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
-            IsNeverEnding = isNeverEnding;
+            Lifetime = lifetime;
         }
 
-        public CustomNotification(string message, Geometry symbol, bool isNeverEnding = false) : base(message, new MessageOptions()) {
+        public CustomNotification(string message, Geometry symbol, TimeSpan lifetime) : base(message, new MessageOptions()) {
             Symbol = symbol;
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
             ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
-            IsNeverEnding = isNeverEnding;
+            Lifetime = lifetime;
         }
 
-        public CustomNotification(string message, Geometry symbol, Brush color, Brush foregroundColor, bool isNeverEnding = false) : base(message, new MessageOptions()) {
+        public CustomNotification(string message, Geometry symbol, Brush color, Brush foregroundColor, TimeSpan lifetime) : base(message, new MessageOptions()) {
             Symbol = symbol;
             Color = color;
             ForegroundColor = foregroundColor;
-            IsNeverEnding = isNeverEnding;
+            Lifetime = lifetime;
         }
 
-        public bool IsNeverEnding { get; }
+        public DateTime DateTime { get; private set; } = DateTime.Now;
+
+        public TimeSpan Lifetime { get; }
 
         private Geometry _symbol;
 
@@ -206,7 +199,6 @@ namespace NINA.Utility.Notification {
     }
 
     public class CustomLifetimeSupervisor : INotificationsLifetimeSupervisor {
-        private readonly TimeSpan _notificationLifetime;
         private readonly int _maximumNotificationCount;
 
         private Dispatcher _dispatcher;
@@ -217,8 +209,6 @@ namespace NINA.Utility.Notification {
 
         public CustomLifetimeSupervisor() {
             _notifications = new CustomNotificationsList();
-
-            _notificationLifetime = TimeSpan.FromSeconds(3);
             _maximumNotificationCount = 5;
 
             _notifications = new CustomNotificationsList();
@@ -226,10 +216,10 @@ namespace NINA.Utility.Notification {
         }
 
         public void PushNotification(INotification notification) {
-            var neverEnding = false;
+            var lifetime = TimeSpan.FromSeconds(3);
             if (notification.GetType() == typeof(CustomNotification)) {
                 var customNotification = (CustomNotification)notification;
-                neverEnding = customNotification.IsNeverEnding;
+                lifetime = customNotification.Lifetime;
             }
 
             if (_interval.IsRunning == false)
@@ -254,7 +244,7 @@ namespace NINA.Utility.Notification {
             foreach (var n in notificationsToRemove)
                 CloseNotification(n.Notification);
 
-            _notifications.Add(notification, neverEnding);
+            _notifications.Add(notification, lifetime);
             RequestShowNotification(new ShowNotificationEventArgs(notification));
         }
 
@@ -303,7 +293,9 @@ namespace NINA.Utility.Notification {
             TimeSpan now = DateTimeNow.Local.TimeOfDay;
 
             var notificationsToRemove = _notifications
-                .Where(x => x.Value.Notification.CanClose && x.Value.CreateTime + _notificationLifetime <= now)
+                .Where(x => {
+                    return x.Value.Notification.CanClose && x.Value.CreateTime <= now;
+                })
                 .Select(x => x.Value)
                 .ToList();
 
@@ -341,10 +333,9 @@ namespace NINA.Utility.Notification {
     public class CustomNotificationsList : NotificationsList {
         private int _id = 0;
 
-        public NotificationMetaData Add(INotification notification, bool neverEnding) {
+        public NotificationMetaData Add(INotification notification, TimeSpan lifetime) {
             Interlocked.Increment(ref _id);
-            var time = DateTimeNow.Local.TimeOfDay;
-            if (neverEnding) { time = DateTime.MaxValue.TimeOfDay; }
+            var time = DateTimeNow.Local.TimeOfDay.Add(lifetime);
             var metaData = new NotificationMetaData(notification, _id, time);
             this[_id] = metaData;
             return metaData;

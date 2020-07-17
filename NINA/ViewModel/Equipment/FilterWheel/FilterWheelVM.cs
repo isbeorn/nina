@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -51,7 +42,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
             CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
-            DisconnectCommand = new RelayCommand(DisconnectFW);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectFW());
             RefreshFWListCommand = new RelayCommand(RefreshFWList, o => !(FW?.Connected == true));
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
                 _changeFilterCancellationSource?.Dispose();
@@ -92,7 +83,9 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                                 var newFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == filter.Position).FirstOrDefault();
                                 if (newFilter != null) {
                                     int offset = newFilter.FocusOffset - prevFilter.FocusOffset;
-                                    changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                    if (offset != 0) {
+                                        changeFocus = focuserMediator.MoveFocuserRelative(offset, token);
+                                    }
                                 }
                             }
                         }
@@ -113,7 +106,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                     }
                     FilterWheelInfo.SelectedFilter = filter;
                 } else {
-                    Disconnect();
+                    await Disconnect();
                 }
             } finally {
                 BroadcastFilterWheelInfo();
@@ -158,7 +151,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
         private async Task<bool> ChooseFW() {
             await ss.WaitAsync();
             try {
-                Disconnect();
+                await Disconnect();
 
                 if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FilterWheelSettings.Id = FilterWheelChooserVM.SelectedDevice.Id;
@@ -206,13 +199,15 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
                             BroadcastFilterWheelInfo();
 
+                            Logger.Info($"Successfully connected Filter Wheel. Id: {FW.Id} Name: {FW.Name} Driver Version: {FW.DriverVersion}");
+
                             return true;
                         } else {
                             this.FW = null;
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (fW?.Connected == true) { Disconnect(); }
+                        if (fW?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -235,14 +230,15 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
         private CancellationTokenSource _cancelChooseFilterWheelSource;
 
-        private void DisconnectFW(object obj) {
+        private async Task<bool> DisconnectFW() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
+        public Task Disconnect() {
             if (FW != null) {
                 _changeFilterCancellationSource?.Cancel();
                 FW.Disconnect();
@@ -250,7 +246,9 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                 FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 RaisePropertyChanged(nameof(FW));
                 BroadcastFilterWheelInfo();
+                Logger.Info("Disconnected Filter Wheel");
             }
+            return Task.CompletedTask;
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;

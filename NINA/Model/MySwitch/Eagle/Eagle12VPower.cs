@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -33,22 +24,13 @@ namespace NINA.Model.MySwitch {
 
         public Eagle12VPower(short index, string baseUrl) : base(index, baseUrl) {
             getRoute = "getpwrout?idx=${0}";
-            setRoute = "setpwrout?idx=${0}&state={1}";
+            setRoute = "setpwrout?idx=${0}";
+            setValueAttribute = "state";
+            name = "12V Power Out " + (4 - Id).ToString();
+            Description = "Fixed Power Out " + (4 - Id).ToString();
         }
 
-        /// <summary>
-        /// 12V power out  port number 1: 3
-        /// 12V power out  port number 2: 2
-        /// 12V power out  port number 3: 1
-        /// 12V power out  port number 4: 0
-        /// </summary>
-        public override string Name {
-            get => "12V Power Out " + (4 - Id).ToString();
-        }
-
-        public override string Description {
-            get => "Fixed Power output port";
-        }
+        public override string Description { get; }
 
         public override double Maximum {
             get => 1d;
@@ -73,6 +55,9 @@ namespace NINA.Model.MySwitch {
             var jobj = JObject.Parse(response);
             var regoutResponse = jobj.ToObject<PowerOutResponse>();
             if (regoutResponse.Success()) {
+                if (!string.IsNullOrWhiteSpace(regoutResponse.Label)) {
+                    ReceivedName(regoutResponse.Label);
+                }
                 return regoutResponse.Voltage > 0d ? 1d : 0d;
             } else {
                 return double.NaN;
@@ -89,6 +74,9 @@ namespace NINA.Model.MySwitch {
 
             [JsonProperty(PropertyName = "power")]
             public double Power;
+
+            [JsonProperty(PropertyName = "label")]
+            public string Label;
         }
     }
 }

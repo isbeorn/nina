@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -42,20 +33,22 @@ namespace NINA.Profile {
             pixelSize = 3.8;
             bulbMode = CameraBulbModeEnum.NATIVE;
             serialPort = "COM1";
-            readNoise = 0.0;
             bitDepth = 16;
-            offset = 0.0;
-            fullWellCapacity = 20000;
-            downloadToDataRatio = 9;
-            rawConverter = RawConverterEnum.DCRAW;
+            bayerPattern = BayerPatternEnum.Auto;
+            rawConverter = RawConverterEnum.FREEIMAGE;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
+            bitScaling = false;
+            timeout = 60;
+            dewHeaterOn = false;
 
             fliEnableFloodFlush = false;
             fliFloodDuration = 1;
             fliFlushCount = 2;
             fliEnableSnapshotFloodFlush = false;
+
+            qhyIncludeOverscan = false;
         }
 
         private string id;
@@ -79,6 +72,19 @@ namespace NINA.Profile {
             set {
                 if (pixelSize != value) {
                     pixelSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private BayerPatternEnum bayerPattern;
+
+        [DataMember]
+        public BayerPatternEnum BayerPattern {
+            get => bayerPattern;
+            set {
+                if (bayerPattern != value) {
+                    bayerPattern = value;
                     RaisePropertyChanged();
                 }
             }
@@ -110,19 +116,6 @@ namespace NINA.Profile {
             }
         }
 
-        private double readNoise;
-
-        [DataMember]
-        public double ReadNoise {
-            get => readNoise;
-            set {
-                if (readNoise != value) {
-                    readNoise = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private double bitDepth;
 
         [DataMember]
@@ -131,45 +124,6 @@ namespace NINA.Profile {
             set {
                 if (bitDepth != value) {
                     bitDepth = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double offset;
-
-        [DataMember]
-        public double Offset {
-            get => offset;
-            set {
-                if (offset != value) {
-                    offset = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double fullWellCapacity;
-
-        [DataMember]
-        public double FullWellCapacity {
-            get => fullWellCapacity;
-            set {
-                if (fullWellCapacity != value) {
-                    fullWellCapacity = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double downloadToDataRatio;
-
-        [DataMember]
-        public double DownloadToDataRatio {
-            get => downloadToDataRatio;
-            set {
-                if (downloadToDataRatio != value) {
-                    downloadToDataRatio = value;
                     RaisePropertyChanged();
                 }
             }
@@ -226,6 +180,19 @@ namespace NINA.Profile {
             set {
                 if (fileCameraFolder != value) {
                     fileCameraFolder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string fileCameraExtension;
+
+        [DataMember]
+        public string FileCameraExtension {
+            get => fileCameraExtension;
+            set {
+                if (fileCameraExtension != value) {
+                    fileCameraExtension = value;
                     RaisePropertyChanged();
                 }
             }
@@ -317,6 +284,201 @@ namespace NINA.Profile {
             set {
                 if (fliEnableSnapshotFloodFlush != value) {
                     fliEnableSnapshotFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool bitScaling;
+
+        [DataMember]
+        public bool BitScaling {
+            get => bitScaling;
+            set {
+                if (bitScaling != value) {
+                    bitScaling = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double coolingDuration;
+
+        [DataMember]
+        public double CoolingDuration {
+            get => coolingDuration;
+            set {
+                if (coolingDuration != value) {
+                    coolingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double warmingDuration;
+
+        [DataMember]
+        public double WarmingDuration {
+            get => warmingDuration;
+            set {
+                if (warmingDuration != value) {
+                    warmingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double? temperature;
+
+        [DataMember]
+        public double? Temperature {
+            get => temperature;
+            set {
+                if (temperature != value) {
+                    temperature = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningX;
+
+        [DataMember]
+        public short? BinningX {
+            get => binningX;
+            set {
+                if (binningX != value) {
+                    binningX = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningY;
+
+        [DataMember]
+        public short? BinningY {
+            get => binningY;
+            set {
+                if (binningY != value) {
+                    binningY = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? gain;
+
+        [DataMember]
+        public int? Gain {
+            get => gain;
+            set {
+                if (gain != value) {
+                    gain = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? offset;
+
+        [DataMember]
+        public int? Offset {
+            get => offset;
+            set {
+                if (offset != value) {
+                    offset = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? usbLimit;
+
+        [DataMember]
+        public int? USBLimit {
+            get => usbLimit;
+            set {
+                if (usbLimit != value) {
+                    usbLimit = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutMode;
+
+        [DataMember]
+        public short? ReadoutMode {
+            get => readoutMode;
+            set {
+                if (readoutMode != value) {
+                    readoutMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForSnapImages;
+
+        [DataMember]
+        public short? ReadoutModeForSnapImages {
+            get => readoutModeForSnapImages;
+            set {
+                if (readoutModeForSnapImages != value) {
+                    readoutModeForSnapImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForNormalImages;
+
+        [DataMember]
+        public short? ReadoutModeForNormalImages {
+            get => readoutModeForNormalImages;
+            set {
+                if (readoutModeForNormalImages != value) {
+                    readoutModeForNormalImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool qhyIncludeOverscan;
+
+        [DataMember]
+        public bool QhyIncludeOverscan {
+            get => qhyIncludeOverscan;
+            set {
+                if (qhyIncludeOverscan != value) {
+                    qhyIncludeOverscan = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int timeout;
+
+        [DataMember]
+        public int Timeout {
+            get => timeout;
+            set {
+                if (timeout != value) {
+                    timeout = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? dewHeaterOn;
+
+        [DataMember]
+        public bool? DewHeaterOn {
+            get => dewHeaterOn;
+            set {
+                if (dewHeaterOn != value) {
+                    dewHeaterOn = value;
                     RaisePropertyChanged();
                 }
             }

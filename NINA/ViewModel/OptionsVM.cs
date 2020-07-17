@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -24,11 +15,12 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyPlanetarium;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
+using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -36,8 +28,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
@@ -50,9 +43,11 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
             OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
-            PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
+            OpenSharpCapSensorAnalysisFolderDiagCommand = new RelayCommand(OpenSharpCapSensorAnalysisFolderDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
+            OpenSequenceCommandAtCompletionDiagCommand = new RelayCommand(OpenSequenceCommandAtCompletionDiag);
+            OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
@@ -65,6 +60,7 @@ namespace NINA.ViewModel {
             OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
+            SetAutoFocusFilterCommand = new RelayCommand(SetAutoFocusFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
             AddProfileCommand = new RelayCommand(AddProfile);
             CloneProfileCommand = new RelayCommand(CloneProfile, (object o) => { return SelectedProfile != null; });
@@ -125,13 +121,23 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SiteFromPlanetarium() {
             IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
-            Coords loc = await s.GetSite();
-            if (loc != null) {
-                Latitude = loc.Latitude;
-                Longitude = loc.Longitude;
-                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-                // Elevation = loc.Elevation;
-            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            Coords loc = null;
+
+            try {
+                loc = await s.GetSite();
+
+                if (loc != null) {
+                    Latitude = loc.Latitude;
+                    Longitude = loc.Longitude;
+                    Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                }
+            } catch (PlanetariumFailedToConnect ex) {
+                Logger.Error($"Unable to connect to {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+            } catch (Exception ex) {
+                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            }
 
             return (loc != null);
         }
@@ -204,6 +210,18 @@ namespace NINA.ViewModel {
             SelectedFilter = filter;
         }
 
+        private void SetAutoFocusFilter(object obj) {
+            if (SelectedFilter != null) {
+                foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
+                    if (filter != SelectedFilter) {
+                        filter.AutoFocusFilter = false;
+                    } else {
+                        SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
+                    }
+                }
+            }
+        }
+
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
             if (filters?.Count > 0) {
@@ -250,6 +268,19 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSharpCapSensorAnalysisFolderDiag(object o) {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
+                diag.SelectedPath = ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder = diag.SelectedPath + "\\";
+                    var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+                    var sensorAnalysisData = vm.ExposureCalculatorVM.LoadSensorAnalysisData(ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder);
+                    Notification.ShowInformation(String.Format(Locale.Loc.Instance["LblSharpCapSensorAnalysisLoadedFormat"], sensorAnalysisData.Count));
+                }
+            }
+        }
+
         private void OpenSequenceTemplateDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblSequenceTemplate"];
@@ -259,6 +290,28 @@ namespace NINA.ViewModel {
 
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.SequenceSettings.TemplatePath = dialog.FileName;
+            }
+        }
+
+        private void OpenSequenceCommandAtCompletionDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblSequenceCommandAtCompletionTitle"];
+            dialog.FileName = "SequenceCompleteCommand";
+            dialog.DefaultExt = ".*";
+            dialog.Filter = "Any executable command |*.*";
+
+            if (dialog.ShowDialog() == true) {
+                ActiveProfile.SequenceSettings.SequenceCompleteCommand = dialog.FileName;
+            }
+        }
+
+        private void OpenSequenceFolderDiag(object o) {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
+                diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.SelectedPath + "\\";
+                }
             }
         }
 
@@ -351,12 +404,15 @@ namespace NINA.ViewModel {
         public ICommand OpenASTAPFileDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
+        public ICommand OpenSharpCapSensorAnalysisFolderDiagCommand { get; private set; }
+        public ICommand SensorAnalysisFolderChangedCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
 
-        public ICommand OpenWebRequestCommand { get; private set; }
+        public ICommand OpenSequenceCommandAtCompletionDiagCommand { get; private set; }
+        public ICommand OpenSequenceFolderDiagCommand { get; private set; }
 
-        public ICommand PreviewFileCommand { get; private set; }
+        public ICommand OpenWebRequestCommand { get; private set; }
 
         public ICommand ToggleColorsCommand { get; private set; }
 
@@ -366,6 +422,7 @@ namespace NINA.ViewModel {
         public ICommand ImportFiltersCommand { get; private set; }
 
         public ICommand AddFilterCommand { get; private set; }
+        public ICommand SetAutoFocusFilterCommand { get; private set; }
 
         public ICommand RemoveFilterCommand { get; private set; }
 
@@ -380,15 +437,23 @@ namespace NINA.ViewModel {
 
         public ICommand SelectProfileCommand { get; private set; }
 
-        private void PreviewFile(object o) {
-            MyMessageBox.MyMessageBox.Show(ImagePatterns.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
-        }
-
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
             new CultureInfo("de-DE"),
-            new CultureInfo("it-IT")
+            new CultureInfo("it-IT"),
+            new CultureInfo("es-ES"),
+            new CultureInfo("gl-ES"),
+            new CultureInfo("zh-CN"),
+            new CultureInfo("zh-HK"),
+            new CultureInfo("zh-TW"),
+            new CultureInfo("fr-FR"),
+            new CultureInfo("ru-RU"),
+            new CultureInfo("pl-PL"),
+            new CultureInfo("nl-NL"),
+            new CultureInfo("ja-JP"),
+            new CultureInfo("tr-TR"),
+            new CultureInfo("pt-PT")
         };
 
         public ObservableCollection<CultureInfo> AvailableLanguages {
@@ -415,12 +480,46 @@ namespace NINA.ViewModel {
             ActiveProfile.ColorSchemaSettings.ToggleSchema();
         }
 
-        public FileTypeEnum[] FileTypes {
-            get {
-                return Enum.GetValues(typeof(FileTypeEnum))
+#pragma warning disable CS0612 // Type or member is obsolete
+
+        public FileTypeEnum[] FileTypes => Enum.GetValues(typeof(FileTypeEnum))
                     .Cast<FileTypeEnum>()
                     .Where(p => p != FileTypeEnum.RAW)
-                    .ToArray<FileTypeEnum>();
+                    .Where(p => p != FileTypeEnum.TIFF_LZW)
+                    .Where(p => p != FileTypeEnum.TIFF_ZIP)
+                    .ToArray();
+
+#pragma warning restore CS0612 // Type or member is obsolete
+
+        public TIFFCompressionTypeEnum[] TIFFCompressionTypes {
+            get {
+                return Enum.GetValues(typeof(TIFFCompressionTypeEnum))
+                    .Cast<TIFFCompressionTypeEnum>()
+                    .ToArray();
+            }
+        }
+
+        public XISFCompressionTypeEnum[] XISFCompressionTypes {
+            get {
+                return Enum.GetValues(typeof(XISFCompressionTypeEnum))
+                    .Cast<XISFCompressionTypeEnum>()
+                    .ToArray();
+            }
+        }
+
+        public XISFChecksumTypeEnum[] XISFChecksumTypes {
+            get {
+                /*
+                 * NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
+                 * being defined as part of the XISF 1.0 specification. We will not permit the user to choose
+                 * these as a checksum type until PixInsight also supports them, which is supposed to be in early
+                 * 2020.
+                 */
+                return Enum.GetValues(typeof(XISFChecksumTypeEnum))
+                    .Cast<XISFChecksumTypeEnum>()
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_256)
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_512)
+                    .ToArray();
             }
         }
 

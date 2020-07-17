@@ -1,26 +1,14 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
-/*
- *  Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
- *  Copyright 2019 Dale Ghent <daleg@elemental.org>
- */
 
 #endregion "copyright"
 
@@ -50,12 +38,15 @@ namespace NINA.Profile {
     [KnownType(typeof(PlateSolveSettings))]
     [KnownType(typeof(PolarAlignmentSettings))]
     [KnownType(typeof(RotatorSettings))]
+    [KnownType(typeof(FlatDeviceSettings))]
     [KnownType(typeof(SequenceSettings))]
     [KnownType(typeof(TelescopeSettings))]
     [KnownType(typeof(WeatherDataSettings))]
     [KnownType(typeof(FlatWizardSettings))]
     [KnownType(typeof(PlanetariumSettings))]
     [KnownType(typeof(SwitchSettings))]
+    [KnownType(typeof(ExposureCalculatorSettings))]
+    [KnownType(typeof(SnapShotControlSettings))]
     public class Profile : BaseINPC, IProfile {
 
         /// <summary>
@@ -80,6 +71,19 @@ namespace NINA.Profile {
         [OnDeserialized]
         private void SetValuesOnDeserialized(StreamingContext context) {
             RegisterHandlers();
+            MigrateFlatDeviceFilterSettingsFromFilterNameToPosition();
+        }
+
+        private void MigrateFlatDeviceFilterSettingsFromFilterNameToPosition() {
+            foreach (var kvp in FlatDeviceSettings.FilterSettings) {
+                if (kvp.Key.Position == null && !string.IsNullOrEmpty(kvp.Key.FilterName)) {
+                    var usedFilter = FilterWheelSettings.FilterWheelFilters.FirstOrDefault(f => f.Name == kvp.Key.FilterName);
+                    if (usedFilter != null) {
+                        kvp.Key.Position = usedFilter.Position;
+                        kvp.Key.FilterName = null;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -102,10 +106,13 @@ namespace NINA.Profile {
             PlateSolveSettings = new PlateSolveSettings();
             PolarAlignmentSettings = new PolarAlignmentSettings();
             RotatorSettings = new RotatorSettings();
+            FlatDeviceSettings = new FlatDeviceSettings();
             SequenceSettings = new SequenceSettings();
             SwitchSettings = new SwitchSettings();
             TelescopeSettings = new TelescopeSettings();
             WeatherDataSettings = new WeatherDataSettings();
+            ExposureCalculatorSettings = new ExposureCalculatorSettings();
+            SnapShotControlSettings = new SnapShotControlSettings();
         }
 
         /// <summary>
@@ -128,10 +135,13 @@ namespace NINA.Profile {
             PlateSolveSettings.PropertyChanged += SettingsChanged;
             PolarAlignmentSettings.PropertyChanged += SettingsChanged;
             RotatorSettings.PropertyChanged += SettingsChanged;
+            FlatDeviceSettings.PropertyChanged += SettingsChanged;
             SequenceSettings.PropertyChanged += SettingsChanged;
             SwitchSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
+            ExposureCalculatorSettings.PropertyChanged += SettingsChanged;
+            SnapShotControlSettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -234,6 +244,9 @@ namespace NINA.Profile {
         public IRotatorSettings RotatorSettings { get; set; }
 
         [DataMember]
+        public IFlatDeviceSettings FlatDeviceSettings { get; set; }
+
+        [DataMember]
         public ISequenceSettings SequenceSettings { get; set; }
 
         [DataMember]
@@ -250,6 +263,12 @@ namespace NINA.Profile {
 
         [DataMember]
         public IPlanetariumSettings PlanetariumSettings { get; set; }
+
+        [DataMember]
+        public IExposureCalculatorSettings ExposureCalculatorSettings { get; set; }
+
+        [DataMember]
+        public ISnapShotControlSettings SnapShotControlSettings { get; set; }
 
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name
@@ -302,6 +321,12 @@ namespace NINA.Profile {
                 } else {
                     fs.Position = 0;
                 }
+
+                using (var temp = new FileStream(Location + ".bkp", FileMode.Create, FileAccess.Write)) {
+                    fs.CopyTo(temp);
+                    temp.Flush();
+                }
+
                 fs.SetLength(0);
                 var serializer = new DataContractSerializer(typeof(Profile));
                 serializer.WriteObject(fs, this);
@@ -334,6 +359,26 @@ namespace NINA.Profile {
                     }
                 } catch (Exception ex) {
                     Logger.Error(ex);
+                    var backup = path + ".bkp";
+                    if (File.Exists(backup)) {
+                        try {
+                            Logger.Info("Restoring corrupt profile from backup");
+                            File.Copy(backup, path, true);
+                            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                var serializer = new DataContractSerializer(typeof(Profile));
+                                var obj = serializer.ReadObject(fs);
+                                var p = (Profile)obj;
+                                return new ProfileMeta() {
+                                    Id = p.Id,
+                                    Name = p.Name,
+                                    Location = p.Location,
+                                    LastUsed = p.LastUsed
+                                };
+                            }
+                        } catch (Exception backupEx) {
+                            Logger.Error("Restoring of profile failed", backupEx);
+                        }
+                    }
                 }
                 return null;
             }

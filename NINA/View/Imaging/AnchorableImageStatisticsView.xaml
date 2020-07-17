@@ -1,20 +1,11 @@
-﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.AnchorableImageStatisticsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -48,7 +39,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Width, StringFormat=\{0:#0\}}" />
+                                Text="{Binding ImageProperties.Width, StringFormat=\{0:#0\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -59,7 +50,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Height, StringFormat=\{0:#\}}" />
+                                Text="{Binding ImageProperties.Height, StringFormat=\{0:#\}}" />
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
@@ -72,7 +63,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Mean, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.Mean, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -83,7 +74,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding StDev, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.StDev, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
 
@@ -97,7 +88,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Median, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.Median, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -108,7 +99,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding MedianAbsoluteDeviation, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.MedianAbsoluteDeviation, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
@@ -121,12 +112,12 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Min}" />
+                                    Text="{Binding ImageStatistics.Result.Min}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding MinOccurrences}" />
+                                    Text="{Binding ImageStatistics.Result.MinOccurrences, IsAsync=True}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
@@ -139,12 +130,12 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Max}" />
+                                    Text="{Binding ImageStatistics.Result.Max}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding MaxOccurrences}" />
+                                    Text="{Binding ImageStatistics.Result.MaxOccurrences, IsAsync=True}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
@@ -159,7 +150,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
+                                Text="{Binding StarDetectionAnalysis.DetectedStars, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -170,96 +161,34 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding HFR, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
                         </StackPanel>
                     </UniformGrid>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="55"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblBitDepth}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding BitDepth}" />
-                    </StackPanel>
-                </StackPanel>
-                <Expander
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    Header="{ns:Loc LblExposureCalculator}">
-                    <Border>
-                        <StackPanel Margin="5" VerticalAlignment="Top">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblMinOptimalADU}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding MinExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblMinimumExposureTime}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding MinimumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblMaxOptimalADU}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding MaxExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblMaximumExposureTime}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding MaximumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblOptimalExposureTime}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding OptimizedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="170"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblCurrentDownloadToDataRatio}" />
-                                <TextBlock
-                                    Width="40"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding CurrentDownloadToDataRatio, Mode=OneWay}" />
-                            </StackPanel>
+                            Text="{Binding ImageProperties.BitDepth}" />
                         </StackPanel>
-                    </Border>
-                </Expander>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="55"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ImageProperties.Gain, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
             </StackPanel>
 
             <local:HistogramView

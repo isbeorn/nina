@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -37,16 +28,13 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
-            stellariumTimeout = 500;
             stellariumPort = 8090;
             stellariumHost = "localhost";
-            cdCTimeout = 300;
             cdCPort = 3292;
             cdCHost = "localhost";
-            tsxTimeout = 300;
             tsxPort = 3040;
             tsxHost = "localhost";
-            hnskyTimeout = 300;
+            tsxUseSelectedObject = true;
             hnskyPort = 7700;
             hnskyHost = "localhost";
             preferredPlanetarium = PlanetariumEnum.CDC;
@@ -82,21 +70,6 @@ namespace NINA.Profile {
             }
         }
 
-        private int stellariumTimeout;
-
-        [DataMember]
-        public int StellariumTimeout {
-            get {
-                return stellariumTimeout;
-            }
-            set {
-                if (stellariumTimeout != value) {
-                    stellariumTimeout = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private string cdCHost;
 
         [DataMember]
@@ -122,21 +95,6 @@ namespace NINA.Profile {
             set {
                 if (cdCPort != value) {
                     cdCPort = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int cdCTimeout;
-
-        [DataMember]
-        public int CdCTimeout {
-            get {
-                return cdCTimeout;
-            }
-            set {
-                if (cdCTimeout != value) {
-                    cdCTimeout = value;
                     RaisePropertyChanged();
                 }
             }
@@ -172,16 +130,16 @@ namespace NINA.Profile {
             }
         }
 
-        private int tsxTimeout;
+        private bool tsxUseSelectedObject;
 
         [DataMember]
-        public int TSXTimeout {
+        public bool TSXUseSelectedObject {
             get {
-                return tsxTimeout;
+                return tsxUseSelectedObject;
             }
             set {
-                if (tsxTimeout != value) {
-                    tsxTimeout = value;
+                if (tsxUseSelectedObject != value) {
+                    tsxUseSelectedObject = value;
                     RaisePropertyChanged();
                 }
             }
@@ -212,21 +170,6 @@ namespace NINA.Profile {
             set {
                 if (hnskyPort != value) {
                     hnskyPort = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int hnskyTimeout;
-
-        [DataMember]
-        public int HNSKYTimeout {
-            get {
-                return hnskyTimeout;
-            }
-            set {
-                if (hnskyTimeout != value) {
-                    hnskyTimeout = value;
                     RaisePropertyChanged();
                 }
             }

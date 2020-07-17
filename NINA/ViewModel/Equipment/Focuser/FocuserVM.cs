@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -33,6 +24,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Accord.Math.Geometry;
 
 namespace NINA.ViewModel.Equipment.Focuser {
 
@@ -48,14 +40,14 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList, o => !(Focuser?.Connected == true));
-            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected);
-            MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected);
-            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected);
-            MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5), (p) => FocuserInfo.Connected);
-            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected);
-            HaltFocuserCommand = new RelayCommand(HaltFocuser);
+            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelativeInternal((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelativeInternal(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelativeInternal((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelativeInternal(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuserInternal(TargetPosition), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            HaltFocuserCommand = new RelayCommand((object o) => _cancelMove?.Cancel());
             ToggleTempCompCommand = new RelayCommand(ToggleTempComp);
 
             updateTimer = new DeviceUpdateTimer(
@@ -67,6 +59,11 @@ namespace NINA.ViewModel.Equipment.Focuser {
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RefreshFocuserList(null);
             };
+
+            progress = new Progress<ApplicationStatus>(p => {
+                p.Source = this.Title;
+                this.applicationStatusMediator.StatusUpdate(p);
+            });
         }
 
         private void ToggleTempComp(object obj) {
@@ -75,94 +72,84 @@ namespace NINA.ViewModel.Equipment.Focuser {
             }
         }
 
-        private void HaltFocuser(object obj) {
-            _cancelMove?.Cancel();
-            Focuser.Halt();
+        public void ToggleTempComp(bool tempComp) {
+            if (FocuserInfo.Connected) {
+                Focuser.TempComp = tempComp;
+            }
         }
 
-        private enum Direction {
-            IN,
-            OUT,
-            NONE
+        private void HaltFocuser() {
+            Logger.Info("Halting Focuser");
+            if (Focuser?.Connected == true) {
+                try {
+                    Focuser.Halt();
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+            }
         }
 
-        private Direction _lastFocuserDirection = Direction.NONE;
-        private int _focuserOffset = 0;
         private CancellationTokenSource _cancelMove;
 
-        public async Task<int> MoveFocuser(int position) {
+        private Task<int> MoveFocuserInternal(int position) {
             _cancelMove?.Dispose();
             _cancelMove = new CancellationTokenSource();
+            return MoveFocuser(position, _cancelMove.Token);
+        }
+
+        private Task<int> MoveFocuserRelativeInternal(int position) {
+            _cancelMove?.Dispose();
+            _cancelMove = new CancellationTokenSource();
+            return MoveFocuserRelative(position, _cancelMove.Token);
+        }
+
+        public async Task<int> MoveFocuser(int position, CancellationToken ct) {
             int pos = -1;
-            int initialPos = this.Position;
-            int backlashCompensation = GetBacklashCompensation(initialPos, position);
-            position += backlashCompensation;
-            position += _focuserOffset;
+
             await Task.Run(async () => {
                 try {
-                    var tempComp = false;
-                    if (Focuser.TempCompAvailable && Focuser.TempComp) {
-                        tempComp = true;
-                        ToggleTempComp(false);
-                    }
-                    while (Focuser.Position != position) {
-                        FocuserInfo.IsMoving = true;
-                        _cancelMove.Token.ThrowIfCancellationRequested();
-                        await Focuser.Move(position, _cancelMove.Token);
-                    }
-                    //Wait for focuser to settle
-                    if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {
-                        FocuserInfo.IsSettling = true;
-                        TimeSpan totalSettleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.FocuserSettings.FocuserSettleTime);
-                        TimeSpan elapsedSettleTime = TimeSpan.Zero;
-                        while (elapsedSettleTime.TotalMilliseconds < totalSettleTime.TotalMilliseconds) {
-                            applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = Locale.Loc.Instance["LblSettle"], Progress = elapsedSettleTime.TotalSeconds, MaxProgress = (int)totalSettleTime.TotalSeconds, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
-                            await Utility.Utility.Delay(TimeSpan.FromSeconds(1), _cancelMove.Token);
-                            elapsedSettleTime = elapsedSettleTime.Add(TimeSpan.FromSeconds(1));
+                    using (ct.Register(() => HaltFocuser())) {
+                        var tempComp = false;
+                        if (Focuser.TempCompAvailable && Focuser.TempComp) {
+                            tempComp = true;
+                            ToggleTempComp(false);
+                        }
+
+                        Logger.Info($"Moving Focuser to position {position}");
+                        progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblFocuserMoveToPosition"], position) });
+
+                        while (Focuser.Position != position) {
+                            FocuserInfo.IsMoving = true;
+                            ct.ThrowIfCancellationRequested();
+                            await Focuser.Move(position, ct);
+                        }
+
+                        FocuserInfo.Position = this.Position;
+                        pos = this.Position;
+                        ToggleTempComp(tempComp);
+                        BroadcastFocuserInfo();
+
+                        //Wait for focuser to settle
+                        if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {
+                            FocuserInfo.IsSettling = true;
+                            await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.FocuserSettings.FocuserSettleTime), ct, progress, Locale.Loc.Instance["LblSettle"]);
                         }
                     }
-
-                    _lastFocuserDirection = MoveDirection(initialPos, position);
-                    _focuserOffset += backlashCompensation;
-
-                    FocuserInfo.Position = this.Position;
-                    pos = this.Position;
-                    ToggleTempComp(tempComp);
-                    BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
                 } finally {
                     FocuserInfo.IsSettling = false;
-                    applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty });
+                    FocuserInfo.IsMoving = false;
+                    progress.Report(new ApplicationStatus() { Status = string.Empty });
                 }
             });
             return pos;
         }
 
-        private int GetBacklashCompensation(int oldPos, int newPos) {
-            if (newPos > oldPos && _lastFocuserDirection == Direction.IN) {
-                return profileService.ActiveProfile.FocuserSettings.BacklashOut;
-            } else if (newPos < oldPos && _lastFocuserDirection == Direction.OUT) {
-                return profileService.ActiveProfile.FocuserSettings.BacklashIn * -1;
-            } else {
-                return 0;
-            }
-        }
-
-        private Direction MoveDirection(int oldPos, int newPos) {
-            if (newPos > oldPos) {
-                return Direction.OUT;
-            } else if (newPos < oldPos) {
-                return Direction.IN;
-            } else {
-                return _lastFocuserDirection;
-            }
-        }
-
-        public async Task<int> MoveFocuserRelative(int offset) {
+        public async Task<int> MoveFocuserRelative(int offset, CancellationToken ct) {
             int pos = -1;
             if (Focuser?.Connected == true) {
                 pos = this.Position + offset;
-                pos = await MoveFocuser(pos);
+                pos = await MoveFocuser(pos, ct);
             }
             return pos;
         }
@@ -171,25 +158,35 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
+        private IFocuser GetBacklashCompensationFocuser(IProfileService profileService, IFocuser focuser) {
+            switch (profileService.ActiveProfile.FocuserSettings.BacklashCompensationModel) {
+                case Utility.Enum.BacklashCompensationModel.ABSOLUTE:
+                    return new AbsoluteBacklashCompensationDecorator(profileService, focuser);
+
+                case Utility.Enum.BacklashCompensationModel.OVERSHOOT:
+                    return new OvershootBacklashCompensationDecorator(profileService, focuser);
+
+                default:
+                    return focuser;
+            }
+        }
+
         private async Task<bool> ChooseFocuser() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
-                applicationStatusMediator.StatusUpdate(
-                    new ApplicationStatus() {
-                        Source = Title,
-                        Status = Locale.Loc.Instance["LblConnecting"]
-                    }
-                );
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblConnecting"] });
 
-                var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
+                var focuser = GetBacklashCompensationFocuser(profileService, (IFocuser)FocuserChooserVM.SelectedDevice);
                 _cancelChooseFocuserSource?.Dispose();
                 _cancelChooseFocuserSource = new CancellationTokenSource();
                 if (focuser != null) {
@@ -205,6 +202,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                                 Name = Focuser.Name,
                                 Position = this.Position,
                                 StepSize = Focuser.StepSize,
+                                TempCompAvailable = Focuser.TempCompAvailable,
                                 TempComp = Focuser.TempComp,
                                 Temperature = Focuser.Temperature
                             };
@@ -216,6 +214,9 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
                             TargetPosition = this.Position;
                             profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
+
+                            Logger.Info($"Successfully connected Focuser. Id: {Focuser.Id} Name: {Focuser.Name} Driver Version: {Focuser.DriverVersion}");
+
                             return true;
                         } else {
                             FocuserInfo.Connected = false;
@@ -223,7 +224,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (FocuserInfo.Connected) { Disconnect(); }
+                        if (FocuserInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -231,12 +232,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                 }
             } finally {
                 ss.Release();
-                applicationStatusMediator.StatusUpdate(
-                    new ApplicationStatus() {
-                        Source = Title,
-                        Status = string.Empty
-                    }
-                );
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
         }
 
@@ -307,24 +303,32 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
         public int Position {
             get {
-                return Focuser.Position - _focuserOffset;
+                if (Focuser != null) {
+                    return Focuser.Position;
+                } else {
+                    return 0;
+                }
             }
         }
 
-        private void DisconnectDiag(object obj) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
-            updateTimer?.Stop();
+        public async Task Disconnect() {
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             Focuser?.Disconnect();
             Focuser = null;
             FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
             BroadcastFocuserInfo();
             RaisePropertyChanged(nameof(Focuser));
+            Logger.Info("Disconnected Focuser");
         }
 
         public void RefreshFocuserList(object obj) {
@@ -369,6 +373,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
         private DeviceUpdateTimer updateTimer;
         private IFocuserMediator focuserMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private IProgress<ApplicationStatus> progress;
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 

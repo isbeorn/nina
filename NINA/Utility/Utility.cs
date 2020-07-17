@@ -1,26 +1,18 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
+using NINA.Model;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -78,31 +70,81 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="unixTimeStamp">Milliseconds after 1970</param>
         /// <returns>DateTime</returns>
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp) {
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp) {
             // Unix timestamp is seconds past epoch
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
 
+        /// <summary>
+        /// Convert datetime to unix timestamp
+        /// </summary>
+        /// <param name="unixTimeStamp">Milliseconds after 1970</param>
+        /// <returns>DateTime</returns>
+        public static long DateTimeToUnixTimeStamp(DateTime date) {
+            return (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds; ;
+        }
+
         public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {
-            var t = new TimeSpan(0, 0, 0, 0, milliseconds);
+            var t = TimeSpan.FromMilliseconds(milliseconds);
             return await Delay(t, token);
         }
 
         public static async Task<TimeSpan> Delay(TimeSpan span, CancellationToken token) {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             await Task.Delay(span, token);
-            return DateTime.Now.Subtract(now);
+            return DateTime.UtcNow.Subtract(now);
         }
 
-        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken()) {
+        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = default, string status = "") {
             TimeSpan elapsed = new TimeSpan(0);
             do {
                 var delta = await Delay(100, token);
                 elapsed += delta;
-            } while (elapsed < t);
+                progress?.Report(new ApplicationStatus() { MaxProgress = (int)t.TotalSeconds, Progress = (int)elapsed.TotalSeconds, Status = string.IsNullOrWhiteSpace(status) ? Locale.Loc.Instance["LblWaiting"] : status, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
+            } while (elapsed < t && !token.IsCancellationRequested);
             return elapsed;
+        }
+
+        public static void DirectoryCleanup(string directory, TimeSpan deleteFromNow) {
+            try {
+                foreach (var file in Directory.GetFiles(directory)) {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.LastWriteTime < DateTime.Now.Add(deleteFromNow)) {
+                        try {
+                            fi.Delete();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Formats a byte value to a string with the highest logical unit
+        /// </summary>
+        /// <param name="bytes">byte count</param>
+        /// <returns>a string representing the converted byte unit</returns>
+        /// <example>
+        /// 5000 => "4.88 KiB"
+        /// 5000000000 => "4.65 GiB"
+        /// </example>
+        public static string FormatBytes(long bytes) {
+            const int scale = 1024;
+            var orders = new string[] { "TiB", "GiB", "MiB", "KiB", "Bytes" };
+            long max = (long)Math.Pow(scale, orders.Length - 1);
+            foreach (string order in orders) {
+                if (bytes > max) {
+                    return string.Format("{0:##.##} {1}", decimal.Divide(bytes, max), order);
+                }
+
+                max /= scale;
+            }
+            return "0 Bytes";
         }
     }
 }

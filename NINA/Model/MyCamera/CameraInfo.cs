@@ -1,27 +1,19 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace NINA.Model.MyCamera {
@@ -48,9 +40,9 @@ namespace NINA.Model.MyCamera {
             set { temperature = value; RaisePropertyChanged(); }
         }
 
-        private short gain;
+        private int gain;
 
-        public short Gain {
+        public int Gain {
             get { return gain; }
             set { gain = value; RaisePropertyChanged(); }
         }
@@ -88,11 +80,39 @@ namespace NINA.Model.MyCamera {
             set { binY = value; RaisePropertyChanged(); }
         }
 
+        private bool canSetOffset;
+
+        public bool CanSetOffset {
+            get { return canSetOffset; }
+            set { canSetOffset = value; RaisePropertyChanged(); }
+        }
+
+        public int offsetMin;
+
+        public int OffsetMin {
+            get { return offsetMin; }
+            set { offsetMin = value; RaisePropertyChanged(); }
+        }
+
+        public int offsetMax;
+
+        public int OffsetMax {
+            get { return offsetMax; }
+            set { offsetMax = value; RaisePropertyChanged(); }
+        }
+
         private int offset;
 
         public int Offset {
             get { return offset; }
             set { offset = value; RaisePropertyChanged(); }
+        }
+
+        private int usbLimit;
+
+        public int USBLimit {
+            get { return usbLimit; }
+            set { usbLimit = value; RaisePropertyChanged(); }
         }
 
         private bool isSubSampleEnabled;
@@ -135,6 +155,54 @@ namespace NINA.Model.MyCamera {
         public int Battery {
             get { return battery; }
             set { battery = value; RaisePropertyChanged(); }
+        }
+
+        private int gainMin;
+
+        public int GainMin {
+            get {
+                return gainMin;
+            }
+            set {
+                gainMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int gainMax;
+
+        public int GainMax {
+            get {
+                return gainMax;
+            }
+            set {
+                gainMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool canSetGain;
+
+        public bool CanSetGain {
+            get {
+                return canSetGain;
+            }
+            set {
+                canSetGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private IList<int> gains;
+
+        public IList<int> Gains {
+            get {
+                return gains;
+            }
+            set {
+                gains = value;
+                RaisePropertyChanged();
+            }
         }
 
         private bool coolerOn;
@@ -225,6 +293,16 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private short readoutMode;
+
+        public short ReadoutMode {
+            get => readoutMode;
+            set {
+                readoutMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private short snapReadoutMode;
 
         public short ReadoutModeForSnapImages {
@@ -281,6 +359,46 @@ namespace NINA.Model.MyCamera {
             get => lastDownloadTime;
             set {
                 lastDownloadTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SensorType sensorType = SensorType.Monochrome;
+
+        public SensorType SensorType {
+            get => sensorType;
+            set {
+                sensorType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short bayerOffsetX = 0;
+
+        public short BayerOffsetX {
+            get => bayerOffsetX;
+            set {
+                bayerOffsetX = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short bayerOffsetY = 0;
+
+        public short BayerOffsetY {
+            get => bayerOffsetY;
+            set {
+                bayerOffsetY = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double exposureMin = 0;
+
+        public double ExposureMin {
+            get => exposureMin;
+            set {
+                exposureMin = value;
                 RaisePropertyChanged();
             }
         }

@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -25,12 +16,18 @@ using NINA.Database;
 using Nito.AsyncEx;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace NINA.Utility.Astrometry {
 
     public class Astrometry {
+
+        static Astrometry() {
+            _ = new EarthRotationParameterUpdater().Update();
+        }
+
         private static double DegreeToRadiansFactor = Math.PI / 180d;
         private static double RadiansToDegreeFactor = 180d / Math.PI;
         private static double RadianstoHourFactor = 12d / Math.PI;
@@ -425,14 +422,14 @@ namespace NINA.Utility.Astrometry {
             double degree = 0, minutes = 0, seconds = 0;
 
             if (matches.Count > 0) {
-                degree = double.Parse(matches[0].Value);
+                degree = double.Parse(matches[0].Value, CultureInfo.InvariantCulture);
 
                 if (matches.Count > 1) {
-                    minutes = ArcminToDegree(double.Parse(matches[1].Value));
+                    minutes = ArcminToDegree(double.Parse(matches[1].Value, CultureInfo.InvariantCulture));
                 }
 
                 if (matches.Count > 2) {
-                    seconds = ArcsecToDegree(double.Parse(matches[2].Value));
+                    seconds = ArcsecToDegree(double.Parse(matches[2].Value, CultureInfo.InvariantCulture));
                 }
             }
 
@@ -481,9 +478,11 @@ namespace NINA.Utility.Astrometry {
             var sunPosition = tuple.Item2;
 
             var diff = HoursToDegrees(moonPosition.RA - sunPosition.RA);
-            var positionAngle = (diff) % 180;
-
-            return positionAngle;
+            if (diff > 180) {
+                return diff - 360;
+            } else {
+                return diff;
+            }
         }
 
         private static double CalculateMoonIllumination(DateTime date) {
@@ -605,16 +604,48 @@ namespace NINA.Utility.Astrometry {
             var dP = (c * γTRH) / (b - γTRH);
             return dP;
         }
+
+        /// <summary>
+        /// Returns the polar alignment error during a drift in degree for the given measurements
+        /// </summary>
+        /// <param name="startDeclination">Starting position of drift alignment in degrees</param>
+        /// <param name="driftRate">drift rate in degrees</param>
+        /// <param name="declinationError">Determined delta between start declination and end declination in degrees</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Hook's equation => δ(err) = (t * cos(δ) * θ(r) / 4) * 60 * 60 ===> δ(err) = 900 * t * cos(δ) * θ(r)
+        /// ==> t = time to drift in minutes
+        /// ==> δ = Declination of drift target
+        /// ==> θ(r) = alignment error in radians
+        /// ==> δ(err) = declination drift in arcseconds
+        ///
+        /// Solving for alignError = δ(err) / (900 * t * cos(δ)) ==> yields align error in radians
+        /// Express error in degree ==> δ(err) / (900 * t * cos(δ)) * (180/π)
+        /// Factor 4 is simplified for drift rate in degrees converted to minutes</remarks>
+        /// <see cref="http://celestialwonders.com/articles/polaralignment/PolarAlignmentAccuracy.pdf"/>
+        public static double DetermineDriftAlignError(double startDeclination, double driftRate, double declinationError) {
+            double δ = ToRadians(startDeclination);
+            double δerr = DegreeToArcsec(declinationError);
+            double t = driftRate * 4;
+
+            return ToDegree(δerr / (900 * t * Math.Cos(δ)));
+        }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Epoch {
 
+        [Description("LblJNOW")]
+        JNOW,
+
+        [Description("LblB1950")]
+        B1950,
+
         [Description("LblJ2000")]
         J2000,
 
-        [Description("LblJNOW")]
-        JNOW
+        [Description("LblJ2050")]
+        J2050
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

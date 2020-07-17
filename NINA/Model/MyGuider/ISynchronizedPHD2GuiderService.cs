@@ -1,4 +1,18 @@
-﻿using System;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Threading;
@@ -21,12 +35,6 @@ namespace NINA.Model.MyGuider {
         /// </summary>
         [OperationContract]
         void CancelStartGuiding();
-
-        /// <summary>
-        /// Cancels the StartPause request.
-        /// </summary>
-        [OperationContract]
-        void CancelStartPause();
 
         /// <summary>
         /// Cancels the StopGuiding request.
@@ -81,14 +89,6 @@ namespace NINA.Model.MyGuider {
         /// <returns></returns>
         [OperationContract]
         Task<bool> StartGuiding();
-
-        /// <summary>
-        /// Forwards the Pause or Resume command to the PHD2 instance and pauses or resumes PHD2. Can be called from multiple instances simultaneously.
-        /// </summary>
-        /// <param name="pause"></param>
-        /// <returns></returns>
-        [OperationContract]
-        Task<bool> StartPause(bool pause);
 
         /// <summary>
         /// Forwards StopGuiding to the PHD2 instance and stops guiding. Can be called from multiple instances simultaneously.

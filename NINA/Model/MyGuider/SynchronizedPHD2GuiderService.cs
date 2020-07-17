@@ -1,4 +1,18 @@
-﻿using NINA.Locale;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Locale;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
@@ -90,7 +104,6 @@ namespace NINA.Model.MyGuider {
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private readonly object ditherLock = new object();
         private readonly object startGuidingLock = new object();
-        private readonly object startPauseLock = new object();
         private readonly object stopGuidingLock = new object();
         private CancellationTokenSource ditherCancellationTokenSource;
         private Task<bool> ditherTask;
@@ -98,8 +111,6 @@ namespace NINA.Model.MyGuider {
         private TaskCompletionSource<bool> initializeTaskCompletionSource;
         private CancellationTokenSource startGuidingCancellationTokenSource;
         private Task<bool> startGuidingTask;
-        private CancellationTokenSource startPauseCancellationTokenSource;
-        private Task<bool> startPauseTask;
         private CancellationTokenSource stopGuidingCancellationTokenSource;
         private Task<bool> stopGuidingTask;
         public List<SynchronizedClientInfo> ConnectedClients;
@@ -131,11 +142,6 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public void CancelStartGuiding() {
             startGuidingCancellationTokenSource?.Cancel();
-        }
-
-        /// <inheritdoc />
-        public void CancelStartPause() {
-            startPauseCancellationTokenSource?.Cancel();
         }
 
         /// <inheritdoc />
@@ -225,23 +231,6 @@ namespace NINA.Model.MyGuider {
             }
 
             return startGuidingTask;
-        }
-
-        /// <inheritdoc />
-        public Task<bool> StartPause(bool pause) {
-            lock (startPauseLock) {
-                var taskStatus = startPauseTask?.Status;
-                if (taskStatus == TaskStatus.Faulted ||
-                    taskStatus == TaskStatus.Canceled ||
-                    taskStatus == TaskStatus.RanToCompletion ||
-                    startPauseTask == null) {
-                    startPauseCancellationTokenSource?.Dispose();
-                    startPauseCancellationTokenSource = new CancellationTokenSource();
-                    startPauseTask = guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-                }
-            }
-
-            return startPauseTask;
         }
 
         /// <inheritdoc />

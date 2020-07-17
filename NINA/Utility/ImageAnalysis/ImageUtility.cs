@@ -1,14 +1,23 @@
-﻿using AForge.Imaging;
-using Microsoft.Win32.SafeHandles;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using Accord.Imaging;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -18,7 +27,11 @@ namespace NINA.Utility.ImageAnalysis {
 
     internal class ImageUtility {
 
-        public static ColorRemappingGeneral GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
+        public static ColorRemappingGeneral GetColorRemappingFilter(
+            IImageStatistics statistics,
+            double targetHistogramMeanPct,
+            double shadowsClipping,
+            System.Windows.Media.PixelFormat pf) {
             ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct, shadowsClipping);
 
             if (pf == PixelFormats.Gray16) {
@@ -32,7 +45,13 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
+        public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(
+            IImageStatistics redStatistics,
+            IImageStatistics greenStatistics,
+            IImageStatistics blueStatistics,
+            double targetHistogramMeanPct,
+            double shadowsClipping,
+            System.Windows.Media.PixelFormat pf) {
             ushort[] mapRed = GetStretchMap(redStatistics, targetHistogramMeanPct, shadowsClipping);
             ushort[] mapGreen = GetStretchMap(greenStatistics, targetHistogramMeanPct, shadowsClipping);
             ushort[] mapBlue = GetStretchMap(blueStatistics, targetHistogramMeanPct, shadowsClipping);
@@ -85,14 +104,26 @@ namespace NINA.Utility.ImageAnalysis {
             var normalizedMAD = NormalizeUShort(statistics.MedianAbsoluteDeviation);
 
             var scaleFactor = 1.4826; // see https://en.wikipedia.org/wiki/Median_absolute_deviation
-            var zero = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
 
-            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - zero);
+            double shadows = 0d;
+            double midtones = 0.5d;
+            double highlights = 1d;
+
+            //Assume the image is inverted or overexposed when median is higher than half of the possible value
+            if (normalizedMedian > 0.5) {
+                shadows = 0d;
+                highlights = normalizedMedian - shadowsClipping * normalizedMAD * scaleFactor;
+                midtones = MidtonesTransferFunction(highlights - normalizedMedian, targetHistogramMedianPercent);
+            } else {
+                shadows = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
+                midtones = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - shadows);
+                highlights = 1;
+            }
 
             for (int i = 0; i < map.Length; i++) {
                 double value = NormalizeUShort(i);
 
-                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value - zero));
+                map[i] = DenormalizeUShort(MidtonesTransferFunction(midtones, 1 - highlights + value - shadows));
             }
 
             return map;
@@ -135,7 +166,7 @@ namespace NINA.Utility.ImageAnalysis {
 
         public static Bitmap Convert16BppTo8Bpp(BitmapSource source) {
             using (var bmp = BitmapFromSource(source)) {
-                return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
+                return Accord.Imaging.Image.Convert16bppTo8bpp(bmp);
             }
         }
 
@@ -149,33 +180,72 @@ namespace NINA.Utility.ImageAnalysis {
             return s;
         }
 
-        public static BitmapSource CreateSourceFromArray(IImageArray arr, IImageStatistics statistics, System.Windows.Media.PixelFormat pf) {
+        public static BitmapSource CreateSourceFromArray(IImageArray arr, ImageProperties props, System.Windows.Media.PixelFormat pf) {
             //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
-            int stride = (statistics.Width * pf.BitsPerPixel + 7) / 8;
+            int stride = (props.Width * pf.BitsPerPixel + 7) / 8;
             double dpi = 96;
 
-            BitmapSource source = BitmapSource.Create(statistics.Width, statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
+            BitmapSource source = BitmapSource.Create(props.Width, props.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
             source.Freeze();
             return source;
         }
 
-        public static DebayeredImageData Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf, bool saveColorChannels = false, bool saveLumChannel = false) {
+        public static DebayeredImageData Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf, bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB) {
             using (MyStopWatch.Measure()) {
                 if (pf != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                     throw new NotSupportedException();
                 }
                 using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
-                    return Debayer(bmp, saveColorChannels, saveLumChannel);
+                    return Debayer(bmp, saveColorChannels, saveLumChannel, bayerPattern);
                 }
             }
         }
 
-        public static DebayeredImageData Debayer(Bitmap bmp, bool saveColorChannels = false, bool saveLumChannel = false) {
+        public static DebayeredImageData Debayer(Bitmap bmp, bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB) {
             using (MyStopWatch.Measure()) {
                 var filter = new BayerFilter16bpp();
                 filter.SaveColorChannels = saveColorChannels;
                 filter.SaveLumChannel = saveLumChannel;
-                filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+
+                Logger.Debug($"Debayering pattern {bayerPattern}");
+
+                switch (bayerPattern) {
+                    case SensorType.RGGB:
+                        filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+                        break;
+
+                    case SensorType.RGBG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.B }, { RGB.G, RGB.R } };
+                        break;
+
+                    case SensorType.GRGB:
+                        filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.R, RGB.G } };
+                        break;
+
+                    case SensorType.GRBG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.B }, { RGB.R, RGB.G } };
+                        break;
+
+                    case SensorType.GBGR:
+                        filter.BayerPattern = new int[,] { { RGB.R, RGB.G }, { RGB.B, RGB.G } };
+                        break;
+
+                    case SensorType.GBRG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.R }, { RGB.B, RGB.G } };
+                        break;
+
+                    case SensorType.BGRG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.R }, { RGB.G, RGB.B } };
+                        break;
+
+                    case SensorType.BGGR:
+                        filter.BayerPattern = new int[,] { { RGB.R, RGB.G }, { RGB.G, RGB.B } };
+                        break;
+
+                    default:
+                        throw new InvalidImagePropertiesException(string.Format(Locale.Loc.Instance["LblUnsupportedCfaPattern"], bayerPattern));
+                }
+
                 DebayeredImageData debayered = new DebayeredImageData();
                 debayered.ImageSource = ConvertBitmap(filter.Apply(bmp), PixelFormats.Rgb48);
                 debayered.ImageSource.Freeze();
@@ -198,39 +268,47 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static Task<BitmapSource> Stretch(ImageData data, double factor, double blackClipping) {
-            return Task.Run(() => {
-                if (data.Image.Format == System.Windows.Media.PixelFormats.Gray16) {
-                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
-                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
-                    }
-                } else if (data.Image.Format == System.Windows.Media.PixelFormats.Rgb48) {
-                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
-                    }
-                } else {
-                    throw new NotSupportedException();
-                }
-            });
-        }
-
-        public static Task<BitmapSource> StretchUnlinked(ImageData data, double factor, double blackClipping) {
+        public static Task<BitmapSource> Stretch(IRenderedImage image, double factor, double blackClipping) {
             return Task.Run(async () => {
-                if (data.Image.Format != System.Windows.Media.PixelFormats.Rgb48) {
+                var imageStatistics = await image.RawImageData.Statistics.Task;
+                if (image.Image.Format == PixelFormats.Gray16) {
+                    using (var bmp = ImageUtility.BitmapFromSource(image.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
+                        return Stretch(imageStatistics, bmp, image.Image.Format, factor, blackClipping);
+                    }
+                } else if (image.Image.Format == PixelFormats.Rgb48) {
+                    using (var bmp = ImageUtility.BitmapFromSource(image.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                        return Stretch(imageStatistics, bmp, image.Image.Format, factor, blackClipping);
+                    }
+                } else {
+                    throw new NotSupportedException();
+                }
+            });
+        }
+
+        public static Task<BitmapSource> StretchUnlinked(IDebayeredImage data, double factor, double blackClipping) {
+            return Task.Run(async () => {
+                if (data.Image.Format != PixelFormats.Rgb48) {
                     throw new NotSupportedException();
                 } else {
-                    var r = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    var g = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    var b = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    await Task.WhenAll(r.Calculate(data.DebayeredData.Red), g.Calculate(data.DebayeredData.Green), b.Calculate(data.DebayeredData.Blue));
+                    var asyncR = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Red));
+                    var asyncG = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Green));
+                    var asyncB = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Blue));
+                    await Task.WhenAll(asyncR, asyncG, asyncB);
                     using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        return StretchUnlinked(r, g, b, img, data.Image.Format, factor, blackClipping);
+                        return StretchUnlinked(asyncR.Result, asyncG.Result, asyncB.Result, img, data.Image.Format, factor, blackClipping);
                     }
                 }
             });
         }
 
-        public static BitmapSource StretchUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
+        public static BitmapSource StretchUnlinked(
+            IImageStatistics redStatistics,
+            IImageStatistics greenStatistics,
+            IImageStatistics blueStatistics,
+            Bitmap img,
+            System.Windows.Media.PixelFormat pf,
+            double factor,
+            double blackClipping) {
             using (MyStopWatch.Measure()) {
                 var filter = ImageUtility.GetColorRemappingFilterUnlinked(redStatistics, greenStatistics, blueStatistics, factor, blackClipping, pf);
                 filter.ApplyInPlace(img);
@@ -241,7 +319,7 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static BitmapSource Stretch(IImageStatistics statistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
+        public static BitmapSource Stretch(IImageStatistics statistics, Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
             using (MyStopWatch.Measure()) {
                 var filter = ImageUtility.GetColorRemappingFilter(statistics, factor, blackClipping, pf);
                 filter.ApplyInPlace(img);

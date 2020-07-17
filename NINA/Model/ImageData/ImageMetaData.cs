@@ -1,12 +1,29 @@
-﻿using NINA.Model.MyCamera;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using System;
+using System.Linq;
 
 namespace NINA.Model.ImageData {
 
@@ -20,6 +37,7 @@ namespace NINA.Model.ImageData {
         public TargetParameter Target { get; set; } = new TargetParameter();
         public ObserverParameter Observer { get; set; } = new ObserverParameter();
         public WeatherDataParameter WeatherData { get; set; } = new WeatherDataParameter();
+        public WorldCoordinateSystem WorldCoordinateSystem = null;
 
         /// <summary>
         /// Fill relevant info from a Profile
@@ -27,6 +45,7 @@ namespace NINA.Model.ImageData {
         /// <param name="profile"></param>
         public void FromProfile(IProfile profile) {
             Camera.PixelSize = profile.CameraSettings.PixelSize;
+            Camera.BayerPattern = profile.CameraSettings.BayerPattern;
 
             Telescope.Name = profile.TelescopeSettings.Name;
             Telescope.FocalLength = profile.TelescopeSettings.FocalLength;
@@ -47,6 +66,25 @@ namespace NINA.Model.ImageData {
                 Camera.BinY = info.BinY;
                 Camera.ElectronsPerADU = info.ElectronsPerADU;
                 Camera.PixelSize = info.PixelSize;
+                Camera.USBLimit = info.USBLimit;
+
+                if (info.ReadoutModes.Count() > 1) {
+                    Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
+                }
+
+                Camera.SensorType = info.SensorType;
+
+                if (Camera.SensorType != SensorType.Monochrome) {
+                    if (Camera.BayerPattern == BayerPatternEnum.Auto) {
+                        Camera.SensorType = info.SensorType;
+                        Camera.BayerOffsetX = info.BayerOffsetX;
+                        Camera.BayerOffsetY = info.BayerOffsetY;
+                    } else {
+                        Camera.SensorType = (SensorType)Camera.BayerPattern;
+                        Camera.BayerOffsetX = 0;
+                        Camera.BayerOffsetY = 0;
+                    }
+                }
             }
         }
 
@@ -106,6 +144,10 @@ namespace NINA.Model.ImageData {
                 WeatherData.WindSpeed = info.WindSpeed;
             }
         }
+
+        public SensorType StringToSensorType(string pattern) {
+            return Enum.TryParse(pattern, out SensorType sensor) ? sensor : SensorType.Monochrome;
+        }
     }
 
     public class ImageParameter {
@@ -124,17 +166,33 @@ namespace NINA.Model.ImageData {
         public int BinY { get; set; } = 1;
         public double PixelSize { get; set; } = double.NaN;
         public double Temperature { get; set; } = double.NaN;
-        public double Gain { get; set; } = double.NaN;
-        public double Offset { get; set; } = double.NaN;
+        public int Gain { get; set; } = -1;
+        public int Offset { get; set; } = -1;
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
+        public string ReadoutModeName { get; set; } = string.Empty;
+        public BayerPatternEnum BayerPattern = BayerPatternEnum.Auto;
+        public SensorType SensorType { get; set; } = SensorType.Monochrome;
+        public int BayerOffsetX { get; set; } = 0;
+        public int BayerOffsetY { get; set; } = 0;
+        public int USBLimit { get; set; } = -1;
     }
 
     public class TelescopeParameter {
         public string Name { get; set; } = string.Empty;
         public double FocalLength { get; set; } = double.NaN;
         public double FocalRatio { get; set; } = double.NaN;
-        public Coordinates Coordinates { get; set; } = null;
+        private Coordinates coordinates = null;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                if (value != null) {
+                    value = value.Transform(Epoch.J2000);
+                }
+                coordinates = value;
+            }
+        }
     }
 
     public class FocuserParameter {
@@ -156,8 +214,27 @@ namespace NINA.Model.ImageData {
     }
 
     public class TargetParameter {
-        public string Name { get; set; } = string.Empty;
-        public Coordinates Coordinates { get; set; } = null;
+        private string name = string.Empty;
+
+        public string Name {
+            get => name;
+            set {
+                name = value;
+                name = name.Replace("\\", "-").Replace("/", "-");
+            }
+        }
+
+        private Coordinates coordinates = null;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                if (value != null) {
+                    value = value.Transform(Epoch.J2000);
+                }
+                coordinates = value;
+            }
+        }
     }
 
     public class ObserverParameter {

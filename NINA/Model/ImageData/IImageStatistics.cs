@@ -1,27 +1,31 @@
-﻿using OxyPlot;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using System.Collections.Immutable;
+using System.ComponentModel;
 
 namespace NINA.Model.ImageData {
 
     public interface IImageStatistics {
-        int BitDepth { get; }
-        int DetectedStars { get; set; }
-        int Height { get; }
-        double HFR { get; set; }
-        List<DataPoint> Histogram { get; }
-        int Id { get; set; }
-        bool IsBayered { get; }
-        int Max { get; }
-        long MaxOccurrences { get; }
+        double StDev { get; }
         double Mean { get; }
         double Median { get; }
         double MedianAbsoluteDeviation { get; }
+        int Max { get; }
+        long MaxOccurrences { get; }
         int Min { get; }
         long MinOccurrences { get; }
-        double StDev { get; }
-        int Width { get; }
-
-        Task Calculate(ushort[] array);
+        ImmutableList<OxyPlot.DataPoint> Histogram { get; }
     }
 }

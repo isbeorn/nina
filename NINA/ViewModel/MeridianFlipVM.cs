@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -41,10 +32,9 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
-            this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -66,7 +56,6 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _tokensource;
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
-        private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
@@ -119,7 +108,7 @@ namespace NINA.ViewModel {
         private async Task<bool> DoFilp(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblFlippingScope"] });
             Logger.Trace($"Meridian Flip - Scope will flip to coordinates RA: {_targetCoordinates.RAString} Dec: {_targetCoordinates.DecString} Epoch: {_targetCoordinates.Epoch}");
-            var flipsuccess = telescopeMediator.MeridianFlip(_targetCoordinates);
+            var flipsuccess = await telescopeMediator.MeridianFlip(_targetCoordinates);
             Logger.Trace($"Meridian Flip - Successful flip: {flipsuccess}");
 
             await Settle(token, progress);
@@ -202,20 +191,34 @@ namespace NINA.ViewModel {
                 Logger.Trace("Meridian Flip - Recenter after meridian flip");
 
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
-                PlateSolveResult plateSolveResult = null;
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                        syncScope = true,
-                        slewToTarget = true,
-                        repeat = true,
-                        silent = true,
-                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
-                    };
-                    solver.PlateSolveTarget = _targetCoordinates;
-                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
-                }
+
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var seq = new CaptureSequence(
+                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    CaptureSequence.ImageTypes.SNAPSHOT,
+                    profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                    1
+                );
+                seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+
+                var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
+                var parameter = new CenterSolveParameter() {
+                    Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                    Coordinates = _targetCoordinates,
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                    NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
+                };
+                _ = await solver.Center(seq, parameter, default, progress, token);
             }
             return true;
         }
@@ -247,13 +250,22 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
+        public static TimeSpan GetRemainingTime(IProfileService profileService, TelescopeInfo telescopeInfo) {
             if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
                 var tolerance = TimeSpan.FromMinutes(1);
                 var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
                 if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
                     remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
                 }
+                return remainingExposureTime;
+            } else {
+                return TimeSpan.Zero;
+            }
+        }
+
+        public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
+            if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
+                var remainingExposureTime = GetRemainingTime(profileService, telescopeInfo);
 
                 if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                     if (telescopeInfo.Connected == true) {

@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -52,7 +43,7 @@ namespace NINA.ViewModel.Equipment.Switch {
             this.switchMediator.RegisterHandler(this);
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
-            DisconnectCommand = new RelayCommand((object o) => Disconnect());
+            DisconnectCommand = new AsyncCommand<bool>(async () => { await Disconnect(); return true; });
             CancelConnectCommand = new RelayCommand((object o) => CancelConnect());
             RefreshDevicesCommand = new RelayCommand((object o) => RefreshDevices(), o => !(SwitchHub?.Connected == true));
 
@@ -174,8 +165,10 @@ namespace NINA.ViewModel.Equipment.Switch {
         public async Task<bool> Connect() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (SwitchChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SwitchSettings.Id = SwitchChooserVM.SelectedDevice.Id;
@@ -224,6 +217,8 @@ namespace NINA.ViewModel.Equipment.Switch {
                             RaisePropertyChanged(nameof(WritableSwitches));
                             BroadcastSwitchInfo();
 
+                            Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} Driver Version: {switchHub.DriverVersion}");
+
                             return true;
                         } else {
                             Notification.ShowError($"Unable to connect to {SwitchChooserVM.SelectedDevice.Name}");
@@ -232,7 +227,7 @@ namespace NINA.ViewModel.Equipment.Switch {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (SwitchInfo.Connected) { Disconnect(); }
+                        if (SwitchInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -249,14 +244,17 @@ namespace NINA.ViewModel.Equipment.Switch {
             }
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (SwitchInfo.Connected) {
-                updateTimer?.Stop();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
                 SwitchHub?.Disconnect();
                 WritableSwitches.Clear();
                 SwitchHub = null;
                 SwitchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
                 BroadcastSwitchInfo();
+                Logger.Info("Disconnected Switch");
             }
         }
 

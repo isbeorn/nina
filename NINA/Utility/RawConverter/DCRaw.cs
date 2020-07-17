@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -39,20 +30,25 @@ namespace NINA.Utility.RawConverter {
         }
 
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
-        public static string FILEPREFIX = "dcraw_tmp";
 
-        public async Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token) {
+        public async Task<IImageData> Convert(
+            MemoryStream s,
+            int bitDepth,
+            string rawType,
+            ImageMetaData metaData,
+            CancellationToken token = default) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
-                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + fileextension);
+                    var filename = Path.GetRandomFileName();
+                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, filename + fileextension);
 
                     using (var filestream = new System.IO.FileStream(rawfile, System.IO.FileMode.Create)) {
                         s.WriteTo(filestream);
                     }
 
                     ImageData data = null;
-                    var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
+                    var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, filename + ".tiff");
                     try {
                         System.Diagnostics.Process process;
                         System.Diagnostics.ProcessStartInfo startInfo;
@@ -98,8 +94,14 @@ namespace NINA.Utility.RawConverter {
                                 //Due to the settings of dcraw decoding the values will be stretched to 16 bits
                                 bitDepth = 16;
 
-                                data = new ImageData(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true);
-                                data.Data.RAWData = s.ToArray();
+                                var imageArray = new ImageArray(flatArray: pixels, rawData: s.ToArray(), rawType: rawType);
+                                data = new ImageData(
+                                    imageArray: imageArray,
+                                    width: (int)bmp.PixelWidth,
+                                    height: (int)bmp.PixelHeight,
+                                    bitDepth: bitDepth,
+                                    isBayered: true,
+                                    metaData: metaData);
                             } else {
                                 Logger.Error("File not found: " + outputFile);
                                 throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());

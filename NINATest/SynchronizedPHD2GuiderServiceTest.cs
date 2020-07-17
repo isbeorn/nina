@@ -1,4 +1,18 @@
-﻿using FluentAssertions;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using FluentAssertions;
 using Moq;
 using NINA.Model.MyGuider;
 using NUnit.Framework;
@@ -117,21 +131,6 @@ namespace NINATest {
             // assert
             result.Should().BeTrue();
             guider.Verify(m => m.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
-        public async Task StartPause_WhenCalledWithParameter_ShouldCallPauseOnGuideInstanceWithParameter() {
-            // setup
-            CancellationTokenSource cts = new CancellationTokenSource();
-            await sut.Initialize(guider.Object, cts.Token);
-            guider.Setup(m => m.Pause(true, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-
-            // act
-            var result = await sut.StartPause(true);
-
-            // assert
-            result.Should().BeTrue();
-            guider.Verify(m => m.Pause(true, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]

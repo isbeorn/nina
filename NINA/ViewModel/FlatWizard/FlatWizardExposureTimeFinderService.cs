@@ -1,50 +1,46 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using NINA.Locale;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Utility.WindowService;
-using OxyPlot;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NINA.ViewModel.FlatWizard {
 
     public class FlatWizardExposureTimeFinderService : IFlatWizardExposureTimeFinderService {
-        private List<DataPoint> dataPoints = new List<DataPoint>();
+        private List<ScatterErrorPoint> dataPoints = new List<ScatterErrorPoint>();
 
         public IWindowService WindowService { get; set; } = new WindowService();
 
         public ILoc Locale { get; set; } = Loc.Instance;
 
         public void ClearDataPoints() {
-            dataPoints = new List<DataPoint>();
+            dataPoints = new List<ScatterErrorPoint>();
         }
 
-        public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
-            var flatsWizardUserPrompt = new FlatWizardUserPromptVM(message,
-                                                    imageData.Statistics.Mean, CameraBitDepthToAdu(wrapper.BitDepth), wrapper, exposureTime);
+        public async Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
+            var imageStatistics = await imageData.Statistics.Task;
+            var flatsWizardUserPrompt = new FlatWizardUserPromptVM(
+                message,
+                imageStatistics.Mean,
+                CameraBitDepthToAdu(wrapper.BitDepth),
+                wrapper,
+                exposureTime);
             await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
             if (flatsWizardUserPrompt.Reset) {
@@ -63,11 +59,12 @@ namespace NINA.ViewModel.FlatWizard {
             return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
 
-        public FlatWizardExposureAduState GetFlatExposureState(IImageData imageData, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
+        public async Task<FlatWizardExposureAduState> GetFlatExposureState(IImageData imageData, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
             var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.BitDepth);
             var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
-            var currentMean = imageData.Statistics.Mean;
+            var imageStatistics = await imageData.Statistics.Task;
+            var currentMean = imageStatistics.Mean;
 
             if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
                 return FlatWizardExposureAduState.ExposureFinished;
@@ -125,7 +122,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void AddDataPoint(double exposureTime, double mean) {
-            dataPoints.Add(new DataPoint(exposureTime, mean));
+            dataPoints.Add(new ScatterErrorPoint(exposureTime, mean, 1, 1));
         }
     }
 

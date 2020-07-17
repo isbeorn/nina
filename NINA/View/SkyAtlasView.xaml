@@ -1,20 +1,12 @@
-﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
 <UserControl
     x:Class="NINA.View.SkyAtlasView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -46,16 +38,34 @@
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="5">
-                        <ninactrl:HintTextBox
-                            HorizontalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            Foreground="{StaticResource PrimaryBrush}"
-                            HintText="{ns:Loc LblObjectNameHint}"
-                            Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
-                            </TextBox.InputBindings>
-                        </ninactrl:HintTextBox>
+                        <Grid HorizontalAlignment="Stretch">
+                            <ninactrl:HintTextBox
+                                HorizontalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                DockPanel.Dock="Left"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                HintText="{ns:Loc LblObjectNameHint}"
+                                Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
+                                </TextBox.InputBindings>
+                            </ninactrl:HintTextBox>
+
+                            <Button
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Right"
+                                Command="{Binding ResetFiltersCommand}"
+                                DockPanel.Dock="Right"
+                                ToolTip="{ns:Loc LblClear}">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource ResetSVG}"
+                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                        </Grid>
+
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0,0,0,1"
@@ -356,7 +366,7 @@
                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                     <TextBlock Text="{ns:Loc LblDataProvidedBy}" />
                     <TextBlock>
-                        <Hyperlink NavigateUri="http://www.saguaroastro.org/content/downloads.htm" RequestNavigate="Hyperlink_RequestNavigate">
+                        <Hyperlink NavigateUri="https://www.saguaroastro.org/sac-downloads/" RequestNavigate="Hyperlink_RequestNavigate">
                             Saguaro Astronomy Club Database version 8.1
                         </Hyperlink>
                     </TextBlock>
@@ -411,7 +421,7 @@
                         Header="{ns:Loc LblName}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ItemsControl Margin="0 5 0 0" ItemsSource="{Binding AlsoKnownAs}" />
+                                <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding AlsoKnownAs}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

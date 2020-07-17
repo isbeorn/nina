@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -40,6 +31,7 @@ namespace NINA.Utility.Astrometry {
             Hours
         }
 
+        private DateTime creationDate;
         private Angle raAngle;
         private Angle decAngle;
 
@@ -101,13 +93,14 @@ namespace NINA.Utility.Astrometry {
         /// <param name="dec">   Declination in degrees</param>
         /// <param name="epoch"> J2000|JNOW</param>
         /// <param name="ratype">Degrees|Hours</param>
-        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype)
+        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype, DateTime? referenceDate = null)
             : this(
                   ratype == RAType.Hours
                     ? Angle.ByHours(ra)
                     : Angle.ByDegree(ra),
                   Angle.ByDegree(dec),
-                  epoch
+                  epoch,
+                  referenceDate
             ) {
         }
 
@@ -117,7 +110,17 @@ namespace NINA.Utility.Astrometry {
         /// <param name="ra">    Right Ascension</param>
         /// <param name="dec">   Declination</param>
         /// <param name="epoch"> J2000|JNOW</param>
-        public Coordinates(Angle ra, Angle dec, Epoch epoch) {
+        /// <param name="referenceDate">Optional: Default is DateTime.Now.
+        ///     Will be used for transformation from JNOW to J2000.
+        ///     As JNOW is constantly progressing but the creation was at a specific time this date is used as reference
+        /// </param>
+        public Coordinates(Angle ra, Angle dec, Epoch epoch, DateTime? referenceDate = null) {
+            if (referenceDate.HasValue) {
+                this.creationDate = referenceDate.Value;
+            } else {
+                this.creationDate = DateTime.Now;
+            }
+
             this.raAngle = ra;
             this.decAngle = dec;
             this.Epoch = epoch;
@@ -130,7 +133,7 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public Coordinates Transform(Epoch targetEpoch) {
             if (Epoch == targetEpoch) {
-                return new Coordinates(this.raAngle, this.decAngle, this.Epoch);
+                return new Coordinates(this.raAngle, this.decAngle, this.Epoch, this.creationDate);
             }
 
             if (targetEpoch == Epoch.JNOW) {
@@ -147,7 +150,8 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJNOW() {
-            double jdTT = GetJdTT(DateTime.Now);
+            var now = DateTime.Now;
+            double jdTT = GetJdTT(now);
 
             double ri = 0, di = 0, eo = 0;
             SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
@@ -155,7 +159,8 @@ namespace NINA.Utility.Astrometry {
             var raApparent = Angle.ByRadians(SOFA.Anp(ri - eo));
             var decApparent = Angle.ByRadians(di);
 
-            return new Coordinates(raApparent, decApparent, Epoch.JNOW);
+            var jnowCoordinates = new Coordinates(raApparent, decApparent, Epoch.JNOW, now);
+            return jnowCoordinates;
         }
 
         private double GetJdTT(DateTime date) {
@@ -174,9 +179,8 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJ2000() {
-            var now = DateTime.Now;
-            var jdTT = GetJdTT(now);
-            var jdUTC = Astrometry.GetJulianDate(now);
+            var jdTT = GetJdTT(this.creationDate);
+            var jdUTC = Astrometry.GetJulianDate(this.creationDate);
             double rc = 0, dc = 0, eo = 0;
             SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdUTC, 0.0)), decAngle.Radians, jdTT, 0.0, ref rc, ref dc, ref eo);
 
@@ -484,15 +488,31 @@ namespace NINA.Utility.Astrometry {
                 Bearing = bearing
             };
         }
+
+        public static Coordinates operator +(Coordinates a, Separation b) {
+            return new Coordinates(Angle.ByDegree(a.RADegrees) + b.RA, Angle.ByDegree(a.Dec) + b.Dec, a.Epoch);
+        }
+
+        public static Coordinates operator -(Coordinates a, Separation b) {
+            return new Coordinates(Angle.ByDegree(a.RADegrees) - b.RA, Angle.ByDegree(a.Dec) - b.Dec, a.Epoch);
+        }
+
+        public override string ToString() {
+            return $"RA: {this.RAString}; Dec: {this.DecString}; Epoch: {Epoch}";
+        }
     }
 
     /// <summary>
     /// Separation properties between two coordinates
     /// </summary>
     public class Separation {
-        public Angle RA { get; set; }
-        public Angle Dec { get; set; }
-        public Angle Distance { get; set; }
-        public Angle Bearing { get; set; }
+        public Angle RA { get; set; } = Angle.ByDegree(0);
+        public Angle Dec { get; set; } = Angle.ByDegree(0);
+        public Angle Distance { get; set; } = Angle.ByDegree(0);
+        public Angle Bearing { get; set; } = Angle.ByDegree(0);
+
+        public override string ToString() {
+            return $"RA: {Astrometry.HoursToHMS(RA.Hours)}; Dec: {Astrometry.DegreesToDMS(Dec.Degree)}; Distance: {Distance.Degree}; Bearing: {Bearing.Degree}";
+        }
     }
 }

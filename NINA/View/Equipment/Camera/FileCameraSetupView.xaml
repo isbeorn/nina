@@ -1,4 +1,12 @@
-﻿<UserControl
+<!--
+    Copyright (c) 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
     x:Class="NINA.View.Equipment.FileCameraSetupView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -45,6 +53,13 @@
                         Stretch="Uniform" />
                 </Button>
             </Grid>
+            <UniformGrid Margin="0,5,0,0" Columns="2">
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFileExtension}" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding FileExtensions}"
+                    SelectedItem="{Binding SelectedFileExtension}" />
+            </UniformGrid>
             <UniformGrid Margin="0,5,0,0" Columns="2">
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUseBuldMode}" />
                 <CheckBox IsChecked="{Binding UseBulbMode}" />

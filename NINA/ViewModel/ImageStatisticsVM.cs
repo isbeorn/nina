@@ -1,102 +1,33 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Profile;
 using System;
+using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
 
     public class ImageStatisticsVM : DockableVM {
-        private string _downloadToDataRatio;
-
-        private double _maxRecommendedExposureTime;
-
-        private double _optimizedExposureTime;
-
-        private double _recommendedExposureTime;
-
-        private IImageStatistics _statistics;
+        private AllImageStatistics _statistics;
 
         public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistogramSVG"];
         }
 
-        public string CurrentDownloadToDataRatio {
-            get {
-                return "1:" + _downloadToDataRatio;
-            }
-            set {
-                _downloadToDataRatio = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MaxExposureADU {
-            get {
-                return _offset + 10 * _squaredReadNoise;
-            }
-        }
-
-        public double MaximumRecommendedExposureTime {
-            get {
-                return _maxRecommendedExposureTime;
-            }
-            set {
-                _maxRecommendedExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinExposureADU {
-            get {
-                return _offset + 3 * _squaredReadNoise;
-            }
-        }
-
-        public double MinimumRecommendedExposureTime {
-            get {
-                return _recommendedExposureTime;
-            }
-            set {
-                _recommendedExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double OptimizedExposureTime {
-            get {
-                return _optimizedExposureTime;
-            }
-            set {
-                _optimizedExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public IImageStatistics Statistics {
+        public AllImageStatistics Statistics {
             get {
                 return _statistics;
             }
@@ -106,62 +37,18 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double ConvertToOutputBitDepth(double input) {
-            if (Statistics != null) {
-                if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
-                    || !Statistics.IsBayered) {
-                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.BitDepth));
-                }
-
-                return input;
-            } else {
-                return 0.0;
+        public async Task UpdateStatistics(IImageData imageData) {
+            var exposureTime = imageData.MetaData.Image.ExposureTime;
+            var statistics = await AllImageStatistics.Create(imageData);
+            statistics.PropertyChanged += Child_PropertyChanged;
+            Statistics = statistics;
+            if (exposureTime >= 0) {
+                var imageStatistics = await imageData.Statistics.Task;
             }
         }
 
-        private double _offset {
-            get {
-                return ConvertToOutputBitDepth(profileService.ActiveProfile.CameraSettings.Offset);
-            }
-        }
-
-        private double _squaredReadNoise {
-            get {
-                if (Statistics != null) {
-                    return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, Statistics.BitDepth)), 2));
-                } else {
-                    return 0;
-                }
-            }
-        }
-
-        public void Add(IImageStatistics stats, double exposureTime) {
-            Statistics = stats;
-
-            if (exposureTime > 0) {
-                CalculateRecommendedExposureTime(stats.Mean, exposureTime);
-            }
-        }
-
-        private void CalculateRecommendedExposureTime(double mean, double exposureTime) {
-            MinimumRecommendedExposureTime = ((MinExposureADU - _offset) / (mean - _offset)) * exposureTime;
-            MaximumRecommendedExposureTime = ((MaxExposureADU - _offset) / (mean - _offset)) * exposureTime;
-            var downloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds;
-
-            var optimalRatioExposureTime = profileService.ActiveProfile.CameraSettings.DownloadToDataRatio * downloadTime;
-
-            CurrentDownloadToDataRatio = (exposureTime / downloadTime).ToString("0.000");
-
-            var recommendedTime = MinimumRecommendedExposureTime;
-
-            if (optimalRatioExposureTime > MinimumRecommendedExposureTime) {
-                recommendedTime = optimalRatioExposureTime;
-            }
-
-            OptimizedExposureTime = recommendedTime;
-
-            RaisePropertyChanged(nameof(MinExposureADU));
-            RaisePropertyChanged(nameof(MaxExposureADU));
+        private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            this.ChildChanged(sender, e);
         }
     }
 }

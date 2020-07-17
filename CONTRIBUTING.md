@@ -55,13 +55,19 @@ Also attach your log file of that session (if applicable), which can be found in
 
 ## Quick Start
 1. Fork the repository
-2. Add your changes
-3. Check that unit tests are passing
-4. Make sure no unnecessary files are accidentally checked in.
-5. Add a short description about your changes to the correct section inside "RELEASE_NOTES.md"
-6. Push the change to your forked repository using a good commit message
-7. Submit a pull request
-8. During the pull requests there will be discussions and constructive feedback.
+2. **Sync LFS files into the fork**
+```
+git lfs fetch --all <nina root origin>
+git lfs push --all <your fork origin>
+git lfs pull
+```
+3. Add your changes
+4. Check that unit tests are passing
+5. Make sure no unnecessary files are accidentally checked in.
+6. Add a short description about your changes to the correct section inside "RELEASE_NOTES.md"
+7. Push the change to your forked repository using a good commit message
+8. Submit a pull request
+9. During the pull requests there will be discussions and constructive feedback.
    Required changes that might be requested during this phase have to be implemented.
    Once this is done, the pull request can be merged.
 
@@ -128,20 +134,17 @@ This database will be automatically created by the EntityFramework based on the 
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better
-* External dependencies are automatically installed via nuget (except Camera vendor DLLs)
-* External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
-    * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
-	* Altair SDK: reach out to AltairAstro. They can provide you with their sdk. Contact details at https://cameras.altairastro.com/
-	* ASI SDK: SDK is available at https://astronomy-imaging-camera.com/software-drivers section "For Developers"
-	* Atik SDK: SDK is available at https://www.atik-cameras.com/downloads/
-	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
-	* QHYCCD SDK: Instructions for integrating the QHYCCD SDK can be found in `NINA\Utility\CameraSDKs\QHYCCD\README.md`
-	* FLI SDK: Instructions for integrating the FLI SDK can be found in `NINA\Utility\CameraSDKs\FLI\README.md`
-    * Due to licensing of those files, they must not be put into a public repository
+* Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
+    * [License Header Manager](https://github.com/rubicon-oss/LicenseHeaderManager) for automatic insertion of the license into new files
+* Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
+* (Optional) External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
+    * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
+	* Altair SDK: Join the altair development group at https://groups.google.com/forum/#!forum/altair-development-group
+    * Due to not being publicly available, they must not be put into a public repository
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
 
 ## Automated Unit Tests (AUT)
@@ -162,6 +165,18 @@ This database will be automatically created by the EntityFramework based on the 
 * Inside the test explorer you will see all detected AUTs (after building the project)
 * To run all AUTs simply click on "Run All"
 * You can also run and/or debug single AUTs by right clicking inside the respective method and selecting "Run Test" or "Debug Test"
+
+## Localization
+
+* All strings that are displayed inside the User Interface should be localized using the Locale Manager
+  * In Code Behind: Locale.Loc.Instance["[Label key]"]
+  * In XAML: 
+    * Import namespace: xmlns:ns="clr-namespace:NINA.Locale"
+    * Use via binding like Text="{ns:Loc [Label key]}"
+* To introduce a new label you just need to add the new key and value into "NINA/Locale/Locale.resx" file. The other localized files will be managed by an external integration automatically.
+* All translations are managed by an external page  at [Crowdin](https://nina.crowdin.com) and automatically integrated into the repository
+  * For more information on how to contribute to the localization refer to our documentation in the contributing section
+
 
 ## Pull Requests
 

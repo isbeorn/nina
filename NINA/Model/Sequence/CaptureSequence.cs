@@ -1,4 +1,18 @@
-﻿using NINA.Utility;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using System;
 using System.Xml;
 using System.Xml.Serialization;
@@ -42,6 +56,27 @@ namespace NINA.Model {
             Gain = -1;
             Offset = -1;
             Enabled = true;
+        }
+
+        public CaptureSequence Clone() {
+            CaptureSequence clone = new CaptureSequence(ExposureTime, ImageType, FilterType, Binning, TotalExposureCount);
+            clone.Gain = Gain;
+            clone.Dither = Dither;
+            clone.DitherAmount = DitherAmount;
+            clone.Offset = Offset;
+            return clone;
+        }
+
+        public bool IsLightSequence() {
+            return ImageType == ImageTypes.SNAPSHOT || ImageType == ImageTypes.LIGHT;
+        }
+
+        public bool IsFlatSequence() {
+            return ImageType == ImageTypes.FLAT || ImageType == ImageTypes.DARKFLAT;
+        }
+
+        public bool IsDarkSequence() {
+            return ImageType == ImageTypes.BIAS || ImageType == ImageTypes.DARK;
         }
 
         private double _exposureTime;
@@ -112,10 +147,10 @@ namespace NINA.Model {
             }
         }
 
-        private short _gain;
+        private int _gain;
 
         [XmlElement(nameof(Gain))]
-        public short Gain {
+        public int Gain {
             get {
                 return _gain;
             }

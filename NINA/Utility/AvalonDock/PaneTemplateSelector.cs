@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -24,12 +15,14 @@
 using NINA.ViewModel;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.FlatDevice;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Switch;
 using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
+using NINA.ViewModel.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -76,83 +69,76 @@ namespace NINA.Utility.AvalonDock {
         public DataTemplate FocusTargetsTemplate { get; set; }
 
         public DataTemplate SwitchTemplate { get; set; }
+        public DataTemplate FlatDeviceTemplate { get; set; }
+        public DataTemplate ExposureCalculatorTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
-            if (item is CameraVM) {
-                return CameraTemplate;
-            }
+            switch (item) {
+                case CameraVM _:
+                    return CameraTemplate;
 
-            if (item is TelescopeVM) {
-                return TelescopeTemplate;
-            }
+                case TelescopeVM _:
+                    return TelescopeTemplate;
 
-            if (item is PlatesolveVM) {
-                return PlatesolveTemplate;
-            }
+                case AnchorablePlateSolverVM _:
+                    return PlatesolveTemplate;
 
-            if (item is PolarAlignmentVM) {
-                return PolarAlignmentTemplate;
-            }
+                case PolarAlignmentVM _:
+                    return PolarAlignmentTemplate;
 
-            if (item is GuiderVM) {
-                return GuiderTemplate;
-            }
+                case GuiderVM _:
+                    return GuiderTemplate;
 
-            if (item is FilterWheelVM) {
-                return FilterWheelTemplate;
-            }
+                case FilterWheelVM _:
+                    return FilterWheelTemplate;
 
-            if (item is ImagingVM) {
-                return ImagingTemplate;
-            }
+                case AnchorableSnapshotVM _:
+                    return ImagingTemplate;
 
-            if (item is ImageHistoryVM) {
-                return ImageHistoryTemplate;
-            }
+                case ImageHistoryVM _:
+                    return ImageHistoryTemplate;
 
-            if (item is ImageStatisticsVM) {
-                return ImageStatisticsTemplate;
-            }
+                case ImageStatisticsVM _:
+                    return ImageStatisticsTemplate;
 
-            if (item is ImageControlVM) {
-                return ImageControlTemplate;
-            }
+                case ImageControlVM _:
+                    return ImageControlTemplate;
 
-            if (item is SequenceVM) {
-                return SequenceTemplate;
-            }
+                case SequenceVM _:
+                    return SequenceTemplate;
 
-            if (item is WeatherDataVM) {
-                return WeatherDataTemplate;
-            }
+                case WeatherDataVM _:
+                    return WeatherDataTemplate;
 
-            if (item is FocuserVM) {
-                return FocuserTemplate;
-            }
+                case FocuserVM _:
+                    return FocuserTemplate;
 
-            if (item is AutoFocusVM) {
-                return AutoFocusTemplate;
-            }
+                case AutoFocusVM _:
+                    return AutoFocusTemplate;
 
-            if (item is ThumbnailVM) {
-                return ThumbnailTemplate;
-            }
+                case ThumbnailVM _:
+                    return ThumbnailTemplate;
 
-            if (item is RotatorVM) {
-                return RotatorTemplate;
-            }
+                case RotatorVM _:
+                    return RotatorTemplate;
 
-            if (item is FocusTargetsVM) {
-                return FocusTargetsTemplate;
-            }
+                case FocusTargetsVM _:
+                    return FocusTargetsTemplate;
 
-            if (item is SwitchVM) {
-                return SwitchTemplate;
-            }
+                case SwitchVM _:
+                    return SwitchTemplate;
 
-            return base.SelectTemplate(item, container);
+                case FlatDeviceVM _:
+                    return FlatDeviceTemplate;
+
+                case ExposureCalculatorVM _:
+                    return ExposureCalculatorTemplate;
+
+                default:
+                    return base.SelectTemplate(item, container);
+            }
         }
     }
 }

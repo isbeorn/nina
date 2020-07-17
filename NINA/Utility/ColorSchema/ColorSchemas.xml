@@ -1,22 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <ColorSchemas>
   <ColorSchema Name="Light">
     <PrimaryColor Color="#FF000000" />
@@ -225,5 +215,21 @@
     <NotificationErrorTextColor Color="#FF6FC3DF" />
     <SecondaryBackgroundColor Color="#FF10233d" />
     <TertiaryBackgroundColor Color="#FF0f2138" />
+  </ColorSchema>
+  <ColorSchema Name="Dark Nebula">
+    <PrimaryColor Color="#FFF5F4FA" />
+    <SecondaryColor Color="#68808080" />
+    <BorderColor Color="#AA3E4146" />
+    <BackgroundColor Color="#E1191A1C" />
+    <ButtonBackgroundColor Color="#FF34373D" />
+    <ButtonBackgroundSelectedColor Color="#FF696C70" />
+    <ButtonForegroundColor Color="#FF6495ED" />
+    <ButtonForegroundDisabledColor Color="#FF848484" />
+    <NotificationWarningColor Color="#FFBA5E07" />
+    <NotificationErrorColor Color="#FF700000" />
+    <NotificationWarningTextColor Color="#FFF0F8FF" />
+    <NotificationErrorTextColor Color="#FFF0F8FF" />
+    <SecondaryBackgroundColor Color="#FF1E2024" />
+    <TertiaryBackgroundColor Color="#FF404144" />
   </ColorSchema>
 </ColorSchemas>

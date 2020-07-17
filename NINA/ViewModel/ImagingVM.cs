@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -42,13 +33,57 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyWeatherData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
-    internal class ImagingVM : DockableVM, IImagingVM {
+    internal class ImagingVM : BaseVM, IImagingVM {
+
+        //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
+        private ImageControlVM _imageControl;
+
+        private Task<IRenderedImage> _imageProcessingTask;
+
+        private ApplicationStatus _status;
+
+        private IApplicationStatusMediator applicationStatusMediator;
+
+        private CameraInfo cameraInfo;
+
+        private ICameraMediator cameraMediator;
+
+        private FilterWheelInfo filterWheelInfo;
+
+        private IFilterWheelMediator filterWheelMediator;
+
+        private FocuserInfo focuserInfo;
+
+        private IFocuserMediator focuserMediator;
+
+        private IGuiderMediator guiderMediator;
+
+        private IImagingMediator imagingMediator;
+
+        private ImageStatisticsVM imgStatisticsVM;
+
+        private IProgress<ApplicationStatus> progress;
+
+        private RotatorInfo rotatorInfo;
+
+        private IRotatorMediator rotatorMediator;
+
+        private TelescopeInfo telescopeInfo;
+
+        private ITelescopeMediator telescopeMediator;
+
+        private WeatherDataInfo weatherDataInfo;
+
+        private IWeatherDataMediator weatherDataMediator;
 
         public ImagingVM(
-                IProfileService profileService,
+                                                                                                                                                                                        IProfileService profileService,
                 IImagingMediator imagingMediator,
                 ICameraMediator cameraMediator,
                 ITelescopeMediator telescopeMediator,
@@ -59,9 +94,6 @@ namespace NINA.ViewModel {
                 IWeatherDataMediator weatherDataMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
-            Title = "LblImaging";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
-
             this.imagingMediator = imagingMediator;
             this.imagingMediator.RegisterHandler(this);
 
@@ -86,25 +118,10 @@ namespace NINA.ViewModel {
             this.weatherDataMediator = weatherDataMediator;
             this.weatherDataMediator.RegisterConsumer(this);
 
-            SnapExposureDuration = 1;
             progress = new Progress<ApplicationStatus>(p => Status = p);
-            SnapCommand = new AsyncCommand<bool>(() => SnapImage(progress));
-            CancelSnapCommand = new RelayCommand(CancelSnapImage);
-            StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
-            StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
         }
-
-        private IProgress<ApplicationStatus> progress;
-        private ImageControlVM _imageControl;
-
-        public ImageControlVM ImageControl {
-            get { return _imageControl; }
-            set { _imageControl = value; RaisePropertyChanged(); }
-        }
-
-        private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
             get {
@@ -116,75 +133,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _snapSubSample;
-
-        public bool SnapSubSample {
-            get {
-                return _snapSubSample;
-            }
-            set {
-                _snapSubSample = value;
-                RaisePropertyChanged();
-            }
+        public ImageControlVM ImageControl {
+            get { return _imageControl; }
+            set { _imageControl = value; RaisePropertyChanged(); }
         }
-
-        private bool _liveViewEnabled;
-
-        public bool LiveViewEnabled {
-            get {
-                return _liveViewEnabled;
-            }
-            set {
-                _liveViewEnabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private CancellationTokenSource _liveViewCts;
-
-        private async Task<bool> StartLiveView() {
-            ImageControl.IsLiveViewEnabled = true;
-            _liveViewCts?.Dispose();
-            _liveViewCts = new CancellationTokenSource();
-            try {
-                await Task.Run(async () => {
-                    var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
-                    await liveViewEnumerable.ForEachAsync(async iarr => {
-                        await ImageControl.PrepareImage(iarr, _liveViewCts.Token);
-                    });
-                });
-            } catch (OperationCanceledException) {
-            } finally {
-                ImageControl.IsLiveViewEnabled = false;
-            }
-
-            return true;
-        }
-
-        public void SetImage(BitmapSource img) {
-            ImageControl.Image = img;
-        }
-
-        private void StopLiveView(object o) {
-            _liveViewCts?.Cancel();
-        }
-
-        private ApplicationStatus _status;
-
-        public ApplicationStatus Status {
-            get {
-                return _status;
-            }
-            set {
-                _status = value;
-                _status.Source = Title;
-                RaisePropertyChanged();
-
-                applicationStatusMediator.StatusUpdate(_status);
-            }
-        }
-
-        private ImageStatisticsVM imgStatisticsVM;
 
         public ImageStatisticsVM ImgStatisticsVM {
             get {
@@ -199,125 +151,54 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _loop;
-
-        public bool Loop {
+        public ApplicationStatus Status {
             get {
-                return _loop;
+                return _status;
             }
             set {
-                _loop = value;
+                _status = value;
+                _status.Source = Locale.Loc.Instance["LblImaging"]; ;
                 RaisePropertyChanged();
+
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
-        private bool _snapSave;
+        private void AddMetaData(
+            ImageMetaData metaData,
+            CaptureSequence sequence,
+            DateTime start,
+            RMS rms,
+            string targetName) {
+            metaData.Image.ExposureStart = start;
+            metaData.Image.Binning = sequence.Binning.Name;
+            metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
+            metaData.Image.ExposureTime = sequence.ExposureTime;
+            metaData.Image.ImageType = sequence.ImageType;
+            metaData.Image.RecordedRMS = rms;
+            metaData.Target.Name = targetName;
 
-        public bool SnapSave {
-            get {
-                return _snapSave;
-            }
-            set {
-                _snapSave = value;
-                RaisePropertyChanged();
-            }
+            // Fill all available info from profile
+            metaData.FromProfile(profileService.ActiveProfile);
+            metaData.FromTelescopeInfo(telescopeInfo);
+            metaData.FromFilterWheelInfo(filterWheelInfo);
+            metaData.FromRotatorInfo(rotatorInfo);
+            metaData.FromFocuserInfo(focuserInfo);
+            metaData.FromWeatherDataInfo(weatherDataInfo);
+
+            metaData.FilterWheel.Filter = sequence.FilterType?.Name ?? metaData.FilterWheel.Filter;
         }
 
-        private double _snapExposureDuration;
-        private IFilterWheelMediator filterWheelMediator;
-        private IGuiderMediator guiderMediator;
-        private IWeatherDataMediator weatherDataMediator;
-        private IApplicationStatusMediator applicationStatusMediator;
-
-        public double SnapExposureDuration {
-            get {
-                return _snapExposureDuration;
-            }
-
-            set {
-                _snapExposureDuration = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private int _exposureSeconds;
-
-        public int ExposureSeconds {
-            get {
-                return _exposureSeconds;
-            }
-            set {
-                _exposureSeconds = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private String _expStatus;
-
-        public String ExpStatus {
-            get {
-                return _expStatus;
-            }
-
-            set {
-                _expStatus = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public IAsyncCommand SnapCommand { get; private set; }
-
-        public ICommand CancelSnapCommand { get; private set; }
-        public IAsyncCommand StartLiveViewCommand { get; private set; }
-        public ICommand StopLiveViewCommand { get; private set; }
-
-        private void CancelSnapImage(object o) {
-            _captureImageToken?.Cancel();
-        }
-
-        private CancellationTokenSource _captureImageToken;
-
-        private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (seq.FilterType != null) {
-                await filterWheelMediator.ChangeFilter(seq.FilterType, token, progress);
-            }
-        }
-
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (ImageControl.IsLiveViewEnabled) _liveViewCts?.Cancel();
-            else await cameraMediator.Capture(seq, token, progress);
-        }
-
-        private Task<IImageData> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return cameraMediator.Download(token);
-        }
-
-        //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
-        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-
-        public async Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var iarr = await CaptureImage(sequence, token, string.Empty);
-            if (iarr != null) {
-                return await _imageProcessingTask;
-            } else {
-                return null;
-            }
-        }
-
-        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return CaptureImage(sequence, token, string.Empty, true);
-        }
-
-        private Task<IImageData> CaptureImage(
+        private Task<IExposureData> CaptureImage(
                 CaptureSequence sequence,
+                PrepareImageParameters parameters,
                 CancellationToken token,
                 string targetName = "",
                 bool skipProcessing = false
                 ) {
             return Task.Run(async () => {
                 try {
-                    IImageData data = null;
+                    IExposureData data = null;
                     //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
                     await semaphoreSlim.WaitAsync(token);
@@ -336,7 +217,7 @@ namespace NINA.ViewModel {
 
                         /*Capture*/
                         var exposureStart = DateTime.Now;
-                        await Capture(sequence, token, progress);
+                        await cameraMediator.Capture(sequence, token, progress);
 
                         /* Stop RMS Recording */
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
@@ -352,7 +233,7 @@ namespace NINA.ViewModel {
                             return null;
                         }
 
-                        AddMetaData(data, sequence, exposureStart, rms, targetName);
+                        AddMetaData(data.MetaData, sequence, exposureStart, rms, targetName);
 
                         if (!skipProcessing) {
                             //Wait for previous prepare image task to complete
@@ -361,7 +242,7 @@ namespace NINA.ViewModel {
                                 await _imageProcessingTask;
                             }
 
-                            _imageProcessingTask = PrepareImage(data, token);
+                            _imageProcessingTask = PrepareImage(data, parameters, token);
                         }
                     } catch (System.OperationCanceledException ex) {
                         cameraMediator.AbortExposure();
@@ -386,124 +267,88 @@ namespace NINA.ViewModel {
             });
         }
 
-        private void AddMetaData(IImageData data, CaptureSequence sequence, DateTime start, RMS rms, string targetName) {
-            data.MetaData.Image.ExposureStart = start;
-            data.MetaData.Image.Binning = sequence.Binning.Name;
-            data.MetaData.Image.ExposureNumber = sequence.ProgressExposureCount;
-            data.MetaData.Image.ExposureTime = sequence.ExposureTime;
-            data.MetaData.Image.ImageType = sequence.ImageType;
-            data.MetaData.Image.RecordedRMS = rms;
-            data.MetaData.Target.Name = targetName;
-
-            // Fill all available info from profile
-            data.MetaData.FromProfile(profileService.ActiveProfile);
-            data.MetaData.FromTelescopeInfo(telescopeInfo);
-            data.MetaData.FromFilterWheelInfo(filterWheelInfo);
-            data.MetaData.FromRotatorInfo(rotatorInfo);
-            data.MetaData.FromFocuserInfo(focuserInfo);
-            data.MetaData.FromWeatherDataInfo(weatherDataInfo);
-
-            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
-        }
-
-        private Task<IImageData> _imageProcessingTask;
-
-        private Model.MyFilterWheel.FilterInfo _snapFilter;
-
-        public Model.MyFilterWheel.FilterInfo SnapFilter {
-            get {
-                return _snapFilter;
-            }
-            set {
-                _snapFilter = value;
-                RaisePropertyChanged();
+        private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            if (seq.FilterType != null) {
+                await filterWheelMediator.ChangeFilter(seq.FilterType, token, progress);
             }
         }
 
-        private BinningMode _snapBin;
+        private Task<IExposureData> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
+            return cameraMediator.Download(token);
+        }
 
-        public BinningMode SnapBin {
-            get {
-                if (_snapBin == null) {
-                    _snapBin = new BinningMode(1, 1);
-                }
-                return _snapBin;
-            }
-            set {
-                _snapBin = value;
-                RaisePropertyChanged();
+        public async Task<IRenderedImage> CaptureAndPrepareImage(
+            CaptureSequence sequence,
+            PrepareImageParameters parameters,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
+            var iarr = await CaptureImage(sequence, parameters, token, string.Empty);
+            if (iarr != null) {
+                return await _imageProcessingTask;
+            } else {
+                return null;
             }
         }
 
-        private short _snapGain = -1;
-        private ICameraMediator cameraMediator;
-        private IImagingMediator imagingMediator;
-        private ITelescopeMediator telescopeMediator;
-        private IFocuserMediator focuserMediator;
-        private IRotatorMediator rotatorMediator;
-        private TelescopeInfo telescopeInfo;
-        private FilterWheelInfo filterWheelInfo;
-        private FocuserInfo focuserInfo;
-        private RotatorInfo rotatorInfo;
-        private WeatherDataInfo weatherDataInfo;
-
-        public short SnapGain {
-            get {
-                return _snapGain;
-            }
-            set {
-                _snapGain = value;
-                RaisePropertyChanged();
-            }
+        public Task<IExposureData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, new PrepareImageParameters(), token, string.Empty, true);
         }
 
-        public async Task<bool> SnapImage(IProgress<ApplicationStatus> progress) {
-            _captureImageToken?.Dispose();
-            _captureImageToken = new CancellationTokenSource();
+        public void DestroyImage() {
+            ImageControl.Image = null;
+            ImageControl.RenderedImage = null;
+        }
 
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
+            this.telescopeMediator.RemoveConsumer(this);
+            this.filterWheelMediator.RemoveConsumer(this);
+            this.focuserMediator.RemoveConsumer(this);
+            this.rotatorMediator.RemoveConsumer(this);
+            this.weatherDataMediator.RemoveConsumer(this);
+        }
+
+        public Task<IRenderedImage> PrepareImage(
+            IExposureData data,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            _imageProcessingTask = Task.Run(async () => {
+                var imageData = await data.ToImageData();
+                var processedData = await ImageControl.PrepareImage(imageData, parameters, cancelToken);
+                await ImgStatisticsVM.UpdateStatistics(imageData);
+                return processedData;
+            }, cancelToken);
+            return _imageProcessingTask;
+        }
+
+        public Task<IRenderedImage> PrepareImage(
+            IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            _imageProcessingTask = Task.Run(async () => {
+                var processedData = await ImageControl.PrepareImage(data, parameters, cancelToken);
+                await ImgStatisticsVM.UpdateStatistics(data);
+                return processedData;
+            }, cancelToken);
+            return _imageProcessingTask;
+        }
+
+        public void SetImage(BitmapSource img) {
+            ImageControl.Image = img;
+        }
+
+        public async Task<bool> StartLiveView(CancellationToken ct) {
+            ImageControl.IsLiveViewEnabled = true;
             try {
-                var success = true;
-                if (Loop) IsLooping = true;
-                do {
-                    var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
-                    seq.EnableSubSample = SnapSubSample;
-                    seq.Gain = SnapGain;
-
-                    var data = await CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
-                    if (SnapSave) {
-                        var path = await data.SaveToDisk(
-                            profileService.ActiveProfile.ImageFileSettings.FilePath,
-                            profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                            profileService.ActiveProfile.ImageFileSettings.FileType,
-                            _captureImageToken.Token
-                        );
-                        imagingMediator.OnImageSaved(
-                            new ImageSavedEventArgs() {
-                                PathToImage = new Uri(path),
-                                Image = data.Image,
-                                FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
-                                Mean = data.Statistics.Mean,
-                                HFR = data.Statistics.HFR,
-                                Duration = data.MetaData.Image.ExposureTime,
-                                IsBayered = data.Statistics.IsBayered,
-                                Filter = data.MetaData.FilterWheel.Filter,
-                                StatisticsId = data.Statistics.Id
-                            }
-                        );
-                    }
-
-                    _captureImageToken.Token.ThrowIfCancellationRequested();
-                } while (Loop && success);
+                var liveViewEnumerable = cameraMediator.LiveView(ct);
+                await liveViewEnumerable.ForEachAsync(async exposureData => {
+                    var imageData = await exposureData.ToImageData(ct);
+                    await ImageControl.PrepareImage(imageData, new PrepareImageParameters(), ct);
+                });
             } catch (OperationCanceledException) {
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(ex.Message);
             } finally {
-                if (_imageProcessingTask != null) {
-                    await _imageProcessingTask;
-                }
-                IsLooping = false;
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                ImageControl.IsLiveViewEnabled = false;
             }
 
             return true;
@@ -532,45 +377,5 @@ namespace NINA.ViewModel {
         public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
             this.weatherDataInfo = deviceInfo;
         }
-
-        public bool SetDetectStars(bool value) {
-            var oldval = ImageControl.DetectStars;
-            ImageControl.DetectStars = value;
-            return oldval;
-        }
-
-        public bool SetAutoStretch(bool value) {
-            var oldval = ImageControl.AutoStretch;
-            ImageControl.AutoStretch = value;
-            return oldval;
-        }
-
-        public Task<IImageData> PrepareImage(IImageData data, CancellationToken token) {
-            _imageProcessingTask = Task.Run(async () => {
-                Task<IImageData> process = ImageControl.PrepareImage(data, token);
-
-                var processedData = await process;
-
-                ImgStatisticsVM.Add(data.Statistics, data.MetaData.Image.ExposureTime);
-                return processedData;
-            }, token);
-            return _imageProcessingTask;
-        }
-
-        public void DestroyImage() {
-            ImageControl.Image = null;
-            ImageControl.ImgArr = null;
-        }
-
-        public void Dispose() {
-            this.cameraMediator.RemoveConsumer(this);
-            this.telescopeMediator.RemoveConsumer(this);
-            this.filterWheelMediator.RemoveConsumer(this);
-            this.focuserMediator.RemoveConsumer(this);
-            this.rotatorMediator.RemoveConsumer(this);
-            this.weatherDataMediator.RemoveConsumer(this);
-        }
-
-        public bool IsLooping { get; set; }
     }
 }

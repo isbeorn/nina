@@ -1,33 +1,24 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using EDSDKLib;
+using FLI;
 using NINA.Model.MyCamera;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Profile;
-using FLI;
 using QHYCCD;
 using System;
 using System.Collections.Generic;
@@ -75,9 +66,10 @@ namespace NINA.ViewModel.Equipment.Camera {
             /* Atik */
             try {
                 Logger.Trace("Adding Atik Cameras");
-                var atikDevices = AtikCameraDll.RefreshDevicesCount();
-                for (int i = 0; i < atikDevices; i++) {
-                    if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
+                var atikDevices = AtikCameraDll.GetDevicesCount();
+                Logger.Trace($"Cameras found: {atikDevices}");
+                if (atikDevices > 0) {
+                    for (int i = 0; i < atikDevices; i++) {
                         var cam = new AtikCamera(i, profileService);
                         Devices.Add(cam);
                     }
@@ -134,6 +126,17 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
+            /* Omegon */
+            try {
+                Logger.Debug("Adding Omegon Cameras");
+                foreach (var instance in Omegon.Omegonprocam.EnumV2()) {
+                    var cam = new OmegonCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* ASCOM */
             try {
                 foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {
@@ -147,14 +150,14 @@ namespace NINA.ViewModel.Equipment.Camera {
             try {
                 IntPtr cameraList;
                 try {
-                    EDSDK.Initialize();
+                    EDSDKLocal.Initialize();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Utility.Notification.Notification.ShowError(ex.Message);
                 }
 
                 uint err = EDSDK.EdsGetCameraList(out cameraList);
-                if (err == (uint)EDSDK.EDS_ERR.OK) {
+                if (err == EDSDK.EDS_ERR_OK) {
                     int count;
                     err = EDSDK.EdsGetChildCount(cameraList, out count);
 
@@ -181,7 +184,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
 
             Devices.Add(new Model.MyCamera.FileCamera(profileService, telescopeMediator));
-            Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
+            Devices.Add(new Model.MyCamera.Simulator.SimulatorCamera(profileService, telescopeMediator));
 
             DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);
         }

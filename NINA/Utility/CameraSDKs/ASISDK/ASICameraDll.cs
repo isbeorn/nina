@@ -1,4 +1,4 @@
-﻿using NINA.Utility;
+using NINA.Utility;
 using System;
 using System.Drawing;
 using System.IO;
@@ -227,7 +227,7 @@ namespace ZWOptical.ASISDK {
         private static extern ASI_ERROR_CODE ASIStopVideoCapture(int iCameraID);
 
         [DllImport(DLLNAME, EntryPoint = "ASIGetVideoData", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetVideoData(int iCameraID, IntPtr pBuffer, int lBuffSize, int iWaitms);
+        private static extern ASI_ERROR_CODE ASIGetVideoData(int iCameraID, [Out] ushort[] pBuffer, int lBuffSize, int iWaitms);
 
         [DllImport(DLLNAME, EntryPoint = "ASIPulseGuideOn", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIPulseGuideOn(int iCameraID, ASI_GUIDE_DIRECTION direction);
@@ -245,7 +245,7 @@ namespace ZWOptical.ASISDK {
         private static extern ASI_ERROR_CODE ASIGetExpStatus(int iCameraID, out ASI_EXPOSURE_STATUS pExpStatus);
 
         [DllImport(DLLNAME, EntryPoint = "ASIGetDataAfterExp", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetDataAfterExp(int iCameraID, IntPtr pBuffer, int lBuffSize);
+        private static extern ASI_ERROR_CODE ASIGetDataAfterExp(int iCameraID, [Out] ushort[] pBuffer, int lBuffSize);
 
         [DllImport(DLLNAME, EntryPoint = "ASIGetGainOffset", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetGainOffset(int iCameraID, out int Offset_HighestDR, out int Offset_UnityGain, out int Gain_LowestRN, out int Offset_LowestRN);
@@ -377,7 +377,7 @@ namespace ZWOptical.ASISDK {
             CheckReturn(ASIStopVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
 
-        public static bool GetVideoData(int cameraId, IntPtr buffer, int bufferSize, int waitMs) {
+        public static bool GetVideoData(int cameraId, ushort[] buffer, int bufferSize, int waitMs) {
             var result = ASIGetVideoData(cameraId, buffer, bufferSize, waitMs);
 
             if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
@@ -409,7 +409,7 @@ namespace ZWOptical.ASISDK {
             return result;
         }
 
-        public static bool GetDataAfterExp(int cameraId, IntPtr buffer, int bufferSize) {
+        public static bool GetDataAfterExp(int cameraId, ushort[] buffer, int bufferSize) {
             var result = ASIGetDataAfterExp(cameraId, buffer, bufferSize);
             if (result == ASI_ERROR_CODE.ASI_ERROR_TIMEOUT)
                 return false;

@@ -1,27 +1,19 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using NINA.Utility;
+using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
 
@@ -30,6 +22,7 @@ namespace NINA.Model.MyFilterWheel {
     [Serializable]
     [DataContract]
     public class FlatWizardFilterSettings : BaseINPC {
+        private FlatWizardMode flatWizardMode;
         private double histogramMeanTarget;
 
         private double histogramTolerance;
@@ -40,12 +33,31 @@ namespace NINA.Model.MyFilterWheel {
 
         private double stepSize;
 
+        private double maxFlatDeviceBrightness;
+
+        private double minFlatDeviceBrightness;
+
+        private double flatDeviceStepSize;
+
         public FlatWizardFilterSettings() {
+            flatWizardMode = FlatWizardMode.DYNAMICEXPOSURE;
             HistogramMeanTarget = 0.5;
             HistogramTolerance = 0.1;
             StepSize = 0.1;
             MinFlatExposureTime = 0.01;
             MaxFlatExposureTime = 30;
+            MinFlatDeviceBrightness = 0;
+            MaxFlatDeviceBrightness = 100;
+            FlatDeviceStepSize = 10;
+        }
+
+        [DataMember]
+        public FlatWizardMode FlatWizardMode {
+            get => flatWizardMode;
+            set {
+                flatWizardMode = value;
+                RaisePropertyChanged();
+            }
         }
 
         [DataMember]
@@ -93,6 +105,37 @@ namespace NINA.Model.MyFilterWheel {
             get => stepSize;
             set {
                 stepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double MaxFlatDeviceBrightness {
+            get => maxFlatDeviceBrightness;
+            set {
+                maxFlatDeviceBrightness = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double MinFlatDeviceBrightness {
+            get => minFlatDeviceBrightness;
+            set {
+                minFlatDeviceBrightness = value;
+                if (MaxFlatDeviceBrightness < minFlatDeviceBrightness) {
+                    MaxFlatDeviceBrightness = minFlatDeviceBrightness;
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double FlatDeviceStepSize {
+            get => flatDeviceStepSize;
+            set {
+                flatDeviceStepSize = value;
                 RaisePropertyChanged();
             }
         }

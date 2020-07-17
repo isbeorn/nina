@@ -1,4 +1,18 @@
-﻿using NINA.Locale;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Locale;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
@@ -49,6 +63,9 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public string Name => Locale["LblSynchronizedPHD2Guider"];
+
+        /// <inheritdoc />
+        public string Id => "PHD2_Synchronized";
 
         /// <inheritdoc />
         public double PixelScale {
@@ -218,14 +235,6 @@ namespace NINA.Model.MyGuider {
             return Task.Run(async () => {
                 ct.Register(guiderService.CancelSynchronizedDither);
                 return await guiderService.SynchronizedDither(profileService.ActiveProfile.Id);
-            }, ct);
-        }
-
-        /// <inheritdoc />
-        public Task<bool> Pause(bool pause, CancellationToken ct) {
-            return Task.Run(async () => {
-                ct.Register(guiderService.CancelStartPause);
-                return await guiderService.StartPause(pause);
             }, ct);
         }
 

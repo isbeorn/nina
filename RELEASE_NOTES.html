@@ -1,11 +1,295 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Version 1.9</title>
+    <meta charset="UTF-8" />
+    <meta property="og:url" content="https://nighttime-imaging.eu/">
+    <meta property="og:title" content="Nighttime Imaging 'N' Astronomy">
+    <meta property="og:description" content="An astrophotography imaging suite">
+    <meta property="og:image" content="https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png">
+    <meta property="og:type" content="website">
+    <style type="text/css">
+        body {
+            background-color: #222;
+            color: #eee;
+            font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif
+        }
+    </style>
+    <title>N.I.N.A. - Nighttime Imaging 'N' Astronomy Changelog</title>
 </head>
 <body>
 
-    <h1 id="version-1.9">Version 1.9</h1>
+    <h1 id="n.i.n.a-nighttime-imaging-n-astronomy-changelog">N.I.N.A. - Nighttime Imaging 'N' Astronomy Changelog</h1>
+<p>If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.<br />
+More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a></p>
+<h1 id="version-1.10">Version 1.10</h1>
+<h2 id="new-hardware-support">New hardware support</h2>
+<h4 id="flat-panel-control-and-automation">Flat Panel control and automation</h4>
+<ul>
+<li>Control supported flat panel devices from within N.I.N.A.</li>
+<li>Flat Wizard can specify a specific panel brightness to attain optimal flat frame exposures</li>
+<li>Flat panels or covers that open and close will automatically do so at the beginning and end of a sequence</li>
+<li>The following flat panels are supported, with no additional software required:
+<ul>
+<li>All-Pro Spike-a Flat Fielder</li>
+<li>Alnitak Flip-Flat, Flat-Man, and Remote Dust Cover</li>
+<li>Artesky USB Flat Box</li>
+<li>Pegasus Astro Flatmaster</li>
+</ul>
+</li>
+</ul>
+<h4 id="omegon-vetec-and-velox-series-cameras">Omegon veTEC and veLOX series cameras</h4>
+<ul>
+<li>Native support for the line of veTEC and veLOX cameras from Omegon</li>
+</ul>
+<h4 id="native-support-for-qhy-integrated-and-cfw-filter-wheels">Native support for QHY integrated and CFW filter wheels</h4>
+<ul>
+<li>The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc.) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported</li>
+<li>This allows the native QHY camera driver to be used with these cameras and filter wheel configurations.</li>
+</ul>
+<h4 id="lacerta-mgen-2-autoguider-integration">Lacerta MGEN-2 Autoguider integration</h4>
+<ul>
+<li>Full control of the MGEN-2 by mirroring the controller display into N.I.N.A.'s user interface</li>
+<li>Automatic power-on when connecting</li>
+<li>Starts guiding on sequence start</li>
+<li>Performs calibration and star auto-selection when required</li>
+<li>Displays star drift during guiding in a graph (currently only measured in pixels)</li>
+<li>Dithering during sequencing</li>
+<li>MGEN-3 support will appear in a future release</li>
+</ul>
+<h4 id="native-support-for-pegasus-astro-ultimate-powerbox-v2">Native support for Pegasus Astro Ultimate Powerbox V2</h4>
+<ul>
+<li>Connect to and control the Ultimate Powerbox V2 from within the application</li>
+<li>Monitor input voltage and power consumption</li>
+<li>Turn power and USB ports on and off via the Switch interface</li>
+<li>Set the output voltage of the variable power port</li>
+<li>Control the dew heater ports, including the Auto-Dew feature</li>
+<li>Support for using the Powerbox's sensors as a weather device</li>
+<li>Support for using the stepper motor driver as a focuser</li>
+</ul>
+<h4 id="expanded-native-camera-support">Expanded native camera support</h4>
+<ul>
+<li><strong>Altair Astro:</strong> Added support for Altair Astro Hypercam 269 PRO TEC and other new cameras</li>
+<li><strong>Atik:</strong> Updated vendor SDK for new camera support and bug fixes</li>
+<li><strong>Canon:</strong> Added support for EOS M6 Mark II, EOS 90D, and EOS M200. CR3 RAW file is not supported at this time but is expected to be in a future release</li>
+<li><strong>Nikon:</strong> Added support for the Z-series, D780, and D6</li>
+<li><strong>QHYCCD:</strong> Added support for QHY268C, QHY600M/C, QHY367C-PRO, QHY4040 and others</li>
+<li><strong>ZWO:</strong> Added support for the ASI533MC-Pro, ASI2600MC-Pro, and ASI6200MC/M-Pro</li>
+<li>Plus many bug fixes and feature enhancements in the respective camera vendor SDKs. Refer to the bottom of this release's section for the version numbers of the included vendor SDKs.</li>
+</ul>
+<h2 id="localization">Localization</h2>
+<ul>
+<li>N.I.N.A. is now available on <a href="https://crowdin.com/" target="_blank">Crowdin</a>! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at <a href="https://nina.crowdin.com/" target="_blank">nina.crowdin.com</a>. Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project</li>
+<li>Thirteen new languages are included in this release:
+<ul>
+<li>Dansk (Danish)</li>
+<li>Español (Spanish)</li>
+<li>Français (French)</li>
+<li>日本語 (Japanese)</li>
+<li>Nederlands (Dutch)</li>
+<li>Polski (Polish)</li>
+<li>Русский (Russian)</li>
+<li>简体中文, 中国 (Simplified Chinese, China)</li>
+<li>繁体中文, 台灣 (Traditional Chinese, Taiwan)</li>
+<li>繁体中文, 香港 (Traditional Chinese, Hong Kong)</li>
+<li>Türk (Turkish)</li>
+<li>Galego (Galician)</li>
+<li>Portugese (Português)</li>
+</ul>
+</li>
+</ul>
+<h2 id="application-improvements">Application Improvements</h2>
+<h3 id="general">General</h3>
+<ul>
+<li>Added the ability to record flat frame exposure times with the Flat Wizard, which may be later used in a sequence</li>
+<li>The Flat Wizard's limit of 50 exposures has been eliminated, but we're still not sure why you would want more than that</li>
+<li>The telescope will now stop tracking after being commanded to slew to zenith in the Framing Wizard</li>
+<li>Added the name of the active profile to the application title bar</li>
+<li>Warning notifications are now appear for 30 seconds instead of 3 seconds before automatically dismissing. Error notifications still display until they are dismissed by the user</li>
+<li>Logs older than 30 days are now automatically cleaned up when N.I.N.A. starts</li>
+<li>The timestamps in N.I.N.A.'s log file now have millisecond resolution and use the 24 hour time format</li>
+<li>In the <strong>Equipment &gt; Camera</strong> window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler</li>
+<li>UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required</li>
+<li>Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature</li>
+<li>The current <a href="https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html" target="_blank">Earth Rotation Parameter</a> data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists</li>
+<li>An occasional miscalculation of the moon's current phase has been corrected</li>
+<li>The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment</li>
+<li>Added an empty entry in the Constellation filter in Sky Atlas to allow for its deselection</li>
+<li>Clean-ups of the status text in the status bar at the bottom of the main window</li>
+<li>Various spelling and grammar fixes throughout the application</li>
+<li>Added or clarified several missing tool tips</li>
+<li>Gain/Offset controls now display the current gain/offset the camera is set to when no gain/offset is specified</li>
+</ul>
+<h3 id="auto-focus-system">Auto-focus system</h3>
+<ul>
+<li>Auto-focus has been enhanced to support multiple curve fitting methodologies:
+<ul>
+<li>Parabolic fitting, weighted by standard deviation</li>
+<li>Hyperbolic fitting, weighted by standard deviation</li>
+<li>A combination of parabolic or hyperbolic fitting, with trend lines. The averages of fitting minimum and trend line intersection are then used</li>
+</ul>
+</li>
+<li>A contrast detection auto-focus routine has been added. Instead of analyzing stars to determine the point of best focus, the routine will analyze the overall contrast of the image using various contrast detection methods. A Gaussian fit is then performed on the obtained focus points. On some systems, this process can employ shorter exposure times compared to Star HFR and produce results faster</li>
+<li>The single backlash compensation system has been improved and split into two selectable behaviors:
+<ul>
+<li>Absolute, where the focuser is moved in or out by the specified number of steps plus any additional steps for backlash. This is the same system that has existed before</li>
+<li>Overshoot, a new method, where the focuser is moved in or out by the requested number of steps, plus any &quot;overshoot&quot; number of steps, and is then moved in the opposite direction by the same number of &quot;overshoot&quot; steps. This is suitable for optical systems such as SCTs, which might benefit from this method in order to eliminate mirror flop</li>
+</ul>
+</li>
+<li>The &quot;Crop Ratio&quot; setting has been changed to &quot;Inner Crop Ratio&quot;, and an additional &quot;Outer Crop Ratio&quot; setting has been added. This allows users to define a centered ROI, or a centered &quot;square doughnut&quot;, which will be used by star detection. This allows for avoiding stars in the center and at the edges of the camera's FOV when a frame is analyzed during auto-focus</li>
+<li>HFR calculation is now computed using the mean background surrounding the star instead of the entire image's mean</li>
+<li>HFR calculation has been enhanced to provide more accurate results, especially for imaging systems that have central obstructions</li>
+<li>Auto-focus trend lines now use a weighted fit based on HFR standard deviation in each image rather than an unweighted fit. This provides much better slopes and final derived focus point</li>
+<li>A filter for use in auto-focusing can be set if &quot;Use filter offsets&quot; is set to true. When defined, the auto-focus routine will use the specified filter instead of the current imaging filter. Initial baseline HFR and final HFR (used to determine whether the auto-focus run was successful) will still use the intended imaging filter.</li>
+<li>Added the ability to keep guiding active during auto-focus operations</li>
+<li>The auto-focus routine has been changed so that it doesn't attempt to measure the focus twice for the same point on the curve</li>
+<li>If it is turned on, a focuser driver's internal temperature compensation feature is now turned off before an auto-focus operation starts and is turned back on when the operation completes</li>
+<li>Meridian Flip now has an option to trigger an auto-focus operation after a meridian flip while a sequence is running</li>
+<li>Backlash compensation will no longer be applied more than once if focuser movement is canceled during focuser settle time</li>
+<li>An auto-focus operation will not be performed if it might interfere with a pending meridian flip</li>
+<li>All auto-focus operations and their data points are now logged to their own <a href="https://www.json.org/" target="_blank">JSON</a>-formatted file located in <code>%LOCALAPPDATA%\NINA\AutoFocus</code>. This allows one to retrace what was measured at a later time</li>
+</ul>
+<h3 id="sequencer">Sequencer</h3>
+<ul>
+<li>Parameters in rows that are added to a sequence will now default to the parameters specified in the row above it</li>
+<li>A user-specified command (batch script, Windows/DOS executable, etc.) may be ran at the conclusion of a sequence. This command may be specified under <strong>Options &gt; Imaging &gt; Sequence</strong></li>
+<li>Sequence Gain and Offset settings can now be entered without having any camera connected. The values will be validated on sequence start in case an incompatible value was specified</li>
+<li>The pre-sequence checklist has been enhanced to check whether the telescope is parked. If it is parked, and the user affirms the action, N.I.N.A. will unpark the telescope before beginning the sequence</li>
+<li>Added a pre-sequence check to ensure that enough disk space is available to store the whole sequence's amount of images. The calculation does not take any file compression into account as that is unpredictable.</li>
+<li>End of Sequence operations are now done in parallel</li>
+<li>The &quot;Auto-focus after % HFR Change&quot; option has been enhanced to not be triggered by a single bad frame which might have been caused by a temporary condition such as wind or a passing vibration</li>
+<li>&quot;Auto-focus after % HFR Change&quot; now resets its reference index on sequence start, a target change, or any auto-focus operation that is caused by other criteria</li>
+<li>&quot;Auto-focus After Number of Exposures&quot; now correctly triggers after the specified number of exposures</li>
+<li>When the camera fails to indicate that an image is available for download after exposure time + 15 seconds, the exposure will be canceled and skipped</li>
+<li>When using filter offsets, NINA will no longer pause a sequence for any specified focuser settle time if there was no change in the focuser's position after switching filters</li>
+<li>Camera Gain and Offset are now saved as integers and are no longer saved with decimal places</li>
+<li>Added estimated target start and end times to sequence view. This is useful for multi-target sequence sets</li>
+<li>Guiding was improperly stopped when performing an auto-focus operation at start of sequence, even if the Disable Guiding option was false</li>
+<li>Sequence file names are now saved with valid file name characters. Invalid characters are replaced with a hyphen (-)</li>
+<li>Various sequence window presentation and layout improvements</li>
+<li>HFR calculation is enforced for light frames when autofocus after HFR change is enabled to ensure that the trigger will always work</li>
+</ul>
+<h3 id="plate-solving">Plate Solving</h3>
+<ul>
+<li>Additional information has been added to the plate solve pop-up window that appears during sequencing</li>
+<li>A camera gain and binning setting may be configured for use during automated plate solves</li>
+<li>Removed the &quot;Repeat until&quot; option from the <strong>Imaging &gt; Plate Solve</strong> tool window. This action will be always occur when &quot;Reslew to Target&quot; is enabled</li>
+<li>Plate solvers will now receive an unstretched FITS image instead of a JPEG. This can allow for a quicker and more reliable solve result</li>
+<li>Any <code>WARNING</code> FITS keyword that a plate solver inserts into a solved image will result in a warning notice in N.I.N.A. that contains the keyword's text</li>
+<li>A custom Astrometry.net API URL may be configured</li>
+<li>Improved status feedback and logging for Astrometry.net plate solve jobs</li>
+<li>Plate Solving window's Sync and Reslew settings will be saved</li>
+<li>Reworked the plate solving code completely for cleaner operations</li>
+</ul>
+<h3 id="guiding">Guiding</h3>
+<ul>
+<li>Improved the resiliency of StartGuider when PHD2 is unable to detect a guide star when guiding is started due to temporary clouds or other factors. An auto-retry mechanism has been added to command PHD2 to attempt to select guide star after a configurable timeout</li>
+<li>The guiding graph will now pause during dithering to avoid displaying guide pulses that are not actual corrections</li>
+<li>The guiding graph now displays a gray triangle icon along the X axis at the point where a dither action occurred</li>
+<li>The drawing of lines in the guiding graph will now pause when guiding itself is paused</li>
+<li>The scaling of lines in the guiding graph will now be consistent even if there are missing data points</li>
+<li>Guiding graph settings are now stored in the profile and are loaded when application is started</li>
+</ul>
+<h3 id="framing-wizard">Framing Wizard</h3>
+<ul>
+<li>NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image's characteristics</li>
+<li>When importing FITS or XISF files, any metadata they contain concerning the RA and declination of the image will be used to hint the plate solver. This can drastically speed up the importing of images into the Framing Wizard by avoiding blind solves</li>
+<li>If a FITS or XISF file contains WCS (World Coordinate System) information due to it already being plate solved externally, Framing Wizard will now retrieve and use that information instead of running its own plate solve on the image, resulting in instant positioning and rendering of the image</li>
+<li>The font size of the mosaic panel ID numbers is now scaled based on the imaging rectangle size and zoom level</li>
+<li>Coordinate input fields in the Framing Assistant and Sequence windows now allow for <code>-0</code> to be entered for declination</li>
+<li>When loading an image file into the Framing Assistant, the rectangle dimensions are now correctly calculated</li>
+</ul>
+<h3 id="device-related-improvements">Device-related improvements</h3>
+<ul>
+<li>The following camera settings are now saved to the active profile: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, Cooling and Warming Duration</li>
+<li>Images from OSC cameras now use their advertised bayer pattern instead of RGGB being assumed all the time</li>
+<li>N.I.N.A.'s camera simulator will now assume the pixel size, bayer matrix, and sensor temperature attributes of any FITS or XISF file that is loaded into it</li>
+<li>The equatorial system reported by the mount driver is now used, and the Epoch setting under <strong>Options &gt; General &gt; Astrometry</strong> has been removed. N.I.N.A. will default to J2000 when a mount's driver reports an epoch of &quot;other&quot;</li>
+<li>Wait and check to see if the mount flipped automatically at the meridian when &quot;Use Telescope Side of Pier&quot; is on</li>
+<li>A short timeout after mount sync operations has been added as some mounts may not immediately report updated coordinates after a Sync command is sent to them</li>
+<li>N.I.N.A.'s File Camera can now watch folders for Sony's <code>.ARW</code> and Olympus' <code>.ORF</code> RAW file formats</li>
+<li>Reintroduced a &quot;No Guider&quot; option under the <strong>Equipment &gt; Guiding</strong> device list so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the &quot;Connect All Devices&quot; button is pressed</li>
+<li>When a sequence is in the centering stage, rotators will now rotate to nearest orientation even if it results in an image that is upside down. An image's vertical orientation is not relevant for framing due to the corrective action of star alignment in post-processing</li>
+<li>Focuser control buttons are now disabled while the focuser is reporting that it is moving</li>
+<li>A new option is available to prevent sending any Sync command to the mount. The centering logic will then use offset a coordinate calculation instead. This new logic will also be called when a Sync command fails</li>
+<li>Added button to the <strong>Equipment &gt; Telescope</strong> window to set the current position of the mount to be its park position. This button is available only if the connected mount's ASCOM driver supports setting a park position</li>
+<li>Canon camera support has been improved and many common errors have been fixed</li>
+<li>Atik cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images</li>
+<li>FLI cameras no longer sit idle for the length of the exposure time prior to actually initiating the exposure</li>
+<li>QHY native camera driver now retrieves only the non-overscan area (the &quot;effective area&quot;) of the sensor by default. A Camera option now exists to include the overscan area, if desired</li>
+<li>QHY native camera driver now supports selecting readout modes if the camera offers any</li>
+<li>QHY cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images</li>
+<li>QHY native camera driver now optimizes image file size based on the actual image dimensions, resulting in slightly smaller image file sizes</li>
+<li>Binned exposures now finish on QHY cameras that have overscan areas</li>
+<li>ZWO cameras now properly handle odd bin dimensions (e.g. 3x3)</li>
+<li>Added a bit scaling option under <strong>Options &gt; Equipment &gt; Camera &gt; Advanced Settings</strong>, intended for users of Altair Astro, Omegon, and ToupTek cameras, to bit-shift the raw sub-16 bit data camera data that N.I.N.A. receives to 16 bits in order to improve file compatibility with other capture software</li>
+<li>FreeImage library upgraded to 3.18 for improved DSLR raw file display</li>
+<li>ZWO cameras now write correct EGAIN values when switching Gain</li>
+<li>ZWO cameras reset the FLIP STATUS to NONE in case it was altered by another software</li>
+<li>Time to meridian flip is displayed in telescope windows when enabled</li>
+</ul>
+<h3 id="imaging-window-changes">Imaging window changes</h3>
+<ul>
+<li>Added more southern hemisphere stars to the Manual Focus Stars tool</li>
+<li>Zooming to high magnification inside the Image viewer will no longer show smeared pixels. Sharp pixel edges will be shown instead</li>
+<li>The mid-tone stretch algorithm no longer inverts blown-out pixels</li>
+<li>The HFR History graph now displays indicators that denote when an auto-focus operation has occurred. Hovering over an indicator with the mouse pointer will reveal details for that operation, including the previous focuser position, the newly calculated focuser position, and the focuser's temperature at the time</li>
+<li>Optimal Exposure Calculator (OEC) has been moved out of the statistics window and into its own tool window for improved user experience, with improved calculations</li>
+<li>OEC can now load <a href="https://www.sharpcap.co.uk/sharpcap/features/sensor-analysis/" target="_blank">SharpCap Sensor Analysis</a> files to populate fields for the camera's full well and read noise parameters with measured values</li>
+<li>The camera snapshot control window will now save its parameters across application sessions</li>
+<li>Added a layout reset button for the Imaging window, located at <strong>Options &gt; Imaging &gt; Layout</strong></li>
+<li>Images from OSCs are no longer debayered for presentation twice</li>
+</ul>
+<h3 id="planetarium-software-integration">Planetarium software integration</h3>
+<ul>
+<li>All Planetarium options have been moved to their own section in the <strong>Options &gt; Equipment</strong> tab and the <strong>Options &gt; Planetarium</strong> tab has been removed</li>
+<li>When using Stellarium, N.I.N.A. now takes current view's center coordinates when no target is selected</li>
+<li>Added an option to retrieve the coordinates of the center of the sky chart instead of any selected object when using TheSkyX</li>
+<li>Increased reliability when parsing coordinates that are retrieved from Cartes du Ciel and Stellarium, especially in cases where the user's locale uses characters other than the decimal point as the decimal separator</li>
+<li>Reworked the Planetarium interfacing to be more robust</li>
+</ul>
+<h3 id="fits-and-xisf-support">FITS and XISF support</h3>
+<ul>
+<li>XISF files may be created with optional compression or shuffled compression of the image data using the LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported</li>
+<li>XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file that includes one</li>
+<li>Opening XISF and FITS files that have non-16 bit data is now supported. This benefits the Framing Wizard and N.I.N.A. Simulator Camera</li>
+<li>XISF image properties for aperture and focal length now correctly state values in meters rather than millimeters</li>
+</ul>
+<h3 id="file-name-patterns-and-fits-keywords">File name patterns and FITS keywords</h3>
+<ul>
+<li><code>$$DATEMINUS12$$</code>: Shifts the current date and time to 12 hours into the past. This allows for all images from a day-crossing session to be saved into the same date folder</li>
+<li><code>$$READOUTMODE$$</code>: Allows the camera's readout mode to be used in file or folder names</li>
+<li><code>$$SQM$$</code>: Allows the current reading from an attached sky quality meter to be used in file or folder names</li>
+<li><code>$$USBLIMIT$$</code>: Allows the USB Limit setting for the camera, if available, to be use in file or folder names</li>
+<li>The <code>$$FRAMENR$$</code> pattern now creates a 4 digit number, padding with zeros. Example: <code>0004</code></li>
+<li>The &quot;Image File Pattern&quot; setting will now correctly save its state to the active profile when file patterns are dragged from the list into the &quot;Image File Pattern&quot; field</li>
+<li>A new example preview of the currently-assembled file pattern appears below the &quot;Image File Pattern&quot; field. Any folder separators that are specified are denoted by a <code>›</code> character</li>
+<li>File pattern values are now scrubbed for leading and trailing white spaces and other illegal characters to prevent the creation of an invalid file or folder name</li>
+<li>Added the <code>READOUTM</code> keyword to FITS and XISF files to record the name of the readout mode used to create the image</li>
+<li>Added the <code>BAYERPAT</code>, <code>XBAYEROFF</code>, and <code>YBAYEROFF</code> keywords to FITS and XISF files when using color cameras. A menu under <strong>Options &gt; Equipment &gt; Camera</strong> allows the user to override the driver-specified Bayer pattern with an alternative pattern. This allows for automatic debayering in some processing applications, including the use of the &quot;Auto&quot; setting in PixInsight's Debayer process.</li>
+<li>Added the <code>USBLIMIT</code> keyword to FITS and XISF files to record the USB Limit setting of the camera</li>
+<li>The FITS <code>XPIXSZ</code> and <code>YPIXSZ</code> keywords (and related XISF properties) now correctly account for the binning factor</li>
+</ul>
+<h2 id="special-thanks">Special Thanks</h2>
+<p>The N.I.N.A. team would like to sincerely thank:</p>
+<ul>
+<li>The staff at <a href="https://teleskop-austria.com/" target="_blank">Teleskop Austria</a> for providing an MGEN-2 unit as well as a detailed communication protocol document for implementing and fully testing MGEN-2 support in N.I.N.A.</li>
+<li><a href="https://www.qhyccd.com/" target="_blank">QHYCCD</a> for providing a QHY183M and CFW3 filter wheel to test and verify NINA's native QHY camera and filter wheel drivers</li>
+</ul>
+<p>These items helped a lot during development and testing.<br />
+Thank you for your support!</p>
+<h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
+<ul>
+<li><strong>Altair Astro:</strong> 46.16909.2020.404</li>
+<li><strong>Atik:</strong> 2020.6.18.0</li>
+<li><strong>Canon:</strong> 13.12.10</li>
+<li><strong>FLI:</strong> 1.104.0.0</li>
+<li><strong>Nikon:</strong> 1.3.1.3001</li>
+<li><strong>Omegon:</strong> 39.15325.2019.810</li>
+<li><strong>QHY:</strong> 20.6.26.0</li>
+<li><strong>ToupTek:</strong> 46.17309.2020.616</li>
+<li><strong>ZWO:</strong> 1.15.6.17</li>
+</ul>
+<h1 id="version-1.9">Version 1.9</h1>
 <h2 id="features">Features</h2>
 <h3 id="camera-control">Camera Control</h3>
 <ul>
@@ -20,7 +304,7 @@
 <li>A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.</li>
 <li>Enhanced direct guider will accept decimal durations (e.g. 0.5s), and perform random angle selection in a way that minimizes target deviation from center, even after many dither operations.</li>
 </ul>
-<h3 id="plate-solving">Plate Solving</h3>
+<h3 id="plate-solving-1">Plate Solving</h3>
 <ul>
 <li>Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver</li>
 <li>Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:
@@ -61,8 +345,8 @@
 <ul>
 <li>Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views</li>
 <li>A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.</li>
-<li>Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.</li>
-<li>A new Measure Backlash tool has been added in the Auto-Focus view in the imaging tab. When launched, NINA will automatically measure focuser backlash IN and OUT.</li>
+<li>Backlash can be compensated using two methods. Absolut and Overshoot. Absolut will add absolute backlash values to the movement while overshoot will overshoot the position by a larger amount and move backwards again.</li>
+<li>Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements depending on the method specified.</li>
 <li>Sequence Auto-Focus can now be triggered if measured HFR of any frame is X% worse than the first frame taken after the previous auto-focus routine.</li>
 <li>More resilient autofocus:
 <ul>
@@ -88,11 +372,25 @@
 <li>The sequence start button is unavailable if an imaging loop is in progress in the imaging tab</li>
 <li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
 <li>It is now possible to set the Offset in addition to the Gain within each sequence item</li>
+<li>Added buttons to move sequence row up and down the list</li>
+<li>File handling now changed so that:
+<ul>
+<li>the default folder for sequences is set under Options -&gt; Imaging</li>
+<li>a 'modified' status is maintained for each target</li>
+<li>targets can be loaded from any xml file</li>
+<li>targets can be saved back to the file it was loaded from</li>
+<li>a 'Save as' option is added to save to a new file</li>
+<li>a warning is issued if a target is closed without saving when it has been modified.  This also applies when the application is closed.</li>
+</ul>
+</li>
+<li>Controls to change order of targets in a multi-target sequence</li>
+<li>Ability to save and load 'target sets' (a set of targets in a certain sequence)</li>
 </ul>
 <h3 id="flat-wizard">Flat Wizard</h3>
 <ul>
 <li>Progress bars have been added for remaining filters and exposures</li>
 <li>A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.</li>
+<li>A new option to pause between filters has been added. This is to allow the user the chance to set lightbox settings</li>
 </ul>
 <h3 id="interface">Interface</h3>
 <ul>
@@ -158,6 +456,7 @@
 <li>Fixed custom color schema not saving properly and resetting to default when reloading the application</li>
 <li>The backlash measurement routine has been fixed so that the focuser is properly recentered before the backlashOUT measurement procedure</li>
 <li>Some Sky Surveys did not work in some locales due to decimal pointer settings</li>
+<li>Fixed race condition when using DCRaw when the previous temp image was not finished processed and the new image tried to replace the previous temp image</li>
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
@@ -177,15 +476,15 @@
 <li>A new button is added in the options to directly open the log destination folder</li>
 <li>Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: <a href="https://altaircameras.com/black_preview_screen/">https://altaircameras.com/black_preview_screen/</a></li>
 </ul>
-<h2 id="special-thanks">Special Thanks</h2>
+<h2 id="special-thanks-1">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>
 <ul>
 <li>The staff at <a href="https://cloudbreakoptics.com/">Cloud Break Optics</a> and <a href="http://flicamera.com/">Finger Lakes Instrumentation</a> for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.</li>
 <li>Filippo Bradaschia from <a href="https://www.primalucelab.com/">PrimaLuceLab</a> for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager</li>
 </ul>
-<h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
+<h2 id="included-camera-sdk-versions-1">Included Camera SDK Versions:</h2>
 <ul>
-<li>Altair: 39.15529.2019.906</li>
+<li>Altair: 46.17427.2020.704</li>
 <li>Atik: 8.7.3.5</li>
 <li>Canon: 3.8.20.0</li>
 <li>FLI: 1.104.0.0</li>
@@ -205,7 +504,7 @@
 <ul>
 <li>Enable/Disable sequence entries</li>
 </ul>
-<h3 id="plate-solving-1">Plate Solving</h3>
+<h3 id="plate-solving-2">Plate Solving</h3>
 <ul>
 <li>Added interface for All Sky Platesolver</li>
 </ul>
@@ -235,7 +534,7 @@
 <li>Instead of dragging the rectangular through the initial image like in the other framing sources
 the background itself will be moved like in an orrery</li>
 </ul>
-<h3 id="guiding">Guiding</h3>
+<h3 id="guiding-1">Guiding</h3>
 <ul>
 <li>Added Synchronized PHD2 Guider (experimental)</li>
 <li>Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
@@ -303,7 +602,6 @@ the background itself will be moved like in an orrery</li>
 <li>Framing Assistant now can annotate DSO</li>
 <li>Sensor offset is now available as an image file name token (<code>$$OFFSET$$</code>)</li>
 <li>Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running</li>
-<li>Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.</li>
 <li>Automatically import filter wheel filters to the profile on connection when profile filter list is still empty</li>
 <li>Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore</li>
 <li>Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.</li>
@@ -327,7 +625,7 @@ the background itself will be moved like in an orrery</li>
 </ul>
 </li>
 </ul>
-<h2 id="special-thanks-1">Special Thanks</h2>
+<h2 id="special-thanks-2">Special Thanks</h2>
 <p>The N.I.N.A. team would like to thank</p>
 <ul>
 <li>Nick Smith from <a href="https://www.altairastro.com/">Altair Astro</a> for providing a GPCAM2 290C to integrate Altair SDK</li>
@@ -391,7 +689,6 @@ Thank you for your support!</p>
 <li>Major code refactorings for better maintainability</li>
 <li>Lots and lots of minor bugfixes and improvements</li>
 </ul>
-
 
 </body>
 </html>

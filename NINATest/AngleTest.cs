@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -106,6 +97,30 @@ namespace NINATest {
             var angle = Angle.ByRadians(inputRadians).Sin();
 
             var rad = Math.Sin(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
+            Assert.AreEqual(rad, angle.Radians, TOLERANCE);
+            Assert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
+        [TestCase(-Math.PI)]
+        [TestCase(-2 * Math.PI)]
+        [TestCase(-1)]
+        public void AbsTest(double inputRadians) {
+            var angle = Angle.ByRadians(inputRadians).Abs();
+
+            var rad = Math.Abs(inputRadians);
             var expectedDegree = Astrometry.ToDegree(rad);
             var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
             var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);

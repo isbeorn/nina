@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -35,6 +26,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.Utility.Mediator;
+using NINA.PlateSolving;
 
 namespace NINA.ViewModel {
 
@@ -269,9 +262,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private short snapGain = -1;
+        private int snapGain = -1;
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return snapGain;
             }
@@ -360,7 +353,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, TelescopeInfo.EquatorialSystem, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
@@ -405,17 +398,12 @@ namespace NINA.ViewModel {
                 cancelDARVSlewToken?.Dispose();
                 cancelDARVSlewToken = new CancellationTokenSource();
                 try {
-                    var oldAutoStretch = imagingMediator.SetAutoStretch(true);
-                    var oldDetectStars = imagingMediator.SetDetectStars(false);
-
                     var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
-                    var capture = imagingMediator.CaptureAndPrepareImage(seq, cancelDARVSlewToken.Token, cameraprogress);
+                    var prepareParameters = new PrepareImageParameters(autoStretch: true, detectStars: false);
+                    var capture = imagingMediator.CaptureAndPrepareImage(seq, prepareParameters, cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, cancelDARVSlewToken.Token);
 
                     await Task.WhenAll(capture, slew);
-
-                    imagingMediator.SetAutoStretch(oldAutoStretch);
-                    imagingMediator.SetDetectStars(oldDetectStars);
                 } catch (OperationCanceledException) {
                 }
             } else {
@@ -463,6 +451,7 @@ namespace NINA.ViewModel {
             if (CameraInfo?.Connected == true) {
                 cancelMeasureErrorToken?.Dispose();
                 cancelMeasureErrorToken = new CancellationTokenSource();
+                Task moveBackTask = Task.CompletedTask;
                 try {
                     var siderealTime = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
                     var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
@@ -472,7 +461,10 @@ namespace NINA.ViewModel {
                     var azimuth = Astrometry.GetAzimuth(hourAngle, altitude, latitude, dec);
                     var altitudeSide = azimuth.Degree < 180 ? AltitudeSite.EAST : AltitudeSite.WEST;
 
-                    double poleErr = await CalculatePoleError(progress, cancelMeasureErrorToken.Token);
+                    Coordinates startPosition = telescopeMediator.GetCurrentPosition();
+                    double poleErr = await CalculatePoleError(startPosition, progress, cancelMeasureErrorToken.Token);
+                    moveBackTask = telescopeMediator.SlewToCoordinatesAsync(startPosition);
+
                     string poleErrString = Deg2str(Math.Abs(poleErr), 4);
                     cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                     if (double.IsNaN(poleErr)) {
@@ -532,6 +524,8 @@ namespace NINA.ViewModel {
 
                     progress.Report(new ApplicationStatus() { Status = msg });
                 } catch (OperationCanceledException) {
+                } finally {
+                    await moveBackTask;
                 }
 
                 /*  Altitude
@@ -552,32 +546,44 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+        private async Task<double> CalculatePoleError(Coordinates startPosition, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+            var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+            var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
+            var parameter = new CaptureSolverParameter() {
+                Attempts = 1,
+                Binning = SnapBin?.X ?? CameraInfo.BinX,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius
+            };
+
             double poleError = double.NaN;
             try {
-                double movementdeg = 0.5d;
-                double movement = (movementdeg / 360) * 24;
+                double driftAmount = 0.5d;
 
                 progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-                }
+                parameter.Coordinates = startPosition;
+                PlateSolveResult = await solver.Solve(seq, parameter, default, progress, canceltoken);
+
                 canceltoken.ThrowIfCancellationRequested();
 
-                PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
+                PlateSolveResult startSolveResult = PlateSolveResult;
                 if (!startSolveResult.Success) {
                     return double.NaN;
                 }
 
-                Coordinates startSolve = PlateSolveResult.Coordinates;
-                startSolve = startSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                Coordinates startSolve = PlateSolveResult.Coordinates.Transform(Epoch.JNOW);
 
-                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates targetPosition = new Coordinates(startPosition.RADegrees - driftAmount, startPosition.Dec, TelescopeInfo.EquatorialSystem, Coordinates.RAType.Degrees);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await telescopeMediator.SlewToCoordinatesAsync(targetPosition);
 
@@ -593,29 +599,22 @@ namespace NINA.ViewModel {
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-                }
+                parameter.Coordinates = telescopeMediator.GetCurrentPosition();
+                PlateSolveResult = await solver.Solve(seq, parameter, default, progress, canceltoken);
+
                 canceltoken.ThrowIfCancellationRequested();
 
-                PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
+                PlateSolveResult targetSolveResult = PlateSolveResult;
                 if (!targetSolveResult.Success) {
                     return double.NaN;
                 }
 
-                Coordinates targetSolve = PlateSolveResult.Coordinates;
-                targetSolve = targetSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                Coordinates targetSolve = PlateSolveResult.Coordinates.Transform(Epoch.JNOW);
 
                 var decError = startSolve.Dec - targetSolve.Dec;
-                // Calculate pole error
-                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
-                // Convert pole error from arcminutes to degrees
-                poleError = Astrometry.ArcminToDegree(poleError);
+
+                poleError = Astrometry.DetermineDriftAlignError(startSolve.Dec, driftAmount, decError);
             } catch (OperationCanceledException) {
-            } finally {
-                //progress.Report("Slewing back to origin...");
-                await telescopeMediator.SlewToCoordinatesAsync(startPosition);
-                //progress.Report("Done");
             }
 
             return poleError;

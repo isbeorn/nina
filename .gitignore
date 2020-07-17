@@ -1,15 +1,11 @@
 #Exclude external DLL files
 NINA/External/*/Altair
-NINA/External/*/ASI
-NINA/External/*/Atik
 NINA/External/*/Canon
 NINA/External/*/Nikon
-NINA/External/*/ToupTek
-NINA/External/*/QHYCCD
-NINA/External/*/FLI
 
 # User-specific files
 *.rsuser
+*.user
 *.suo
 *.user
 *.userosscache
@@ -95,3 +91,6 @@ ClientBin/
 *.pfx
 *.publishsettings
 orleans.codegen.cs
+/NINA/Resources/SVG/ArrowRight.ai
+/NINA/Resources/StaticResources/ArrowRight.xaml
+/NINA/Resources/StaticResources/ArrowLeft.xaml

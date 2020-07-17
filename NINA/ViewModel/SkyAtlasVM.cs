@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -46,10 +37,11 @@ namespace NINA.ViewModel {
             // Not required to register to the mediator, as we don't need updates
             this.telescopeMediator = telescopeMediator;
 
-            SelectedDate = DateTime.Now;
+            ResetFilters(null);
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
+            ResetFiltersCommand = new RelayCommand(ResetFilters);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 return await telescopeMediator.SlewToCoordinatesAsync(SearchResult.SelectedItem.Coordinates);
@@ -69,6 +61,44 @@ namespace NINA.ViewModel {
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 InitializeFilters();
             };
+
+            Ticker = new Ticker(TimeSpan.FromSeconds(30));
+        }
+
+        private void ResetFilters(object obj) {
+            SelectedDate = DateTime.Now;
+
+            SearchObjectName = string.Empty;
+
+            foreach (var objecttype in ObjectTypes) {
+                objecttype.Selected = false;
+            }
+
+            SelectedAltitudeTimeFrom = DateTime.MinValue;
+            SelectedAltitudeTimeThrough = DateTime.MaxValue;
+            SelectedMinimumAltitudeDegrees = 0;
+
+            SelectedBrightnessFrom = null;
+            SelectedBrightnessThrough = null;
+
+            SelectedConstellation = string.Empty;
+
+            SelectedDecFrom = null;
+            SelectedDecThrough = null;
+
+            SelectedMagnitudeFrom = null;
+            SelectedMagnitudeThrough = null;
+
+            SelectedMinimumAltitudeDegrees = 0;
+
+            SelectedRAFrom = null;
+            SelectedRAThrough = null;
+
+            SelectedSizeFrom = null;
+            SelectedSizeThrough = null;
+
+            OrderByField = SkyAtlasOrderByFieldsEnum.SIZEMAX;
+            OrderByDirection = SkyAtlasOrderByDirectionEnum.DESC;
         }
 
         private void ResetRiseAndSetTimes() {
@@ -79,8 +109,6 @@ namespace NINA.ViewModel {
             TwilightRiseAndSet = null;
             _nightDuration = null;
             _twilightDuration = null;
-            _ticker?.Stop();
-            _ticker = null;
         }
 
         private CancellationTokenSource _searchTokenSource;
@@ -103,16 +131,7 @@ namespace NINA.ViewModel {
             return await vm.FramingAssistantVM.SetCoordinates(SearchResult.SelectedItem);
         }
 
-        private Ticker _ticker;
-
-        public Ticker Ticker {
-            get {
-                if (_ticker == null) {
-                    _ticker = new Ticker(30000);
-                }
-                return _ticker;
-            }
-        }
+        public Ticker Ticker { get; }
 
         private AsyncObservableCollection<DataPoint> _nightDuration;
 
@@ -352,9 +371,6 @@ namespace NINA.ViewModel {
             AltitudeTimesFrom = new AsyncObservableCollection<DateTime>();
             AltitudeTimesThrough = new AsyncObservableCollection<DateTime>();
             MinimumAltitudeDegrees = new AsyncObservableCollection<KeyValuePair<double, string>>();
-            SelectedAltitudeTimeFrom = DateTime.MinValue;
-            SelectedAltitudeTimeThrough = DateTime.MaxValue;
-            SelectedMinimumAltitudeDegrees = 0;
 
             var d = GetReferenceDate(SelectedDate);
 
@@ -408,14 +424,15 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeConstellationFilters() {
-            var l = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
-            Constellations = new AsyncObservableCollection<string>(l.Result);
+            var dbResult = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
+            var list = new AsyncObservableCollection<string>(dbResult.Result);
+            list.Insert(0, string.Empty);
+            Constellations = list;
         }
 
         private void InitializeObjectTypeFilters() {
             var task = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             var list = task.Result?.OrderBy(x => x).ToList();
-            ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
             foreach (var type in list) {
                 ObjectTypes.Add(new DSOObjectType(type));
             }
@@ -444,11 +461,6 @@ namespace NINA.ViewModel {
             RAThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
             DecFrom.Add(new KeyValuePair<double?, string>(null, string.Empty));
             DecThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
-
-            SelectedRAFrom = null;
-            SelectedRAThrough = null;
-            SelectedDecFrom = null;
-            SelectedDecThrough = null;
 
             for (int i = 0; i < 25; i++) {
                 Astrometry.HoursToDegrees(i);
@@ -567,6 +579,9 @@ namespace NINA.ViewModel {
 
         public AsyncObservableCollection<DSOObjectType> ObjectTypes {
             get {
+                if (_objectTypes == null) {
+                    _objectTypes = new AsyncObservableCollection<DSOObjectType>();
+                }
                 return _objectTypes;
             }
 
@@ -818,6 +833,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        public ICommand ResetFiltersCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
 
         public ICommand CancelSearchCommand { get; private set; }

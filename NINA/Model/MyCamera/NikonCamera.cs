@@ -1,22 +1,13 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright Â© 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -29,7 +20,6 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.RawConverter;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -110,8 +100,8 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
-            return Task.Run(() => {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            return Task.Run<IExposureData>(() => {
                 byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
                 using (var memStream = new MemoryStream(buffer)) {
                     memStream.Position = 0;
@@ -127,9 +117,13 @@ namespace NINA.Model.MyCamera {
                     ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                     bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-                    IImageData iarr = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
-
-                    return iarr;
+                    return new ImageArrayExposureData(
+                            input: outArray,
+                            width: bitmap.PixelWidth,
+                            height: bitmap.PixelHeight,
+                            bitDepth: 16,
+                            isBayered: false,
+                            metaData: new ImageMetaData());
                 }
             });
         }
@@ -149,20 +143,29 @@ namespace NINA.Model.MyCamera {
             _camera.ImageReady += Camera_ImageReady;
             _camera.CaptureComplete += _camera_CaptureComplete;
 
-            //Set to shoot in RAW
-            Logger.Debug("Setting compression to RAW");
-            var compression = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel);
-            for (int i = 0; i < compression.Length; i++) {
-                var val = compression.GetEnumValueByIndex(i);
-                if (val.ToString() == "RAW") {
-                    compression.Index = i;
-                    _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, compression);
-                    break;
+            GetCapabilities();
+
+            if (Capabilities.TryGetValue(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, out var compressionCapability)) {
+                if (compressionCapability.CanGet() && compressionCapability.CanSet()) {
+                    //Set to shoot in RAW
+                    Logger.Debug("Setting compression to RAW");
+                    var compression = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel);
+                    for (int i = 0; i < compression.Length; i++) {
+                        var val = compression.GetEnumValueByIndex(i);
+                        if (val.ToString() == "RAW") {
+                            compression.Index = i;
+                            _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, compression);
+                            break;
+                        }
+                    }
+                } else {
+                    Logger.Trace($"Cannot set compression level: CanGet {compressionCapability.CanGet()} - CanSet {compressionCapability.CanSet()}");
                 }
+            } else {
+                Logger.Trace("Compression Level capability not available");
             }
 
             GetShutterSpeeds();
-            GetCapabilities();
 
             /* Setting SaveMedia when supported, to save images via SDRAM and not to the internal memory card */
             if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_SaveMedia) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_SaveMedia].CanSet()) {
@@ -243,7 +246,7 @@ namespace NINA.Model.MyCamera {
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _memoryStream = new MemoryStream(image.Buffer);
-            Logger.Debug("Setting Download Exposure Taks to complete");
+            Logger.Debug("Setting Download Exposure Task to complete");
             _downloadExposure.TrySetResult(null);
         }
 
@@ -357,6 +360,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public short BayerOffsetX => 0;
+
+        public short BayerOffsetY => 0;
+
         public int CameraXSize {
             get {
                 return -1;
@@ -469,6 +476,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
+
         public bool CanSetOffset {
             get {
                 return false;
@@ -519,7 +530,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 if (Gains != null) {
                     return ISOSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
@@ -529,7 +540,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 if (Gains != null) {
                     return ISOSpeeds.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
@@ -539,12 +550,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 if (Connected) {
                     NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                    short iso;
-                    if (short.TryParse(e.Value.ToString(), out iso)) {
+                    int iso;
+                    if (int.TryParse(e.Value.ToString(), out iso)) {
                         return iso;
                     } else {
                         return -1;
@@ -564,22 +575,36 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
+        private Dictionary<int, int> _isoSpeeds = default;
 
-        private ArrayList _gains;
+        private Dictionary<int, int> ISOSpeeds {
+            get {
+                if (_isoSpeeds != default(Dictionary<int, int>)) return _isoSpeeds;
+                _isoSpeeds = new Dictionary<int, int>();
+                NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                for (int i = 0; i < e.Length; i++) {
+                    if (int.TryParse(e.GetEnumValueByIndex(i).ToString(), out int iso)) {
+                        _isoSpeeds.Add(iso, i);
+                    }
+                }
 
-        public ArrayList Gains {
+                return _isoSpeeds;
+            }
+        }
+
+        private IList<int> _gains;
+
+        public IList<int> Gains {
             get {
                 if (_gains == null) {
-                    _gains = new ArrayList();
+                    _gains = new List<int>();
                 }
 
                 if (_gains.Count == 0 && Connected && CanGetGain) {
                     NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
                     for (int i = 0; i < e.Length; i++) {
-                        short iso;
-                        if (short.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
-                            ISOSpeeds.Add(iso, i);
+                        int iso;
+                        if (int.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
                             _gains.Add(iso);
                         }
                     }
@@ -588,7 +613,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes => new List<string> { "Default" };
+
+        public short ReadoutMode {
+            get => 0;
+            set { }
+        }
 
         private short _readoutModeForSnapImages;
 
@@ -663,17 +693,33 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                await _downloadExposure.Task;
+            }
+        }
+
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
+            if (_downloadExposure.Task.IsCanceled) { return null; }
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
-            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.Convert(_memoryStream, BitDepth, token);
-            iarr.Data.RAWType = "nef";
-            _memoryStream.Dispose();
-            _memoryStream = null;
-            return iarr;
+            try {
+                var rawImageData = _memoryStream.ToArray();
+                var rawConverter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                return new RAWExposureData(
+                    rawConverter: rawConverter,
+                    rawBytes: rawImageData,
+                    rawType: "nef",
+                    bitDepth: this.BitDepth,
+                    metaData: new ImageMetaData());
+            } finally {
+                if (_memoryStream != null) {
+                    _memoryStream.Dispose();
+                    _memoryStream = null;
+                }
+            }
         }
 
         public void SetBinning(short x, short y) {
@@ -697,7 +743,7 @@ namespace NINA.Model.MyCamera {
                     SetCameraShutterSpeed(speed.Key);
 
                     Logger.Debug("Start capture");
-                    _camera.Capture();
+                    Task.Run(() => _camera.Capture());
                 } else {
                     if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                         Logger.Debug("Use Telescope Snap Port");
@@ -898,6 +944,7 @@ namespace NINA.Model.MyCamera {
                     CleanupUnusedManagers(_activeNikonManager);
                 }
 
+                Connected = connected;
                 return connected;
             });
         }

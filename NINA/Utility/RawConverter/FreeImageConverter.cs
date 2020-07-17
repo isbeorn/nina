@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -24,7 +15,6 @@
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +28,12 @@ namespace NINA.Utility.RawConverter {
             DllLoader.LoadDll(Path.Combine("FreeImage", "FreeImage.dll"));
         }
 
-        public Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token) {
+        public Task<IImageData> Convert(
+            MemoryStream s,
+            int bitDepth,
+            string rawType,
+            ImageMetaData metaData,
+            CancellationToken token = default) {
             return Task.Run(() => {
                 using (MyStopWatch.Measure()) {
                     FIBITMAP img;
@@ -66,8 +61,15 @@ namespace NINA.Utility.RawConverter {
                         ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                         cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
                         FreeImage.UnloadEx(ref img);
-                        var data = new ImageData(outArray, cropped.PixelWidth, cropped.PixelHeight, bitDepth, true);
-                        data.Data.RAWData = s.ToArray();
+
+                        var imageArray = new ImageArray(flatArray: outArray, rawData: s.ToArray(), rawType: rawType);
+                        var data = new ImageData(
+                            imageArray: imageArray,
+                            width: cropped.PixelWidth,
+                            height: cropped.PixelHeight,
+                            bitDepth: bitDepth,
+                            isBayered: true,
+                            metaData: metaData);
                         return Task.FromResult<IImageData>(data);
                     }
                 }

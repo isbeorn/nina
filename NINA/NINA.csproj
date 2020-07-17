@@ -33,33 +33,6 @@
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
-    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>N:\Astrofotografie\AstrophotographyBuddy\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
-    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
   </PropertyGroup>
@@ -91,7 +64,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>default</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -132,14 +105,20 @@
     <StartupObject>NINA.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
-      <HintPath>..\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    <Reference Include="Accord, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.3.8.0\lib\net462\Accord.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
-      <HintPath>..\packages\AForge.Imaging.2.2.5\lib\AForge.Imaging.dll</HintPath>
+    <Reference Include="Accord.Imaging, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Imaging.3.8.0\lib\net462\Accord.Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
-      <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
+    <Reference Include="Accord.Math, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Core, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Astrometry.dll</HintPath>
@@ -185,6 +164,9 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="LZ4, Version=1.0.15.93, Culture=neutral, PublicKeyToken=62e1b5ec1eec9bdd, processorArchitecture=MSIL">
+      <HintPath>..\packages\lz4net.1.0.15.93\lib\net4-client\LZ4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -247,6 +229,12 @@
     <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="SHA3, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SHA3.0.9.2\lib\net40\SHA3.dll</HintPath>
+    </Reference>
+    <Reference Include="SHA3Managed, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SHA3.0.9.2\lib\net40\SHA3Managed.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
@@ -269,6 +257,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -309,6 +298,9 @@
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -334,16 +326,217 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Locale\Locale.de-DE.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.de-DE.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.en-GB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.en-GB.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.es-ES.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.es-ES.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.fr-FR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.fr-FR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.gl-ES.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.gl-ES.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.it-IT.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.it-IT.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.ja-JP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.ja-JP.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.nl-NL.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.nl-NL.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.pl-PL.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.pl-PL.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.pt-PT.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.pt-PT.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.ru-RU.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.ru-RU.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.tr-TR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.tr-TR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-CN.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-HK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-HK.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-TW.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-TW.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ImageData\AllImageStatistics.cs" />
+    <Compile Include="Model\ImageData\ImageProperties.cs" />
     <Compile Include="Model\ImageData\IImageData.cs" />
+    <Compile Include="Model\ImageData\IImageStatistics.cs" />
     <Compile Include="Model\ImageData\ImageData.cs" />
     <Compile Include="Model\ImageData\DebayeredImageData.cs" />
     <Compile Include="Model\ImageData\ImageMetaData.cs" />
+    <Compile Include="Model\ImageData\IDebayeredImage.cs" />
+    <Compile Include="Model\ImageData\IRenderedImage.cs" />
+    <Compile Include="Model\ImageData\IStarDetectionAnalysis.cs" />
     <Compile Include="Model\ImageData\LRGBArrays.cs" />
+    <Compile Include="Model\ImageData\DebayeredImage.cs" />
+    <Compile Include="Model\ImageData\RenderedImage.cs" />
+    <Compile Include="Model\ImageData\StarDetectionAnalysis.cs" />
+    <Compile Include="Model\MyCamera\ExposureData.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
+    <Compile Include="Model\MyCamera\IExposureData.cs" />
+    <Compile Include="Model\MyCamera\OmegonCamera.cs" />
+    <Compile Include="Model\MyCamera\PersistSettingsCameraDecorator.cs" />
+    <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\Settings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\SkySurveySettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
+    <Compile Include="Model\MyFilterWheel\NullFilter.cs" />
+    <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyFlatDevice\AllProSpikeAFlat.cs" />
+    <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
+    <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
+    <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
+    <Compile Include="Model\MyFlatDevice\ArteskyFlatBox.cs" />
+    <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
+    <Compile Include="Model\MyFlatDevice\PegasusAstroFlatMaster.cs" />
+    <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
+    <Compile Include="PlateSolving\CenteringSolver.cs" />
+    <Compile Include="PlateSolving\CenterSolveParameter.cs" />
+    <Compile Include="PlateSolving\ICaptureSolver.cs" />
+    <Compile Include="PlateSolving\ICenteringSolver.cs" />
+    <Compile Include="PlateSolving\IImageSolver.cs" />
+    <Compile Include="PlateSolving\ImageSolver.cs" />
+    <Compile Include="PlateSolving\CaptureSolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveProgress.cs" />
+    <Compile Include="Profile\ExposureCalculatorSettings.cs" />
+    <Compile Include="Profile\Interfaces\IExposureCalculatorSettings.cs" />
+    <Compile Include="Profile\Interfaces\ISnapShotControlSettings.cs" />
+    <Compile Include="Profile\SnapShotControlSettings.cs" />
+    <Compile Include="Utility\Astrometry\EarthRotationParameterUpdater.cs" />
+    <Compile Include="Utility\Astrometry\WorldCoordinateSystem.cs" />
+    <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\DataProviderSwitch.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\PegasusAstroSwitch.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\BinarySwitches.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\ContinuousSwitches.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
+    <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
+    <Compile Include="Utility\Converters\BooleanToVisibilityHiddenMultiConverter.cs" />
+    <Compile Include="Utility\Converters\CollectionContainsItemsToBooleanConverter.cs" />
+    <Compile Include="Utility\Converters\DecDegreeConverter.cs" />
+    <Compile Include="Utility\Converters\IntListToTextBlockListConverter.cs" />
+    <Compile Include="Utility\Converters\MinusOneToBaseValueConverter.cs" />
+    <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
+    <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
+    <Compile Include="Utility\Converters\IntNegativeOneToDoubleDashConverter.cs" />
+    <Compile Include="Utility\Converters\InverseNullToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Converters\OptimalExposureCalculatorAnswerConverter.cs" />
+    <Compile Include="Utility\Converters\NaNToDoubleDashConverter.cs" />
+    <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
+    <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
+    <Compile Include="Utility\Enum\FlatWizardMode.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\ByteConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\DoubleConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\FloatConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\IDataConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\IntConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\LongConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\ShortConverter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\Float32Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\Float64Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\IDataConverter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt16Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt32Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt64Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt8Converter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSData.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSHeader.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSHeaderCard.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFData.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFHeader.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFImageProperty.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFMetaDataProperty.cs" />
+    <Compile Include="Utility\FileSaveInfo.cs" />
+    <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />
+    <Compile Include="Utility\DeferredContent.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\IArteskyFlatBox.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyDevice.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AllPro\USBD.cs" />
+    <Compile Include="Utility\SerialCommunication\Exceptions.cs" />
+    <Compile Include="Utility\ImageAnalysis\SharpCapSensorAnalysisReader.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\ICommand.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPort.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\Response.cs" />
+    <Compile Include="Utility\SerialCommunication\ResponseCache.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortWrapper.cs" />
+    <Compile Include="Utility\Enum\TIFFFeaturesEnum.cs" />
+    <Compile Include="Utility\Enum\XISFFeaturesEnum.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\FlatDeviceInfo.cs" />
+    <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyGuider\MGENGuider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
@@ -356,15 +549,15 @@
     <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
+    <Compile Include="PlateSolving\Solvers\BaseSolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
+    <Compile Include="Profile\FlatDeviceSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFlatDeviceSettings.cs" />
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />
-    <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
-    <Compile Include="Utility\Api\RawTcp.cs" />
-    <Compile Include="Utility\Api\ITcpIpApi.cs" />
     <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
-    <Compile Include="Utility\Api\JSONApi.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitch.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitchHub.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomWritableSwitch.cs" />
@@ -381,13 +574,16 @@
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="Model\MyGPS\NMEAGps.cs" />
-    <Compile Include="PlateSolving\ASTAPSolver.cs" />
-    <Compile Include="PlateSolving\CLISolver.cs" />
+    <Compile Include="PlateSolving\Solvers\ASTAPSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYFilterWheels.cs" />
+    <Compile Include="Utility\Converters\AutoFocusHFRToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
+    <Compile Include="Utility\Converters\AutoFocusContrastDetectionToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
     <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
@@ -396,7 +592,11 @@
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
+    <Compile Include="Utility\Converters\ZeroToVisibilityConverter.cs" />
+    <Compile Include="Utility\Enum\AFCurveFittingEnum.cs" />
+    <Compile Include="Utility\Enum\AFMethodEnum.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
+    <Compile Include="Utility\Enum\ContrastDetectionMethodEnum.cs" />
     <Compile Include="Utility\Enum\NoiseReductionEnum.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
@@ -408,6 +608,13 @@
     <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatSimulator.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\IAlnitakDevice.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\FlatMasterCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\FlatMasterResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\IPegasusFlatMaster.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\PegasusFlatMaster.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
@@ -415,28 +622,109 @@
     <Compile Include="Utility\ImageAnalysis\FastGaussianBlur.cs" />
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
+    <Compile Include="Utility\Mediator\FlatDeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataMediator.cs" />
+    <Compile Include="Utility\Mediator\PrepareImageParameters.cs" />
     <Compile Include="Utility\Mediator\WeatherDataMediator.cs" />
     <Compile Include="Utility\Mediator\SwitchMediator.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\IPegasusDevice.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusCommands.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusDevice.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusResponses.cs" />
     <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
+    <Compile Include="Utility\ValidationRules\IntRangeRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusPoint.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusReport.cs" />
+    <Compile Include="ViewModel\AutoFocus\FocusPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\MathHelper.cs" />
+    <Compile Include="ViewModel\AutoFocus\MeasureAndError.cs" />
+    <Compile Include="ViewModel\AutoFocus\PlotPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\TrendLine.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatWizardValues.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\IFlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\AbsoluteBacklashCompensationDecorator.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserDecorator.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\OvershootBacklashCompensationDecorator.cs" />
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="ViewModel\ImageGeometryProvider.cs" />
+    <Compile Include="ViewModel\Imaging\AnchorableSnapshotVM.cs" />
+    <Compile Include="ViewModel\Imaging\ExposureTimeRecommendationVM.cs" />
+    <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
+    <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
+    <Compile Include="View\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AboutNINAView.xaml.cs">
+      <DependentUpon>AboutNINAView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AboutPageView.xaml.cs">
+      <DependentUpon>AboutPageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AuthorsView.xaml.cs">
+      <DependentUpon>AuthorsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\LicenseView.xaml.cs">
+      <DependentUpon>LicenseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\ThirdPartyLicensesView.xaml.cs">
+      <DependentUpon>ThirdPartyLicensesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Camera\CameraTemplateSelector.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\ArteskyFlatBoxSetupView.xaml.cs">
+      <DependentUpon>ArteskyFlatBoxSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml.cs">
+      <DependentUpon>PegasusAstroFlatMasterSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
+      <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\WizardGridCellTemplateSelector.cs" />
+    <Compile Include="View\Equipment\Focuser\PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\DefaultDetailView.xaml.cs">
+      <DependentUpon>DefaultDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\GuiderTemplateSelector.cs" />
+    <Compile Include="View\Equipment\Guider\MGenDetailView.xaml.cs">
+      <DependentUpon>MGenDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
+      <DependentUpon>FlatDeviceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\EagleBooleanSwitchConverter.cs" />
+    <Compile Include="View\Equipment\Switch\EagleVariablePowerSwitchConverter.cs" />
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2ChartsView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2ChartsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2SetupView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2SetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
@@ -464,11 +752,10 @@
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\ImageData\IImageArray.cs" />
-    <Compile Include="Model\ImageData\IImageStatistics.cs" />
     <Compile Include="Model\ImageData\ImageArray.cs" />
     <Compile Include="Model\ImageData\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
-    <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
+    <Compile Include="Model\MyCamera\Simulator\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\QHYCamera.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
@@ -485,6 +772,7 @@
     <Compile Include="Utility\Converters\SubtractHalfConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\DataPipes.cs" />
+    <Compile Include="Utility\ExternalCommand\ExternalCommandExecutor.cs" />
     <Compile Include="Utility\Extensions\ProcessExtension.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ApplicationResourceDictionary.cs" />
@@ -516,8 +804,8 @@
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
-    <Compile Include="PlateSolving\Platesolve2Solver.cs" />
+    <Compile Include="PlateSolving\Solvers\AllSkyPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
     <Compile Include="Utility\ASCOMInteraction.cs" />
     <Compile Include="Utility\Astrometry\RiseAndSet\AstronomicalTwilightRiseAndSet.cs" />
@@ -544,7 +832,7 @@
     <Compile Include="Utility\ButtonHelper.cs" />
     <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameras.cs" />
     <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameraSDK.cs" />
-    <Compile Include="Utility\CameraSDKs\ToupTekSDK\toupcam.cs" />
+    <Compile Include="Utility\CameraSDKs\ToupTekSDK\ToupCam.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanAndConverter.cs" />
@@ -642,7 +930,7 @@
     <Compile Include="Utility\Enum\LogLevelEnum.cs" />
     <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
-    <Compile Include="Utility\FITS.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITS.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
@@ -694,10 +982,10 @@
     <Compile Include="Utility\WindowService\CustomWindow.cs" />
     <Compile Include="Utility\WindowService\WindowService.cs" />
     <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
-    <Compile Include="Utility\XISF.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISF.cs" />
     <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
-    <Compile Include="ViewModel\AutoFocusVM.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
@@ -722,8 +1010,8 @@
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
-    <Compile Include="PlateSolving\LocalPlateSolver.cs" />
-    <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\LocalPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -736,7 +1024,6 @@
     <Compile Include="Utility\BaseINPC.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
     <Compile Include="Utility\ImageAnalysis\StarDetection.cs" />
-    <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />
     <Compile Include="Utility\Notification\Notification.cs" />
@@ -760,7 +1047,6 @@
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
-    <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
@@ -787,6 +1073,12 @@
     </Compile>
     <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableExposureCalculatorView.xaml.cs">
+      <DependentUpon>AnchorableExposureCalculatorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableFlatDeviceView.xaml.cs">
+      <DependentUpon>AnchorableFlatDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Imaging\AnchorableFocusTargetsView.xaml.cs">
       <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
@@ -867,13 +1159,13 @@
     <Compile Include="View\Equipment\FilterWheel\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardFilterSettingsWrapperView.xaml.cs">
       <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardUserPrompt.xaml.cs">
       <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardView.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardView.xaml.cs">
       <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Focuser\FocuserView.xaml.cs">
@@ -915,9 +1207,6 @@
     <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Options\OptionsPlanetariumView.xaml.cs">
-      <DependentUpon>OptionsPlanetariumView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
@@ -948,8 +1237,8 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SimulatorCameraSetupView.xaml.cs">
-      <DependentUpon>SimulatorCameraSetupView.xaml</DependentUpon>
+    <Compile Include="Model\MyCamera\Simulator\SetupView.xaml.cs">
+      <DependentUpon>SetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
@@ -980,18 +1269,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Locale\Locale.en-GB.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.en-US.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.it-IT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1006,14 +1283,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Locale\Locale.de-DE.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Locale\Locale.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MyMessageBox\MyMessageBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1145,6 +1414,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AboutNINAView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AboutPageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AuthorsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\LicenseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\ThirdPartyLicensesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AltitudeChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1157,6 +1450,46 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\FlatDevice\ArteskyFlatBoxSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\Focuser\PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Guider\DefaultDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Guider\MGenDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\FlatDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2ChartsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2SetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1164,6 +1497,14 @@
     <Page Include="View\Imaging\AnchorableAutoFocusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableExposureCalculatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableFlatDeviceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Imaging\AnchorableFocusTargetsView.xaml">
       <SubType>Designer</SubType>
@@ -1273,15 +1614,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
+    <Page Include="View\FlatWizard\FlatWizardFilterSettingsWrapperView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardUserPrompt.xaml">
+    <Page Include="View\FlatWizard\FlatWizardUserPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardView.xaml">
+    <Page Include="View\FlatWizard\FlatWizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1337,10 +1678,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Options\OptionsPlanetariumView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1381,7 +1718,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SimulatorCameraSetupView.xaml">
+    <Page Include="Model\MyCamera\Simulator\SetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1423,74 +1760,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="..\NINA.sln.licenseheader">
+      <Link>NINA.sln.licenseheader</Link>
+    </None>
     <None Include="BootstrapAscomProfileStore.ps1" />
-    <None Include="Documentation\images\nina-logo.png" />
-    <None Include="Documentation\images\panel-autofocus.png" />
-    <None Include="Documentation\images\panel-camera.png" />
-    <None Include="Documentation\images\panel-customization_1.png" />
-    <None Include="Documentation\images\panel-customization_2.png" />
-    <None Include="Documentation\images\panel-customization_3.png" />
-    <None Include="Documentation\images\panel-customization_4.png" />
-    <None Include="Documentation\images\panel-filterwheel.png" />
-    <None Include="Documentation\images\panel-focuser.png" />
-    <None Include="Documentation\images\panel-guiding.png" />
-    <None Include="Documentation\images\panel-hfrhistory.png" />
-    <None Include="Documentation\images\panel-image.png" />
-    <None Include="Documentation\images\panel-imagehistory.png" />
-    <None Include="Documentation\images\panel-imaging.png" />
-    <None Include="Documentation\images\panel-platesolving.png" />
-    <None Include="Documentation\images\panel-polaralignment.png" />
-    <None Include="Documentation\images\panel-sequence-running.png" />
-    <None Include="Documentation\images\panel-sequence.png" />
-    <None Include="Documentation\images\panel-statistics.png" />
-    <None Include="Documentation\images\panel-telescope.png" />
-    <None Include="Documentation\images\panel-weather.png" />
-    <None Include="Documentation\images\quickstart-camera.png" />
-    <None Include="Documentation\images\quickstart-defocusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-disablepanels.png" />
-    <None Include="Documentation\images\quickstart-focusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-focusing.png" />
-    <None Include="Documentation\images\quickstart-imaging.png" />
-    <None Include="Documentation\images\quickstart-running-sequence.png" />
-    <None Include="Documentation\images\quickstart-sequence.png" />
-    <None Include="Documentation\images\quickstart-settings-equipment.png" />
-    <None Include="Documentation\images\quickstart-settings-imaging.png" />
-    <None Include="Documentation\images\quickstart-telescope.png" />
-    <None Include="Documentation\images\quickstart-ui-overview.png" />
-    <None Include="Documentation\images\tab-camera.png" />
-    <None Include="Documentation\images\tab-filterwheelfocuser.png" />
-    <None Include="Documentation\images\tab-framingassistant.png" />
-    <None Include="Documentation\images\tab-imaging.png" />
-    <None Include="Documentation\images\tab-objectbrowser.png" />
-    <None Include="Documentation\images\tab-phd2.png" />
-    <None Include="Documentation\images\tab-sequencing.png" />
-    <None Include="Documentation\images\tab-settings-equipment.png" />
-    <None Include="Documentation\images\tab-settings-general.png" />
-    <None Include="Documentation\images\tab-settings-imaging.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
-    <None Include="Documentation\images\tab-telescope.png" />
-    <None Include="Documentation\images\panel-image-bahtinov.png" />
-    <None Include="Documentation\images\panel-image-subsampling.png" />
-    <None Include="Documentation\images\usage-autoflip-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-mountsnapport.png" />
-    <None Include="Documentation\images\usage-bulbshutter-serial.png" />
-    <None Include="Documentation\images\usage-bulbshutter-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-snapport.png" />
-    <None Include="Documentation\images\usage-dithering-sequence.png" />
-    <None Include="Documentation\images\usage-dithering-settings-phd2.png" />
-    <None Include="Documentation\images\usage-objectbrowser-object.png" />
-    <None Include="Documentation\md-template.html" />
-    <None Include="Documentation\modest.css" />
-    <None Include="Documentation\NINA.html">
-      <DependentUpon>NINA.md</DependentUpon>
-    </None>
-    <None Include="Documentation\table-of-contents.html">
-      <DependentUpon>table-of-contents.md</DependentUpon>
-    </None>
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="3rd-party-licenses.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Database\Initial\initial_data.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1503,11 +1780,52 @@
     <Content Include="Database\Migration\2.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\FLI\libfli.dll" />
+    <Content Include="Database\Migration\3.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Migration\5.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\AllPro\spikahidapi64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\AllPro\spikausbd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\ASI\ASICamera2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\Atik.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\AtikCameras.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\FlyCapture2_v140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\FLI\libfli.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\FTDI\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Omegon\omegonprocam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\qhyccd.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\tbb.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SOFA\SOFAlib.dll">
@@ -1516,11 +1834,49 @@
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\FLI\libfli.dll" />
+    <Content Include="External\x64\ToupTek\toupcam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\AllPro\hidapi.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\AllPro\spikausbd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\ASI\ASICamera2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\Atik.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\AtikCameras.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\FlyCapture2_v140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\FLI\libfli.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x86\FTDI\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Omegon\omegonprocam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\qhyccd.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\tbb.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SOFA\SOFAlib.dll">
@@ -1532,14 +1888,15 @@
     <Resource Include="Logo_Nina.ico" />
     <Resource Include="Resources\Logo_Nina.png" />
     <Resource Include="Resources\Logo_Nina.ico" />
+    <Content Include="External\x86\ToupTek\toupcam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Documentation\NINA.md" />
-    <None Include="Documentation\table-of-contents.md" />
     <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1549,15 +1906,117 @@
     <Content Include="External\x86\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\ToupTek\toupcam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Omegon\omegonprocam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\ASI\ASICamera2.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Omegon\omegonprocam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\ToupTek\toupcam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="NINA.ruleset" />
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
+    <EmbeddedResource Include="Locale\Locale.da-DK.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.de-DE.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.en-GB.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.en-GB.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.es-ES.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.es-ES.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.fr-FR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.fr-FR.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.gl-ES.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.gl-ES.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.it-IT.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.it-IT.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.ja-JP.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.ja-JP.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.nl-NL.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.nl-NL.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.pl-PL.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.pl-PL.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.pt-PT.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.pt-PT.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.ru-RU.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.ru-RU.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.tr-TR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.tr-TR.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-CN.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-HK.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-HK.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-TW.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-TW.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="AstrophotographyBuddy_TemporaryKey.pfx" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1602,6 +2061,10 @@
       <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
       <Name>nikoncswrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj">
+      <Project>{d897bffd-7777-44f5-9100-1ff0db3b032f}</Project>
+      <Name>NINA.MGEN</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
       <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
       <Name>NINACustomControlLibrary</Name>
@@ -1609,8 +2072,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="External\x64\Altair\" />
-    <Folder Include="External\x64\ASI\" />
-    <Folder Include="External\x64\Atik\" />
     <Folder Include="External\x64\Canon\" />
     <Folder Include="External\x64\Nikon\Type0001\" />
     <Folder Include="External\x64\Nikon\Type0002\" />
@@ -1634,11 +2095,9 @@
     <Folder Include="External\x64\Nikon\Type0020\" />
     <Folder Include="External\x64\Nikon\Type0021\" />
     <Folder Include="External\x64\Nikon\Type0022\" />
-    <Folder Include="External\x64\QHYCCD\" />
-    <Folder Include="External\x64\ToupTek\" />
+    <Folder Include="External\x64\Nikon\Type0023\" />
+    <Folder Include="External\x64\Nikon\Type0024\" />
     <Folder Include="External\x86\Altair\" />
-    <Folder Include="External\x86\ASI\" />
-    <Folder Include="External\x86\Atik\" />
     <Folder Include="External\x86\Canon\" />
     <Folder Include="External\x86\Nikon\Type0001\" />
     <Folder Include="External\x86\Nikon\Type0002\" />
@@ -1662,43 +2121,38 @@
     <Folder Include="External\x86\Nikon\Type0020\" />
     <Folder Include="External\x86\Nikon\Type0021\" />
     <Folder Include="External\x86\Nikon\Type0022\" />
-    <Folder Include="External\x86\QHYCCD\" />
-    <Folder Include="External\x86\ToupTek\" />
+    <Folder Include="External\x86\Nikon\Type0023\" />
+    <Folder Include="External\x86\Nikon\Type0024\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-      echo "Copy Altair DLLs"
+      if exist "$(ProjectDir)External\x64\Altair" (
+      echo "Copy Altair x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Altair" (
+      echo "Copy Altair x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy ASI DLLs"
-      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
-
-      echo "Copy Atik DLLs"
-      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
-
-      echo "Copy Canon DLLs"
+      if exist "$(ProjectDir)External\x64\Canon" (
+      echo "Copy Canon x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Canon" (
+      echo "Copy Canon x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy Nikon DLLs"
+      if exist "$(ProjectDir)External\x64\Nikon" (
+      echo "Copy Nikon x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Nikon" (
+      echo "Copy Nikon x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
-
-      echo "Copy ToupTek DLLs"
-      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
-
-      echo "Copy QHYCCD DLLs"
-      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
-
-      echo "Copy FLI DLLs"
-      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+      )
 
       if $(Platform) == x86 (
       if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
@@ -1707,7 +2161,7 @@
       editbin /largeaddressaware "$(TargetPath)"
       )
       )
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -1717,9 +2171,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
     <Error Condition="!Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets'))" />
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\Accord.3.8.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.0\build\Accord.targets'))" />
   </Target>
   <Import Project="..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets" Condition="Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

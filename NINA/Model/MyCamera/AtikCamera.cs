@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -26,12 +17,10 @@ using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
 using NINA.Profile;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -44,7 +33,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _cameraId;
-        private IntPtr _cameraP;
+        private IntPtr _cameraP = IntPtr.Zero;
 
         public string Category { get; } = "Atik";
 
@@ -66,7 +55,7 @@ namespace NINA.Model.MyCamera {
 
         public bool Connected {
             get {
-                return AtikCameraDll.IsConnected(_cameraP);
+                return _cameraP == IntPtr.Zero ? false : AtikCameraDll.IsConnected(_cameraP);
             }
         }
 
@@ -198,6 +187,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public short BayerOffsetX => 0;
+
+        public short BayerOffsetY => 0;
+
         public int CameraXSize {
             get {
                 return Info.nPixelsX;
@@ -326,6 +319,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
+
         public bool CanGetGain {
             get {
                 return false;
@@ -338,19 +335,19 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 return -1;
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 return -1;
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 return -1;
             }
@@ -359,13 +356,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList Gains {
+        public IList<int> Gains {
             get {
-                return new ArrayList();
+                return new List<int>();
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes => new List<string> { "Default" };
+
+        public short ReadoutMode {
+            get => 0;
+            set { }
+        }
 
         private short _readoutModeForSnapImages;
 
@@ -431,7 +433,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void AbortExposure() {
-            AtikCameraDll.StopExposure(_cameraP);
+            AtikCameraDll.AbortExposure(_cameraP);
         }
 
         public async Task<bool> Connect(CancellationToken token) {
@@ -462,17 +464,26 @@ namespace NINA.Model.MyCamera {
                 AtikCameraDll.ArtemisCoolerWarmUp(_cameraP);
             } catch (Exception) { }
             AtikCameraDll.Disconnect(_cameraP);
+            _cameraP = IntPtr.Zero;
             _binningModes = null;
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                while (!AtikCameraDll.ImageReady(_cameraP)) {
+                    await Task.Delay(100, token);
+                }
+            }
+        }
+
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ATIK Download")) {
-                return await Task.Run<IImageData>(async () => {
+                return await Task.Run<IExposureData>(async () => {
                     try {
-                        do {
+                        while (!AtikCameraDll.ImageReady(_cameraP)) {
                             await Task.Delay(100, token);
-                        } while (!AtikCameraDll.ImageReady(_cameraP));
+                        }
 
                         return AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {
@@ -501,6 +512,15 @@ namespace NINA.Model.MyCamera {
             } else {
                 AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
             }
+
+            var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                  sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                  sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT);
+
+            if (HasShutter) {
+                AtikCameraDll.SetDarkMode(_cameraP, !isLightFrame);
+            }
+
             AtikCameraDll.StartExposure(_cameraP, sequence.ExposureTime);
         }
 
@@ -512,7 +532,7 @@ namespace NINA.Model.MyCamera {
             throw new NotImplementedException();
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 

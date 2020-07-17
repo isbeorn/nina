@@ -1,25 +1,14 @@
 #region "copyright"
 
 /*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
-/*
- * Copyright (c) 2019 Dale Ghent <daleg@elemental.org> All rights reserved.
- */
 
 #endregion "copyright"
 
@@ -267,7 +256,7 @@ namespace FLI {
         public static extern unsafe uint FLIGetCoolerPower(uint dev, ref double power);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGrabRow", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe uint FLIGrabRow(uint dev, [Out] byte[] buff, int width);
+        public static extern unsafe uint FLIGrabRow(uint dev, [Out] ushort[] buff, int width);
 
         [DllImport(DLLNAME, EntryPoint = "FLIExposeFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern unsafe uint FLIExposeFrame(uint dev);
@@ -576,7 +565,7 @@ namespace FLI {
             /// <summary>
             /// List of readout mode names
             /// </summary>
-            public List<string> ReadoutModes;
+            public IList<string> ReadoutModes;
 
             /// <summary>
             /// Index of readout mode for sequences

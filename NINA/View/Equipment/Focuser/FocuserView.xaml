@@ -1,20 +1,11 @@
-﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.Equipment.FocuserView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -25,6 +16,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -177,7 +169,7 @@
                 <Border
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0"
-                    IsEnabled="{Binding Focuser.TempCompAvailable}">
+                    IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}">
                     <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
@@ -185,7 +177,7 @@
                             Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperatureCompensation}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
@@ -221,19 +213,27 @@
                                 <TextBox
                                     Height="25"
                                     MinWidth="90"
-                                    Margin="5,0,0,0"
-                                    Text="{Binding TargetPosition}" />
+                                    Margin="5,0,0,0">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetPosition">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
                                 <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                     <ninactrl:CancellableButton
                                         Width="50"
                                         Height="25"
                                         Margin="5"
                                         HorizontalAlignment="Left"
+                                        HorizontalContentAlignment="Center"
                                         ButtonText="{ns:Loc LblMove}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding HaltFocuserCommand}"
                                         Command="{Binding MoveFocuserCommand}"
-                                        ToolTip="" />
+                                        ToolTip="{ns:Loc LblMoveFocuserTooltip}" />
                                 </Grid>
                             </StackPanel>
                         </UniformGrid>
@@ -254,7 +254,8 @@
                                     ButtonText="&lt;&lt; "
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserInLargeCommand}"/>
+                                    Command="{Binding MoveFocuserInLargeCommand}"
+                                    ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -265,7 +266,8 @@
                                     ButtonText="&lt; "
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserInSmallCommand}"/>
+                                    Command="{Binding MoveFocuserInSmallCommand}"
+                                    ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -276,7 +278,8 @@
                                     ButtonText="&gt;"
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserOutSmallCommand}"/>
+                                    Command="{Binding MoveFocuserOutSmallCommand}"
+                                    ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -287,7 +290,8 @@
                                     ButtonText="&gt;&gt;"
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserOutLargeCommand}"/>
+                                    Command="{Binding MoveFocuserOutLargeCommand}"
+                                    ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
                             </Grid>
                         </UniformGrid>
                     </UniformGrid>

@@ -1,20 +1,11 @@
-﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.Equipment.GuiderGraph"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -39,7 +30,7 @@
             <!--<TextBlock Text="{ns:Loc LblYAxisScale}" />-->
             <ComboBox
                 ItemStringFormat="y: +/-{0}&quot;"
-                SelectedValue="{Binding MaxY}"
+                SelectedValue="{Binding Source={StaticResource AppVM}, Path=GuiderVM.GuiderMaxY}"
                 SelectedValuePath="Content">
                 <ComboBoxItem>0.25</ComboBoxItem>
                 <ComboBoxItem>0.5</ComboBoxItem>
@@ -48,12 +39,14 @@
                 <ComboBoxItem>4</ComboBoxItem>
                 <ComboBoxItem>8</ComboBoxItem>
                 <ComboBoxItem>16</ComboBoxItem>
+                <ComboBoxItem>32</ComboBoxItem>
+                <ComboBoxItem>64</ComboBoxItem>
             </ComboBox>
             <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
             <ComboBox
                 Margin="0,1,0,0"
                 ItemStringFormat="x: {0}"
-                SelectedValue="{Binding HistorySize}"
+                SelectedValue="{Binding Source={StaticResource AppVM}, Path=GuiderVM.HistorySize}"
                 SelectedValuePath="Content">
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>100</ComboBoxItem>
@@ -65,7 +58,7 @@
                 Margin="0,1,0,0"
                 ItemStringFormat="unit: {0}"
                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
-                SelectedItem="{Binding Scale}" />
+                SelectedItem="{Binding Source={StaticResource AppVM}, Path=GuiderVM.GuiderScale}" />
             <TextBlock Text="{Binding RMS.RAText}" />
             <TextBlock Text="{Binding RMS.DecText}" />
             <TextBlock Text="{Binding RMS.TotalText}" />
@@ -125,13 +118,15 @@
                     Position="Right" />
                 <oxy:LinearAxis
                     Key="DataAxisX"
+                    AbsoluteMinimum="0"
                     IsAxisVisible="False"
+                    MinimumRange="{Binding HistorySize}"
                     Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries
                     Title="{ns:Loc LblRA}"
-                    DataFieldX="Time"
+                    DataFieldX="Id"
                     DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideSteps}"
                     XAxisKey="DataAxisX"
@@ -139,7 +134,7 @@
                     Color="Blue" />
                 <oxy:LineSeries
                     Title="{ns:Loc LblDec}"
-                    DataFieldX="Time"
+                    DataFieldX="Id"
                     DataFieldY="DECDistanceRawDisplay"
                     ItemsSource="{Binding GuideSteps}"
                     XAxisKey="DataAxisX"
@@ -148,7 +143,7 @@
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblRACorrections}"
                     BarWidth="3"
-                    DataFieldX="TimeRA"
+                    DataFieldX="IdOffsetLeft"
                     DataFieldY="RADuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideSteps}"
@@ -160,7 +155,7 @@
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblDecCorrections}"
                     BarWidth="3"
-                    DataFieldX="TimeDec"
+                    DataFieldX="IdOffsetRight"
                     DataFieldY="DECDuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideSteps}"
@@ -169,6 +164,17 @@
                     XAxisKey="DataAxisX"
                     YAxisKey="DurationAxis"
                     Color="Red" />
+                <oxy:LineSeries
+                    Title="{ns:Loc LblDither}"
+                    DataFieldX="Id"
+                    DataFieldY="Dither"
+                    ItemsSource="{Binding GuideSteps}"
+                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    MarkerSize="5"
+                    MarkerType="Triangle"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="TextAxisY"
+                    Color="Transparent" />
             </oxy:Plot.Series>
             <oxy:Plot.Annotations>
                 <oxy:LineAnnotation
@@ -177,7 +183,7 @@
                     TextVerticalAlignment="Top"
                     Type="Horizontal"
                     XAxisKey="TextAxisX"
-                    Y="1"
+                    Y="0.99"
                     YAxisKey="TextAxisY"
                     Color="Transparent" />
                 <oxy:LineAnnotation
@@ -186,7 +192,7 @@
                     TextVerticalAlignment="Bottom"
                     Type="Horizontal"
                     XAxisKey="TextAxisX"
-                    Y="0"
+                    Y="0.01"
                     YAxisKey="TextAxisY"
                     Color="Transparent" />
             </oxy:Plot.Annotations>

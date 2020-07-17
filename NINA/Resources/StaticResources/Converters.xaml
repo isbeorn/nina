@@ -1,38 +1,31 @@
-﻿<!--
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
-
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-    Copyright 2019 Dale Ghent <daleg@elemental.org>
--->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:NINA.Utility.Converters">
 
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <converters:AutoFocusContrastDetectionToCollapsedVisibilityConverter x:Key="AutoFocusContrastDetectionToCollapsedVisibilityConverter" />
+    <converters:AutoFocusHFRToCollapsedVisibilityConverter x:Key="AutoFocusHFRToCollapsedVisibilityConverter" />
     <converters:BooleanToVisibilityHiddenConverter x:Key="BooleanToVisibilityHiddenConverter" />
     <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+    <converters:InverseNullToVisibilityCollapsedConverter x:Key="InverseNullToVisibilityCollapsedConverter" />
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter" />
     <converters:DatabindingDebugConverter x:Key="DebugConverter" />
     <converters:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
     <converters:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
     <converters:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
+    <converters:CollectionContainsItemsToBooleanConverter x:Key="CollectionContainsItemsToBooleanConverter" />
     <converters:CollectionContainsItemsToVisibilityConverter x:Key="CollectionContainsItemsToVisibilityConverter" />
     <converters:InverseCollectionContainsItemsToVisibilityConverter x:Key="InverseCollectionContainsItemsToVisibilityConverter" />
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />
@@ -55,10 +48,23 @@
     <converters:DoubleToBooleanConverter x:Key="DoubleToBooleanConverter" />
     <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
     <converters:NaNToVisibilityConverter x:Key="NaNToVisibilityConverter" />
+    <converters:NaNToVisibilityCollapsedConverter x:Key="NaNToVisibilityCollapsedConverter" />
     <converters:NaNToEmptyTextConverter x:Key="NaNToEmptyTextConverter" />
     <converters:WeatherTemperatureConverter x:Key="WeatherTemperatureConverter" />
     <converters:WeatherPressureConverter x:Key="WeatherPressureConverter" />
     <converters:WeatherVelocityConverter x:Key="WeatherVelocityConverter" />
     <converters:WeatherRainRateConverter x:Key="WeatherRainRateConverter" />
     <converters:WeatherBrightnessConverter x:Key="WeatherBrightnessConverter" />
+    <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+    <converters:AFFittingToVisibilityConverter x:Key="AFFittingToVisibilityConverter" />
+    <converters:IsLightImageTypeToVisibilityConverter x:Key="IsLightImageTypeToVisibilityConverter" />
+    <converters:FilterWheelFilterConverter x:Key="FilterWheelFilterConverter" />
+    <converters:DecDegreeConverter x:Key="DecDegreeConverter" />
+    <converters:ImagePatternToTextConverter x:Key="ImagePatternToTextConverter" />
+    <converters:IntNegativeOneToDoubleDashConverter x:Key="IntNegativeOneToDoubleDashConverter" />
+    <converters:NaNToDoubleDashConverter x:Key="NaNToDoubleDashConverter" />
+    <converters:BooleanToVisibilityHiddenMultiConverter x:Key="BooleanToVisibilityHiddenMultiConverter" />
+    <converters:OptimalExposureCalculatorAnswerConverter x:Key="OptimalExposureCalculatorAnswerConverter" />
+    <converters:MinusOneToBaseValueConverter x:Key="MinusOneToBaseValueConverter" />
+    <converters:IntListToTextBlockListConverter x:Key="IntListToTextBlockListConverter" />
 </ResourceDictionary>

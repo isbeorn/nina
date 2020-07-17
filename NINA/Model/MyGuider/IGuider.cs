@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -33,6 +24,7 @@ namespace NINA.Model.MyGuider {
         double PixelScale { get; set; }
         string State { get; }
         string Name { get; }
+        string Id { get; }
 
         event EventHandler<IGuideStep> GuideEvent;
 
@@ -42,7 +34,7 @@ namespace NINA.Model.MyGuider {
 
         bool Disconnect();
 
-        Task<bool> Pause(bool pause, CancellationToken ct);
+        //Task<bool> Pause(bool pause, CancellationToken ct);
 
         Task<bool> StartGuiding(CancellationToken ct);
 
@@ -65,29 +57,10 @@ namespace NINA.Model.MyGuider {
     public interface IGuideStep : IGuideEvent {
         double Frame { get; }
         double Time { get; }
-        double TimeRA { get; }
-        double TimeDec { get; }
-        string Mount { get; }
-        double Dx { get; }
-        double Dy { get; }
         double RADistanceRaw { get; set; }
         double DECDistanceRaw { get; set; }
-        double RADistanceGuide { get; set; }
-        double DECDistanceGuide { get; set; }
-        double RADistanceRawDisplay { get; set; }
-        double DECDistanceRawDisplay { get; set; }
-        double RADistanceGuideDisplay { get; set; }
-        double DecDistanceGuideDisplay { get; set; }
         double RADuration { get; }
-        string RADirection { get; }
         double DECDuration { get; }
-        string DECDirection { get; }
-        double StarMass { get; }
-        double SNR { get; }
-        double AvgDist { get; }
-        bool RALimited { get; }
-        bool DecLimited { get; }
-        double ErrorCode { get; }
 
         IGuideStep Clone();
     }

@@ -1,6 +1,18 @@
-﻿using NINA.Utility.Enum;
-using NINA.Utility.ImageAnalysis;
-using System;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -9,24 +21,22 @@ namespace NINA.Model.ImageData {
 
     public interface IImageData {
         IImageArray Data { get; }
-        LRGBArrays DebayeredData { get; }
-        BitmapSource Image { get; }
-        IImageStatistics Statistics { get; set; }
-        ImageMetaData MetaData { get; set; }
 
-        Task CalculateStatistics();
+        ImageProperties Properties { get; }
 
-        void Debayer(bool saveColorChannels = false, bool saveLumChannel = false);
+        Nito.AsyncEx.AsyncLazy<IImageStatistics> Statistics { get; }
 
-        Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction, CancellationToken ct = default, IProgress<ApplicationStatus> progress = null);
+        IStarDetectionAnalysis StarDetectionAnalysis { get; }
 
-        void RenderImage();
+        ImageMetaData MetaData { get; }
 
-        Task Stretch(double factor, double blackClipping, bool unlinked);
+        IRenderedImage RenderImage();
 
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token = default);
+        BitmapSource RenderBitmapSource();
 
-        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken token = default);
+        Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default, bool forceFileType = false);
+
+        Task<string> PrepareSave(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default);
 
         string FinalizeSave(string file, string pattern);
     }

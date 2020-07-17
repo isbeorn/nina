@@ -1,4 +1,18 @@
-ï»¿using NINA.Utility.Astrometry;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility.Astrometry;
 using System.Windows;
 using Math = System.Math;
 using Point = System.Windows.Point;
@@ -43,13 +57,14 @@ namespace NINA.ViewModel.FramingAssistant {
             OriginalWidth = width;
             OriginalHeight = height;
 
-            // I don't know why you need to use -Rotation-90 but this is what works
-            (Width, Height) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, width, height);
+            Width = width;
+            Height = height;
 
-            (OriginalHFoV, OriginalVFoV) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, (width / height) * vFoVDegrees, vFoVDegrees);
+            OriginalVFoV = vFoVDegrees;
+            OriginalHFoV = (vFoVDegrees / height) * width;
 
-            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / Width;
-            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / Height;
+            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / OriginalWidth;
+            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / OriginalHeight;
 
             CenterCoordinates = centerCoordinates;
 

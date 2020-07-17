@@ -1,14 +1,29 @@
-﻿using System;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
 namespace NINA.Utility.ImageAnalysis {
+
     public class NoBlurCannyEdgeDetector : BaseUsingCopyPartialFilter {
         private byte lowThreshold = 20;
         private byte highThreshold = 100;
@@ -26,14 +41,14 @@ namespace NINA.Utility.ImageAnalysis {
         /// <summary>
         /// Low threshold.
         /// </summary>
-        /// 
+        ///
         /// <remarks><para>Low threshold value used for hysteresis
         /// (see  <a href="http://www.pages.drexel.edu/~weg22/can_tut.html">tutorial</a>
         /// for more information).</para>
-        /// 
+        ///
         /// <para>Default value is set to <b>20</b>.</para>
         /// </remarks>
-        /// 
+        ///
         public byte LowThreshold {
             get { return lowThreshold; }
             set { lowThreshold = value; }
@@ -42,14 +57,14 @@ namespace NINA.Utility.ImageAnalysis {
         /// <summary>
         /// High threshold.
         /// </summary>
-        /// 
+        ///
         /// <remarks><para>High threshold value used for hysteresis
         /// (see  <a href="http://www.pages.drexel.edu/~weg22/can_tut.html">tutorial</a>
         /// for more information).</para>
-        /// 
+        ///
         /// <para>Default value is set to <b>100</b>.</para>
         /// </remarks>
-        /// 
+        ///
         public byte HighThreshold {
             get { return highThreshold; }
             set { highThreshold = value; }
@@ -58,7 +73,7 @@ namespace NINA.Utility.ImageAnalysis {
         /// <summary>
         /// Initializes a new instance of the <see cref="CannyEdgeDetector"/> class.
         /// </summary>
-        /// 
+        ///
         public NoBlurCannyEdgeDetector() {
             // initialize format translation dictionary
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
@@ -67,10 +82,10 @@ namespace NINA.Utility.ImageAnalysis {
         /// <summary>
         /// Initializes a new instance of the <see cref="CannyEdgeDetector"/> class.
         /// </summary>
-        /// 
+        ///
         /// <param name="lowThreshold">Low threshold.</param>
         /// <param name="highThreshold">High threshold.</param>
-        /// 
+        ///
         public NoBlurCannyEdgeDetector(byte lowThreshold, byte highThreshold) : this() {
             this.lowThreshold = lowThreshold;
             this.highThreshold = highThreshold;
@@ -79,11 +94,11 @@ namespace NINA.Utility.ImageAnalysis {
         /// <summary>
         /// Process the filter on the specified image.
         /// </summary>
-        /// 
+        ///
         /// <param name="source">Source image data.</param>
         /// <param name="destination">Destination image data.</param>
         /// <param name="rect">Image rectangle for processing by the filter.</param>
-        /// 
+        ///
         protected override unsafe void ProcessFilter(UnmanagedImage source, UnmanagedImage destination, Rectangle rect) {
             // processing start and stop X,Y positions
             int startX = rect.Left + 1;
@@ -188,14 +203,17 @@ namespace NINA.Utility.ImageAnalysis {
                             leftPixel = gradients[x - 1, y];
                             rightPixel = gradients[x + 1, y];
                             break;
+
                         case 45:
                             leftPixel = gradients[x - 1, y + 1];
                             rightPixel = gradients[x + 1, y - 1];
                             break;
+
                         case 90:
                             leftPixel = gradients[x, y + 1];
                             rightPixel = gradients[x, y - 1];
                             break;
+
                         case 135:
                             leftPixel = gradients[x + 1, y + 1];
                             rightPixel = gradients[x - 1, y - 1];

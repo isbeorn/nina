@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -26,6 +17,7 @@ using NINA.Utility.Enum;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace NINA.Profile {
 
@@ -41,6 +33,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+            astrometryURL = "http://nova.astrometry.net";
             astrometryAPIKey = string.Empty;
             cygwinLocation = string.Empty;
             searchRadius = 30;
@@ -54,6 +47,9 @@ namespace NINA.Profile {
             filter = null;
             downSampleFactor = 2;
             maxObjects = 500;
+            gain = -1;
+            binning = 1;
+            sync = false;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -95,6 +91,24 @@ namespace NINA.Profile {
             }
         }
 
+        private string astrometryURL;
+
+        [DataMember]
+        public string AstrometryURL {
+            get {
+                return astrometryURL;
+            }
+            set {
+                // Clear out any whitespace characters in the URL
+                string url = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryURL != url) {
+                    astrometryURL = url;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private string astrometryAPIKey;
 
         [DataMember]
@@ -103,8 +117,13 @@ namespace NINA.Profile {
                 return astrometryAPIKey;
             }
             set {
-                if (astrometryAPIKey != value) {
-                    astrometryAPIKey = value;
+                // Whitespace characters are not valid characaters in an Astrometry.net API key.
+                // Help the user by removing any that might be present. Copy and pasting from the astrometry.net API page
+                // can sometimes insert a space at the end of the API key string, and it's not very obvious.
+                string key = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryAPIKey != key) {
+                    astrometryAPIKey = key;
                     RaisePropertyChanged();
                 }
             }
@@ -223,8 +242,7 @@ namespace NINA.Profile {
                 return numberOfAttempts;
             }
             set {
-                if (numberOfAttempts != value)
-                {
+                if (numberOfAttempts != value) {
                     numberOfAttempts = value;
                     RaisePropertyChanged();
                 }
@@ -239,8 +257,7 @@ namespace NINA.Profile {
                 return reattemptDelay;
             }
             set {
-                if (reattemptDelay != value)
-                {
+                if (reattemptDelay != value) {
                     reattemptDelay = value;
                     RaisePropertyChanged();
                 }
@@ -317,6 +334,66 @@ namespace NINA.Profile {
             set {
                 if (maxObjects != value) {
                     maxObjects = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool sync;
+
+        [DataMember]
+        public bool Sync {
+            get {
+                return sync;
+            }
+            set {
+                if (sync != value) {
+                    sync = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool slewToTarget;
+
+        [DataMember]
+        public bool SlewToTarget {
+            get {
+                return slewToTarget;
+            }
+            set {
+                if (slewToTarget != value) {
+                    slewToTarget = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short binning;
+
+        [DataMember]
+        public short Binning {
+            get {
+                return binning;
+            }
+            set {
+                if (binning != value) {
+                    binning = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int gain;
+
+        [DataMember]
+        public int Gain {
+            get {
+                return gain;
+            }
+            set {
+                if (gain != value) {
+                    gain = value;
                     RaisePropertyChanged();
                 }
             }

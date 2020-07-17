@@ -1,26 +1,14 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
-/*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
- * Copyright 2019 Dale Ghent <daleg@elemental.org>
- */
 
 #endregion "copyright"
 
@@ -34,9 +22,12 @@ using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Utility {
+
     internal class ASCOMInteraction {
+
         public static List<ICamera> GetCameras(IProfileService profileService) {
             var l = new List<ICamera>();
             using (var ascomDevices = new ASCOM.Utilities.Profile()) {
@@ -146,6 +137,16 @@ namespace NINA.Utility {
             using (var util = new ASCOM.Utilities.Util()) {
                 return $"Version {util.PlatformVersion}";
             }
+        }
+
+        public static Version GetPlatformVersion() {
+            using (var util = new ASCOM.Utilities.Util()) {
+                return new Version(util.MajorVersion, util.MinorVersion);
+            }
+        }
+
+        public static void LogComplianceIssue([CallerMemberName]string callerMember = "") {
+            Logger.Error($"ASCOM {callerMember} threw a PropertyNotImplementedException. This is a driver compliance issue and should be fixed by the driver vendor.");
         }
     }
 }

@@ -1,25 +1,17 @@
-﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.SequenceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:filter="clr-namespace:NINA.Model.MyFilterWheel"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:NINA.Model"
@@ -28,8 +20,8 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
+    d:DesignHeight="500"
+    d:DesignWidth="1000"
     mc:Ignorable="d">
 
     <Grid>
@@ -97,7 +89,7 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="{StaticResource ButtonForegroundBrush}"
-                                                Text="{Binding TargetName}" />
+                                                Text="{Binding TargetNameWithModifiedIndicator}" />
                                             <Button
                                                 x:Name="PART_Close"
                                                 Grid.Column="2"
@@ -159,22 +151,88 @@
                     <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" />
                 </ListView.View>
             </ListView>
-            <Button
-                Grid.Column="1"
-                Width="35"
-                Command="{Binding AddTargetCommand}"
-                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource AddSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
-            </Button>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button
+                    Grid.Column="1"
+                    Width="35"
+                    Command="{Binding PromoteTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipPromoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowLeftSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="2"
+                    Width="35"
+                    Command="{Binding DemoteTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipDemoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowRightSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="3"
+                    Width="35"
+                    Command="{Binding SaveTargetSetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetSaveSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="4"
+                    Width="35"
+                    Command="{Binding LoadTargetSetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetLoadSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource LoadSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="5"
+                    Width="35"
+                    Command="{Binding AddTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource AddSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+            </StackPanel>
         </Grid>
         <UniformGrid
             Grid.Row="1"
@@ -236,7 +294,7 @@
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblStartGuiding}" />
                                 <CheckBox
-                                    Width="75"
+                                    Width="120"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding StartGuiding}" />
@@ -252,7 +310,7 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSlewToTarget}" />
                                     <CheckBox
-                                        Width="75"
+                                        Width="120"
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding SlewToTarget}" />
@@ -263,7 +321,7 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCenterTarget}" />
                                     <CheckBox
-                                        Width="75"
+                                        Width="120"
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding CenterTarget}" />
@@ -274,11 +332,11 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
                             DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
-                            <UniformGrid Columns="2">
+                            <StackPanel Orientation="Vertical">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
-                                    Columns="2">
+                                    Columns="4">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEstimatedDownloadTime}" />
                                     <TextBox
                                         Margin="5,0,0,0"
@@ -286,22 +344,105 @@
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         Text="{Binding EstimatedDownloadTime}" />
                                 </UniformGrid>
+                                <UniformGrid Columns="4">
+
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblFrom}" />
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallStartTime, Mode=OneWay, StringFormat=HH:mm:ss}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblTo}" />
+
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallEndTime, Mode=OneWay, StringFormat=HH:mm:ss}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblDuration}" />
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallDuration, StringFormat=hh\\:mm\\:ss, Mode=OneWay}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+                        <Border
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="4">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCurrentSequenceEstimates}" />
                                 <UniformGrid
-                                    Margin="5,6,0,6"
+                                    Margin="0,0,0,0"
                                     VerticalAlignment="Center"
                                     Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
-                                    <Grid VerticalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="30" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding ETA, Mode=OneWay}" />
-                                    </Grid>
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFrom}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedStartTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblTo}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblDuration}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedDuration, StringFormat=hh\\:mm\\:ss, Mode=OneWay}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -417,7 +558,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnStart}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusOnStart}" />
@@ -428,7 +569,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnFilterChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusOnFilterChange}" />
@@ -443,7 +584,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetTime}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterSetTime}" />
@@ -455,7 +596,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusSetTime}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
@@ -467,7 +608,7 @@
                                                         </TextBox.Text>
                                                     </TextBox>
                                                     <TextBlock
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
@@ -484,7 +625,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetExposures}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterSetExposures}" />
@@ -495,7 +636,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusNrOfExposures}" />
                                                 <TextBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left">
                                                     <TextBox.Text>
@@ -517,7 +658,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterTemperatureChange}" />
@@ -529,7 +670,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChangeAmount}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
@@ -558,7 +699,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterHFRChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterHFRChange}" />
@@ -570,7 +711,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterHFRChangeAmount}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
@@ -715,11 +856,14 @@
                             Margin="5,0,0,0"
                             TextAlignment="Right">
                             <TextBox.Text>
-                                <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DegreesRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
+                                <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="NegativeDec" />
+                                    <Binding Path="DecDegrees">
+                                        <Binding.ValidationRules>
+                                            <rules:DegreesRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </MultiBinding>
                             </TextBox.Text>
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">d</TextBlock>
@@ -909,9 +1053,19 @@
                         <DataTemplate>
                             <ComboBox
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
-                                SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedValuePath="Name" />
+                                SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
+                                SelectedValuePath="Name"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}">
+                                <ComboBox.Resources>
+                                    <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                                </ComboBox.Resources>
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <x:Static Member="filter:NullFilter.Instance" />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
@@ -920,7 +1074,8 @@
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
                                 Text="{Binding FilterType}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -958,7 +1113,8 @@
                             <CheckBox
                                 HorizontalAlignment="Center"
                                 IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}" />
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -977,6 +1133,7 @@
                                 MinValue="0"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}"
                                 Value="{Binding DitherAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -987,7 +1144,8 @@
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Text="{Binding DitherAmount}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1011,13 +1169,33 @@
                     </DataGridTemplateColumn.Visibility>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
+                            <ComboBox
+                                Grid.Column="1"
+                                DisplayMemberPath="Text"
+                                IsSynchronizedWithCurrentItem="True"
+                                SelectedValuePath="Text">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
-                                        <s:Int16>-1</s:Int16>
-                                        <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
+                                        <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
+                                <ComboBox.SelectedValue>
+                                    <MultiBinding
+                                        Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                        Mode="TwoWay"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </ComboBox.SelectedValue>
                             </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -1026,8 +1204,21 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1038,14 +1229,10 @@
                     CanUserSort="False"
                     Header="{ns:Loc LblGain}">
                     <DataGridTemplateColumn.Visibility>
-                        <PriorityBinding>
+                        <PriorityBinding FallbackValue="Visible">
                             <Binding
                                 Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
                                 Path="CameraVM.Cam.Gains"
-                                Source="{StaticResource AppVM}" />
-                            <Binding
-                                Converter="{StaticResource NullToVisibilityConverter}"
-                                Path="CameraVM.Cam"
                                 Source="{StaticResource AppVM}" />
                         </PriorityBinding>
                     </DataGridTemplateColumn.Visibility>
@@ -1053,18 +1240,25 @@
                         <DataTemplate>
                             <TextBox>
                                 <TextBox.Text>
-                                    <Binding
-                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                                        Path="Gain"
-                                        UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <util:ShortRangeRule>
-                                                <util:ShortRangeRule.ValidRange>
-                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
-                                                </util:ShortRangeRule.ValidRange>
-                                            </util:ShortRangeRule>
-                                        </Binding.ValidationRules>
-                                    </Binding>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
                                 </TextBox.Text>
                             </TextBox>
                         </DataTemplate>
@@ -1074,8 +1268,21 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1086,14 +1293,10 @@
                     CanUserSort="False"
                     Header="{ns:Loc LblOffset}">
                     <DataGridTemplateColumn.Visibility>
-                        <PriorityBinding>
+                        <PriorityBinding FallbackValue="Visible">
                             <Binding
                                 Converter="{StaticResource BooleanToVisibilityHiddenConverter}"
                                 Path="CameraVM.Cam.CanSetOffset"
-                                Source="{StaticResource AppVM}" />
-                            <Binding
-                                Converter="{StaticResource NullToVisibilityConverter}"
-                                Path="CameraVM.Cam"
                                 Source="{StaticResource AppVM}" />
                         </PriorityBinding>
                     </DataGridTemplateColumn.Visibility>
@@ -1101,18 +1304,25 @@
                         <DataTemplate>
                             <TextBox>
                                 <TextBox.Text>
-                                    <Binding
-                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                                        Path="Offset"
-                                        UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <util:ShortRangeRule>
-                                                <util:ShortRangeRule.ValidRange>
-                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMin}" />
-                                                </util:ShortRangeRule.ValidRange>
-                                            </util:ShortRangeRule>
-                                        </Binding.ValidationRules>
-                                    </Binding>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Offset"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMin}" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultOffset"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
                                 </TextBox.Text>
                             </TextBox>
                         </DataTemplate>
@@ -1122,8 +1332,21 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Offset, Converter={StaticResource MinusOneToEmptyStringConverter}}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Offset"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultOffset"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1184,8 +1407,42 @@
                 <Button
                     Width="40"
                     Margin="1,0,0,0"
+                    Command="{Binding PromoteSequenceRowCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipPromoteSequenceRow}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowUpSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding DemoteSequenceRowCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipDemoteSequenceRow}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowDownSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
                     Command="{Binding SaveSequenceCommand}"
-                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    IsEnabled="{Binding SequenceSaveable}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
                             <TextBlock Text="{ns:Loc LblSaveSequenceToolTip}" />
@@ -1194,6 +1451,23 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding SaveAsSequenceCommand}"
+                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblSaveAsSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>
@@ -1219,20 +1493,22 @@
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Right"
                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}">
-                <ninactrl:AsyncProcessButton
-                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                    ButtonImage="{StaticResource PlaySVG}"
-                    CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelSequenceCommand}"
-                    Command="{Binding StartSequenceCommand}"
-                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
-                    IsPaused="{Binding IsPaused}"
-                    LoadingImageBrush="{StaticResource PrimaryBrush}"
-                    PauseButtonImage="{StaticResource PauseSVG}"
-                    PauseCommand="{Binding PauseSequenceCommand}"
-                    ResumeButtonImage="{StaticResource PlaySVG}"
-                    ResumeCommand="{Binding ResumeSequenceCommand}"
-                    ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                <Grid IsEnabled="{Binding Source={StaticResource AppVM}, Path=AnchorableSnapshotVM.IsLooping, Converter={StaticResource InverseBooleanConverter}}">
+                    <ninactrl:AsyncProcessButton
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonImage="{StaticResource PlaySVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelSequenceCommand}"
+                        Command="{Binding StartSequenceCommand}"
+                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
+                        IsPaused="{Binding IsPaused}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        PauseButtonImage="{StaticResource PauseSVG}"
+                        PauseCommand="{Binding PauseSequenceCommand}"
+                        ResumeButtonImage="{StaticResource PlaySVG}"
+                        ResumeCommand="{Binding ResumeSequenceCommand}"
+                        ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                </Grid>
             </Grid>
         </DockPanel>
     </Grid>

@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D897BFFD-7777-44F5-9100-1FF0DB3B032F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NINA.MGEN</RootNamespace>
+    <AssemblyName>NINA.MGEN</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="CalibrationStatus.cs" />
+    <Compile Include="Commands\AppMode\AppModeCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\AutoGuidingCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\CancelCalibrationCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\GetImagingParameterCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\GetStarDataCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\QueryCalibrationCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\QueryCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\SetImagingParameterCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\SetNewGuidingPositionCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StartCalibrationCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StartCameraCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StartGuidingCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StartStarSearchCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StopCameraCommand.cs" />
+    <Compile Include="Commands\AppMode\AutoGuidingCommands\StopGuidingCommand.cs" />
+    <Compile Include="Commands\AppMode\DitheringCommands\DitheringCommand.cs" />
+    <Compile Include="Commands\AppMode\DitheringCommands\GetDitherStateCommand.cs" />
+    <Compile Include="Commands\AppMode\DitheringCommands\StartDitherCommand.cs" />
+    <Compile Include="Commands\AppMode\ExposureCommands\ExposureCommand.cs" />
+    <Compile Include="Commands\AppMode\FirmwareVersionCommand.cs" />
+    <Compile Include="Commands\AppMode\GroupedCommand.cs" />
+    <Compile Include="Commands\AppMode\IOCommands\ButtonCommand.cs" />
+    <Compile Include="Commands\AppMode\IOCommands\GetLEDStatesCommand.cs" />
+    <Compile Include="Commands\AppMode\IOCommands\IOCommand.cs" />
+    <Compile Include="MGENButton.cs" />
+    <Compile Include="Commands\AppMode\IOCommands\ReadDisplayCommand.cs" />
+    <Compile Include="Commands\AppMode\NoOp2Command.cs" />
+    <Compile Include="Commands\AppMode\NoOpCommand.cs" />
+    <Compile Include="Commands\BootMode\BootModeCommand.cs" />
+    <Compile Include="Commands\BootMode\PowerOff.cs" />
+    <Compile Include="Commands\CompatibilityMode\CompatibilityModeCommand.cs" />
+    <Compile Include="Commands\CompatibilityMode\EnterNormalModeCommand.cs" />
+    <Compile Include="Commands\CompatibilityMode\QueryDeviceCommand.cs" />
+    <Compile Include="Commands\IMGENCommand.cs" />
+    <Compile Include="Commands\IMGENResult.cs" />
+    <Compile Include="Commands\MGENCommand.cs" />
+    <Compile Include="Commands\MGENResult.cs" />
+    <Compile Include="DllLoader.cs" />
+    <Compile Include="Exceptions\AnotherCommandInProgressException.cs" />
+    <Compile Include="Exceptions\AutoGuidingActiveException.cs" />
+    <Compile Include="Exceptions\CameraIsOffException.cs" />
+    <Compile Include="Exceptions\CannotAccessDataException.cs" />
+    <Compile Include="Exceptions\CannotDoFunctionsException.cs" />
+    <Compile Include="Exceptions\FTDIReadException.cs" />
+    <Compile Include="Exceptions\FTDIWriteException.cs" />
+    <Compile Include="Exceptions\InvalidScreenException.cs" />
+    <Compile Include="Exceptions\NoStarSeenException.cs" />
+    <Compile Include="Exceptions\UILockedException.cs" />
+    <Compile Include="Exceptions\UnexpectedReturnCodeException.cs" />
+    <Compile Include="FTD2XX\FTD2XX.cs" />
+    <Compile Include="FTD2XX\FT_DATA_BITS.cs" />
+    <Compile Include="FTD2XX\FT_DEVICE.cs" />
+    <Compile Include="FTD2XX\FT_DEVICE_INFO_NODE.cs" />
+    <Compile Include="FTD2XX\FT_FLOW_CONTROL.cs" />
+    <Compile Include="FTD2XX\FT_PARITY.cs" />
+    <Compile Include="FTD2XX\FT_STATUS.cs" />
+    <Compile Include="FTD2XX\FT_STOP_BITS.cs" />
+    <Compile Include="FTD2XX\IFTDI.cs" />
+    <Compile Include="LEDS.cs" />
+    <Compile Include="MGEN.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LMG_USB_interface_protocol_v261.pdf" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

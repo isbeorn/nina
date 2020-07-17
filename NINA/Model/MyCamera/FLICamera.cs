@@ -1,25 +1,14 @@
-ï»¿#region "copyright"
+#region "copyright"
 
 /*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
-/*
- * Copyright (c) 2019 Dale Ghent <daleg@elemental.org> All rights reserved.
- */
 
 #endregion "copyright"
 
@@ -28,10 +17,8 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using FLI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -321,7 +308,7 @@ namespace NINA.Model.MyCamera {
         public double ExposureMax => 1e4;
         public double ExposureMin => 1e-3;
 
-        public short Gain {
+        public int Gain {
             get => -1;
             set {
             }
@@ -344,9 +331,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax => 0;
-        public short GainMin => 0;
-        public ArrayList Gains => new ArrayList();
+        public int GainMax => 0;
+        public int GainMin => 0;
+        public IList<int> Gains => new List<int>();
         public bool HasBattery => false;
         public bool HasDewHeater => false;
         public bool HasSetupDialog => Connected ? true : false;
@@ -430,12 +417,11 @@ namespace NINA.Model.MyCamera {
                 }
             }
             set {
-                byte[] rowData;
                 uint timeLeft = 0;
                 uint rv;
 
-                if (Connected && (value != ReadoutMode)) {
-                    string modeName = ReadoutModes.Cast<string>().ToArray()[value];
+                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                    string modeName = ReadoutModes[value];
 
                     Logger.Debug($"FLI: ReadoutMode: Setting readout mode to {value} ({modeName})");
 
@@ -464,12 +450,12 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug($"FLI: ReadoutMode: Pausing for {timeLeft}ms after DARK frame exposure");
                     Thread.Sleep((int)timeLeft);
 
-                    rowData = new byte[GetFullRowSize(Info.ExposureWidth)];
+                    ushort[] rowData = new ushort[Info.ExposureWidth];
 
                     Logger.Debug($"FLI: ReadoutMode: Reading out DARK frame following readout mode change");
 
                     for (int r = 0; r < CameraYSize; r++) {
-                        if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, GetFullRowSize(Info.ExposureWidth))) != LibFLI.FLI_SUCCESS) {
+                        if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, (int)Info.ExposureWidth)) != LibFLI.FLI_SUCCESS) {
                             Logger.Error($"FLI: FLIGrabRow() failed at row {r}. Returned {rv}");
                         }
                     }
@@ -497,14 +483,17 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes {
+        public IList<string> ReadoutModes {
             get => Info.ReadoutModes;
-            set => Info.ReadoutModes = (List<string>)value;
+            set => Info.ReadoutModes = value;
         }
 
         public string SensorName => string.Empty;
 
         public SensorType SensorType => SensorType.Monochrome;
+
+        public short BayerOffsetX => 0;
+        public short BayerOffsetY => 0;
 
         public int SubSampleHeight { get; set; }
         public int SubSampleWidth { get; set; }
@@ -549,9 +538,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public int USBLimitMax => 0;
-        public int USBLimitMin => 0;
-        public int USBLimitStep => 0;
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
 
         public void AbortExposure() {
             StopExposure();
@@ -670,54 +659,74 @@ namespace NINA.Model.MyCamera {
             LibFLI.FLIClose(CameraH);
         }
 
-        public Task<IImageData> DownloadExposure(CancellationToken ct) {
-            return Task.Run(() => {
-                int width;
-                int height;
-                int rowSize;
-                int imgSize;
-                byte[] rowData;
-                byte[] imgData;
-                IntPtr buff;
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                uint rv;
+                uint timeLeft = 0;
+
+                /*
+                 * Make sure to wait for any residual time to allow the camera to complete the exposure
+                 */
+                if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+                }
+
+                if (timeLeft > 0) {
+                    Logger.Debug($"FLI: DownloadExposure() pausing for {timeLeft}ms for exposure completion.");
+                    await Task.Delay((int)timeLeft, token);
+                }
+            }
+        }
+
+        public Task<IExposureData> DownloadExposure(CancellationToken ct) {
+            return Task.Run<IExposureData>(async () => {
                 uint rv;
 
-                width = (int)Info.ExposureWidth;
-                height = (int)Info.ExposureHeight;
-                rowSize = GetFullRowSize(Info.ExposureWidth);
-                imgSize = rowSize * height;
+                int width = (int)Info.ExposureWidth;
+                int height = (int)Info.ExposureHeight;
+                int imgSize = width * height;
+                int rowSize = width * 2;
+                uint timeLeft = 0;
 
-                rowData = new byte[rowSize];
-                imgData = new byte[imgSize];
+                /*
+                 * Make sure to wait for any residual time to allow the camera to complete the exposure
+                 */
+                if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+                }
+
+                if (timeLeft > 0) {
+                    Logger.Debug($"FLI: DownloadExposure() pausing for {timeLeft}ms for exposure completion.");
+                    await Task.Delay((int)timeLeft, ct);
+                }
+
+                // FLI cameras are always 16bit
+                ushort[] rowData = new ushort[width];
+                ushort[] imgData = new ushort[imgSize];
 
                 Logger.Debug($"FLI: Fetching {height} rows from the camera");
 
                 for (int r = 0; r < height; r++) {
-                    if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, rowSize)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, width)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
                     }
 
-                    Logger.Trace($"FLI: Normal exposure, fetched row {r + 1} of {height}");
                     Buffer.BlockCopy(rowData, 0, imgData, r * rowSize, rowSize);
                 }
 
                 BGFlushStart();
 
-                Logger.Debug($"FLI: Marshalling {imgSize} bytes");
-
-                buff = Marshal.AllocHGlobal(imgSize);
-                Marshal.Copy(imgData, 0, buff, imgSize);
-
-                var cameraDataToManaged = new CameraDataToManaged(buff, width, height, BitDepth);
-                var arr = cameraDataToManaged.GetData();
-
-                rowData = imgData = null;
-                Marshal.FreeHGlobal(buff);
-
-                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome));
+                return new ImageArrayExposureData(
+                    input: imgData,
+                    width: width,
+                    height: height,
+                    bitDepth: this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
             }, ct);
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken ct) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 
@@ -749,7 +758,6 @@ namespace NINA.Model.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             bool isSnap;
             bool isDarkFrame;
-            uint timeLeft = 0;
             uint ul_x, ul_y, lr_x, lr_y;
             uint rv;
 
@@ -817,13 +825,6 @@ namespace NINA.Model.MyCamera {
                 Logger.Error($"FLI: FLIExposeFrame() failed. Returned {rv}");
                 return;
             }
-
-            if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
-                Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
-            }
-
-            Logger.Debug($"FLI: StartExposure() pausing for {timeLeft}ms for exposure completion.");
-            Thread.Sleep((int)timeLeft);
         }
 
         public void StopExposure() {
@@ -846,7 +847,6 @@ namespace NINA.Model.MyCamera {
 
         private bool FloodControl() {
             uint timeLeft = 0;
-            byte[] rowData;
             uint rows;
             uint ul_x, ul_y, lr_x, lr_y;
             uint rv;
@@ -868,7 +868,7 @@ namespace NINA.Model.MyCamera {
             Info.ExposureWidth = Info.ExposureEndPixelX - Info.ExposureOriginPixelX;
             Info.ExposureHeight = Info.ExposureEndPixelY - Info.ExposureOriginPixelY;
 
-            rowData = new byte[GetFullRowSize(Info.ExposureWidth)];
+            ushort[] rowData = new ushort[Info.ExposureWidth];
 
             if ((rv = LibFLI.FLISetImageArea(CameraH, ul_x, ul_y, lr_x, lr_y)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLISetImageArea() failed. Returned {rv}");
@@ -892,11 +892,9 @@ namespace NINA.Model.MyCamera {
             Logger.Debug($"FLI: RBI: Downloading RBI flood ({rows} rows)");
 
             for (int r = 0; r < rows; r++) {
-                if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, GetFullRowSize(Info.ExposureWidth))) != LibFLI.FLI_SUCCESS) {
+                if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, (int)Info.ExposureWidth)) != LibFLI.FLI_SUCCESS) {
                     Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
                 }
-
-                Logger.Trace($"FLI: RBI: Flood exposure fetched row {r + 1} of {rows}");
             }
 
             BGFlushStart();
@@ -933,10 +931,6 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug("FLI: Background flushing stopped!");
                 }
             }
-        }
-
-        private int GetFullRowSize(uint rowPixels) {
-            return (int)(rowPixels * BitDepth) / 8;
         }
 
         public bool FLIEnableFloodFlush {

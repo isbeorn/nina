@@ -1,0 +1,178 @@
+<!--
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.Model.MyCamera.Simulator.SetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:camera="clr-namespace:NINA.Model.MyCamera.Simulator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="NINA.Model.MyCamera.Simulator.SetupView"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:util="clr-namespace:NINA.Utility"
+    Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid DataContext="{Binding Settings}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ComboBox
+            Name="PART_Type"
+            MinWidth="150"
+            Margin="0,0,0,0"
+            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type camera:CameraType}}}"
+            SelectedItem="{Binding Type}" />
+
+        <Grid Grid.Row="1">
+            <GroupBox DataContext="{Binding RandomSettings}" Header="Random Image Generation">
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="50">Width</TextBlock>
+                            <TextBox Width="100" Text="{Binding ImageWidth}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="50">Height</TextBlock>
+                            <TextBox Width="100" Text="{Binding ImageHeight}" />
+                        </StackPanel>
+                    </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="50">Mean</TextBlock>
+                            <TextBox Width="100" Text="{Binding ImageMean}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="50">StdDev</TextBlock>
+                            <TextBox Width="100" Text="{Binding ImageStdDev}" />
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="1">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="2">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+        <Grid Grid.Row="1">
+            <GroupBox DataContext="{Binding ImageSettings}" Header="Load Image">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Is Bayered" />
+                        <CheckBox Margin="5,0,0,0" IsChecked="{Binding IsBayered}" />
+                    </StackPanel>
+                    <ninactrl:AsyncProcessButton
+                        Grid.Row="1"
+                        Height="40"
+                        Margin="0,5,0,0"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Load Image"
+                        Command="{Binding DataContext.LoadImageCommand, ElementName=UC}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        Visibility="{Binding Image, Converter={StaticResource InverseNullToVisibilityConverter}}" />
+
+                    <Button
+                        Grid.Row="1"
+                        Height="40"
+                        Margin="0,5,0,0"
+                        Command="{Binding DataContext.UnloadImageCommand, ElementName=UC}"
+                        Visibility="{Binding Image, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                        Unload Image
+                    </Button>
+
+                    <ninactrl:AsyncProcessButton
+                        Grid.Row="2"
+                        Height="40"
+                        Margin="0,5,0,0"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Load RAW"
+                        Command="{Binding DataContext.LoadRAWImageCommand, ElementName=UC}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        Visibility="{Binding RAWImageStream, Converter={StaticResource InverseNullToVisibilityConverter}}" />
+                    <Button
+                        Grid.Row="2"
+                        Height="40"
+                        Margin="0,5,0,0"
+                        Command="{Binding DataContext.UnloadRAWImageCommand, ElementName=UC}"
+                        Visibility="{Binding RAWImageStream, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                        Unload RAW
+                    </Button>
+                </Grid>
+            </GroupBox>
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="2">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+        <Grid Grid.Row="1">
+            <GroupBox DataContext="{Binding SkySurveySettings}" Header="Sky Survey">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        MaxWidth="250"
+                        FontStyle="Italic"
+                        TextWrapping="Wrap">
+                        Warning! Requires telescope connectn. Additionally this method will overwrite pixel size and focal length profile settings on image download based on the sky survey parameters!
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="150">Widght and Height</TextBlock>
+                        <TextBox Width="100" Text="{Binding WidthAndHeight}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="150">FoV</TextBlock>
+                        <TextBox Width="100" Text="{Binding FieldOfView}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="150">Simulated RA Error (arcsecs)</TextBlock>
+                        <TextBox Width="100" Text="{Binding RAError}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="150">Simulated Dec Error (arcsecs)</TextBlock>
+                        <TextBox Width="100" Text="{Binding DecError}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=PART_Type, Path=SelectedItem}" Value="1">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+    </Grid>
+</UserControl>

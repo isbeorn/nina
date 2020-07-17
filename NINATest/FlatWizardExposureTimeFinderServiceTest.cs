@@ -1,11 +1,24 @@
-﻿using NINA.ViewModel.FlatWizard;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.ViewModel.FlatWizard;
 using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Moq;
 using NINA.Utility.WindowService;
 using FluentAssertions;
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using System.Windows.Input;
 using NINA.Locale;
@@ -54,7 +67,7 @@ namespace NINATest {
             _sut.AddDataPoint(3, 30);
 
             var result = _sut.GetNextExposureTime(1, wrapper);
-            result.Should().Be(12.8);
+            result.Should().BeApproximately(12.8, 0.000000001);
         }
 
         [Test]
@@ -83,7 +96,7 @@ namespace NINATest {
         [TestCase(0.5, 0.1, 115.2, FlatWizardExposureAduState.ExposureFinished)]
         [TestCase(0.5, 0.2, 102.5, FlatWizardExposureAduState.ExposureFinished)]
         [TestCase(0.5, 0.2, 150, FlatWizardExposureAduState.ExposureFinished)]
-        public void GetFlatExposureState_DifferentValues_ProperExpectedResults(double meanTarget, double tolerance, double mean, FlatWizardExposureAduState state) {
+        public async Task GetFlatExposureState_DifferentValues_ProperExpectedResults(double meanTarget, double tolerance, double mean, FlatWizardExposureAduState state) {
             FlatWizardFilterSettingsWrapper wrapper = new FlatWizardFilterSettingsWrapper(new FilterInfo("Test", 0, 0), new FlatWizardFilterSettings() {
                 HistogramMeanTarget = meanTarget,
                 HistogramTolerance = tolerance
@@ -91,13 +104,14 @@ namespace NINATest {
 
             var test = new Mock<IFlatWizardExposureTimeFinderService>();
 
-            var dataMock = new Mock<IImageData>();
             var arrMock = new Mock<IImageArray>();
+
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(mean);
-            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.Setup(m => m.Statistics).Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(statMock.Object)));
 
-            var result = _sut.GetFlatExposureState(dataMock.Object, 10, wrapper);
+            var result = await _sut.GetFlatExposureState(imageDataMock.Object, 10, wrapper);
             result.Should().Be(state);
         }
 
@@ -114,18 +128,18 @@ namespace NINATest {
                 It.IsAny<ICommand>()))
                 .Returns(Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>((f) => { ((DispatcherFrame)f).Continue = false; }), frame))
                 .Callback<FlatWizardUserPromptVM, object, object, object, object>((f, f1, f2, f3, f4) => {
-                    Dispatcher.PushFrame(frame);
                     f.Continue = true;
                     f.Reset = false;
                 });
 
-            var dataMock = new Mock<IImageData>();
-            var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.Setup(m => m.Statistics).Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(statMock.Object)));
 
-            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 10, "", wrapper);
+            var resultTask = _sut.EvaluateUserPromptResultAsync(imageDataMock.Object, 10, "", wrapper);
+            Dispatcher.PushFrame(frame);
+            var result = await resultTask;
 
             result.Continue.Should().BeTrue();
             result.NextExposureTime.Should().Be(10);
@@ -145,18 +159,18 @@ namespace NINATest {
                 It.IsAny<ICommand>()))
                 .Returns(Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>((f) => { ((DispatcherFrame)f).Continue = false; }), frame))
                 .Callback<FlatWizardUserPromptVM, object, object, object, object>((f, f1, f2, f3, f4) => {
-                    Dispatcher.PushFrame(frame);
                     f.Continue = true;
                     f.Reset = true;
                 });
 
-            var dataMock = new Mock<IImageData>();
-            var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.Setup(m => m.Statistics).Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(statMock.Object)));
 
-            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 5, "", wrapper);
+            var resultTask = _sut.EvaluateUserPromptResultAsync(imageDataMock.Object, 5, "", wrapper);
+            Dispatcher.PushFrame(frame);
+            var result = await resultTask;
 
             result.Continue.Should().BeTrue();
             result.NextExposureTime.Should().Be(10);
@@ -176,18 +190,18 @@ namespace NINATest {
                 It.IsAny<ICommand>()))
                 .Returns(Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>((f) => { ((DispatcherFrame)f).Continue = false; }), frame))
                 .Callback<FlatWizardUserPromptVM, object, object, object, object>((f, f1, f2, f3, f4) => {
-                    Dispatcher.PushFrame(frame);
                     f.Continue = false;
                     f.Reset = true;
                 });
 
-            var dataMock = new Mock<IImageData>();
-            var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            var imageDataMock = new Mock<IImageData>();
+            imageDataMock.Setup(m => m.Statistics).Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(statMock.Object)));
 
-            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 5, "", wrapper);
+            var resultTask = _sut.EvaluateUserPromptResultAsync(imageDataMock.Object, 5, "", wrapper);
+            Dispatcher.PushFrame(frame);
+            var result = await resultTask;
 
             result.Continue.Should().BeFalse();
             result.NextExposureTime.Should().Be(10);

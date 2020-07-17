@@ -1,0 +1,458 @@
+<!--
+    Copyright (c) 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.FlatWizardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
+    xmlns:filter="clr-namespace:NINA.Model.MyFilterWheel"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:util="clr-namespace:NINA.Utility"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Header="{ns:Loc LblFlatWizard}">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTargetName}"
+                                TextWrapping="WrapWithOverflow" />
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="{Binding TargetName, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatCount}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                MinValue="1"
+                                Value="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDarkFlatCount}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                MinValue="0"
+                                Value="{Binding DarkFlatCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBinning}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                DisplayMemberPath="Name"
+                                IsSynchronizedWithCurrentItem="True"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
+                                SelectedItem="{Binding BinningMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Name" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Border.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                    Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                    Path="CameraVM.Cam.Gains"
+                                    Source="{StaticResource AppVM}" />
+                                <Binding
+                                    Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                    Path="CameraVM.Cam"
+                                    Source="{StaticResource AppVM}" />
+                            </PriorityBinding>
+                        </Border.Visibility>
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+
+                            <ComboBox
+                                Grid.Column="1"
+                                DisplayMemberPath="Text"
+                                IsSynchronizedWithCurrentItem="True"
+                                SelectedValuePath="Text">
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                                <ComboBox.SelectedValue>
+                                    <MultiBinding
+                                        Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                        Mode="TwoWay"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </ComboBox.SelectedValue>
+                                <ComboBox.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                            Path="CameraVM.Cam.Gains"
+                                            Source="{StaticResource AppVM}" />
+                                        <Binding
+                                            Converter="{StaticResource NullToVisibilityConverter}"
+                                            Path="CameraVM.Cam"
+                                            Source="{StaticResource AppVM}" />
+                                    </PriorityBinding>
+                                </ComboBox.Visibility>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Border.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                    Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                                    Path="CameraVM.Cam.Gains"
+                                    Source="{StaticResource AppVM}" />
+                                <Binding
+                                    Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                    Path="CameraVM.Cam"
+                                    Source="{StaticResource AppVM}" />
+                            </PriorityBinding>
+                        </Border.Visibility>
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+
+                            <!--  Free Gain Setting  -->
+                            <TextBox Grid.Column="1">
+                                <TextBox.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <rules:IntRangeRule>
+                                                    <rules:IntRangeRule.ValidRange>
+                                                        <rules:IntRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                    </rules:IntRangeRule.ValidRange>
+                                                </rules:IntRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </Border>
+
+                    <UniformGrid Margin="0,0,0,5" Columns="2">
+                        <ComboBox ItemsSource="{util:EnumBindingSource {x:Type enum:AltitudeSite}}" SelectedItem="{Binding AltitudeSite}" />
+                        <Button
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding SlewToZenithCommand}">
+                            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlewToZenith}" />
+                        </Button>
+                    </UniformGrid>
+                    <TabControl>
+                        <TabItem Header="Single Mode">
+                            <StackPanel Orientation="Vertical">
+                                <Border
+                                    Margin="0,0,0,5"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="0,0,0,1"
+                                    Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblFilter}" />
+                                        <ComboBox
+                                            Grid.Column="1"
+                                            DisplayMemberPath="Name"
+                                            SelectedItem="{Binding SelectedFilter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                                            SelectedValuePath="Name">
+
+                                            <ComboBox.Resources>
+                                                <CollectionViewSource x:Key="Filters" Source="{Binding FilterInfos}" />
+                                            </ComboBox.Resources>
+                                            <ComboBox.ItemsSource>
+                                                <CompositeCollection>
+                                                    <x:Static Member="filter:NullFilter.Instance" />
+                                                    <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                                </CompositeCollection>
+                                            </ComboBox.ItemsSource>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                                <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Grid Height="35" Margin="0,5,0,0">
+                                    <ninactrl:AsyncProcessButton
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                        ButtonImage="{StaticResource PlaySVG}"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding CancelFlatExposureSequenceCommand}"
+                                        Command="{Binding StartFlatSequenceCommand}"
+                                        IsEnabled="{Binding CameraConnected}"
+                                        IsPaused="{Binding IsPaused}"
+                                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                                        PauseButtonImage="{StaticResource PauseSVG}"
+                                        PauseCommand="{Binding PauseFlatExposureSequenceCommand}"
+                                        ResumeButtonImage="{StaticResource PlaySVG}"
+                                        ResumeCommand="{Binding ResumeFlatExposureSequenceCommand}"
+                                        ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Multi Mode" Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            <StackPanel Orientation="Vertical">
+                                <ListView ItemsSource="{Binding Filters}">
+                                    <ListView.Template>
+                                        <ControlTemplate>
+                                            <ItemsPresenter />
+                                        </ControlTemplate>
+                                    </ListView.Template>
+                                    <ListView.ItemTemplate>
+                                        <ItemContainerTemplate>
+                                            <Expander
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                ScrollViewer.CanContentScroll="False">
+                                                <Expander.Header>
+                                                    <Grid Margin="5,5,5,5" HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="4*" />
+                                                            <ColumnDefinition Width="2*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock
+                                                            Grid.Column="0"
+                                                            VerticalAlignment="Center"
+                                                            Text="{Binding Filter.Name}" />
+                                                        <CheckBox
+                                                            Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </Grid>
+                                                </Expander.Header>
+                                                <ContentControl Content="{Binding Path=., UpdateSourceTrigger=PropertyChanged}" />
+                                            </Expander>
+                                        </ItemContainerTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="Focusable" Value="False" />
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblPauseBetweenFilters}"
+                                        TextWrapping="WrapWithOverflow" />
+                                    <CheckBox
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding PauseBetweenFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid Height="35" Margin="0,5,0,0">
+                                    <ninactrl:AsyncProcessButton
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                        ButtonImage="{StaticResource PlaySVG}"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding CancelFlatExposureSequenceCommand}"
+                                        Command="{Binding StartMultiFlatSequenceCommand}"
+                                        IsEnabled="{Binding CameraConnected}"
+                                        IsPaused="{Binding IsPaused}"
+                                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                                        PauseButtonImage="{StaticResource PauseSVG}"
+                                        PauseCommand="{Binding PauseFlatExposureSequenceCommand}"
+                                        ResumeButtonImage="{StaticResource PlaySVG}"
+                                        ResumeCommand="{Binding ResumeFlatExposureSequenceCommand}"
+                                        ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <local:ImageView
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Image="{Binding Image}" />
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblFlatCalculatedExposureTime}"
+                        TextWrapping="WrapWithOverflow" />
+                    <TextBox
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        IsEnabled="False"
+                        Text="{Binding CalculatedExposureTime, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.00000 s}}" />
+                </Grid>
+            </Border>
+            <Border
+                Grid.Row="1"
+                Grid.Column="1"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblFlatCalculatedHistogramMean}"
+                        TextWrapping="WrapWithOverflow" />
+                    <TextBox
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        IsEnabled="False"
+                        Text="{Binding CalculatedHistogramMean, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0} ADU}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

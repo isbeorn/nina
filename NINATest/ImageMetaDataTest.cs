@@ -1,4 +1,18 @@
-﻿using NINA.Model.ImageData;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
@@ -9,6 +23,7 @@ using NINA.Profile;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace NINATest {
 
@@ -32,8 +47,8 @@ namespace NINATest {
             Assert.AreEqual(1, sut.Camera.BinY);
             Assert.AreEqual(double.NaN, sut.Camera.PixelSize);
             Assert.AreEqual(double.NaN, sut.Camera.Temperature);
-            Assert.AreEqual(double.NaN, sut.Camera.Gain);
-            Assert.AreEqual(double.NaN, sut.Camera.Offset);
+            Assert.AreEqual(-1, sut.Camera.Gain);
+            Assert.AreEqual(-1, sut.Camera.Offset);
             Assert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(double.NaN, sut.Camera.SetPoint);
 
@@ -128,8 +143,8 @@ namespace NINATest {
             Assert.AreEqual(1, sut.Camera.BinY);
             Assert.AreEqual(double.NaN, sut.Camera.PixelSize);
             Assert.AreEqual(double.NaN, sut.Camera.Temperature);
-            Assert.AreEqual(double.NaN, sut.Camera.Gain);
-            Assert.AreEqual(double.NaN, sut.Camera.Offset);
+            Assert.AreEqual(-1, sut.Camera.Gain);
+            Assert.AreEqual(-1, sut.Camera.Offset);
             Assert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(double.NaN, sut.Camera.SetPoint);
         }
@@ -146,7 +161,9 @@ namespace NINATest {
                 BinX = 3,
                 BinY = 2,
                 ElectronsPerADU = 2.43,
-                PixelSize = 12
+                PixelSize = 12,
+                ReadoutMode = 1,
+                ReadoutModes = new List<string> { "mode1", "mode2" }
             };
 
             var sut = new ImageMetaData();
@@ -162,6 +179,7 @@ namespace NINATest {
             Assert.AreEqual(10, sut.Camera.Offset);
             Assert.AreEqual(2.43, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(-10, sut.Camera.SetPoint);
+            Assert.That(sut.Camera.ReadoutModeName, Is.EqualTo("mode2"));
         }
 
         [Test]
@@ -184,7 +202,7 @@ namespace NINATest {
 
         [Test]
         public void FromTelescopeInfoConnectedTest() {
-            var coordinates = new Coordinates(Angle.ByHours(4), Angle.ByDegree(29), Epoch.J2000);
+            var coordinates = new Coordinates(Angle.ByHours(4), Angle.ByDegree(29), Epoch.JNOW, new DateTime(2020, 06, 16));
             var telescopeInfo = new TelescopeInfo() {
                 Connected = true,
                 Name = "TestName",
@@ -198,7 +216,55 @@ namespace NINATest {
             Assert.AreEqual(120.3, sut.Observer.Elevation);
             Assert.AreEqual(double.NaN, sut.Telescope.FocalLength);
             Assert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
-            Assert.AreSame(coordinates, sut.Telescope.Coordinates);
+
+            Assert.AreEqual(Epoch.J2000, sut.Telescope.Coordinates.Epoch);
+            Assert.AreEqual(59.694545025696307d, sut.Telescope.Coordinates.RADegrees);
+            Assert.AreEqual(28.945185789035015d, sut.Telescope.Coordinates.Dec);
+        }
+
+        [Test]
+        public void FromTelescopeInfoNoCoordinateTransformTest() {
+            var coordinates = new Coordinates(Angle.ByHours(4), Angle.ByDegree(29), Epoch.J2000);
+            var telescopeInfo = new TelescopeInfo() {
+                Connected = true,
+                Coordinates = coordinates
+            };
+            var sut = new ImageMetaData();
+            sut.FromTelescopeInfo(telescopeInfo);
+
+            Assert.AreEqual(Epoch.J2000, sut.Telescope.Coordinates.Epoch);
+            Assert.AreEqual(60, sut.Telescope.Coordinates.RADegrees);
+            Assert.AreEqual(29, sut.Telescope.Coordinates.Dec);
+        }
+
+        [Test]
+        public void TargetCoordinateTransformTest() {
+            var coordinates = new Coordinates(Angle.ByHours(4), Angle.ByDegree(29), Epoch.JNOW, new DateTime(2020, 06, 16));
+
+            var sut = new ImageMetaData() {
+                Target = new TargetParameter() {
+                    Coordinates = coordinates
+                }
+            };
+
+            Assert.AreEqual(Epoch.J2000, sut.Target.Coordinates.Epoch);
+            Assert.AreEqual(59.694545025696307d, sut.Target.Coordinates.RADegrees);
+            Assert.AreEqual(28.945185789035015d, sut.Target.Coordinates.Dec);
+        }
+
+        [Test]
+        public void TargetCoordinateNoTransformTest() {
+            var coordinates = new Coordinates(Angle.ByHours(4), Angle.ByDegree(29), Epoch.J2000);
+
+            var sut = new ImageMetaData() {
+                Target = new TargetParameter() {
+                    Coordinates = coordinates
+                }
+            };
+
+            Assert.AreEqual(Epoch.J2000, sut.Target.Coordinates.Epoch);
+            Assert.AreEqual(60, sut.Target.Coordinates.RADegrees);
+            Assert.AreEqual(29, sut.Target.Coordinates.Dec);
         }
 
         [Test]

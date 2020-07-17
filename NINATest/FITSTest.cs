@@ -1,10 +1,27 @@
-﻿using FluentAssertions;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using FluentAssertions;
 using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.FileFormat.FITS;
+using NINA.Utility.FileFormat.FITS.DataConverter;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -39,11 +56,11 @@ namespace NINATest {
             var sut = new FITS(data, width, height);
 
             //Assert
-            sut.ImageData.Should().BeEquivalentTo(data);
-            sut.HeaderCards.Count.Should().Be(expectedHeaderCards.Count);
+            sut.Data.Data.Should().BeEquivalentTo(data);
+            sut.Header.HeaderCards.Count.Should().Be(expectedHeaderCards.Count);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -55,6 +72,8 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING",1, "Y axis binning factor"),
+                new FITSHeaderCard("ROWORDER","TOP-DOWN", "FITS Image Orientation"),
+                new FITSHeaderCard("EQUINOX", 2000d, "Equinox of celestial coordinate system"),
                 new FITSHeaderCard("SWCREATE",string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file"),
             };
 
@@ -63,9 +82,9 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             //Assert
-            sut.HeaderCards.Count.Should().Be(expectedHeaderCards.Count + 7); // 7 is the default header size
+            sut.Header.HeaderCards.Count.Should().Be(expectedHeaderCards.Count + 7); // 7 is the default header size
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -81,6 +100,7 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("IMAGETYP", metaData.Image.ImageType, "Type of exposure"),
                 new FITSHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration"),
+                new FITSHeaderCard("EXPTIME", metaData.Image.ExposureTime, "[s] Exposure duration"),
                 new FITSHeaderCard("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)"),
                 new FITSHeaderCard("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)"),
             };
@@ -91,7 +111,7 @@ namespace NINATest {
 
             //Assert
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -114,7 +134,7 @@ namespace NINATest {
 
             //Assert
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -131,6 +151,7 @@ namespace NINATest {
             metaData.Camera.PixelSize = 12;
             metaData.Camera.SetPoint = -5;
             metaData.Camera.Temperature = -4.454;
+            metaData.Camera.ReadoutModeName = "1 Hz";
 
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("INSTRUME", metaData.Camera.Name, "Imaging instrument name"),
@@ -139,17 +160,18 @@ namespace NINATest {
                 new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain"),
                 new FITSHeaderCard("OFFSET", metaData.Camera.Offset, "Sensor gain offset"),
                 new FITSHeaderCard("EGAIN", metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit"),
-                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size"),
-                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size"),
+                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinX, "[um] Pixel X axis size"),
+                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinY, "[um] Pixel Y axis size"),
                 new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint"),
                 new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature"),
+                new FITSHeaderCard("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode")
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -174,7 +196,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -196,7 +218,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -216,7 +238,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -237,7 +259,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -263,7 +285,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -286,7 +308,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -326,7 +348,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -404,6 +426,19 @@ namespace NINATest {
         }
 
         [Test]
+        public void FITSHeaderCard_NullTest() {
+            var key = "SOME";
+            string value = null;
+            string comment = null;
+
+            var sut = new FITSHeaderCard(key, value, comment);
+
+            sut.Key.Should().Be(key);
+            sut.Value.Should().Be("''                  ");
+            sut.Comment.Should().Be(string.Empty);
+        }
+
+        [Test]
         public void FITSHeaderCardStringTest() {
             var key = "SOME";
             var value = "someone's value";
@@ -457,18 +492,23 @@ namespace NINATest {
         }
 
         [Test]
-        public void FITSHeaderCardDoubleTest() {
+        [TestCase(-123, "-123.0")]
+        [TestCase(123, "123.0")]
+        [TestCase(123.1123234134543298765, "123.112323413454")]
+        [TestCase(123456789123456.123456, "123456789123456.0")]
+        [TestCase(1234567891234.123456, "1234567891234.12")]
+        [TestCase(0, "0.0")]
+        public void FITSHeaderCardDoubleTest(double value, string expectedValue) {
             var key = "SOME";
-            var value = 12.45678965432129497;
             var comment = "some comment";
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "12.4567896543213";
-
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);
             sut.Comment.Should().Be(comment);
+
+            sut.Value.Length.Should().BeLessThan(21);
         }
 
         [Test]
@@ -479,7 +519,7 @@ namespace NINATest {
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "2012-01-10T01:20:12.111";
+            var expectedValue = "'2012-01-10T01:20:12.111'";
 
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);
@@ -509,7 +549,134 @@ namespace NINATest {
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
             sut.PopulateHeaderCards(metaData);
 
-            sut.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
+            sut.Header.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
+        }
+
+        [Test]
+        [TestCase("Some String")]
+        [TestCase("Bode's Nebula")]
+        [TestCase("' A bit Weird '")]
+        [TestCase("")]
+        public void FITSOriginalValue_StringTest(string value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(100)]
+        [TestCase(-100)]
+        public void FITSOriginalValue_StringTest(int value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value.ToString());
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(100)]
+        [TestCase(-100)]
+        [TestCase(-100)]
+        [TestCase(200.1234)]
+        [TestCase(-200.4321)]
+        public void FITSOriginalValue_DoubleTest(double value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value.ToString("0.0##############", CultureInfo.InvariantCulture));
+        }
+
+        [Test]
+        public void ByteConverter_CorrectConversionTest() {
+            Array[] data = new byte[][]
+            {
+                new byte[] { 0, 255 },
+                new byte[] { 200, 5 },
+            };
+
+            var converter = new ByteConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 51400, 1285 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void ShortConverter_CorrectConversionTest() {
+            Array[] data = new short[][]
+            {
+                new short[] { short.MinValue, short.MaxValue },
+                new short[] { -30000, 30000 },
+            };
+
+            var converter = new ShortConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 2768, 62768 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void IntConverter_CorrectConversionTest() {
+            Array[] data = new int[][]
+            {
+                new int[] { int.MinValue, int.MaxValue },
+                new int[] { -30000, 60000 },
+            };
+
+            var converter = new IntConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 32767, 32768 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void LongConverter_CorrectConversionTest() {
+            Array[] data = new long[][]
+            {
+                new long[] { long.MinValue, long.MaxValue },
+                new long[] { -30000, 60000 },
+            };
+
+            var converter = new LongConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 32767, 32767 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void DoubleConverter_CorrectConversionTest() {
+            Array[] data = new double[][]
+            {
+                new double[] { 0, 1 },
+                new double[] { 0.4, 0.6 },
+            };
+
+            var converter = new DoubleConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 26214, 39321 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void FloatConverter_CorrectConversionTest() {
+            Array[] data = new float[][]
+            {
+                new float[] { 0f, 1f },
+                new float[] { 0.4f, 0.6f },
+            };
+
+            var converter = new FloatConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 26214, 39321 };
+
+            sut.Should().BeEquivalentTo(expectation);
         }
     }
 }

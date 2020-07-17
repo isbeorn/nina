@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -58,15 +49,14 @@ namespace NINA.ViewModel.Equipment.Guider {
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
-            GuideStepsHistory = new GuideStepsHistory(HistorySize);
+            GuideStepsHistory = new GuideStepsHistory(HistorySize, GuiderScale, GuiderMaxY);
+
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                GuiderChooserVM.GetEquipment();
+            };
         }
 
         public IGuiderChooserVM GuiderChooserVM { get; set; }
-
-        public enum GuideStepsHistoryType {
-            GuideStepsLarge,
-            GuideStepsMinimal
-        }
 
         /// <summary>
         /// Starts recording RMS until StopRMSRecording is called
@@ -102,24 +92,6 @@ namespace NINA.ViewModel.Equipment.Guider {
                 var result = await Guider?.AutoSelectGuideStar();
                 await Task.Delay(TimeSpan.FromSeconds(5), token);
                 return result;
-            } else {
-                return false;
-            }
-        }
-
-        public async Task<bool> PauseGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                return await Guider?.Pause(true, token);
-            } else {
-                return false;
-            }
-        }
-
-        public async Task<bool> ResumeGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
-                return true;
             } else {
                 return false;
             }
@@ -193,16 +165,20 @@ namespace NINA.ViewModel.Equipment.Guider {
         }
 
         private void Guider_GuideEvent(object sender, IGuideStep e) {
-            var step = e;
+            try {
+                var step = e;
 
-            GuideStepsHistory.AddGuideStep(step);
+                GuideStepsHistory.AddGuideStep(step);
 
-            foreach (RMS rms in recordedRMS.Values) {
-                rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
+                foreach (RMS rms in recordedRMS.Values) {
+                    rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 
-        public void Disconnect() {
+        public Task Disconnect() {
             if (Guider != null) {
                 Guider.PropertyChanged -= Guider_PropertyChanged;
                 Guider.GuideEvent -= Guider_GuideEvent;
@@ -210,6 +186,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             Guider?.Disconnect();
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
+            return Task.CompletedTask;
         }
 
         private GuiderInfo guiderInfo;
@@ -241,6 +218,16 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
+        public double GuiderMaxY {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.MaxY;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.MaxY = value;
+                GuideStepsHistory.MaxY = value;
+            }
+        }
+
         public async Task<bool> StartGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 return await Guider.StartGuiding(token);
@@ -259,12 +246,19 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         public async Task<bool> Dither(CancellationToken token) {
             if (Guider?.Connected == true) {
-                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
-                await Guider?.Dither(token);
-                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
+                try {
+                    Guider.GuideEvent -= Guider_GuideEvent;
+                    applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
+                    GuideStepsHistory.AddDitherIndicator();
+                    await Guider.Dither(token);
+                } finally {
+                    Guider.GuideEvent += Guider_GuideEvent;
+                    applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
+                }
+
                 return true;
             } else {
-                Disconnect();
+                await Disconnect();
                 return false;
             }
         }

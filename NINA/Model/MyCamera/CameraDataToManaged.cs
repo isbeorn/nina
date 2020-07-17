@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -30,6 +21,7 @@ namespace NINA.Model.MyCamera {
         private IntPtr dataPtr;
         private int width;
         private int height;
+        private int scaling = 0;
 
         private int Size {
             get {
@@ -44,11 +36,15 @@ namespace NINA.Model.MyCamera {
         /// <param name="width">Image dimension width</param>
         /// <param name="height">Image dimension height</param>
         /// <param name="bitDepth">Image data bit depth</param>
-        public CameraDataToManaged(IntPtr dataPtr, int width, int height, int bitDepth) {
+        /// <param name="bitScaling">True: Shift data bits left to scale to 16 bit. False: Pure raw data</param>
+        public CameraDataToManaged(IntPtr dataPtr, int width, int height, int bitDepth, bool bitScaling) {
             this.dataPtr = dataPtr;
             this.width = width;
             this.height = height;
             this.bitDepth = bitDepth;
+            if (bitScaling) {
+                this.scaling = 16 - bitDepth;
+            }
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace NINA.Model.MyCamera {
             unsafe {
                 var sourcePtr = (ushort*)source;
                 for (int i = 0; i < length; ++i) {
-                    destination[i] = *sourcePtr++;
+                    destination[i] = (ushort)((*sourcePtr++) << scaling);
                 }
             }
             return destination;

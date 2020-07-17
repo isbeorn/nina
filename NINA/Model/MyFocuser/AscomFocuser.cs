@@ -1,28 +1,19 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.DriverAccess;
+using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
@@ -38,7 +29,8 @@ namespace NINA.Model.MyFocuser {
             Name = name;
         }
 
-        private Focuser _focuser;
+        private IFocuserV3 _focuser;
+        public IAscomFocuserProvider FocuserProvider { get; set; } = new AscomFocuserProvider();
 
         public string Category { get; } = "ASCOM";
 
@@ -79,7 +71,7 @@ namespace NINA.Model.MyFocuser {
         public int MaxIncrement {
             get {
                 if (Connected) {
-                    return _focuser.MaxIncrement;
+                    return Math.Abs(_focuser.MaxIncrement);
                 } else {
                     return -1;
                 }
@@ -89,7 +81,7 @@ namespace NINA.Model.MyFocuser {
         public int MaxStep {
             get {
                 if (Connected) {
-                    return _focuser.MaxStep;
+                    return Math.Abs(_focuser.MaxStep);
                 } else {
                     return -1;
                 }
@@ -103,7 +95,7 @@ namespace NINA.Model.MyFocuser {
                 int pos = -1;
                 try {
                     if (Connected && _canGetPosition) {
-                        pos = _focuser.Position;
+                        pos = Math.Abs(_focuser.Position);
                     }
                 } catch (PropertyNotImplementedException) {
                     _canGetPosition = false;
@@ -282,7 +274,7 @@ namespace NINA.Model.MyFocuser {
                 try {
                     bool dispose = false;
                     if (_focuser == null) {
-                        _focuser = new Focuser(Id);
+                        _focuser = FocuserProvider.GetFocuser(Id);
                     }
                     _focuser.SetupDialog();
                     if (dispose) {
@@ -290,6 +282,7 @@ namespace NINA.Model.MyFocuser {
                         _focuser = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }
@@ -298,9 +291,14 @@ namespace NINA.Model.MyFocuser {
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
-                    _focuser = new Focuser(Id);
+                    _focuser = FocuserProvider.GetFocuser(Id);
                     Connected = true;
                     if (Connected) {
+                        if (!_focuser.Absolute) {
+                            Connected = false;
+                            throw new Exception(Locale.Loc.Instance["LblRelativeFocuserNotSupported"]);
+                        }
+
                         Initialize();
                         RaiseAllPropertiesChanged();
                     }

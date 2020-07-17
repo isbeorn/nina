@@ -1,25 +1,14 @@
-ï»¿#region "copyright"
+#region "copyright"
 
 /*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
-/*
- * Copyright 2019 Dale Ghent <daleg@elemental.org>
- */
 
 #endregion "copyright"
 
@@ -49,7 +38,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
 
             ChooseWeatherDataCommand = new AsyncCommand<bool>(() => ChooseWeatherData());
             CancelChooseWeatherDataCommand = new RelayCommand(CancelChooseWeatherData);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             RefreshWeatherDataListCommand = new RelayCommand(RefreshWeatherDataList, o => !(WeatherData?.Connected == true));
 
             updateTimer = new DeviceUpdateTimer(
@@ -70,11 +59,13 @@ namespace NINA.ViewModel.Equipment.WeatherData {
         private async Task<bool> ChooseWeatherData() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (WeatherDataChooserVM.SelectedDevice.Id == "No_Device") {
-                    profileService.ActiveProfile.FocuserSettings.Id = WeatherDataChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.WeatherDataSettings.Id = WeatherDataChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -119,6 +110,9 @@ namespace NINA.ViewModel.Equipment.WeatherData {
                             updateTimer.Start();
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
+
+                            Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} Driver Version: {weatherdev.DriverVersion}");
+
                             return true;
                         } else {
                             WeatherDataInfo.Connected = false;
@@ -126,7 +120,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (WeatherDataInfo.Connected) { Disconnect(); }
+                        if (WeatherDataInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -253,15 +247,19 @@ namespace NINA.ViewModel.Equipment.WeatherData {
             return ChooseWeatherData();
         }
 
-        private void DisconnectDiag(object obj) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblWeatherDisconnect"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
-            updateTimer?.Stop();
+        public async Task Disconnect() {
+            if (WeatherData != null) { Logger.Info("Disconnected Weather Device"); }
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             WeatherData?.Disconnect();
             WeatherData = null;
             WeatherDataInfo = DeviceInfo.CreateDefaultInstance<WeatherDataInfo>();

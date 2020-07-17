@@ -1,29 +1,19 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
 
-using NINA.Model.ImageData;
 using NINA.Utility;
-using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +27,8 @@ namespace NINA.Model.MyCamera {
         short BinY { get; set; }
         string SensorName { get; }
         SensorType SensorType { get; }
+        short BayerOffsetX { get; }
+        short BayerOffsetY { get; }
         int CameraXSize { get; }
         int CameraYSize { get; }
         double ExposureMin { get; }
@@ -58,28 +50,32 @@ namespace NINA.Model.MyCamera {
         int SubSampleWidth { get; set; }
         int SubSampleHeight { get; set; }
         bool CanShowLiveView { get; }
-        bool LiveViewEnabled { get; set; }
+        bool LiveViewEnabled { get; }
         bool HasBattery { get; }
         int BatteryLevel { get; }
         int BitDepth { get; }
 
-        int Offset { get; set; }
-        int USBLimit { get; set; }
         bool CanSetOffset { get; }
+        int Offset { get; set; }
         int OffsetMin { get; }
         int OffsetMax { get; }
         bool CanSetUSBLimit { get; }
+        int USBLimit { get; set; }
+        int USBLimitMin { get; }
+        int USBLimitMax { get; }
+        int USBLimitStep { get; }
         bool CanGetGain { get; }
         bool CanSetGain { get; }
-        short GainMax { get; }
-        short GainMin { get; }
-        short Gain { get; set; }
+        int GainMax { get; }
+        int GainMin { get; }
+        int Gain { get; set; }
         double ElectronsPerADU { get; }
-        ICollection ReadoutModes { get; }
+        IList<string> ReadoutModes { get; }
+        short ReadoutMode { get; set; }
         short ReadoutModeForSnapImages { get; set; }
         short ReadoutModeForNormalImages { get; set; }
 
-        ArrayList Gains { get; }
+        IList<int> Gains { get; }
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
@@ -87,16 +83,18 @@ namespace NINA.Model.MyCamera {
 
         void StartExposure(CaptureSequence sequence);
 
+        Task WaitUntilExposureIsReady(CancellationToken token);
+
         void StopExposure();
 
         void StartLiveView();
 
-        Task<IImageData> DownloadLiveView(CancellationToken token);
+        Task<IExposureData> DownloadLiveView(CancellationToken token);
 
         void StopLiveView();
 
         void AbortExposure();
 
-        Task<IImageData> DownloadExposure(CancellationToken token);
+        Task<IExposureData> DownloadExposure(CancellationToken token);
     }
 }
