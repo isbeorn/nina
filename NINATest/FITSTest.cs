@@ -72,6 +72,7 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING",1, "Y axis binning factor"),
+                new FITSHeaderCard("ROWORDER","TOP-DOWN", "FITS Image Orientation"),
                 new FITSHeaderCard("EQUINOX", 2000d, "Equinox of celestial coordinate system"),
                 new FITSHeaderCard("SWCREATE",string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file"),
             };

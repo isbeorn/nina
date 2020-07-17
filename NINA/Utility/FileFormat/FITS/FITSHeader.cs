@@ -598,6 +598,9 @@ namespace NINA.Utility.FileFormat.FITS {
                 Add("WINDSPD", metaData.WeatherData.WindSpeed * 3.6, "[kph] Wind speed");
             }
 
+            //ROWORDER as proposed by Siril at https://free-astro.org/index.php?title=Siril:FITS_orientation
+            Add("ROWORDER", "TOP-DOWN", "FITS Image Orientation");
+
             Add("EQUINOX", 2000.0d, "Equinox of celestial coordinate system");
             Add("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
         }
