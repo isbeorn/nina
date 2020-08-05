@@ -131,7 +131,7 @@ namespace NINA.PlateSolving.Solvers {
                     FileType = FileTypeEnum.FITS
                 };
 
-                filePath = await source.SaveToDisk(fileSaveInfo, cancelToken);
+                filePath = await source.SaveToDisk(fileSaveInfo, cancelToken, forceFileType: true);
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
                     return await SubmitImageStream(fs, session, cancelToken);
                 }
