@@ -64,10 +64,118 @@ namespace NINA.ViewModel {
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
             InspectAberrationCommand = new AsyncCommand<bool>(() => InspectAberration(), (object o) => Image != null);
 
+            PixelPeepStartCommand = new RelayCommand(PixelPeeperStart);
+            PixelPeepMoveCommand = new RelayCommand(PixelPeeperMove);
+            PixelPeepEndCommand = new RelayCommand(PixelPeeperStop);
+
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
             BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
             SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
+        }
+
+        private bool showPixelPeeper;
+
+        public bool ShowPixelPeeper {
+            get {
+                return showPixelPeeper;
+            }
+            set {
+                showPixelPeeper = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private BitmapSource pixelPeepImage;
+
+        public BitmapSource PixelPeepImage {
+            get => pixelPeepImage;
+            private set {
+                pixelPeepImage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double pixelPeepX;
+
+        public double PixelPeepX {
+            get => pixelPeepX;
+            set {
+                pixelPeepX = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double pixelPeepY;
+
+        public double PixelPeepY {
+            get => pixelPeepY;
+            set {
+                pixelPeepY = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double pixelPeepValue;
+
+        public double PixelPeepValue {
+            get => pixelPeepValue;
+            set {
+                pixelPeepValue = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void PixelPeeperStart(object o) {
+            ShowPixelPeeper = true;
+            PixelPeeperMove(o);
+        }
+
+        private void PixelPeeperMove(object o) {
+            if (o != null) {
+                var p = (Point)o;
+                var x = (int)p.X;
+                var y = (int)p.Y;
+
+                var width = RenderedImage.Image.PixelWidth;
+                var height = RenderedImage.Image.PixelHeight;
+
+                var idx = x + y * width;
+                if (idx < 0) {
+                    idx = 0;
+                } else if (idx > RenderedImage.RawImageData.Data.FlatArray.Length - 1) {
+                    idx = RenderedImage.RawImageData.Data.FlatArray.Length - 1;
+                }
+
+                PixelPeepX = x;
+                PixelPeepY = y;
+                PixelPeepValue = RenderedImage.RawImageData.Data.FlatArray[idx];
+
+                var rectX = Math.Max(x - 12, 0);
+                var rectY = Math.Max(y - 12, 0);
+                var rectWidth = 25;
+                var rectHeight = 25;
+
+                if ((rectX + 25) > width) {
+                    rectX = width - rectWidth;
+                }
+                if ((rectY + 25) > height) {
+                    rectY = height - rectHeight;
+                }
+
+                var rect = new Int32Rect(rectX, rectY, rectWidth, rectHeight);
+                var crop = new CroppedBitmap(this.Image, rect);
+                PixelPeepImage = new WriteableBitmap(crop);
+            }
+        }
+
+        private void PixelPeeperStop(object o) {
+            ShowPixelPeeper = false;
+
+            PixelPeepX = 0;
+            PixelPeepY = 0;
+            PixelPeepValue = 0;
+            PixelPeepImage = null;
         }
 
         private async Task<bool> InspectAberration() {
@@ -294,6 +402,9 @@ namespace NINA.ViewModel {
         public ICommand SubSampleDragStartCommand { get; private set; }
         public ICommand SubSampleDragStopCommand { get; private set; }
         public ICommand SubSampleDragMoveCommand { get; private set; }
+        public ICommand PixelPeepStartCommand { get; private set; }
+        public ICommand PixelPeepEndCommand { get; private set; }
+        public ICommand PixelPeepMoveCommand { get; private set; }
 
         private IWindowServiceFactory windowServiceFactory;
 

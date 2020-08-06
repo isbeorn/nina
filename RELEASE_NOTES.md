@@ -3,6 +3,11 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 1.10 HF1
+
+### Image Preview
+- Ability to inspect pixel area and pixel values in detail by holding right click
+
 # Version 1.10
 
 ## New hardware support
