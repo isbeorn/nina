@@ -52,6 +52,30 @@ namespace NINA.View {
             PART_TextblockScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
         }
 
+        public static readonly DependencyProperty RightMouseButtonDownCommandProperty =
+            DependencyProperty.Register(nameof(RightMouseButtonDownCommand), typeof(ICommand), typeof(ImageView), new PropertyMetadata(null));
+
+        public ICommand RightMouseButtonDownCommand {
+            get { return (ICommand)GetValue(RightMouseButtonDownCommandProperty); }
+            set { SetValue(RightMouseButtonDownCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty RightMouseButtonUpCommandProperty =
+            DependencyProperty.Register(nameof(RightMouseButtonUpCommand), typeof(ICommand), typeof(ImageView), new PropertyMetadata(null));
+
+        public ICommand RightMouseButtonUpCommand {
+            get { return (ICommand)GetValue(RightMouseButtonUpCommandProperty); }
+            set { SetValue(RightMouseButtonUpCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty RightMouseButtonMoveCommandProperty =
+            DependencyProperty.Register(nameof(RightMouseButtonMoveCommand), typeof(ICommand), typeof(ImageView), new PropertyMetadata(null));
+
+        public ICommand RightMouseButtonMoveCommand {
+            get { return (ICommand)GetValue(RightMouseButtonMoveCommandProperty); }
+            set { SetValue(RightMouseButtonMoveCommandProperty, value); }
+        }
+
         public static readonly DependencyProperty ScrollEnabledProperty =
             DependencyProperty.Register(nameof(ScrollEnabled), typeof(bool), typeof(ImageView), new PropertyMetadata(true));
 

@@ -223,7 +223,6 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Cam.TemperatureSetPoint = Cam.Temperature;
                 throw ex;
             } finally {
-                progress.Report(1);
             }
 
             return true;
