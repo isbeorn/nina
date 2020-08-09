@@ -10,6 +10,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Replaced LZ4 library with a more optimized one for faster XISF compression
 - Log files now show correct operating system version
 - Telescope views now display the side of pier when available
+- Cancelling a sequence that is paused, will no longer throw a semaphore error
 
 # Version 1.10
 
