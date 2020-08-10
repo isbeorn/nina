@@ -24,14 +24,14 @@ namespace NINA.Utility.RawConverter {
 
         public static IRawConverter CreateInstance(RawConverterEnum converter) {
             switch (converter) {
-                case Enum.RawConverterEnum.DCRAW:
+                case RawConverterEnum.DCRAW:
                     return new DCRaw();
 
-                case Enum.RawConverterEnum.FREEIMAGE:
+                case RawConverterEnum.FREEIMAGE:
                     return new FreeImageConverter();
 
                 default:
-                    return new DCRaw();
+                    return new FreeImageConverter();
             }
         }
     }

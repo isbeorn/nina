@@ -187,6 +187,8 @@ namespace EDSDKLib
         public const uint   PropID_TimeZone              = 0x01000017;
         public const uint   PropID_SummerTimeSetting     = 0x01000018;
 
+        public const uint   PropID_AutoPowerOffSetting   = 0x0100045e;
+
         #endregion
 
         #region Camera commands
@@ -719,7 +721,29 @@ namespace EDSDKLib
 			EdsImageQuality_RHEIFL  =   0x00640080, /* RAW  + HEIF Large */
 			EdsImageQuality_CRHEIFL =   0x00630080, /* CRAW + HEIF Large */
 
-			EdsImageQuality_Unknown = 0xffffffff,
+            EdsImageQuality_HEIFLF    = 0x0083ff0f, /* HEIF Large Fine */
+            EdsImageQuality_HEIFLN    = 0x0082ff0f, /* HEIF Large Normal */
+            EdsImageQuality_HEIFMF    = 0x0183ff0f, /* HEIF Middle Fine */
+            EdsImageQuality_HEIFMN    = 0x0182ff0f, /* HEIF Middle Normal */
+            EdsImageQuality_HEIFS1F   = 0x0e83ff0f, /* HEIF Small1 Fine */
+            EdsImageQuality_HEIFS1N   = 0x0e82ff0f, /* HEIF Small1 Normal */
+            EdsImageQuality_HEIFS2F   = 0x0f83ff0f, /* HEIF Small2 Fine */
+            EdsImageQuality_RHEIFLF   = 0x00640083, /* RAW + HEIF Large Fine */
+            EdsImageQuality_RHEIFLN   = 0x00640082, /* RAW + HEIF Large Normal */
+            EdsImageQuality_RHEIFMF   = 0x00640183, /* RAW + HEIF Middle Fine */
+            EdsImageQuality_RHEIFMN   = 0x00640182, /* RAW + HEIF Middle Normal */
+            EdsImageQuality_RHEIFS1F  = 0x00640e83, /* RAW + HEIF Small1 Fine */
+            EdsImageQuality_RHEIFS1N  = 0x00640e82, /* RAW + HEIF Small1 Normal */
+            EdsImageQuality_RHEIFS2F  = 0x00640f83, /* RAW + HEIF Small2 Fine */
+            EdsImageQuality_CRHEIFLF  = 0x00630083, /* CRAW + HEIF Large Fine */
+            EdsImageQuality_CRHEIFLN  = 0x00630082, /* CRAW + HEIF Large Normal */
+            EdsImageQuality_CRHEIFMF  = 0x00630183, /* CRAW + HEIF Middle Fine */
+            EdsImageQuality_CRHEIFMN  = 0x00630182, /* CRAW + HEIF Middle Normal */
+            EdsImageQuality_CRHEIFS1F = 0x00630e83, /* CRAW + HEIF Small1 Fine */
+            EdsImageQuality_CRHEIFS1N = 0x00630e82, /* CRAW + HEIF Small1 Normal */
+            EdsImageQuality_CRHEIFS2F = 0x00630f83, /* CRAW + HEIF Small2 Fine */
+
+            EdsImageQuality_Unknown = 0xffffffff,
         }
 
         #endregion
@@ -2342,7 +2366,7 @@ namespace EDSDKLib
             public EdsRect          imageRect;  
             public uint             pointNumber;
 
-            [MarshalAs( UnmanagedType.ByValArray, SizeConst=600)]
+            [MarshalAs( UnmanagedType.ByValArray, SizeConst=1053)]
             public EdsFocusPoint[]  focusPoint;
             public uint             executeMode;
         }

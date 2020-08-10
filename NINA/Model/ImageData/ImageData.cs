@@ -370,6 +370,7 @@ namespace NINA.Model.ImageData {
                         return await FITS.Load(new Uri(path), isBayered);
 
                     case ".cr2":
+                    case ".cr3":
                     case ".nef":
                     case ".raf":
                     case ".raw":

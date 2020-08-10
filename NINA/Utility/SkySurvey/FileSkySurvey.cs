@@ -35,7 +35,7 @@ namespace NINA.Utility.SkySurvey {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.cr3;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.cr3;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
 
             if (dialog.ShowDialog() == true) {
                 var arr = await ImageData.FromFile(dialog.FileName, 16, false, Enum.RawConverterEnum.FREEIMAGE, ct);

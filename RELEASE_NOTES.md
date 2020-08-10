@@ -11,6 +11,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Log files now show correct operating system version
 - Telescope views now display the side of pier when available
 - Cancelling a sequence that is paused, will no longer throw a semaphore error
+- Canon CR3 image format is now supported
+- Adding support for the EOS R5 and EOS R6
 
 ### File name patterns and FITS keywords
 - Added `$$CAMERA$$` file pattern
