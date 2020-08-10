@@ -20,6 +20,17 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added `$$ROTATEANGLE$$` file pattern
 - Added `$$STARCOUNT$$` file pattern
 
+## Included Camera SDK Versions:
+- **Altair Astro:** 46.16909.2020.404
+- **Atik:** 2020.6.18.0
+- **Canon:** 13.12.31
+- **FLI:** 1.104.0.0
+- **Nikon:** 1.3.1.3001
+- **Omegon:** 39.15325.2019.810
+- **QHY:** 20.7.26.1
+- **ToupTek:** 46.17309.2020.616
+- **ZWO:** 1.15.6.17
+
 # Version 1.10
 
 ## New hardware support
