@@ -1429,6 +1429,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera Name.
+        /// </summary>
+        internal static string LblCameraName {
+            get {
+                return ResourceManager.GetString("LblCameraName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera is at {0}°C yet target temperature is {1}°C.
         /// </summary>
         internal static string LblCameraNotAtTargetTemp {
@@ -8026,6 +8035,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Angle of the rotator.
+        /// </summary>
+        internal static string LblRotatorAngleDescription {
+            get {
+                return ResourceManager.GetString("LblRotatorAngleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rotator Connected.
         /// </summary>
         internal static string LblRotatorConnected {
@@ -8824,6 +8842,15 @@ namespace NINA.Locale {
         internal static string LblSQMPatternDescription {
             get {
                 return ResourceManager.GetString("LblSQMPatternDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Star count.
+        /// </summary>
+        internal static string LblStarCount {
+            get {
+                return ResourceManager.GetString("LblStarCount", resourceCulture);
             }
         }
         

@@ -12,6 +12,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Telescope views now display the side of pier when available
 - Cancelling a sequence that is paused, will no longer throw a semaphore error
 
+### File name patterns and FITS keywords
+- Added `$$CAMERA$$` file pattern
+- Added `$$TELESCOPE$$` file pattern
+- Added `$$ROTATEANGLE$$` file pattern
+- Added `$$STARCOUNT$$` file pattern
+
 # Version 1.10
 
 ## New hardware support

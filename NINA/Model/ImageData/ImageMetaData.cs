@@ -214,15 +214,7 @@ namespace NINA.Model.ImageData {
     }
 
     public class TargetParameter {
-        private string name = string.Empty;
-
-        public string Name {
-            get => name;
-            set {
-                name = value;
-                name = name.Replace("\\", "-").Replace("/", "-");
-            }
-        }
+        public string Name { get; set; } = string.Empty;
 
         private Coordinates coordinates = null;
 

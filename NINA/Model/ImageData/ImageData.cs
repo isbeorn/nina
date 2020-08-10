@@ -120,7 +120,7 @@ namespace NINA.Model.ImageData {
             }
         }
 
-        private ImagePatterns GetImagePatterns() {
+        public ImagePatterns GetImagePatterns() {
             var p = new ImagePatterns();
             var metadata = this.MetaData;
             p.Set(ImagePatternKeys.Filter, metadata.FilterWheel.Filter);
@@ -185,6 +185,22 @@ namespace NINA.Model.ImageData {
 
             if (!string.IsNullOrEmpty(metadata.Camera.ReadoutModeName)) {
                 p.Set(ImagePatternKeys.ReadoutMode, metadata.Camera.ReadoutModeName);
+            }
+
+            if (!string.IsNullOrEmpty(metadata.Camera.Name)) {
+                p.Set(ImagePatternKeys.Camera, metadata.Camera.Name);
+            }
+
+            if (!string.IsNullOrEmpty(metadata.Telescope.Name)) {
+                p.Set(ImagePatternKeys.Telescope, metadata.Telescope.Name);
+            }
+
+            if (!double.IsNaN(metadata.Rotator.Position)) {
+                p.Set(ImagePatternKeys.RotatorAngle, metadata.Rotator.Position);
+            }
+
+            if (this.StarDetectionAnalysis.DetectedStars >= 0) {
+                p.Set(ImagePatternKeys.StarCount, this.StarDetectionAnalysis.DetectedStars);
             }
 
             return p;

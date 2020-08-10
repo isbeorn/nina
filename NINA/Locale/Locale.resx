@@ -3750,4 +3750,22 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblWest" xml:space="preserve">
     <value>West</value>
   </data>
+  <data name="LblDomeSyncTimeout" xml:space="preserve">
+    <value>Synchronization Timeout</value>
+  </data>
+  <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
+    <value>The maximum amount of time, in seconds, to wait for the Dome and Telescope to synchronize their positions</value>
+  </data>
+  <data name="LblC2A" xml:space="preserve">
+    <value>C2A</value>
+  </data>
+  <data name="LblCameraName" xml:space="preserve">
+    <value>Camera Name</value>
+  </data>
+  <data name="LblRotatorAngleDescription" xml:space="preserve">
+    <value>Angle of the rotator</value>
+  </data>
+  <data name="LblStarCount" xml:space="preserve">
+    <value>Star count</value>
+  </data>
 </root>
