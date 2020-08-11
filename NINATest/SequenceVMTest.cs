@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestFixture]
     public class SequenceVMTest {
         public TestContext TestContext { get; set; }
@@ -41,7 +42,7 @@ namespace NINATest {
         private Mock<IWeatherDataMediator> weatherDataMediatorMock;
         private Mock<IImagingMediator> imagingMediatorMock;
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock;
-        private Mock<IFlatDeviceMediator> _flatDeviceMediatorMock;
+        private Mock<IFlatDeviceMediator> flatDeviceMediatorMock;
         private FlatDeviceInfo _flatDevice;
         private CaptureSequenceList _dummyList;
         private SequenceVM _sut;
@@ -86,7 +87,7 @@ namespace NINATest {
             };
 
             _sut = new SequenceVM(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object,
-                filterWheelMediatorMock.Object, guiderMediatorMock.Object, rotatorMediatorMock.Object, _flatDeviceMediatorMock.Object,
+                filterWheelMediatorMock.Object, guiderMediatorMock.Object, rotatorMediatorMock.Object, flatDeviceMediatorMock.Object,
                 weatherDataMediatorMock.Object, imagingMediatorMock.Object, applicationStatusMediatorMock.Object);
         }
 

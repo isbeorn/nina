@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -122,7 +123,7 @@ namespace NINA.Model {
 
         public bool Set(string key, double value) {
             if (!double.IsNaN(value)) {
-                return this.Set(key, string.Format("{0:0.00}", value));
+                return this.Set(key, string.Format(CultureInfo.InvariantCulture, "{0:0.00}", value));
             }
             return false;
         }

@@ -19,6 +19,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -405,14 +406,14 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
             Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
@@ -505,14 +506,14 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
             Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
@@ -566,14 +567,14 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{new string('_', invalidChars.Length)}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
                 $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format(CultureInfo.InvariantCulture, "{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
             Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
