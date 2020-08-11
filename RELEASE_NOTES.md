@@ -6,6 +6,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 # Version 1.10 HF1
 
 - When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format
+- Relative Focusers can now be connected and will be simulated to behave like absolute focusers
 - Ability to inspect pixel area and pixel values in detail by holding right click
 - Replaced LZ4 library with a more optimized one for faster XISF compression
 - Log files now show correct operating system version
