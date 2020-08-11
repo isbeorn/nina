@@ -5,19 +5,24 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 1.10 HF1
 
-- When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format
-- Relative Focusers can now be connected and will be simulated to behave like absolute focusers
+## Features
 - Ability to inspect pixel area and pixel values in detail by holding right click
-- Replaced LZ4 library with a more optimized one for faster XISF compression
-- Log files now show correct operating system version
-- Telescope views now display the side of pier when available
-- Cancelling a sequence that is paused, will no longer throw a semaphore error
+- Relative Focusers can now be connected and will be simulated to behave like absolute focusers
+
+## Improvements
 - Canon CR3 image format is now supported (use FreeImage as your RAW converter)
 - Adding support for the EOS R5 and EOS R6
 - Added `$$CAMERA$$` file pattern
 - Added `$$TELESCOPE$$` file pattern
 - Added `$$ROTATEANGLE$$` file pattern
 - Added `$$STARCOUNT$$` file pattern
+- Telescope views now display the side of pier when available
+- Replaced LZ4 library with a more optimized one for faster XISF compression
+
+## Bugfixes
+- When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format
+- Log files now show correct operating system version
+- Cancelling a sequence that is paused, will no longer throw a semaphore error
 - Set white balance and gamma to 50 for ASI native driver on connection
 
 ## Included Camera SDK Versions:

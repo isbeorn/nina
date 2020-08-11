@@ -22,13 +22,40 @@
 <p>If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.<br />
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a></p>
 <h1 id="version-1.10-hf1">Version 1.10 HF1</h1>
+<h2 id="features">Features</h2>
+<ul>
+<li>Ability to inspect pixel area and pixel values in detail by holding right click</li>
+<li>Relative Focusers can now be connected and will be simulated to behave like absolute focusers</li>
+</ul>
+<h2 id="improvements">Improvements</h2>
+<ul>
+<li>Canon CR3 image format is now supported (use FreeImage as your RAW converter)</li>
+<li>Adding support for the EOS R5 and EOS R6</li>
+<li>Added <code>$$CAMERA$$</code> file pattern</li>
+<li>Added <code>$$TELESCOPE$$</code> file pattern</li>
+<li>Added <code>$$ROTATEANGLE$$</code> file pattern</li>
+<li>Added <code>$$STARCOUNT$$</code> file pattern</li>
+<li>Telescope views now display the side of pier when available</li>
+<li>Replaced LZ4 library with a more optimized one for faster XISF compression</li>
+</ul>
+<h2 id="bugfixes">Bugfixes</h2>
 <ul>
 <li>When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format</li>
-<li>Ability to inspect pixel area and pixel values in detail by holding right click</li>
-<li>Replaced LZ4 library with a more optimized one for faster XISF compression</li>
 <li>Log files now show correct operating system version</li>
-<li>Telescope views now display the side of pier when available</li>
 <li>Cancelling a sequence that is paused, will no longer throw a semaphore error</li>
+<li>Set white balance and gamma to 50 for ASI native driver on connection</li>
+</ul>
+<h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
+<ul>
+<li><strong>Altair Astro:</strong> 46.16909.2020.404</li>
+<li><strong>Atik:</strong> 2020.6.18.0</li>
+<li><strong>Canon:</strong> 13.12.31</li>
+<li><strong>FLI:</strong> 1.104.0.0</li>
+<li><strong>Nikon:</strong> 1.3.1.3001</li>
+<li><strong>Omegon:</strong> 39.15325.2019.810</li>
+<li><strong>QHY:</strong> 20.7.26.1</li>
+<li><strong>ToupTek:</strong> 46.17309.2020.616</li>
+<li><strong>ZWO:</strong> 1.15.6.17</li>
 </ul>
 <h1 id="version-1.10">Version 1.10</h1>
 <h2 id="new-hardware-support">New hardware support</h2>
@@ -286,7 +313,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 <p>These items helped a lot during development and testing.<br />
 Thank you for your support!</p>
-<h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
+<h2 id="included-camera-sdk-versions-1">Included Camera SDK Versions:</h2>
 <ul>
 <li><strong>Altair Astro:</strong> 46.16909.2020.404</li>
 <li><strong>Atik:</strong> 2020.6.18.0</li>
@@ -299,7 +326,7 @@ Thank you for your support!</p>
 <li><strong>ZWO:</strong> 1.15.6.17</li>
 </ul>
 <h1 id="version-1.9">Version 1.9</h1>
-<h2 id="features">Features</h2>
+<h2 id="features-1">Features</h2>
 <h3 id="camera-control">Camera Control</h3>
 <ul>
 <li>Native support for Finger Lakes Instrumentation ProLine/MicroLine cameras and color filter wheels</li>
@@ -449,7 +476,7 @@ Thank you for your support!</p>
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes">Bugfixes</h2>
+<h2 id="bugfixes-1">Bugfixes</h2>
 <ul>
 <li>Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur</li>
 <li>Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming</li>
@@ -467,7 +494,7 @@ Thank you for your support!</p>
 <li>Some Sky Surveys did not work in some locales due to decimal pointer settings</li>
 <li>Fixed race condition when using DCRaw when the previous temp image was not finished processed and the new image tried to replace the previous temp image</li>
 </ul>
-<h2 id="improvements">Improvements</h2>
+<h2 id="improvements-1">Improvements</h2>
 <ul>
 <li>When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.</li>
 <li>N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.</li>
@@ -491,7 +518,7 @@ Thank you for your support!</p>
 <li>The staff at <a href="https://cloudbreakoptics.com/">Cloud Break Optics</a> and <a href="http://flicamera.com/">Finger Lakes Instrumentation</a> for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.</li>
 <li>Filippo Bradaschia from <a href="https://www.primalucelab.com/">PrimaLuceLab</a> for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager</li>
 </ul>
-<h2 id="included-camera-sdk-versions-1">Included Camera SDK Versions:</h2>
+<h2 id="included-camera-sdk-versions-2">Included Camera SDK Versions:</h2>
 <ul>
 <li>Altair: 46.17427.2020.704</li>
 <li>Atik: 8.7.3.5</li>
@@ -508,7 +535,7 @@ Thank you for your support!</p>
 <li>Profiles where always saved after a sequence exposure, which slows down the image saving process. During sequence capture the profile saving is disabled now.</li>
 </ul>
 <h1 id="version-1.8">Version 1.8</h1>
-<h2 id="features-1">Features</h2>
+<h2 id="features-2">Features</h2>
 <h3 id="sequence">Sequence</h3>
 <ul>
 <li>Enable/Disable sequence entries</li>
@@ -557,7 +584,7 @@ the background itself will be moved like in an orrery</li>
 <li>Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.</li>
 <li>Additionally the changelog for the new version will now be displayed prior to updating, too.</li>
 </ul>
-<h2 id="bugfixes-1">Bugfixes</h2>
+<h2 id="bugfixes-2">Bugfixes</h2>
 <ul>
 <li>Corrected Max Binning level for ASI Cameras</li>
 <li>Focuser move command fixed where lots of move commands where sent by accident</li>
@@ -575,7 +602,7 @@ the background itself will be moved like in an orrery</li>
 <li>Fixed Platesolve result reporting wrong Dec Error.</li>
 <li>Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.</li>
 </ul>
-<h2 id="improvements-1">Improvements</h2>
+<h2 id="improvements-2">Improvements</h2>
 <ul>
 <li>Clear button for PHD2 Graph</li>
 <li>Hide camera cooler controls when not available for current camera model</li>
@@ -645,7 +672,7 @@ the background itself will be moved like in an orrery</li>
 Thank you for your support!</p>
 <hr />
 <h1 id="version-1.7">Version 1.7</h1>
-<h2 id="features-2">Features</h2>
+<h2 id="features-3">Features</h2>
 <h3 id="framing-assistant-1">Framing Assistant</h3>
 <ul>
 <li>Mosaic planning for framing assistant</li>
@@ -678,12 +705,12 @@ Thank you for your support!</p>
 <li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
 <li>Serial Relay (via USB) interaction for Nikon Bulb</li>
 </ul>
-<h2 id="bugfixes-2">Bugfixes</h2>
+<h2 id="bugfixes-3">Bugfixes</h2>
 <ul>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>
 </ul>
-<h2 id="improvements-2">Improvements</h2>
+<h2 id="improvements-3">Improvements</h2>
 <ul>
 <li>Guider is also connected when pushing &quot;Connect All&quot;</li>
 <li>Changed FilterWheel UI for switching filters</li>
