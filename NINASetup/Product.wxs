@@ -488,9 +488,6 @@
       <Component Win64="$(var.Win64)" Id="K4os.Compression.LZ4.dll" Guid="af75b12d-ae2f-48c8-8b15-55a5d7344aa0">
         <File Id="K4os.Compression.LZ4.dll" Name="K4os.Compression.LZ4.dll" Source="$(var.NINA_TargetDir)K4os.Compression.LZ4.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="Ninject.dll" Guid="c2d44b0a-a283-4cc3-8fd5-e7a744975300">
-        <File Id="Ninject.dll" Name="Ninject.dll" Source="$(var.NINA_TargetDir)Ninject.dll" />
-      </Component>
     </ComponentGroup>
   </Fragment>
   <!--<Fragment>
