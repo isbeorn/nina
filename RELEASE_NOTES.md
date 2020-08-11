@@ -18,6 +18,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added `$$TELESCOPE$$` file pattern
 - Added `$$ROTATEANGLE$$` file pattern
 - Added `$$STARCOUNT$$` file pattern
+- Set white balance and gamma to 50 for ASI native driver on connection
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 46.16909.2020.404
