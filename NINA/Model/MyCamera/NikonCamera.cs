@@ -195,7 +195,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug("\t CanStart: " + canStart.ToString());
 
                 if (info.ulID == eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed && !canSet) {
-                    throw new NikonException("Cannot set shutterspeeds. Please make sure the camera dial is set to a position where bublb mode is possible and the mirror lock is turned off");
+                    throw new NikonException("Cannot set shutterspeeds. Please make sure the camera dial is set to a position where bulb mode is possible and the mirror lock is turned off");
                 }
             }
         }
