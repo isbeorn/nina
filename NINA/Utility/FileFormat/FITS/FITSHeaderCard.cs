@@ -44,7 +44,7 @@ namespace NINA.Utility.FileFormat.FITS {
         public FITSHeaderCard(string key, bool value, string comment) {
             this.Key = key;
             this.Value = value ? "T" : "F";
-            if (comment.Length > 45) {
+            if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
             }
             this.Comment = comment;
@@ -53,7 +53,7 @@ namespace NINA.Utility.FileFormat.FITS {
         public FITSHeaderCard(string key, double value, string comment) {
             this.Key = key;
             this.Value = (value.ToString("0.0##############", CultureInfo.InvariantCulture));
-            if (comment.Length > 45) {
+            if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
             }
             this.Comment = comment;
@@ -62,7 +62,7 @@ namespace NINA.Utility.FileFormat.FITS {
         public FITSHeaderCard(string key, DateTime value, string comment) {
             this.Key = key;
             this.Value = @"'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'";
-            if (comment.Length > 45) {
+            if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
             }
             this.Comment = comment;
@@ -71,7 +71,7 @@ namespace NINA.Utility.FileFormat.FITS {
         public FITSHeaderCard(string key, int value, string comment) {
             this.Key = key;
             this.Value = value.ToString(CultureInfo.InvariantCulture);
-            if (comment.Length > 45) {
+            if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
             }
             this.Comment = comment;
