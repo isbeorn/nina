@@ -65,6 +65,7 @@ namespace NINA.ViewModel {
         }
 
         private void ResetFilters(object obj) {
+            SelectedDate = DateTime.UtcNow;
             ResetRiseAndSetTimes();
 
             SearchObjectName = string.Empty;
@@ -101,7 +102,6 @@ namespace NINA.ViewModel {
         }
 
         public void ResetRiseAndSetTimes() {
-            SelectedDate = DateTime.Now;
             MoonPhase = Astrometry.MoonPhase.Unknown;
             Illumination = null;
             MoonRiseAndSet = null;
@@ -286,10 +286,10 @@ namespace NINA.ViewModel {
         public static DateTime GetReferenceDate(DateTime reference) {
             DateTime d = reference;
             if (d.Hour > 12) {
-                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0);
+                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0, DateTimeKind.Utc);
             } else {
                 var tmp = d.AddDays(-1);
-                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0);
+                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0, DateTimeKind.Utc);
             }
             return d;
         }
@@ -328,7 +328,7 @@ namespace NINA.ViewModel {
 
                     var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                     var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
-
+                    ResetRiseAndSetTimes();
                     DateTime d = GetReferenceDate(SelectedDate);
 
                     Parallel.ForEach(result, (obj) => {
