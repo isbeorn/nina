@@ -53,7 +53,6 @@ namespace NINA.ViewModel {
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 _nightDuration = null; //Clear cache
-                SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
             };
@@ -66,7 +65,7 @@ namespace NINA.ViewModel {
         }
 
         private void ResetFilters(object obj) {
-            SelectedDate = DateTime.Now;
+            ResetRiseAndSetTimes();
 
             SearchObjectName = string.Empty;
 
@@ -101,7 +100,8 @@ namespace NINA.ViewModel {
             OrderByDirection = SkyAtlasOrderByDirectionEnum.DESC;
         }
 
-        private void ResetRiseAndSetTimes() {
+        public void ResetRiseAndSetTimes() {
+            SelectedDate = DateTime.Now;
             MoonPhase = Astrometry.MoonPhase.Unknown;
             Illumination = null;
             MoonRiseAndSet = null;
@@ -109,6 +109,10 @@ namespace NINA.ViewModel {
             TwilightRiseAndSet = null;
             _nightDuration = null;
             _twilightDuration = null;
+
+            InitializeElevationFilters();
+            RaisePropertyChanged(nameof(NightDuration));
+            RaisePropertyChanged(nameof(TwilightDuration));
         }
 
         private CancellationTokenSource _searchTokenSource;
@@ -276,8 +280,6 @@ namespace NINA.ViewModel {
             set {
                 _selectedDate = value;
                 RaisePropertyChanged();
-                InitializeElevationFilters();
-                ResetRiseAndSetTimes();
             }
         }
 

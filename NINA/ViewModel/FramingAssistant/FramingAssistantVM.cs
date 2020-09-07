@@ -415,6 +415,9 @@ namespace NINA.ViewModel.FramingAssistant {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             NegativeDec = DSO?.Coordinates?.Dec < 0;
+
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.SkyAtlasVM.ResetRiseAndSetTimes();
         }
 
         private int _downloadProgressValue;

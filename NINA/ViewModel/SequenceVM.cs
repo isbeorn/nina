@@ -1535,6 +1535,8 @@ namespace NINA.ViewModel {
 
             Sequence.PropertyChanged += _sequence_PropertyChanged;
 
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.SkyAtlasVM.ResetRiseAndSetTimes();
             return true;
         }
 
