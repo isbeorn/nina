@@ -255,7 +255,7 @@ namespace NINA.Utility.ImageAnalysis {
                         Debug.Print("HFR Standard Dev: " + s);
                         //todo change
                         AverageHFR = m;
-                        HFRStdDev = s;
+                        HFRStdDev = double.IsNaN(s) ? 0 : s;
                         DetectedStars = _starlist.Count;
                     }
 
