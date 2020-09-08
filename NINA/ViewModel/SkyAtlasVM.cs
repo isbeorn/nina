@@ -65,7 +65,7 @@ namespace NINA.ViewModel {
         }
 
         private void ResetFilters(object obj) {
-            SelectedDate = DateTime.UtcNow;
+            SelectedDate = DateTime.Now;
             ResetRiseAndSetTimes();
 
             SearchObjectName = string.Empty;
@@ -286,10 +286,10 @@ namespace NINA.ViewModel {
         public static DateTime GetReferenceDate(DateTime reference) {
             DateTime d = reference;
             if (d.Hour > 12) {
-                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0, DateTimeKind.Utc);
+                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0, reference.Kind);
             } else {
                 var tmp = d.AddDays(-1);
-                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0, DateTimeKind.Utc);
+                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0, reference.Kind);
             }
             return d;
         }
