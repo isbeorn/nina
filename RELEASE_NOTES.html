@@ -44,6 +44,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Log files now show correct operating system version</li>
 <li>Cancelling a sequence that is paused, will no longer throw a semaphore error</li>
 <li>Set white balance and gamma to 50 for ASI native driver on connection</li>
+<li>FITS header parsing can now deal with keywords that don't have any comment at all</li>
+<li>Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run</li>
 </ul>
 <h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
 <ul>
