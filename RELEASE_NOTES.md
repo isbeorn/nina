@@ -24,6 +24,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Log files now show correct operating system version
 - Cancelling a sequence that is paused, will no longer throw a semaphore error
 - Set white balance and gamma to 50 for ASI native driver on connection
+- FITS header parsing can now deal with keywords that don't have any comment at all
+- Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 46.16909.2020.404
