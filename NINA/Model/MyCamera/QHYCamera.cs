@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Model.ImageData;
+using Nito.AsyncEx;
 
 namespace NINA.Model.MyCamera {
 
@@ -38,6 +39,9 @@ namespace NINA.Model.MyCamera {
         private CancellationTokenSource coolerWorkerCts;
         private LibQHYCCD.QHYCCD_CAMERA_INFO Info;
         private IProfileService profileService;
+
+        private CancellationTokenSource DownloadExposureTaskCTS;
+        private Task<IExposureData> DownloadExposureTask;
 
         public QHYCamera(uint cameraIdx, IProfileService profileService) {
             this.profileService = profileService;
@@ -838,15 +842,14 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
-            using (token.Register(() => AbortExposure())) {
-                /* Wait for exposure to finish */
-                while (LibQHYCCD.GetQHYCCDExposureRemaining(CameraP) > 0) {
-                    await Task.Delay(100, token);
+            using (token.Register(() => { AbortExposure(); DownloadExposureTaskCTS.Cancel(); })) {
+                if (DownloadExposureTask != null) {
+                    await DownloadExposureTask;
                 }
             }
         }
 
-        public Task<IExposureData> DownloadExposure(CancellationToken ct) {
+        private Task<IExposureData> StartDownloadExposure(CancellationToken ct) {
             return Task.Run<IExposureData>(async () => {
                 uint width = 0;
                 uint height = 0;
@@ -899,6 +902,12 @@ namespace NINA.Model.MyCamera {
                     isBayered: SensorType != SensorType.Monochrome && (BinX == 1 && BinY == 1),
                     metaData: new ImageMetaData());
             }, ct);
+        }
+
+        public async Task<IExposureData> DownloadExposure(CancellationToken ct) {
+            using (ct.Register(() => DownloadExposureTaskCTS.Cancel())) {
+                return await DownloadExposureTask.WaitAsync(ct);
+            }
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
@@ -1052,6 +1061,10 @@ namespace NINA.Model.MyCamera {
             }
 
             CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.EXPOSING.ToString();
+
+            DownloadExposureTaskCTS?.Dispose();
+            DownloadExposureTaskCTS = new CancellationTokenSource();
+            DownloadExposureTask = StartDownloadExposure(DownloadExposureTaskCTS.Token);
         }
 
         private void ReconnectForLiveView() {
