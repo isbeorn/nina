@@ -34,7 +34,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **FLI:** 1.104.0.0
 - **Nikon:** 1.3.1.3001
 - **Omegon:** 39.15325.2019.810
-- **QHY:** 20.7.26.1
+- **QHY:** 20.8.26.3
 - **ToupTek:** 46.17309.2020.616
 - **ZWO:** 1.15.6.17
 
