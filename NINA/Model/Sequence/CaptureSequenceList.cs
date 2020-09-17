@@ -164,7 +164,7 @@ namespace NINA.Model {
             if (l.ActiveSequence == null && l.Count > 0) {
                 l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
             }
-            l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.UtcNow), latitude, longitude);
+            l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
         }
 
         public static void SaveSequenceSet(Collection<CaptureSequenceList> sequenceSet, string path) {
