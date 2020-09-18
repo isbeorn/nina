@@ -28,7 +28,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run
 
 ## Included Camera SDK Versions:
-- **Altair Astro:** 46.16909.2020.404
+- **Altair Astro:** 47.17497.2020.722
 - **Atik:** 2020.6.18.0
 - **Canon:** 13.12.31
 - **FLI:** 1.104.0.0
