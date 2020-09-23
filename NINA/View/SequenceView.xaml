@@ -31,7 +31,7 @@
             <RowDefinition />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Grid Margin="5,0,0,0" IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+        <Grid Margin="5,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
@@ -41,6 +41,7 @@
                 MaxHeight="65"
                 Margin="-5,0,0,0"
                 BorderBrush="Transparent"
+                IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
                 ItemsSource="{Binding Targets}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -187,8 +188,7 @@
                 <Button
                     Grid.Column="3"
                     Width="35"
-                    Command="{Binding SaveTargetSetCommand}"
-                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    Command="{Binding SaveTargetSetCommand}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
                             <TextBlock Text="{ns:Loc LblTooltipTargetSaveSet}" />

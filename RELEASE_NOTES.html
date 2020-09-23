@@ -37,6 +37,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Added <code>$$STARCOUNT$$</code> file pattern</li>
 <li>Telescope views now display the side of pier when available</li>
 <li>Replaced LZ4 library with a more optimized one for faster XISF compression</li>
+<li>Save target set in sequence screen is now enabled also when sequence is running</li>
 </ul>
 <h2 id="bugfixes">Bugfixes</h2>
 <ul>
@@ -46,6 +47,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Set white balance and gamma to 50 for ASI native driver on connection</li>
 <li>FITS header parsing can now deal with keywords that don't have any comment at all</li>
 <li>Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run</li>
+<li>Fix issue for QHY cameras to dither too early when camera was still exposing</li>
 </ul>
 <h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
 <ul>

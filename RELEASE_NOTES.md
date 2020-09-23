@@ -18,6 +18,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added `$$STARCOUNT$$` file pattern
 - Telescope views now display the side of pier when available
 - Replaced LZ4 library with a more optimized one for faster XISF compression
+- Save target set in sequence screen is now enabled also when sequence is running
 
 ## Bugfixes
 - When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format
@@ -26,6 +27,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Set white balance and gamma to 50 for ASI native driver on connection
 - FITS header parsing can now deal with keywords that don't have any comment at all
 - Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run
+- Fix issue for QHY cameras to dither too early when camera was still exposing
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 47.17497.2020.722
