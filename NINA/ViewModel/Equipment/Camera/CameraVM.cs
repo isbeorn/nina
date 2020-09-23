@@ -642,7 +642,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                 }
                 this.exposureTime = sequence.ExposureTime;
                 double exposureTime = sequence.ExposureTime;
-                Logger.Debug($"Starting Exposure - Exposure Time: {exposureTime}s; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX};");
+                Logger.Info($"Starting Exposure - Exposure Time: {exposureTime}s; Filter: {sequence.FilterType?.Name}; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX}x{CameraInfo.BinY};");
 
                 Cam.StartExposure(sequence);
 

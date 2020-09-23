@@ -19,6 +19,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Telescope views now display the side of pier when available
 - Replaced LZ4 library with a more optimized one for faster XISF compression
 - Save target set in sequence screen is now enabled also when sequence is running
+- Added info logs for start exposure, download location and star detection
 
 ## Bugfixes
 - When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format

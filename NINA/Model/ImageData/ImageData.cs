@@ -80,6 +80,7 @@ namespace NINA.Model.ImageData {
             try {
                 using (MyStopWatch.Measure()) {
                     actualPath = await SaveToDiskAsync(fileSaveInfo, cancelToken, false);
+                    Logger.Debug($"Saving temporary image at {actualPath}");
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -112,6 +113,9 @@ namespace NINA.Model.ImageData {
                 }
 
                 File.Move(file, newFileName);
+
+                Logger.Info($"Saving image at {newFileName}");
+
                 return newFileName;
             } catch (Exception ex) {
                 Logger.Error(ex);
