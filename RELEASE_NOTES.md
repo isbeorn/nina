@@ -31,7 +31,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fix issue for QHY cameras to dither too early when camera was still exposing
 
 ## Included Camera SDK Versions:
-- **Altair Astro:** 47.17497.2020.722
+- **Altair Astro:** 48.17729.2020.922
 - **Atik:** 2020.6.18.0
 - **Canon:** 13.12.31
 - **FLI:** 1.104.0.0

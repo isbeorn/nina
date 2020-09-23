@@ -15,7 +15,7 @@ using NINA.Utility;
 using System.IO;
 
 /*
-    Versin: 46.17427.2020.0704
+    Versin: 48.17729.2020.0922
 
     For Microsoft dotNET Framework & dotNet Core
 
@@ -47,7 +47,6 @@ namespace Altair {
             FLAG_USB30_OVER_USB20 = 0x00000100,   /* usb3.0 camera connected to usb2.0 port */
             FLAG_ST4 = 0x00000200,   /* ST4 */
             FLAG_GETTEMPERATURE = 0x00000400,   /* support to get the temperature of the sensor */
-            FLAG_PUTTEMPERATURE = 0x00000800,   /* support to put the target temperature of the sensor */
             FLAG_RAW10 = 0x00001000,   /* pixel format, RAW 10bits */
             FLAG_RAW12 = 0x00002000,   /* pixel format, RAW 12bits */
             FLAG_RAW14 = 0x00004000,   /* pixel format, RAW 14bits */
@@ -89,7 +88,9 @@ namespace Altair {
             FLAG_FOCUSMOTOR = 0x0000002000000000,  /* support focus motor */
             FLAG_PRECISE_FRAMERATE = 0x0000004000000000,  /* support precise framerate & bandwidth, see OPTION_PRECISE_FRAMERATE & OPTION_BANDWIDTH */
             FLAG_HEAT = 0x0000008000000000,  /* heat to prevent fogging up */
-            FLAG_LOW_NOISE = 0x0000010000000000   /* low noise mode */
+            FLAG_LOW_NOISE = 0x0000010000000000,  /* low noise mode */
+            FLAG_LEVELRANGE_HARDWARE = 0x0000020000000000,  /* hardware level range, put(get)_LevelRangeV2 */
+            FLAG_EVENT_HARDWARE = 0x0000040000000000   /* hardware event, such as exposure start & stop */
         };
 
         public enum eEVENT : uint {
@@ -104,12 +105,16 @@ namespace Altair {
             EVENT_FFC = 0x0009, /* flat field correction status changed */
             EVENT_DFC = 0x000a, /* dark field correction status changed */
             EVENT_ROI = 0x000b, /* roi changed */
+            EVENT_LEVELRANGE = 0x000c, /* level range changed */
             EVENT_ERROR = 0x0080, /* generic error */
             EVENT_DISCONNECTED = 0x0081, /* camera disconnected */
             EVENT_NOFRAMETIMEOUT = 0x0082, /* no frame timeout error */
             EVENT_AFFEEDBACK = 0x0083, /* auto focus feedback information */
             EVENT_AFPOSITION = 0x0084, /* auto focus sensor board positon */
             EVENT_NOPACKETTIMEOUT = 0x0085, /* no packet timeout */
+            EVENT_EXPO_START = 0x4000, /* exposure start */
+            EVENT_EXPO_STOP = 0x4001, /* exposure stop */
+            EVENT_TRIGGER_ALLOW = 0x4002, /* next trigger allow */
             EVENT_FACTORY = 0x8001  /* restore factory settings */
         };
 
@@ -197,7 +202,7 @@ namespace Altair {
                                                        default: 1 (win), 0 (linux/macos)
                                                    */
             OPTION_AFPOSITION = 0x24,       /* auto focus sensor board positon */
-            OPTION_AFMODE = 0x25,       /* auto focus mode (0:manul focus; 1:auto focus; 2:onepush focus; 3:conjugate calibration) */
+            OPTION_AFMODE = 0x25,       /* auto focus mode (0:manul focus; 1:auto focus; 2:once focus; 3:conjugate calibration) */
             OPTION_AFZONE = 0x26,       /* auto focus zone */
             OPTION_AFFEEDBACK = 0x27,       /* auto focus information feedback; 0:unknown; 1:focused; 2:focusing; 3:defocus; 4:up; 5:down */
             OPTION_TESTPATTERN = 0x28,       /* test pattern:
@@ -318,6 +323,15 @@ namespace Altair {
             IOCONTROLTYPE_SET_UART_BAUDRATE = 0x2c,
             IOCONTROLTYPE_GET_UART_LINEMODE = 0x2d, /* line mode: 0-> TX(GPIO_0)/RX(GPIO_1); 1-> TX(GPIO_1)/RX(GPIO_0) */
             IOCONTROLTYPE_SET_UART_LINEMODE = 0x2e
+        };
+
+        /* hardware level range mode */
+
+        public enum eLevelRange : ushort {
+            LEVELRANGE_MANUAL = 0x0000,    /* manual */
+            LEVELRANGE_ONCE = 0x0001,    /* once */
+            LEVELRANGE_CONTINUE = 0x0002,    /* continue */
+            LEVELRANGE_ROI = 0xffff     /* update roi rect only */
         };
 
         public const int TEC_TARGET_MIN = -300;
@@ -689,6 +703,12 @@ namespace Altair {
         private static extern int Altaircam_get_LevelRange(SafeCamHandle h, [Out] ushort[] aLow, [Out] ushort[] aHigh);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
+        private static extern int Altaircam_put_LevelRangeV2(SafeCamHandle h, ushort mode, ref RECT roiRect, [In] ushort[] aLow, [In] ushort[] aHigh);
+
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
+        private static extern int Altaircam_get_LevelRangeV2(SafeCamHandle h, out ushort mode, out RECT pRoiRect, [Out] ushort[] aLow, [Out] ushort[] aHigh);
+
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Altaircam_put_Hue(SafeCamHandle h, int Hue);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
@@ -902,7 +922,7 @@ namespace Altair {
         private static extern int Altaircam_get_VignetMidPointInt(SafeCamHandle h, out int nMidPoint);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
-        private static extern int Altaircam_AwbOnePush(SafeCamHandle h, IntPtr fnTTProc, IntPtr pTTCtx);
+        private static extern int Altaircam_AwbOnce(SafeCamHandle h, IntPtr fnTTProc, IntPtr pTTCtx);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Altaircam_AwbInit(SafeCamHandle h, IntPtr fnWBProc, IntPtr pWBCtx);
@@ -914,7 +934,7 @@ namespace Altair {
         private static extern int Altaircam_GetHistogram(SafeCamHandle h, HISTOGRAM_CALLBACK fnHistogramProc, IntPtr pHistogramCtx);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
-        private static extern int Altaircam_AbbOnePush(SafeCamHandle h, IntPtr fnBBProc, IntPtr pBBCtx);
+        private static extern int Altaircam_AbbOnce(SafeCamHandle h, IntPtr fnBBProc, IntPtr pBBCtx);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Altaircam_put_LEDState(SafeCamHandle h, ushort iLed, ushort iState, ushort iPeriod);
@@ -962,10 +982,10 @@ namespace Altair {
         private static extern int Altaircam_get_FrameRate(SafeCamHandle h, out uint nFrame, out uint nTime, out uint nTotalFrame);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
-        private static extern int Altaircam_FfcOnePush(SafeCamHandle h);
+        private static extern int Altaircam_FfcOnce(SafeCamHandle h);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
-        private static extern int Altaircam_DfcOnePush(SafeCamHandle h);
+        private static extern int Altaircam_DfcOnce(SafeCamHandle h);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Altaircam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
@@ -1113,7 +1133,7 @@ namespace Altair {
             Dispose();
         }
 
-        /* get the version of this dll/so, which is: 46.17427.2020.0704 */
+        /* get the version of this dll/so, which is: 48.17729.2020.0922 */
 
         public static string Version() {
             return Marshal.PtrToStringUni(Altaircam_Version());
@@ -1829,6 +1849,36 @@ namespace Altair {
             return (Altaircam_get_LevelRange(_handle, aLow, aHigh) >= 0);
         }
 
+        public bool put_LevelRangeV2(ushort mode, int roiX, int roiY, int roiWidth, int roiHeight, ushort[] aLow, ushort[] aHigh) {
+            if (aLow.Length != 4 || aHigh.Length != 4)
+                return false;
+            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
+                return false;
+            RECT rc = new RECT();
+            rc.left = roiX;
+            rc.right = roiX + roiWidth;
+            rc.top = roiY;
+            rc.bottom = roiY + roiHeight;
+            return (Altaircam_put_LevelRangeV2(_handle, mode, ref rc, aLow, aHigh) >= 0);
+        }
+
+        public bool get_LevelRangeV2(out ushort mode, out int roiX, out int roiY, out int roiWidth, out int roiHeight, ushort[] aLow, ushort[] aHigh) {
+            mode = 0;
+            roiX = roiY = roiWidth = roiHeight = 0;
+            if (aLow.Length != 4 || aHigh.Length != 4)
+                return false;
+            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
+                return false;
+            RECT rc = new RECT();
+            if (Altaircam_get_LevelRangeV2(_handle, out mode, out rc, aLow, aHigh) < 0)
+                return false;
+            roiX = rc.left;
+            roiY = rc.top;
+            roiWidth = rc.right - rc.left;
+            roiHeight = rc.bottom - rc.top;
+            return true;
+        }
+
         public bool put_Hue(int Hue) {
             if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
                 return false;
@@ -2362,12 +2412,17 @@ namespace Altair {
             return (Altaircam_LevelRangeAuto(_handle) >= 0);
         }
 
-        /* Auto White Balance, Temp/Tint Mode */
+        /* Auto White Balance "Once", Temp/Tint Mode */
 
-        public bool AwbOnePush() {
+        public bool AwbOnce() {
             if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
                 return false;
-            return (Altaircam_AwbOnePush(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
+            return (Altaircam_AwbOnce(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
+        }
+
+        [Obsolete("Use AwbOnce")]
+        public bool AwbOnePush() {
+            return AwbOnce();
         }
 
         /* Auto White Balance, RGB Gain Mode */
@@ -2375,25 +2430,40 @@ namespace Altair {
         public bool AwbInit() {
             if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
                 return false;
-            return (Altaircam_AwbOnePush(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
+            return (Altaircam_AwbOnce(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
         }
 
+        public bool AbbOnce() {
+            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
+                return false;
+            return (Altaircam_AbbOnce(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
+        }
+
+        [Obsolete("Use AbbOnce")]
         public bool AbbOnePush() {
-            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
-                return false;
-            return (Altaircam_AbbOnePush(_handle, IntPtr.Zero, IntPtr.Zero) >= 0);
+            return AbbOnce();
         }
 
+        public bool FfcOnce() {
+            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
+                return false;
+            return (Altaircam_FfcOnce(_handle) >= 0);
+        }
+
+        [Obsolete("Use FfcOnce")]
         public bool FfcOnePush() {
-            if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
-                return false;
-            return (Altaircam_FfcOnePush(_handle) >= 0);
+            return FfcOnce();
         }
 
-        public bool DfcOnePush() {
+        public bool DfcOnce() {
             if (_handle == null || _handle.IsInvalid || _handle.IsClosed)
                 return false;
-            return (Altaircam_DfcOnePush(_handle) >= 0);
+            return (Altaircam_DfcOnce(_handle) >= 0);
+        }
+
+        [Obsolete("Use DfcOnce")]
+        public bool DfcOnePush() {
+            return DfcOnce();
         }
 
         public bool FfcExport(string filepath) {
