@@ -32,7 +32,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 48.17729.2020.922
-- **Atik:** 2020.6.18.0
+- **Atik:** 2020.08.3.642
 - **Canon:** 13.12.31
 - **FLI:** 1.104.0.0
 - **Nikon:** 1.3.1.3001
