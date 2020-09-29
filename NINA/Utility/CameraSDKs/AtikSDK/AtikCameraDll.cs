@@ -103,8 +103,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        [Obsolete]
-        private static bool Shutdown() {
+        public static bool Shutdown() {
             return ArtemisShutdown();
         }
 

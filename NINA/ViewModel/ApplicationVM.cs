@@ -36,7 +36,9 @@ using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     internal class ApplicationVM : BaseVM {
+
         public ApplicationVM() : this(new ProfileService()) {
         }
 
@@ -276,6 +278,10 @@ namespace NINA.ViewModel {
                     return;
                 }
             }
+
+            try {
+                Utility.AtikSDK.AtikCameraDll.Shutdown();
+            } catch (Exception) { }
 
             Application.Current.Shutdown();
         }
