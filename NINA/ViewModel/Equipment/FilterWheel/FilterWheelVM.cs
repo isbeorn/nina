@@ -69,6 +69,10 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
             try {
                 if (FW?.Connected == true) {
                     var prevFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == FilterWheelInfo.SelectedFilter?.Position).FirstOrDefault();
+                    if (inputFilter == null) {
+                        return prevFilter;
+                    }
+
                     var filter = FW.Filters.Where((x) => x.Position == inputFilter.Position).FirstOrDefault();
                     if (filter == null) {
                         Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (inputFilter.Position + 1)));
