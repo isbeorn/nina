@@ -219,6 +219,22 @@
                 <Button
                     Grid.Column="5"
                     Width="35"
+                    Command="{Binding ImportTargetsCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipImportTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="10"
+                        Data="{StaticResource DownloadSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="5"
+                    Width="35"
                     Command="{Binding AddTargetCommand}"
                     IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.ToolTip>

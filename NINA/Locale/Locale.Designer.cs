@@ -1307,6 +1307,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C2A.
+        /// </summary>
+        internal static string LblC2A {
+            get {
+                return ResourceManager.GetString("LblC2A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cache.
         /// </summary>
         internal static string LblCache {
@@ -3486,6 +3495,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Synchronization Timeout.
+        /// </summary>
+        internal static string LblDomeSyncTimeout {
+            get {
+                return ResourceManager.GetString("LblDomeSyncTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum amount of time, in seconds, to wait for the Dome and Telescope to synchronize their positions.
+        /// </summary>
+        internal static string LblDomeSyncTimeoutTooltip {
+            get {
+                return ResourceManager.GetString("LblDomeSyncTimeoutTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         internal static string LblDownload {
@@ -5334,6 +5361,15 @@ namespace NINA.Locale {
         internal static string LblImportFromFilterWheel {
             get {
                 return ResourceManager.GetString("LblImportFromFilterWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Targets from external source.
+        /// </summary>
+        internal static string LblImportTargets {
+            get {
+                return ResourceManager.GetString("LblImportTargets", resourceCulture);
             }
         }
         
@@ -9947,6 +9983,15 @@ namespace NINA.Locale {
         internal static string LblUnknownEpochWarning {
             get {
                 return ResourceManager.GetString("LblUnknownEpochWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown format to import targets.
+        /// </summary>
+        internal static string LblUnknownImportFormat {
+            get {
+                return ResourceManager.GetString("LblUnknownImportFormat", resourceCulture);
             }
         }
         
