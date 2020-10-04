@@ -353,6 +353,42 @@
                             <DataTemplate x:Key="Default">
                                 <Grid />
                             </DataTemplate>
+                            <DataTemplate x:Key="Altair">
+                                <StackPanel Orientation="Vertical">
+                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighGain, Converter={StaticResource VisibilityConverter}}">
+                                        <TextBlock
+                                            MinWidth="100"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblHighGainMode}" />
+                                        <CheckBox
+                                            Width="200"
+                                            HorizontalAlignment="Right"
+                                            IsChecked="{Binding HighGainMode}">
+                                            <CheckBox.ToolTip>
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblHighGainModeTooltip}" />
+                                                </ToolTip>
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </DockPanel>
+                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasLowNoiseMode, Converter={StaticResource VisibilityConverter}}">
+                                        <TextBlock
+                                            MinWidth="100"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblUltraMode}" />
+                                        <CheckBox
+                                            Width="200"
+                                            HorizontalAlignment="Right"
+                                            IsChecked="{Binding LowNoiseMode}">
+                                            <CheckBox.ToolTip>
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblUltraModeTooltip}" />
+                                                </ToolTip>
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </DockPanel>
+                                </StackPanel>
+                            </DataTemplate>
                             <DataTemplate x:Key="Touptek">
                                 <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighGain, Converter={StaticResource VisibilityConverter}}">
                                     <TextBlock
@@ -391,6 +427,7 @@
                             </DataTemplate>
                             <local:CameraTemplateSelector
                                 x:Key="ContentSelector"
+                                Altair="{StaticResource Altair}"
                                 Default="{StaticResource Default}"
                                 QhyCcd="{StaticResource QhyCcd}"
                                 Touptek="{StaticResource Touptek}" />

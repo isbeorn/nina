@@ -3768,4 +3768,10 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblUnknownImportFormat" xml:space="preserve">
     <value>Unknown format to import targets</value>
   </data>
+  <data name="LblUltraMode" xml:space="preserve">
+    <value>Ultra Mode</value>
+  </data>
+  <data name="LblUltraModeTooltip" xml:space="preserve">
+    <value>Enables the Ultra Mode for extra low read noise </value>
+  </data>
 </root>

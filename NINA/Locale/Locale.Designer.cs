@@ -9915,6 +9915,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ultra Mode.
+        /// </summary>
+        internal static string LblUltraMode {
+            get {
+                return ResourceManager.GetString("LblUltraMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enables the Ultra Mode for extra low read noise .
+        /// </summary>
+        internal static string LblUltraModeTooltip {
+            get {
+                return ResourceManager.GetString("LblUltraModeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to connect camera.
         /// </summary>
         internal static string LblUnableToConnectCamera {
