@@ -215,6 +215,7 @@ namespace NINA.PlateSolving.Solvers {
 
                 result.Orientation = jobinfo.calibration.orientation;
                 /* The orientation is mirrored on the x-axis */
+                result.Flipped = jobinfo.calibration.parity < 0;
                 result.Orientation = 180 - result.Orientation + 360;
 
                 result.Pixscale = jobinfo.calibration.pixscale;

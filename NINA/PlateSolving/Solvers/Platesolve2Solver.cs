@@ -103,9 +103,19 @@ namespace NINA.PlateSolving.Solvers {
                                      won't work when result contains even numbers tho... */
                                     result.Pixscale = double.Parse(resultArr[0] + "." + resultArr[1], CultureInfo.InvariantCulture);
                                     result.Orientation = double.Parse(resultArr[2] + "." + resultArr[3], CultureInfo.InvariantCulture);
+
+                                    result.Flipped = !(double.Parse(resultArr[4] + "." + resultArr[5], CultureInfo.InvariantCulture) < 0);
+                                    if (result.Flipped) {
+                                        result.Orientation = result.Orientation - 180;
+                                    }
                                 } else {
                                     result.Pixscale = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
                                     result.Orientation = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
+
+                                    result.Flipped = !(double.Parse(resultArr[2], CultureInfo.InvariantCulture) < 0);
+                                    if (result.Flipped) {
+                                        result.Orientation = result.Orientation - 180;
+                                    }
                                 }
                             }
                         }

@@ -85,6 +85,38 @@ namespace NINA.PlateSolving.Solvers {
                         }
                     }
 
+                    if (wcsinfo.ContainsKey("crval0")
+                        && wcsinfo.ContainsKey("crval1")
+                        && wcsinfo.ContainsKey("crpix0")
+                        && wcsinfo.ContainsKey("crpix1")
+                        && wcsinfo.ContainsKey("cd11")
+                        && wcsinfo.ContainsKey("cd12")
+                        && wcsinfo.ContainsKey("cd21")
+                        && wcsinfo.ContainsKey("cd22")) {
+                        var crval1 = double.Parse(wcsinfo["crval0"]);
+                        var crval2 = double.Parse(wcsinfo["crval1"]);
+                        var crpix1 = double.Parse(wcsinfo["crpix0"]);
+                        var crpix2 = double.Parse(wcsinfo["crpix1"]);
+                        var cd11 = double.Parse(wcsinfo["cd11"]);
+                        var cd12 = double.Parse(wcsinfo["cd12"]);
+                        var cd21 = double.Parse(wcsinfo["cd21"]);
+                        var cd22 = double.Parse(wcsinfo["cd22"]);
+
+                        var wcs = new WorldCoordinateSystem(
+                            crval1,
+                            crval2,
+                            crpix1,
+                            crpix2,
+                            cd11,
+                            cd12,
+                            cd21,
+                            cd22
+                        );
+
+                        /* Due to the way N.I.N.A. writes FITS files, the orientation is mirrored on the x-axis */
+                        result.Flipped = !wcs.Flipped;
+                    }
+
                     double ra = 0, dec = 0;
                     if (wcsinfo.ContainsKey("ra_center")) {
                         ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
