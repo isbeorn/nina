@@ -48,6 +48,8 @@ namespace NINA.PlateSolving {
             }
         }
 
+        public bool Flipped { get; set; }
+
         public bool Success { get; set; }
 
         public Separation Separation { get; set; }

@@ -31,6 +31,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - FITS header parsing can now deal with keywords that don't have any comment at all
 - Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run
 - Fix issue for QHY cameras to dither too early when camera was still exposing
+- Images that are mirrored (e.g. on a scope like a hyperstar) now have a correct rotation inside the framing wizard
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 48.17729.2020.922

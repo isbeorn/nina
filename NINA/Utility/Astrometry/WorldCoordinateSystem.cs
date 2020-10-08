@@ -62,17 +62,20 @@ namespace NINA.Utility.Astrometry {
             var determinant = cd1_1 * cd2_2 - cd1_2 * cd2_1;
 
             var sign = 1;
-            if (determinant < 1) {
+            if (determinant < 0) {
                 sign = -1;
             }
 
             var cdelta1 = sign * Math.Sqrt(cd1_1 * cd1_1 + cd2_1 * cd2_1);
             var cdelta2 = Math.Sqrt(cd1_2 * cd1_2 + cd2_2 * cd2_2);
 
-            var rot1_cd = Math.Atan2(-cd1_2, sign * cd1_1);
-            var rot2_cd = Math.Atan2(sign * cd1_2, cd2_2);
-            var rotav = (rot1_cd + rot2_cd) / 2;
-            var rotation = Astrometry.ToDegree(rotav);
+            if (cdelta1 >= 0 || cdelta2 < 0) {
+                Flipped = true;
+            }
+
+            var rot1_cd = Math.Atan2(sign * cd1_2, cd2_2);
+            var rot2_cd = Math.Atan2(sign * cd1_1, cd2_1) - Math.PI / 2d;
+            var rotation = Astrometry.ToDegree(Flipped ? -rot2_cd : rot2_cd);
             var skew = Astrometry.ToDegree(Math.Abs(rot1_cd - rot2_cd));
 
             //Approximation as the matrix can account for skewed axes
@@ -105,10 +108,14 @@ namespace NINA.Utility.Astrometry {
             Point = new Point(crpix1, crpix2);
             Coordinates = new Coordinates(Angle.ByDegree(crval1), Angle.ByDegree(crval2), Epoch.J2000);
 
-            if (cdelta1 < 0 && cdelta2 > 0) {
+            if (cdelta1 >= 0 || cdelta2 < 0) {
+                Flipped = true;
+            }
+
+            if (!Flipped) {
                 Rotation = Astrometry.EuclidianModulus(crota2, 360);
             } else {
-                Rotation = Astrometry.EuclidianModulus(crota2 + 180, 360);
+                Rotation = Astrometry.EuclidianModulus(-crota2, 360);
             }
 
             PixelScaleX = Astrometry.DegreeToArcsec(Math.Abs(cdelta1));
@@ -121,6 +128,11 @@ namespace NINA.Utility.Astrometry {
 
         public double PixelScaleX { get; }
         public double PixelScaleY { get; }
+
+        /// <summary>
+        /// Indicator that either the x xor y axis is flipped and the rotation has been adjusted for it
+        /// </summary>
+        public bool Flipped { get; }
 
         /// <summary>
         /// Gets coordinates for a given point based on the WCS

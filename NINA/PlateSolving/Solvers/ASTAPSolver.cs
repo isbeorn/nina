@@ -62,6 +62,17 @@ namespace NINA.PlateSolving.Solvers {
                 Notification.ShowWarning($"ASTAP - {warning}");
             }
 
+            var wcs = new WorldCoordinateSystem(
+                double.Parse(dict["CRVAL1"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CRVAL2"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CRPIX1"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CRPIX2"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CD1_1"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CD1_2"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CD2_1"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CD2_2"], CultureInfo.InvariantCulture)
+            );
+
             result.Success = true;
             result.Coordinates = new Coordinates(
                 double.Parse(dict["CRVAL1"], CultureInfo.InvariantCulture),
@@ -84,7 +95,8 @@ namespace NINA.PlateSolving.Solvers {
             }
 
             /* Due to the way N.I.N.A. writes FITS files, the orientation is mirrored on the x-axis */
-            result.Orientation = 180 - result.Orientation + 360;
+            result.Orientation = wcs.Rotation - 180;
+            result.Flipped = !wcs.Flipped;
 
             return result;
         }
