@@ -142,6 +142,7 @@
       <ComponentGroupRef Id="tr_TR_files" />
       <ComponentGroupRef Id="gl_ES_files" />
       <ComponentGroupRef Id="pt_PT_files" />
+      <ComponentGroupRef Id="el_GR_files" />
     </Feature>
   </Product>
 
@@ -274,6 +275,7 @@
           <Directory Id="tr_TR" Name="tr-TR" />
           <Directory Id="gl_ES" Name="gl-ES" />
           <Directory Id="pt_PT" Name="pt-PT" />
+          <Directory Id="el_GR" Name="el-GR" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -1651,6 +1653,13 @@
     <ComponentGroup Id="pt_PT_files" Directory="pt_PT">
       <Component Id="pt_PT_NINA.resources.dll" Guid="7656399b-8082-4154-ba86-2490aa7f067b">
         <File Id="pt_PT_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)pt-PT\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="el_GR_files" Directory="el_GR">
+      <Component Id="el_GR_NINA.resources.dll" Guid="a3f9cfbc-8d39-4eb0-b2c6-4014a670f764">
+        <File Id="el_GR_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)el-GR\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

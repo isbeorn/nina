@@ -1945,6 +1945,7 @@
       <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.el-GR.resx" />
     <EmbeddedResource Include="Locale\Locale.en-GB.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.en-GB.Designer.cs</LastGenOutput>
