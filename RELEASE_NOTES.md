@@ -22,6 +22,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Replaced LZ4 library with a more optimized one for faster XISF compression
 - Save target set in sequence screen is now enabled also when sequence is running
 - Added info logs for start exposure, download location and star detection
+- Rotators will now display the sky angle as the current position, when rotation via plate solving was invoked
+- Added toggle to reverse direction for rotators
 
 ## Bugfixes
 - When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format

@@ -687,6 +687,8 @@ namespace NINA.ViewModel {
                             position = movement2;
                         }
 
+                        rotatorMediator.Sync(orientation);
+
                         if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
                             await rotatorMediator.MoveRelative(position);
                         }

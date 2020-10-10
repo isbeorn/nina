@@ -43,6 +43,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
             RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList, o => !(rotator?.Connected == true));
             MoveCommand = new AsyncCommand<float>(() => Move(TargetPosition), (p) => RotatorInfo.Connected);
             HaltCommand = new RelayCommand(Halt);
+            ReverseCommand = new RelayCommand(Reverse);
 
             updateTimer = new DeviceUpdateTimer(
                 GetRotatorValues,
@@ -55,9 +56,23 @@ namespace NINA.ViewModel.Equipment.Rotator {
             };
         }
 
+        private void Reverse(object obj) {
+            var reverse = (bool)obj;
+            rotator.Reverse = reverse;
+            profileService.ActiveProfile.RotatorSettings.Reverse = reverse;
+        }
+
         private void Halt(object obj) {
             _moveCts?.Cancel();
             rotator?.Halt();
+        }
+
+        public void Sync(float skyAngle) {
+            if (RotatorInfo.Connected) {
+                rotator.Sync(skyAngle);
+                RotatorInfo.Position = rotator.Position;
+                BroadcastRotatorInfo();
+            }
         }
 
         public async Task<float> Move(float targetPosition) {
@@ -105,6 +120,9 @@ namespace NINA.ViewModel.Equipment.Rotator {
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);
 
+            rotatorValues.TryGetValue(nameof(RotatorInfo.Reverse), out o);
+            RotatorInfo.Reverse = (bool)(o ?? false);
+
             BroadcastRotatorInfo();
         }
 
@@ -114,6 +132,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
             rotatorValues.Add(nameof(RotatorInfo.Position), rotator?.Position ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.IsMoving), rotator?.IsMoving ?? false);
             rotatorValues.Add(nameof(RotatorInfo.StepSize), rotator?.StepSize ?? 0);
+            rotatorValues.Add(nameof(RotatorInfo.Reverse), rotator?.Reverse ?? false);
 
             return rotatorValues;
         }
@@ -174,6 +193,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
         public ICommand RefreshRotatorListCommand { get; private set; }
         public IAsyncCommand MoveCommand { get; private set; }
         public ICommand HaltCommand { get; private set; }
+        public ICommand ReverseCommand { get; private set; }
 
         private CancellationTokenSource _connectRotatorCts;
         private CancellationTokenSource _moveCts;
@@ -209,6 +229,10 @@ namespace NINA.ViewModel.Equipment.Rotator {
                         if (connected) {
                             this.rotator = rotator;
 
+                            if (this.rotator.CanReverse) {
+                                this.rotator.Reverse = profileService.ActiveProfile.RotatorSettings.Reverse;
+                            }
+
                             RotatorInfo = new RotatorInfo {
                                 Connected = true,
                                 IsMoving = rotator.IsMoving,
@@ -217,7 +241,9 @@ namespace NINA.ViewModel.Equipment.Rotator {
                                 Position = rotator.Position,
                                 StepSize = rotator.StepSize,
                                 DriverInfo = rotator.DriverInfo,
-                                DriverVersion = rotator.DriverVersion
+                                DriverVersion = rotator.DriverVersion,
+                                CanReverse = rotator.CanReverse,
+                                Reverse = rotator.Reverse
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblRotatorConnected"]);
@@ -227,6 +253,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
                             TargetPosition = rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = rotator.Id;
+                            profileService.ActiveProfile.RotatorSettings.Reverse = this.rotator.Reverse;
 
                             Logger.Info($"Successfully connected Rotator. Id: {rotator.Id} Name: {rotator.Name} Driver Version: {rotator.DriverVersion}");
 

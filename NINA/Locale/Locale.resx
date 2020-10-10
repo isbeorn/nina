@@ -3774,4 +3774,7 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblUltraModeTooltip" xml:space="preserve">
     <value>Enables the Ultra Mode for extra low read noise </value>
   </data>
+  <data name="LblRotatorReverseTooltip" xml:space="preserve">
+    <value>Reverse movement direction of rotator. Toggle this, if the platesolver rotates into the wrong direction.</value>
+  </data>
 </root>

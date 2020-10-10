@@ -8098,6 +8098,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reverse movement direction of rotator. Toggle this, if the platesolver rotates into the wrong direction..
+        /// </summary>
+        internal static string LblRotatorReverseTooltip {
+            get {
+                return ResourceManager.GetString("LblRotatorReverseTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Running end of sequence options.
         /// </summary>
         internal static string LblRunningEndOfSequence {

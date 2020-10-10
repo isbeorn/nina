@@ -21,6 +21,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     public interface IRotatorMediator : IDeviceMediator<IRotatorVM, IRotatorConsumer, RotatorInfo> {
 
+        void Sync(float skyAngle);
+
         Task<float> Move(float position);
 
         Task<float> MoveRelative(float position);

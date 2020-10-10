@@ -16,5 +16,6 @@ namespace NINA.Profile {
 
     public interface IRotatorSettings : ISettings {
         string Id { get; set; }
+        bool Reverse { get; set; }
     }
 }

@@ -15,11 +15,15 @@
 namespace NINA.Model.MyRotator {
 
     internal interface IRotator : IDevice {
+        bool CanReverse { get; }
+        bool Reverse { get; set; }
         bool IsMoving { get; }
 
         float Position { get; }
 
         float StepSize { get; }
+
+        void Sync(float skyAngle);
 
         void Move(float position);
 
