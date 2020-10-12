@@ -10,6 +10,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Relative Focusers can now be connected and will be simulated to behave like absolute focusers
 - It is possible now to import Telescopius Observing Lists and Telescopius Mosaic Plans via CSV
 - Added Ultra Mode and Dew Heater Controls for supported Altair Cameras.
+- New translation for Greek (Ελληνικά) has been added
 
 ## Improvements
 - Canon CR3 image format is now supported (use FreeImage as your RAW converter)
