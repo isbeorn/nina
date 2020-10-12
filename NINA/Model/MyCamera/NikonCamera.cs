@@ -224,7 +224,7 @@ namespace NINA.Model.MyCamera {
                     } else if (val.ToLower() == "time") {
                         //currently unused
                     } else {
-                        _shutterSpeeds.Add(i, double.Parse(val));
+                        _shutterSpeeds.Add(i, double.Parse(val, CultureInfo.InvariantCulture));
                     }
                 } catch (Exception ex) {
                     Logger.Error("Unexpected Shutter Speed: ", ex);
