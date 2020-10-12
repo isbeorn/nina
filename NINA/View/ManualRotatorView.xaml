@@ -96,132 +96,93 @@
                 <TextBlock HorizontalAlignment="Center" Text="{Binding Direction}" />
             </StackPanel>
 
-            <!--  Start position indicator  -->
-            <Line
-                RenderTransformOrigin="0.5 0.5"
-                Stroke="{StaticResource SecondaryBrush}"
-                X1="100"
-                X2="100"
-                Y1="0"
-                Y2="50">
-                <Line.RenderTransform>
-                    <RotateTransform Angle="{Binding Position}" />
-                </Line.RenderTransform>
-            </Line>
+            <Grid RenderTransformOrigin="0.5 0.5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Reverse}" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="-1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <!--  Start position indicator  -->
+                <Line
+                    RenderTransformOrigin="0.5 0.5"
+                    Stroke="{StaticResource SecondaryBrush}"
+                    X1="100"
+                    X2="100"
+                    Y1="0"
+                    Y2="50">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="{Binding Position}" />
+                    </Line.RenderTransform>
+                </Line>
 
-            <!--  Arc target indicator  -->
-            <ninactrl:Arc
-                Center="100 100"
-                EndAngle="{Binding Position}"
-                Radius="100"
-                RenderTransformOrigin="0.5 0.5"
-                SmallAngle="True"
-                StartAngle="{Binding Position}"
-                Stroke="{StaticResource PrimaryBrush}"
-                StrokeDashArray="4 4">
+                <!--  Arc target indicator  -->
+                <ninactrl:Arc
+                    Center="100 100"
+                    EndAngle="{Binding Position}"
+                    Radius="100"
+                    RenderTransformOrigin="0.5 0.5"
+                    SmallAngle="True"
+                    StartAngle="{Binding Position}"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="4 4">
 
-                <ninactrl:Arc.RenderTransform>
-                    <RotateTransform Angle="-90" />
-                </ninactrl:Arc.RenderTransform>
+                    <ninactrl:Arc.RenderTransform>
+                        <RotateTransform Angle="-90" />
+                    </ninactrl:Arc.RenderTransform>
 
-                <ninactrl:Arc.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource ArcTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </ninactrl:Arc.Triggers>
-            </ninactrl:Arc>
-            <ninactrl:Arc
-                Center="100 100"
-                EndAngle="{Binding Position}"
-                Radius="50"
-                RenderTransformOrigin="0.5 0.5"
-                SmallAngle="True"
-                StartAngle="{Binding Position}"
-                Stroke="{StaticResource PrimaryBrush}"
-                StrokeDashArray="4 4">
+                    <ninactrl:Arc.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource ArcTargetAngleStoryboard}" />
+                        </EventTrigger>
+                    </ninactrl:Arc.Triggers>
+                </ninactrl:Arc>
+                <ninactrl:Arc
+                    Center="100 100"
+                    EndAngle="{Binding Position}"
+                    Radius="50"
+                    RenderTransformOrigin="0.5 0.5"
+                    SmallAngle="True"
+                    StartAngle="{Binding Position}"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="4 4">
 
-                <ninactrl:Arc.RenderTransform>
-                    <RotateTransform Angle="-90" />
-                </ninactrl:Arc.RenderTransform>
+                    <ninactrl:Arc.RenderTransform>
+                        <RotateTransform Angle="-90" />
+                    </ninactrl:Arc.RenderTransform>
 
-                <ninactrl:Arc.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource ArcTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </ninactrl:Arc.Triggers>
-            </ninactrl:Arc>
-            <!--<ninactrl:Arc
-                Center="100 100"
-                EndAngle="{Binding Position}"
-                Radius="20"
-                RenderTransformOrigin="0.5 0.5"
-                SmallAngle="True"
-                StartAngle="{Binding Position}"
-                Stroke="{StaticResource PrimaryBrush}"
-                StrokeDashArray="4 4">
+                    <ninactrl:Arc.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource ArcTargetAngleStoryboard}" />
+                        </EventTrigger>
+                    </ninactrl:Arc.Triggers>
+                </ninactrl:Arc>
 
-                <ninactrl:Arc.RenderTransform>
-                    <RotateTransform Angle="-90" />
-                </ninactrl:Arc.RenderTransform>
-
-                <ninactrl:Arc.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource ArcTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </ninactrl:Arc.Triggers>
-            </ninactrl:Arc>-->
-
-            <!--  Line target indicator  -->
-            <Line
-                RenderTransformOrigin="0.5 0.5"
-                Stroke="{StaticResource PrimaryBrush}"
-                X1="100"
-                X2="100"
-                Y1="0"
-                Y2="50">
-                <Line.RenderTransform>
-                    <RotateTransform x:Name="transform" Angle="{Binding Position}" />
-                </Line.RenderTransform>
-                <Line.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource LineTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </Line.Triggers>
-            </Line>
-
-            <!--  Arrow direction indicator
-            <Line
-                RenderTransformOrigin="0.5 0.5"
-                Stroke="{StaticResource PrimaryBrush}"
-                X1="90"
-                X2="100"
-                Y1="30"
-                Y2="40">
-                <Line.RenderTransform>
-                    <RotateTransform Angle="{Binding Position}" />
-                </Line.RenderTransform>
-                <Line.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource LineTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </Line.Triggers>
-            </Line>
-            <Line
-                RenderTransformOrigin="0.5 0.5"
-                Stroke="{StaticResource PrimaryBrush}"
-                X1="90"
-                X2="100"
-                Y1="50"
-                Y2="40">
-                <Line.RenderTransform>
-                    <RotateTransform Angle="{Binding Position}" />
-                </Line.RenderTransform>
-                <Line.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource LineTargetAngleStoryboard}" />
-                    </EventTrigger>
-                </Line.Triggers>
-            </Line>-->
+                <!--  Line target indicator  -->
+                <Line
+                    RenderTransformOrigin="0.5 0.5"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    X1="100"
+                    X2="100"
+                    Y1="0"
+                    Y2="50">
+                    <Line.RenderTransform>
+                        <RotateTransform x:Name="transform" Angle="{Binding Position}" />
+                    </Line.RenderTransform>
+                    <Line.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource LineTargetAngleStoryboard}" />
+                        </EventTrigger>
+                    </Line.Triggers>
+                </Line>
+            </Grid>
         </Grid>
 
         <Button
