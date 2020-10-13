@@ -87,8 +87,14 @@ namespace NINA.Model.MyFilterWheel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblFilterwheelConnectionLost"]);
                             Disconnect();
                         }
-                    } catch (Exception) {
-                        Disconnect();
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowWarning(Locale.Loc.Instance["LblFilterwheelConnectionLost"]);
+                        try {
+                            Disconnect();
+                        } catch (Exception disconnectEx) {
+                            Logger.Error(disconnectEx);
+                        }
                     }
                     return val;
                 } else {
