@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - It is possible now to import Telescopius Observing Lists and Telescopius Mosaic Plans via CSV
 - Added Ultra Mode and Dew Heater Controls for supported Altair Cameras.
 - New translation for Greek (Ελληνικά) has been added
+- Added a new sky survey <a href="http://alasky.u-strasbg.fr/hips-image-services/hips2fits" target="_blank">Hips 2 Fits</a> as an option in framing assistant. This survey seems to provide a much faster image compared to the other surveys.
 
 ## Improvements
 - Canon CR3 image format is now supported (use FreeImage as your RAW converter)

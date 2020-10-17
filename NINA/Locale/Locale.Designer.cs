@@ -5131,6 +5131,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HIPS 2 FITS Sky Survey.
+        /// </summary>
+        internal static string LblHips2FitsSurvey {
+            get {
+                return ResourceManager.GetString("LblHips2FitsSurvey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Histogram.
         /// </summary>
         internal static string LblHistogram {

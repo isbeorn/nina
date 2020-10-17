@@ -641,6 +641,7 @@
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\SkySurvey\Hips2FitsSurvey.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\IPegasusDevice.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusCommands.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusDevice.cs" />

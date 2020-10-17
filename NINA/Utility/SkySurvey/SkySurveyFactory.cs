@@ -32,6 +32,9 @@ namespace NINA.Utility.SkySurvey {
                 case SkySurveySource.ESO:
                     return new ESOSkySurvey();
 
+                case SkySurveySource.HIPS2FITS:
+                    return new Hips2FitsSurvey();
+
                 case SkySurveySource.FILE:
                     return new FileSkySurvey();
 
@@ -64,6 +67,9 @@ namespace NINA.Utility.SkySurvey {
         [Description("LblEsoSkySurvey")]
         ESO,
 
+        [Description("LblHips2FitsSurvey")]
+        HIPS2FITS,
+
         [Description("LblSkyAtlasSkySurvey")]
         SKYATLAS,
 
@@ -89,6 +95,9 @@ namespace NINA.Utility.SkySurvey {
 
                 case SkySurveySource.ESO:
                     return typeof(ESOSkySurvey).Name;
+
+                case SkySurveySource.HIPS2FITS:
+                    return typeof(Hips2FitsSurvey).Name;
 
                 case SkySurveySource.SKYATLAS:
                     return typeof(SkyAtlasSkySurvey).Name;

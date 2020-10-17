@@ -3777,4 +3777,7 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblRotatorReverseTooltip" xml:space="preserve">
     <value>Reverse movement direction of rotator. Toggle this, if the platesolver rotates into the wrong direction.</value>
   </data>
+  <data name="LblHips2FitsSurvey" xml:space="preserve">
+    <value>HIPS 2 FITS Sky Survey</value>
+  </data>
 </root>
