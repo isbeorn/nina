@@ -490,9 +490,10 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public Task WaitUntilExposureIsReady(CancellationToken token) {
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
-                return Task.CompletedTask;
+                var remaining = exposureTime - (DateTime.Now - exposureStart);
+                await Task.Delay(remaining, token);
             }
         }
 
@@ -571,8 +572,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private DateTime exposureStart;
+        private TimeSpan exposureTime;
+
         public void StartExposure(CaptureSequence captureSequence) {
             folderWatcher.Start();
+            exposureStart = DateTime.Now;
+            exposureTime = TimeSpan.FromSeconds(captureSequence.ExposureTime);
             if (UseBulbMode) {
                 var exposureTime = captureSequence.ExposureTime;
                 if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {

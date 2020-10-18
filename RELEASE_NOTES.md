@@ -37,6 +37,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fix issue for QHY cameras to dither too early when camera was still exposing
 - Images that are mirrored (e.g. on a scope like a hyperstar) now have a correct rotation inside the framing wizard
 - Fixed a problem with Nikon Shutterspeeds between 1s and 30s not being parsed correctly in certain locale settings
+- Fixed an issue when using the file camera together with dithering, where the dither signal was triggered directly after starting the exposure, as the file camera directly switched to download state. Instead the file camera will wait for the exposure time instead before switching to download state.
 
 ## Included Camera SDK Versions:
 - **Altair Astro:** 48.17729.2020.922

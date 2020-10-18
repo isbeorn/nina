@@ -57,6 +57,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Fix issue for QHY cameras to dither too early when camera was still exposing</li>
 <li>Images that are mirrored (e.g. on a scope like a hyperstar) now have a correct rotation inside the framing wizard</li>
 <li>Fixed a problem with Nikon Shutterspeeds between 1s and 30s not being parsed correctly in certain locale settings</li>
+<li>Fixed an issue when using the file camera together with dithering, where the dither signal was triggered directly after starting the exposure, as the file camera directly switched to download state. Instead the file camera will wait for the exposure time instead before switching to download state.</li>
 </ul>
 <h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
 <ul>
