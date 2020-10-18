@@ -142,6 +142,7 @@
       <ComponentGroupRef Id="tr_TR_files" />
       <ComponentGroupRef Id="gl_ES_files" />
       <ComponentGroupRef Id="pt_PT_files" />
+      <ComponentGroupRef Id="el_GR_files" />
     </Feature>
   </Product>
 
@@ -274,6 +275,7 @@
           <Directory Id="tr_TR" Name="tr-TR" />
           <Directory Id="gl_ES" Name="gl-ES" />
           <Directory Id="pt_PT" Name="pt-PT" />
+          <Directory Id="el_GR" Name="el-GR" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -470,9 +472,6 @@
       <Component Id="NINA.MGEN.dll" Guid="aff16aed-fbcc-4db3-8ae6-30387f4995e9">
         <File Id="NINA.MGEN.dll" Name="NINA.MGEN.dll" Source="$(var.NINA.MGEN_TargetDir)NINA.MGEN.dll" />
       </Component>
-      <Component Id="LZ4.dll" Guid="8b76a83a-338b-44cd-9459-c1f479e6945f">
-        <File Id="LZ4.dll" Name="LZ4.dll" Source="$(var.NINA_TargetDir)LZ4.dll" />
-      </Component>
       <Component Id="Zlib.Portable.dll" Guid="e029186f-d493-4b7e-aee1-e84ba51eaf7a">
         <File Id="Zlib.Portable.dll" Name="Zlib.Portable.dll" Source="$(var.NINA_TargetDir)Zlib.Portable.dll" />
       </Component>
@@ -487,6 +486,9 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="thirdparty" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
         <File Id="thirdparty" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="K4os.Compression.LZ4.dll" Guid="af75b12d-ae2f-48c8-8b15-55a5d7344aa0">
+        <File Id="K4os.Compression.LZ4.dll" Name="K4os.Compression.LZ4.dll" Source="$(var.NINA_TargetDir)K4os.Compression.LZ4.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -712,6 +714,9 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_FlyCapture2_v140.dll" Guid="452A92A5-DE18-45A9-AE6A-36D097E314AD">
         <File Id="External_x64_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\FlyCapture2_v140.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_Atik_libiomp5md.dll" Guid="54989fa0-5e1a-4fb6-84f7-bdab8db7b5af">
+        <File Id="External_x64_Atik_libiomp5md.dll" Name="libiomp5md.dll" Source="$(var.NINA_TargetDir)External\x64\Atik\libiomp5md.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1039,6 +1044,9 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Atik_FlyCapture2_v140.dll" Guid="5C4BF259-A863-4E31-9A75-12BFA8ACA9DF">
         <File Id="External_x86_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\FlyCapture2_v140.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_Atik_libiomp5md.dll" Guid="836443c5-cb40-4662-98f4-b918187e9f22">
+        <File Id="External_x86_Atik_libiomp5md.dll" Name="libiomp5md.dll" Source="$(var.NINA_TargetDir)External\x86\Atik\libiomp5md.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1524,6 +1532,9 @@
       <Component Id="Database_Migration_3.sql" Guid="1ec7f760-b158-4ac2-a5c7-df74adbe3587">
         <File Id="Database_Migration_3.sql" Name="3.sql" Source="$(var.NINA_TargetDir)Database\Migration\3.sql" />
       </Component>
+      <Component Id="Database_Migration_5.sql" Guid="053ed218-ec37-4fdf-9a74-707316f2415a">
+        <File Id="Database_Migration_5.sql" Name="5.sql" Source="$(var.NINA_TargetDir)Database\Migration\5.sql" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
@@ -1642,6 +1653,13 @@
     <ComponentGroup Id="pt_PT_files" Directory="pt_PT">
       <Component Id="pt_PT_NINA.resources.dll" Guid="7656399b-8082-4154-ba86-2490aa7f067b">
         <File Id="pt_PT_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)pt-PT\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="el_GR_files" Directory="el_GR">
+      <Component Id="el_GR_NINA.resources.dll" Guid="a3f9cfbc-8d39-4eb0-b2c6-4014a670f764">
+        <File Id="el_GR_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)el-GR\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

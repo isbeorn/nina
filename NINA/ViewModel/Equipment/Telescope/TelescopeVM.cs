@@ -322,6 +322,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             get {
                 if (telescopeInfo == null) {
                     telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+                    telescopeInfo.SideOfPier = PierSide.pierUnknown;
                 }
                 return telescopeInfo;
             }
@@ -429,7 +430,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         private CancellationTokenSource _cancelChooseTelescopeSource;
 
         private async Task<bool> DisconnectTelescope() {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectTelescope"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 await Disconnect();
             }

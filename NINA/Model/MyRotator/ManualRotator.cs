@@ -18,6 +18,7 @@ using NINA.Utility.WindowService;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Utility.Astrometry;
 
 namespace NINA.Model.MyRotator {
 
@@ -35,6 +36,16 @@ namespace NINA.Model.MyRotator {
         }
 
         public string Category { get; } = "N.I.N.A.";
+        public bool CanReverse => true;
+        private bool reverse;
+
+        public bool Reverse {
+            get => reverse;
+            set {
+                reverse = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public bool IsMoving { get; set; }
 
@@ -123,12 +134,16 @@ namespace NINA.Model.MyRotator {
 
         public string Direction {
             get {
-                if (TargetPosition - Position < 0) {
+                if ((TargetPosition - Position < 0 && !Reverse) || (TargetPosition - Position >= 0 && Reverse)) {
                     return Locale.Loc.Instance["LblCounterclockwise"];
                 } else {
                     return Locale.Loc.Instance["LblClockwise"];
                 }
             }
+        }
+
+        public void Sync(float skyAngle) {
+            Position = skyAngle;
         }
 
         public void Move(float position) {
@@ -143,13 +158,10 @@ namespace NINA.Model.MyRotator {
                 TargetPosition = TargetPosition + 360;
             }
 
-            var clockwise = TargetPosition - Position > 0;
-
             var task = WindowService.ShowDialog(this, Locale.Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
             task.Wait();
 
-            Position = TargetPosition % 360;
-            if (Position < 0) { Position += 360; }
+            Position = Astrometry.EuclidianModulus(TargetPosition, 360);
 
             IsMoving = false;
         }

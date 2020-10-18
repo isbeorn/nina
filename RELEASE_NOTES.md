@@ -3,6 +3,53 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 1.10 HF1
+
+## Features
+- Ability to inspect pixel area and pixel values in detail by holding right click
+- Relative Focusers can now be connected and will be simulated to behave like absolute focusers
+- It is possible now to import Telescopius Observing Lists and Telescopius Mosaic Plans via CSV
+- Added Ultra Mode and Dew Heater Controls for supported Altair Cameras.
+- New translation for Greek (Ελληνικά) has been added
+- Added a new sky survey <a href="http://alasky.u-strasbg.fr/hips-image-services/hips2fits" target="_blank">Hips 2 Fits</a> as an option in framing assistant. This survey seems to provide a much faster image compared to the other surveys.
+
+## Improvements
+- Canon CR3 image format is now supported (use FreeImage as your RAW converter)
+- Adding support for the EOS R5 and EOS R6
+- Added `$$CAMERA$$` file pattern
+- Added `$$TELESCOPE$$` file pattern
+- Added `$$ROTATEANGLE$$` file pattern
+- Added `$$STARCOUNT$$` file pattern
+- Telescope views now display the side of pier when available
+- Replaced LZ4 library with a more optimized one for faster XISF compression
+- Save target set in sequence screen is now enabled also when sequence is running
+- Added info logs for start exposure, download location and star detection
+- Rotators will now display the sky angle as the current position, when rotation via plate solving was invoked
+- Added toggle to reverse direction for rotators
+
+## Bugfixes
+- When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format
+- Log files now show correct operating system version
+- Cancelling a sequence that is paused, will no longer throw a semaphore error
+- Set white balance and gamma to 50 for ASI native driver on connection
+- FITS header parsing can now deal with keywords that don't have any comment at all
+- Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run
+- Fix issue for QHY cameras to dither too early when camera was still exposing
+- Images that are mirrored (e.g. on a scope like a hyperstar) now have a correct rotation inside the framing wizard
+- Fixed a problem with Nikon Shutterspeeds between 1s and 30s not being parsed correctly in certain locale settings
+- Fixed an issue when using the file camera together with dithering, where the dither signal was triggered directly after starting the exposure, as the file camera directly switched to download state. Instead the file camera will wait for the exposure time instead before switching to download state.
+
+## Included Camera SDK Versions:
+- **Altair Astro:** 48.17729.2020.922
+- **Atik:** 2020.08.3.642
+- **Canon:** 13.12.31
+- **FLI:** 1.104.0.0
+- **Nikon:** 1.3.1.3001
+- **Omegon:** 39.15325.2019.810
+- **QHY:** 20.8.26.3
+- **ToupTek:** 46.17309.2020.616
+- **ZWO:** 1.15.9.15
+
 # Version 1.10
 
 ## New hardware support

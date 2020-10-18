@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -97,11 +98,23 @@ namespace NINA.Model {
 
             p = new ImagePattern(ImagePatternKeys.ReadoutMode, Locale.Loc.Instance["LblReadoutModePatternDescription"]);
             patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.Camera, Locale.Loc.Instance["LblCameraName"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.Telescope, Locale.Loc.Instance["LblTelescopeName"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.RotatorAngle, Locale.Loc.Instance["LblRotatorAngleDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.StarCount, Locale.Loc.Instance["LblStarCount"]);
+            patterns.Add(p.Key, p);
         }
 
         public bool Set(string key, string value) {
             if (patterns.ContainsKey(key) && value != null) {
-                patterns[key].Value = value.Trim();
+                patterns[key].Value = ReplaceAllInvalidFilenameChars(value.Trim());
                 return true;
             }
 
@@ -110,7 +123,7 @@ namespace NINA.Model {
 
         public bool Set(string key, double value) {
             if (!double.IsNaN(value)) {
-                return this.Set(key, string.Format("{0:0.00}", value));
+                return this.Set(key, string.Format(CultureInfo.InvariantCulture, "{0:0.00}", value));
             }
             return false;
         }
@@ -120,7 +133,7 @@ namespace NINA.Model {
         }
 
         /// <summary>
-        /// Replaces makros from Settings.ImageFilePattern into actual values based on input e.g.:
+        /// Replaces macros from Settings.ImageFilePattern into actual values based on input e.g.:
         /// $$Filter$$ -&gt; "Red"
         /// </summary>
         /// <param name="patterns">KeyValue Collection of Makro -&gt; Makrovalue</param>
@@ -134,19 +147,34 @@ namespace NINA.Model {
 
             var imageFileString = string.Empty;
             for (int i = 0; i < path.Length; i++) {
-                imageFileString = Path.Combine(imageFileString, ReplaceInvalidChars(path[i]));
+                imageFileString = Path.Combine(imageFileString, ReplaceInvalidFilenameChars(path[i]));
             }
 
             return imageFileString;
         }
 
         /// <summary>
-        /// Replace invalid characters from filename
+        /// Sanitizes strings for unwanted or illegal filename characters and replaces them with alternatives
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="str"></param>
         /// <returns></returns>
-        private string ReplaceInvalidChars(string filename) {
-            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
+        private string ReplaceAllInvalidFilenameChars(string str) {
+            // Replace forward and back slash with a hyphen
+            str = str.Replace(@"\", "-").Replace(@"/", "-");
+
+            // Replace any invalid path characters with an underscore (OS or filesystem dependent)
+            str = ReplaceInvalidFilenameChars(str);
+
+            return str;
+        }
+
+        /// <summary>
+        /// Sanitizes strings for illegal filename characters
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private string ReplaceInvalidFilenameChars(string str) {
+            return string.Join("_", str.Split(Path.GetInvalidFileNameChars()));
         }
 
         internal static ImagePatterns CreateExample() {
@@ -174,6 +202,10 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.SQM, 21.83);
             p.Set(ImagePatternKeys.ReadoutMode, "42 MHz");
             p.Set(ImagePatternKeys.USBLimit, 55);
+            p.Set(ImagePatternKeys.Camera, "ACME UltraCam 1000");
+            p.Set(ImagePatternKeys.Telescope, "OptiCo 60mm f-15");
+            p.Set(ImagePatternKeys.RotatorAngle, 289.4);
+            p.Set(ImagePatternKeys.StarCount, 3294);
 
             return p;
         }
@@ -206,6 +238,10 @@ namespace NINA.Model {
         public static readonly string SQM = "$$SQM$$";
         public static readonly string ReadoutMode = "$$READOUTMODE$$";
         public static readonly string USBLimit = "$$USBLIMIT$$";
+        public static readonly string Camera = "$$CAMERA$$";
+        public static readonly string Telescope = "$$TELESCOPE$$";
+        public static readonly string RotatorAngle = "$$ROTATORANGLE$$";
+        public static readonly string StarCount = "$$STARCOUNT$$";
     }
 
     public class ImagePattern {

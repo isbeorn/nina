@@ -1307,6 +1307,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C2A.
+        /// </summary>
+        internal static string LblC2A {
+            get {
+                return ResourceManager.GetString("LblC2A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cache.
         /// </summary>
         internal static string LblCache {
@@ -1379,6 +1388,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera still connected. Exit anyway?.
+        /// </summary>
+        internal static string LblCameraConnectedOnExit {
+            get {
+                return ResourceManager.GetString("LblCameraConnectedOnExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera connection lost! Please reconnect camera!.
         /// </summary>
         internal static string LblCameraConnectionLost {
@@ -1416,6 +1434,15 @@ namespace NINA.Locale {
         internal static string LblCameraHighPower {
             get {
                 return ResourceManager.GetString("LblCameraHighPower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Name.
+        /// </summary>
+        internal static string LblCameraName {
+            get {
+                return ResourceManager.GetString("LblCameraName", resourceCulture);
             }
         }
         
@@ -3360,6 +3387,51 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disconnect Camera?.
+        /// </summary>
+        internal static string LblDisconnectCamera {
+            get {
+                return ResourceManager.GetString("LblDisconnectCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect Filter Wheel?.
+        /// </summary>
+        internal static string LblDisconnectFilterWheel {
+            get {
+                return ResourceManager.GetString("LblDisconnectFilterWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect Focuser?.
+        /// </summary>
+        internal static string LblDisconnectFocuser {
+            get {
+                return ResourceManager.GetString("LblDisconnectFocuser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect Rotator?.
+        /// </summary>
+        internal static string LblDisconnectRotator {
+            get {
+                return ResourceManager.GetString("LblDisconnectRotator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect Telescope?.
+        /// </summary>
+        internal static string LblDisconnectTelescope {
+            get {
+                return ResourceManager.GetString("LblDisconnectTelescope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Distance.
         /// </summary>
         internal static string LblDistance {
@@ -3419,6 +3491,24 @@ namespace NINA.Locale {
         internal static string LblDocumentation {
             get {
                 return ResourceManager.GetString("LblDocumentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synchronization Timeout.
+        /// </summary>
+        internal static string LblDomeSyncTimeout {
+            get {
+                return ResourceManager.GetString("LblDomeSyncTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum amount of time, in seconds, to wait for the Dome and Telescope to synchronize their positions.
+        /// </summary>
+        internal static string LblDomeSyncTimeoutTooltip {
+            get {
+                return ResourceManager.GetString("LblDomeSyncTimeoutTooltip", resourceCulture);
             }
         }
         
@@ -5041,6 +5131,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HIPS 2 FITS Sky Survey.
+        /// </summary>
+        internal static string LblHips2FitsSurvey {
+            get {
+                return ResourceManager.GetString("LblHips2FitsSurvey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Histogram.
         /// </summary>
         internal static string LblHistogram {
@@ -5271,6 +5370,15 @@ namespace NINA.Locale {
         internal static string LblImportFromFilterWheel {
             get {
                 return ResourceManager.GetString("LblImportFromFilterWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Targets from external source.
+        /// </summary>
+        internal static string LblImportTargets {
+            get {
+                return ResourceManager.GetString("LblImportTargets", resourceCulture);
             }
         }
         
@@ -7972,6 +8080,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Angle of the rotator.
+        /// </summary>
+        internal static string LblRotatorAngleDescription {
+            get {
+                return ResourceManager.GetString("LblRotatorAngleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rotator Connected.
         /// </summary>
         internal static string LblRotatorConnected {
@@ -7986,6 +8103,15 @@ namespace NINA.Locale {
         internal static string LblRotatorConnectionLost {
             get {
                 return ResourceManager.GetString("LblRotatorConnectionLost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverse movement direction of rotator. Toggle this, if the platesolver rotates into the wrong direction..
+        /// </summary>
+        internal static string LblRotatorReverseTooltip {
+            get {
+                return ResourceManager.GetString("LblRotatorReverseTooltip", resourceCulture);
             }
         }
         
@@ -8513,6 +8639,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Side of Pier.
+        /// </summary>
+        internal static string LblSideOfPier {
+            get {
+                return ResourceManager.GetString("LblSideOfPier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sidereal Time.
         /// </summary>
         internal static string LblSiderealTime {
@@ -8761,6 +8896,15 @@ namespace NINA.Locale {
         internal static string LblSQMPatternDescription {
             get {
                 return ResourceManager.GetString("LblSQMPatternDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Star count.
+        /// </summary>
+        internal static string LblStarCount {
+            get {
+                return ResourceManager.GetString("LblStarCount", resourceCulture);
             }
         }
         
@@ -9789,6 +9933,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ultra Mode.
+        /// </summary>
+        internal static string LblUltraMode {
+            get {
+                return ResourceManager.GetString("LblUltraMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enables the Ultra Mode for extra low read noise .
+        /// </summary>
+        internal static string LblUltraModeTooltip {
+            get {
+                return ResourceManager.GetString("LblUltraModeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to connect camera.
         /// </summary>
         internal static string LblUnableToConnectCamera {
@@ -9857,6 +10019,15 @@ namespace NINA.Locale {
         internal static string LblUnknownEpochWarning {
             get {
                 return ResourceManager.GetString("LblUnknownEpochWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown format to import targets.
+        /// </summary>
+        internal static string LblUnknownImportFormat {
+            get {
+                return ResourceManager.GetString("LblUnknownImportFormat", resourceCulture);
             }
         }
         

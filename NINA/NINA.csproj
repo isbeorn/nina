@@ -165,8 +165,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="LZ4, Version=1.0.15.93, Culture=neutral, PublicKeyToken=62e1b5ec1eec9bdd, processorArchitecture=MSIL">
-      <HintPath>..\packages\lz4net.1.0.15.93\lib\net4-client\LZ4.dll</HintPath>
+    <Reference Include="K4os.Compression.LZ4, Version=1.1.11.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.1.11\lib\net46\K4os.Compression.LZ4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -440,6 +440,9 @@
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyFlatDevice\AllProSpikeAFlat.cs" />
+    <Compile Include="Model\MyFocuser\AbsoluteAscomFocuser.cs" />
+    <Compile Include="Model\MyFocuser\IFocuserV3Ex.cs" />
+    <Compile Include="Model\MyFocuser\RelativeAscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
     <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
@@ -461,6 +464,8 @@
     <Compile Include="Profile\SnapShotControlSettings.cs" />
     <Compile Include="Utility\Astrometry\EarthRotationParameterUpdater.cs" />
     <Compile Include="Utility\Astrometry\WorldCoordinateSystem.cs" />
+    <Compile Include="Utility\Behaviors\MouseCommandBehavior.cs" />
+    <Compile Include="Utility\Behaviors\MouseFollowBehavior.cs" />
     <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\DataProviderSwitch.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\PegasusAstroSwitch.cs" />
@@ -480,6 +485,7 @@
     <Compile Include="Utility\Converters\OptimalExposureCalculatorAnswerConverter.cs" />
     <Compile Include="Utility\Converters\NaNToDoubleDashConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Converters\SideOfPierConverter.cs" />
     <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
     <Compile Include="Utility\Enum\FlatWizardMode.cs" />
@@ -635,6 +641,7 @@
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\SkySurvey\Hips2FitsSurvey.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\IPegasusDevice.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusCommands.cs" />
     <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusDevice.cs" />
@@ -1804,6 +1811,9 @@
     <Content Include="External\x64\Atik\FlyCapture2_v140.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\Atik\libiomp5md.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FLI\libfli.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1853,6 +1863,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Atik\FlyCapture2_v140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\libiomp5md.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\FLI\libfli.dll">
@@ -1933,6 +1946,7 @@
       <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.el-GR.resx" />
     <EmbeddedResource Include="Locale\Locale.en-GB.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.en-GB.Designer.cs</LastGenOutput>
@@ -2161,7 +2175,7 @@
       editbin /largeaddressaware "$(TargetPath)"
       )
       )
-</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

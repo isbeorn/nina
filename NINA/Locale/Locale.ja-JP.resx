@@ -1139,7 +1139,7 @@
     <value>デザリングがオンになっていますが、ガイドカメラが未接続です。</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
-    <value>PHD2デザリングピクセル</value>
+    <value>Dither Pixels</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>赤経のみデザリグ</value>
@@ -1150,8 +1150,8 @@
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
     <value>ASCOM ドームドライバに接続できません:</value>
   </data>
-  <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>ドライバーはスレーブ可能</value>
+  <data name="LblDomeDriverCanFollow" xml:space="preserve">
+    <value>ドライバーは追従可能です</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>シャッターの状況</value>
@@ -1180,8 +1180,8 @@
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>ホームポジションです。</value>
   </data>
-  <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>ドライバーによりスレーブになっています。</value>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value>ドライバーは望遠鏡を追従しています</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>旋回中</value>
@@ -1217,7 +1217,7 @@
     <value>ドームの接続が失われました。</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>ドームが切断されました</value>
+    <value>ドームの接続を解除しますか？</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
     <value>ドームは接続されていません</value>
@@ -1944,6 +1944,18 @@
   </data>
   <data name="LblMeridianOffset" xml:space="preserve">
     <value>子午線オフセット</value>
+  </data>
+  <data name="LblPHD2Setup" xml:space="preserve">
+    <value>PHD2 Setup</value>
+  </data>
+  <data name="LblMetaGuideSetup" xml:space="preserve">
+    <value>MetaGuide Setup</value>
+  </data>
+  <data name="LblMetaGuideIP" xml:space="preserve">
+    <value>MetaGuide IP</value>
+  </data>
+  <data name="LblMetaGuidePort" xml:space="preserve">
+    <value>MetaGuide Port</value>
   </data>
   <data name="LblMin" xml:space="preserve">
     <value>最小</value>
@@ -2773,13 +2785,13 @@
     <value>安定化</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
-    <value>PHD2の安定化ピクセル公差</value>
+    <value>Settle Pixel Tolerance</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
     <value>導入動作後の安定化時間</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
-    <value>PHD2安定化タイムアウト</value>
+    <value>Settle Timeout</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
     <value>ガイド開始再試行</value>
@@ -3761,14 +3773,68 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>ウィザード動作モード</value>
   </data>
+  <data name="LblDomeAzimuthToleranceDegrees" xml:space="preserve">
+    <value>方位角の許容値(度)</value>
+  </data>
+  <data name="LblDomeAzimuthToleranceDegreesTooltip" xml:space="preserve">
+    <value>目標方位角がこの値より離れている場合、ドームは旋回します</value>
+  </data>
+  <data name="LblDomeDirectDriver" xml:space="preserve">
+    <value>NINAダイレクトフォローを使用する</value>
+  </data>
+  <data name="LblDomeFindHome" xml:space="preserve">
+    <value>ホームポジションを見つける</value>
+  </data>
+  <data name="LblDomeGemAxisLength" xml:space="preserve">
+    <value>GEM軸長(mm)</value>
+  </data>
+  <data name="LblDomeGemAxisLengthTooltip" xml:space="preserve">
+    <value>経緯台の場合は0にする必要があります。 赤道儀では、赤経 を +/- 90 度まで旋回し、回転軸から望遠鏡の開口部の中心までの、横方向の距離(mm)を測定します</value>
+  </data>
+  <data name="LblDomeLateralAxisLength" xml:space="preserve">
+    <value>Lateral Axis Length (mm)</value>
+  </data>
+  <data name="LblDomeLateralAxisLengthTooltip" xml:space="preserve">
+    <value>In a side-by-side configuration, this is the distance (laterally, in mm) from the saddle to the OTA center. Positive is to the right when facing the celestial pole.</value>
+  </data>
+  <data name="LblDomeRadius" xml:space="preserve">
+    <value>ドーム半径(mm)</value>
+  </data>
+  <data name="LblDomeRadiusTooltip" xml:space="preserve">
+    <value>ドームの中心から周辺からまでをベースに沿って測定</value>
+  </data>
+  <data name="LblDomeScopeEW" xml:space="preserve">
+    <value>Scope Position E/W (mm)</value>
+  </data>
+  <data name="LblDomeScopeEWTooltip" xml:space="preserve">
+    <value>Measure the East or West offset (in mm) of the center of the mount from the center of the dome. Positive is to the right when facing the celestial pole.</value>
+  </data>
+  <data name="LblDomeScopeNS" xml:space="preserve">
+    <value>Scope Position N/S (mm)</value>
+  </data>
   <data name="LblCancelSequence" xml:space="preserve">
     <value>シーケンスの取り消し</value>
+  </data>
+  <data name="LblDomeScopeNSTooltip" xml:space="preserve">
+    <value>Measure the North or South offset (in mm) of the center of the mount from the center of the dome. Positive is towards the celestial pole.</value>
   </data>
   <data name="LblPauseSequence" xml:space="preserve">
     <value>シーケンスの一時停止</value>
   </data>
+  <data name="LblDomeScopeUD" xml:space="preserve">
+    <value>スコープ位置 +上/-下 (mm)</value>
+  </data>
+  <data name="LblDomeScopeUDTooltip" xml:space="preserve">
+    <value>マウント軸の中心と、ドームのベースとの高さの差(mm)を測定します。 経緯台の場合は高度軸の中心からの値であり、赤道儀の場合は赤経軸と赤緯軸 が交差する場所からの値です。 正の数値は、中心軸がドームのベースよりも高いことを示し、負の数は低いことを意味します。</value>
+  </data>
+  <data name="LblDomeSettings" xml:space="preserve">
+    <value>ドーム設定</value>
+  </data>
   <data name="LblResumeSequence" xml:space="preserve">
     <value>シーケンスの再開</value>
+  </data>
+  <data name="LblDomeFollowing" xml:space="preserve">
+    <value>ドームは望遠鏡に追従しています</value>
   </data>
   <data name="LblStartSequence" xml:space="preserve">
     <value>シーケンスの開始</value>
@@ -3778,6 +3844,9 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
     <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムのみが含まれています。カメラがカバーされていることを確認してください。</value>
+  </data>
+  <data name="LblAutoFocusFilterSettings" xml:space="preserve">
+    <value>Auto Focus Filter Settings</value>
   </data>
   <data name="LblMeridianFlipIn" xml:space="preserve">
     <value>子午線フリップに入りました</value>
@@ -3801,25 +3870,25 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>フォーカサーがポジション {0} に移動中です</value>
   </data>
   <data name="LblCameraConnectedOnExit" xml:space="preserve">
-    <value>Camera still connected. Exit anyway?</value>
+    <value>カメラはまだ接続されていますが、そのまま終了しますか？</value>
   </data>
   <data name="LblDisconnectCamera" xml:space="preserve">
-    <value>Disconnect Camera?</value>
+    <value>カメラの接続を解除しますか？</value>
   </data>
   <data name="LblDisconnectFilterWheel" xml:space="preserve">
-    <value>Disconnect Filter Wheel?</value>
+    <value>フィルターホイールの接続を解除しますか？</value>
   </data>
   <data name="LblDisconnectFocuser" xml:space="preserve">
-    <value>Disconnect Focuser?</value>
+    <value>フォーカサーの接続を解除しますか？</value>
   </data>
   <data name="LblDisconnectRotator" xml:space="preserve">
-    <value>Disconnect Rotator?</value>
+    <value>回転装置の接続を解除しますか？</value>
   </data>
   <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Disconnect Telescope?</value>
+    <value>望遠鏡の接続を解除しますか？</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
-    <value>Side of Pier</value>
+    <value>ピアサイド</value>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>カメラのタイムアウト</value>
@@ -3827,10 +3896,109 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
     <value>露出時間の後の、画像が失われたと見なされるまでの時間。 露出+タイムアウト時間後に、カメラが画像準備イベントを送信しない場合、露出はキャンセルされます。</value>
   </data>
-  <data name="LblEast" xml:space="preserve">
-    <value>East</value>
+  <data name="LblCalibrationState" xml:space="preserve">
+    <value>Calibration State</value>
   </data>
-  <data name="LblWest" xml:space="preserve">
-    <value>West</value>
+  <data name="LblFWHM" xml:space="preserve">
+    <value>FWHM</value>
+  </data>
+  <data name="LblIntensity" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
+  <data name="LblMinIntensity" xml:space="preserve">
+    <value>Minimum Intensity</value>
+  </data>
+  <data name="LblMinIntensityTooltip" xml:space="preserve">
+    <value>Guide star intensity is measured on a scale of 0-255. If intensity drops below this amount, then NINA will pause guiding until it returns. This may indicate the presence of clouds.</value>
+  </data>
+  <data name="LblSeeing" xml:space="preserve">
+    <value>Seeing</value>
+  </data>
+  <data name="LblMetaGuideConnectionFailed" xml:space="preserve">
+    <value>Failed to connect to MetaGuide</value>
+  </data>
+  <data name="LblMetaGuideLowIntensityRestoreGuiding" xml:space="preserve">
+    <value>Guiding resumed</value>
+  </data>
+  <data name="LblMetaGuideLowIntensityRestoreGuidingFailed" xml:space="preserve">
+    <value>Failed to resume guiding after star intensity recovered</value>
+  </data>
+  <data name="LblDomeFollowFailure" xml:space="preserve">
+    <value>ドーム同期エラー. 望遠鏡に追従できません,{0}</value>
+  </data>
+  <data name="LblCloseDomeShutterAtSequenceEnd" xml:space="preserve">
+    <value>シーケンス終了時にドームのシャッターを閉じる</value>
+  </data>
+  <data name="LblDomeEnableFollowingWarning" xml:space="preserve">
+    <value>ドーム/望遠鏡追従機能を有効化できません</value>
+  </data>
+  <data name="LblParkDomeAtSequenceEnd" xml:space="preserve">
+    <value>シーケンス終了時にドームをパークさせる</value>
+  </data>
+  <data name="LblDomeFindHomeBeforePark" xml:space="preserve">
+    <value>パークする前にホームポジションを見つける</value>
+  </data>
+  <data name="LblDomeFindHomeBeforeParkTooltip" xml:space="preserve">
+    <value>正確な位置合わせが必要なとき、FindHomeが利用可能であれば、これによって正しい位置にパークさせる確実性を向上させることができます。</value>
+  </data>
+  <data name="LblAutoFocusTimeout" xml:space="preserve">
+    <value>オートフォーカスシーケンスのタイムアウト</value>
+  </data>
+  <data name="LblAutoFocusTimeoutTooltip" xml:space="preserve">
+    <value>シーケンス中（動作キャンセル前）の、オートフォーカスを待つ時間（秒）</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>東</value>
+  </data>
+  <data name="LblMetaGuideLowIntensityStopGuiding" xml:space="preserve">
+    <value>Stopped guiding due to low star intensity. There may be clouds.</value>
+  </data>
+  <data name="LblDomeSyncTimeout" xml:space="preserve">
+    <value>同期のタイムアウト</value>
+  </data>
+  <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
+    <value>ドームと望遠鏡が位置を同期するまでの最大時間（秒）</value>
+  </data>
+  <data name="LblC2A" xml:space="preserve">
+    <value>C2A</value>
+  </data>
+  <data name="LblCameraName" xml:space="preserve">
+    <value>Camera Name</value>
+  </data>
+  <data name="LblRotatorAngleDescription" xml:space="preserve">
+    <value>Angle of the rotator</value>
+  </data>
+  <data name="LblStarCount" xml:space="preserve">
+    <value>Star count</value>
+  </data>
+  <data name="LblMetaGuideVersionCheckFailed" xml:space="preserve">
+    <value>Update MetaGuide to at least {0}</value>
+  </data>
+  <data name="LblMetaGuideDitherSettleTime" xml:space="preserve">
+    <value>Dither settling time</value>
+  </data>
+  <data name="LblMetaGuideDitherSettleTimeTooltip" xml:space="preserve">
+    <value>Amount of time, in seconds, to wait for dithering to complete</value>
+  </data>
+  <data name="LblMetaGuideLockWhenGuiding" xml:space="preserve">
+    <value>Lock star when guiding</value>
+  </data>
+  <data name="LblCoordinatesToFramingTooltip" xml:space="preserve">
+    <value>Send coordinates to the Framing Wizard</value>
+  </data>
+  <data name="LblImportTargets" xml:space="preserve">
+    <value>Import Targets from external source</value>
+  </data>
+  <data name="LblUnknownImportFormat" xml:space="preserve">
+    <value>Unknown format to import targets</value>
+  </data>
+  <data name="LblUltraMode" xml:space="preserve">
+    <value>Ultra Mode</value>
+  </data>
+  <data name="LblUltraModeTooltip" xml:space="preserve">
+    <value>Enables the Ultra Mode for extra low read noise </value>
+  </data>
+  <data name="LblMeridianFlipWaitLonger" xml:space="preserve">
+    <value>Add {0} to Minutes after Meridian</value>
   </data>
 </root>

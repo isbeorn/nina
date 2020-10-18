@@ -53,7 +53,6 @@ namespace NINA.ViewModel {
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 _nightDuration = null; //Clear cache
-                SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
             };
@@ -67,6 +66,7 @@ namespace NINA.ViewModel {
 
         private void ResetFilters(object obj) {
             SelectedDate = DateTime.Now;
+            ResetRiseAndSetTimes();
 
             SearchObjectName = string.Empty;
 
@@ -101,7 +101,7 @@ namespace NINA.ViewModel {
             OrderByDirection = SkyAtlasOrderByDirectionEnum.DESC;
         }
 
-        private void ResetRiseAndSetTimes() {
+        public void ResetRiseAndSetTimes() {
             MoonPhase = Astrometry.MoonPhase.Unknown;
             Illumination = null;
             MoonRiseAndSet = null;
@@ -109,6 +109,10 @@ namespace NINA.ViewModel {
             TwilightRiseAndSet = null;
             _nightDuration = null;
             _twilightDuration = null;
+
+            InitializeElevationFilters();
+            RaisePropertyChanged(nameof(NightDuration));
+            RaisePropertyChanged(nameof(TwilightDuration));
         }
 
         private CancellationTokenSource _searchTokenSource;
@@ -276,18 +280,16 @@ namespace NINA.ViewModel {
             set {
                 _selectedDate = value;
                 RaisePropertyChanged();
-                InitializeElevationFilters();
-                ResetRiseAndSetTimes();
             }
         }
 
         public static DateTime GetReferenceDate(DateTime reference) {
             DateTime d = reference;
             if (d.Hour > 12) {
-                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0);
+                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0, reference.Kind);
             } else {
                 var tmp = d.AddDays(-1);
-                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0);
+                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0, reference.Kind);
             }
             return d;
         }
@@ -326,7 +328,7 @@ namespace NINA.ViewModel {
 
                     var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                     var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
-
+                    ResetRiseAndSetTimes();
                     DateTime d = GetReferenceDate(SelectedDate);
 
                     Parallel.ForEach(result, (obj) => {

@@ -26,9 +26,9 @@ namespace NINA.Utility.SkySurvey {
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
             int height, CancellationToken ct, IProgress<int> progress) {
-            var arcSecPerPixel = 0.5;
+            var arcSecPerPixel = 2;
             fieldOfView = Math.Round(fieldOfView, 2);
-            var pixels = Math.Ceiling(Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000));
+            var pixels = Math.Ceiling(Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) / arcSecPerPixel, 5000));
 
             var request = new Http.HttpDownloadImageRequest(
                Url,

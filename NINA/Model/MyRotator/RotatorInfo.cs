@@ -15,6 +15,20 @@
 namespace NINA.Model.MyRotator {
 
     public class RotatorInfo : DeviceInfo {
+        private bool canReverse;
+
+        public bool CanReverse {
+            get { return canReverse; }
+            set { canReverse = value; RaisePropertyChanged(); }
+        }
+
+        private bool reverse;
+
+        public bool Reverse {
+            get { return reverse; }
+            set { reverse = value; RaisePropertyChanged(); }
+        }
+
         private float position;
 
         public float Position {

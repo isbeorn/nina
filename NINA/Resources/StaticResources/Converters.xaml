@@ -36,6 +36,7 @@
     <converters:ValueToLocaleConverter x:Key="ValueToLocaleConverter" />
     <converters:HoursToHMSConverter x:Key="HoursToHMSConverter" />
     <converters:DegreesToDMSConverter x:Key="DegreesToDMSConverter" />
+    <converters:SideOfPierConverter x:Key="SideOfPierConverter" />
     <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
     <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
     <converters:PercentageConverter x:Key="PercentageConverter" />

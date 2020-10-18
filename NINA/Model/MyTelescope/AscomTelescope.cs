@@ -915,8 +915,14 @@ namespace NINA.Model.MyTelescope {
                             Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeConnectionLost"]);
                             Disconnect();
                         }
-                    } catch (Exception) {
-                        Disconnect();
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeConnectionLost"]);
+                        try {
+                            Disconnect();
+                        } catch (Exception disconnectEx) {
+                            Logger.Error(disconnectEx);
+                        }
                     }
                     return val;
                 } else {

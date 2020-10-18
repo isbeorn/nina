@@ -223,7 +223,6 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Cam.TemperatureSetPoint = Cam.Temperature;
                 throw ex;
             } finally {
-                progress.Report(1);
             }
 
             return true;
@@ -550,7 +549,7 @@ namespace NINA.ViewModel.Equipment.Camera {
         private CancellationTokenSource _cancelConnectCameraSource;
 
         private async Task<bool> DisconnectDiag() {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectCamera"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 await Disconnect();
             }
@@ -643,7 +642,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                 }
                 this.exposureTime = sequence.ExposureTime;
                 double exposureTime = sequence.ExposureTime;
-                Logger.Debug($"Starting Exposure - Exposure Time: {exposureTime}s; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX};");
+                Logger.Info($"Starting Exposure - Exposure Time: {exposureTime}s; Filter: {sequence.FilterType?.Name}; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX}x{CameraInfo.BinY};");
 
                 Cam.StartExposure(sequence);
 

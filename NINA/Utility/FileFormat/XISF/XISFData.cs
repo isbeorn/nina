@@ -13,7 +13,7 @@
 #endregion "copyright"
 
 using Ionic.Zlib;
-using LZ4;
+using K4os.Compression.LZ4;
 using NINA.Utility.Enum;
 using SHA3;
 using System;
@@ -114,46 +114,47 @@ namespace NINA.Utility.FileFormat.XISF {
              * Compress the data block as configured.
              */
             using (MyStopWatch.Measure($"XISF Compression = {CompressionType}")) {
-                switch (CompressionType) {
-                    case XISFCompressionTypeEnum.LZ4:
-                        if (ByteShuffling) {
-                            CompressionName = "lz4+sh";
-                            byteArray = Shuffle(byteArray, ShuffleItemSize);
-                        } else {
-                            CompressionName = "lz4";
-                        }
+                if (CompressionType == XISFCompressionTypeEnum.LZ4) {
+                    if (ByteShuffling) {
+                        CompressionName = "lz4+sh";
+                        byteArray = Shuffle(byteArray, ShuffleItemSize);
+                    } else {
+                        CompressionName = "lz4";
+                    }
 
-                        outArray = LZ4Codec.Encode(byteArray, 0, byteArray.Length);
+                    byte[] tmpArray = new byte[LZ4Codec.MaximumOutputSize(byteArray.Length)];
+                    int compressedSize = LZ4Codec.Encode(byteArray, 0, byteArray.Length, tmpArray, 0, tmpArray.Length, LZ4Level.L00_FAST);
 
-                        break;
+                    outArray = new byte[compressedSize];
+                    Array.Copy(tmpArray, outArray, outArray.Length);
+                    tmpArray = null;
+                } else if (CompressionType == XISFCompressionTypeEnum.LZ4HC) {
+                    if (ByteShuffling) {
+                        CompressionName = "lz4hc+sh";
+                        byteArray = Shuffle(byteArray, ShuffleItemSize);
+                    } else {
+                        CompressionName = "lz4hc";
+                    }
 
-                    case XISFCompressionTypeEnum.LZ4HC:
-                        if (ByteShuffling) {
-                            CompressionName = "lz4hc+sh";
-                            byteArray = Shuffle(byteArray, ShuffleItemSize);
-                        } else {
-                            CompressionName = "lz4hc";
-                        }
+                    byte[] tmpArray = new byte[LZ4Codec.MaximumOutputSize(byteArray.Length)];
+                    int compressedSize = LZ4Codec.Encode(byteArray, 0, byteArray.Length, tmpArray, 0, tmpArray.Length, LZ4Level.L06_HC);
 
-                        outArray = LZ4Codec.EncodeHC(byteArray, 0, byteArray.Length);
-                        break;
+                    outArray = new byte[compressedSize];
+                    Array.Copy(tmpArray, outArray, outArray.Length);
+                    tmpArray = null;
+                } else if (CompressionType == XISFCompressionTypeEnum.ZLIB) {
+                    if (ByteShuffling) {
+                        CompressionName = "zlib+sh";
+                        byteArray = Shuffle(byteArray, ShuffleItemSize);
+                    } else {
+                        CompressionName = "zlib";
+                    }
 
-                    case XISFCompressionTypeEnum.ZLIB:
-                        if (ByteShuffling) {
-                            CompressionName = "zlib+sh";
-                            byteArray = Shuffle(byteArray, ShuffleItemSize);
-                        } else {
-                            CompressionName = "zlib";
-                        }
-
-                        outArray = ZlibStream.CompressBuffer(byteArray);
-                        break;
-
-                    case XISFCompressionTypeEnum.NONE:
-                    default:
-                        outArray = byteArray;
-                        CompressionName = null;
-                        break;
+                    outArray = ZlibStream.CompressBuffer(byteArray);
+                } else {
+                    outArray = new byte[byteArray.Length];
+                    Array.Copy(byteArray, outArray, outArray.Length);
+                    CompressionName = null;
                 }
             }
 

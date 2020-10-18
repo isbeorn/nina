@@ -379,5 +379,41 @@ namespace NINATest {
 
             sut.Distance.ArcSeconds.Should().BeApproximately(expectedDistance, 0.01);
         }
+
+        [Test]
+        [TestCase(0, 0, 0, 0, 0, 0)]
+        [TestCase(0, 0, 10, 10, 10, 10)]
+        [TestCase(0, 0, -10, -10, 350, -10)]
+        [TestCase(10, 10, 0, 0, 10, 10)]
+        [TestCase(10, 10, -10, -10, 0, 0)]
+        [TestCase(10, 10, -20, -20, 350, -10)]
+        [TestCase(350, -10, 20, 20, 10, 10)]
+        public void AddSeparationTest(double ra1, double dec1, double ra2, double dec2, double expectedRA, double expectedDec) {
+            var coordinates = new Coordinates(ra1, dec1, Epoch.J2000, Coordinates.RAType.Degrees);
+            var separation = new Separation() { RA = Angle.ByDegree(ra2), Dec = Angle.ByDegree(dec2) };
+
+            var sut = coordinates + separation;
+
+            sut.RADegrees.Should().Be(expectedRA);
+            sut.Dec.Should().Be(expectedDec);
+        }
+
+        [Test]
+        [TestCase(0, 0, 0, 0, 0, 0)]
+        [TestCase(0, 0, -10, -10, 10, 10)]
+        [TestCase(0, 0, 10, 10, 350, -10)]
+        [TestCase(10, 10, 0, 0, 10, 10)]
+        [TestCase(10, 10, 10, 10, 0, 0)]
+        [TestCase(10, 10, 20, 20, 350, -10)]
+        [TestCase(350, -10, -20, -20, 10, 10)]
+        public void SubstractSeparationTest(double ra1, double dec1, double ra2, double dec2, double expectedRA, double expectedDec) {
+            var coordinates = new Coordinates(ra1, dec1, Epoch.J2000, Coordinates.RAType.Degrees);
+            var separation = new Separation() { RA = Angle.ByDegree(ra2), Dec = Angle.ByDegree(dec2) };
+
+            var sut = coordinates - separation;
+
+            sut.RADegrees.Should().Be(expectedRA);
+            sut.Dec.Should().Be(expectedDec);
+        }
     }
 }

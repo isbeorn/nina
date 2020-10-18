@@ -420,24 +420,29 @@ namespace NINA.Model.MyCamera {
         public Task<IExposureData> DownloadExposure(CancellationToken token) {
             return Task.Run<IExposureData>(async () => {
                 if (downloadExposure.Task.IsCanceled) { return null; }
+
+                EDSDK.EdsDirectoryItemInfo directoryItemInfo;
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
+
                 try {
                     using (token.Register(() => CancelDownloadExposure())) {
                         await downloadExposure.Task;
                     }
 
                     using (MyStopWatch.Measure("Canon - Image Download")) {
-                        CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(DirectoryItem, out var directoryItemInfo));
+                        CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(DirectoryItem, out directoryItemInfo));
 
-                        //create a file stream to accept the image
+                        // Create a memory stream to accept the image
                         CheckAndThrowError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out memoryStreamHandle));
 
-                        //download image
+                        // Download image
+                        Logger.Debug($"CANON: Downloading {directoryItemInfo.szFileName} ({directoryItemInfo.Size} bytes)");
                         CheckAndThrowError(EDSDK.EdsDownload(DirectoryItem, directoryItemInfo.Size, memoryStreamHandle));
 
-                        //complete download
+                        // Complete download
                         CheckAndThrowError(EDSDK.EdsDownloadComplete(DirectoryItem));
+                        Logger.Debug($"CANON: Image {directoryItemInfo.szFileName} downloaded");
 
                         token.ThrowIfCancellationRequested();
                     }
@@ -449,15 +454,15 @@ namespace NINA.Model.MyCamera {
 
                         byte[] rawImageData = new byte[length];
 
-                        //Move from unmanaged to managed code.
+                        // Move from unmanaged to managed code.
                         Marshal.Copy(imageDataPointer, rawImageData, 0, rawImageData.Length);
 
-                        //release directory item
+                        // Release directory item
                         if (this.DirectoryItem != IntPtr.Zero) {
                             CheckAndThrowError(EDSDK.EdsRelease(DirectoryItem));
                         }
 
-                        //release stream
+                        // Release stream
                         if (memoryStreamHandle != IntPtr.Zero) {
                             CheckAndThrowError(EDSDK.EdsRelease(memoryStreamHandle));
                         }
@@ -468,7 +473,7 @@ namespace NINA.Model.MyCamera {
                         return new RAWExposureData(
                             rawConverter: rawConverter,
                             rawBytes: rawImageData,
-                            rawType: "cr2",
+                            rawType: GetFileType(directoryItemInfo),
                             bitDepth: BitDepth,
                             metaData: new ImageMetaData());
                     }
@@ -502,6 +507,14 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetupDialog() {
+        }
+
+        private string GetFileType(EDSDK.EdsDirectoryItemInfo directoryItemInfo) {
+            if (directoryItemInfo.szFileName.EndsWith(".cr3", StringComparison.InvariantCultureIgnoreCase)) {
+                return "cr3";
+            } else {
+                return "cr2";
+            }
         }
 
         private void ValidateMode() {

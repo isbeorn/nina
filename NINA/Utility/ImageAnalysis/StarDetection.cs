@@ -213,16 +213,9 @@ namespace NINA.Utility.ImageAnalysis {
         public void Detect(IProgress<ApplicationStatus> progress) {
             try {
                 using (MyStopWatch.Measure()) {
-                    Stopwatch overall = Stopwatch.StartNew();
                     progress?.Report(new ApplicationStatus() { Status = "Preparing image for star detection" });
 
-                    Stopwatch sw = Stopwatch.StartNew();
-
                     _bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(_originalBitmapSource);
-
-                    Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
-
-                    sw.Restart();
 
                     _token.ThrowIfCancellationRequested();
 
@@ -251,22 +244,17 @@ namespace NINA.Utility.ImageAnalysis {
                     if (_starlist.Count > 0) {
                         var m = (from star in _starlist select star.HFR).Average();
                         var s = Math.Sqrt(((from star in _starlist select star.HFR * star.HFR).Sum() - _starlist.Count() * m * m) / _starlist.Count());
-                        Debug.Print("Mean HFR: " + m);
-                        Debug.Print("HFR Standard Dev: " + s);
+
+                        Logger.Info($"Average HFR: {m}, HFR σ: {s}, Detected Stars {_starlist.Count}");
+
                         //todo change
                         AverageHFR = m;
-                        HFRStdDev = s;
+                        HFRStdDev = double.IsNaN(s) ? 0 : s;
                         DetectedStars = _starlist.Count;
                     }
 
-                    sw.Stop();
-                    sw = null;
-
                     _blobCounter = null;
                     _bitmapToAnalyze.Dispose();
-                    overall.Stop();
-                    Debug.Print("Overall star detection: " + overall.Elapsed);
-                    overall = null;
                 }
             } catch (OperationCanceledException) {
             } finally {

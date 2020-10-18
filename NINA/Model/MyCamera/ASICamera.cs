@@ -537,10 +537,10 @@ namespace NINA.Model.MyCamera {
 
         public int Offset {
             get {
-                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OFFSET);
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS, value)) {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OFFSET, value)) {
                     RaisePropertyChanged();
                 }
             }
@@ -548,13 +548,13 @@ namespace NINA.Model.MyCamera {
 
         public int OffsetMin {
             get {
-                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OFFSET);
             }
         }
 
         public int OffsetMax {
             get {
-                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OFFSET);
             }
         }
 
@@ -682,6 +682,15 @@ namespace NINA.Model.MyCamera {
                 Logger.Info($"Resetting ASI Flip Status to NONE. It was {flip}");
                 SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_FLIP, (int)ASICameraDll.ASI_FLIP_STATUS.ASI_FLIP_NONE);
             }
+
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_WB_B, 50);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_WB_R, 50);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAMMA, 50);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HIGH_SPEED_MODE, 0);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, 0);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_MONO_BIN, 0);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OVERCLOCK, 0);
+            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_PATTERN_ADJUST, 0);
         }
 
         public async Task<bool> Connect(CancellationToken token) {

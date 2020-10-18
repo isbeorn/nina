@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.SkySurvey {
@@ -35,7 +36,7 @@ namespace NINA.Utility.SkySurvey {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.cr3;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.cr3;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
 
             if (dialog.ShowDialog() == true) {
                 var arr = await ImageData.FromFile(dialog.FileName, 16, false, Enum.RawConverterEnum.FREEIMAGE, ct);
@@ -45,12 +46,23 @@ namespace NINA.Utility.SkySurvey {
                 var targetName = string.IsNullOrWhiteSpace(arr.MetaData.Target?.Name) ? Path.GetFileNameWithoutExtension(dialog.FileName) : arr.MetaData.Target.Name;
 
                 if (arr.MetaData.WorldCoordinateSystem != null) {
+                    var img = renderedImage.Image;
+                    if (arr.MetaData.WorldCoordinateSystem.Flipped) {
+                        var tb = new TransformedBitmap();
+                        tb.BeginInit();
+                        tb.Source = renderedImage.Image;
+                        var transform = new ScaleTransform(-1, 1, 0, 0);
+                        tb.Transform = transform;
+                        tb.EndInit();
+                        img = tb;
+                    }
+
                     return new FileSkySurveyImage() {
                         Name = targetName,
                         Coordinates = arr.MetaData.WorldCoordinateSystem.GetCoordinates(renderedImage.Image.PixelWidth / 2, renderedImage.Image.PixelHeight / 2),
                         FoVHeight = Astrometry.Astrometry.ArcsecToArcmin(arr.MetaData.WorldCoordinateSystem.PixelScaleY * renderedImage.Image.PixelHeight),
                         FoVWidth = Astrometry.Astrometry.ArcsecToArcmin(arr.MetaData.WorldCoordinateSystem.PixelScaleX * renderedImage.Image.PixelWidth),
-                        Image = renderedImage.Image,
+                        Image = img,
                         Rotation = arr.MetaData.WorldCoordinateSystem.Rotation,
                         Source = nameof(FileSkySurvey),
                         Data = arr

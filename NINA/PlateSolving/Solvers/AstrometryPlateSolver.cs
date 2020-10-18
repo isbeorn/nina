@@ -131,7 +131,7 @@ namespace NINA.PlateSolving.Solvers {
                     FileType = FileTypeEnum.FITS
                 };
 
-                filePath = await source.SaveToDisk(fileSaveInfo, cancelToken);
+                filePath = await source.SaveToDisk(fileSaveInfo, cancelToken, forceFileType: true);
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
                     return await SubmitImageStream(fs, session, cancelToken);
                 }
@@ -215,6 +215,7 @@ namespace NINA.PlateSolving.Solvers {
 
                 result.Orientation = jobinfo.calibration.orientation;
                 /* The orientation is mirrored on the x-axis */
+                result.Flipped = jobinfo.calibration.parity < 0;
                 result.Orientation = 180 - result.Orientation + 360;
 
                 result.Pixscale = jobinfo.calibration.pixscale;

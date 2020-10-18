@@ -109,6 +109,35 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
+                <Border
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    IsEnabled="{Binding RotatorInfo.CanReverse}">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblReverse}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblRotatorReverseTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding ReverseCommand}"
+                                CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding RotatorInfo.Reverse}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblRotatorReverseTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                     <UniformGrid Columns="2">
                         <UniformGrid

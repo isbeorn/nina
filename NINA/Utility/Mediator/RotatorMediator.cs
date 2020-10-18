@@ -22,6 +22,10 @@ namespace NINA.Utility.Mediator {
 
     internal class RotatorMediator : DeviceMediator<IRotatorVM, IRotatorConsumer, RotatorInfo>, IRotatorMediator {
 
+        public void Sync(float skyAngle) {
+            handler.Sync(skyAngle);
+        }
+
         public Task<float> Move(float position) {
             return handler.Move(position);
         }

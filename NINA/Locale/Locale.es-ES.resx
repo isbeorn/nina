@@ -1151,7 +1151,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Dithering esta habilitado pero el guiado no esta conectado</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
-    <value>PHD2 Dither Pixeles</value>
+    <value>Dither Pixels</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither AR Solamente</value>
@@ -1162,8 +1162,8 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
     <value>No se puede conectar al controlador de cúpula ASCOM:</value>
   </data>
-  <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver se puede acoplar</value>
+  <data name="LblDomeDriverCanFollow" xml:space="preserve">
+    <value>El controlador puede seguir</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Estado de la apertura</value>
@@ -1192,8 +1192,8 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>En la posición inicial (home)</value>
   </data>
-  <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Esclavo a través del driver</value>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value>El controlador sigue el telescopio</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girando</value>
@@ -1229,7 +1229,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Perdida conexión con cúpula.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Cúpula desconectada</value>
+    <value>¿Desconectar la cúpula?</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
     <value>Cúpula no conectada</value>
@@ -1959,6 +1959,18 @@ Calculado HFR: {2}
   </data>
   <data name="LblMeridianOffset" xml:space="preserve">
     <value>Compensacion del Meridiano</value>
+  </data>
+  <data name="LblPHD2Setup" xml:space="preserve">
+    <value>PHD2 Setup</value>
+  </data>
+  <data name="LblMetaGuideSetup" xml:space="preserve">
+    <value>MetaGuide Setup</value>
+  </data>
+  <data name="LblMetaGuideIP" xml:space="preserve">
+    <value>MetaGuide IP</value>
+  </data>
+  <data name="LblMetaGuidePort" xml:space="preserve">
+    <value>MetaGuide Port</value>
   </data>
   <data name="LblMin" xml:space="preserve">
     <value>Minimo</value>
@@ -2789,13 +2801,13 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>Establecer</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
-    <value>Tolerancia PHD2 Settle Pixel</value>
+    <value>Settle Pixel Tolerance</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
     <value>Tiempo de Espera despues de Ir a</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
-    <value>PHD2 Timeout para Espera</value>
+    <value>Settle Timeout</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
     <value>Reintentar guiado</value>
@@ -3599,7 +3611,7 @@ El valor predeterminado del Auto utiliza cualquier matriz que el controlador de 
     <value>Exposición finalizada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
+    <value>Tiempo de espera de la cámara agotado - La cámara no configuró la imagen como preparada tras el tiempo de exposición + {0} segundos</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Vista previa de la matriz</value>
@@ -3783,23 +3795,80 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Modo de Operación con Asistente</value>
   </data>
+  <data name="LblDomeAzimuthToleranceDegrees" xml:space="preserve">
+    <value>Tolerancia azimutal (grados)</value>
+  </data>
+  <data name="LblDomeAzimuthToleranceDegreesTooltip" xml:space="preserve">
+    <value>La cúpula gira, si el azimut del objetivo supéra esta cantidad</value>
+  </data>
+  <data name="LblDomeDirectDriver" xml:space="preserve">
+    <value>Usar seguimiento directo de NINA</value>
+  </data>
+  <data name="LblDomeFindHome" xml:space="preserve">
+    <value>Encontrar posición inicial</value>
+  </data>
+  <data name="LblDomeGemAxisLength" xml:space="preserve">
+    <value>Longitud del eje GEM (mm)</value>
+  </data>
+  <data name="LblDomeGemAxisLengthTooltip" xml:space="preserve">
+    <value>Si la montura es Alt/Az, debe ser 0. Para una montura EQ, desplaza el eje RA a +/- 90 grados, y mide la distancia lateral (en mm) desde el eje al centro de la apertura del telescopio</value>
+  </data>
+  <data name="LblDomeLateralAxisLength" xml:space="preserve">
+    <value>Lateral Axis Length (mm)</value>
+  </data>
+  <data name="LblDomeLateralAxisLengthTooltip" xml:space="preserve">
+    <value>In a side-by-side configuration, this is the distance (laterally, in mm) from the saddle to the OTA center. Positive is to the right when facing the celestial pole.</value>
+  </data>
+  <data name="LblDomeRadius" xml:space="preserve">
+    <value>Radio de la cúpula (mm)</value>
+  </data>
+  <data name="LblDomeRadiusTooltip" xml:space="preserve">
+    <value>Medida desde el centro hasta el borde de la cúpula, a lo largo de la base</value>
+  </data>
+  <data name="LblDomeScopeEW" xml:space="preserve">
+    <value>Scope Position E/W (mm)</value>
+  </data>
+  <data name="LblDomeScopeEWTooltip" xml:space="preserve">
+    <value>Measure the East or West offset (in mm) of the center of the mount from the center of the dome. Positive is to the right when facing the celestial pole.</value>
+  </data>
+  <data name="LblDomeScopeNS" xml:space="preserve">
+    <value>Scope Position N/S (mm)</value>
+  </data>
   <data name="LblCancelSequence" xml:space="preserve">
-    <value>Cancel Sequence</value>
+    <value>Cancelar secuencia</value>
+  </data>
+  <data name="LblDomeScopeNSTooltip" xml:space="preserve">
+    <value>Measure the North or South offset (in mm) of the center of the mount from the center of the dome. Positive is towards the celestial pole.</value>
   </data>
   <data name="LblPauseSequence" xml:space="preserve">
-    <value>Pause Sequence</value>
+    <value>Pausar secuencia</value>
+  </data>
+  <data name="LblDomeScopeUD" xml:space="preserve">
+    <value>Posición del telescopio +Arriba/Abajo (mm)</value>
+  </data>
+  <data name="LblDomeScopeUDTooltip" xml:space="preserve">
+    <value>Medir la diferencia de altura (en mm) del centro del eje de montura relativa a la base de la cúpula. Para una montura Alt/Az, esta es desde el centro del eje Altitud, y para una montura EQ aquí es donde los ejes RA y DEC intersecciones. Un número positivo indica que el centro del eje es más alto que la base de la cúpula, y un número negativo significa que es más bajo.</value>
+  </data>
+  <data name="LblDomeSettings" xml:space="preserve">
+    <value>Ajustes de la cúpula</value>
   </data>
   <data name="LblResumeSequence" xml:space="preserve">
-    <value>Resume Sequence</value>
+    <value>Reanudar secuencia</value>
+  </data>
+  <data name="LblDomeFollowing" xml:space="preserve">
+    <value>La cúpula sigue al telescopio</value>
   </data>
   <data name="LblStartSequence" xml:space="preserve">
-    <value>Start Sequence</value>
+    <value>Empezar secuencia</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats automatizado conectado y la secuencia contiene elementos DARK/BIAS además de los LIGHT.</value>
   </data>
   <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
     <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats conectado y la secuencia solo contiene elementos DARK/BIAS Asegúrate que la cámara está tapada.</value>
+  </data>
+  <data name="LblAutoFocusFilterSettings" xml:space="preserve">
+    <value>Auto Focus Filter Settings</value>
   </data>
   <data name="LblMeridianFlipIn" xml:space="preserve">
     <value>Cambio de meridiano en</value>
@@ -3817,42 +3886,141 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Este valor especifica la ganancia por defecto que debe ser usada siempre que no se haya establecido ninguna ganancia explícitamente</value>
   </data>
   <data name="LbLUsbLimitDescription" xml:space="preserve">
-    <value>Camera USB speed or traffic limit setting</value>
+    <value>Ajuste de velocidad USB de la cámara o de límite de tráfico</value>
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
-    <value>Moving focuser to position {0}</value>
+    <value>Moviendo el enfocador a la posición {0}</value>
   </data>
   <data name="LblCameraConnectedOnExit" xml:space="preserve">
-    <value>Camera still connected. Exit anyway?</value>
+    <value>Cámara todavía conectada. ¿Salir de todos modos?</value>
   </data>
   <data name="LblDisconnectCamera" xml:space="preserve">
-    <value>Disconnect Camera?</value>
+    <value>¿Desconectar la cámara?</value>
   </data>
   <data name="LblDisconnectFilterWheel" xml:space="preserve">
-    <value>Disconnect Filter Wheel?</value>
+    <value>¿Desconectar la rueda de filtros?</value>
   </data>
   <data name="LblDisconnectFocuser" xml:space="preserve">
-    <value>Disconnect Focuser?</value>
+    <value>¿Desconectar enfocador?</value>
   </data>
   <data name="LblDisconnectRotator" xml:space="preserve">
-    <value>Disconnect Rotator?</value>
+    <value>¿Desconectar rotador?</value>
   </data>
   <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Disconnect Telescope?</value>
+    <value>¿Desconectar Telescopio?</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
-    <value>Side of Pier</value>
+    <value>Lado de la columna</value>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
-    <value>Camera Timeout</value>
+    <value>Tiempo de espera de la cámara</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
-    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+    <value>Tiempo transcurrido tras el tiempo de exposición hasta que la imagen se considera como perdida. Cuando la cámara no envía una imagen después del tiempo de exposición + tiempo de espera, la exposición será cancelada.</value>
+  </data>
+  <data name="LblCalibrationState" xml:space="preserve">
+    <value>Calibration State</value>
+  </data>
+  <data name="LblFWHM" xml:space="preserve">
+    <value>FWHM</value>
+  </data>
+  <data name="LblIntensity" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
+  <data name="LblMinIntensity" xml:space="preserve">
+    <value>Minimum Intensity</value>
+  </data>
+  <data name="LblMinIntensityTooltip" xml:space="preserve">
+    <value>Guide star intensity is measured on a scale of 0-255. If intensity drops below this amount, then NINA will pause guiding until it returns. This may indicate the presence of clouds.</value>
+  </data>
+  <data name="LblSeeing" xml:space="preserve">
+    <value>Seeing</value>
+  </data>
+  <data name="LblMetaGuideConnectionFailed" xml:space="preserve">
+    <value>Failed to connect to MetaGuide</value>
+  </data>
+  <data name="LblMetaGuideLowIntensityRestoreGuiding" xml:space="preserve">
+    <value>Guiding resumed</value>
+  </data>
+  <data name="LblMetaGuideLowIntensityRestoreGuidingFailed" xml:space="preserve">
+    <value>Failed to resume guiding after star intensity recovered</value>
+  </data>
+  <data name="LblDomeFollowFailure" xml:space="preserve">
+    <value>Error de sincronización de la cúpula. Ya no sigue al telescopio. {0}</value>
+  </data>
+  <data name="LblCloseDomeShutterAtSequenceEnd" xml:space="preserve">
+    <value>Cerrar la apertura de la cúpula al final de la secuencia</value>
+  </data>
+  <data name="LblDomeEnableFollowingWarning" xml:space="preserve">
+    <value>No se pudo habilitar el seguimiento de la Cúpula / Telescopio</value>
+  </data>
+  <data name="LblParkDomeAtSequenceEnd" xml:space="preserve">
+    <value>Aparcar cúpula al final de la secuencia</value>
+  </data>
+  <data name="LblDomeFindHomeBeforePark" xml:space="preserve">
+    <value>Encontrar posición inicial antes de aparcar</value>
+  </data>
+  <data name="LblDomeFindHomeBeforeParkTooltip" xml:space="preserve">
+    <value>Si FindHome está disponible, entonces esto puede mejorar la fiabilidad del estacionamiento en la ubicación correcta, cuando se requiere una ubicación precisa.</value>
+  </data>
+  <data name="LblAutoFocusTimeout" xml:space="preserve">
+    <value>AF Sequence Timeout</value>
+  </data>
+  <data name="LblAutoFocusTimeoutTooltip" xml:space="preserve">
+    <value>Amount of time, in seconds, to wait for an auto focus during a sequence before cancelling to continue</value>
   </data>
   <data name="LblEast" xml:space="preserve">
-    <value>East</value>
+    <value>Este</value>
   </data>
-  <data name="LblWest" xml:space="preserve">
-    <value>West</value>
+  <data name="LblMetaGuideLowIntensityStopGuiding" xml:space="preserve">
+    <value>Stopped guiding due to low star intensity. There may be clouds.</value>
+  </data>
+  <data name="LblDomeSyncTimeout" xml:space="preserve">
+    <value>Tiempo de sincronización agotado</value>
+  </data>
+  <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
+    <value>La cantidad máxima de tiempo, en segundos, para esperar a que Cúpula y Telescopio sincronicen sus posiciones</value>
+  </data>
+  <data name="LblC2A" xml:space="preserve">
+    <value>C2A</value>
+  </data>
+  <data name="LblCameraName" xml:space="preserve">
+    <value>Camera Name</value>
+  </data>
+  <data name="LblRotatorAngleDescription" xml:space="preserve">
+    <value>Angle of the rotator</value>
+  </data>
+  <data name="LblStarCount" xml:space="preserve">
+    <value>Star count</value>
+  </data>
+  <data name="LblMetaGuideVersionCheckFailed" xml:space="preserve">
+    <value>Update MetaGuide to at least {0}</value>
+  </data>
+  <data name="LblMetaGuideDitherSettleTime" xml:space="preserve">
+    <value>Dither settling time</value>
+  </data>
+  <data name="LblMetaGuideDitherSettleTimeTooltip" xml:space="preserve">
+    <value>Amount of time, in seconds, to wait for dithering to complete</value>
+  </data>
+  <data name="LblMetaGuideLockWhenGuiding" xml:space="preserve">
+    <value>Lock star when guiding</value>
+  </data>
+  <data name="LblCoordinatesToFramingTooltip" xml:space="preserve">
+    <value>Send coordinates to the Framing Wizard</value>
+  </data>
+  <data name="LblImportTargets" xml:space="preserve">
+    <value>Import Targets from external source</value>
+  </data>
+  <data name="LblUnknownImportFormat" xml:space="preserve">
+    <value>Unknown format to import targets</value>
+  </data>
+  <data name="LblUltraMode" xml:space="preserve">
+    <value>Ultra Mode</value>
+  </data>
+  <data name="LblUltraModeTooltip" xml:space="preserve">
+    <value>Enables the Ultra Mode for extra low read noise </value>
+  </data>
+  <data name="LblMeridianFlipWaitLonger" xml:space="preserve">
+    <value>Add {0} to Minutes after Meridian</value>
   </data>
 </root>

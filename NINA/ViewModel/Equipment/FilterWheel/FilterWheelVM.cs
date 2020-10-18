@@ -69,6 +69,10 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
             try {
                 if (FW?.Connected == true) {
                     var prevFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == FilterWheelInfo.SelectedFilter?.Position).FirstOrDefault();
+                    if (inputFilter == null) {
+                        return prevFilter;
+                    }
+
                     var filter = FW.Filters.Where((x) => x.Position == inputFilter.Position).FirstOrDefault();
                     if (filter == null) {
                         Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (inputFilter.Position + 1)));
@@ -231,7 +235,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
         private CancellationTokenSource _cancelChooseFilterWheelSource;
 
         private async Task<bool> DisconnectFW() {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectFilterWheel"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 await Disconnect();
             }

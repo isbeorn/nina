@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using NINA.ViewModel;
 
 namespace NINATest.FlatDevice {
-
     [TestFixture]
     public class FlatDeviceVMTest {
         private FlatDeviceVM _sut;

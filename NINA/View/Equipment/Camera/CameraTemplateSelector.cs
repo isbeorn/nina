@@ -22,9 +22,12 @@ namespace NINA.View.Equipment {
         public DataTemplate Default { get; set; }
         public DataTemplate Touptek { get; set; }
         public DataTemplate QhyCcd { get; set; }
+        public DataTemplate Altair { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            if (item is AltairCamera || item is OmegonCamera || item is ToupTekCamera) {
+            if (item is AltairCamera) {
+                return Altair;
+            } else if (item is OmegonCamera || item is ToupTekCamera) {
                 return Touptek;
             } else if (item is QHYCamera) {
                 return QhyCcd;

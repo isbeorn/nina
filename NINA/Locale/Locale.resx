@@ -3717,10 +3717,67 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Moving focuser to position {0}</value>
   </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
+  </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Camera Timeout</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
     <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+  </data>
+  <data name="LblDomeSyncTimeout" xml:space="preserve">
+    <value>Synchronization Timeout</value>
+  </data>
+  <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
+    <value>The maximum amount of time, in seconds, to wait for the Dome and Telescope to synchronize their positions</value>
+  </data>
+  <data name="LblC2A" xml:space="preserve">
+    <value>C2A</value>
+  </data>
+  <data name="LblCameraName" xml:space="preserve">
+    <value>Camera Name</value>
+  </data>
+  <data name="LblRotatorAngleDescription" xml:space="preserve">
+    <value>Angle of the rotator</value>
+  </data>
+  <data name="LblStarCount" xml:space="preserve">
+    <value>Star count</value>
+  </data>
+  <data name="LblImportTargets" xml:space="preserve">
+    <value>Import Targets from external source</value>
+  </data>
+  <data name="LblUnknownImportFormat" xml:space="preserve">
+    <value>Unknown format to import targets</value>
+  </data>
+  <data name="LblUltraMode" xml:space="preserve">
+    <value>Ultra Mode</value>
+  </data>
+  <data name="LblUltraModeTooltip" xml:space="preserve">
+    <value>Enables the Ultra Mode for extra low read noise </value>
+  </data>
+  <data name="LblRotatorReverseTooltip" xml:space="preserve">
+    <value>Reverse movement direction of rotator. Toggle this, if the platesolver rotates into the wrong direction.</value>
+  </data>
+  <data name="LblHips2FitsSurvey" xml:space="preserve">
+    <value>HIPS 2 FITS Sky Survey</value>
   </data>
 </root>

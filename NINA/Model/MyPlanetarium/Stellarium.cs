@@ -85,6 +85,11 @@ namespace NINA.Model.MyPlanetarium {
                 var dec = z.Asin();
                 var ra = Angle.Atan2(y, x);
 
+                // A bug in Stellarium >= 0.20 will cause it to report negative y values which translates to a negative RA value. This is not desired.
+                if (ra.Radians < 0d) {
+                    ra = (2 * Math.PI) + ra;
+                }
+
                 var coordinates = new Coordinates(ra, dec, Epoch.J2000);
                 var dso = new DeepSkyObject(string.Empty, coordinates, string.Empty);
 

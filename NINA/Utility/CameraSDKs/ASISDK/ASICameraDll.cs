@@ -23,32 +23,27 @@ namespace ZWOptical.ASISDK {
             ASI_GAMMA,
             ASI_WB_R,
             ASI_WB_B,
-            ASI_BRIGHTNESS,
+            ASI_OFFSET,
             ASI_BANDWIDTHOVERLOAD,
             ASI_OVERCLOCK,
             ASI_TEMPERATURE,// return 10*temperature
             ASI_FLIP,
             ASI_AUTO_MAX_GAIN,
-            ASI_AUTO_MAX_EXP,
-            ASI_AUTO_MAX_BRIGHTNESS,
+            ASI_AUTO_MAX_EXP,//micro second
+            ASI_AUTO_TARGET_BRIGHTNESS,//target brightness
             ASI_HARDWARE_BIN,
             ASI_HIGH_SPEED_MODE,
             ASI_COOLER_POWER_PERC,
             ASI_TARGET_TEMP,// not need *10
             ASI_COOLER_ON,
-            ASI_MONO_BIN,
+            ASI_MONO_BIN,//lead to less grid at software bin mode for color camera
             ASI_FAN_ON,
             ASI_PATTERN_ADJUST,
-            ASI_ANTI_DEW_HEATER,
-            ASI_HUMIDITY,
-            ASI_ENABLE_DDR
+            ASI_ANTI_DEW_HEATER
         }
 
         public enum ASI_IMG_TYPE {
-
-            //Supported image type
             ASI_IMG_RAW8 = 0,
-
             ASI_IMG_RGB24,
             ASI_IMG_RAW16,
             ASI_IMG_Y8,
@@ -94,6 +89,7 @@ namespace ZWOptical.ASISDK {
             ASI_ERROR_VIDEO_MODE_ACTIVE,
             ASI_ERROR_EXPOSURE_IN_PROGRESS,
             ASI_ERROR_GENERAL_ERROR,//general error, eg: value is out of valid range
+            ASI_ERROR_INVALID_MODE,//the current mode is wrong
             ASI_ERROR_END
         };
 
@@ -134,9 +130,11 @@ namespace ZWOptical.ASISDK {
             public ASI_BOOL IsUSB3Host;
             public ASI_BOOL IsUSB3Camera;
             public float ElecPerADU;
+            public int BitDepth;
+            public ASI_BOOL IsTriggerCam;
 
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 24)]
-            public byte[] Unused;//[20];
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
+            public byte[] Unused;//[16];
 
             public string Name {
                 get { return Encoding.ASCII.GetString(name).TrimEnd((Char)0); }
@@ -286,6 +284,7 @@ namespace ZWOptical.ASISDK {
                 case ASI_ERROR_CODE.ASI_ERROR_VIDEO_MODE_ACTIVE:
                 case ASI_ERROR_CODE.ASI_ERROR_EXPOSURE_IN_PROGRESS:
                 case ASI_ERROR_CODE.ASI_ERROR_GENERAL_ERROR:
+                case ASI_ERROR_CODE.ASI_ERROR_INVALID_MODE:
                 case ASI_ERROR_CODE.ASI_ERROR_END:
                     throw new ASICameraException(errorCode, callingMethod, parameters);
                 default:

@@ -42,7 +42,7 @@ namespace NINATest {
         private Mock<IWeatherDataMediator> weatherDataMediatorMock;
         private Mock<IImagingMediator> imagingMediatorMock;
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock;
-        private Mock<IFlatDeviceMediator> _flatDeviceMediatorMock;
+        private Mock<IFlatDeviceMediator> flatDeviceMediatorMock;
         private FlatDeviceInfo _flatDevice;
         private CaptureSequenceList _dummyList;
         private SequenceVM _sut;
@@ -62,7 +62,7 @@ namespace NINATest {
             filterWheelMediatorMock = new Mock<IFilterWheelMediator>();
             guiderMediatorMock = new Mock<IGuiderMediator>();
             rotatorMediatorMock = new Mock<IRotatorMediator>();
-            _flatDeviceMediatorMock = new Mock<IFlatDeviceMediator>();
+            flatDeviceMediatorMock = new Mock<IFlatDeviceMediator>();
             weatherDataMediatorMock = new Mock<IWeatherDataMediator>();
             imagingMediatorMock = new Mock<IImagingMediator>();
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
@@ -87,7 +87,7 @@ namespace NINATest {
             };
 
             _sut = new SequenceVM(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object,
-                filterWheelMediatorMock.Object, guiderMediatorMock.Object, rotatorMediatorMock.Object, _flatDeviceMediatorMock.Object,
+                filterWheelMediatorMock.Object, guiderMediatorMock.Object, rotatorMediatorMock.Object, flatDeviceMediatorMock.Object,
                 weatherDataMediatorMock.Object, imagingMediatorMock.Object, applicationStatusMediatorMock.Object);
         }
 
@@ -103,7 +103,7 @@ namespace NINATest {
             rotatorMediatorMock.Verify(m => m.RegisterConsumer(_sut));
             weatherDataMediatorMock.Verify(m => m.RegisterConsumer(_sut));
             guiderMediatorMock.Verify(m => m.RegisterConsumer(_sut));
-            _flatDeviceMediatorMock.Verify(m => m.RegisterConsumer(_sut));
+            flatDeviceMediatorMock.Verify(m => m.RegisterConsumer(_sut));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace NINATest {
             Assert.That(_sut.SelectedSequenceRowIdx, Is.EqualTo(0));
             Assert.That(_sut.IsPaused, Is.False);
             Assert.That(_sut.Sequence.IsRunning, Is.False);
-            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
+            flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
         }
 
         [Test]

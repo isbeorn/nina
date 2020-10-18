@@ -188,11 +188,14 @@
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="Focuser\AbsoluteBacklashCompensationDecoratorTest.cs" />
+    <Compile Include="Focuser\ASCOM\RelativeAscomFocuserTest.cs" />
+    <Compile Include="Focuser\ASCOM\AbsoluteAscomFocuserTest.cs" />
     <Compile Include="Focuser\OvershootBacklashCompensationDecoratorTest.cs" />
     <Compile Include="Focuser\PegasusAstro\UltimatePowerboxV2Test.cs" />
     <Compile Include="Focuser\ASCOM\AscomFocuserTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
     <Compile Include="ImageAnalysis\SharpCapSensorAnalysisReaderTest.cs" />
+    <Compile Include="FilePatternTest.cs" />
     <Compile Include="ImageDataTest.cs" />
     <Compile Include="ImageHistoryVMTest.cs" />
     <Compile Include="ImageMetaDataTest.cs" />

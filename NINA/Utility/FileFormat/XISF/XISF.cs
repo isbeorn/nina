@@ -13,7 +13,7 @@
 #endregion "copyright"
 
 using Ionic.Zlib;
-using LZ4;
+using K4os.Compression.LZ4;
 using NINA.Model.ImageData;
 using NINA.Utility.Enum;
 using NINA.Utility.FileFormat.XISF.DataConverter;
@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -204,7 +203,7 @@ namespace NINA.Utility.FileFormat.XISF {
 
                     // Uncompress the data block
                     if (compressionInfo.CompressionType != XISFCompressionTypeEnum.NONE) {
-                        raw = UncompressData(raw, compressionInfo.CompressionType, compressionInfo.UncompressedSize);
+                        raw = UncompressData(raw, compressionInfo);
 
                         if (compressionInfo.IsShuffled) {
                             raw = XISFData.Unshuffle(raw, compressionInfo.ItemSize);
@@ -403,17 +402,22 @@ namespace NINA.Utility.FileFormat.XISF {
             }
         }
 
-        private static byte[] UncompressData(byte[] raw, XISFCompressionTypeEnum codec, int uncompressedSize) {
+        private static byte[] UncompressData(byte[] raw, XISFCompressionInfo compressionInfo) {
             byte[] outArray = null;
 
-            if (codec != XISFCompressionTypeEnum.NONE) {
-                outArray = new byte[uncompressedSize];
+            if (compressionInfo.CompressionType != XISFCompressionTypeEnum.NONE) {
+                outArray = new byte[compressionInfo.UncompressedSize];
 
-                using (MyStopWatch.Measure($"XISF Decompression = {codec}")) {
-                    switch (codec) {
+                using (MyStopWatch.Measure($"XISF Decompression = {compressionInfo.CompressionType}")) {
+                    switch (compressionInfo.CompressionType) {
                         case XISFCompressionTypeEnum.LZ4:
                         case XISFCompressionTypeEnum.LZ4HC:
-                            LZ4Codec.Decode(raw, 0, raw.Length, outArray, 0, uncompressedSize, true);
+                            int size = LZ4Codec.Decode(raw, 0, raw.Length, outArray, 0, compressionInfo.UncompressedSize);
+
+                            if (size != compressionInfo.UncompressedSize) {
+                                Logger.Error($"XISF: Indicated uncompressed size does not equal actual size: Indicated: {compressionInfo.UncompressedSize}, Actual: {size}");
+                            }
+
                             break;
 
                         case XISFCompressionTypeEnum.ZLIB:

@@ -490,11 +490,13 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static Coordinates operator +(Coordinates a, Separation b) {
-            return new Coordinates(Angle.ByDegree(a.RADegrees) + b.RA, Angle.ByDegree(a.Dec) + b.Dec, a.Epoch);
+            var ra = Astrometry.EuclidianModulus((Angle.ByDegree(a.RADegrees) + b.RA).Degree, 360);
+            return new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(a.Dec) + b.Dec, a.Epoch);
         }
 
         public static Coordinates operator -(Coordinates a, Separation b) {
-            return new Coordinates(Angle.ByDegree(a.RADegrees) - b.RA, Angle.ByDegree(a.Dec) - b.Dec, a.Epoch);
+            var ra = Astrometry.EuclidianModulus((Angle.ByDegree(a.RADegrees) - b.RA).Degree, 360);
+            return new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(a.Dec) - b.Dec, a.Epoch);
         }
 
         public override string ToString() {

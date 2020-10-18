@@ -12,15 +12,19 @@
 
 #endregion "copyright"
 
-using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 
 namespace NINA.Model.MyFocuser {
 
     public class AscomFocuserProvider : IAscomFocuserProvider {
 
-        public IFocuserV3 GetFocuser(string focuserId) {
-            return new Focuser(focuserId);
+        public IFocuserV3Ex GetFocuser(string focuserId) {
+            var ascomFocuser = new Focuser(focuserId);
+            if (ascomFocuser.Absolute) {
+                return new AbsoluteAscomFocuser(ascomFocuser);
+            } else {
+                return new RelativeAscomFocuser(ascomFocuser);
+            }
         }
     }
 }

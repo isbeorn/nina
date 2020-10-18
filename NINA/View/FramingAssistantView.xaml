@@ -116,6 +116,9 @@
                                             <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="5">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="6">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>

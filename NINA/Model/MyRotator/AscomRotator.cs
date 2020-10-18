@@ -14,6 +14,7 @@
 
 using ASCOM.DriverAccess;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 using System;
 using System.Threading;
@@ -32,6 +33,32 @@ namespace NINA.Model.MyRotator {
 
         public string Category { get; } = "ASCOM";
 
+        public bool CanReverse {
+            get {
+                if (Connected) {
+                    return rotator.CanReverse;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        public bool Reverse {
+            get {
+                if (Connected) {
+                    return rotator.Reverse;
+                } else {
+                    return false;
+                }
+            }
+            set {
+                if (CanReverse) {
+                    rotator.Reverse = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool IsMoving {
             get {
                 if (Connected) {
@@ -42,13 +69,13 @@ namespace NINA.Model.MyRotator {
             }
         }
 
+        private float position = 0;
+
         public float Position {
-            get {
-                if (Connected) {
-                    return rotator.Position;
-                } else {
-                    return float.NaN;
-                }
+            get => position;
+            private set {
+                position = Astrometry.EuclidianModulus(value, 360);
+                RaisePropertyChanged();
             }
         }
 
@@ -84,8 +111,14 @@ namespace NINA.Model.MyRotator {
                             Notification.ShowWarning(Locale.Loc.Instance["LblRotatorConnectionLost"]);
                             Disconnect();
                         }
-                    } catch (Exception) {
-                        Disconnect();
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowWarning(Locale.Loc.Instance["LblRotatorConnectionLost"]);
+                        try {
+                            Disconnect();
+                        } catch (Exception disconnectEx) {
+                            Logger.Error(disconnectEx);
+                        }
                     }
                     return val;
                 } else {
@@ -124,6 +157,7 @@ namespace NINA.Model.MyRotator {
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
+                    Position = 0;
                     rotator = new Rotator(Id);
                     Connected = true;
                     if (Connected) {
@@ -157,15 +191,20 @@ namespace NINA.Model.MyRotator {
             }
         }
 
+        public void Sync(float skyAngle) {
+            Position = skyAngle;
+        }
+
         public void Move(float position) {
             if (Connected) {
                 rotator?.Move(position);
+                Position += position;
             }
         }
 
-        public void MoveAbsolute(float position) {
+        public void MoveAbsolute(float targetPosition) {
             if (Connected) {
-                rotator?.MoveAbsolute(position);
+                Move(targetPosition - Position);
             }
         }
 

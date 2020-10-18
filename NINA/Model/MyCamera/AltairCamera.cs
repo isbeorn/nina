@@ -219,17 +219,35 @@ namespace NINA.Model.MyCamera {
             });
         }
 
+        private bool hasDewHeater;
+
         public bool HasDewHeater {
-            get {
-                return false;
+            get => hasDewHeater;
+            private set {
+                hasDewHeater = value;
+                RaisePropertyChanged();
             }
         }
 
         public bool DewHeaterOn {
             get {
-                return false;
+                if (HasDewHeater) {
+                    camera.get_Option(AltairCam.eOPTION.OPTION_HEAT, out var heat);
+                    return heat > 0;
+                } else {
+                    return false;
+                }
             }
             set {
+                if (HasDewHeater) {
+                    if (value) {
+                        camera.get_Option(AltairCam.eOPTION.OPTION_HEAT_MAX, out var max);
+                        camera.put_Option(AltairCam.eOPTION.OPTION_HEAT, max);
+                    } else {
+                        camera.put_Option(AltairCam.eOPTION.OPTION_HEAT, 0);
+                    }
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -569,6 +587,14 @@ namespace NINA.Model.MyCamera {
                         CanSetOffset = true;
                     }
 
+                    if ((this.flags & AltairCam.eFLAG.FLAG_HEAT) != 0) {
+                        HasDewHeater = true;
+                    }
+
+                    if ((this.flags & AltairCam.eFLAG.FLAG_LOW_NOISE) != 0) {
+                        HasLowNoiseMode = true;
+                    }
+
                     if (((this.flags & AltairCam.eFLAG.FLAG_CG) != 0) || ((this.flags & AltairCam.eFLAG.FLAG_CGHDR) != 0)) {
                         Logger.Trace("AltairCamera - Camera has High Conversion Gain option");
                         HasHighGain = true;
@@ -620,6 +646,35 @@ namespace NINA.Model.MyCamera {
                 return sensorType;
             }
             return SensorType.RGGB;
+        }
+
+        private bool _hasLowNoiseMode;
+
+        public bool HasLowNoiseMode {
+            get => _hasLowNoiseMode;
+            set {
+                _hasLowNoiseMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool LowNoiseMode {
+            get {
+                if (HasLowNoiseMode) {
+                    camera.get_Option(AltairCam.eOPTION.OPTION_LOW_NOISE, out var value);
+                    Logger.Trace($"AltairCamera - Low Noise Mode is set to {value}");
+                    return value == 1;
+                } else {
+                    return false;
+                }
+            }
+            set {
+                if (HasLowNoiseMode) {
+                    Logger.Debug($"AltairCamera - Setting Low Noise Mode to {value}");
+                    camera.put_Option(AltairCam.eOPTION.OPTION_LOW_NOISE, value ? 1 : 0);
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         private bool _hasHighGain;

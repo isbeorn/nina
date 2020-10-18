@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -122,6 +123,7 @@ namespace NINA.ViewModel {
             SaveTargetSetCommand = new RelayCommand(SaveTargetSet);
             LoadTargetSetCommand = new RelayCommand(LoadTargetSet);
             CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
+            ImportTargetsCommand = new RelayCommand(ImportTargets);
 
             autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
             autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
@@ -140,6 +142,91 @@ namespace NINA.ViewModel {
 
             PropertyChanged += SequenceVM_PropertyChanged;
             EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+        }
+
+        private void ImportTargets(object obj) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Multiselect = false;
+            dialog.Title = Locale.Loc.Instance["LblImportTargets"];
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.FileName = "";
+            dialog.DefaultExt = "csv";
+            dialog.Filter = "Telescopius|*." + dialog.DefaultExt;
+
+            if (dialog.ShowDialog() == true) {
+                try {
+                    var s = File.ReadAllText(dialog.FileName);
+                    using (var reader = new System.IO.StringReader(s)) {
+                        string headerLine = reader.ReadLine();
+                        string[] headerColumns = headerLine.Split(',').Select(p => p.Trim()).ToArray();
+
+                        if (Array.FindIndex(headerColumns, x => x.ToLower() == "pane") > -1) {
+                            this.Targets.Clear();
+                            var idxPane = Array.FindIndex(headerColumns, x => x.ToLower() == "pane");
+                            var idxRA = Array.FindIndex(headerColumns, x => x.ToLower() == "ra");
+                            var idxDec = Array.FindIndex(headerColumns, x => x.ToLower() == "dec");
+                            var idxAngle = Array.FindIndex(headerColumns, x => x.ToLower() == "position angle (east)");
+
+                            string line;
+                            while ((line = reader.ReadLine()) != null) {
+                                //Telescopius Mosaic Plan
+                                var columns = line.Split(',').Select(p => p.Trim()).ToArray();
+
+                                var name = columns[idxPane];
+                                var ra = Astrometry.HMSToDegrees(columns[idxRA]);
+                                var dec = Astrometry.DMSToDegrees(columns[idxDec]);
+                                //Nina orientation is not east of north, but flipped
+                                var angle = 360 - Astrometry.EuclidianModulus(double.Parse(columns[idxAngle], CultureInfo.InvariantCulture), 360);
+
+                                var template = GetTemplate();
+                                template.TargetName = name;
+                                template.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
+                                template.Rotation = angle;
+                                template.MarkAsUnchanged();
+                                this.Targets.Add(template);
+                            }
+                            Sequence = Targets.First();
+                        } else if (Array.FindIndex(headerColumns, x => x.ToLower() == "familiar name") > -1) {
+                            this.Targets.Clear();
+                            //Telescopius Observing List
+                            var idxCatalogue = Array.FindIndex(headerColumns, x => x.ToLower() == "catalogue entry");
+                            var idxName = Array.FindIndex(headerColumns, x => x.ToLower() == "familiar name");
+                            var idxRA = Array.FindIndex(headerColumns, x => x.ToLower() == "right ascension");
+                            var idxDec = Array.FindIndex(headerColumns, x => x.ToLower() == "declination");
+                            var idxAngle = Array.FindIndex(headerColumns, x => x.ToLower() == "position angle (east)");
+
+                            string line;
+                            while ((line = reader.ReadLine()) != null) {
+                                var columns = line.Split(',').Select(p => p.Trim()).ToArray();
+
+                                var name = columns[idxName];
+                                var ra = Astrometry.HMSToDegrees(columns[idxRA]);
+                                var dec = Astrometry.DMSToDegrees(columns[idxDec]);
+
+                                var template = GetTemplate();
+                                template.TargetName = string.IsNullOrWhiteSpace(name) ? columns[idxCatalogue] : name;
+                                template.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
+                                if (idxAngle >= 0 && !string.IsNullOrWhiteSpace(columns[idxAngle])) {
+                                    //Nina orientation is not east of north, but flipped
+                                    var angle = 360 - Astrometry.EuclidianModulus(double.Parse(columns[idxAngle], CultureInfo.InvariantCulture), 360);
+                                    template.Rotation = angle;
+                                } else {
+                                    template.Rotation = 0;
+                                }
+                                template.Rotation = 0;
+                                template.MarkAsUnchanged();
+                                this.Targets.Add(template);
+                            }
+                            Sequence = Targets.First();
+                        } else {
+                            Notification.ShowError(Locale.Loc.Instance["LblUnknownImportFormat"]);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(Locale.Loc.Instance["LblUnknownImportFormat"]);
+                }
+            }
         }
 
         private void SequenceVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -600,6 +687,8 @@ namespace NINA.ViewModel {
                             position = movement2;
                         }
 
+                        rotatorMediator.Sync(orientation);
+
                         if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
                             await rotatorMediator.MoveRelative(position);
                         }
@@ -1044,7 +1133,11 @@ namespace NINA.ViewModel {
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
                     csl.IsRunning = false;
-                    semaphoreSlim.Release();
+
+                    //In case the lock was already released due to pause skip it
+                    if (semaphoreSlim.CurrentCount == 0) {
+                        semaphoreSlim.Release();
+                    }
                 }
                 return true;
             });
@@ -1531,6 +1624,8 @@ namespace NINA.ViewModel {
 
             Sequence.PropertyChanged += _sequence_PropertyChanged;
 
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.SkyAtlasVM.ResetRiseAndSetTimes();
             return true;
         }
 
@@ -1888,6 +1983,7 @@ namespace NINA.ViewModel {
         public ICommand DemoteTargetCommand { get; private set; }
         public ICommand SaveTargetSetCommand { get; private set; }
         public ICommand LoadTargetSetCommand { get; private set; }
+        public ICommand ImportTargetsCommand { get; private set; }
 
         private void PromoteSequenceRow(object obj) {
             if (Sequence != null) {

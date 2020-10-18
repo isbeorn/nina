@@ -28,6 +28,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            reverse = false;
         }
 
         private string id;
@@ -40,6 +41,21 @@ namespace NINA.Profile {
             set {
                 if (id != value) {
                     id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool reverse;
+
+        [DataMember]
+        public bool Reverse {
+            get {
+                return reverse;
+            }
+            set {
+                if (reverse != value) {
+                    reverse = value;
                     RaisePropertyChanged();
                 }
             }

@@ -13,7 +13,6 @@
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.DeviceInterface;
 using Moq;
 using NINA.Model.MyFocuser;
 using NUnit.Framework;
@@ -27,14 +26,14 @@ namespace NINATest.Focuser.ASCOM {
     public class AscomFocuserTest {
         private AscomFocuser _sut;
         private Mock<IAscomFocuserProvider> _mockFocuserProvider;
-        private Mock<IFocuserV3> _mockFocuser;
+        private Mock<IFocuserV3Ex> _mockFocuser;
         private const string ID = "focuser";
         private const string NAME = "name";
 
         [SetUp]
         public async Task Init() {
             _mockFocuserProvider = new Mock<IAscomFocuserProvider>();
-            _mockFocuser = new Mock<IFocuserV3>();
+            _mockFocuser = new Mock<IFocuserV3Ex>();
             _mockFocuser.SetupProperty(m => m.Connected, false);
             _mockFocuser.Setup(m => m.Absolute).Returns(true);
             _mockFocuserProvider.Setup(m => m.GetFocuser(It.IsAny<string>())).Returns(_mockFocuser.Object);
@@ -351,23 +350,11 @@ namespace NINATest.Focuser.ASCOM {
         }
 
         [Test]
-        [TestCase(true, false, true)]
-        [TestCase(true, true, false)]
-        [TestCase(false, true, false)]
-        [TestCase(false, false, false)]
-        public async Task TestMove(bool connected, bool tempComp, bool expected) {
-            if (!connected) _sut.Disconnect();
-            _mockFocuser.Setup(m => m.TempCompAvailable).Returns(true);
-            _mockFocuser.Setup(m => m.TempComp).Returns(tempComp);
-            _mockFocuser.SetupSequence(m => m.Position).Returns(0).Returns(10);
-            _mockFocuser.SetupSequence(m => m.IsMoving).Returns(true).Returns(false);
-
-            await _sut.Move(10, new CancellationToken());
-            if (expected) {
-                _mockFocuser.Verify(m => m.Move(10), Times.Once);
-            } else {
-                _mockFocuser.Verify(m => m.Move(It.IsAny<int>()), Times.Never);
-            }
+        public async Task TestMove() {
+            var ct = new CancellationToken();
+            _mockFocuser.Setup(m => m.MoveAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            await _sut.Move(10, ct);
+            _mockFocuser.Verify(m => m.MoveAsync(10, ct), Times.Once);
         }
 
         [Test]

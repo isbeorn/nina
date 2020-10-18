@@ -300,8 +300,14 @@ namespace NINA.Model.MyWeatherData {
                             Notification.ShowWarning(Locale.Loc.Instance["LblWeatherConnectionLost"]);
                             Disconnect();
                         }
-                    } catch (Exception) {
-                        Disconnect();
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowWarning(Locale.Loc.Instance["LblWeatherConnectionLost"]);
+                        try {
+                            Disconnect();
+                        } catch (Exception disconnectEx) {
+                            Logger.Error(disconnectEx);
+                        }
                     }
                     return val;
                 } else {

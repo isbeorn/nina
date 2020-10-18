@@ -14,6 +14,7 @@
 
 using ASCOM;
 using ASCOM.DeviceInterface;
+using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
@@ -29,7 +30,7 @@ namespace NINA.Model.MyFocuser {
             Name = name;
         }
 
-        private IFocuserV3 _focuser;
+        private IFocuserV3Ex _focuser;
         public IAscomFocuserProvider FocuserProvider { get; set; } = new AscomFocuserProvider();
 
         public string Category { get; } = "ASCOM";
@@ -191,8 +192,14 @@ namespace NINA.Model.MyFocuser {
                             Notification.ShowWarning(Locale.Loc.Instance["LblFocuserConnectionLost"]);
                             Disconnect();
                         }
-                    } catch (Exception) {
-                        Disconnect();
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowWarning(Locale.Loc.Instance["LblFocuserConnectionLost"]);
+                        try {
+                            Disconnect();
+                        } catch (Exception disconnectEx) {
+                            Logger.Error(disconnectEx);
+                        }
                     }
                     return val;
                 } else {
@@ -213,14 +220,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         public async Task Move(int position, CancellationToken ct) {
-            if (Connected && !TempComp) {
-                while (position != _focuser.Position) {
-                    _focuser.Move(position);
-                    while (IsMoving) {
-                        await Utility.Utility.Wait(TimeSpan.FromSeconds(1), ct);
-                    }
-                }
-            }
+            await _focuser.MoveAsync(position, ct);
         }
 
         private bool _canHalt;
@@ -269,12 +269,16 @@ namespace NINA.Model.MyFocuser {
             _focuser?.Dispose();
         }
 
+        private IFocuserV3Ex GetFocuser() {
+            return FocuserProvider.GetFocuser(Id);
+        }
+
         public void SetupDialog() {
             if (HasSetupDialog) {
                 try {
                     bool dispose = false;
                     if (_focuser == null) {
-                        _focuser = FocuserProvider.GetFocuser(Id);
+                        _focuser = GetFocuser();
                     }
                     _focuser.SetupDialog();
                     if (dispose) {
@@ -291,14 +295,9 @@ namespace NINA.Model.MyFocuser {
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
-                    _focuser = FocuserProvider.GetFocuser(Id);
+                    _focuser = GetFocuser();
                     Connected = true;
                     if (Connected) {
-                        if (!_focuser.Absolute) {
-                            Connected = false;
-                            throw new Exception(Locale.Loc.Instance["LblRelativeFocuserNotSupported"]);
-                        }
-
                         Initialize();
                         RaiseAllPropertiesChanged();
                     }

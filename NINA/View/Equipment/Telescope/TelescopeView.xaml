@@ -210,6 +210,13 @@
                                     <TextBlock Text="{ns:Loc LblAzimuth}" />
                                     <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AzimuthString}" />
                                 </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock Text="{ns:Loc LblSideOfPier}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.SideOfPier, Converter={StaticResource SideOfPierConverter}}" />
+                                </UniformGrid>
                             </UniformGrid>
                         </Border>
                     </StackPanel>

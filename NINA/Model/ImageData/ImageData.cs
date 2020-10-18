@@ -80,6 +80,7 @@ namespace NINA.Model.ImageData {
             try {
                 using (MyStopWatch.Measure()) {
                     actualPath = await SaveToDiskAsync(fileSaveInfo, cancelToken, false);
+                    Logger.Debug($"Saving temporary image at {actualPath}");
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -112,6 +113,9 @@ namespace NINA.Model.ImageData {
                 }
 
                 File.Move(file, newFileName);
+
+                Logger.Info($"Saving image at {newFileName}");
+
                 return newFileName;
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -120,7 +124,7 @@ namespace NINA.Model.ImageData {
             }
         }
 
-        private ImagePatterns GetImagePatterns() {
+        public ImagePatterns GetImagePatterns() {
             var p = new ImagePatterns();
             var metadata = this.MetaData;
             p.Set(ImagePatternKeys.Filter, metadata.FilterWheel.Filter);
@@ -185,6 +189,22 @@ namespace NINA.Model.ImageData {
 
             if (!string.IsNullOrEmpty(metadata.Camera.ReadoutModeName)) {
                 p.Set(ImagePatternKeys.ReadoutMode, metadata.Camera.ReadoutModeName);
+            }
+
+            if (!string.IsNullOrEmpty(metadata.Camera.Name)) {
+                p.Set(ImagePatternKeys.Camera, metadata.Camera.Name);
+            }
+
+            if (!string.IsNullOrEmpty(metadata.Telescope.Name)) {
+                p.Set(ImagePatternKeys.Telescope, metadata.Telescope.Name);
+            }
+
+            if (!double.IsNaN(metadata.Rotator.Position)) {
+                p.Set(ImagePatternKeys.RotatorAngle, metadata.Rotator.Position);
+            }
+
+            if (this.StarDetectionAnalysis.DetectedStars >= 0) {
+                p.Set(ImagePatternKeys.StarCount, this.StarDetectionAnalysis.DetectedStars);
             }
 
             return p;
@@ -354,6 +374,7 @@ namespace NINA.Model.ImageData {
                         return await FITS.Load(new Uri(path), isBayered);
 
                     case ".cr2":
+                    case ".cr3":
                     case ".nef":
                     case ".raf":
                     case ".raw":

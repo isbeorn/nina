@@ -273,11 +273,15 @@ namespace NINA.ViewModel {
             if (SeqVM?.OKtoExit() == false)
                 return;
             if (CameraVM?.Cam?.Connected == true) {
-                var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblCameraConnectedOnExit"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag != MessageBoxResult.OK) {
                     return;
                 }
             }
+
+            try {
+                Utility.AtikSDK.AtikCameraDll.Shutdown();
+            } catch (Exception) { }
 
             Application.Current.Shutdown();
         }
