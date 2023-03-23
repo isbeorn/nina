@@ -48,6 +48,7 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
                 <wpfutil:SharedResourceDictionary>
                     <converter:DroppableToDropIntoParametersConverter x:Key="DroppableToDropIntoParametersConverter" />
+                    <converter:IsIDeepSkyObjectContainerConverter x:Key="DeepSkyObjectContainerToVisibilityConverter" />
                     <converter:StrategyEvaluatesConditionsAndTriggersToVisibilityConverter x:Key="StrategyEvaluatesConditionsAndTriggersToVisibilityConverter" />
                     <converter:StatusToEnabledConverter x:Key="StatusToEnabledConverter" />
                     <converter:DisabledStatusToStrikethroughConverter x:Key="DisabledStatusToStrikethroughConverter" />
@@ -360,7 +361,7 @@
                                             <Style BasedOn="{StaticResource SecondaryBackgroundButton}" TargetType="Button">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=., Converter={StaticResource DataTypeToStringConverter}}" Value="{x:Type cont:DeepSkyObjectContainer}">
+                                                    <DataTrigger Binding="{Binding Path=., Converter={StaticResource DeepSkyObjectContainerToVisibilityConverter}}" Value="True">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
