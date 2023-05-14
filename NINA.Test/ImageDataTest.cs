@@ -355,6 +355,7 @@ namespace NINA.Test {
                 FileType = fileType
             };
 
+            dataFactoryUtility.ProfileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FITSRowOrder).Returns(Core.Enum.FITSRowOrder.TOP_DOWN);
             var sut = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(data, 3, 3, 16, false, MetaData);
 
             var file = await sut.SaveToDisk(fileSaveInfo, default);
@@ -383,6 +384,7 @@ namespace NINA.Test {
                 FileType = fileType
             };
 
+            dataFactoryUtility.ProfileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FITSRowOrder).Returns(Core.Enum.FITSRowOrder.TOP_DOWN);
             var sut = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(data, 3, 3, 16, false, MetaData);
 
             var file = await sut.SaveToDisk(fileSaveInfo, default);

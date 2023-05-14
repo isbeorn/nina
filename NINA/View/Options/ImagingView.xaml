@@ -114,7 +114,20 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{ns:Loc LblNoFileFormatOptions}" />
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Margin="0,5,0,0"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblRowOrder}" />
+                                    <ComboBox
+                                        MinWidth="150"
+                                        Margin="5,0,0,0"
+                                        ItemsSource="{Binding DataContext.FITSRowOrderTypes, ElementName=UC}"
+                                        SelectedItem="{Binding FITSRowOrder}" />
+                                </StackPanel>
                             </Grid>
                         </StackPanel>
                         <Grid>

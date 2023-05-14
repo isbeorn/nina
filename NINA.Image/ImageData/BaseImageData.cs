@@ -417,7 +417,8 @@ namespace NINA.Image.ImageData {
             FITS f = new FITS(
                 Data.FlatArray,
                 Properties.Width,
-                Properties.Height
+                Properties.Height,
+                profileService.ActiveProfile.ImageFileSettings.FITSRowOrder
             );
 
             f.PopulateHeaderCards(MetaData);

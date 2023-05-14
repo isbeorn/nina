@@ -6684,4 +6684,13 @@ Increase minimum exposure time or wait until it is brighter.</value>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
     <value>Not present</value>
   </data>
+  <data name="LblBottomUp" xml:space="preserve">
+    <value>Bottom Up</value>
+  </data>
+  <data name="LblRowOrder" xml:space="preserve">
+    <value>Row Order</value>
+  </data>
+  <data name="LblTopDown" xml:space="preserve">
+    <value>Top Down</value>
+  </data>
 </root>

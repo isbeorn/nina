@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
@@ -33,9 +34,12 @@ namespace NINA.Image.FileFormat.FITS {
     /// </summary>
     public class FITS {
 
-        public FITS(ushort[] data, int width, int height) {
-            this.Header = new FITSHeader(width, height);
-            this.Data = new FITSData(data);
+        public FITS(ushort[] data, int width, int height) : this(data, width, height, FITSRowOrder.TOP_DOWN) {
+        }
+
+        public FITS(ushort[] data, int width, int height, FITSRowOrder rowOrder) {
+            this.Header = new FITSHeader(width, height, rowOrder);
+            this.Data = new FITSData(data, width, height, rowOrder);
         }
 
 

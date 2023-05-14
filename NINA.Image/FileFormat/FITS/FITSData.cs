@@ -12,23 +12,48 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
 using System.IO;
 
 namespace NINA.Image.FileFormat.FITS {
 
     public class FITSData {
+        private int width;
+        private int height;
+        private FITSRowOrder rowOrder;
+
         public ushort[] Data { get; }
 
-        public FITSData(ushort[] data) {
+
+        public FITSData(ushort[] data, int width, int height, FITSRowOrder rowOrder) {
             this.Data = data;
+            this.width = width;
+            this.height = height;
+            this.rowOrder = rowOrder;
         }
 
         public void Write(Stream s) {
-            /* Write image data */
-            for (int i = 0; i < this.Data.Length; i++) {
-                var val = (short)(this.Data[i] - (short.MaxValue + 1));
-                s.WriteByte((byte)(val >> 8));
-                s.WriteByte((byte)val);
+            if (rowOrder == FITSRowOrder.TOP_DOWN) {
+                /* Write image data */
+                for (int i = 0; i < this.Data.Length; i++) {
+                    var val = (short)(this.Data[i] - (short.MaxValue + 1));
+                    s.WriteByte((byte)(val >> 8));
+                    s.WriteByte((byte)val);
+                }
+            } else {
+                int row = height - 1;
+                var column = 0;
+                for (int i = 0; i < this.Data.Length; i++) {
+                    var arrayIndex = width * row + (column % width);
+
+                    var val = (short)(this.Data[arrayIndex] - (short.MaxValue + 1));
+                    s.WriteByte((byte)(val >> 8));
+                    s.WriteByte((byte)val);
+
+
+                    column++;
+                    if (column % width == 0) { row--; }
+                }
             }
         }
     }

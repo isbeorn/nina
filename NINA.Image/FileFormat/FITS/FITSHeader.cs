@@ -25,8 +25,9 @@ using NINA.Image.ImageData;
 namespace NINA.Image.FileFormat.FITS {
 
     public class FITSHeader {
+        public FITSHeader(int width, int height) :this(width, height, FITSRowOrder.TOP_DOWN) { }
 
-        public FITSHeader(int width, int height) {
+        public FITSHeader(int width, int height, FITSRowOrder rowOrder) {
             Add("SIMPLE", true, "C# FITS");
             Add("BITPIX", 16, "");
             Add("NAXIS", 2, "Dimensionality");
@@ -34,6 +35,14 @@ namespace NINA.Image.FileFormat.FITS {
             Add("NAXIS2", height, "");
             Add("BZERO", 32768, "");
             Add("EXTEND", true, "Extensions are permitted");
+
+            //ROWORDER as proposed by Siril at https://free-astro.org/index.php?title=Siril:FITS_orientation
+            if (rowOrder == FITSRowOrder.TOP_DOWN) {
+                Add("ROWORDER", "TOP-DOWN", "FITS Image Orientation");
+            } else {
+                Add("ROWORDER", "BOTTOM-UP", "FITS Image Orientation");
+
+            }
         }
 
         private Dictionary<string, FITSHeaderCard> _headerCards = new Dictionary<string, FITSHeaderCard>();
@@ -729,9 +738,6 @@ namespace NINA.Image.FileFormat.FITS {
             if (!double.IsNaN(metaData.WeatherData.WindSpeed)) {
                 Add("WINDSPD", metaData.WeatherData.WindSpeed * 3.6, "[kph] Wind speed");
             }
-
-            //ROWORDER as proposed by Siril at https://free-astro.org/index.php?title=Siril:FITS_orientation
-            Add("ROWORDER", "TOP-DOWN", "FITS Image Orientation");
 
             Add("EQUINOX", 2000.0d, "Equinox of celestial coordinate system");
             Add("SWCREATE", string.Format("N.I.N.A. {0} ({1})", CoreUtil.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");

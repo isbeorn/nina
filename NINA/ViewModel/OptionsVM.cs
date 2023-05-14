@@ -765,16 +765,20 @@ namespace NINA.ViewModel {
                     .Cast<XISFCompressionTypeEnum>()
                     .ToArray();
 
+        /// <summary>
+        /// NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
+        /// being defined as part of the XISF 1.0 specification. We will not permit the user to choose
+        /// these as a checksum type until PixInsight also supports them.
+        /// </summary>
         public XISFChecksumTypeEnum[] XISFChecksumTypes =>
-                /*
-* NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
-* being defined as part of the XISF 1.0 specification. We will not permit the user to choose
-* these as a checksum type until PixInsight also supports them.
-*/
-                Enum.GetValues(typeof(XISFChecksumTypeEnum))
+                  Enum.GetValues(typeof(XISFChecksumTypeEnum))
                     .Cast<XISFChecksumTypeEnum>()
                     .Where(p => p != XISFChecksumTypeEnum.SHA3_256)
                     .Where(p => p != XISFChecksumTypeEnum.SHA3_512)
+                    .ToArray();
+
+        public FITSRowOrder[] FITSRowOrderTypes => Enum.GetValues(typeof(FITSRowOrder))
+                    .Cast<FITSRowOrder>()
                     .ToArray();
 
         private ImagePatterns _imagePatterns;

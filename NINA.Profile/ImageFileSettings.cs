@@ -40,6 +40,7 @@ namespace NINA.Profile {
             tiffCompressionType = TIFFCompressionTypeEnum.NONE;
             xisfCompressionType = XISFCompressionTypeEnum.NONE;
             xisfChecksumType = XISFChecksumTypeEnum.SHA256;
+            fitsRowOrder = FITSRowOrder.TOP_DOWN;
             xisfByteShuffling = false;
         }
 
@@ -203,6 +204,18 @@ namespace NINA.Profile {
             set {
                 if (xisfByteShuffling != value) {
                     xisfByteShuffling = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private FITSRowOrder fitsRowOrder;
+        [DataMember]
+        public FITSRowOrder FITSRowOrder {
+            get => fitsRowOrder; 
+            set { 
+                if(fitsRowOrder != value) {
+                    fitsRowOrder = value;
                     RaisePropertyChanged();
                 }
             }
