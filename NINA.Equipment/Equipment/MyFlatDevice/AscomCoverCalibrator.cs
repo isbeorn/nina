@@ -12,11 +12,11 @@
 
 #endregion "copyright"
 
-using ASCOM;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.ASCOMFacades;
+using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Threading;
@@ -39,7 +39,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                         return CoverState.Unknown;
 
                     case ASCOM.Common.DeviceInterfaces.CoverStatus.NotPresent:
-                        return CoverState.Unknown;
+                        return CoverState.NotPresent;
 
                     case ASCOM.Common.DeviceInterfaces.CoverStatus.Moving:
                         return CoverState.NeitherOpenNorClosed;
@@ -51,7 +51,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                         return CoverState.Open;
 
                     case ASCOM.Common.DeviceInterfaces.CoverStatus.Error:
-                        return CoverState.Unknown;
+                        return CoverState.Error;
 
                     default:
                         return CoverState.Unknown;
@@ -130,8 +130,16 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public async Task<bool> Open(CancellationToken ct, int delay = 300) {
             if (SupportsOpenClose) {
+                if (CoverState == CoverState.Error) {
+                    throw new FlatDeviceCoverErrorException();
+                }
+
                 device.OpenCover();
                 while (CoverState != CoverState.Unknown && CoverState == CoverState.NeitherOpenNorClosed) {
+                    if (CoverState == CoverState.Error) {
+                        throw new FlatDeviceCoverErrorException();
+                    }
+
                     await Task.Delay(delay);
                 }
             }
@@ -140,8 +148,16 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public async Task<bool> Close(CancellationToken ct, int delay = 300) {
             if (SupportsOpenClose) {
+                if (CoverState == CoverState.Error) {
+                    throw new FlatDeviceCoverErrorException();
+                }
+
                 device.CloseCover();
                 while (CoverState != CoverState.Unknown && CoverState == CoverState.NeitherOpenNorClosed) {
+                    if (CoverState == CoverState.Error) {
+                        throw new FlatDeviceCoverErrorException();
+                    }
+
                     await Task.Delay(delay);
                 }
             }

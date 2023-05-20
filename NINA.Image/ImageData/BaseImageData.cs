@@ -515,6 +515,15 @@ namespace NINA.Image.ImageData {
             }, ct);
         }
 
+        public static bool FileIsSupported(string path) {
+            if (!File.Exists(path)) {
+                throw new FileNotFoundException();
+            }
+
+            var supportedExtensions = new Regex(@".*\.(gif|tiff?|jpe?g|[dp]ng|xisf|fits?|cr[23]|nef|ra[fw]|pef|arw|orf)", RegexOptions.IgnoreCase);
+            return supportedExtensions.IsMatch(path);
+        }
+
         private static async Task<IImageData> RawToImageArray(string path, int bitDepth, IRawConverter rawConverter, CancellationToken ct) {
             using (var fs = new FileStream(path, FileMode.Open)) {
                 using (var ms = new System.IO.MemoryStream()) {

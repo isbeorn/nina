@@ -71,8 +71,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Todo - this interface lacks progress
-            await flatDeviceMediator.ToggleLight(OnOff, token);
+            await flatDeviceMediator.ToggleLight(OnOff, progress, token);
 
             var lightOnState = flatDeviceMediator.GetInfo().LightOn;
             if (lightOnState != OnOff) {
@@ -99,7 +98,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ToggleLight)}";
+            return $"Category: {Category}, Item: {nameof(ToggleLight)}, Light: {(OnOff ? "On" : "Off")}";
         }
     }
 }

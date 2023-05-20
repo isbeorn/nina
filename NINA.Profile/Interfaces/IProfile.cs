@@ -48,6 +48,7 @@ namespace NINA.Profile.Interfaces {
         ISnapShotControlSettings SnapShotControlSettings { get; set; }
         ISafetyMonitorSettings SafetyMonitorSettings { get; set; }
         IPluginSettings PluginSettings { get; set; }
+        IGnssSettings GnssSettings { get; set; }
 
         void Save();
     }

@@ -20,5 +20,7 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
         string Name { get; }
 
         DateTime GetDateTime(ISequenceEntity context);
+
+        TimeOnly GetRolloverTime(ISequenceEntity context);
     }
 }

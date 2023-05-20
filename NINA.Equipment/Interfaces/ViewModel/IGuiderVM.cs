@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Equipment.Equipment.MyGuider;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,5 +41,7 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct);
 
         Task<bool> StopShifting(CancellationToken ct);
+
+        LockPosition GetLockPosition();
     }
 }

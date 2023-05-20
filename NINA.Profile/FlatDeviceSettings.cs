@@ -28,6 +28,7 @@ namespace NINA.Profile {
 
         public FlatDeviceSettings() {
             FilterSettings = new ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+            TrainedFlatExposureSettings = new ObserveAllCollection<TrainedFlatExposureSetting>();
         }
 
         [OnDeserializing]
@@ -37,9 +38,21 @@ namespace NINA.Profile {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
+            if (TrainedFlatExposureSettings == null) {
+                TrainedFlatExposureSettings = new ObserveAllCollection<TrainedFlatExposureSetting>();
+            }
             if (FilterSettings == null) {
                 FilterSettings =
                     new ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+            } else if (FilterSettings.Count > 0 && TrainedFlatExposureSettings.Count == 0) {
+                // Migrate to new list
+                foreach (var setting in FilterSettings) {
+                    if (setting.Key.Position == null && !string.IsNullOrEmpty(setting.Key.FilterName)) {
+                        // Skip entries from versions prior to 2.0 that don't have a position for a filter name
+                        continue;
+                    }
+                    AddTrainedFlatExposureSetting(setting.Key.Position, setting.Key.Binning, setting.Key.Gain, -1, setting.Value.AbsoluteBrightness, setting.Value.Time);
+                }
             }
         }
 
@@ -146,69 +159,203 @@ namespace NINA.Profile {
         private ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> filterSettings;
 
         [DataMember]
-        public ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> FilterSettings {
+        [Obsolete("Superseded by TrainedFlatExposureSettings")]
+        internal ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> FilterSettings {
             get => filterSettings;
             set {
+                if (filterSettings == value) return;
                 filterSettings = value;
+                RaisePropertyChanged();
+
+            }
+        }
+
+        private ObserveAllCollection<TrainedFlatExposureSetting> trainedFlatExposureSettings;
+        [DataMember]
+        public ObserveAllCollection<TrainedFlatExposureSetting> TrainedFlatExposureSettings {
+            get => trainedFlatExposureSettings;
+            set {
+                if (trainedFlatExposureSettings == value) return;
+                if (trainedFlatExposureSettings != null) {
+                    trainedFlatExposureSettings.CollectionChanged -= TrainedFlatExposureSettings_CollectionChanged;
+                }
+                trainedFlatExposureSettings = value;
+                if (trainedFlatExposureSettings != null) {
+                    trainedFlatExposureSettings.CollectionChanged += TrainedFlatExposureSettings_CollectionChanged;
+                }
                 RaisePropertyChanged();
             }
         }
+        private void TrainedFlatExposureSettings_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            RaisePropertyChanged(nameof(TrainedFlatExposureSettings));
+        }
 
-        public void AddBrightnessInfo(FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value) {
-            if (FilterSettings.ContainsKey(key)) {
-                FilterSettings[key] = value;
+        public void AddEmptyTrainedExposureSetting() {
+            TrainedFlatExposureSettings.Add(new TrainedFlatExposureSetting(-1, new BinningMode(1,1), -1, -1, -1, -1));
+        }
+
+        public void AddTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset, int brightness, double exposureTime) {
+            var existingSetting = GetTrainedFlatExposureSetting(filterPosition, binning, gain, offset);           
+
+            if (existingSetting == null) {
+                var filter = filterPosition ?? -1;
+                if (binning == null) { binning = new BinningMode(1, 1); }
+                TrainedFlatExposureSettings.Add(new TrainedFlatExposureSetting(filter, binning, gain, offset, brightness, exposureTime));
             } else {
-                FilterSettings.Add(key, value);
-            }
-
-            RaisePropertyChanged(nameof(FilterSettings));
-        }
-
-        public FlatDeviceFilterSettingsValue GetBrightnessInfo(FlatDeviceFilterSettingsKey key) {
-            return FilterSettings.ContainsKey(key) ? FilterSettings[key] : null;
-        }
-
-        public void ClearBrightnessInfo(FlatDeviceFilterSettingsKey key) {
-            if (filterSettings.ContainsKey(key)) {
-                filterSettings[key] = null;
+                existingSetting.Brightness = brightness;
+                existingSetting.Time = exposureTime;
             }
         }
 
-        public IEnumerable<BinningMode> GetBrightnessInfoBinnings() {
-            var result = FilterSettings.Keys.Select(key => key.Binning).ToList();
-
-            return result.Distinct();
-        }
-
-        public IEnumerable<int> GetBrightnessInfoGains() {
-            var result = FilterSettings.Keys.Select(key => key.Gain).ToList();
-
-            return result.Distinct();
-        }
-
-        public void RemoveGain(int gain) {
-            var keysToRemove = FilterSettings.Keys
-                                                .Where(key => key.Gain == gain).ToList();
-
-            foreach (var key in keysToRemove) {
-                FilterSettings.Remove(key);
+        public bool RemoveFlatExposureSetting(TrainedFlatExposureSetting setting) {
+            var remove = TrainedFlatExposureSettings.Remove(setting);
+            if(remove) {
+                RaisePropertyChanged(nameof(TrainedFlatExposureSettings));
             }
-            RaisePropertyChanged(nameof(FilterSettings));
+            return remove;
         }
 
-        public void RemoveBinning(BinningMode binning) {
-            var keysToRemove = FilterSettings.Keys
-                                                .Where(key => Equals(key.Binning, binning)).ToList();
+        public TrainedFlatExposureSetting GetTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset) {
+            var filter = filterPosition ?? -1;
+            if (binning == null) { binning = new BinningMode(1, 1); }
+            TrainedFlatExposureSetting setting = TrainedFlatExposureSettings.FirstOrDefault(
+                x => x.Filter == filter
+                && x.Binning.X == binning.X
+                && x.Binning.Y == binning.Y
+                && x.Gain == gain
+                && x.Offset == offset);
 
-            foreach (var key in keysToRemove) {
-                FilterSettings.Remove(key);
+            if (setting == null) {
+                // Check for an entry without offset
+                setting = TrainedFlatExposureSettings.FirstOrDefault(
+                x => x.Filter == filter
+                && x.Binning.X == binning.X
+                && x.Binning.Y == binning.Y
+                && x.Gain == gain
+                && x.Offset == -1);
             }
-            RaisePropertyChanged(nameof(FilterSettings));
+
+
+            if (setting == null) {
+                // Check for an entry without gain
+                setting = TrainedFlatExposureSettings.FirstOrDefault(
+                x => x.Filter == filter
+                && x.Binning.X == binning.X
+                && x.Binning.Y == binning.Y
+                && x.Gain == -1
+                && x.Offset == offset);
+            }
+
+            if (setting == null) {
+                // Check for an entry without gain or offset
+                setting = TrainedFlatExposureSettings.FirstOrDefault(
+                x => x.Filter == filter
+                && x.Binning.X == binning.X
+                && x.Binning.Y == binning.Y
+                && x.Gain == -1
+                && x.Offset == -1);
+            }
+
+            return setting;
         }
+
     }
 
     [Serializable]
     [DataContract]
+    public class TrainedFlatExposureSetting : SerializableINPC {
+
+        public TrainedFlatExposureSetting() {
+            Filter = -1;
+            Binning = new BinningMode(1, 1);
+            Gain = -1;
+            Offset = -1;
+            Brightness = 0;
+            Time = 0;
+        }
+        public TrainedFlatExposureSetting(short filter, BinningMode binning, int gain, int offset, int brightness, double time) {
+            Filter = filter;
+            Binning = binning;
+            Gain = gain;
+            Offset = offset;
+            Brightness = brightness;
+            Time = time;
+        }
+
+        private short filter;
+        [DataMember]
+        public short Filter {
+            get => filter;
+            set {
+                if (filter == value) return;
+                filter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private BinningMode binning;
+        [DataMember]
+        public BinningMode Binning {
+            get => binning;
+            set {
+                if (binning == value) return;
+                binning = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int gain;
+        [DataMember]
+        public int Gain {
+            get => gain;
+            set {
+                if (gain == value) return;
+                gain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int offset;
+        [DataMember]
+        public int Offset {
+            get => offset;
+            set {
+                if (offset == value) return;
+                offset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int brightness;
+        [DataMember]
+        public int Brightness {
+            get => brightness;
+            set {
+                if(value < 0) { value = 0; }
+                if (brightness == value) return;
+                brightness = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double time;
+        [DataMember]
+        public double Time {
+            get => time;
+            set {
+                if (value < 0) { value = 0; }
+                if (time == value) return;
+                time = value;
+                RaisePropertyChanged();
+            }
+        }
+    }
+
+    #region Obsolete
+
+    [Serializable]
+    [DataContract]
+    [Obsolete]
     public class FlatDeviceFilterSettingsKey {
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -261,6 +408,7 @@ namespace NINA.Profile {
 
     [Serializable]
     [DataContract]
+    [Obsolete]
     public class FlatDeviceFilterSettingsValue {
 
         [Obsolete]
@@ -278,4 +426,6 @@ namespace NINA.Profile {
             Time = time;
         }
     }
+
+    #endregion
 }

@@ -315,7 +315,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
     }
 
     public class GetLockPositionResponse : PhdMethodResponse {
-        public int[] result;
+        public float[] result;
     }
 
     public class GetLockShiftParamsResponse : PhdMethodResponse {

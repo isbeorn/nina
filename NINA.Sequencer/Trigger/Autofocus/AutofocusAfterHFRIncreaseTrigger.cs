@@ -162,14 +162,15 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (nextItem == null) { return false; }
-            if (!(nextItem is IExposureItem)) { return false; }
+            if (!(nextItem is IExposureItem exposureItem)) { return false; }
+            if (exposureItem.ImageType != "LIGHT") { return false; }
 
             bool shouldTrigger = false;
             var fwInfo = this.filterWheelMediator.GetInfo();
 
             var lastAF = history.AutoFocusPoints?.LastOrDefault();
             // Filter the history for all light frames and frames that have a non zero HFR value
-            var imageHistory = history.ImageHistory.Where(x => x.Type == "LIGHT" && !double.IsNaN(x.HFR) && x.HFR > 0).ToList(); ;
+            var imageHistory = history.ImageHistory.Where(x => x.Type == "LIGHT" && !double.IsNaN(x.HFR) && x.HFR > 0).ToList();
 
             if (lastAF != null) {
                 //Take all items that are after the last autofocus into consideration

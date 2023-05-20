@@ -23,10 +23,10 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.Interfaces {
 
     public interface IExposureItem : ISequenceItem {
-        double ExposureTime { get; }
-        int Gain { get; }
-        int Offset { get; }
-        string ImageType { get; }
-        BinningMode Binning { get; }
+        double ExposureTime { get; set; }
+        int Gain { get; set; }
+        int Offset { get; set; }
+        string ImageType { get; set; }
+        BinningMode Binning { get; set; }
     }
 }

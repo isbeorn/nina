@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Core.Interfaces;
 using NINA.Core.Model;
+using NINA.Equipment.Equipment.MyGuider;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace NINA.Equipment.Interfaces {
         bool CanClearCalibration { get; }
         bool CanSetShiftRate { get; }
         bool ShiftEnabled { get; }
+        bool CanGetLockPosition { get; }
 
         SiderealShiftTrackingRate ShiftRate { get; }
 
@@ -47,6 +49,8 @@ namespace NINA.Equipment.Interfaces {
         Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct);
 
         Task<bool> StopShifting(CancellationToken ct);
+
+        Task<LockPosition> GetLockPosition();
     }
 
     public interface IGuiderAppState {

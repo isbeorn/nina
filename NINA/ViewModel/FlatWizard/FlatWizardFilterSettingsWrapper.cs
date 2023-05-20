@@ -19,7 +19,7 @@ using NINA.Core.Utility;
 using NINA.Core.Model.Equipment;
 using NINA.Image.ImageAnalysis;
 
-namespace NINA.WPF.Base.Model {
+namespace NINA.ViewModel.FlatWizard {
 
     public class FlatWizardFilterSettingsWrapper : BaseINPC {
         private FilterInfo filterInfo;

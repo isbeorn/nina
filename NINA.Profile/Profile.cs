@@ -51,6 +51,8 @@ namespace NINA.Profile {
     [KnownType(typeof(SnapShotControlSettings))]
     [KnownType(typeof(SafetyMonitorSettings))]
     [KnownType(typeof(PluginSettings))]
+    [KnownType(typeof(GnssSettings))]
+
     public class Profile : SerializableINPC, IProfile {
 
         /// <summary>
@@ -75,19 +77,6 @@ namespace NINA.Profile {
         [OnDeserialized]
         private void SetValuesOnDeserialized(StreamingContext context) {
             RegisterHandlers();
-            MigrateFlatDeviceFilterSettingsFromFilterNameToPosition();
-        }
-
-        private void MigrateFlatDeviceFilterSettingsFromFilterNameToPosition() {
-            foreach (var kvp in FlatDeviceSettings.FilterSettings) {
-                if (kvp.Key.Position == null && !string.IsNullOrEmpty(kvp.Key.FilterName)) {
-                    var usedFilter = FilterWheelSettings.FilterWheelFilters.FirstOrDefault(f => f.Name == kvp.Key.FilterName);
-                    if (usedFilter != null) {
-                        kvp.Key.Position = usedFilter.Position;
-                        kvp.Key.FilterName = null;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -119,6 +108,7 @@ namespace NINA.Profile {
             SnapShotControlSettings = new SnapShotControlSettings();
             SafetyMonitorSettings = new SafetyMonitorSettings();
             PluginSettings = new PluginSettings();
+            GnssSettings = new GnssSettings();
         }
 
         /// <summary>
@@ -149,6 +139,7 @@ namespace NINA.Profile {
             SnapShotControlSettings.PropertyChanged += SettingsChanged;
             SafetyMonitorSettings.PropertyChanged += SettingsChanged;
             PluginSettings.PropertyChanged += SettingsChanged;
+            GnssSettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -291,6 +282,9 @@ namespace NINA.Profile {
 
         [DataMember]
         public IPluginSettings PluginSettings { get; set; }
+
+        [DataMember]
+        public IGnssSettings GnssSettings { get; set; }
 
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name

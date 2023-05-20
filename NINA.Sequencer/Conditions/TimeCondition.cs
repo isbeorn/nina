@@ -183,12 +183,15 @@ namespace NINA.Sequencer.Conditions {
             var now = DateTime.Now;
             var then = new DateTime(now.Year, now.Month, now.Day, Hours, Minutes, Seconds);
 
-            if (now.Hour < 12 && then.Hour >= 12) {
+            var rollover = SelectedProvider.GetRolloverTime(this);
+            var timeOnlyNow = TimeOnly.FromDateTime(now);
+            var timeOnlyThen = TimeOnly.FromDateTime(then);
+
+            if (timeOnlyNow < rollover && timeOnlyThen >= rollover) {
                 then = then.AddDays(-1);
             }
 
-            //In case it is 22:00:00 but you want to wait until 01:00:00 o'clock a day of 1 needs to be added
-            if (now.Hour >= 12 && then.Hour < 12) {
+            if (timeOnlyNow >= rollover && timeOnlyThen < rollover) {
                 then = then.AddDays(1);
             }
 

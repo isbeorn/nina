@@ -33,6 +33,7 @@ using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.SkySurvey;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
@@ -163,9 +164,9 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public bool CanSetOffset => true;
 
-        public int OffsetMin => 1000;
+        public int OffsetMin => 0;
 
-        public int OffsetMax => 0;
+        public int OffsetMax => 1000;
 
         public bool CanSetUSBLimit => true;
 
@@ -306,8 +307,10 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
                 try {
                     // Trigger a download to ensure the the properties from the previously saved image settings are intialized
                     _ = await this.DownloadExposure(token);
+                    currentFile = 0;
                 } catch (Exception e) {
                     Logger.Error("Failed to download image on connect", e);
+                    return false;
                 }
 
                 return true;
@@ -416,7 +419,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
                 case CameraType.DIRECTORY:
                     if (files == null || files.Length == 0) {
-                        files = Directory.GetFiles(settings.DirectorySettings.DirectoryPath, "*", SearchOption.AllDirectories);
+                        files = Directory.GetFiles(settings.DirectorySettings.DirectoryPath, "*", SearchOption.AllDirectories).Where(BaseImageData.FileIsSupported).ToArray();
                         if (files.Length == 0) {
                             throw new Exception("No Image found in directory set in Simulator!");
                         }
@@ -502,7 +505,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath)) {
                 settings.DirectorySettings.DirectoryPath = dialog.SelectedPath;
-                files = Directory.GetFiles(dialog.SelectedPath);
+                files = Directory.GetFiles(dialog.SelectedPath).Where(BaseImageData.FileIsSupported).ToArray();
                 currentFile = 0;
                 return true;
             }

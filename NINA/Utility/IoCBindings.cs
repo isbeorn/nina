@@ -1,6 +1,7 @@
 ﻿#region "copyright"
+
 /*
-    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -8,77 +9,82 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+
 #endregion "copyright"
+
+using Microsoft.Extensions.DependencyInjection;
 using NINA.API.SGP;
-using NINA.Equipment.Equipment.MyPlanetarium;
-using NINA.Profile.Interfaces;
 using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
+using NINA.Core.Interfaces;
+using NINA.Core.Interfaces.API.SGP;
+using NINA.Core.Interfaces.Utility;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyDome;
+using NINA.Equipment.Equipment.MyGPS;
+using NINA.Equipment.Equipment.MyPlanetarium;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
+using NINA.Image.ImageAnalysis;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Imaging.ViewModel.Imaging;
+using NINA.Interfaces;
+using NINA.PlateSolving;
+using NINA.PlateSolving.Interfaces;
+using NINA.Plugin;
+using NINA.Plugin.Interfaces;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Mediator;
 using NINA.ViewModel;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
 using NINA.ViewModel.ImageHistory;
 using NINA.ViewModel.Imaging;
+using NINA.ViewModel.Interfaces;
+using NINA.ViewModel.Plugins;
 using NINA.ViewModel.Sequencer;
-using System;
-using NINA.Plugin;
-using NINA.Core.Utility;
-using NINA.Core.Model;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Interfaces;
-using NINA.WPF.Base.Mediator;
-using NINA.Sequencer.Interfaces.Mediator;
-using NINA.Core.Utility.WindowService;
-using NINA.Image.ImageAnalysis;
 using NINA.WPF.Base.Interfaces.Utility;
-using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.Utility;
-using NINA.Sequencer.Mediator;
-using NINA.Equipment.Equipment.MyDome;
-using NINA.Core.Interfaces.API.SGP;
-using NINA.Core.MyMessageBox;
-using NINA.Profile;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.WPF.Base.ViewModel.Equipment.FlatDevice;
 using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.WPF.Base.ViewModel.Equipment.Switch;
+using NINA.WPF.Base.Mediator;
+using NINA.WPF.Base.Utility;
+using NINA.WPF.Base.ViewModel;
 using NINA.WPF.Base.ViewModel.Equipment.Camera;
-using NINA.WPF.Base.ViewModel.Equipment.WeatherData;
-using NINA.WPF.Base.ViewModel.Equipment.Telescope;
 using NINA.WPF.Base.ViewModel.Equipment.Dome;
 using NINA.WPF.Base.ViewModel.Equipment.FilterWheel;
-using NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor;
+using NINA.WPF.Base.ViewModel.Equipment.FlatDevice;
 using NINA.WPF.Base.ViewModel.Equipment.Focuser;
 using NINA.WPF.Base.ViewModel.Equipment.Guider;
 using NINA.WPF.Base.ViewModel.Equipment.Rotator;
-using NINA.Plugin.Interfaces;
-using NINA.Interfaces;
-using NINA.ViewModel.Plugins;
-using NINA.PlateSolving.Interfaces;
-using NINA.PlateSolving;
-using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
-using NINA.Core.Interfaces.Utility;
-using NINA.Image.Interfaces;
-using NINA.Image.ImageData;
-using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces;
-using NINA.Equipment.Equipment;
-using NINA.Imaging.ViewModel.Imaging;
-using Microsoft.Extensions.DependencyInjection;
+using NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor;
+using NINA.WPF.Base.ViewModel.Equipment.Switch;
+using NINA.WPF.Base.ViewModel.Equipment.Telescope;
+using NINA.WPF.Base.ViewModel.Equipment.WeatherData;
+using System;
 
 namespace NINA.Utility {
-    
+
     internal class IoCBindings {
         private readonly IProfileService _profileService;
+        private readonly ICommandLineOptions _commandLineArguments;
 
-        public IoCBindings(IProfileService profileService) { 
+        public IoCBindings(IProfileService profileService, ICommandLineOptions commandLineOptions) {
             _profileService = profileService;
+            _commandLineArguments = commandLineOptions;
         }
 
         public IServiceProvider Load() {
             try {
-
                 var services = new ServiceCollection();
 
                 services.AddSingleton<ProjectVersion>(f => new ProjectVersion(NINA.Core.Utility.CoreUtil.Version));
@@ -88,6 +94,8 @@ namespace NINA.Utility {
 
                 services.AddSingleton<IDeviceDispatcher, DeviceDispatcher>();
                 services.AddSingleton<IApplicationVM, ApplicationVM>();
+
+                services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
 
                 // Equipment Providers
                 services.AddScoped<IEquipmentProviders<ICamera>, PluginEquipmentProviders<ICamera>>();
@@ -241,7 +249,6 @@ namespace NINA.Utility {
                 services.AddSingleton<IImageHistoryVM, ImageHistoryVM>();
                 services.AddSingleton<IImageStatisticsVM, ImageStatisticsVM>();
 
-                services.AddSingleton<IFlatWizardUserPromptVM, FlatWizardUserPromptVM>();
                 services.AddSingleton<ITwilightCalculator, TwilightCalculator>();
                 services.AddSingleton<IMicroCacheFactory, DefaultMicroCacheFactory>();
                 services.AddSingleton<ISbigSdk, SbigSdk>();
@@ -278,6 +285,7 @@ namespace NINA.Utility {
                 services.AddSingleton<IWindowServiceFactory, WindowServiceFactory>();
                 services.AddSingleton<IPlanetariumFactory, PlanetariumFactory>();
                 services.AddSingleton<IAllDeviceConsumer, AllDeviceConsumer>();
+                services.AddSingleton<IGnssFactory, GnssFactory>();
 
                 services.AddSingleton<IApplicationResourceDictionary, ApplicationResourceDictionary>();
                 services.AddSingleton<INighttimeCalculator, NighttimeCalculator>();
@@ -309,9 +317,10 @@ namespace NINA.Utility {
                                                      f.GetService<IImagingMediator>(),
                                                      f.GetService<IApplicationStatusMediator>()),
                                   new ImageStatisticsVM(f.GetService<IProfileService>()),
-                                  f.GetService<IImageHistoryVM>()), f.GetService<IFlatWizardUserPromptVM>(),
+                                  f.GetService<IImageHistoryVM>()),
                     f.GetService<ICameraMediator>(), f.GetService<IFilterWheelMediator>(), f.GetService<ITelescopeMediator>(),
                     f.GetService<IFlatDeviceMediator>(), f.GetService<IImageGeometryProvider>(), f.GetService<IApplicationStatusMediator>(), f.GetService<IMyMessageBoxVM>(),
+                    f.GetService<INighttimeCalculator>(),
                     f.GetService<ITwilightCalculator>(),
                     f.GetService<IImageSaveMediator>()));
 

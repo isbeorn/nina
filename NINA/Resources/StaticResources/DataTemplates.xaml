@@ -17,7 +17,6 @@
     xmlns:focuser="clr-namespace:NINA.Equipment.Equipment.MyFocuser;assembly=NINA.Equipment"
     xmlns:framing="clr-namespace:NINA.ViewModel.FramingAssistant"
     xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard"
-    xmlns:fwcore="clr-namespace:NINA.WPF.Base.Model;assembly=NINA.WPF.Base"
     xmlns:guider="clr-namespace:NINA.Equipment.Equipment.MyGuider;assembly=NINA.Equipment"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -58,11 +57,7 @@
         <equip:TelescopeLatLongSyncView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type fw:FlatWizardUserPromptVM}">
-        <view:FlatWizardUserPrompt />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type fwcore:FlatWizardFilterSettingsWrapper}">
+    <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
         <view:FlatWizardFilterSettingsWrapperView />
     </DataTemplate>
 

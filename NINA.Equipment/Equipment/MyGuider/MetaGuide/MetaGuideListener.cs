@@ -55,7 +55,7 @@ namespace NINA.Equipment.Equipment.MyGuider.MetaGuide {
 
         public event OnDisconnectedDelegate OnDisconnected;
 
-        private static int METAGUIDE_QUEUE_TIMEOUT_MS = 5000;
+        private const int METAGUIDE_QUEUE_TIMEOUT_MS = 5000;
 
         public MetaGuideListener() {
         }
@@ -138,31 +138,40 @@ namespace NINA.Equipment.Equipment.MyGuider.MetaGuide {
         }
 
         public async Task RunListener(
-            IPAddress ipAddress,
+            bool useIpAddressAny,
             int port,
             CancellationToken ct) {
             await Task.Run(async () => {
                 Task consumerTask = null;
                 Socket socket = null;
                 var consumerTokenSource = new CancellationTokenSource();
+
                 try {
-                    AsyncProducerConsumerQueue<string[]> messageQueue = new AsyncProducerConsumerQueue<string[]>(200);
+                    var messageQueue = new AsyncProducerConsumerQueue<string[]>(200);
                     // Run consumer on a separate, concurrent task to keep up with UDP messages from MetaGuide
                     consumerTask = RunConsumer(messageQueue, CancellationTokenSource.CreateLinkedTokenSource(ct, consumerTokenSource.Token).Token);
-                    IPEndPoint remoteEndpoint = new IPEndPoint(ipAddress, port);
-                    socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
-                    socket.EnableBroadcast = true;
-                    socket.ReceiveTimeout = METAGUIDE_QUEUE_TIMEOUT_MS;
-                    socket.Bind(remoteEndpoint);
-                    EndPoint localEndpoint = (EndPoint)remoteEndpoint;
-                    byte[] receiveBytes = new byte[1024];
+
+                    var listenAddr = new IPEndPoint(useIpAddressAny ? IPAddress.Any : IPAddress.Loopback, port);
+                    EndPoint remoteEndpoint = listenAddr;
+                    var receiveBytes = new byte[1024];
+
+                    socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
+                        EnableBroadcast = true,
+                        ReceiveTimeout = METAGUIDE_QUEUE_TIMEOUT_MS
+                    };
+
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                    socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+                    socket.Bind(listenAddr);
+
                     while (!ct.IsCancellationRequested) {
-                        int bytesReceived = socket.ReceiveFrom(receiveBytes, ref localEndpoint);
-                        string rawMessage = Encoding.UTF8.GetString(receiveBytes, 0, bytesReceived);
+                        var bytesReceived = socket.ReceiveFrom(receiveBytes, ref remoteEndpoint);
+                        var rawMessage = Encoding.UTF8.GetString(receiveBytes, 0, bytesReceived);
                         var splitMessage = rawMessage.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
                         var timeoutTokenSource = new CancellationTokenSource(TimeSpan.FromMilliseconds(METAGUIDE_QUEUE_TIMEOUT_MS));
                         var timeoutOrCancelledTokenSource = CancellationTokenSource.CreateLinkedTokenSource(ct, timeoutTokenSource.Token);
+
                         using (timeoutTokenSource.Token.Register(() => Logger.Error($"MetaGuide queue full"))) {
                             await messageQueue.EnqueueAsync(splitMessage, timeoutOrCancelledTokenSource.Token);
                         }
@@ -177,7 +186,7 @@ namespace NINA.Equipment.Equipment.MyGuider.MetaGuide {
                     consumerTask?.WaitWithoutException(new CancellationTokenSource(METAGUIDE_QUEUE_TIMEOUT_MS).Token);
                     this.OnDisconnected?.Invoke();
                 }
-            });
+            }, ct);
         }
     }
 }

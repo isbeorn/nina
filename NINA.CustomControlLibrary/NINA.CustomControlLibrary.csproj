@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <PropertyGroup>
-    <Version>3.0.0.1015-nightly</Version>
+    <Version>3.0.0.1022-nightly</Version>
     <Title>N.I.N.A. Custom Control Library</Title>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>

@@ -33,8 +33,6 @@ namespace NINA.Profile {
             flatCount = 10;
             histogramTolerance = 0.1;
             histogramMeanTarget = 0.5;
-            stepSize = 0.5;
-            binningMode = new BinningMode(1, 1);
             darkFlatCount = 0;
             altitudeSite = AltitudeSite.EAST;
             flatWizardMode = FlatWizardMode.DYNAMICEXPOSURE;
@@ -74,32 +72,6 @@ namespace NINA.Profile {
             set {
                 if (histogramTolerance != value) {
                     histogramTolerance = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double stepSize;
-
-        [DataMember]
-        public double StepSize {
-            get => stepSize;
-            set {
-                if (stepSize != value) {
-                    stepSize = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private BinningMode binningMode;
-
-        [DataMember]
-        public BinningMode BinningMode {
-            get => binningMode;
-            set {
-                if (binningMode != value) {
-                    binningMode = value;
                     RaisePropertyChanged();
                 }
             }

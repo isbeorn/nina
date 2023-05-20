@@ -1657,23 +1657,20 @@ HFR calculada: {2}
   <data name="LblGeneral" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="LblGPSConnected" xml:space="preserve">
-    <value>GPS conectado en el puerto</value>
+  <data name="LblGnssConnectFail" xml:space="preserve">
+    <value>Error al conectar a {0}</value>
   </data>
-  <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>No se puede conectar al GPS en el puerto</value>
+  <data name="LblGnssLocationSet" xml:space="preserve">
+    <value>Ubicación establecida desde {0}</value>
   </data>
-  <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>Ubicación actualizada desde GPS</value>
+  <data name="LblGnssNoFix" xml:space="preserve">
+    <value>{0} informa de que no hay solución</value>
   </data>
-  <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS No se ha arreglado</value>
+  <data name="LblGnssNotFound" xml:space="preserve">
+    <value>Ningún dispositivo {0} detectado</value>
   </data>
-  <data name="LblGPSNotFound" xml:space="preserve">
-    <value>No se ha detectado modulo GPS</value>
-  </data>
-  <data name="LblGPSTooltip" xml:space="preserve">
-    <value>Importar ubicación usando un dispositivo GPS NMEA</value>
+  <data name="LblGnssTooltip" xml:space="preserve">
+    <value>Importar ubicación desde un dispositivo GNSS</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guiado</value>
@@ -1989,9 +1986,6 @@ HFR calculada: {2}
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
     <value>Configuración de MetaGuide</value>
-  </data>
-  <data name="LblMetaGuideIP" xml:space="preserve">
-    <value>MetaGuide IP</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
     <value>Puerto de MetaGuide</value>
@@ -6557,5 +6551,126 @@ Esto solo debería desactivarse si tienes un buen modelado de cielo que no debe 
   </data>
   <data name="LblCalibrate" xml:space="preserve">
     <value>Calibrar</value>
+  </data>
+  <data name="LblNmeaSerialGnss" xml:space="preserve">
+    <value>GNSS tipo NMEA</value>
+  </data>
+  <data name="LblPrimaLuceLabEagle" xml:space="preserve">
+    <value>PrimaLuceLab Eagle</value>
+  </data>
+  <data name="LblGnssGgaMissingError" xml:space="preserve">
+    <value>Sin notificación del GGA durante {0} segundos</value>
+  </data>
+  <data name="LblGnssGgaQualityError" xml:space="preserve">
+    <value>La notificación del CGA indica que la calidad es de {0}</value>
+  </data>
+  <data name="LblGnss" xml:space="preserve">
+    <value>GNSS</value>
+  </data>
+  <data name="LblPegasusUranusNotFound" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo no encontrado</value>
+  </data>
+  <data name="LblPegausAstroUranus" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblIsValidIpPortRule" xml:space="preserve">
+    <value>El número de puerto debe estar entre {0} y {1}</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
+    <value>Usar todas las interfaces</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
+    <value>Escuchar en todas las interfaces las emisiones de MegaGuide. Por defecto, N.I.N.A. escuchará sólo en loopback (127.0.0.1)</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
+    <value>Esta instrucción determinará automáticamente el tiempo de exposiciones de flats de forma similar al asistente para un panel de flat con un brillo determinado.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
+    <value>Auto exposición de flat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
+    <value>Esta instrucción determinará automáticamente el brillo del panel de flats de forma similar al del asistente para un tiempo de exposición determinado.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
+    <value>Brillo automático de flat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
+    <value>Esta instrucción determinará automáticamente los tiempos de exposición de forma similar al asistente para flats hechos contra el cielo.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
+    <value>Flats de cielo</value>
+  </data>
+  <data name="LblClosingCover" xml:space="preserve">
+    <value>Cerrando tapa</value>
+  </data>
+  <data name="LblOpeningCover" xml:space="preserve">
+    <value>Abriendo tapa</value>
+  </data>
+  <data name="LblSettingBrightness" xml:space="preserve">
+    <value>Ajustando brillo a {0}</value>
+  </data>
+  <data name="LblToggleLight" xml:space="preserve">
+    <value>Cambiando luz a {0}</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
+    <value>Determinando brillo usando {0}. Intento {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
+    <value>Encontrada luminosidad en la luminosidad del panel {0}. Capturando flats.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
+    <value>Calculando tiempo de exposición usando {0} s. Intento {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
+    <value>Calculado el tiempo de exposición en {0} s. Capturando flats.</value>
+  </data>
+  <data name="LblFlatWizardFailed" xml:space="preserve">
+    <value>El asistente de flats falló.
+Razón: {0}</value>
+    <comment>When flat wizard fails in single mode</comment>
+  </data>
+  <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
+    <value>El asistente de Flats ha fallado con el filtro {0}.
+Motivo: {1}</value>
+    <comment>When flat wizard fails in multi mode</comment>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
+    <value>No se pudo determinar el brillo de los flats - la luz es demasiado brillante.
+Reduzca el brillo mínimo del panel o el tiempo de exposición.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
+    <value>No se pudo determinar el brillo de los flats - la luz es demasiado tenue.
+Aumenta el brillo máximo del panel o el tiempo de exposición.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
+    <value>No se pudo determinar el tiempo de exposición de los flats - la luz es demasiado brillante.
+Reducir el brillo del panel o el tiempo mínimo de exposición.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
+    <value>No se pudo determinar el tiempo de exposición de los flats - la luz es demasiado tenue.
+Aumenta el brillo del panel o el tiempo máximo de exposición.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
+    <value>Calculando tiempo de exposición usando {0} s. Intento {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
+    <value>Calculado el tiempo de exposición en {0} s. Capturando flats en el cielo.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
+    <value>No se pudo determinar el tiempo de exposición de los flats contra el cielo: el cielo es demasiado brillante. 
+Reducir el tiempo mínimo de exposición o esperar hasta que sea más oscuro.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
+    <value>No se pudo determinar el tiempo de exposición de los planos contra el cielo: el cielo es demasiado oscuro.
+Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.</value>
+  </data>
+  <data name="LblFlatDeviceError" xml:space="preserve">
+    <value>Se ha encontrado un error</value>
+  </data>
+  <data name="LblFlatDeviceCoverError" xml:space="preserve">
+    <value>{0} informa que la tapa está en un estado erróneo</value>
+  </data>
+  <data name="LblFlatDeviceNotPresent" xml:space="preserve">
+    <value>No presente</value>
   </data>
 </root>

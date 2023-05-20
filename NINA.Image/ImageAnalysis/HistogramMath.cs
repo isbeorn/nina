@@ -36,20 +36,20 @@ namespace NINA.Image.ImageAnalysis {
             return Math.Pow(2, cameraBitDepth);
         }
 
-        public static double HistogramMeanAndCameraBitDepthToAdu(double histogramMean, double cameraBitDepth) {
-            return histogramMean * CameraBitDepthToAdu(cameraBitDepth);
+        public static double HistogramMeanAndCameraBitDepthToAdu(double histogramMeanPercentage, double cameraBitDepth) {
+            return histogramMeanPercentage * CameraBitDepthToAdu(cameraBitDepth);
         }
 
-        public static double GetLowerToleranceBoundInAdu(double histogramMean, double cameraBitDepth, double tolerance) {
-            return GetLowerToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMean, cameraBitDepth), tolerance);
+        public static double GetLowerToleranceBoundInAdu(double histogramMeanPercentage, double cameraBitDepth, double tolerance) {
+            return GetLowerToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMeanPercentage, cameraBitDepth), tolerance);
         }
 
-        public static double GetUpperToleranceBoundInAdu(double histogramMean, double cameraBitDepth, double tolerance) {
-            return GetUpperToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMean, cameraBitDepth), tolerance);
+        public static double GetUpperToleranceBoundInAdu(double histogramMeanPercentage, double cameraBitDepth, double tolerance) {
+            return GetUpperToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMeanPercentage, cameraBitDepth), tolerance);
         }
 
-        public static ExposureAduState GetExposureAduState(double mean, double targetMean, double cameraBitDepth, double tolerance) {
-            var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(targetMean, cameraBitDepth);
+        public static ExposureAduState GetExposureAduState(double mean, double targetMeanPercentage, double cameraBitDepth, double tolerance) {
+            var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(targetMeanPercentage, cameraBitDepth);
             var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, tolerance);
             var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, tolerance);
 

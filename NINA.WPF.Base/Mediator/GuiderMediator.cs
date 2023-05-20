@@ -22,6 +22,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Astrometry;
 using NINA.Core.Utility.Extensions;
 using NINA.Core.Interfaces;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 
 namespace NINA.WPF.Base.Mediator {
 
@@ -62,6 +63,11 @@ namespace NINA.WPF.Base.Mediator {
         public Task<bool> StopShifting(CancellationToken ct) {
             return handler.StopShifting(ct);
         }
+
+        public LockPosition GetLockPosition() {
+            return handler.GetLockPosition();
+        }
+
         /// <summary>
         /// Will be raised each time the application receives guide pulse info from the guider
         /// </summary>

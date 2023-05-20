@@ -91,7 +91,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             sut.Brightness = 10;
             await sut.Execute(default, default);
 
-            fdMediatorMock.Verify(x => x.SetBrightness(It.Is<int>(b => b == sut.Brightness), It.IsAny<CancellationToken>()), Times.Once);
+            fdMediatorMock.Verify(x => x.SetBrightness(It.Is<int>(b => b == sut.Brightness), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var sut = new SetBrightness(fdMediatorMock.Object);
             await sut.Run(default, default);
 
-            fdMediatorMock.Verify(x => x.SetBrightness(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+            fdMediatorMock.Verify(x => x.SetBrightness(It.IsAny<int>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Never);
             sut.Status.Should().Be(SequenceEntityStatus.FAILED);
         }
 

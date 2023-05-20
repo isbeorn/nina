@@ -71,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            await flatDeviceMediator.SetBrightness(Brightness, token);
+            await flatDeviceMediator.SetBrightness(Brightness, progress, token);
 
             var brightnessState = flatDeviceMediator.GetInfo().Brightness;
             if (brightnessState != Brightness) {
@@ -98,7 +98,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetBrightness)}";
+            return $"Category: {Category}, Item: {nameof(SetBrightness)}, {nameof(Brightness)}: {Brightness}";
         }
     }
 }

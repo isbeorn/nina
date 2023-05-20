@@ -51,9 +51,11 @@ namespace NINA.Test.Sequencer.Conditions {
 
         [Test]
         public void TimeCondition_Clone_GoodClone_TimeProviderDoesntOverwrite() {
-            var hours = (int)AstroUtil.EuclidianModulus(DateTime.Now.Hour + 1, 24);
+            var hours = (int)AstroUtil.EuclidianModulus(14, 24);
 
-            var l = new List<IDateTimeProvider>() { new TimeProvider() };
+            var provider = new Mock<IDateTimeProvider>();
+            provider.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2023,01,01,14,20,30));
+            var l = new List<IDateTimeProvider>() { provider.Object };
             var sut = new TimeCondition(l);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             sut.SelectedProvider = l.First();
@@ -163,6 +165,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var providerMock = new Mock<IDateTimeProvider>();
             providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2000, 1, 1, conditionHours, conditionMinutes, 0));
+            providerMock.Setup(x => x.GetRolloverTime(It.IsAny<ISequenceEntity>())).Returns(new TimeOnly(12, 0, 0));
 
             var sut = new TimeCondition(new List<IDateTimeProvider>() { providerMock.Object }, providerMock.Object);
             sut.DateTime = dateMock.Object;

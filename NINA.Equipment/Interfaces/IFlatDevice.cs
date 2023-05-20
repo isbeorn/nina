@@ -39,5 +39,12 @@ namespace NINA.Equipment.Interfaces {
         bool SupportsOnOff { get; }
     }
 
-    public enum CoverState { Unknown, NeitherOpenNorClosed, Closed, Open };
+    public enum CoverState {
+        Unknown,
+        NeitherOpenNorClosed,
+        Closed,
+        Open,
+        Error,
+        NotPresent,
+    };
 }

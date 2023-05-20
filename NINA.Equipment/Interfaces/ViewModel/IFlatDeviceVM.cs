@@ -15,21 +15,23 @@
 using System.Threading;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using System.Threading.Tasks;
+using NINA.Core.Model;
+using System;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
     public interface IFlatDeviceVM : IDeviceVM<FlatDeviceInfo>, IDockableVM {
 
-        Task<bool> OpenCover(CancellationToken token);
+        Task<bool> OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token);
 
-        Task<bool> CloseCover(CancellationToken token);
+        Task<bool> CloseCover(IProgress<ApplicationStatus> progress, CancellationToken token);
 
         int Brightness { get; set; }
         bool LightOn { get; set; }
         FlatDeviceInfo FlatDeviceInfo { get; set; }
 
-        Task<bool> ToggleLight(object o, CancellationToken token);
+        Task<bool> ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token);
 
-        Task<bool> SetBrightness(int value, CancellationToken token);
+        Task<bool> SetBrightness(int value, IProgress<ApplicationStatus> progress, CancellationToken token);
     }
 }

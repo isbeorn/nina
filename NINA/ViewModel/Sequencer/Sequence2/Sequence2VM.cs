@@ -58,22 +58,28 @@ using System.ComponentModel;
 namespace NINA.ViewModel.Sequencer {
 
     internal class Sequence2VM : BaseVM, ISequence2VM {
+        private ICommandLineOptions commandLineOptions;
         private IApplicationStatusMediator applicationStatusMediator;
         private ISequenceMediator sequenceMediator;
+        private IApplicationMediator applicationMediator;
         private ICameraMediator cameraMediator;
         private DispatcherTimer validationTimer;
 
         public Sequence2VM(
             IProfileService profileService,
+            ICommandLineOptions commandLineOptions,
             ISequenceMediator sequenceMediator,
+            IApplicationMediator applicationMediator,
             IApplicationStatusMediator applicationStatusMediator,
             ICameraMediator cameraMediator,
             ISequencerFactory factory
             ) : base(profileService) {
-            
+
+            this.commandLineOptions = commandLineOptions;
             this.applicationStatusMediator = applicationStatusMediator;
 
             this.sequenceMediator = sequenceMediator;
+            this.applicationMediator = applicationMediator;
             this.cameraMediator = cameraMediator;
             cameraMediator.RegisterConsumer(this);
 
@@ -98,11 +104,11 @@ namespace NINA.ViewModel.Sequencer {
             get => savePath;
             set {
                 savePath = value;
-                if(!string.IsNullOrWhiteSpace(value)) {
+                if (!string.IsNullOrWhiteSpace(value)) {
                     DetachSequencerINPC();
                     Sequencer.MainContainer.SequenceTitle = Path.GetFileNameWithoutExtension(value);
                     AttachSequencerINPC();
-                }                
+                }
                 RaisePropertyChanged();
             }
         }
@@ -130,7 +136,7 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private void Sequencer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if(e.PropertyName == nameof(Sequencer.MainContainer.SequenceTitle)) {
+            if (e.PropertyName == nameof(Sequencer.MainContainer.SequenceTitle)) {
                 SavePath = string.Empty;
             }
         }
@@ -188,7 +194,7 @@ namespace NINA.ViewModel.Sequencer {
                     validationTimer.Tick += (sender, args) => Sequencer.MainContainer.Validate();
                     validationTimer.Start();
 
-                    if (File.Exists(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate)) {
+                    if (commandLineOptions.SequenceFile == null && File.Exists(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate)) {
                         try {
                             LoadSequenceFromFile(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate);
                             SavePath = string.Empty;
@@ -196,6 +202,10 @@ namespace NINA.ViewModel.Sequencer {
                         } catch (Exception ex) {
                             Logger.Error("Startup Sequence failed to load", ex);
                         }
+                    }
+
+                    if (commandLineOptions.SequenceFile != null) {
+                        TryLoadSequenceFile();
                     }
                 }));
             });
@@ -310,6 +320,31 @@ namespace NINA.ViewModel.Sequencer {
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Loc.Instance["Lbl_Sequencer_UnableToDeserializeJSON"]);
+            }
+        }
+
+        private void TryLoadSequenceFile() {
+            string sequenceFile = commandLineOptions.SequenceFile;
+
+            try {
+                if (!File.Exists(sequenceFile)) {
+                    Logger.Error($"Auto load sequence file not found: {sequenceFile}");
+                    return;
+                }
+
+                Logger.Info($"Loading sequence file: {sequenceFile}");
+                LoadSequenceFromFile(sequenceFile);
+                SavePath = string.Empty;
+                Sequencer.MainContainer.ClearHasChanged();
+
+                if (commandLineOptions.RunSequence) {
+                    Logger.Info("Starting sequence");
+                    _ = StartSequence(null);
+                    applicationMediator.ChangeTab(ApplicationTab.IMAGING);
+                }
+            }
+            catch(Exception ex) {
+                Logger.Error(ex);
             }
         }
 

@@ -33,7 +33,7 @@ namespace NINA.Profile.Interfaces {
         string PHD2Path { get; set; }
         bool AutoRetryStartGuiding { get; set; }
         int AutoRetryStartGuidingTimeoutSeconds { get; set; }
-        string MetaGuideIP { get; set; }
+        bool MetaGuideUseIpAddressAny { get; set; }
         int MetaGuidePort { get; set; }
         int MGENFocalLength { get; set; }
         int MGENPixelMargin { get; set; }

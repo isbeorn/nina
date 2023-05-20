@@ -71,7 +71,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>N.I.N.A. Core Library</Title>
-    <Version>3.0.0.1015-nightly</Version>
+    <Version>3.0.0.1022-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the core components of N.I.N.A.</Description>
@@ -95,6 +95,11 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Locale\Locale.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if $(Configuration) == SignedRelease (&#xD;&#xA;   echo  &quot;Trying to sign $(TargetPath)&quot;&#xD;&#xA;   signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)&#xD;&#xA; &#xD;&#xA;)" />

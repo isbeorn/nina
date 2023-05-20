@@ -93,7 +93,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             sut.OnOff = onoff;
             await sut.Execute(default, default);
 
-            fdMediatorMock.Verify(x => x.ToggleLight(It.Is<bool>(b => b == sut.OnOff), It.IsAny<CancellationToken>()), Times.Once);
+            fdMediatorMock.Verify(x => x.ToggleLight(It.Is<bool>(b => b == sut.OnOff), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var sut = new ToggleLight(fdMediatorMock.Object);
             await sut.Run(default, default);
 
-            fdMediatorMock.Verify(x => x.ToggleLight(It.IsAny<double>(), It.IsAny<CancellationToken>()), Times.Never);
+            fdMediatorMock.Verify(x => x.ToggleLight(It.IsAny<bool>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Never);
             sut.Status.Should().Be(SequenceEntityStatus.FAILED);
         }
 

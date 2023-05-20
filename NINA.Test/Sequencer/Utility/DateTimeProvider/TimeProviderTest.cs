@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NINA.Astrometry.Interfaces;
 
 namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
 
@@ -35,7 +36,7 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
             var customDateTimeMock = new Mock<ICustomDateTime>();
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
-            var sut = new TimeProvider();
+            var sut = new TimeProvider(new Mock<INighttimeCalculator>().Object);
             sut.DateTime = customDateTimeMock.Object;
             sut.GetDateTime(null).Should().Be(referenceDate);
         }

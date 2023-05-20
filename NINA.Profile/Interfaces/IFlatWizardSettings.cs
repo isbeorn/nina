@@ -21,8 +21,6 @@ namespace NINA.Profile.Interfaces {
         int FlatCount { get; set; }
         double HistogramMeanTarget { get; set; }
         double HistogramTolerance { get; set; }
-        double StepSize { get; set; }
-        BinningMode BinningMode { get; set; }
         int DarkFlatCount { get; set; }
         AltitudeSite AltitudeSite { get; set; }
         FlatWizardMode FlatWizardMode { get; set; }

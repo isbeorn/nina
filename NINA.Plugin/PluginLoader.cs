@@ -96,7 +96,8 @@ namespace NINA.Plugin {
                               IDomeSynchronization domeSynchronization,
                               ISequenceMediator sequenceMediator,
                               IOptionsVM optionsVM,
-                              IExposureDataFactory exposureDataFactory) {
+                              IExposureDataFactory exposureDataFactory,
+                              ITwilightCalculator twilightCalculator) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.telescopeMediator = telescopeMediator;
@@ -133,9 +134,10 @@ namespace NINA.Plugin {
             this.sequenceMediator = sequenceMediator;
             this.optionsVM = optionsVM;
             this.exposureDataFactory = exposureDataFactory;
+            this.twilightCalculator = twilightCalculator;
 
             DateTimeProviders = new List<IDateTimeProvider>() {
-                new TimeProvider(),
+                new TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
                 new NauticalDuskProvider(nighttimeCalculator),
                 new DuskProvider(nighttimeCalculator),
@@ -175,10 +177,15 @@ namespace NINA.Plugin {
                         } catch (Exception ex) {
                             Logger.Error("Failed to deploy plugin file to destination", ex);
                         }
-                    }
-                    Directory.Delete(staging, true);
+                    }                    
                 } catch (Exception ex) {
                     Logger.Error("Pluging deployment from staging failed", ex);
+                } finally {
+                    try {
+                        Directory.Delete(staging, true);
+                    } catch(Exception ex) {
+                        Logger.Error("Deleting staging folder failed", ex);
+                    }                    
                 }
             }
         }
@@ -480,6 +487,7 @@ namespace NINA.Plugin {
             container.ComposeExportedValue(sequenceMediator);
             container.ComposeExportedValue(optionsVM);
             container.ComposeExportedValue(exposureDataFactory);
+            container.ComposeExportedValue(twilightCalculator);
 
             return container;
         }
@@ -533,6 +541,7 @@ namespace NINA.Plugin {
         private readonly ISequenceMediator sequenceMediator;
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
+        private readonly ITwilightCalculator twilightCalculator;
         private readonly Dictionary<string, string> assemblyReferencePathMap;
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {

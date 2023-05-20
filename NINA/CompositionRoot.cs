@@ -34,9 +34,9 @@ namespace NINA {
 
     internal static class CompositionRoot {
 
-        public static IMainWindowVM Compose(IProfileService profileService) {
+        public static IMainWindowVM Compose(IProfileService profileService, ICommandLineOptions commandLineOptions) {
             try {
-                var serviceProvider = new IoCBindings(profileService).Load();
+                var serviceProvider = new IoCBindings(profileService, commandLineOptions).Load();
                 Stopwatch sw;
 
                 sw = Stopwatch.StartNew();

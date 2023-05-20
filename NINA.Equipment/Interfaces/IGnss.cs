@@ -1,4 +1,4 @@
-#region "copyright"
+﻿#region "copyright"
 
 /*
     Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -12,17 +12,18 @@
 
 #endregion "copyright"
 
-using System.Windows.Controls;
+using NINA.Astrometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace NINA.View {
+namespace NINA.Equipment.Interfaces {
+    public interface IGnss {
+        string Name { get; }
 
-    /// <summary>
-    /// Interaction logic for FlatsWizardUserPrompt.xaml
-    /// </summary>
-    public partial class FlatWizardUserPrompt : UserControl {
-
-        public FlatWizardUserPrompt() {
-            InitializeComponent();
-        }
+        Task<Location> GetLocation();
     }
 }

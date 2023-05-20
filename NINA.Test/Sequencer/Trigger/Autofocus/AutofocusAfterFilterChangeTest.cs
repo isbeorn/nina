@@ -101,7 +101,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             sut.SequenceBlockStarted();
 
-            var result = sut.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
 
             result.Should().BeFalse();
         }
@@ -126,7 +128,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             sut.Initialize();
 
-            var result = sut.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
 
             result.Should().BeTrue();
         }

@@ -217,9 +217,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var takeExposure = ((Items[4] as SequentialContainer).Items[0] as TakeExposure);
             var binning = takeExposure.Binning;
             var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-            var info = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(filter?.Position, binning, gain));
+            var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+            var info = profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
 
-            GetSetBrightnessItem().Brightness = info.AbsoluteBrightness;
+            GetSetBrightnessItem().Brightness = info.Brightness;
             takeExposure.ExposureTime = info.Time;
 
             if (KeepPanelClosed) {
@@ -264,7 +265,9 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 var filter = switchFilter?.Filter;
                 var binning = takeExposure.Binning;
                 var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-                if (profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(filter?.Position, binning, gain)) == null) {
+                var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+
+                if (profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset) == null) {
                     issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_FlatDeviceTrainedExposureNotFound"], filter?.Name, gain, binning?.Name));
                     valid = false;
                 }

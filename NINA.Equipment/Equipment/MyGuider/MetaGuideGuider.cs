@@ -12,23 +12,22 @@
 
 #endregion "copyright"
 
-using NINA.Profile.Interfaces;
+using NINA.Astrometry;
+using NINA.Core.Interfaces;
+using NINA.Core.Locale;
+using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyGuider.MetaGuide;
+using NINA.Equipment.Interfaces;
+using NINA.Profile.Interfaces;
 using Nito.AsyncEx;
 using System;
-using System.Net;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Interfaces;
-using NINA.Core.Locale;
-using NINA.Equipment.Equipment.MyGuider.MetaGuide;
-using NINA.Equipment.Interfaces;
-using NINA.Core.Model;
-using NINA.Astrometry;
-using System.Collections.Generic;
 
 namespace NINA.Equipment.Equipment.MyGuider {
 
@@ -47,6 +46,9 @@ namespace NINA.Equipment.Equipment.MyGuider {
         private static readonly uint remoteUnguideMsg = RegisterWindowMessage("MG_RemoteUnGuide");
         private static readonly uint remoteDitherMsg = RegisterWindowMessage("MG_RemoteDither");
         private static readonly uint remoteDitherRadiusMsg = RegisterWindowMessage("MG_RemoteDitherRadius");
+        private static readonly uint remoteShift = RegisterWindowMessage("MG_RemoteShift");
+        private static readonly uint remoteUnShift = RegisterWindowMessage("MG_RemoteUnShift");
+        private static readonly uint remoteSetShift = RegisterWindowMessage("MG_RemoteSetShift");
 
         private const int METAGUIDE_CONNECT_TIMEOUT_MS = 5000;
         private const int METAGUIDE_QUEUE_FLUSH_TIMEOUT_MS = 2000;
@@ -241,7 +243,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
                 this.connecting = true;
             }
 
-            IPAddress ipAddress = IPAddress.Parse(this.profileService.ActiveProfile.GuiderSettings.MetaGuideIP);
+            bool useIpAddressAny = this.profileService.ActiveProfile.GuiderSettings.MetaGuideUseIpAddressAny;
             int port = this.profileService.ActiveProfile.GuiderSettings.MetaGuidePort;
             this.clientCTS = new CancellationTokenSource();
             this.listener = new MetaGuideListener();
@@ -249,7 +251,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
             this.listener.OnGuide += Listener_OnGuide;
             this.listener.OnDisconnected += Listener_OnDisconnected;
 
-            this.listenerTask = this.listener.RunListener(ipAddress, port, this.clientCTS.Token);
+            this.listenerTask = this.listener.RunListener(useIpAddressAny, port, this.clientCTS.Token);
             this.listenerTask.GetAwaiter().OnCompleted(() => this.Disconnect());
             bool connectionSuccess = false;
 
@@ -257,6 +259,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
                 var connectTimeoutTokenSource = new CancellationTokenSource(TimeSpan.FromMilliseconds(METAGUIDE_CONNECT_TIMEOUT_MS));
                 var connectCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(connectTimeoutTokenSource.Token, token);
                 connectionSuccess = await WaitOnEventChangeCondition(() => this.latestStatus != null, connectCancellationTokenSource.Token);
+
                 lock (this.lockobj) {
                     if (!connectionSuccess) {
                         Logger.Error("Failed to connect to MetaGuide. Check to make sure it is running, that broadcast is enabled in Setup -> Extra, and that the broadcast address and port match up with NINA settings.");
@@ -361,9 +364,28 @@ namespace NINA.Equipment.Equipment.MyGuider {
 
         public bool CanClearCalibration => false;
 
-        public bool CanSetShiftRate => false;
-        public bool ShiftEnabled => false;
-        public SiderealShiftTrackingRate ShiftRate => SiderealShiftTrackingRate.Disabled;
+        public bool CanGetLockPosition => false;
+        public bool CanSetShiftRate => true;
+
+        private bool shiftEnabled;
+
+        public bool ShiftEnabled {
+            get => shiftEnabled;
+            private set {
+                shiftEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SiderealShiftTrackingRate shiftRate = SiderealShiftTrackingRate.Disabled;
+
+        public SiderealShiftTrackingRate ShiftRate {
+            get => shiftRate;
+            private set {
+                shiftRate = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public Task<bool> ClearCalibration(CancellationToken ct) {
             return Task.FromResult(false);
@@ -536,12 +558,32 @@ namespace NINA.Equipment.Equipment.MyGuider {
             windowService.ShowDialog(this, Loc.Instance["LblMetaGuideSetup"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
-        public Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
-            return Task.FromResult(false);
+        public async Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
+            if (!shiftTrackingRate.Enabled) {
+                return await StopShifting(ct);
+            }
+            ShiftRate = shiftTrackingRate;
+            double raArcsecPerHour = shiftTrackingRate.RAArcsecsPerHour;
+            double decArcsecPerHour = shiftTrackingRate.DecArcsecsPerHour;
+            Logger.Info($"Setting shift rate to RA={raArcsecPerHour}, Dec={decArcsecPerHour}");
+            if (!PostAndCheckMessage("SetShiftRate", remoteSetShift, (int)(10000 + Math.Round(raArcsecPerHour)), (int)(10000 + Math.Round(decArcsecPerHour)))) {
+                Logger.Error($"Failed to set lock shift rate");
+                return false;
+            }
+            if (!PostAndCheckMessage("StartShifting", remoteShift, 0, 0)) {
+                Logger.Error($"Failed to enable lock shift");
+                return false;
+            }
+            ShiftEnabled = true;
+            return true;
         }
 
-        public Task<bool> StopShifting(CancellationToken ct) {
-            return Task.FromResult(true);
+        public async Task<bool> StopShifting(CancellationToken ct) {
+            if (!PostAndCheckMessage("StopShifting", remoteUnShift, 0, 0)) {
+                return false;
+            }
+            ShiftEnabled = false;
+            return true;
         }
 
         public IList<string> SupportedActions => new List<string>();
@@ -559,6 +601,10 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public void SendCommandBlind(string command, bool raw) {
+            throw new NotImplementedException();
+        }
+
+        public Task<LockPosition> GetLockPosition() {
             throw new NotImplementedException();
         }
     }

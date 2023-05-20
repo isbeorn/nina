@@ -25,11 +25,11 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
 using NINA.WPF.Base.Model;
 using NINA.Core.Enum;
+using NINA.ViewModel.FlatWizard;
 
-namespace NINA.WPF.Base.Interfaces.ViewModel {
+namespace NINA.ViewModel.Interfaces {
 
     public interface IFlatWizardVM : ICameraConsumer, IFilterWheelConsumer, ITelescopeConsumer, IFlatDeviceConsumer {
-        BinningMode BinningMode { get; set; }
         double CalculatedExposureTime { get; set; }
         double CalculatedHistogramMean { get; set; }
         bool CameraConnected { get; set; }
@@ -37,8 +37,6 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         ObservableCollection<FilterInfo> FilterInfos { get; }
         ObservableCollection<FlatWizardFilterSettingsWrapper> Filters { get; set; }
         int FlatCount { get; set; }
-        int Gain { get; set; }
-        BitmapSource Image { get; set; }
         bool IsPaused { get; set; }
         int Mode { get; set; }
         RelayCommand PauseFlatExposureSequenceCommand { get; }
@@ -49,11 +47,6 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool PauseBetweenFilters { get; set; }
         FlatWizardMode FlatWizardMode { get; set; }
         IWindowService WindowService { get; set; }
-
-        Task<double> FindFlatExposureTime(PauseToken pt, FlatWizardFilterSettingsWrapper filter);
-
-        Task<int> FindFlatDeviceBrightness(PauseToken pt, FlatWizardFilterSettingsWrapper filter);
-
         Task<bool> StartFlatMagic(IEnumerable<FlatWizardFilterSettingsWrapper> filterWrappers, PauseToken pt);
     }
 }

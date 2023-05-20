@@ -13,13 +13,11 @@
 #endregion "copyright"
 
 using NINA.Core.Enum;
-using NINA.Core.Utility.ColorSchema;
 using NINA.Profile.Interfaces;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Windows.Media;
-using System.Xml.Serialization;
 
 namespace NINA.Profile {
 
@@ -47,7 +45,7 @@ namespace NINA.Profile {
             autoRetryStartGuiding = false;
             autoRetryStartGuidingTimeoutSeconds = 300;
             maxY = 4;
-            metaGuideIP = "127.0.1.1";
+            metaGuideUseIpAddressAny = false;
             metaGuidePort = 1277;
             metaGuideMinIntensity = 100;
             metaGuideLockWhenGuiding = false;
@@ -276,17 +274,18 @@ namespace NINA.Profile {
             }
         }
 
-        private string metaGuideIP;
+        private bool metaGuideUseIpAddressAny;
 
         [DataMember]
-        public string MetaGuideIP {
-            get => metaGuideIP;
+        public bool MetaGuideUseIpAddressAny {
+            get => metaGuideUseIpAddressAny;
             set {
-                if (metaGuideIP != value) {
-                    metaGuideIP = value;
+                if (metaGuideUseIpAddressAny != value) {
+                    metaGuideUseIpAddressAny = value;
                     RaisePropertyChanged();
                 }
             }
+        
         }
 
         private int metaGuidePort;

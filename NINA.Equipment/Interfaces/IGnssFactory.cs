@@ -12,20 +12,17 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
+namespace NINA.Equipment.Interfaces {
+    public interface IGnssFactory {
 
-    public class LockPosition {
-
-        public LockPosition(int x, int y) {
-            X = x;
-            Y = y;
-            EventTime = DateTime.Now;
-        }
-
-        public int X { get; }
-        public int Y { get; }
-        public DateTime EventTime { get; }
+        IGnss GetGnssSource();
+        IGnss GetGnssSource(GnssSourceEnum gnss);
     }
 }

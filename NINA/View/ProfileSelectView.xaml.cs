@@ -26,6 +26,7 @@ namespace NINA.View {
     public partial class ProfileSelectView : Window {
 
         public ProfileSelectView() {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
@@ -34,16 +35,6 @@ namespace NINA.View {
             var tmp = this.WindowState;
             this.WindowState = WindowState.Minimized;
             this.WindowState = tmp;
-        }
-
-        protected override void OnSourceInitialized(EventArgs e) {
-            base.OnSourceInitialized(e);
-            ((HwndSource)PresentationSource.FromVisual(this)).AddHook(HookProc);
-
-            //this.WindowState = Properties.Settings.Default.WindowState;
-            this.Top = Properties.Settings.Default.WindowTop;
-            this.Left = Properties.Settings.Default.WindowLeft;
-
         }
 
         private IntPtr HookProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {

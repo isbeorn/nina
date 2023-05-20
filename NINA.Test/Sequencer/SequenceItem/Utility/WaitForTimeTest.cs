@@ -50,7 +50,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
         public void WaitForTime_Clone_GoodClone_TimeProviderDoesntOverwrite() {
             var hours = (int)AstroUtil.EuclidianModulus(DateTime.Now.Hour + 1, 24);
 
-            var l = new List<IDateTimeProvider>() { new TimeProvider() };
+            var provider = new Mock<IDateTimeProvider>();
+            provider.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2023, 01, 01, hours, 20, 30));
+
+            var l = new List<IDateTimeProvider>() { provider.Object };
             var sut = new WaitForTime(l);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             sut.SelectedProvider = l.First();
@@ -132,6 +135,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
             var providerMock = new Mock<IDateTimeProvider>();
             providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(1, 2, 3, thenHours, thenMinutes, thenSeconds));
+            providerMock.Setup(x => x.GetRolloverTime(It.IsAny<ISequenceEntity>())).Returns(new TimeOnly(12, 0, 0));
 
             var sut = new WaitForTime(new List<IDateTimeProvider>() { providerMock.Object, });
             sut.SelectedProvider = sut.DateTimeProviders.Last();

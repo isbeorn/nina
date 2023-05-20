@@ -13,18 +13,19 @@
 #endregion "copyright"
 
 using NINA.Core.Locale;
-using NINA.Profile.Interfaces;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.SerialCommunication;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK;
+using NINA.Profile.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Equipment.SDK.FlatDeviceSDKs.AlnitakSDK;
-using NINA.Equipment.Interfaces;
-using System.Collections.Generic;
 
 namespace NINA.Equipment.Equipment.MyFlatDevice {
 
@@ -216,10 +217,10 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                     await Sdk.SendCommand<CloseResponse>(command);
                 } catch (InvalidDeviceResponseException ex) {
                     LogAndNotify(command, ex);
-                    return false;
+                    throw new FlatDeviceCoverErrorException();
                 } catch (SerialPortClosedException ex) {
                     HandlePortClosed(command, ex);
-                    return false;
+                    throw new FlatDeviceCoverErrorException();
                 }
                 while (await IsMotorRunning()) {
                     await CoreUtil.Delay(delay, ct);
@@ -276,10 +277,10 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                     await Sdk.SendCommand<OpenResponse>(command);
                 } catch (InvalidDeviceResponseException ex) {
                     LogAndNotify(command, ex);
-                    return false;
+                    throw new FlatDeviceCoverErrorException();
                 } catch (SerialPortClosedException ex) {
                     HandlePortClosed(command, ex);
-                    return false;
+                    throw new FlatDeviceCoverErrorException();
                 }
 
                 while (await IsMotorRunning()) {

@@ -68,34 +68,34 @@ namespace NINA.Core.API.SGP {
         [JsonProperty(Required = Required.Always)]
         public double ExposureLength { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public string Gain { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public string Iso { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public string Speed { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public string FrameType { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public string Path { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public bool? UseSubframe { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public int? X { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public int? Y { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public int? Width { get; set; }
 
-        [JsonProperty(Required = Required.AllowNull)]
+        [JsonProperty(Required = Required.Default)]
         public int? Height { get; set; }
     }
 

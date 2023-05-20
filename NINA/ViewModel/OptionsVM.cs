@@ -1,6 +1,7 @@
 #region "copyright"
+
 /*
-    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -8,9 +9,12 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+
 #endregion "copyright"
+
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Interfaces;
 using NINA.Core.Interfaces.API.SGP;
 using NINA.Core.Locale;
 using NINA.Core.Model;
@@ -19,14 +23,17 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Equipment.Exceptions;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Plugin;
+using NINA.Equipment.Interfaces;
+using NINA.Image.ImageAnalysis;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Utility;
-using NINA.ViewModel.Plugins;
+using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Utility;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -35,18 +42,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment.MyGPS;
-using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using System.Windows.Media;
-using NINA.Plugin.Interfaces;
-using NINA.Core.Interfaces;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Interfaces;
-using System.Collections.Generic;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
@@ -57,6 +55,7 @@ namespace NINA.ViewModel {
                          IVersionCheckVM versionCheckVM,
                          ProjectVersion projectVersion,
                          IPlanetariumFactory planetariumFactory,
+                         IGnssFactory gnssFactory,
                          ISGPServiceHost sgpServiceHost,
                          IPluggableBehaviorSelector<IStarDetection> starDetectionSelector,
                          IPluggableBehaviorSelector<IStarAnnotator> starAnnotatorSelector,
@@ -70,6 +69,7 @@ namespace NINA.ViewModel {
             this.versionCheckVM = versionCheckVM;
             this.projectVersion = projectVersion;
             this.planetariumFactory = planetariumFactory;
+            this.gnssFactory = gnssFactory;
             this.sgpServiceHost = sgpServiceHost;
             this.PluggableStarDetection = starDetectionSelector;
             this.PluggableStarAnnotator = starAnnotatorSelector;
@@ -104,7 +104,7 @@ namespace NINA.ViewModel {
 
             CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
             CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
-            SiteFromGPSCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGPS));
+            SiteFromGnssCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGnss));
             SiteFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromPlanetarium));
             RecreatePatterns();
 
@@ -127,7 +127,7 @@ namespace NINA.ViewModel {
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 ProfileChanged();
-                Profiles.Refresh(); 
+                Profiles.Refresh();
                 FilePatternsExpanded = !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternBIAS)
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT)
@@ -156,7 +156,7 @@ namespace NINA.ViewModel {
 
         private void RecreatePatterns() {
             var patterns = ImagePatterns.CreateExample();
-            foreach(var cp in customPatterns) {
+            foreach (var cp in customPatterns) {
                 patterns.Add(cp);
             }
             ImagePatterns = patterns;
@@ -209,6 +209,7 @@ namespace NINA.ViewModel {
         }
 
         private bool filePatternsExpanded;
+
         public bool FilePatternsExpanded {
             get => filePatternsExpanded;
             set {
@@ -270,22 +271,41 @@ namespace NINA.ViewModel {
             Process.Start(new ProcessStartInfo(url.AbsoluteUri) { UseShellExecute = true });
         }
 
-        private async Task<bool> SiteFromGPS() {
-            bool loc = false; // if location was acquired
-            using (var gps = new NMEAGps(0, profileService)) {
-                gps.Initialize();
-                if (gps.AutoDiscover()) {
-                    loc = await gps.Connect(new System.Threading.CancellationToken());
-                    if (loc) {                        
-                        Latitude = gps.Coords[1];
-                        Longitude = gps.Coords[0];
-                        if (gps.Coords.Length > 2 && !double.IsNaN(gps.Coords[2]) && gps.Coords[2] != 0) {
-                            Elevation = gps.Coords[2];
-                        }
-                    }
+        private async Task<bool> SiteFromGnss() {
+            IGnss gnss = gnssFactory.GetGnssSource();
+            Location loc = null;
+
+            try {
+                loc = await gnss.GetLocation();
+
+                if (loc != null) {
+                    Latitude = loc.Latitude;
+                    Longitude = loc.Longitude;
+                    Elevation = loc.Elevation;
+
+                    Logger.Info($"Location information from {gnss.Name}: Latitude: {loc.Latitude}, Longitude: {loc.Longitude}, Elevation: {loc.Elevation}");
+                    Notification.ShowSuccess(string.Format(Loc.Instance["LblGnssLocationSet"], gnss.Name));
                 }
-                return loc;
+            } catch (GnssNoFixException ex) {
+                string message;
+
+                if (!string.IsNullOrEmpty(ex.Message)) {
+                    message = ex.Message;
+                } else {
+                    message = string.Format(Loc.Instance["LblGnssNoFix"], gnss.Name);
+                }
+
+                Logger.Error(message);
+                Notification.ShowExternalError(message, Loc.Instance["LblGnss"]);
+            } catch (GnssNotFoundException ex) {
+                Logger.Error(ex.Message);
+                Notification.ShowError(string.Format(Loc.Instance["LblGnssNotFound"], gnss.Name));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(string.Format(Loc.Instance["LblGnssConnectFail"], gnss.Name));
             }
+
+            return (loc != null);
         }
 
         private async Task<bool> SiteFromPlanetarium() {
@@ -325,8 +345,8 @@ namespace NINA.ViewModel {
         private void CloneProfile(object obj) {
             if (!profileService.Clone(SelectedProfile)) {
                 Notification.ShowWarning(Loc.Instance["LblLoadProfileInUseWarning"]);
-            } else {    
-                if(!Properties.Settings.Default.SingleDockLayout) {
+            } else {
+                if (!Properties.Settings.Default.SingleDockLayout) {
                     try {
                         var currentProfileId = profileService.ActiveProfile.Id;
                         var dockPath = DockManagerVM.GetDockConfigPath(currentProfileId);
@@ -336,7 +356,6 @@ namespace NINA.ViewModel {
                         if (File.Exists(dockPath)) {
                             File.Copy(dockPath, Path.Combine(Path.GetDirectoryName(dockPath), $"{newProfile.Id}.dock.config"));
                         }
-
                     } catch (Exception e) {
                         Logger.Error("Failed to clone dock config", e);
                     }
@@ -612,7 +631,7 @@ namespace NINA.ViewModel {
         public ICommand OpenLogFolderCommand { get; private set; }
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
-        public ICommand SiteFromGPSCommand { get; private set; }
+        public ICommand SiteFromGnssCommand { get; private set; }
         public ICommand SiteFromPlanetariumCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
@@ -871,11 +890,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ProfileMeta _selectedProfile;        
+        private ProfileMeta _selectedProfile;
         private bool requiresRestart = false;
         private readonly IVersionCheckVM versionCheckVM;
         private readonly ProjectVersion projectVersion;
         private readonly IPlanetariumFactory planetariumFactory;
+        private readonly IGnssFactory gnssFactory;
 
         public ProfileMeta SelectedProfile {
             get => _selectedProfile;

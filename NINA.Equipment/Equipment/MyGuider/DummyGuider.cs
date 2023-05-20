@@ -23,6 +23,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Core.Model;
 using NINA.Astrometry;
 using System.Collections.Generic;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 
 #pragma warning disable 1998
 
@@ -100,6 +101,8 @@ namespace NINA.Equipment.Equipment.MyGuider {
 
         public bool CanSetShiftRate => false;
         public bool ShiftEnabled => false;
+        public bool CanGetLockPosition => false;
+
         public SiderealShiftTrackingRate ShiftRate => SiderealShiftTrackingRate.Disabled;
 
         public async Task<bool> ClearCalibration(CancellationToken ct) {
@@ -134,5 +137,10 @@ namespace NINA.Equipment.Equipment.MyGuider {
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
         }
+
+        public Task<LockPosition> GetLockPosition() {
+            throw new NotImplementedException();
+        }
+
     }
 }

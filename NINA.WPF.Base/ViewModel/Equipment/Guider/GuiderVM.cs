@@ -217,13 +217,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                         Connected = connected,
                         CanClearCalibration = Guider.CanClearCalibration,
                         CanSetShiftRate = Guider.CanSetShiftRate,
+                        CanGetLockPosition = Guider.CanGetLockPosition,
                         Name = Guider.Name,
                         Description = Guider.Description,
                         DriverInfo = Guider.DriverInfo,
                         DriverVersion = Guider.DriverVersion,
                         DeviceId = Guider.Id,
                         SupportedActions = Guider.SupportedActions,
-                        RMSError = new RMSError()
+                        RMSError = new RMSError(),
+                        PixelScale = Guider.PixelScale
                     });
                     BroadcastGuiderInfo();
                     Notification.ShowSuccess(Loc.Instance["LblGuiderConnected"]);
@@ -511,6 +513,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
             await Guider.StopShifting(ct);
             return true;
         }
+
+        public LockPosition GetLockPosition() {
+            return Guider.GetLockPosition().Result;
+        }
+
         public IDevice GetDevice() {
             return Guider;
         }

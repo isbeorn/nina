@@ -16,6 +16,7 @@ using NINA.Astrometry;
 using NINA.Core.Interfaces;
 using NINA.Core.Model;
 using NINA.Equipment.Equipment.MyGuider;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 using NINA.Equipment.Interfaces.ViewModel;
 using System;
 using System.Threading;
@@ -42,6 +43,8 @@ namespace NINA.Equipment.Interfaces.Mediator {
         Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct);
 
         Task<bool> StopShifting(CancellationToken ct);
+
+        LockPosition GetLockPosition();
 
         event Func<object, EventArgs, Task> AfterDither;
         Task RaiseAfterDither(EventArgs e);

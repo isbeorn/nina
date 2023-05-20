@@ -10,6 +10,7 @@
 */
 #endregion "copyright"
 using System.Linq;
+using FluentAssertions;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Profile;
@@ -34,15 +35,35 @@ namespace NINA.Test.FlatDevice {
         [TestCase(-1, 2, 1, 0, 0.34, 1)]
         [TestCase(null, 2, 1, 0, 0.34, 1)]
         [TestCase(null, 2, 1, -1, 0.34, 1)]
-        public void TestAddBrightnessInfo(short? position, short binX, short binY, short gain, double time, int brightness) {
-            var key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
-            var value = new FlatDeviceFilterSettingsValue(brightness, time);
-            _sut.AddBrightnessInfo(key, value);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(binX, binY)), Is.True);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains(gain), Is.True);
+        public void TrainedFlatExposureSetting_GeneralIterations(short? position, short binX, short binY, short gain, double time, int brightness) {
+            _sut.AddTrainedFlatExposureSetting(position, new BinningMode(binX, binY), gain, -1, brightness, time);
+
+            var info = _sut.GetTrainedFlatExposureSetting(position, new BinningMode(binX, binY), gain, -1);
+            info.Time.Should().Be(time);
+            info.Brightness.Should().Be(brightness);
+            info.Binning.X.Should().Be(binX);
+            info.Binning.Y.Should().Be(binY);
+            info.Filter.Should().Be(position ?? -1);
+            info.Gain.Should().Be(gain);
+            info.Offset.Should().Be(-1);
+        }
+
+        [Test]
+        [TestCase(0, 0, 0.34, 1)]
+        [TestCase(-1, 0, 0.34, 1)]
+        [TestCase(null, 0, 0.34, 1)]
+        [TestCase(null, -1, 0.34, 1)]
+        public void TrainedFlatExposureSetting_NullBinning(short? position, short gain, double time, int brightness) {
+            _sut.AddTrainedFlatExposureSetting(position, null, gain, -1, brightness, time);
+
+            var info = _sut.GetTrainedFlatExposureSetting(position, null, gain, -1);
+            info.Time.Should().Be(time);
+            info.Brightness.Should().Be(brightness);
+            info.Binning.X.Should().Be(1);
+            info.Binning.Y.Should().Be(1);
+            info.Filter.Should().Be(position ?? -1);
+            info.Gain.Should().Be(gain);
+            info.Offset.Should().Be(-1);
         }
 
         [Test]
@@ -52,65 +73,44 @@ namespace NINA.Test.FlatDevice {
         [TestCase(-1, 2, 1, 0, 0.34, 1)]
         [TestCase(null, 2, 1, 0, 0.34, 1)]
         [TestCase(null, 2, 1, -1, 0.34, 1)]
-        public void TestBrightnessInfoKeyEquivalence(short? position, short binX, short binY, short gain, double time, int brightness) {
-            var key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
-            var value = new FlatDeviceFilterSettingsValue(brightness, time);
-            _sut.AddBrightnessInfo(key, value);
-            key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
+        public void TrainedFlatExposureSetting_UpdateSetting(short? position, short binX, short binY, short gain, double time, int brightness) {
+            _sut.AddTrainedFlatExposureSetting(position, new BinningMode(binX, binY), gain, -1, 0, 0);
+
+            _sut.AddTrainedFlatExposureSetting(position, new BinningMode(binX, binY), gain, -1, brightness, time);
+
+            var info = _sut.GetTrainedFlatExposureSetting(position, new BinningMode(binX, binY), gain, -1);
+            info.Time.Should().Be(time);
+            info.Brightness.Should().Be(brightness);
+            info.Binning.X.Should().Be(binX);
+            info.Binning.Y.Should().Be(binY);
+            info.Filter.Should().Be(position ?? -1);
+            info.Gain.Should().Be(gain);
+            info.Offset.Should().Be(-1);
         }
 
         [Test]
-        [TestCase(0, 0, 0.34, 1)]
-        [TestCase(-1, 0, 0.34, 1)]
-        [TestCase(null, 0, 0.34, 1)]
-        [TestCase(null, -1, 0.34, 1)]
-        public void TestBrightnessInfoKeyEquivalenceNullBinning(short? position, short gain, double time, int brightness) {
-            var key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
-            var value = new FlatDeviceFilterSettingsValue(brightness, time);
-            _sut.AddBrightnessInfo(key, value);
-            key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-        }
+        public void TrainedFlatExposureSetting_AddMultiple() {
+            _sut.AddTrainedFlatExposureSetting(1, new BinningMode(1, 1), 10, -1, 50, 20);
 
-        [Test]
-        [TestCase(0, 30, 0.34, 1)]
-        [TestCase(null, 30, 0.34, 1)]
-        [TestCase(0, -1, 0.34, 1)]
-        [TestCase(null, -1, 0.34, 1)]
-        public void TestAddBrightnessInfoNullBinning(short? position, short gain, double time, int brightness) {
-            var key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
-            var value = new FlatDeviceFilterSettingsValue(brightness, time);
-            _sut.AddBrightnessInfo(key, value);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(null), Is.True);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains(gain), Is.True);
-        }
+            _sut.AddTrainedFlatExposureSetting(1, new BinningMode(1, 1), 20, -1, 100, 40);
 
-        [Test]
-        public void TestUpdateBrightnessInfo() {
-            //setup
-            var key = new FlatDeviceFilterSettingsKey(0, new BinningMode(1, 1), 30);
-            var value = new FlatDeviceFilterSettingsValue(5, 0.75);
-            _sut.AddBrightnessInfo(key, value);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
+            var info = _sut.GetTrainedFlatExposureSetting(1, new BinningMode(1, 1), 10, -1);
+            info.Time.Should().Be(20);
+            info.Brightness.Should().Be(50);
+            info.Binning.X.Should().Be(1);
+            info.Binning.Y.Should().Be(1);
+            info.Filter.Should().Be(1);
+            info.Gain.Should().Be(10);
+            info.Offset.Should().Be(-1);
 
-            //test
-            value = new FlatDeviceFilterSettingsValue(25, 0.6); ;
-            _sut.AddBrightnessInfo(key, value);
-
-            //Assert
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
+            var info2 = _sut.GetTrainedFlatExposureSetting(1, new BinningMode(1, 1), 20, -1);
+            info2.Time.Should().Be(40);
+            info2.Brightness.Should().Be(100);
+            info2.Binning.X.Should().Be(1);
+            info2.Binning.Y.Should().Be(1);
+            info2.Filter.Should().Be(1);
+            info2.Gain.Should().Be(20);
+            info2.Offset.Should().Be(-1);
         }
     }
 }

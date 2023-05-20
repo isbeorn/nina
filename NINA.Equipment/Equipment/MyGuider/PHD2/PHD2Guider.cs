@@ -412,7 +412,11 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             return null;
         }
 
-        private async Task<LockPosition> GetLockPosition(
+        public async Task<LockPosition> GetLockPosition() {
+            return await GetLockPositionInternal(5000);
+        }
+
+        private async Task<LockPosition> GetLockPositionInternal(
             int receiveTimeout = 0) {
             var msg = new Phd2GetLockPosition();
             var lockPositionResponse = await SendMessage<GetLockPositionResponse>(
@@ -558,7 +562,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         }
 
         private async Task<bool> WaitForStarSelected(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var lockPos = await GetLockPosition(5000);
+            var lockPos = await GetLockPositionInternal(5000);
             if (lockPos == null) {
                 using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
                     var timeoutTime = TimeSpan.FromSeconds(30);
@@ -566,7 +570,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                     try {
                         while (lockPos == null) {
                             await Task.Delay(1000, timeoutCts.Token);
-                            lockPos = await GetLockPosition(5000);
+                            lockPos = await GetLockPositionInternal(5000);
                         }
                         return true;
                     } catch (OperationCanceledException) {
@@ -703,6 +707,8 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         public bool CanClearCalibration => true;
 
         public bool CanSetShiftRate => true;
+
+        public bool CanGetLockPosition => true;
 
         private bool shiftEnabled;
         public bool ShiftEnabled {

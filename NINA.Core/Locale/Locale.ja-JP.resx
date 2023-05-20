@@ -1651,23 +1651,20 @@
   <data name="LblGeneral" xml:space="preserve">
     <value>一般</value>
   </data>
-  <data name="LblGPSConnected" xml:space="preserve">
-    <value>ポートにGPS接続済</value>
+  <data name="LblGnssConnectFail" xml:space="preserve">
+    <value>{0} への接続に失敗しました</value>
   </data>
-  <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>ポートにGPS接続できません。</value>
+  <data name="LblGnssLocationSet" xml:space="preserve">
+    <value>{0} から設定した位置情報</value>
   </data>
-  <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>GPSより位置情報取得</value>
+  <data name="LblGnssNoFix" xml:space="preserve">
+    <value>{0} は修正がないことを報告しています</value>
   </data>
-  <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS測位不能</value>
+  <data name="LblGnssNotFound" xml:space="preserve">
+    <value>デバイス {0} が検出されませんでした</value>
   </data>
-  <data name="LblGPSNotFound" xml:space="preserve">
-    <value>GPSモジュールが検出されませんでした。</value>
-  </data>
-  <data name="LblGPSTooltip" xml:space="preserve">
-    <value>NMEA GPSデバイスから位置情報をインポート</value>
+  <data name="LblGnssTooltip" xml:space="preserve">
+    <value>GNSSデバイスから位置情報をインポート</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>ガイダー</value>
@@ -1983,9 +1980,6 @@
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
     <value>MetaGuide設定</value>
-  </data>
-  <data name="LblMetaGuideIP" xml:space="preserve">
-    <value>MetaGuide IP</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
     <value>MetaGuide ポート</value>
@@ -6539,5 +6533,124 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblCalibrate" xml:space="preserve">
     <value>キャリブレート</value>
+  </data>
+  <data name="LblNmeaSerialGnss" xml:space="preserve">
+    <value>NMEAシリアルGNSS</value>
+  </data>
+  <data name="LblPrimaLuceLabEagle" xml:space="preserve">
+    <value>PrimaLuceLab Eagle</value>
+  </data>
+  <data name="LblGnssGgaMissingError" xml:space="preserve">
+    <value>{0} 秒以内にGGAセンテンスを受信しませんでした</value>
+  </data>
+  <data name="LblGnssGgaQualityError" xml:space="preserve">
+    <value>GGAセンテンスは修正品質が {0} であることを示しています</value>
+  </data>
+  <data name="LblGnss" xml:space="preserve">
+    <value>GNSS</value>
+  </data>
+  <data name="LblPegasusUranusNotFound" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteoが見つかりません</value>
+  </data>
+  <data name="LblPegausAstroUranus" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblIsValidIpPortRule" xml:space="preserve">
+    <value>ポート番号は {0} から {1} の間でなければなりません。</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
+    <value>Use all interfaces</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
+    <value>Listen on all interfaces for MegaGuide broadcasts. By default, N.I.N.A. will listen on loopback (127.0.0.1) only</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
+    <value>この命令は、固定輝度パネル用のフラットウィザードと同じように、フラット露出を自動的に決定します。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
+    <value>自動露出フラット</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
+    <value>この命令は、固定露出時間用のフラットウィザードと同じように、フラットパネルの明るさを自動的に決定します。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
+    <value>自動明度フラット</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
+    <value>この命令は、スカイフラット用のフラットウィザードと同じように、露出時間を自動的に決定します。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
+    <value>スカイフラット</value>
+  </data>
+  <data name="LblClosingCover" xml:space="preserve">
+    <value>カバー閉鎖</value>
+  </data>
+  <data name="LblOpeningCover" xml:space="preserve">
+    <value>カバー開放</value>
+  </data>
+  <data name="LblSettingBrightness" xml:space="preserve">
+    <value>明るさを {0} に設定</value>
+  </data>
+  <data name="LblToggleLight" xml:space="preserve">
+    <value>ライトを {0} に切り替え</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
+    <value>Determining brightness using {0}. Attempt {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
+    <value>Found brightness at panel brightness {0}. Capturing flats.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
+    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
+    <value>Found exposure time at {0} s. Capturing flats.</value>
+  </data>
+  <data name="LblFlatWizardFailed" xml:space="preserve">
+    <value>フラットウィザードが失敗しました。原因 : {0}</value>
+    <comment>When flat wizard fails in single mode</comment>
+  </data>
+  <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
+    <value>フィルター {0}のフラットウィザードが失敗しました。原因 : {1}</value>
+    <comment>When flat wizard fails in multi mode</comment>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
+    <value>フラットの明るさを決定できませんでした。光源が明るすぎます。
+パネルの最小輝度または露出時間を小さくしてください。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
+    <value>フラットの明るさを決定できませんでした。光源が暗すぎます。
+パネルの最大輝度または露出時間を大きくしてください。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
+    <value>フラットの露出時間を決定できませんでした。光源が明るすぎます。
+パネルの明るさまたは最小露出時間を小さくしてください。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
+    <value>フラットの露出時間を決定できませんでした。光源が暗すぎます。
+パネルの明るさまたは最大露出時間を大きくしてください。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
+    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
+    <value>露出時間を{0} 秒で決定。スカイフラットを撮像中。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
+    <value>スカイフラットの露出時間を決定できませんでした。空が明るすぎます。 
+暗くなるまで待つか、最小露出時間を小さくしてください。</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
+    <value>スカイフラットの露出時間を決定できませんでした。空が暗すぎます。 
+明るくなるまで待つか、最小露出時間を大きくしてください。</value>
+  </data>
+  <data name="LblFlatDeviceError" xml:space="preserve">
+    <value>エラー発生</value>
+  </data>
+  <data name="LblFlatDeviceCoverError" xml:space="preserve">
+    <value>{0} は、カバーにエラーが発生しことを報告しています</value>
+  </data>
+  <data name="LblFlatDeviceNotPresent" xml:space="preserve">
+    <value>存在しない</value>
   </data>
 </root>

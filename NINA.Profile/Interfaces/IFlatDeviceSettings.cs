@@ -15,6 +15,7 @@
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace NINA.Profile.Interfaces {
 
@@ -27,21 +28,10 @@ namespace NINA.Profile.Interfaces {
         bool OpenAtSequenceStart { get; set; }
         bool CloseAtSequenceEnd { get; set; }
         bool UseWizardTrainedValues { get; set; }
-
-        ObservableDictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> FilterSettings { get; set; }
-
-        void AddBrightnessInfo(FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value);
-
-        FlatDeviceFilterSettingsValue GetBrightnessInfo(FlatDeviceFilterSettingsKey key);
-
-        IEnumerable<BinningMode> GetBrightnessInfoBinnings();
-
-        IEnumerable<int> GetBrightnessInfoGains();
-
-        void RemoveGain(int gain);
-
-        void RemoveBinning(BinningMode binningMode);
-
-        void ClearBrightnessInfo(FlatDeviceFilterSettingsKey key);
+        ObserveAllCollection<TrainedFlatExposureSetting> TrainedFlatExposureSettings { get; set; }
+        bool RemoveFlatExposureSetting(TrainedFlatExposureSetting setting);
+        TrainedFlatExposureSetting GetTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset);
+        void AddEmptyTrainedExposureSetting();
+        void AddTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset, int brightness, double exposureTime);
     }
 }

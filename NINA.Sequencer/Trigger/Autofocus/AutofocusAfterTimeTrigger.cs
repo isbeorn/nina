@@ -122,7 +122,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (nextItem == null) { return false; }
-            if (!(nextItem is IExposureItem)) { return false; }
+            if (!(nextItem is IExposureItem exposureItem)) { return false; }
+            if (exposureItem.ImageType != "LIGHT") { return false; }
 
             bool shouldTrigger = false;
             var lastAF = history.AutoFocusPoints.LastOrDefault();

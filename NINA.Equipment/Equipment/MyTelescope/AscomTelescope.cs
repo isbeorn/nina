@@ -740,20 +740,57 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         private void CheckMountTime() {
+            double warningThreshold = 10; // Time difference, in seconds, greater than which we will issue a warning
+            DateTime mountTime;
+
             try {
-                var mountTime = device.UTCDate;
-                var systemTime = DateTime.UtcNow;
-                var timeDiff = Math.Abs((mountTime - systemTime).TotalSeconds);
-
-                double warningThreshold = 60;
-
-                Logger.Info($"Mount UTC Time: {mountTime:u} / System UTC Time: {systemTime:u}; Difference: {timeDiff:0.0##} seconds");
-
-                if (timeDiff >= warningThreshold) {
-                    Notification.ShowWarning(string.Format(Loc.Instance["LblMountTimeDifferenceTooLarge"], timeDiff));
+                mountTime = device.UTCDate;
+            } catch (ASCOM.InvalidOperationException) {
+                // In this case, ASCOM says we have to first write the time before being able to read it.
+                try {
+                    mountTime = UTCDate = DateTime.UtcNow;
+                } catch (Exception) {
+                    // It seems we cannot do anything with time on this mount. This is theoretically possible, so stop now.
+                    Logger.Info("Unable to check or set mount time");
+                    return;
                 }
-            } catch (Exception e) {
-                Logger.Error("Failed to retrieve the UTC Date from the mount", e);
+            }
+
+            var systemTime = DateTime.UtcNow;
+            var timeDiff = Math.Abs((mountTime - systemTime).TotalSeconds);
+
+            Logger.Info($"Mount UTC Time: {mountTime:u} / System UTC Time: {systemTime:u}; Difference: {timeDiff:0.0##} seconds");
+
+            // Sync system's time to the mount
+            try {
+                device.UTCDate = DateTime.UtcNow;
+                Logger.Info($"System time has been synced to the mount");
+            } catch (Exception ex) {
+                // ASCOM docs are confused - online docs says to expect PropertyNotImplementedException, but method comment says NotImplementedException.
+                // Whatever; we'll test for both
+                if (ex is ASCOM.PropertyNotImplementedException || ex is ASCOM.NotImplementedException) {
+                    string message = "Mount driver does not allow the mount's time to be set.";
+
+                    if (timeDiff >= warningThreshold) {
+                        Logger.Warning($"{message} Mount and system have an excessive time difference of {timeDiff:0.0##} seconds.");
+                        Notification.ShowWarning(string.Format(Loc.Instance["LblMountTimeDifferenceTooLarge"], timeDiff));
+                        return;
+                    }
+
+                    Logger.Info(message);
+                    return;
+                }
+
+                Logger.Error($"Unexpected exception when trying to set UTCDate:{Environment.NewLine}{ex}");
+                return;
+            }
+
+            // One last check
+            timeDiff = Math.Abs((device.UTCDate - DateTime.UtcNow).TotalSeconds);
+
+            if (timeDiff >= warningThreshold) {
+                Logger.Error($"System and mount time still differ by {timeDiff:0.0##} seconds. This may be due to a driver issue.");
+                Notification.ShowWarning(string.Format(Loc.Instance["LblMountTimeDifferenceTooLarge"], timeDiff));
             }
         }
 

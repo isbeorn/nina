@@ -43,6 +43,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.ImageAnalysis;
 using NINA.WPF.Base.Interfaces;
+using NINA.Astrometry.Body;
 
 namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
@@ -101,7 +102,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             historyMock.SetupGet(x => x.AutoFocusPoints).Returns(afHistory);
 
-            var should = afTrigger.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var should = afTrigger.ShouldTrigger(null, itemMock.Object);
 
             should.Should().Be(shouldTrigger);
         }
@@ -119,7 +122,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             await Task.Delay(TimeSpan.FromMilliseconds(initDelay));
 
-            var should = afTrigger.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var should = afTrigger.ShouldTrigger(null, itemMock.Object);
 
             should.Should().Be(shouldTrigger);
         }

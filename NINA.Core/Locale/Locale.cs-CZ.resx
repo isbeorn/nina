@@ -1659,23 +1659,20 @@ Vypočtené HFR: {2}
   <data name="LblGeneral" xml:space="preserve">
     <value>Všeobecné</value>
   </data>
-  <data name="LblGPSConnected" xml:space="preserve">
-    <value>GPS připojeno k portu</value>
+  <data name="LblGnssConnectFail" xml:space="preserve">
+    <value>Nepodařilo se připojit k {0}</value>
   </data>
-  <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>Nelze Připojit GPS k portu</value>
+  <data name="LblGnssLocationSet" xml:space="preserve">
+    <value>Poloha nastavena z {0}</value>
   </data>
-  <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>Poloha nastavena z GPS</value>
+  <data name="LblGnssNoFix" xml:space="preserve">
+    <value>{0} hlásí, že nemá přesnou polohu</value>
   </data>
-  <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS nezachytilo polohu</value>
+  <data name="LblGnssNotFound" xml:space="preserve">
+    <value>Žádné zařízení {0} nenalezeno</value>
   </data>
-  <data name="LblGPSNotFound" xml:space="preserve">
-    <value>GPS modul nedetekován</value>
-  </data>
-  <data name="LblGPSTooltip" xml:space="preserve">
-    <value>Import polohy pomocí zařízení NMEA GPS</value>
+  <data name="LblGnssTooltip" xml:space="preserve">
+    <value>Importovat polohu z GNSS zařízení</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Pointace</value>
@@ -1992,9 +1989,6 @@ Přeskočit.</value>
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
     <value>Nastavení MetaGuide</value>
-  </data>
-  <data name="LblMetaGuideIP" xml:space="preserve">
-    <value>MetaGuide IP</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
     <value>MetaGuide Port</value>
@@ -6562,5 +6556,126 @@ Tato funkce by měla být vypnuta pouze v případě, že máte k dispozici vyni
   </data>
   <data name="LblCalibrate" xml:space="preserve">
     <value>Kalibrace</value>
+  </data>
+  <data name="LblNmeaSerialGnss" xml:space="preserve">
+    <value>NMEA Sériové GNSS</value>
+  </data>
+  <data name="LblPrimaLuceLabEagle" xml:space="preserve">
+    <value>PrimaLuceLab Eagle</value>
+  </data>
+  <data name="LblGnssGgaMissingError" xml:space="preserve">
+    <value>Během {0} sekund nebyla zaznamenána věta GGA</value>
+  </data>
+  <data name="LblGnssGgaQualityError" xml:space="preserve">
+    <value>Věta GGA uvádí kvalitu fixu {0}</value>
+  </data>
+  <data name="LblGnss" xml:space="preserve">
+    <value>GNSS</value>
+  </data>
+  <data name="LblPegasusUranusNotFound" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo nenalezen</value>
+  </data>
+  <data name="LblPegausAstroUranus" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblIsValidIpPortRule" xml:space="preserve">
+    <value>Číslo portu musí být mezi {0} a {1}</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
+    <value>Využít všechna rozhraní</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
+    <value>Naslouchat na všech rozhraních pro příjem vysílání MegaGuide. Výchozí nastavení pro N.I.N.A. je poslouchat pouze smyčku (127.0.0.1)</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
+    <value>Tato instrukce automaticky stanoví flat expozice podobné flat průvodci pro pevný panel světla.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
+    <value>Auto Expozice Flat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
+    <value>Tato instrukce automaticky stanoví jas flat panelu podobný flat průvodci po pevně stanovenou dobu expozice.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
+    <value>Auto Flat Jas</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
+    <value>Tato instrukce automaticky určí doby expozice podobné průvodci pro flat expozice z oblohy.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
+    <value>Flat z Oblohy</value>
+  </data>
+  <data name="LblClosingCover" xml:space="preserve">
+    <value>Uzavřít Kryt</value>
+  </data>
+  <data name="LblOpeningCover" xml:space="preserve">
+    <value>Otevřít Kryt</value>
+  </data>
+  <data name="LblSettingBrightness" xml:space="preserve">
+    <value>Nastavení jasu na {0}</value>
+  </data>
+  <data name="LblToggleLight" xml:space="preserve">
+    <value>Přepínání světla na {0}</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
+    <value>Určení jasu pomocí {0}. Pokus o {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
+    <value>Zjištěný jas na úrovni {0} v panelu jasu. Snímámí flatů.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
+    <value>Expoziční doba určena pomocí {0} s. Pokus {1} z {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
+    <value>Nalezená doba expozice {0} s. Snímání flatů.</value>
+  </data>
+  <data name="LblFlatWizardFailed" xml:space="preserve">
+    <value>Flat Průvodce Selhal.
+Důvod: {0}</value>
+    <comment>When flat wizard fails in single mode</comment>
+  </data>
+  <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
+    <value>Flat Průvodce selhal pro filtr {0}.
+Důvod: {1}</value>
+    <comment>When flat wizard fails in multi mode</comment>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
+    <value>Nepodařilo se určit jas pro flaty - zdroj světla je příliš jasný.
+Snižte minimální jas panelu nebo dobu expozice.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
+    <value>Nepodařilo se určit jas pro flaty - zdroj světla je příliš slabý.
+Zvyšte maximální jas panelu nebo dobu expozice.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
+    <value>Nepodařilo se určit dobu expozice pro flaty - zdroj světla je příliš jasný.
+Snižte jas panelu nebo minimální dobu expozice.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
+    <value>Nepodařilo se určit dobu expozice pro flaty - zdroj světla je příliš slabý.
+Zvyšte jas panelu nebo maximální dobu expozice.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
+    <value>Určení doby expozice pomocí {0} s. Pokus {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
+    <value>Nalezená doba expozice {0} s. Zachycení flatů z oblohy.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
+    <value>Nepodařilo se určit expoziční čas pro flaty z oblohy - obloha je příliš světlá. 
+Zkraťte minimální dobu expozice nebo počkejte, až se setmí.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
+    <value>Nepodařilo se určit expoziční čas pro flaty z oblohy - obloha je příliš tmavá.
+Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</value>
+  </data>
+  <data name="LblFlatDeviceError" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="LblFlatDeviceCoverError" xml:space="preserve">
+    <value>{0} hlásí, že kryt je v chybném stavu</value>
+  </data>
+  <data name="LblFlatDeviceNotPresent" xml:space="preserve">
+    <value>Nepřítomen</value>
   </data>
 </root>

@@ -12,35 +12,34 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyCamera;
-using NINA.Equipment.Equipment.MyFilterWheel;
-using NINA.Equipment.Equipment.MyFlatDevice;
-using NINA.Profile.Interfaces;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyFlatDevice;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Locale;
-using NINA.Core.MyMessageBox;
-using NINA.Core.Model;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Profile;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment;
-using Nito.AsyncEx;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
-    public class FlatDeviceVM : DockableVM, IFlatDeviceVM, ICameraConsumer {
+    public partial class FlatDeviceVM : DockableVM, IFlatDeviceVM, ICameraConsumer {
         private IFlatDeviceSettings flatDeviceSettings;
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private readonly IFlatDeviceMediator flatDeviceMediator;
@@ -64,21 +63,17 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
             Title = Loc.Instance["LblFlatDevice"];
             ImageGeometry = imageGeometryProvider.GetImageGeometry("LightBulbSVG");
+            var progress = new Progress<ApplicationStatus>(x => { x.Source = this.Title; applicationStatusMediator.StatusUpdate(x); });
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
-            CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectFlatDeviceDialog));
-            OpenCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => OpenCover(CancellationToken.None)));
-            CloseCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => CloseCover(CancellationToken.None)));
+            OpenCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => OpenCover(progress, CancellationToken.None)));
+            CloseCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => CloseCover(progress, CancellationToken.None)));
             RescanDevicesCommand =
                 new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !FlatDeviceInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
-            SetBrightnessCommand = new AsyncCommand<bool>(o => Task.Run(() => SetBrightness(o, CancellationToken.None)));
-            ToggleLightCommand = new AsyncCommand<bool>(o => Task.Run(() => ToggleLight(o, CancellationToken.None)));
-            AddGainCommand = new RelayCommand(AddGain);
-            AddBinningCommand = new RelayCommand(AddBinning);
-            DeleteGainCommand = new RelayCommand(DeleteGainDialog);
-            DeleteBinningCommand = new RelayCommand(DeleteBinningDialog);
+            SetBrightnessCommand = new AsyncCommand<bool>(o => Task.Run(() => SetBrightness((int)o, progress, CancellationToken.None)));
+            ToggleLightCommand = new AsyncCommand<bool>(o => Task.Run(() => ToggleLight((bool)o, progress, CancellationToken.None)));
 
             updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
@@ -90,24 +85,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             flatDeviceSettings.PropertyChanged += FlatDeviceSettingsChanged;
             profileService.ProfileChanged += ProfileChanged;
             profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += FilterWheelSettingsChanged;
-            UpdateWizardValueBlocks();
         }
 
         public async Task<IList<string>> Rescan() {
-            return await Task.Run(async  () => {
+            return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
                 return DeviceChooserVM.Devices.Select(x => x.Id).ToList();
             });
         }
 
         private void FlatDeviceSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            RaisePropertyChanged(nameof(Gains));
-            RaisePropertyChanged(nameof(BinningModes));
-            UpdateWizardValueBlocks();
         }
 
         private void FilterWheelSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            UpdateWizardValueBlocks();
         }
 
         private async void ProfileChanged(object sender, EventArgs e) {
@@ -116,9 +106,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             await RescanDevicesCommand.ExecuteAsync(null);
             flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
             flatDeviceSettings.PropertyChanged += FlatDeviceSettingsChanged;
-            RaisePropertyChanged(nameof(Gains));
-            RaisePropertyChanged(nameof(BinningModes));
-            UpdateWizardValueBlocks();
         }
 
         private void BroadcastFlatDeviceInfo() {
@@ -139,21 +126,29 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             set { lightOn = value; RaisePropertyChanged(); }
         }
 
-        public Task<bool> SetBrightness(int value, CancellationToken token) {
+        public Task<bool> SetBrightness(int value, IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (FlatDevice == null || !FlatDevice.Connected) return Task.FromResult(false);
             return Task.Run(async () => {
-                if (value < FlatDevice.MinBrightness) {
-                    value = FlatDevice.MinBrightness;
+                try {
+                    if (value < FlatDevice.MinBrightness) {
+                        value = FlatDevice.MinBrightness;
+                    }
+                    if (value > FlatDevice.MaxBrightness) {
+                        value = FlatDevice.MaxBrightness;
+                    }
+                    if (FlatDevice.Brightness == value) {
+                        return true;
+                    }
+                    Logger.Info($"Setting brightness to {value}");
+                    progress?.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblSettingBrightness"], value) });
+                    FlatDevice.Brightness = value;
+                    var waitForUpdate = updateTimer.WaitForNextUpdate(token);
+                    await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
+                    await waitForUpdate;
+                    return true;
+                } finally {
+                    progress?.Report(new ApplicationStatus());
                 }
-                if (value > FlatDevice.MaxBrightness) {
-                    value = FlatDevice.MaxBrightness;
-                }
-                Logger.Info($"Setting brightness to {value}");
-                FlatDevice.Brightness = value;
-                var waitForUpdate = updateTimer.WaitForNextUpdate(token);
-                await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
-                await waitForUpdate;
-                return true;
             }, token);
         }
 
@@ -212,17 +207,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         };
                         this.Brightness = newDevice.Brightness;
 
-                        // Migrate old trained flat device values
-                        if (profileService.ActiveProfile.FlatDeviceSettings.FilterSettings != null) {
-                            foreach (var setting in profileService.ActiveProfile.FlatDeviceSettings.FilterSettings.ToArray()) {
-                                var info = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(setting.Key);
-                                if (info != null && !double.IsNaN(info.Brightness)) {
-                                    var migratedInfo = new FlatDeviceFilterSettingsValue((int)(setting.Value.Brightness * FlatDeviceInfo.MaxBrightness), info.Time);
-                                    profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(setting.Key, migratedInfo);
-                                }
-                            }
-                        }
-
                         Notification.ShowSuccess(Loc.Instance["LblFlatDeviceConnected"]);
 
                         if (updateTimer != null) {
@@ -263,7 +247,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             }
         }
 
-        private void CancelConnectFlatDevice(object o) {
+        [RelayCommand]
+        private void CancelConnect(object o) {
             try { connectFlatDeviceCts?.Cancel(); } catch { }
         }
 
@@ -288,110 +273,64 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             return true;
         }
 
-        private void AddGain(object o) {
-            if (!(o is string)) return;
-            if (!int.TryParse((string)o, out var gain)) return;
-            if (Gains.Contains(gain)) return;
-            var binning = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings()
-                ?.OrderBy(mode => mode?.Name ?? "").FirstOrDefault();
-            var filters = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-            if (filters.Count == 0) filters = new ObserveAllCollection<FilterInfo> { new FilterInfo() };
-
-            var key = new FlatDeviceFilterSettingsKey(filters.FirstOrDefault()?.Position, binning, gain);
-            var value = new FlatDeviceFilterSettingsValue(0, 1d);
-            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(key, value);
-            RaisePropertyChanged(nameof(Gains));
-            UpdateWizardValueBlocks();
-        }
-
-        private void AddBinning(object binning) {
-            if (!(binning is BinningMode)) return;
-            var gain = Gains.FirstOrDefault();
-            var filters = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-            if (filters.Count == 0) filters = new ObserveAllCollection<FilterInfo> { new FilterInfo() };
-
-            var key = new FlatDeviceFilterSettingsKey(filters.FirstOrDefault()?.Position,
-                (BinningMode)binning, gain);
-            var value = new FlatDeviceFilterSettingsValue(0, 1d);
-            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(key, value);
-            RaisePropertyChanged(nameof(BinningModes));
-            UpdateWizardValueBlocks();
-        }
-
-        private void DeleteGainDialog(object gain) {
-            if (!(gain is int)) return;
-
-            var dialog = MyMessageBox.Show($"{Loc.Instance["LblFlatDeviceAreYouSureGain"]} {gain}?",
-                "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No);
-            if (dialog != System.Windows.MessageBoxResult.Yes) return;
-
-            profileService.ActiveProfile.FlatDeviceSettings.RemoveGain((int)gain);
-            RaisePropertyChanged(nameof(Gains));
-            UpdateWizardValueBlocks();
-        }
-
-        private void DeleteBinningDialog(object o) {
-            if (!(o is string)) return;
-
-            BinningMode binningMode;
-            if (o.Equals(Loc.Instance["LblNone"])) {
-                binningMode = null;
-            } else {
-                if (!BinningMode.TryParse((string)o, out binningMode)) return;
-            }
-
-            var dialog = MyMessageBox.Show($"{Loc.Instance["LblFlatDeviceAreYouSureBinning"]} {binningMode}?",
-                "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No);
-            if (dialog != System.Windows.MessageBoxResult.Yes) return;
-
-            profileService.ActiveProfile.FlatDeviceSettings.RemoveBinning(binningMode);
-            RaisePropertyChanged(nameof(BinningModes));
-            UpdateWizardValueBlocks();
-        }
-
         private readonly SemaphoreSlim ssOpen = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> OpenCover(CancellationToken token) {
+        public async Task<bool> OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await ssOpen.WaitAsync(token);
             try {
                 if (FlatDevice.Connected == false) return false;
                 if (!FlatDevice.SupportsOpenClose) return false;
+                if (FlatDevice.CoverState == CoverState.Open) return true;
                 Logger.Info("Opening Flat Device Cover");
+                progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblOpeningCover"] });
                 var result = await FlatDevice.Open(token);
                 var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                 await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                 await waitForUpdate;
                 return result;
+            } catch (FlatDeviceCoverErrorException) {
+                Logger.Error("Flat device reports the cover is in an Error state");
+                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.Name));
+                return false;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 return false;
             } finally {
                 ssOpen.Release();
+                progress?.Report(new ApplicationStatus());
             }
         }
 
         private readonly SemaphoreSlim ssClose = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> CloseCover(CancellationToken token) {
+        public async Task<bool> CloseCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await ssClose.WaitAsync(token);
             try {
                 if (FlatDevice.Connected == false) return false;
                 if (!FlatDevice.SupportsOpenClose) return false;
+                if (FlatDevice.CoverState == CoverState.Closed) return true;
                 Logger.Info("Closing Flat Device Cover");
+                progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblClosingCover"] });
                 var result = await FlatDevice.Close(token);
                 var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                 await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                 await waitForUpdate;
                 return result;
+            } catch (FlatDeviceCoverErrorException) {
+                Logger.Error("Flat device reports the cover is in an Error state");
+                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.Name));
+                return false;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 return false;
             } finally {
                 ssClose.Release();
+                progress?.Report(new ApplicationStatus());
             }
         }
 
         private IFlatDevice flatDevice;
+
         public IFlatDevice FlatDevice {
             get => flatDevice;
             private set {
@@ -443,30 +382,25 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             return flatDeviceValues;
         }
 
-        public Task<bool> ToggleLight(object o, CancellationToken token) {
+        public Task<bool> ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (FlatDevice == null || FlatDevice.Connected == false) return Task.FromResult(false);
             return Task.Run(async () => {
-                Logger.Info($"Toggling light to {o}");
-                FlatDevice.LightOn = o is bool b && b;
-                var waitForUpdate = updateTimer.WaitForNextUpdate(token);
-                await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
-                await waitForUpdate;
-                return true;
+                try {
+                    if (FlatDevice.LightOn == onOff) {
+                        return true;
+                    }
+                    Logger.Info($"Toggling light to {onOff}");
+                    progress?.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblToggleLight"], onOff ? Loc.Instance["LblOn"] : Loc.Instance["LblOff"]) });
+                    FlatDevice.LightOn = onOff;
+                    var waitForUpdate = updateTimer.WaitForNextUpdate(token);
+                    await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
+                    await waitForUpdate;
+                    return true;
+                } finally {
+                    progress?.Report(new ApplicationStatus());
+                }
             }, token);
         }
-
-        public WizardGrid WizardGrid { get; } = new WizardGrid();
-
-        public ObservableCollection<int> Gains =>
-                new ObservableCollection<int>(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains()?
-                    .OrderBy(g => g)
-                    .ToList() ?? new List<int>());
-
-        public ObservableCollection<string> BinningModes =>
-                new ObservableCollection<string>(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings()
-                    ?.OrderBy(mode => mode?.Name ?? "")
-                    .Select(mode => mode?.Name ?? Loc.Instance["LblNone"])
-                    .ToList() ?? new List<string>());
 
         public string Action(string actionName, string actionParameters = "") {
             return FlatDeviceInfo?.Connected == true ? FlatDevice.Action(actionName, actionParameters) : null;
@@ -486,95 +420,30 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             }
         }
 
-        private void UpdateWizardValueBlocks() {
-            var binningModes = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings()
-                ?.OrderBy(m => m?.Name ?? "");
-            var existingBlocks = WizardGrid.Blocks.ToList();
-            if (binningModes == null) {
-                WizardGrid.RemoveBlocks(existingBlocks);
-                RaisePropertyChanged(nameof(WizardGrid));
-                return;
-            }
-
-            foreach (var binningMode in binningModes) {
-                var block = WizardGrid.Blocks.FirstOrDefault(b => Equals(b?.Binning, binningMode));
-                if (block == null) {
-                    block = new WizardValueBlock { Binning = binningMode };
-                    WizardGrid.AddBlock(block);
-                } else {
-                    existingBlocks.Remove(block);
-                }
-
-                var filters = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                if (filters.Count == 0) filters = new ObserveAllCollection<FilterInfo> { null };
-                var existingColumns = block.Columns.ToList();
-
-                //filter name column
-                FindOrCreateColumnAndUpdateRows(block, ref existingColumns, filters, binningMode, 0, -1, true);
-
-                //gain columns
-                var newGains =
-                profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains()?.OrderBy(g => g)
-                    .ToList() ?? new List<int>();
-                for (var i = 1; i <= newGains.Count; i++) {
-                    FindOrCreateColumnAndUpdateRows(block, ref existingColumns, filters, binningMode, i, newGains[i - 1], false);
-                }
-                block.RemoveColumns(existingColumns);
-            }
-            WizardGrid.RemoveBlocks(existingBlocks);
-            RaisePropertyChanged(nameof(WizardGrid));
-        }
-
-        private void FindOrCreateColumnAndUpdateRows(WizardValueBlock block, ref List<WizardGridColumn> existingColumns,
-                IEnumerable<FilterInfo> filters, BinningMode binningMode, int newColumnNumber, int gain, bool isFilterNameColumn) {
-            var column = isFilterNameColumn
-                ? block.Columns.FirstOrDefault(c => c?.ColumnNumber == 0)
-                : block.Columns.FirstOrDefault(c => c?.Gain == gain);
-            if (column == null) {
-                column = isFilterNameColumn
-                    ? new WizardGridColumn { ColumnNumber = 0, Header = $"{Loc.Instance["LblFilter"]}", Gain = -9000 } //do not use -1, as that is used for simulator cam etc.
-                    : new WizardGridColumn { ColumnNumber = newColumnNumber, Header = null, Gain = gain };
-                block.AddColumn(column);
-            } else {
-                column.ColumnNumber = newColumnNumber;
-                column.RaiseChanged();
-                existingColumns.Remove(column);
-            }
-            var existingFilterKeys = column.Settings?.Select(s => s.Key).ToList();
-            var newFilterKeys = filters.Select(f => new FlatDeviceFilterSettingsKey(f?.Position, binningMode, isFilterNameColumn ? 0 : gain))
-                .ToList();
-
-            foreach (var key in newFilterKeys) {
-                var timing = column.Settings?.FirstOrDefault(s => Equals(s.Key, key));
-                if (timing == null) {
-                    timing = new FilterTiming(profileService, key, isFilterNameColumn);
-                    column.AddFilterTiming(timing);
-                } else {
-                    if (timing.Time == 0 && timing.Brightness == 0) {
-                        profileService.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo(timing.Key);
-                    }
-                    timing.RaiseChanged();
-                    existingFilterKeys?.Remove(key);
-                }
-            }
-            column.RemoveFilterTimingByKeys(existingFilterKeys);
-        }
         public IDevice GetDevice() {
             return FlatDevice;
         }
 
         public IAsyncCommand RescanDevicesCommand { get; }
         public IAsyncCommand ConnectCommand { get; }
-        public ICommand CancelConnectCommand { get; }
         public IAsyncCommand DisconnectCommand { get; }
         public IAsyncCommand OpenCoverCommand { get; }
         public IAsyncCommand CloseCoverCommand { get; }
         public ICommand ToggleLightCommand { get; }
         public ICommand SetBrightnessCommand { get; }
-        public ICommand AddGainCommand { get; }
-        public ICommand AddBinningCommand { get; }
-        public ICommand DeleteGainCommand { get; }
-        public ICommand DeleteBinningCommand { get; }
+
+        [ObservableProperty]
+        private TrainedFlatExposureSetting selectedTrainedExposureSetting;
+
+        [RelayCommand]
+        public void AddTrainedSetting() {
+            profileService.ActiveProfile.FlatDeviceSettings.AddEmptyTrainedExposureSetting();
+        }
+
+        [RelayCommand]
+        public void RemoveTrainedSetting(TrainedFlatExposureSetting setting) {
+            profileService.ActiveProfile.FlatDeviceSettings.RemoveFlatExposureSetting(setting);
+        }
 
         public void Dispose() {
             cameraMediator.RemoveConsumer(this);
@@ -583,7 +452,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
-            get => cameraInfo;
+            get => cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
             set {
                 cameraInfo = value;
                 RaisePropertyChanged();

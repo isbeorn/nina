@@ -86,7 +86,7 @@ namespace NINA.Test.FlatDevice {
         [Test]
         public async Task TestOpenCoverNullFlatDevice() {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            (await sut.OpenCover(It.IsAny<CancellationToken>())).Should().BeFalse();
+            (await sut.OpenCover(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Should().BeFalse();
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.Connected).Returns(false);
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(false);
             await sut.Connect();
-            (await sut.OpenCover(It.IsAny<CancellationToken>())).Should().BeFalse();
+            (await sut.OpenCover(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Should().BeFalse();
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.OpenCover(It.IsAny<CancellationToken>())).Should().BeFalse();
+            (await sut.OpenCover(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Should().BeFalse();
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.Open(It.IsAny<CancellationToken>(), It.IsAny<int>())).Returns(Task.FromResult(expected));
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.OpenCover(CancellationToken.None)).Should().Be(expected);
+            (await sut.OpenCover(null, CancellationToken.None)).Should().Be(expected);
         }
 
         [Test]
@@ -132,13 +132,13 @@ namespace NINA.Test.FlatDevice {
                 .Callback((CancellationToken ct, int delay) => throw new OperationCanceledException());
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.OpenCover(CancellationToken.None)).Should().BeFalse();
+            (await sut.OpenCover(null, CancellationToken.None)).Should().BeFalse();
         }
 
         [Test]
         public async Task TestCloseCoverNullFlatDevice() {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            (await sut.CloseCover(CancellationToken.None)).Should().BeFalse();
+            (await sut.CloseCover(null, CancellationToken.None)).Should().BeFalse();
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.Connected).Returns(false);
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(false);
             await sut.Connect();
-            (await sut.CloseCover(CancellationToken.None)).Should().BeFalse();
+            (await sut.CloseCover(null, CancellationToken.None)).Should().BeFalse();
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.CloseCover(CancellationToken.None)).Should().BeFalse();
+            (await sut.CloseCover(null, CancellationToken.None)).Should().BeFalse();
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.Close(It.IsAny<CancellationToken>(), It.IsAny<int>())).Returns(Task.FromResult(expected));
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.CloseCover(CancellationToken.None)).Should().Be(expected);
+            (await sut.CloseCover(null, CancellationToken.None)).Should().Be(expected);
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace NINA.Test.FlatDevice {
                 .Callback((CancellationToken ct, int delay) => throw new OperationCanceledException());
             mockFlatDevice.Setup(x => x.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(true);
             await sut.Connect();
-            (await sut.CloseCover(CancellationToken.None)).Should().BeFalse();
+            (await sut.CloseCover(null, CancellationToken.None)).Should().BeFalse();
         }
 
         [Test]
@@ -220,158 +220,9 @@ namespace NINA.Test.FlatDevice {
         }
 
         [Test]
-        public void TestWizardGridWithoutData() {
-            var result = sut.WizardGrid;
-            result.Should().NotBeNull();
-            result.Blocks.Count.Should().Be(0);
-        }
-
-        [Test]
-        public void TestWizardGridWithoutFilterWheel() {
-            const int gain = 30;
-            var binningMode = new BinningMode(1, 1);
-            var settingsValue = new FlatDeviceFilterSettingsValue(7, 0.5);
-            var settingsKey = new FlatDeviceFilterSettingsKey(null, binningMode, gain);
-            mockProfileService
-                        .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-                        .Returns(new List<BinningMode> { binningMode });
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
-                    .Returns(new List<int> { gain });
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                        It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(settingsValue);
-            mockFilterWheelSettings.Raise(m => m.PropertyChanged += null,
-                    new PropertyChangedEventArgs("FilterWheelFilters"));
-            var result = sut.WizardGrid;
-            result.Should().NotBeNull();
-            result.Blocks.Count.Should().Be(1);
-            result.Blocks[0].Columns.Count.Should().Be(2);
-            result.Blocks[0].Binning.Should().Be(binningMode);
-            result.Blocks[0].Columns[0].Header.Should().Be(Loc.Instance["LblFilter"]);
-            result.Blocks[0].Columns[0].Settings[0].ShowFilterNameOnly.Should().BeTrue();
-            result.Blocks[0].Columns[0].Settings[0].Key.Position.Should().BeNull();
-            result.Blocks[0].Columns[1].Header.Should().BeNull();
-            result.Blocks[0].Columns[1].Settings[0].ShowFilterNameOnly.Should().BeFalse();
-            result.Blocks[0].Columns[1].Settings[0].Key.Should().Be(settingsKey);
-            result.Blocks[0].Columns[1].Settings[0].Brightness.Should().Be(settingsValue.AbsoluteBrightness);
-            result.Blocks[0].Columns[1].Settings[0].Time.Should().Be(settingsValue.Time);
-        }
-
-        [Test]
-        public void TestWizardGridWithFilters() {
-            const int gain = 30;
-            const short position = 2;
-            var binningMode = new BinningMode(1, 1);
-            var settingsValue = new FlatDeviceFilterSettingsValue(7, 0.5);
-            var settingsKey = new FlatDeviceFilterSettingsKey(position, binningMode, gain);
-
-            mockProfileService
-                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                    It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(settingsValue);
-            mockProfileService
-                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-                .Returns(new List<BinningMode> { binningMode });
-            mockProfileService
-                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
-                                .Returns(new List<int> { gain });
-            mockFilterWheelSettings.Setup(m => m.FilterWheelFilters)
-                    .Returns(new ObserveAllCollection<FilterInfo> { new FilterInfo { Position = position } });
-            mockFilterWheelSettings.Raise(m => m.PropertyChanged += null,
-                    new PropertyChangedEventArgs("FilterWheelFilters"));
-            var result = sut.WizardGrid;
-            result.Should().NotBeNull();
-            result.Blocks.Count.Should().Be(1);
-            result.Blocks[0].Columns.Count.Should().Be(2);
-            result.Blocks[0].Binning.Should().Be(binningMode);
-            result.Blocks[0].Columns[0].Header.Should().Be(Loc.Instance["LblFilter"]);
-            result.Blocks[0].Columns[0].Settings[0].ShowFilterNameOnly.Should().BeTrue();
-            result.Blocks[0].Columns[0].Settings[0].Key.Position.Should().Be(position);
-            result.Blocks[0].Columns[1].Header.Should().BeNull();
-            result.Blocks[0].Columns[1].Settings[0].ShowFilterNameOnly.Should().BeFalse();
-            result.Blocks[0].Columns[1].Settings[0].Key.Should().Be(settingsKey);
-            result.Blocks[0].Columns[1].Settings[0].Brightness.Should().Be(settingsValue.AbsoluteBrightness);
-            result.Blocks[0].Columns[1].Settings[0].Time.Should().Be(settingsValue.Time);
-        }
-
-        [Test]
-        public void TestWizardGridMustChangeWithNewProfile() {
-            const int gain = 30;
-            const short position = 2;
-            var binningMode = new BinningMode(1, 1);
-            var settingsValue = new FlatDeviceFilterSettingsValue(7, 0.5);
-
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                        It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(settingsValue);
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-                    .Returns(new List<BinningMode> { binningMode });
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
-                    .Returns(new List<int> { gain });
-            mockFilterWheelSettings.Setup(m => m.FilterWheelFilters)
-                    .Returns(new ObserveAllCollection<FilterInfo> { new FilterInfo { Position = position } });
-            mockFilterWheelSettings.Raise(m => m.PropertyChanged += null,
-                    new PropertyChangedEventArgs("FilterWheelFilters"));
-
-            var result1 = sut.WizardGrid;
-            result1.Should().NotBeNull();
-            result1.Blocks.Count.Should().Be(1);
-            result1.Blocks[0].Columns[0].Settings[0].Key.Position.Should().Be(position);
-
-            mockFilterWheelSettings.Setup(m => m.FilterWheelFilters)
-            .Returns(new ObserveAllCollection<FilterInfo> { null });
-            mockFilterWheelSettings.Raise(m => m.PropertyChanged += null,
-                    new PropertyChangedEventArgs("FilterWheelFilters"));
-
-            var result2 = sut.WizardGrid;
-            result2.Should().NotBeNull();
-            result2.Blocks.Count.Should().Be(1);
-            result2.Blocks[0].Columns[0].Settings[0].Key.Position.Should().BeNull();
-        }
-
-        [Test]
-        public void TestWizardGridForCamerasWithoutBinning() {
-            const int gain = 30;
-            const short position = 2;
-            var settingsValue = new FlatDeviceFilterSettingsValue(7, 0.5);
-            var settingsKey = new FlatDeviceFilterSettingsKey(position, null, gain);
-
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                        It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(settingsValue);
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-                    .Returns(new List<BinningMode> { null });
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
-                    .Returns(new List<int> { gain });
-            mockFilterWheelSettings.Setup(m => m.FilterWheelFilters)
-                    .Returns(new ObserveAllCollection<FilterInfo> { new FilterInfo { Position = position } });
-            mockFilterWheelSettings.Raise(m => m.PropertyChanged += null,
-                    new PropertyChangedEventArgs("FilterWheelFilters"));
-
-            var result = sut.WizardGrid;
-
-            result.Should().NotBeNull();
-            result.Blocks.Count.Should().Be(1);
-            result.Blocks[0].Columns.Count.Should().Be(2);
-            result.Blocks[0].Binning.Should().BeNull();
-            result.Blocks[0].Columns[0].Header.Should().Be(Loc.Instance["LblFilter"]);
-            result.Blocks[0].Columns[0].Settings[0].ShowFilterNameOnly.Should().BeTrue();
-            result.Blocks[0].Columns[0].Settings[0].Key.Position.Should().Be(position);
-            result.Blocks[0].Columns[1].Header.Should().BeNull();
-            result.Blocks[0].Columns[1].Settings[0].ShowFilterNameOnly.Should().BeFalse();
-            result.Blocks[0].Columns[1].Settings[0].Key.Should().Be(settingsKey);
-            result.Blocks[0].Columns[1].Settings[0].Brightness.Should().Be(settingsValue.AbsoluteBrightness);
-            result.Blocks[0].Columns[1].Settings[0].Time.Should().Be(settingsValue.Time);
-        }
-
-        [Test]
         public async Task TestSetBrightnessNullFlatDevice() {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            (await sut.SetBrightness(1, CancellationToken.None)).Should().Be(false);
+            (await sut.SetBrightness(1, null, CancellationToken.None)).Should().Be(false);
             sut.Brightness.Should().Be(0);
             mockFlatDevice.Verify(m => m.Brightness, Times.Never);
         }
@@ -384,7 +235,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.MaxBrightness).Returns(100);
             mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             await sut.Connect();
-            (await sut.SetBrightness(1, CancellationToken.None)).Should().Be(true);
+            (await sut.SetBrightness(1, null, CancellationToken.None)).Should().Be(true);
             sut.Brightness.Should().Be(0);
             mockFlatDevice.VerifySet(m => m.Brightness = 1, Times.Once);
         }
@@ -397,7 +248,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.MaxBrightness).Returns(100);
             mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             await sut.Connect();
-            (await sut.SetBrightness(1000, CancellationToken.None)).Should().Be(true);
+            (await sut.SetBrightness(1000, null, CancellationToken.None)).Should().Be(true);
             sut.Brightness.Should().Be(0);
             mockFlatDevice.VerifySet(m => m.Brightness = 100, Times.Once);
         }
@@ -411,7 +262,7 @@ namespace NINA.Test.FlatDevice {
             mockFlatDevice.Setup(m => m.MaxBrightness).Returns(1000);
             mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             await sut.Connect();
-            (await sut.SetBrightness(20, CancellationToken.None)).Should().Be(true);
+            (await sut.SetBrightness(20, null, CancellationToken.None)).Should().Be(true);
             sut.Brightness.Should().Be(0);
             mockFlatDevice.VerifySet(m => m.Brightness = 100, Times.Once);
         }
@@ -419,7 +270,7 @@ namespace NINA.Test.FlatDevice {
         [Test]
         public async Task TestToggleLightNullFlatDevice() {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            (await sut.ToggleLight(true, CancellationToken.None)).Should().Be(false);
+            (await sut.ToggleLight(true, null, CancellationToken.None)).Should().Be(false);
             sut.LightOn.Should().BeFalse();
         }
 
@@ -428,65 +279,13 @@ namespace NINA.Test.FlatDevice {
         [TestCase(false)]
         public async Task TestToggleLightConnected(bool expected) {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, mockFlatDevice.Object);
+            mockFlatDevice.SetupGet(x => x.LightOn).Returns(!expected);
             mockFlatDevice.Setup(m => m.Id).Returns("Something");
             mockFlatDevice.Setup(m => m.Connected).Returns(true);
             mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             await sut.Connect();
-            (await sut.ToggleLight(expected, CancellationToken.None)).Should().Be(true);
+            (await sut.ToggleLight(expected, null, CancellationToken.None)).Should().Be(true);
             mockFlatDevice.VerifySet(m => m.LightOn = expected, Times.Once);
-        }
-
-        [Test]
-        public void TestBinningModesReturnsCorrectName() {
-            var binningMode = new BinningMode(1, 1);
-
-            mockProfileService
-            .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-            .Returns(new List<BinningMode> { binningMode });
-            var result = sut.BinningModes;
-
-            result.Count.Should().Be(1);
-            result.Should().BeEquivalentTo(new List<string> { binningMode.Name });
-        }
-
-        [Test]
-        public void TestBinningModesReturnsCorrectNameForNullBinningMode() {
-            mockProfileService
-                    .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
-                    .Returns(new List<BinningMode> { null });
-            var result = sut.BinningModes;
-
-            result.Count.Should().Be(1);
-            result.Should().BeEquivalentTo(new List<string> { Loc.Instance["LblNone"] });
-        }
-
-        [Test]
-        public void TestAddGain() {
-            var result = string.Empty;
-            mockFlatDeviceSettings.Setup(m =>
-                            m.AddBrightnessInfo(It.IsAny<FlatDeviceFilterSettingsKey>(), It.IsAny<FlatDeviceFilterSettingsValue>()))
-                    .Callback((FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value) => { result = key.Gain.ToString(); });
-            mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings).Returns(mockFlatDeviceSettings.Object);
-            sut.AddGainCommand.Execute("25");
-
-            mockFlatDeviceSettings.Verify(m =>
-                    m.AddBrightnessInfo(It.IsAny<FlatDeviceFilterSettingsKey>(), It.IsAny<FlatDeviceFilterSettingsValue>()), Times.Once);
-            result.Should().Be("25");
-        }
-
-        [Test]
-        public void TestAddBinning() {
-            BinningMode result = null;
-            var binning = new BinningMode(1, 1);
-            mockFlatDeviceSettings.Setup(m =>
-                            m.AddBrightnessInfo(It.IsAny<FlatDeviceFilterSettingsKey>(), It.IsAny<FlatDeviceFilterSettingsValue>()))
-                    .Callback((FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value) => { result = key.Binning; });
-            mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings).Returns(mockFlatDeviceSettings.Object);
-            sut.AddBinningCommand.Execute(binning);
-
-            mockFlatDeviceSettings.Verify(m =>
-                    m.AddBrightnessInfo(It.IsAny<FlatDeviceFilterSettingsKey>(), It.IsAny<FlatDeviceFilterSettingsValue>()), Times.Once);
-            result.Should().Be(binning);
-        }
+        }        
     }
 }

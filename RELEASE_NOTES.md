@@ -13,19 +13,64 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - ZWO: Persistent device IDs (Aliases) are now supported for ZWO cameras and filter wheels. If one is already set in either of these devices and has not yet connected to it under NINA 3.0, the device will need to be selected again and connected in NINA's Camera or Filter Wheel equipment selection list. This change makes it easier to support setups where multiple ZWO cameras and filter wheels are present.
     - Device IDs are limited to 8 ASCII characters in length.
     - ZWO EFWs must have firmware version 3.0.9 or later to support storing persistent device IDs.
+- The command line options have been revisited. Previously `/profileid <profile id>` was available. This has been changed to `--profileid <profile id>`
+- Flat Wizard logic has been revamped and can now also be used inside the sequencer. See below for more details.
+- "Loop for time" condition and "Wait for time" instruction have been redesigned. When choosing dawn or dusk times the rollover will no longer happen at noon, but instead at sunrise or sunset. (e.g. when choosing dusk, the rollover will be at dawn)
 
 ## .NET 7
 - The application has been lifted to utilize .NET 7. This is much more than just a Version shift of the previously used .NET Framework 4.8 as .NET 6 is based on .NET Core which is a complete rewrite of the .NET Framework by Microsoft and thus a major technical upgrade for N.I.N.A.
 - Issues due to the technology shift are expected during the early nightly versions, as the complete app has to undergo a full retest!
 - Plugins of prior versions are disabled and need to be patched and target the new version specifically to ensure full compatibility with .NET 7
 
-# Improvements
+## Improvements
 - Profile Chooser on startup will now be shown before the whole application is initializing
     - This change also fixes the issue that sequence templates are loaded from the first profile when switching it in the chooser instead of the one being chosen
 - The guider tab will now also show the dither pixels translated to the main camera based on the guider pixel scale reported by the connected guiding application
+- N.I.N.A. will attempt to synchronize the mount's clock with that of the computer's. Not all mount drivers support this feature. A warning will be displayed if the difference between the clocks is more than 10 seconds and the mount time cannot be set
 - ZWO: Native driver for ZWO EFWs now supports setting the Unidirectional option as well as initiate a calibration run.
+- GNSS devices: Support for retrieving site location information has been expanded to enable different types of sources:
+    - NMEA serial GNSS devices
+    - PegasusAstro Uranus Meteo
+    - PrimaLuceLab Eagle's GPS and Eagle Manager X
 
-# Version 2.1 Hotfix 1
+## Commandline Options
+- Multiple command line options have been added to be able to adjust some of the startup parameters for the application
+```
+-p, --profileid     Load profile for a given id at startup.
+-s, --sequencefile  Load a sequence file at startup.
+-r, --runsequence   (Default: false) Automatically start a sequence loaded with -s and switch to Imaging tab.
+-h, --help          Display this help screen.
+-v, --version       Display version information
+```
+
+## Flat Wizard Rework
+### Flat Wizard screen
+- Binning and Gain settings have been moved down to the other settings and can now also be set filter specific
+- Additionally it is now also possible to specify a camera offset
+- A step size is no longer required. Instead the algorithm will now start at (Min+Max/2) and constantly divide further to find the exposure time.
+- Selection for dark frames is hidden when choosing sky flats. When using sky flats the exposure time will constantly change making dark flats useless.
+- Internally the flat wizard will now use the new advanced sequencer instructions
+
+### Trained Flat Exposure List
+- The settings page to view and maintain the trained flat exposures for the flat device has been reworked
+- Instead of multiple grids the list of trained exposures is now displayed in one uniform grid
+- This new format should be easier to understand and make it much simpler to manually adjust values
+- All settings from a previous version will be automatically upgraded to the new format
+
+### New Instructions for advanced sequencer
+- Auto Exposure Flat: An instruction to find an exposure time for a static flat brightness
+- Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time
+- Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.
+
+# Version 2.3
+
+## Improvements
+- Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame
+
+## Bugfixes
+- The profile chooser on startup did not remember the on/off selection to save the selected profile
+
+# Version 2.2
 
 ## Bugfixes
 - Fixed Slew to Alt/Az instruction not considering changes to Latitude & Longitude values

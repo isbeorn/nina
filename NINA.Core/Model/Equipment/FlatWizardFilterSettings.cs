@@ -33,24 +33,33 @@ namespace NINA.Core.Model.Equipment {
 
         private double minFlatExposureTime;
 
-        private double stepSize;
-
         private int maxAbsoluteFlatDeviceBrightness;
 
         private int minAbsoluteFlatDeviceBrightness;
+        private int gain;
+        private int offset;
+        private BinningMode binning;
 
-        private int flatDeviceAbsoluteStepSize;
+        [OnDeserializing]
+        public void OnDeserializing(StreamingContext context) {
+            SetDefaultValues();
+        }
 
         public FlatWizardFilterSettings() {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
             flatWizardMode = FlatWizardMode.DYNAMICEXPOSURE;
             HistogramMeanTarget = 0.5;
             HistogramTolerance = 0.1;
-            StepSize = 0.1;
             MinFlatExposureTime = 0.01;
             MaxFlatExposureTime = 30;
             MinAbsoluteFlatDeviceBrightness = 0;
-            MaxAbsoluteFlatDeviceBrightness = 1;
-            FlatDeviceAbsoluteStepSize = 1;
+            MaxAbsoluteFlatDeviceBrightness = 32767;
+            Binning = new BinningMode(1, 1);
+            Gain = -1;
+            Offset = -1;
         }
 
         [DataMember]
@@ -109,16 +118,6 @@ namespace NINA.Core.Model.Equipment {
 
         [DataMember]
         [JsonProperty]
-        public double StepSize {
-            get => stepSize;
-            set {
-                stepSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [DataMember]
-        [JsonProperty]
         public int MaxAbsoluteFlatDeviceBrightness {
             get => maxAbsoluteFlatDeviceBrightness;
             set {
@@ -143,10 +142,34 @@ namespace NINA.Core.Model.Equipment {
 
         [DataMember]
         [JsonProperty]
-        public int FlatDeviceAbsoluteStepSize {
-            get => flatDeviceAbsoluteStepSize;
+        public int Gain {
+            get => gain;
             set {
-                flatDeviceAbsoluteStepSize = value;
+                if(value == gain) { return; }
+                gain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        [JsonProperty]
+        public int Offset {
+            get => offset;
+            set {
+                if (value == offset) { return; }
+                offset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        [JsonProperty]
+        public BinningMode Binning {
+            get => binning;
+            set {
+                if (value == null) { value = new BinningMode(1, 1); }
+                if (value == binning) { return; }
+                binning = value;
                 RaisePropertyChanged();
             }
         }

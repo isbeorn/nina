@@ -937,9 +937,9 @@
                             Height="21"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Right"
-                            Command="{Binding SiteFromGPSCommand}">
+                            Command="{Binding SiteFromGnssCommand}">
                             <Button.ToolTip>
-                                <TextBlock Text="{ns:Loc LblGPSTooltip}" />
+                                <TextBlock Text="{ns:Loc LblGnssTooltip}" />
                             </Button.ToolTip>
                             <Path
                                 Margin="5"

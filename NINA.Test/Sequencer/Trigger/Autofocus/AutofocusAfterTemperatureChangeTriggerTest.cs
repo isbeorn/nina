@@ -104,7 +104,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var sut = new AutofocusAfterTemperatureChangeTrigger(profileServiceMock.Object, historyMock.Object, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
             sut.Amount = tempAmount;
 
-            var trigger = sut.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var trigger = sut.ShouldTrigger(null, itemMock.Object);
 
             trigger.Should().Be(shouldTrigger);
         }
@@ -129,7 +131,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             sut.Initialize();
             sut.Amount = tempAmount;
 
-            var trigger = sut.ShouldTrigger(null, new Mock<ISequenceItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var trigger = sut.ShouldTrigger(null, itemMock.Object);
 
             trigger.Should().Be(shouldTrigger);
         }
@@ -154,7 +158,9 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             sut.Initialize();
             sut.Amount = tempAmount;
 
-            var trigger = sut.ShouldTrigger(null, new Mock<IExposureItem>().Object);
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var trigger = sut.ShouldTrigger(null, itemMock.Object);
 
             trigger.Should().Be(shouldTrigger);
         }

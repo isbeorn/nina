@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using NINA.Core.Utility.Http;
 using NINA.Astrometry;
 using System.Collections.Generic;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 
 namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
 {
@@ -163,7 +164,10 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
                 Logger.Debug("This method is not implemented");
                 return false;
             }
-        } 
+        }
+
+        public bool CanGetLockPosition => false;
+
 
         public bool ShiftEnabled {
             get {
@@ -1140,6 +1144,11 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
         public Task<bool> SetShiftRate(SiderealShiftTrackingRate shiftTrackingRate, CancellationToken ct) {
             throw new NotImplementedException();
         }
+
+        public Task<LockPosition> GetLockPosition() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #endregion

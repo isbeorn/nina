@@ -99,7 +99,6 @@
                             Background="Transparent"
                             Focusable="True"
                             IsReadOnly="{TemplateBinding IsReadOnly}"
-                            Style="{x:Null}"
                             Template="{StaticResource ComboBoxTextBox}"
                             Visibility="Hidden" />
                         <Popup

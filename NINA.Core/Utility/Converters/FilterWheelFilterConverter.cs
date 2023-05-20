@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
 using System;
 using System.Globalization;
 using System.Windows.Data;

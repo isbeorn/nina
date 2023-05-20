@@ -31,7 +31,7 @@
 	<?define NINA.WPF.Base_TargetDir=$(var.NINA.WPF.Base.TargetDir)?>
 	<?define NINA.Plugin_TargetDir=$(var.NINA.Plugin.TargetDir)?>
 
-	<Product Id="*" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
+	<Product Id="0F3D61E6-8C0D-437C-8E87-210718A7F50D" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     
     <!--https://learn.microsoft.com/en-us/windows/win32/msi/reinstallmode-->
@@ -155,6 +155,9 @@
       <ComponentGroupRef Id="runtimes_win_x64_native_files" />
       <ComponentGroupRef Id="runtimes_win_lib_net7.0_files" />
       <ComponentGroupRef Id="runtimes_win_lib_netcoreapp2.1_files" />
+			<ComponentGroupRef Id="uk_UA_files" />
+			<ComponentGroupRef Id="hu_HU_files" />
+			<ComponentGroupRef Id="eu_ES_files" />
 		</Feature>
 		<InstallExecuteSequence>
       <Custom Action="API_Firewall_listen_ipv4" Before="InstallFinalize">NOT Installed</Custom>
@@ -305,6 +308,8 @@
               </Directory>
             </Directory>
           </Directory>
+					<Directory Id="hu_HU" Name="hu-HU" />
+					<Directory Id="uk_UA" Name="uk-UA" />
 				</Directory>
 			</Directory>
 			<Directory Id="ProgramMenuFolder">
@@ -699,6 +704,9 @@
 			<Component Id="Iconic.Zlib.Netstandard.dll" Guid="6017c127-e9e4-45cf-b5a2-7011772f4dbb">
 			  <File Id="Iconic.Zlib.Netstandard.dll" Name="Iconic.Zlib.Netstandard.dll" Source="$(var.NINA_TargetDir)Iconic.Zlib.Netstandard.dll" />
 			</Component>
+			<Component Id="CommandLine.dll" Guid="0d8ac625-7515-4fab-b6ca-d1ce200c749f">
+			  <File Id="CommandLine.dll" Name="CommandLine.dll" Source="$(var.NINA_TargetDir)CommandLine.dll" />
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 	<Fragment>
@@ -736,6 +744,9 @@
 			</Component>
       <Component Id="Database_Migration_9.sql" Guid="*">
         <File Id="Database_Migration_9.sql" Name="9.sql" Source="$(var.NINA_TargetDir)Database\Migration\9.sql" />
+      </Component>
+      <Component Id="Database_Migration_10.sql" Guid="*">
+        <File Id="Database_Migration_10.sql" Name="10.sql" Source="$(var.NINA_TargetDir)Database\Migration\10.sql" />
       </Component>
 		</ComponentGroup>
 	</Fragment>
@@ -934,6 +945,27 @@
 			</Component>
 		</ComponentGroup>
 	</Fragment>
+  <Fragment>
+    <ComponentGroup Id="uk_UA_files" Directory="uk_UA">
+      <Component Id="uk_UA_NINA.Core.resources.dll" Guid="78b6abc5-2cf9-4eea-a9b6-1b93060cc215">
+        <File Id="uk_UA_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA_TargetDir)uk-UA\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="hu_HU_files" Directory="hu_HU">
+      <Component Id="hu_HU_NINA.Core.resources.dll" Guid="0f0ac32e-5b66-457b-911b-abbfff31f74e">
+        <File Id="hu_HU_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA_TargetDir)hu-HU\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="eu_ES_files" Directory="eu_ES">
+      <Component Id="eu_ES_NINA.Core.resources.dll" Guid="eda55c1e-b932-4177-8d19-c88c3ecdabdc">
+        <File Id="eu_ES_NINA.Core.resources.dll" Name="NINA.Core.resources.dll" Source="$(var.NINA_TargetDir)eu-ES\NINA.Core.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
 
 	<!-- x64 Dependencies -->
 

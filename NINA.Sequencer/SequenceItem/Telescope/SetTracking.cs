@@ -106,7 +106,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetTracking)}";
+            return $"Category: {Category}, Item: {nameof(SetTracking)}, {nameof(TrackingMode)}: {TrackingMode}";
         }
     }
 }

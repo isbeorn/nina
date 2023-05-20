@@ -13,6 +13,8 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using System;
@@ -25,11 +27,24 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
 
     [JsonObject(MemberSerialization.OptIn)]
     public class TimeProvider : IDateTimeProvider {
+        private INighttimeCalculator nighttimeCalculator;
+        public TimeProvider(INighttimeCalculator nighttimeCalculator) {
+            this.nighttimeCalculator = nighttimeCalculator;
+        }
+
         public string Name { get; } = Loc.Instance["LblTime"];
         public ICustomDateTime DateTime { get; set; } = new SystemDateTime();
 
         public DateTime GetDateTime(ISequenceEntity context) {
             return DateTime.Now;
+        }
+
+        public TimeOnly GetRolloverTime(ISequenceEntity context) {
+            var dawn = nighttimeCalculator.Calculate().SunRiseAndSet.Rise;
+            if (!dawn.HasValue) {
+                return new TimeOnly(12, 0, 0);
+            }
+            return TimeOnly.FromDateTime(dawn.Value);
         }
     }
 }

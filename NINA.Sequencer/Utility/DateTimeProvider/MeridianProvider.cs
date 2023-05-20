@@ -45,5 +45,14 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
             }
             return DateTime.Now;
         }
+        public TimeOnly GetRolloverTime(ISequenceEntity context) {
+            var contextCoordinates = ItemUtility.RetrieveContextCoordinates(context?.Parent);
+            if (contextCoordinates != null) {
+                var siderealTime = Angle.ByHours(AstroUtil.GetLocalSiderealTime(DateTime.Now, profileService.ActiveProfile.AstrometrySettings.Longitude));
+                var timeToMeridian = MeridianFlip.TimeToMeridian(contextCoordinates.Coordinates, siderealTime);
+                return TimeOnly.FromDateTime(DateTime.Now + timeToMeridian + TimeSpan.FromHours(12));
+            }
+            return TimeOnly.FromDateTime(DateTime.Now + TimeSpan.FromHours(12));
+        }
     }
 }

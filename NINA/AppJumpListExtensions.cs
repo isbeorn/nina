@@ -32,7 +32,7 @@ namespace NINA {
                 .Profiles
                 .GroupJoin(
                     jumpList.JumpItems.OfType<JumpTask>(),
-                    p => $"/profileid {p.Id}",
+                    p => $"--profileid {p.Id}",
                     jt => jt.Arguments,
                     (p, jt) => new { Profile = p, JumpTask = jt.SingleOrDefault() }
                 )
@@ -45,7 +45,7 @@ namespace NINA {
                                 Title = x.Profile.Name,
                                 Description = "Launch N.I.N.A. using profile " + x.Profile.Name,
                                 ApplicationPath = System.Environment.ProcessPath,
-                                Arguments = $"/profileid {x.Profile.Id}",
+                                Arguments = $"--profileid {x.Profile.Id}",
                                 WorkingDirectory = System.IO.Directory.GetCurrentDirectory(),
                                 CustomCategory = "Profiles",
                             });

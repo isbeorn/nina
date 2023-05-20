@@ -28,6 +28,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Core.Model;
 using System.Collections.Generic;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
 
 namespace NINA.Equipment.Equipment.MyGuider {
 
@@ -204,6 +205,9 @@ namespace NINA.Equipment.Equipment.MyGuider {
         public bool CanClearCalibration => true;
 
         public bool CanSetShiftRate => false;
+
+        public bool CanGetLockPosition => false;
+
         public bool ShiftEnabled => false;
         public SiderealShiftTrackingRate ShiftRate => SiderealShiftTrackingRate.Disabled;
 
@@ -334,6 +338,10 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public void SendCommandBlind(string command, bool raw) {
+            throw new NotImplementedException();
+        }
+
+        public Task<LockPosition> GetLockPosition() {
             throw new NotImplementedException();
         }
     }

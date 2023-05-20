@@ -1661,23 +1661,20 @@ HFR calculat: {2}    </value>
   <data name="LblGeneral" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="LblGPSConnected" xml:space="preserve">
-    <value>GPS connectat al port</value>
+  <data name="LblGnssConnectFail" xml:space="preserve">
+    <value>No s'ha pogut connectar a {0}</value>
   </data>
-  <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>No és possible connectar amb el port del GPS</value>
+  <data name="LblGnssLocationSet" xml:space="preserve">
+    <value>Ubicació establerta des de {0}</value>
   </data>
-  <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>Ubicació actualitzada des del GPS</value>
+  <data name="LblGnssNoFix" xml:space="preserve">
+    <value>{0} informa que no té cap solució</value>
   </data>
-  <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS no s'ha connectat</value>
+  <data name="LblGnssNotFound" xml:space="preserve">
+    <value>No s'ha detectat cap dispositiu {0}</value>
   </data>
-  <data name="LblGPSNotFound" xml:space="preserve">
-    <value>No s'ha detectat el mòdul GPS</value>
-  </data>
-  <data name="LblGPSTooltip" xml:space="preserve">
-    <value>Importeu la ubicació mitjançant un dispositiu GPS NMEA</value>
+  <data name="LblGnssTooltip" xml:space="preserve">
+    <value>Importa la ubicació des d'un dispositiu GNSS</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guiatge</value>
@@ -1993,9 +1990,6 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
     <value>Configuració del MetaGuide</value>
-  </data>
-  <data name="LblMetaGuideIP" xml:space="preserve">
-    <value>MetaGuide IP</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
     <value>Port del MetaGuide</value>
@@ -6557,5 +6551,127 @@ Això només s'ha de desactivar quan es disposa d'un bon model del cel i no s'ha
   </data>
   <data name="LblCalibrate" xml:space="preserve">
     <value>Calibrar</value>
+  </data>
+  <data name="LblNmeaSerialGnss" xml:space="preserve">
+    <value>GNSS sèrie NMEA</value>
+  </data>
+  <data name="LblPrimaLuceLabEagle" xml:space="preserve">
+    <value>PrimaLuceLab Eagle</value>
+  </data>
+  <data name="LblGnssGgaMissingError" xml:space="preserve">
+    <value>No he observat cap setencia de GGA en {0} segons</value>
+  </data>
+  <data name="LblGnssGgaQualityError" xml:space="preserve">
+    <value>La frase GGA indica que la qualitat de la correcció és {0}</value>
+  </data>
+  <data name="LblGnss" xml:space="preserve">
+    <value>GNSS
+</value>
+  </data>
+  <data name="LblPegasusUranusNotFound" xml:space="preserve">
+    <value>No s'ha trobat PegasusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblPegausAstroUranus" xml:space="preserve">
+    <value>PegàsusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblIsValidIpPortRule" xml:space="preserve">
+    <value>El Número del Port ha d'estar entre {0} i {1}</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
+    <value>Utilitza totes les interfícies</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
+    <value>Escolta totes les interfícies de les emissions de MegaGuide. Per defecte, N.I.N.A. escoltarà només en loopback (127.0.0.1)</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
+    <value>Aquesta instrucció determinarà automàticament les exposicions dels Flats similars a l'assistent de Flats per a una brillantor fixa del panell.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
+    <value>Exposició automàtica per Flats</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
+    <value>Aquesta instrucció determinarà automàticament la brillantor de la pantalla de Flats similar a l'assistent de Flats durant un temps d'exposició fix.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
+    <value>Lluminositat automàtica de Flats</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
+    <value>Aquesta instrucció determinarà automàticament els temps d'exposició similars a l'assistent de Flats per als Flats del cel.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
+    <value>Flats del cel</value>
+  </data>
+  <data name="LblClosingCover" xml:space="preserve">
+    <value>Tancament de la Coberta</value>
+  </data>
+  <data name="LblOpeningCover" xml:space="preserve">
+    <value>Obertura de la coberta</value>
+  </data>
+  <data name="LblSettingBrightness" xml:space="preserve">
+    <value>S'està configurant la brillantor a {0}</value>
+  </data>
+  <data name="LblToggleLight" xml:space="preserve">
+    <value>Commutant la llum a {0}</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
+    <value>Determinant la brillantor mitjançant {0}. Intenteu {1}/{2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
+    <value>S'ha trobat la brillantor del panell {0}. Capturant Flats.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
+    <value>Determinant el temps d'exposició amb {0} s. Intenteu {1}/{2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
+    <value>S'ha trobat el temps d'exposició a {0} s. Capturant Flats.</value>
+  </data>
+  <data name="LblFlatWizardFailed" xml:space="preserve">
+    <value>L' Assistent de Flats ha fallat.
+Motiu: {0}</value>
+    <comment>When flat wizard fails in single mode</comment>
+  </data>
+  <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
+    <value>Ha fallat l'Asistent de Flats al filtre {0}.
+Motiu: {1}</value>
+    <comment>When flat wizard fails in multi mode</comment>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
+    <value>No s'ha pogut determinar la brillantor dels Flats: la font de llum és massa brillant.
+Disminueix la brillantor mínima del panell o el temps d'exposició.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
+    <value>No s'ha pogut determinar la brillantor dels Flats: la font de llum és massa tènue.
+Augmenta la brillantor màxima del panell o el temps d'exposició.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
+    <value>No s'ha pogut determinar el temps d'exposició dels Flats: la font de llum és massa brillant.
+Disminueix la brillantor del panell o el temps d'exposició mínim.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
+    <value>No s'ha pogut determinar el temps d'exposició dels Flats: la font de llum és massa tènue.
+Augmenta la brillantor del panell o el temps màxim d'exposició.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
+    <value>Determinant el temps d'exposició amb {0} s. Intenteu {1}/{2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
+    <value>S'ha trobat el temps d'exposició a {0} s. Capturant els Flats del cel.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
+    <value>No s'ha pogut determinar el temps d'exposició dels Flats del cel: el cel és massa brillant.
+Disminueix el temps d'exposició mínim o espera fins que estigui més fosc.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
+    <value>No s'ha pogut determinar el temps d'exposició dels Flats del cel: el cel és massa fosc.
+Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</value>
+  </data>
+  <data name="LblFlatDeviceError" xml:space="preserve">
+    <value>Errored</value>
+  </data>
+  <data name="LblFlatDeviceCoverError" xml:space="preserve">
+    <value>{0} reports that the cover is in an errored state</value>
+  </data>
+  <data name="LblFlatDeviceNotPresent" xml:space="preserve">
+    <value>Not present</value>
   </data>
 </root>

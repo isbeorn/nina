@@ -19,6 +19,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Equipment.Interfaces;
+using FluentAssertions;
+using NINA.Equipment.Exceptions;
 
 namespace NINA.Test.FlatDevice {
 
@@ -170,7 +172,9 @@ namespace NINA.Test.FlatDevice {
 
             _mockSdk.Setup(m => m.SendCommand<OpenResponse>(It.IsAny<OpenCommand>()))
                 .Throws(new InvalidDeviceResponseException());
-            Assert.That(await _sut.Open(It.IsAny<CancellationToken>()), Is.False);
+
+            var fn = () => _sut.Open(It.IsAny<CancellationToken>());
+            await fn.Should().ThrowAsync<FlatDeviceCoverErrorException>();            
         }
 
         [Test]
@@ -192,7 +196,8 @@ namespace NINA.Test.FlatDevice {
 
             _mockSdk.Setup(m => m.SendCommand<CloseResponse>(It.IsAny<CloseCommand>()))
                 .Throws(new InvalidDeviceResponseException());
-            Assert.That(await _sut.Close(It.IsAny<CancellationToken>()), Is.False);
+            var fn = () => _sut.Close(It.IsAny<CancellationToken>(), 5);
+            await fn.Should().ThrowAsync<FlatDeviceCoverErrorException>();
         }
 
         [Test]

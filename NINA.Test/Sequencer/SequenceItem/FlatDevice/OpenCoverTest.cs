@@ -86,7 +86,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var sut = new OpenCover(fdMediatorMock.Object);
             await sut.Execute(default, default);
 
-            fdMediatorMock.Verify(x => x.OpenCover(It.IsAny<CancellationToken>()), Times.Once);
+            fdMediatorMock.Verify(x => x.OpenCover(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]

@@ -94,7 +94,7 @@ namespace NINA.Sequencer.SequenceItem.Camera {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(DewHeater)}, Set camera dew heater: {OnOff}";
+            return $"Category: {Category}, Item: {nameof(DewHeater)}, Heater: {(OnOff ? "On" : "Off")}";
         }
     }
 }

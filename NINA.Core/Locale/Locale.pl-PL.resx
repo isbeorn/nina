@@ -1657,23 +1657,20 @@ Obliczone HFR: {2}</value>
   <data name="LblGeneral" xml:space="preserve">
     <value>Ogólny</value>
   </data>
-  <data name="LblGPSConnected" xml:space="preserve">
-    <value>Port podłączenia GPS</value>
+  <data name="LblGnssConnectFail" xml:space="preserve">
+    <value>Nie udało się połączyć z {0}</value>
   </data>
-  <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>Nie można połączyć się z GPS na porcie</value>
+  <data name="LblGnssLocationSet" xml:space="preserve">
+    <value>Lokalizacja ustawiona z {0}</value>
   </data>
-  <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>Pobierz lokalizację z GPS</value>
+  <data name="LblGnssNoFix" xml:space="preserve">
+    <value>{0} zgłoszeń(nie) braku sygnału</value>
   </data>
-  <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS nie złapał pozycji</value>
+  <data name="LblGnssNotFound" xml:space="preserve">
+    <value>Nie wykryto urządzenia {0}</value>
   </data>
-  <data name="LblGPSNotFound" xml:space="preserve">
-    <value>Nie wykryto modułu GPS</value>
-  </data>
-  <data name="LblGPSTooltip" xml:space="preserve">
-    <value>Importuj lokalizację za pomocą urządzenia GPS NMEA</value>
+  <data name="LblGnssTooltip" xml:space="preserve">
+    <value>Importuj lokalizację z urządzenia GNSS</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guider</value>
@@ -1989,9 +1986,6 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
     <value>Ustawienia MetaGuide</value>
-  </data>
-  <data name="LblMetaGuideIP" xml:space="preserve">
-    <value>Adres IP MetaGuide</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
     <value>Port MetaGuide</value>
@@ -6557,5 +6551,126 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
   </data>
   <data name="LblCalibrate" xml:space="preserve">
     <value>Kalibruj</value>
+  </data>
+  <data name="LblNmeaSerialGnss" xml:space="preserve">
+    <value>NMEA serial GNSS</value>
+  </data>
+  <data name="LblPrimaLuceLabEagle" xml:space="preserve">
+    <value>PrimaLuceLab Eagle</value>
+  </data>
+  <data name="LblGnssGgaMissingError" xml:space="preserve">
+    <value>Nie wykryto sentencji GGA w ciągu {0} sekund</value>
+  </data>
+  <data name="LblGnssGgaQualityError" xml:space="preserve">
+    <value>GGA wskazuje, że jakość sygnału jest {0}</value>
+  </data>
+  <data name="LblGnss" xml:space="preserve">
+    <value>GNSS</value>
+  </data>
+  <data name="LblPegasusUranusNotFound" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo nie został znaleziony</value>
+  </data>
+  <data name="LblPegausAstroUranus" xml:space="preserve">
+    <value>PegasusAstro Uranus Meteo</value>
+  </data>
+  <data name="LblIsValidIpPortRule" xml:space="preserve">
+    <value>Numer portu musi być pomiędzy {0} i {1}</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
+    <value>Użyj wszystkich interfejsów</value>
+  </data>
+  <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
+    <value>Nasłuchuj wszystkich interfejsów dla transmisji MegaGuide. Domyślnie N.I.N.A. będzie słuchać tylko pętli (127.0.0.1)</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
+    <value>Ta funkcja automatycznie określi ekspozycje Flat podobnie do kreatora dla stałej jasności panelu.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
+    <value>Automatyczna ekspozycja Flat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
+    <value>Ta funkcja automatycznie określi jasność Flat, podobną do kreatora dla ustalonego czasu ekspozycji.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
+    <value>Automatyczna jasność Flat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
+    <value>Ta funkcja automatycznie określi czasy ekspozycji podobne do kreatora Flat horyzontu.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
+    <value>Flat horyzontu</value>
+  </data>
+  <data name="LblClosingCover" xml:space="preserve">
+    <value>Zamknięcie pokrywy</value>
+  </data>
+  <data name="LblOpeningCover" xml:space="preserve">
+    <value>Otwieranie pokrywy</value>
+  </data>
+  <data name="LblSettingBrightness" xml:space="preserve">
+    <value>Ustawienie jasności na {0}</value>
+  </data>
+  <data name="LblToggleLight" xml:space="preserve">
+    <value>Przełącz jasność na {0}</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
+    <value>Określanie jasności za pomocą {0}. Próba {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
+    <value>Znaleziono poziom jasności przy panelu {0}. Przechwytywanie ramek Flat.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
+    <value>Określanie czasu ekspozycji przy użyciu {0} s. Próba {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
+    <value>Znaleziono czas ekspozycji w {0} s. Przechwytywanie Flat.</value>
+  </data>
+  <data name="LblFlatWizardFailed" xml:space="preserve">
+    <value>Kreator Flat nie powiódł się.
+Powód: {0}</value>
+    <comment>When flat wizard fails in single mode</comment>
+  </data>
+  <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
+    <value>Kreator Flat nie powiódł się dla filtra {0}.
+Powód: {1}</value>
+    <comment>When flat wizard fails in multi mode</comment>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
+    <value>Nie udało się określić jasności Flat - źródło światła jest zbyt jasne.
+Zmniejsz minimalną jasność panelu lub czas ekspozycji.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
+    <value>Nie udało się ustalić jasności dla Flat - źródło światła jest zbyt ciemne.
+Zwiększ maksymalną jasność panelu lub czas ekspozycji.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
+    <value>Nie udało się określić czasu ekspozycji dla Flat - źródło światła jest zbyt jasne.
+Zmniejsz jasność panelu lub minimalny czas ekspozycji.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
+    <value>Nie udało się określić czasu ekspozycji dla Flat - źródło światła jest zbyt ciemne.
+Zwiększ jasność panelu lub maksymalny czas ekspozycji.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
+    <value>Określanie czasu ekspozycji przy użyciu {0} s. Próba {1} / {2}.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
+    <value>Znaleziono czas ekspozycji w {0} s. Przechwytywanie Flat horyzontu.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
+    <value>Nie udało się określić czasu ekspozycji dla Flat horyzontu - niebo jest zbyt jasne. 
+Zmniejsz minimalny czas ekspozycji lub poczekaj aż będzie ciemniejsze.</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
+    <value>Nie udało się określić czasu ekspozycji dla Flat horyzontu - niebo jest zbyt ciemne.
+Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
+  </data>
+  <data name="LblFlatDeviceError" xml:space="preserve">
+    <value>Błędny</value>
+  </data>
+  <data name="LblFlatDeviceCoverError" xml:space="preserve">
+    <value>{0} reports that the cover is in an errored state</value>
+  </data>
+  <data name="LblFlatDeviceNotPresent" xml:space="preserve">
+    <value>Nieobecny</value>
   </data>
 </root>

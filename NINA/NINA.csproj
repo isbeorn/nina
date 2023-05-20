@@ -128,6 +128,9 @@
     <Content Include="Database\Migration\8.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Database\Migration\10.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\ASTPAN\ASTPANCamera.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -349,6 +352,7 @@
     <Folder Include="External\x64\Nikon\Type0030\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CoreWCF.WebHttp" Version="1.3.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.71.1" />

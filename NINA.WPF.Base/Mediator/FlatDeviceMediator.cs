@@ -12,8 +12,10 @@
 
 #endregion "copyright"
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Core.Model;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -22,20 +24,20 @@ namespace NINA.WPF.Base.Mediator {
 
     public class FlatDeviceMediator : DeviceMediator<IFlatDeviceVM, IFlatDeviceConsumer, FlatDeviceInfo>, IFlatDeviceMediator {
 
-        public Task SetBrightness(int brightness, CancellationToken token) {
-            return handler.SetBrightness(brightness, token);
+        public Task SetBrightness(int brightness, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return handler.SetBrightness(brightness, progress, token);
         }
 
-        public Task CloseCover(CancellationToken token) {
-            return handler.CloseCover(token);
+        public Task CloseCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return handler.CloseCover(progress, token);
         }
 
-        public Task ToggleLight(object o, CancellationToken token) {
-            return handler.ToggleLight(o, token);
+        public Task ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return handler.ToggleLight(onOff, progress, token);
         }
 
-        public Task OpenCover(CancellationToken token) {
-            return handler.OpenCover(token);
+        public Task OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return handler.OpenCover(progress, token);
         }
     }
 }
