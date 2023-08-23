@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release;SignedRelease</Configurations>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -36,7 +37,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <PropertyGroup>
-    <Version>3.0.0.1022-nightly</Version>
+    <Version>3.0.0.1032-nightly</Version>
     <Title>N.I.N.A. Custom Control Library</Title>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
@@ -50,6 +51,6 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(Configuration) == SignedRelease (&#xD;&#xA;   echo  &quot;Trying to sign $(TargetPath)&quot;&#xD;&#xA;   signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)&#xD;&#xA;&#xD;&#xA;)" />
+    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

@@ -8,6 +8,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;SignedRelease</Configurations>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
     <OutputPath>bin\SignedRelease\</OutputPath>
@@ -42,14 +43,14 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ASCOM.Com.Components" Version="1.0.70" />
+    <PackageReference Include="ASCOM.Com.Components" Version="1.0.108" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
-    <PackageReference Include="Grpc.Tools" Version="2.51.0">
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.24.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.57.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="GrpcDotNetNamedPipes" Version="2.0.0" />
+    <PackageReference Include="GrpcDotNetNamedPipes" Version="2.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -57,23 +58,10 @@
     </PackageReference>
     <PackageReference Include="SharpGIS.NmeaParser" Version="2.2.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Equipment\AscomDeviceFacades.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AscomDeviceFacades.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Equipment\AscomDeviceFacades.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AscomDeviceFacades.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.0.0.1022-nightly</Version>
+    <Version>3.0.0.1032-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the Equipment components of N.I.N.A. to interact and connect to various types of astronomy equipment.</Description>
@@ -85,6 +73,6 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&#xD;&#xA;   if $(Configuration) == SignedRelease (&#xD;&#xA;   echo  &quot;Trying to sign $(TargetPath)&quot;&#xD;&#xA;   signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)&#xD;&#xA; &#xD;&#xA;   )&#xD;&#xA;  " />
+    <Exec IgnoreExitCode="true" Command="   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
 using NINA.Profile.Interfaces;
 using System;
 using System.Runtime.Serialization;
@@ -36,6 +37,7 @@ namespace NINA.Profile {
             snapPortStop = "SNAP1,0#";
             settleTime = 5;
             noSync = false;
+            TelescopeLocationSyncDirection = TelescopeLocationSyncDirection.PROMPT;
         }
 
         private string id;
@@ -165,6 +167,18 @@ namespace NINA.Profile {
                     secondaryReversed = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        private TelescopeLocationSyncDirection telescopeLocationSyncDirection;
+        [DataMember]
+        public TelescopeLocationSyncDirection TelescopeLocationSyncDirection {
+            get => telescopeLocationSyncDirection;
+            set {
+                if(telescopeLocationSyncDirection != value) {
+                    telescopeLocationSyncDirection = value;
+                    RaisePropertyChanged();
+                }                
             }
         }
     }

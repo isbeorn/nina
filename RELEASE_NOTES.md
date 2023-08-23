@@ -16,6 +16,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The command line options have been revisited. Previously `/profileid <profile id>` was available. This has been changed to `--profileid <profile id>`
 - Flat Wizard logic has been revamped and can now also be used inside the sequencer. See below for more details.
 - "Loop for time" condition and "Wait for time" instruction have been redesigned. When choosing dawn or dusk times the rollover will no longer happen at noon, but instead at sunrise or sunset. (e.g. when choosing dusk, the rollover will be at dawn)
+- The native driver for Pegasus Ultimate Power Box v2 has been removed. The Pegasus Unity ASCOM driver supersedes this implemenatation and should be used instead.
+- SGP Server API has been removed from the core application. Instead this is available as a plugin via "SGP Server Emulation"
 
 ## .NET 7
 - The application has been lifted to utilize .NET 7. This is much more than just a Version shift of the previously used .NET Framework 4.8 as .NET 6 is based on .NET Core which is a complete rewrite of the .NET Framework by Microsoft and thus a major technical upgrade for N.I.N.A.
@@ -32,6 +34,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - NMEA serial GNSS devices
     - PegasusAstro Uranus Meteo
     - PrimaLuceLab Eagle's GPS and Eagle Manager X
+- In the Imaging Tab above the image preview, a new button to flip an image horizontally per click is added. Each following image will then also be flipped. This flip is for display only and doesn't affect the data.
+- Further parallelization of post image capture actions. This should especially speed up capturing using a dslr native driver where the time consuming raw conversion will no longer hold up the next exposure.
+- Added an option to Options > Equipment > Telescope to define automatic sync direction of location. This can be used to supress a user prompt for automatic connection and control.
 
 ## Commandline Options
 - Multiple command line options have been added to be able to adjust some of the startup parameters for the application
@@ -62,10 +67,16 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time
 - Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.
 
+## Bugfixes
+- Fixed SVBony Native driver, that was sometimes showing the exposure before the latest one after a cancelled exposure
+- Fixed PlayerOne resolution not fully resetting to complete size after subframe or binning
+- Added automatic retry of exposure start when POA_ERROR_EXPOSING error happens
+
 # Version 2.3
 
 ## Improvements
 - Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame
+- When clicking on the load adv. sequence button, it is now possible to also load in a template or a target
 
 ## Bugfixes
 - The profile chooser on startup did not remember the on/off selection to save the selected profile

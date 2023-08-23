@@ -403,19 +403,6 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Swashbuckle.AspNetCore " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/domaindrivendev/Swashbuckle.AspNetCore " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/domaindrivendev/Swashbuckle.AspNetCore</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
-                </Grid>
-                <Grid Margin="5,5,5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition
-                            Width="Auto"
-                            MinWidth="150"
-                            SharedSizeGroup="Column1" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
-                    </Grid.ColumnDefinitions>
                     <TextBlock Text="SOFA                   " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.iausofa.org/         " RequestNavigate="Hyperlink_RequestNavigate">https://www.iausofa.org/</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.iausofa.org/tandc.html" RequestNavigate="Hyperlink_RequestNavigate">SOFA Software License</Hyperlink></TextBlock>

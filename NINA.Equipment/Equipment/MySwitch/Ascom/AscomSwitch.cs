@@ -15,7 +15,6 @@
 using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Utility;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
     internal class AscomSwitch : BaseINPC, ISwitch {
 
-        public AscomSwitch(ISwitchFacade s, short id) {
+        public AscomSwitch(Switch s, short id) {
             Id = id;
             ascomSwitchHub = s;
 
@@ -33,7 +32,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
             this.Value = ascomSwitchHub.GetSwitchValue(Id);
         }
 
-        protected ISwitchFacade ascomSwitchHub;
+        protected ISwitchV2 ascomSwitchHub;
 
         public short Id { get; private set; }
 

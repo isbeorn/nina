@@ -114,6 +114,13 @@ namespace NINA.WPF.Base.View {
 
         public static readonly DependencyProperty ImageRotationProperty =
             DependencyProperty.Register(nameof(ImageRotation), typeof(double), typeof(ImageView), new PropertyMetadata(0d));
+        public double ImageFlip {
+            get => (double)GetValue(ImageFlipProperty);
+            set => SetValue(ImageFlipProperty, value);
+        }
+
+        public static readonly DependencyProperty ImageFlipProperty =
+            DependencyProperty.Register(nameof(ImageFlip), typeof(double), typeof(ImageView), new PropertyMetadata(1d));
 
         public double RectangleOpacity {
             get => (double)GetValue(OpacityProperty);

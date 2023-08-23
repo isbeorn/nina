@@ -27,14 +27,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
     public class DomeChooserVM : DeviceChooserVM<IDome> {
         public DomeChooserVM(IProfileService profileService,
-                             IDeviceDispatcher deviceDispatcher,
-                             IEquipmentProviders<IDome> equipmentProvicers) : base(profileService, deviceDispatcher, equipmentProvicers) {
+                             IEquipmentProviders<IDome> equipmentProvicers) : base(profileService, equipmentProvicers) {
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblDomeNoSource"]));

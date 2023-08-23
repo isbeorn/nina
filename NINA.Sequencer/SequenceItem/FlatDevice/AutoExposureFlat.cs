@@ -34,6 +34,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [ExportMetadata("Icon", "FlatWizardSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_FlatDevice")]
     [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class AutoExposureFlat : SequentialContainer, IImmutableContainer {
         private IProfileService profileService;

@@ -36,9 +36,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         public GuiderChooserVM(IProfileService profileService,
                                ICameraMediator cameraMediator,
                                ITelescopeMediator telescopeMediator,
-                               IDeviceDispatcher deviceDispatcher,
                                IWindowServiceFactory windowServiceFactory,
-                               IEquipmentProviders<IGuider> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                               IEquipmentProviders<IGuider> equipmentProviders) : base(profileService, equipmentProviders) {
             this.cameraMediator = cameraMediator;
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
@@ -51,7 +50,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 var devices = new List<IDevice>();
                 devices.Add(new DummyGuider(profileService));
                 devices.Add(new PHD2Guider(profileService, windowServiceFactory));
-                //devices.Add(new SynchronizedPHD2Guider(profileService, cameraMediator, windowServiceFactory)); Non-Functional with current sequencer
                 devices.Add(new DirectGuider(profileService, telescopeMediator));
                 devices.Add(new MetaGuideGuider(profileService, windowServiceFactory));
                 devices.Add(new SkyGuardGuider(profileService, windowServiceFactory));

@@ -24,7 +24,6 @@ using NINA.Core.Locale;
 using NINA.Equipment.Utility;
 using NINA.Equipment.Equipment.MySwitch.Eagle;
 using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment.MySwitch.PegasusAstro;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MySwitch.Eagle4;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -33,14 +32,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
     public class SwitchChooserVM : DeviceChooserVM<ISwitchHub> {
         public SwitchChooserVM(IProfileService profileService,
-                               IDeviceDispatcher deviceDispatcher,
-                               IEquipmentProviders<ISwitchHub> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                               IEquipmentProviders<ISwitchHub> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {                
-                    var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     var devices = new List<IDevice>();
 
                     devices.Add(new DummyDevice(Loc.Instance["LblNoSwitch"]));
@@ -68,9 +66,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     /* PrimaLuceLab EAGLE */
                     devices.Add(new Eagle(profileService));
                     devices.Add(new Eagle4(profileService));
-
-                    /* Pegasus Astro Ultimate Powerbox V2 */
-                    devices.Add(new UltimatePowerBoxV2(profileService));
 
                     DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id);
 

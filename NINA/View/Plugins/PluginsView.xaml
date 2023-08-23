@@ -202,6 +202,7 @@
                                                                     Height="25"
                                                                     Margin="2.5"
                                                                     VerticalAlignment="Center"
+                                                                    IsEnabled="False"
                                                                     IsChecked="{Binding Path=Value, Mode=OneWay}"
                                                                     Style="{StaticResource CheckmarkCheckbox}"
                                                                     Visibility="{Binding Value, Converter={StaticResource InverseBoolToVisibilityConverter}}" />

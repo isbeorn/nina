@@ -40,7 +40,10 @@
                     RenderTransformOrigin="0.5,0.5"
                     Source="{Binding PixelPeepImage}">
                     <Image.RenderTransform>
-                        <RotateTransform Angle="{Binding ImageRotation}" />
+                        <TransformGroup>
+                            <RotateTransform Angle="{Binding ImageRotation}" />
+                            <ScaleTransform ScaleX="{Binding ImageFlipValue}" />
+                        </TransformGroup>
                     </Image.RenderTransform>
                 </Image>
 
@@ -108,6 +111,7 @@
 
         <wpfbase:ImageView
             Image="{Binding Image}"
+            ImageFlip="{Binding ImageFlipValue}"
             ImageRotation="{Binding ImageRotation}"
             RightMouseButtonDownCommand="{Binding PixelPeepStartCommand}"
             RightMouseButtonMoveCommand="{Binding PixelPeepMoveCommand}"
@@ -142,6 +146,44 @@
                             </Path.RenderTransform>
                         </Path>
                     </Button>
+                    <ToggleButton
+                        Grid.Column="1"
+                        Margin="2.5"
+                        IsChecked="{Binding ImageFlip}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblFlipImageTooltip}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="7"
+                                                    Data="{StaticResource FlipHorizontalSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="7"
+                                                    Data="{StaticResource FlipHorizontalSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
                     <ToggleButton
                         Grid.Column="1"
                         Margin="2.5"

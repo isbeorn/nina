@@ -13,11 +13,9 @@
 #endregion "copyright"
 
 using Microsoft.Extensions.DependencyInjection;
-using NINA.API.SGP;
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using NINA.Core.Interfaces;
-using NINA.Core.Interfaces.API.SGP;
 using NINA.Core.Interfaces.Utility;
 using NINA.Core.Model;
 using NINA.Core.MyMessageBox;
@@ -92,7 +90,6 @@ namespace NINA.Utility {
                 services.AddSingleton<IProfileService>(f => _profileService);
                 services.AddSingleton<IProfile>(f => f.GetService<ProfileService>().ActiveProfile);
 
-                services.AddSingleton<IDeviceDispatcher, DeviceDispatcher>();
                 services.AddSingleton<IApplicationVM, ApplicationVM>();
 
                 services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
@@ -325,8 +322,6 @@ namespace NINA.Utility {
                     f.GetService<IImageSaveMediator>()));
 
                 services.AddSingleton<IImageSaveController, ImageSaveController>();
-                services.AddSingleton<ISGPServiceHost, SGPServiceHost>();
-                services.AddSingleton<ISGPServiceBackend, SGPServiceBackend>();
                 services.AddSingleton<ISequenceNavigationVM, SequenceNavigationVM>();
                 services.AddTransient<IMyMessageBoxVM, MyMessageBoxVM>();
                 services.AddSingleton<IPlateSolverFactory, PlateSolverFactoryProxy>();

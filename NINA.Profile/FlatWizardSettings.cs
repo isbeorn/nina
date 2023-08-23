@@ -90,6 +90,18 @@ namespace NINA.Profile {
             }
         }
 
+        private bool openForDarkFlats;
+
+        [DataMember]
+        public bool OpenForDarkFlats {
+            get => openForDarkFlats;
+            set {
+                if (openForDarkFlats == value) return;
+                openForDarkFlats = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AltitudeSite altitudeSite;
 
         [DataMember]

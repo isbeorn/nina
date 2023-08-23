@@ -35,10 +35,8 @@ namespace NINA.Equipment.Utility {
 
     public class ASCOMInteraction {
         private readonly IProfileService profileService;
-        private readonly IDeviceDispatcher deviceDispatcher;
 
-        public ASCOMInteraction(IDeviceDispatcher deviceDispatcher, IProfileService profileService) {
-            this.deviceDispatcher = deviceDispatcher;
+        public ASCOMInteraction( IProfileService profileService) {
             this.profileService = profileService;
         }
 
@@ -46,7 +44,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<ICamera>();
             foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Camera)) {
                 try {
-                    AscomCamera cam = new AscomCamera(device.ProgID, device.Name + " (ASCOM)", profileService, exposureDataFactory, deviceDispatcher);
+                    AscomCamera cam = new AscomCamera(device.ProgID, device.Name + " (ASCOM)", profileService, exposureDataFactory);
                     Logger.Trace(string.Format("Adding {0}", cam.Name));
                     l.Add(cam);
                 } catch (Exception) {
@@ -60,7 +58,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<ITelescope>();
                 foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Telescope)) {
                     try {
-                        AscomTelescope telescope = new AscomTelescope(device.ProgID, device.Name, profileService, deviceDispatcher);
+                        AscomTelescope telescope = new AscomTelescope(device.ProgID, device.Name, profileService);
                         l.Add(telescope);
                     } catch (Exception) {
                         //only add telescopes which are supported. e.g. x86 drivers will not work in x64
@@ -73,7 +71,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<IFilterWheel>();
                 foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.FilterWheel)) {
                     try {
-                        AscomFilterWheel fw = new AscomFilterWheel(device.ProgID, device.Name, profileService, deviceDispatcher);
+                        AscomFilterWheel fw = new AscomFilterWheel(device.ProgID, device.Name, profileService);
                         l.Add(fw);
                     } catch (Exception) {
                         //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
@@ -86,7 +84,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<IRotator>();
                 foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Rotator)) {
                     try {
-                        AscomRotator rotator = new AscomRotator(device.ProgID, device.Name, deviceDispatcher);
+                        AscomRotator rotator = new AscomRotator(device.ProgID, device.Name);
                         l.Add(rotator);
                     } catch (Exception) {
                         //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
@@ -99,7 +97,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<ISafetyMonitor>();
                 foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.SafetyMonitor)) {
                     try {
-                        AscomSafetyMonitor safetyMonitor = new AscomSafetyMonitor(device.ProgID, device.Name, deviceDispatcher);
+                        AscomSafetyMonitor safetyMonitor = new AscomSafetyMonitor(device.ProgID, device.Name);
                         l.Add(safetyMonitor);
                     } catch (Exception) {
                         //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
@@ -112,7 +110,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<IFocuser>();
                 foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Focuser)) {
                     try {
-                        AscomFocuser focuser = new AscomFocuser(device.ProgID, device.Name, deviceDispatcher);
+                        AscomFocuser focuser = new AscomFocuser(device.ProgID, device.Name);
                         l.Add(focuser);
                     } catch (Exception) {
                         //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
@@ -125,7 +123,7 @@ namespace NINA.Equipment.Utility {
             var l = new List<ISwitchHub>();
             foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Switch)) {
                 try {
-                    AscomSwitchHub ascomSwitch = new AscomSwitchHub(device.ProgID, device.Name, deviceDispatcher);
+                    AscomSwitchHub ascomSwitch = new AscomSwitchHub(device.ProgID, device.Name);
                     l.Add(ascomSwitch);
                 } catch (Exception) {
                     //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
@@ -139,7 +137,7 @@ namespace NINA.Equipment.Utility {
 
             foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.ObservingConditions)) {
                 try {
-                    AscomObservingConditions obsdev = new AscomObservingConditions(device.ProgID, device.Name, deviceDispatcher);
+                    AscomObservingConditions obsdev = new AscomObservingConditions(device.ProgID, device.Name);
                     l.Add(obsdev);
                 } catch (Exception) {
                 }
@@ -152,7 +150,7 @@ namespace NINA.Equipment.Utility {
 
             foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.Dome)) {
                 try {
-                    AscomDome ascomDome = new AscomDome(device.ProgID, device.Name, deviceDispatcher);
+                    AscomDome ascomDome = new AscomDome(device.ProgID, device.Name);
                     l.Add(ascomDome);
                 } catch (Exception) {
                 }
@@ -165,7 +163,7 @@ namespace NINA.Equipment.Utility {
 
             foreach (ASCOM.Com.ASCOMRegistration device in ASCOM.Com.Profile.GetDrivers(ASCOM.Common.DeviceTypes.CoverCalibrator)) {
                 try {
-                    AscomCoverCalibrator ascomCoverCalibrator = new AscomCoverCalibrator(device.ProgID, device.Name, deviceDispatcher);
+                    AscomCoverCalibrator ascomCoverCalibrator = new AscomCoverCalibrator(device.ProgID, device.Name);
                     l.Add(ascomCoverCalibrator);
                 } catch (Exception) {
                 }

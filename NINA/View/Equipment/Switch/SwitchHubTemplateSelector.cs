@@ -13,7 +13,6 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
-using NINA.Equipment.Equipment.MySwitch.PegasusAstro;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +22,6 @@ namespace NINA.View.Equipment.Switch {
     internal class SwitchHubTemplateSelector : DataTemplateSelector {
         public DataTemplate Generic { get; set; }
         public DataTemplate Eagle { get; set; }
-        public DataTemplate UltimatePowerBoxV2 { get; set; }
         public DataTemplate FailedToLoadTemplate { get; set; }
         public string Postfix { get; set; }
 
@@ -31,9 +29,6 @@ namespace NINA.View.Equipment.Switch {
             switch (item) {
                 case Eagle _:
                     return Eagle;
-
-                case UltimatePowerBoxV2 _:
-                    return UltimatePowerBoxV2;
 
                 default:
                     var templateKey = item?.GetType().FullName + Postfix;

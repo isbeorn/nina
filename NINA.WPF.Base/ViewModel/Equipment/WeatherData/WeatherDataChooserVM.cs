@@ -29,14 +29,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
     public class WeatherDataChooserVM : DeviceChooserVM<IWeatherData> {
 
         public WeatherDataChooserVM(IProfileService profileService,
-                                    IDeviceDispatcher deviceDispatcher,
-                                    IEquipmentProviders<IWeatherData> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                                    IEquipmentProviders<IWeatherData> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblWeatherNoSource"]));
@@ -61,7 +60,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 }
 
                 devices.Add(new OpenWeatherMap(this.profileService));
-                devices.Add(new UltimatePowerboxV2(profileService));
                 devices.Add(new TheWeatherCompany(this.profileService));
                 devices.Add(new WeatherUnderground(this.profileService));
 

@@ -23,11 +23,7 @@ namespace NINA.Profile.Interfaces {
         string Id { get; set; }
         string Name { get; set; }
         string PortName { get; set; }
-        bool OpenForDarkFlats { get; set; }
         int SettleTime { get; set; }
-        bool OpenAtSequenceStart { get; set; }
-        bool CloseAtSequenceEnd { get; set; }
-        bool UseWizardTrainedValues { get; set; }
         ObserveAllCollection<TrainedFlatExposureSetting> TrainedFlatExposureSettings { get; set; }
         bool RemoveFlatExposureSetting(TrainedFlatExposureSetting setting);
         TrainedFlatExposureSetting GetTrainedFlatExposureSetting(short? filterPosition, BinningMode binning, int gain, int offset);

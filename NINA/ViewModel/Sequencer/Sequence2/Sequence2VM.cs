@@ -306,16 +306,33 @@ namespace NINA.ViewModel.Sequencer {
         private void LoadSequenceFromFile(string file) {
             try {
                 var json = File.ReadAllText(file);
-                var container = SequenceJsonConverter.Deserialize(json) as ISequenceRootContainer;
-                if (container != null) {
+                var container = SequenceJsonConverter.Deserialize(json);
+                if (container is ISequenceRootContainer root) {
                     SavePath = file;
-                    Sequencer.MainContainer = container;
+                    Sequencer.MainContainer = root;
                     Sequencer.MainContainer.Validate();
                     SavePath = file;
                     Sequencer.MainContainer.ClearHasChanged();
+                } else if (container != null) {
+                    // In case a template or target was selected to load, put it into a new sequence root container
+                    var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
+                    rootContainer.Name = Loc.Instance["LblAdvancedSequenceTitle"];
+                    rootContainer.Add(SequencerFactory.GetContainer<StartAreaContainer>());
+                    var targetAreaContainer = SequencerFactory.GetContainer<TargetAreaContainer>();
+                    targetAreaContainer.Add(container);
+                    rootContainer.Add(targetAreaContainer);
+                    rootContainer.Add(SequencerFactory.GetContainer<EndAreaContainer>());
+                    rootContainer.ClearHasChanged();
+
+                    // Save path will be empty, as the origin file is not a complete sequencer file
+                    SavePath = string.Empty;
+                    Sequencer.MainContainer = rootContainer;
+                    Sequencer.MainContainer.Validate();
+                    Sequencer.MainContainer.ClearHasChanged();
+
                 } else {
-                    Logger.Error("Unable to load sequence - Sequencer root element must be sequence root container!");
-                    Notification.ShowError(Loc.Instance["Lbl_Sequencer_RootElementMustBeRootContainer"]);
+                    Logger.Error("Unable to load sequence");
+                    Notification.ShowError(Loc.Instance["Lbl_Sequencer_UnableToDeserializeJSON"]);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -338,12 +355,11 @@ namespace NINA.ViewModel.Sequencer {
                 Sequencer.MainContainer.ClearHasChanged();
 
                 if (commandLineOptions.RunSequence) {
-                    Logger.Info("Starting sequence");
-                    _ = StartSequence(null);
+                    Logger.Info("Starting sequence from command line options");
+                    _ = StartSequenceCommand.ExecuteAsync(commandLineOptions.RunSequence);
                     applicationMediator.ChangeTab(ApplicationTab.IMAGING);
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex);
             }
         }
@@ -444,6 +460,10 @@ namespace NINA.ViewModel.Sequencer {
         private CancellationTokenSource cts;
 
         public async Task<bool> StartSequence(object arg) {
+            bool skipValidationPrompt = false;
+            if (arg != null && arg is bool b) {
+                skipValidationPrompt = b;
+            }
             cts?.Dispose();
             cts = new CancellationTokenSource();
             IsRunning = true;
@@ -458,7 +478,7 @@ namespace NINA.ViewModel.Sequencer {
                 Sequencer.MainContainer.Items[2].Status = SequenceEntityStatus.CREATED;
 
                 Logger.Info("Advanced Sequence started");
-                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), cts.Token);
+                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), cts.Token, skipValidationPrompt);
                 return true;
             } finally {
                 Logger.Info("Advanced Sequence finished");
@@ -475,7 +495,7 @@ namespace NINA.ViewModel.Sequencer {
         public IList<IDeepSkyObjectContainer> GetDeepSkyObjectContainerTemplates() {
             var emptyContainer = SequencerFactory.GetContainer<DeepSkyObjectContainer>();
             var templates = TemplateController.Templates.Where(x => x.Container is IDeepSkyObjectContainer).Select(y => y.Container as IDeepSkyObjectContainer).ToList();
-            
+
             var items = new List<IDeepSkyObjectContainer>();
             items.Add(emptyContainer);
             items.AddRange(templates);

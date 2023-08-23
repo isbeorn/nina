@@ -56,7 +56,7 @@ namespace NINA.Equipment.Interfaces {
 
         void Close();
 
-        bool put_ExpoTime(uint µsTime);
+        bool put_ExpoTime(uint usTime);
 
         bool Trigger(ushort v);
 

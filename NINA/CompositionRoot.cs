@@ -112,10 +112,6 @@ namespace NINA {
                 Debug.Print($"Time to create GlobalObjects {sw.Elapsed}");
 
                 sw = Stopwatch.StartNew();
-                var deviceDispatcher = serviceProvider.GetService<IDeviceDispatcher>();
-                Debug.Print($"Time to create DeviceDispatcher {sw.Elapsed}");
-
-                sw = Stopwatch.StartNew();
                 var mainWindowVM = new MainWindowVM {
                     AppVM = appvm,
                     ImageSaveController = imageSaveController,
@@ -135,7 +131,6 @@ namespace NINA {
                     ImageHistoryVM = imageHistoryVM,
                     PluginsVM = pluginsVM,
                     GlobalObjects = globalObjects,
-                    DeviceDispatcher = deviceDispatcher
                 };
                 Debug.Print($"Time to create MainWindowVM {sw.Elapsed}");
 

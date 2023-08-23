@@ -28,14 +28,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
     public class RotatorChooserVM : DeviceChooserVM<IRotator> {
         public RotatorChooserVM(IProfileService profileService,
-                                IDeviceDispatcher deviceDispatcher,
-                                IEquipmentProviders<IRotator> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                                IEquipmentProviders<IRotator> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoRotator"]));

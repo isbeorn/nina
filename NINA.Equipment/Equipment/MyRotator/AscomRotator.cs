@@ -21,13 +21,12 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using ASCOM.Common.DeviceInterfaces;
-using NINA.Equipment.ASCOMFacades;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
-    internal class AscomRotator : AscomDevice<Rotator, IRotatorFacade, RotatorFacadeProxy>, IRotator, IDisposable {
+    internal class AscomRotator : AscomDevice<Rotator>, IRotator, IDisposable {
 
-        public AscomRotator(string id, string name, IDeviceDispatcher deviceDispatcher) : base(id, name, deviceDispatcher, DeviceDispatcherType.Rotator) {
+        public AscomRotator(string id, string name) : base(id, name) {
         }
 
         public bool CanReverse => GetProperty(nameof(Rotator.CanReverse), false);
@@ -125,7 +124,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         protected override Rotator GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Rotator(id));
+            return new Rotator(id);
         }
     }
 }

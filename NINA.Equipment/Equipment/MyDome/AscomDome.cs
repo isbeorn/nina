@@ -17,7 +17,6 @@ using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Threading;
@@ -80,9 +79,9 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
     }
 
-    internal class AscomDome : AscomDevice<Dome, IDomeFacade, DomeFacadeProxy>, IDome, IDisposable {
+    internal class AscomDome : AscomDevice<Dome>, IDome, IDisposable {
 
-        public AscomDome(string domeId, string domeName, IDeviceDispatcher deviceDispatcher) : base(domeId, domeName, deviceDispatcher, DeviceDispatcherType.Dome) {
+        public AscomDome(string domeId, string domeName) : base(domeId, domeName) {
         }
 
         public bool DriverCanFollow => GetProperty(nameof(Dome.CanSlave), false);
@@ -388,7 +387,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         protected override Dome GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Dome(id));
+            return new Dome(id);
         }
     }
 }

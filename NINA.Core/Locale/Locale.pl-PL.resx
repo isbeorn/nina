@@ -1476,7 +1476,7 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
     <value>Otwórz</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Zdejmij osłonę dla plików flat oraz dark flat</value>
+    <value>Zdejmij pokrywę dla klatek Dark Flat</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ustaw</value>
@@ -6668,9 +6668,33 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
     <value>Błędny</value>
   </data>
   <data name="LblFlatDeviceCoverError" xml:space="preserve">
-    <value>{0} reports that the cover is in an errored state</value>
+    <value>{0} zgłasza, że pokrywa ma błąd</value>
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
     <value>Nieobecny</value>
+  </data>
+  <data name="LblFlipImageTooltip" xml:space="preserve">
+    <value>Odbij obraz w poziomie</value>
+  </data>
+  <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
+    <value>Typ czujnika ASCOM jest obecnie skonfigurowany do zwracania obrazów, co nie jest obsługiwane. Dostosuj ustawienia sterownika, aby zamiast tego zwracać debajeryzację obrazów!</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
+    <value>Synchronizacja lokalizacji</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
+    <value>Wskazówka</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
+    <value>Synchronizacja z aplikacją</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
+    <value>Synchronizuj z teleskopem</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
+    <value>Brak synchronizacji</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
+    <value>Podczas podłączania teleskopu określa się zachowanie w przypadku, gdy pozycja montażowa i pozycja aplikacji są różne.</value>
   </data>
 </root>

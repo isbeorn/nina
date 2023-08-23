@@ -210,7 +210,6 @@
                         </Border>
                         <ItemsControl
                             Margin="0,5,0,0"
-
                             ItemTemplateSelector="{StaticResource SwitchTemplateSelector}"
                             ItemsSource="{Binding Switches}" />
                         <StackPanel
@@ -313,10 +312,7 @@
                                     Style="{StaticResource CheckmarkCheckbox}" />
                             </UniformGrid>
                         </Border>
-                        <ItemsControl
-                            Margin="0,5,0,0"
-
-                            ItemsSource="{Binding Switches}">
+                        <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding Switches}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,5,0,0">
@@ -411,8 +407,7 @@
                 <switch:SwitchHubTemplateSelector
                     x:Key="ContentSelector"
                     Eagle="{StaticResource Eagle}"
-                    Generic="{StaticResource Generic}"
-                    UltimatePowerBoxV2="{StaticResource Generic}" />
+                    Generic="{StaticResource Generic}" />
             </Grid.Resources>
 
             <ContentControl

@@ -75,9 +75,6 @@
                 <DataTemplate x:Key="Generic">
                     <switch:Generic />
                 </DataTemplate>
-                <DataTemplate x:Key="UltimatePowerBoxV2">
-                    <switch:PegasusAstroUltimatePowerboxV2 />
-                </DataTemplate>
                 <DataTemplate x:Key="Failed">
                     <TextBlock
                         Margin="5"
@@ -90,8 +87,7 @@
                     Eagle="{StaticResource Eagle}"
                     FailedToLoadTemplate="{StaticResource Failed}"
                     Generic="{StaticResource Generic}"
-                    Postfix="{x:Static wpfutil:DataTemplatePostfix.SwitchSettings}"
-                    UltimatePowerBoxV2="{StaticResource UltimatePowerBoxV2}" />
+                    Postfix="{x:Static wpfutil:DataTemplatePostfix.SwitchSettings}" />
             </Grid.Resources>
             <ContentControl
                 Content="{Binding}"

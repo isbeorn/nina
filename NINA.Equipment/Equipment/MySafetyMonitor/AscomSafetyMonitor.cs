@@ -14,14 +14,13 @@
 
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 
 namespace NINA.Equipment.Equipment.MySafetyMonitor {
 
-    internal class AscomSafetyMonitor : AscomDevice<SafetyMonitor, ISafetyMonitorFacade, SafetyMonitorFacadeProxy>, ISafetyMonitor {
+    internal class AscomSafetyMonitor : AscomDevice<SafetyMonitor>, ISafetyMonitor {
 
-        public AscomSafetyMonitor(string id, string name, IDeviceDispatcher deviceDispatcher) : base(id, name, deviceDispatcher, DeviceDispatcherType.SafetyMonitor) {
+        public AscomSafetyMonitor(string id, string name) : base(id, name) {
         }
 
         public bool IsSafe => GetProperty(nameof(SafetyMonitor.IsSafe), false);
@@ -29,7 +28,7 @@ namespace NINA.Equipment.Equipment.MySafetyMonitor {
         protected override string ConnectionLostMessage => Loc.Instance["LblSafetyMonitorConnectionLost"];
 
         protected override SafetyMonitor GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new SafetyMonitor(id));
+            return new SafetyMonitor(id);
         }
     }
 }

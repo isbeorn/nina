@@ -26,6 +26,10 @@ using NINA.WPF.Base.Utility.AutoFocus;
 namespace NINA.WPF.Base.Model {
 
     public class ImageHistoryPoint : BaseINPC {
+        public ImageHistoryPoint(int id, string imageType) {
+            Id = id;
+            Type = imageType;
+        }
 
         public ImageHistoryPoint(int id, IImageStatistics statistics, string imageType) {
             Id = id;
@@ -37,6 +41,21 @@ namespace NINA.WPF.Base.Model {
                 MAD = statistics.MedianAbsoluteDeviation;
             }
             Type = imageType;
+        }
+
+        public void PopulateStatistics(IImageStatistics statistics) {
+            Statistics = statistics;
+            if (statistics != null) {
+                Median = statistics.Median;
+                Mean = statistics.Mean;
+                StDev = statistics.StDev;
+                MAD = statistics.MedianAbsoluteDeviation;
+            }
+            RaisePropertyChanged(nameof(Median));
+            RaisePropertyChanged(nameof(Mean));
+            RaisePropertyChanged(nameof(StDev));
+            RaisePropertyChanged(nameof(MAD));
+            RaisePropertyChanged(nameof(Statistics));
         }
 
         public void PopulateAFPoint(AutoFocusReport report) {

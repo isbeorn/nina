@@ -26,7 +26,9 @@ namespace NINA.Core.Model {
         private double ra;
         private double dec;
         private double total;
- 
+        private double peakRA = 0;
+        private double peakDec = 0;
+
         public double RA {
             get => ra;
 
@@ -62,12 +64,30 @@ namespace NINA.Core.Model {
         public string DecText => string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], Dec.ToString("0.00"), (Dec * Scale).ToString("0.00"));
 
         public string TotalText => string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], Total.ToString("0.00"), (Total * Scale).ToString("0.00"));
+        public string PeakRAText => string.Format(Locale.Loc.Instance["LblPHD2PeakRA"], PeakRA.ToString("0.00"), (PeakRA * Scale).ToString("0.00"));
+        public string PeakDecText => string.Format(Locale.Loc.Instance["LblPHD2PeakDec"], PeakDec.ToString("0.00"), (PeakDec * Scale).ToString("0.00"));
 
         public double Scale { get; private set; } = 1;
 
-        public double PeakRA { get; set; } = 0;
+        public double PeakRA { 
+            get => peakRA; 
+            set {
+                peakRA = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(PeakRAText));
+            }
+        }
 
-        public double PeakDec { get; set; } = 0;
+        public double PeakDec { 
+            get => peakDec; 
+            set {
+                peakDec = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(PeakDecText));
+            }
+        }
+
+        public int DataPoints { get => datapoints; } 
 
         public void AddDataPoint(double raDistance, double decDistance) {
             datapoints++;

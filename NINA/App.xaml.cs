@@ -194,7 +194,6 @@ namespace NINA {
 
         protected override void OnExit(ExitEventArgs e) {
             if (e?.ApplicationExitCode != -1) {
-                _mainWindowViewModel.DeviceDispatcher?.Dispose();
                 this.RefreshJumpList(_profileService);
             }
         }

@@ -32,6 +32,8 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         int GetNextImageId();
 
         void Add(int id, IImageStatistics statistics, string imageType);
+        void Add(int id, string imageType);
+        void PopulateStatistics(int id, IImageStatistics statistics);
 
         void AppendImageProperties(ImageSavedEventArgs imageSavedEventArgs);
 

@@ -38,6 +38,7 @@ using NINA.Astrometry;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
+using NINA.Image.Interfaces;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -53,6 +54,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private IImageSaveMediator imageSaveMediator;
         private IImageHistoryVM imageHistoryVM;
         private IProfileService profileService;
+        Task imageProcessingTask;
 
         [ImportingConstructor]
         public TakeSubframeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
@@ -215,44 +217,60 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 SubSambleRectangle = rect
             };
 
-            var imageParams = new PrepareImageParameters(null, false);
-            if (IsLightSequence()) {
-                imageParams = new PrepareImageParameters(true, true);
-            }
-
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
-            var imageData = await exposureData.ToImageData(progress, token);
-
-            var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);
-
-            if (dsoContainer != null) {
-                var target = dsoContainer.Target;
-                if (target != null) {
-                    imageData.MetaData.Target.Name = target.DeepSkyObject.NameAsAscii;
-                    imageData.MetaData.Target.Coordinates = target.InputCoordinates.Coordinates;
-                    imageData.MetaData.Target.PositionAngle = target.PositionAngle;
-                }
-            }
-
-            ISequenceContainer parent = Parent;
-            while (parent != null && !(parent is SequenceRootContainer)) {
-                parent = parent.Parent;
-            }
-            if (parent is SequenceRootContainer item) {
-                imageData.MetaData.Sequence.Title = item.SequenceTitle;
-            }
-
-            await imageSaveMediator.Enqueue(imageData, prepareTask, progress, token);
-
             if (IsLightSequence()) {
-                imageHistoryVM.Add(imageData.MetaData.Image.Id, await imageData.Statistics, ImageType);
+                imageHistoryVM.Add(exposureData.MetaData.Image.Id, ImageType);
             }
+
+            if (imageProcessingTask != null) {
+                await imageProcessingTask;
+            }
+            imageProcessingTask = ProcessImageData(dsoContainer, exposureData, progress, token);
 
             if (specificDSOContainer != null) {
                 specificDSOContainer.IncrementExposureCountForItemAndCurrentFilter(this, 1);
             }
             ExposureCount++;
+        }
+
+        private async Task ProcessImageData(IDeepSkyObjectContainer dsoContainer, IExposureData exposureData, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            try {
+                var imageParams = new PrepareImageParameters(null, false);
+                if (IsLightSequence()) {
+                    imageParams = new PrepareImageParameters(true, true);
+                }
+
+                var imageData = await exposureData.ToImageData(progress, token);
+
+                var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);
+
+                if (IsLightSequence()) {
+                    imageHistoryVM.PopulateStatistics(imageData.MetaData.Image.Id, await imageData.Statistics);
+                }
+
+                if (dsoContainer != null) {
+                    var target = dsoContainer.Target;
+                    if (target != null) {
+                        imageData.MetaData.Target.Name = target.DeepSkyObject.NameAsAscii;
+                        imageData.MetaData.Target.Coordinates = target.InputCoordinates.Coordinates;
+                        imageData.MetaData.Target.PositionAngle = target.PositionAngle;
+                    }
+                }
+
+                ISequenceContainer parent = Parent;
+                while (parent != null && !(parent is SequenceRootContainer)) {
+                    parent = parent.Parent;
+                }
+                if (parent is SequenceRootContainer item) {
+                    imageData.MetaData.Sequence.Title = item.SequenceTitle;
+                }
+
+                await imageSaveMediator.Enqueue(imageData, prepareTask, progress, token);
+
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private bool IsLightSequence() {

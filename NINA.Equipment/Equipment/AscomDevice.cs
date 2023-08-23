@@ -17,7 +17,6 @@ using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Collections;
@@ -33,21 +32,15 @@ namespace NINA.Equipment.Equipment {
     /// <summary>
     /// The unified class that handles the shared properties of all ASCOM devices like Connection, Generic Info and Setup
     /// </summary>
-    public abstract class AscomDevice<DeviceT, ProxyI, ProxyT> : BaseINPC, IDevice
-        where DeviceT : ASCOMDevice
-        where ProxyI : class, IAscomDeviceFacade<DeviceT>
-        where ProxyT : class, ProxyI, new() {
+    public abstract class AscomDevice<DeviceT> : BaseINPC, IDevice
+        where DeviceT : ASCOMDevice {
 
-        public AscomDevice(string id, string name, IDeviceDispatcher deviceDispatcher, DeviceDispatcherType deviceDispatcherType) {
+        public AscomDevice(string id, string name) {
             Id = id;
             Name = name;
-            DeviceDispatcher = deviceDispatcher;
-            DeviceDispatcherType = deviceDispatcherType;
         }
 
-        protected IDeviceDispatcher DeviceDispatcher { get; private set; }
-        protected DeviceDispatcherType DeviceDispatcherType { get; private set; }
-        protected ProxyI device;
+        protected DeviceT device;
         public string Category { get; } = "ASCOM";
         protected abstract string ConnectionLostMessage { get; }
 
@@ -224,8 +217,7 @@ namespace NINA.Equipment.Equipment {
 
                     Logger.Trace($"{Name} - Creating instance for {Id}");
                     var concreteDevice = GetInstance(Id);
-                    var proxy = new ProxyT() { Proxied = concreteDevice };
-                    device = DeviceDispatchInterceptor<ProxyI>.Wrap(proxy, DeviceDispatcher, DeviceDispatcherType);
+                    device = concreteDevice;
 
                     Connected = true;
                     if (Connected) {
@@ -250,8 +242,7 @@ namespace NINA.Equipment.Equipment {
                     if (device == null) {
                         Logger.Trace($"{Name} - Creating instance for {Id}");
                         var concreteDevice = GetInstance(Id);
-                        var proxy = new ProxyT() { Proxied = concreteDevice };
-                        device = DeviceDispatchInterceptor<ProxyI>.Wrap(proxy, DeviceDispatcher, DeviceDispatcherType);
+                        device = concreteDevice;
                         dispose = true;
                     }
                     Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
@@ -434,7 +425,7 @@ namespace NINA.Equipment.Equipment {
             public bool IsImplemented { get; set; }
             public object LastValue { get; set; }
 
-            public object GetValue(ProxyI device) {
+            public object GetValue(DeviceT device) {
                 var value = info.GetValue(device);
 
                 LastValue = value;
@@ -442,7 +433,7 @@ namespace NINA.Equipment.Equipment {
                 return value;
             }
 
-            public void SetValue(ProxyI device, object value) {
+            public void SetValue(DeviceT device, object value) {
                 info.SetValue(device, value);
             }
         }

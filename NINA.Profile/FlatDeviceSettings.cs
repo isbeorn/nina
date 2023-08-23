@@ -96,54 +96,6 @@ namespace NINA.Profile {
             }
         }
 
-        private bool openAtSequenceStart;
-
-        [DataMember]
-        public bool OpenAtSequenceStart {
-            get => openAtSequenceStart;
-            set {
-                if (openAtSequenceStart == value) return;
-                openAtSequenceStart = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool closeAtSequenceEnd;
-
-        [DataMember]
-        public bool CloseAtSequenceEnd {
-            get => closeAtSequenceEnd;
-            set {
-                if (closeAtSequenceEnd == value) return;
-                closeAtSequenceEnd = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool openForDarkFlats;
-
-        [DataMember]
-        public bool OpenForDarkFlats {
-            get => openForDarkFlats;
-            set {
-                if (openForDarkFlats == value) return;
-                openForDarkFlats = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool useWizardTrainedValues;
-
-        [DataMember]
-        public bool UseWizardTrainedValues {
-            get => useWizardTrainedValues;
-            set {
-                if (useWizardTrainedValues == value) return;
-                useWizardTrainedValues = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private int settleTime;
 
         [DataMember]

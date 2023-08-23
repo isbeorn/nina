@@ -28,6 +28,8 @@ namespace NINA.Equipment.Interfaces.ViewModel {
 
         Guid StartRMSRecording();
 
+        RMS GetRMSRecording(Guid handle);
+
         Task<bool> StartGuiding(bool forceCalibration, IProgress<ApplicationStatus> progress, CancellationToken token);
 
         Task<bool> StopGuiding(CancellationToken token);

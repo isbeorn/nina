@@ -36,6 +36,10 @@ namespace NINA.WPF.Base.Mediator {
             return handler.StartRMSRecording();
         }
 
+        public RMS GetRMSRecording(Guid handle) {
+            return handler.GetRMSRecording(handle);
+        }
+
         public RMS StopRMSRecording(Guid handle) {
             return handler.StopRMSRecording(handle);
         }

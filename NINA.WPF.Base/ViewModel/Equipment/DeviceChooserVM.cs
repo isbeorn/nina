@@ -28,17 +28,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
 
         public DeviceChooserVM(
                 IProfileService profileService,
-                IDeviceDispatcher deviceDispatcher,
                 IEquipmentProviders<T> equipmentProviders) : base(profileService) {
             this.profileService = profileService;
-            this.deviceDispatcher = deviceDispatcher;
             this.equipmentProviders = equipmentProviders;
             this.Devices = new List<IDevice>();
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
         }
 
         protected SemaphoreSlim lockObj = new SemaphoreSlim(1,1);
-        protected readonly IDeviceDispatcher deviceDispatcher;
         protected readonly IEquipmentProviders<T> equipmentProviders;
 
         private IList<IDevice> devices;

@@ -78,7 +78,7 @@ namespace NINA.ViewModel {
                 var version = ASCOMInteraction.GetPlatformVersion();
                 Logger.Info($"ASCOM Platform {version} installed");
                 var recommendedVersion = new Version("6.6.1.3673");
-                if (version < recommendedVersion) {                 
+                if (version < recommendedVersion) {
                     Logger.Error($"Outdated ASCOM Platform detected. Current: {version} - Minimum Required: {recommendedVersion}");
                     Notification.ShowWarning(Loc.Instance["LblASCOMPlatformOutdated"]);
                 }
@@ -89,8 +89,8 @@ namespace NINA.ViewModel {
 
         [RelayCommand]
         private void CheckWindowsVersion() {
-            // Minimum support Windows version is (curently) Windows 8 (6.2)
-            var minimumVersion = new Version(6, 2);
+            // Minimum support Windows version is (curently) Windows 10 1507
+            var minimumVersion = new Version(10, 0, 10240);
             string friendlyName = "Windows";
 
             if (Environment.OSVersion.Version < minimumVersion) {
@@ -108,7 +108,7 @@ namespace NINA.ViewModel {
                 }
             }
         }
-                
+
         public bool Collapsed {
             get => Properties.Settings.Default.CollapsedSidebar;
             set {
@@ -120,7 +120,7 @@ namespace NINA.ViewModel {
 
         [RelayCommand]
         private void CheckEphemerisExists(object o) {
-            if(!File.Exists(NOVAS.EphemerisLocation)) {
+            if (!File.Exists(NOVAS.EphemerisLocation)) {
                 Notification.ShowError(Loc.Instance["LblEphemerisNotFound"]);
             }
         }
@@ -128,7 +128,7 @@ namespace NINA.ViewModel {
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
             OnPropertyChanged(nameof(ActiveProfile));
         }
-        
+
         [RelayCommand]
         private void OpenManual() {
             System.Diagnostics.Process.Start(new ProcessStartInfo(CoreUtil.DocumentationPage) { UseShellExecute = true });
@@ -160,7 +160,7 @@ namespace NINA.ViewModel {
 
         [ObservableProperty]
         private int tabIndex;
-        
+
 
         [RelayCommand]
         private static void MaximizeWindow() {
@@ -198,7 +198,7 @@ namespace NINA.ViewModel {
         }
 
         private void SubscribeSystemEvents() {
-            try { 
+            try {
                 Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
                 Microsoft.Win32.SystemEvents.SessionEnding += SystemEvents_SessionEnding;
             } catch { }
@@ -208,7 +208,7 @@ namespace NINA.ViewModel {
             try {
                 Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
                 Microsoft.Win32.SystemEvents.SessionEnding -= SystemEvents_SessionEnding;
-            } catch { }            
+            } catch { }
         }
 
         private void SystemEvents_SessionEnding(object sender, Microsoft.Win32.SessionEndingEventArgs e) {
@@ -223,7 +223,7 @@ namespace NINA.ViewModel {
         }
 
         private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e) {
-            switch(e.Mode) {
+            switch (e.Mode) {
                 case Microsoft.Win32.PowerModes.Resume:
                     Logger.Info("The operating system is about to resume from a suspended state.");
                     break;
@@ -295,6 +295,6 @@ namespace NINA.ViewModel {
 
         private readonly ProjectVersion projectVersion;
 
-        
+
     }
 }

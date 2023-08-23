@@ -17,7 +17,6 @@ using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Threading;
@@ -25,12 +24,12 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyFocuser {
 
-    internal class AscomFocuser : AscomDevice<Focuser, IFocuserFacade, FocuserFacadeProxy>, IFocuser, IDisposable {
+    internal class AscomFocuser : AscomDevice<Focuser>, IFocuser, IDisposable {
 
-        public AscomFocuser(string focuser, string name, IDeviceDispatcher deviceDispatcher) : base(focuser, name, deviceDispatcher, DeviceDispatcherType.Focuser) {
+        public AscomFocuser(string focuser, string name) : base(focuser, name) {
         }
 
-        public IFocuserFacade Device => device;
+        public Focuser Device => device;
 
         public bool IsMoving => GetProperty(nameof(Focuser.IsMoving), false);
 
@@ -178,7 +177,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         }
 
         protected override Focuser GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Focuser(id));
+            return new Focuser(id);
         }
     }
 }

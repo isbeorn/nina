@@ -271,20 +271,6 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
                             Columns="2">
-                            <TextBlock Text="{ns:Loc LblFlatDeviceOpenForDarkFlats}" />
-                            <CheckBox
-                                Height="25"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Left"
-                                IsChecked="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, Mode=TwoWay}"
-                                IsEnabled="{Binding FlatDeviceInfo.Connected}" />
-                        </UniformGrid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Top"
-                            Columns="2">
                             <TextBlock Text="{ns:Loc LblFlatDeviceSettleTime}" />
 
                             <ninactrl:UnitTextBox

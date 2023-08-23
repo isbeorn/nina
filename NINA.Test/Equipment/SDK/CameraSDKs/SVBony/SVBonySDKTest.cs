@@ -47,7 +47,7 @@ namespace NINA.Test.Equipment.SDK.CameraSDKs.SVBony {
             pinvoke.Verify(x => x.SVBOpenCamera(id), Times.Exactly(2)); // Should be one, but is two due to the offset problem workaround
             pinvoke.Verify(x => x.SVBSetCameraMode(id, SVB_CAMERA_MODE.SVB_MODE_TRIG_SOFT), Times.Once);
             SVB_CAMERA_PROPERTY dummy;
-            pinvoke.Verify(x => x.SVBGetCameraProperty(id, out dummy), Times.Once);
+            pinvoke.Verify(x => x.SVBGetCameraProperty(id, out dummy), Times.Exactly(2));
             pinvoke.Verify(x => x.SVBStartVideoCapture(id), Times.Exactly(2));
         }
 
@@ -192,21 +192,6 @@ namespace NINA.Test.Equipment.SDK.CameraSDKs.SVBony {
         }
 
         [Test]
-        public void StartExposure_UnSuccessful_TriggerException_ThrowException() {
-            var pinvoke = new Mock<ISVBonyPInvokeProxy>();
-            pinvoke.Setup(x => x.SVBSendSoftTrigger(It.IsAny<int>())).Returns(SVB_ERROR_CODE.SVB_ERROR_GENERAL_ERROR);
-            var id = 12;
-
-            var sut = new SVBonySDK(id, pinvoke.Object);
-            sut.Connect();
-            Action act = () => sut.StartExposure(0.1, 80, 100);
-
-            act.Should().Throw<Exception>();
-
-            pinvoke.Verify(x => x.SVBSendSoftTrigger(id), Times.Once);
-        }
-
-        [Test]
         public async Task StartExposure_UnSuccessful_Cancelled_ReturnedNull() {
             var pinvoke = new Mock<ISVBonyPInvokeProxy>();
             var id = 12;
@@ -219,7 +204,6 @@ namespace NINA.Test.Equipment.SDK.CameraSDKs.SVBony {
             sut.StartExposure(10, 80, 100);            
             var data = await sut.GetExposure(10, 80, 100, cts.Token);
 
-            pinvoke.Verify(x => x.SVBGetVideoDataMono16(id, It.IsAny<ushort[]>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never);
             data.Should().BeNull();
         }
 

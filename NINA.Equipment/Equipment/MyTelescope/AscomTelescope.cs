@@ -29,16 +29,15 @@ using TelescopeAxes = NINA.Core.Enum.TelescopeAxes;
 using GuideDirections = NINA.Core.Enum.GuideDirections;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
-using NINA.Equipment.ASCOMFacades;
 
 namespace NINA.Equipment.Equipment.MyTelescope {
 
-    internal class AscomTelescope : AscomDevice<Telescope, ITelescopeFacade, TelescopeFacadeProxy>, ITelescope, IDisposable {
+    internal class AscomTelescope : AscomDevice<Telescope>, ITelescope, IDisposable {
         private static readonly TimeSpan MERIDIAN_FLIP_SLEW_RETRY_WAIT = TimeSpan.FromMinutes(1);
         private const int MERIDIAN_FLIP_SLEW_RETRY_ATTEMPTS = 20;
         private const double TRACKING_RATE_EPSILON = 0.000001;
 
-        public AscomTelescope(string telescopeId, string name, IProfileService profileService, IDeviceDispatcher deviceDispatcher) : base(telescopeId, name, deviceDispatcher, DeviceDispatcherType.Telescope) {
+        public AscomTelescope(string telescopeId, string name, IProfileService profileService) : base(telescopeId, name) {
             this.profileService = profileService;
         }
 
@@ -930,7 +929,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         protected override Telescope GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Telescope(id));
+            return new Telescope(id);
         }
 
         public PierSide DestinationSideOfPier(Coordinates coordinates) {

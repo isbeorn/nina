@@ -69,9 +69,10 @@ namespace NINA.Sequencer {
             }
         }
 
-        public Task Start(IProgress<ApplicationStatus> progress, CancellationToken token) {
+
+        public Task Start(IProgress<ApplicationStatus> progress, CancellationToken token, bool skipIssuePrompt) {
             return Task.Run(async () => {
-                if (!PromptForIssues()) {
+                if (!skipIssuePrompt && !PromptForIssues()) {
                     return false;
                 }
                 try {
@@ -85,6 +86,10 @@ namespace NINA.Sequencer {
 
                 return true;
             });
+        }
+
+        public Task Start(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return Start(progress, token, false);
         }
 
         private bool PromptForIssues() {

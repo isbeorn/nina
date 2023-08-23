@@ -45,18 +45,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         public double TelescopeLongitude { get; private set; }
         public double TelescopeElevation { get; private set; }
 
-        public LatLongSyncMode Mode { get; set; }
+        public TelescopeLocationSyncDirection Mode { get; set; }
 
         private void SyncNone(object obj) {
-            Mode = LatLongSyncMode.NONE;
+            Mode = TelescopeLocationSyncDirection.NOSYNC;
         }
 
         private void SyncNINA(object obj) {
-            Mode = LatLongSyncMode.NINA;
+            Mode = TelescopeLocationSyncDirection.TOAPPLICATION;
         }
 
         private void SyncTelescope(object obj) {
-            Mode = LatLongSyncMode.TELESCOPE;
+            Mode = TelescopeLocationSyncDirection.TOTELESCOPE;
         }
 
         public ICommand SyncTelescopeCommand { get; set; }

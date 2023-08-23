@@ -30,14 +30,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
         public FocuserChooserVM(
                 IProfileService profileService, 
-                IDeviceDispatcher deviceDispatcher,
-                IEquipmentProviders<IFocuser> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                IEquipmentProviders<IFocuser> equipmentProviders) : base(profileService, equipmentProviders) {
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
                 devices.Add(new DummyDevice(Loc.Instance["LblNoFocuser"]));
 
@@ -51,8 +50,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         Logger.Error(ex);
                     }
                 }
-
-                devices.Add(new UltimatePowerboxV2(profileService));
 
                 try {
                     devices.AddRange(ascomInteraction.GetFocusers());

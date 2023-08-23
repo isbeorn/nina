@@ -105,11 +105,7 @@ namespace NINA.ViewModel {
         }
 
         private void Update(object o) {
-            ProcessStartInfo Info = new ProcessStartInfo();
-            Info.WindowStyle = ProcessWindowStyle.Hidden;
-            Info.CreateNoWindow = true;
-            Info.FileName = Path.Combine(setupLocation, "NINASetupBundle.exe");
-            Process.Start(Info);
+            InvokeProcess.CreateProcess(Path.Combine(setupLocation, "NINASetupBundle.exe"));
             System.Windows.Application.Current.Shutdown();
         }
 

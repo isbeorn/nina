@@ -532,7 +532,8 @@ namespace NINA.ViewModel.FlatWizard {
 
                     SequenceContainer flatInstruction = GetInstructionForMode(filterSettings);
 
-                    if(filterCount < totalCount) { 
+                    // Keep the panel closed when there are more filters to take flats with or if the user specified to take dark flats and the setting to open for dark flats is off
+                    if((filterCount < totalCount) || (!profileService.ActiveProfile.FlatWizardSettings.OpenForDarkFlats && DarkFlatCount > 0)) { 
                         if (flatInstruction is AutoExposureFlat aef1) {
                             aef1.KeepPanelClosed = true;
                         }
@@ -592,7 +593,7 @@ namespace NINA.ViewModel.FlatWizard {
             if ((exposureTimes.Count > 0) && DarkFlatCount > 0) {
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblPreparingDarkFlatSequence"], Source = Title });
                 if (flatDeviceInfo?.Connected == true) { await flatDeviceMediator.ToggleLight(false, null, flatSequenceCts.Token); }
-                if ((flatDeviceInfo?.Connected & flatDeviceInfo?.SupportsOpenClose) == true && profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) { await flatDeviceMediator.OpenCover(null, flatSequenceCts.Token); }
+                if ((flatDeviceInfo?.Connected & flatDeviceInfo?.SupportsOpenClose) == true && profileService.ActiveProfile.FlatWizardSettings.OpenForDarkFlats) { await flatDeviceMediator.OpenCover(null, flatSequenceCts.Token); }
                 var dialogResult = messageBox.Show(Loc.Instance["LblCoverScopeMsgBox"],
                     Loc.Instance["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                 if (dialogResult == MessageBoxResult.OK) {

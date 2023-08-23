@@ -16,7 +16,6 @@ using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,9 +23,9 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
-    internal class AscomSwitchHub : AscomDevice<Switch, ISwitchFacade, SwitchFacadeProxy>, ISwitchHub, IDisposable {
+    internal class AscomSwitchHub : AscomDevice<Switch>, ISwitchHub, IDisposable {
 
-        public AscomSwitchHub(string id, string name, IDeviceDispatcher deviceDispatcher) : base(id, name, deviceDispatcher, DeviceDispatcherType.Switch) {
+        public AscomSwitchHub(string id, string name) : base(id, name) {
         }
 
         public ICollection<ISwitch> Switches { get; private set; } = new AsyncObservableCollection<ISwitch>();
@@ -73,7 +72,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
         }
 
         protected override Switch GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Switch(id));
+            return new Switch(id);
         }
     }
 }

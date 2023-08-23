@@ -1475,7 +1475,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Abrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Abrir la tapa para tomar darkflats con el asistente de flats</value>
+    <value>Abrir la tapa para tomar dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fijar</value>
@@ -6672,5 +6672,29 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
     <value>No presente</value>
+  </data>
+  <data name="LblFlipImageTooltip" xml:space="preserve">
+    <value>Invierte la imagen horizontalmente</value>
+  </data>
+  <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
+    <value>El tipo de sensor ASCOM está configurado para devolver imágenes ya debayerizadas, lo que no es compatible. ¡Por favor ajuste la configuración del controlador para devolver imágenes bayerizadas en su lugar!</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
+    <value>Sincronizar Localización</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
+    <value>Sincronizar con la aplicación</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
+    <value>Sincronizar con el telescopio</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
+    <value>Sin sincronización</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
+    <value>Esto define cómo se comportará el telescopio cuando la ubicación de la montura y la de la aplicación sean diferentes.</value>
   </data>
 </root>

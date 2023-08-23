@@ -1477,7 +1477,7 @@ Když je tato aktivace deaktivována, aplikace pouze přeskočí Start expozice 
     <value>Otevřít</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Otevřít kryt pro dark flats v průvodci flat</value>
+    <value>Otevřít kryt pro dark flaty</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Nastavit</value>
@@ -6677,5 +6677,29 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
     <value>Nepřítomen</value>
+  </data>
+  <data name="LblFlipImageTooltip" xml:space="preserve">
+    <value>Převrátit obrázek horizontálně</value>
+  </data>
+  <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
+    <value>Typ snímače ASCOM je v současné době nakonfigurován tak, aby vracel již debayerované snímky, což není podporováno. Upravte prosím nastavení ovladače tak, aby místo toho vracel bayered snímky!</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
+    <value>Synchronizace polohy</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
+    <value>Pokyn</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
+    <value>Synchronizovat do aplikace</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
+    <value>Synchronizovat do dalekohledu</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
+    <value>Bez synch</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
+    <value>Při připojení dalekohledu se definuje chování, jak postupovat v případě, že se poloha montáže a poloha aplikace liší.</value>
   </data>
 </root>

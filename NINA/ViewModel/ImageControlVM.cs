@@ -36,6 +36,7 @@ using NINA.Equipment.Equipment;
 using NINA.WPF.Base.ViewModel;
 using Accord.IO;
 using System.Runtime.InteropServices;
+using System.Drawing.Imaging;
 
 namespace NINA.ViewModel {
 
@@ -460,6 +461,23 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private bool imageFlip = false;
+        public bool ImageFlip {
+            get => imageFlip;
+            set {
+                imageFlip = value;
+                if (imageFlip) {
+                    ImageFlipValue = -1;
+                } else {
+                    ImageFlipValue = 1;
+                }
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ImageFlipValue));
+            }
+        }
+
+        public int ImageFlipValue { get; private set; } = 1;
 
         private BitmapSource _image;
 

@@ -545,15 +545,24 @@ namespace NINA.Sequencer.Container {
 
         public override string ToString() {
             lock (lockObj) {
-                var conditionString = string.Empty;
-                foreach (var condition in Conditions) {
+                var conditions = GetConditionsSnapshot();
+                var conditionString = conditions.Count == 0 ? "" : ", Conditions: ";
+                foreach (var condition in conditions) {
                     conditionString += condition.ToString() + ", ";
                 }
-                var triggerString = string.Empty;
-                foreach (var trigger in Triggers) {
+                var triggers = GetTriggersSnapshot();
+                var triggerString = triggers.Count == 0 ? "" : ", Triggers: ";
+                foreach (var trigger in GetTriggersSnapshot()) {
                     triggerString += trigger.ToString();
                 }
-                return $"Category: {Category}, Item: {this.GetType()}, Strategy: {Strategy.GetType().Name}, Items: {Items.Count}, Conditions: {conditionString} Triggers: {triggerString}";
+                var items = GetItemsSnapshot();
+                var itemsByStatus = items.GroupBy(x => x.Status);
+                var itemString = string.Empty;
+                foreach(var i in itemsByStatus) {
+                    itemString += $", Items[{i.Key}]: {i.Count()}";
+                }
+
+                return $"Category: {Category}, Container: {this.GetType()}, Strategy: {Strategy.GetType().Name}{itemString}{conditionString}{triggerString}";
             }
         }
 

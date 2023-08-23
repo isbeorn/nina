@@ -139,8 +139,8 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return sdk.put_ExpoAGain(value);
         }
 
-        public bool put_ExpoTime(uint µsTime) {
-            return sdk.put_ExpoTime(µsTime);
+        public bool put_ExpoTime(uint usTime) {
+            return sdk.put_ExpoTime(usTime);
         }
 
         public bool put_Option(ToupTekAlikeOption option, int v) {

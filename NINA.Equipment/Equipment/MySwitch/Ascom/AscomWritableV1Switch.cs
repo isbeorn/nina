@@ -20,14 +20,13 @@ using System.Threading.Tasks;
 using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Utility;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 
 namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
     internal class AscomWritableV1Switch : AscomV1Switch, IWritableSwitch {
 
-        public AscomWritableV1Switch(ISwitchFacade s, short id) : base(s, id) {
+        public AscomWritableV1Switch(Switch s, short id) : base(s, id) {
             Minimum = 0;
             Maximum = 1;
             StepSize = 1;

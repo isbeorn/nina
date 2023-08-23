@@ -48,8 +48,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                ISbigSdk sbigSdk,
                                IExposureDataFactory exposureDataFactory,
                                IImageDataFactory imageDataFactory,
-                               IDeviceDispatcher deviceDispatcher,
-                               IEquipmentProviders<ICamera> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                               IEquipmentProviders<ICamera> equipmentProviders) : base(profileService, equipmentProviders) {
             this.telescopeMediator = telescopeMediator;
             this.sbigSdk = sbigSdk;
             this.exposureDataFactory = exposureDataFactory;
@@ -59,7 +58,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
 
                 var devices = new List<IDevice>();
 

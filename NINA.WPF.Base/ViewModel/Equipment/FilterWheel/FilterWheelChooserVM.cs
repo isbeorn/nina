@@ -38,15 +38,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
         public FilterWheelChooserVM(ISbigSdk sbigSdk,
                                     IProfileService profileService,
-                                    IDeviceDispatcher deviceDispatcher,
-                                    IEquipmentProviders<IFilterWheel> equipmentProviders) : base(profileService, deviceDispatcher, equipmentProviders) {
+                                    IEquipmentProviders<IFilterWheel> equipmentProviders) : base(profileService, equipmentProviders) {
             this.sbigSdk = sbigSdk;
         }
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(deviceDispatcher, profileService);
+                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoFilterwheel"]));

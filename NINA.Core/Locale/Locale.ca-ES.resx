@@ -1480,7 +1480,7 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
     <value>Obert</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Coberta oberta per a dark flats a l'assistent flats</value>
+    <value>Obre la tapa per a Dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fixar</value>
@@ -6666,12 +6666,36 @@ Disminueix el temps d'exposició mínim o espera fins que estigui més fosc.</va
 Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</value>
   </data>
   <data name="LblFlatDeviceError" xml:space="preserve">
-    <value>Errored</value>
+    <value>S'ha produït un error</value>
   </data>
   <data name="LblFlatDeviceCoverError" xml:space="preserve">
-    <value>{0} reports that the cover is in an errored state</value>
+    <value>{0} informa que la tapa es troba en un estat d'error</value>
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
-    <value>Not present</value>
+    <value>No present</value>
+  </data>
+  <data name="LblFlipImageTooltip" xml:space="preserve">
+    <value>Gira la imatge horitzontalment</value>
+  </data>
+  <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
+    <value>El tipus de sensor ASCOM està configurat actualment per retornar imatges ja debaieritzades, això fa que que no sigui compatible. Si us plau, ajusteu, en el seu lloc, la configuració del controlador per retornar imatges bairetitzades!</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
+    <value>Sincronització d'ubicació</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
+    <value>Avís</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
+    <value>Sincronització amb l'aplicació</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
+    <value>Sincronització amb el telescopi</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
+    <value>Sense sincronització</value>
+  </data>
+  <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
+    <value>Quan es connecta el telescopi, es defineix com es comportarà quan la ubicació de la montura i de l' aplicació siguin diferents.</value>
   </data>
 </root>

@@ -40,7 +40,7 @@ namespace NINA.Profile.Interfaces {
         int MetaGuideMinIntensity { get; set; }
         int MetaGuideDitherSettleSeconds { get; set; }
         bool MetaGuideLockWhenGuiding { get; set; }
-        int PHD2ROIPct { get; }
+        int PHD2ROIPct { get; set; }
         int? PHD2ProfileId { get; set; }
         int SkyGuardServerPort { get; set; }
         string SkyGuardServerUrl { get; set; }

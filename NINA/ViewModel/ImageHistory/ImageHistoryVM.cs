@@ -235,6 +235,22 @@ namespace NINA.ViewModel.ImageHistory {
             }
         }
 
+        public void Add(int id, string imageType) {
+            lock (lockObj) {
+                var point = new ImageHistoryPoint(id, imageType);
+                ImageHistory.Add(point);
+            }
+        }
+
+        public void PopulateStatistics(int id, IImageStatistics statistics) {
+            lock (lockObj) {
+                var imageHistoryItem = ImageHistory.FirstOrDefault(item => item.Id == id);
+                if(imageHistoryItem != null) {
+                    imageHistoryItem.PopulateStatistics(statistics);
+                }
+            }
+        }
+
         public void AppendImageProperties(ImageSavedEventArgs imageSavedEventArgs) {
             if (imageSavedEventArgs != null) {
                 ImageHistoryPoint imageHistoryItem;

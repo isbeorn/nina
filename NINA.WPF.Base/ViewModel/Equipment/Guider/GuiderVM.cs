@@ -151,6 +151,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         }
 
         /// <summary>
+        /// Get the current rms recording instance for the given handle
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        public RMS GetRMSRecording(Guid handle) {
+            if (recordedRMS.ContainsKey(handle)) {
+                var rms = recordedRMS[handle];
+                return rms;
+            } else {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Stops and returns RMS for the given rms session handle
         /// </summary>
         /// <param name="handle"></param>

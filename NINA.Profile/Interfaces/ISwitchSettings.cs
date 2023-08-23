@@ -18,21 +18,5 @@ namespace NINA.Profile.Interfaces {
         string Id { get; set; }
         string EagleUrl { get; set; }
 
-        #region UltimatePowerboxV2
-
-        string Upbv2PortName { get; set; }
-        string Upbv2PowerName1 { get; set; }
-        string Upbv2PowerName2 { get; set; }
-        string Upbv2PowerName3 { get; set; }
-        string Upbv2PowerName4 { get; set; }
-        string Upbv2PowerName5 { get; set; }
-        string Upbv2UsbName1 { get; set; }
-        string Upbv2UsbName2 { get; set; }
-        string Upbv2UsbName3 { get; set; }
-        string Upbv2UsbName4 { get; set; }
-        string Upbv2UsbName5 { get; set; }
-        string Upbv2UsbName6 { get; set; }
-
-        #endregion UltimatePowerboxV2
     }
 }

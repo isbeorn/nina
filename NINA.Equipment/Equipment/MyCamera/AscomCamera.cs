@@ -35,13 +35,12 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using NINA.Equipment.Interfaces;
 using NINA.Core.Enum;
-using NINA.Equipment.ASCOMFacades;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    internal class AscomCamera : AscomDevice<Camera, ICameraFacade, CameraFacadeProxy>, ICamera, IDisposable {
+    internal class AscomCamera : AscomDevice<Camera>, ICamera, IDisposable {
 
-        public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory, IDeviceDispatcher deviceDispatcher) : base(cameraId, name, deviceDispatcher, DeviceDispatcherType.Camera) {
+        public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(cameraId, name) {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
         }
@@ -695,7 +694,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private IList<int> offsets = new List<int>();
         private bool offsetValueMode = true;
-        private bool canSetOffset = true;
+        private bool canSetOffset = false;
 
         public bool CanSetOffset {
             get => canSetOffset;
@@ -804,12 +803,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override Task PostConnect() {
+            if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
+                Disconnect();
+                throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
+            }
             Initialize();
             return Task.CompletedTask;
         }
 
         protected override Camera GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new Camera(id));
+            return new Camera(id);
         }
 
         public bool LiveViewEnabled { get => false; set => throw new System.NotImplementedException(); }

@@ -927,8 +927,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 time = ExposureMax;
             }
 
-            var µsTime = (uint)(time * 1000000);
-            if (!sdk.put_ExpoTime(µsTime)) {
+            var usTime = (uint)(time * 1000000);
+            if (!sdk.put_ExpoTime(usTime)) {
                 throw new Exception($"{Category} - Could not set exposure time");
             }
         }

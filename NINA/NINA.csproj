@@ -22,6 +22,7 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release;SignedRelease</Configurations>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
@@ -140,7 +141,6 @@
     <Content Include="External\x64\PlayerOne\PlayerOnePW.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="External\x64\Cfitsio\README.txt" />
     <Content Include="External\x64\MallinCam\mallincam.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -209,6 +209,9 @@
     <Resource Include="Resources\astrometry.net.png" />
     <Content Include="3rd-party-licenses.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>    
+    <Content Include="External\x64\Altair\altaircam.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\AllPro\spikahidapi64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -318,7 +321,6 @@
     <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="External\x64\Altair\" />
     <Folder Include="External\x64\Canon\" />
     <Folder Include="External\x64\Nikon\Type0001\" />
     <Folder Include="External\x64\Nikon\Type0002\" />
@@ -353,17 +355,15 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="CoreWCF.WebHttp" Version="1.3.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="Dirkster.AvalonDock" Version="4.71.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.72.0" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
-    <PackageReference Include="MdXaml" Version="1.16.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.2" />
+    <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
@@ -373,14 +373,12 @@
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SignedRelease|AnyCPU'">
     <Optimize>True</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Altair&quot; (&#xD;&#xA;   echo &quot;Copy Altair x64 DLLs&quot;&#xD;&#xA;   xcopy &quot;$(ProjectDir)External\x64\Altair&quot; &quot;$(TargetDir)\External\x64\Altair&quot; /h/i/c/k/e/r/y&#xD;&#xA;   )&#xD;&#xA;&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; (&#xD;&#xA;   echo &quot;Copy Canon x64 DLLs&quot;&#xD;&#xA;   xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   )&#xD;&#xA;&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; (&#xD;&#xA;   echo &quot;Copy Nikon x64 DLLs&quot;&#xD;&#xA;   xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   )&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease (&#xD;&#xA;   echo  &quot;Trying to sign $(TargetPath)&quot;&#xD;&#xA;   signtool sign /t http://timestamp.sectigo.com /v /a /fd SHA256 $(TargetPath)&#xD;&#xA;&#xD;&#xA;   )" />
+    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /v /a /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

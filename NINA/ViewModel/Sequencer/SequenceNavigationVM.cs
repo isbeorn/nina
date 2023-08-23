@@ -103,7 +103,7 @@ namespace NINA.ViewModel.Sequencer {
 
                 Initialized = true;
 
-                if (profileService.ActiveProfile.SequenceSettings.DisableSimpleSequencer) {
+                if (profileService.ActiveProfile.SequenceSettings.DisableSimpleSequencer || commandLineOptions.RunSequence) {
                     this.ActiveSequencerVM = sequence2VM;
                 } else {
                     ActiveSequencerVM = this;

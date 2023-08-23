@@ -12,6 +12,8 @@
 
 #endregion "copyright"
 
+using NINA.Core.Enum;
+
 namespace NINA.Profile.Interfaces {
 
     public interface ITelescopeSettings : ISettings {
@@ -25,5 +27,7 @@ namespace NINA.Profile.Interfaces {
         bool NoSync { get; set; }
         bool PrimaryReversed { get; set; }
         bool SecondaryReversed { get; set; }
+
+        TelescopeLocationSyncDirection TelescopeLocationSyncDirection { get; set; }
     }
 }

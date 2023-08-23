@@ -122,13 +122,13 @@
                                     VerticalAlignment="Center"
                                     HorizontalContentAlignment="Center"
                                     IsEnabled="{Binding FlatDeviceInfo.Connected}"
-                                    Text="{Binding Brightness, Converter={StaticResource PercentageConverter}, ConverterParameter=2, StringFormat={}{0:F1}}" />
+                                    Text="{Binding Brightness}" />
                                 <Button
                                     Grid.Column="2"
                                     MinWidth="80"
                                     Margin="5"
                                     Command="{Binding SetBrightnessCommand}"
-                                    CommandParameter="{Binding Text, ElementName=BrightnessInput}">
+                                    CommandParameter="{Binding Brightness}">
                                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceSetBrightness}" />
                                 </Button>
                             </Grid>

@@ -15,15 +15,14 @@
 using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
-using NINA.Equipment.ASCOMFacades;
 using NINA.Equipment.Interfaces;
 using System;
 
 namespace NINA.Equipment.Equipment.MyWeatherData {
 
-    internal class AscomObservingConditions : AscomDevice<ObservingConditions, IObservingConditionsFacade, ObservingConditionsFacadeProxy>, IWeatherData, IDisposable {
+    internal class AscomObservingConditions : AscomDevice<ObservingConditions>, IWeatherData, IDisposable {
 
-        public AscomObservingConditions(string weatherDataId, string weatherDataName, IDeviceDispatcher deviceDispatcher) : base(weatherDataId, weatherDataName, deviceDispatcher, DeviceDispatcherType.WeatherData) {
+        public AscomObservingConditions(string weatherDataId, string weatherDataName) : base(weatherDataId, weatherDataName) {
         }
 
         public double AveragePeriod => GetProperty(nameof(ObservingConditions.AveragePeriod), double.NaN);
@@ -57,7 +56,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         protected override string ConnectionLostMessage => Loc.Instance["LblWeatherConnectionLost"];
 
         protected override ObservingConditions GetInstance(string id) {
-            return DeviceDispatcher.Invoke(DeviceDispatcherType, () => new ObservingConditions(id));
+            return new ObservingConditions(id);
         }
     }
 }

@@ -579,6 +579,32 @@
                             </ninactrl:UnitTextBox>
                         </UniformGrid>
                     </UniformGrid>
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc Lbl_TelescopeLocationSyncDirection}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_TelescopeLocationSyncDirection_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+
+                            <ComboBox
+                                MinWidth="150"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:TelescopeLocationSyncDirection}}}"
+                                SelectedItem="{Binding TelescopeLocationSyncDirection}">
+
+                                <ComboBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_TelescopeLocationSyncDirection_Tooltip}" />
+                                </ComboBox.ToolTip>
+                            </ComboBox>
+                        </UniformGrid>
+                    </UniformGrid>
                 </StackPanel>
             </GroupBox>
 

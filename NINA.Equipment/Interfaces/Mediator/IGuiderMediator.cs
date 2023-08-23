@@ -30,6 +30,8 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         Guid StartRMSRecording();
 
+        RMS GetRMSRecording(Guid handle);
+
         RMS StopRMSRecording(Guid handle);
 
         Task<bool> StartGuiding(bool forceCalibration, IProgress<ApplicationStatus> progress, CancellationToken token);

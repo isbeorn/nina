@@ -48,6 +48,7 @@ namespace NINA.Core.Utility {
                 .WriteTo.Console(
                     outputTemplate: "{Timestamp:yyyy-MM-ddTHH:mm:ss.ffff}|{LegacyLogLevel}|{Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(logFilePath,
+                    rollOnFileSizeLimit: true,
                     rollingInterval: RollingInterval.Infinite,
                     outputTemplate: "{Timestamp:yyyy-MM-ddTHH:mm:ss.ffff}|{LegacyLogLevel}|{Message:lj}{NewLine}{Exception}",
                     shared: false,

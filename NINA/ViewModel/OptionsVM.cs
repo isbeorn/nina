@@ -15,7 +15,6 @@
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Interfaces;
-using NINA.Core.Interfaces.API.SGP;
 using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
@@ -56,7 +55,6 @@ namespace NINA.ViewModel {
                          ProjectVersion projectVersion,
                          IPlanetariumFactory planetariumFactory,
                          IGnssFactory gnssFactory,
-                         ISGPServiceHost sgpServiceHost,
                          IPluggableBehaviorSelector<IStarDetection> starDetectionSelector,
                          IPluggableBehaviorSelector<IStarAnnotator> starAnnotatorSelector,
                          IPluggableBehaviorSelector<IAutoFocusVMFactory> autoFocusVMFactorySelector) : base(profileService) {
@@ -70,7 +68,6 @@ namespace NINA.ViewModel {
             this.projectVersion = projectVersion;
             this.planetariumFactory = planetariumFactory;
             this.gnssFactory = gnssFactory;
-            this.sgpServiceHost = sgpServiceHost;
             this.PluggableStarDetection = starDetectionSelector;
             this.PluggableStarAnnotator = starAnnotatorSelector;
             this.PluggableAutoFocusVMFactory = autoFocusVMFactorySelector;
@@ -133,7 +130,6 @@ namespace NINA.ViewModel {
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT)
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARKFLAT);
             };
-            ToggleSGPService();
 
             FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
 
@@ -258,7 +254,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private readonly ISGPServiceHost sgpServiceHost;
         public IAllDeviceConsumer DeviceConsumer { get; }
 
         private void OpenLogFolder(object obj) {
@@ -379,14 +374,6 @@ namespace NINA.ViewModel {
                 if (!p.Name.ToLower().Contains("color")) {
                     RaisePropertyChanged(p.Name);
                 }
-            }
-        }
-
-        private void ToggleSGPService() {
-            if (SGPServerEnabled) {
-                sgpServiceHost.RunService();
-            } else {
-                sgpServiceHost.Stop();
             }
         }
 
@@ -829,16 +816,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        public bool SGPServerEnabled {
-            get => NINA.Properties.Settings.Default.SGPServerEnabled;
-            set {
-                NINA.Properties.Settings.Default.SGPServerEnabled = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                ToggleSGPService();
-                RaisePropertyChanged();
-            }
-        }
+ 
 
         public int SaveQueueSize {
             get => Properties.Settings.Default.SaveQueueSize;

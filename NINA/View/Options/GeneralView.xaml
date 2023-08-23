@@ -429,33 +429,6 @@
                                     </ninactrl:UnitTextBox>
                                 </StackPanel>
 
-                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                    <TextBlock
-                                        Width="150"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblServerEnabled}">
-                                        <TextBlock.ToolTip>
-                                            <TextBlock Text="{ns:Loc LblServerEnabledTooltip}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                    <CheckBox
-                                        Name="PART_ServerEnabled"
-                                        Margin="10,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        IsChecked="{Binding SGPServerEnabled}" />
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        Width="Auto"
-                                        Margin="5,0,0,0"
-                                        VerticalAlignment="Center"
-                                        DockPanel.Dock="Right"
-                                        Text=""
-                                        Visibility="{Binding ElementName=PART_ServerEnabled, Path=IsChecked, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="http://localhost:59590/swagger/index.html">
-                                            <Run Text="API Doc" />
-                                        </Hyperlink>
-                                    </TextBlock>
-                                </StackPanel>
 
                                 <StackPanel
                                     Margin="0,5,0,5"

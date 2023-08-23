@@ -120,6 +120,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             profileServiceMock.SetupGet(x => x.ActiveProfile.ImageFileSettings.FilePath).Returns(TestContext.CurrentContext.TestDirectory);
             imageDataMock.SetupGet(x => x.Statistics).Returns(new AsyncLazy<IImageStatistics>(() => Task.FromResult(stats.Object)));
             imageDataMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 1 } });
+            imageMock.SetupGet(x => x.MetaData).Returns(new ImageMetaData() { Image = new ImageParameter { Id = 1 } });
             imageMock.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(imageDataMock.Object));
             var imageTask = Task.FromResult(imageMock.Object);
             var prepareTask = Task.FromResult(new Mock<IRenderedImage>().Object);
@@ -156,7 +157,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             imagingMediatorMock.Verify(x => x.PrepareImage(It.Is<IImageData>(e => e == imageDataMock.Object), It.Is<PrepareImageParameters>(y => y.AutoStretch == expectedStretch && y.DetectStars == expectedDetect), It.IsAny<CancellationToken>()), Times.Once);
 
             imageSaveMediatorMock.Verify(x => x.Enqueue(It.Is<IImageData>(d => d == imageDataMock.Object), It.Is<Task<IRenderedImage>>(t => t == prepareTask), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
-            historyMock.Verify(x => x.Add(1, It.Is<IImageStatistics>(s => s == stats.Object), imageType), Times.Exactly(historycalls));
+            historyMock.Verify(x => x.Add(1, imageType), Times.Exactly(historycalls));
         }
 
         [Test]

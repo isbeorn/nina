@@ -666,8 +666,9 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"The url: {url} is not accessible, please check in the setup of SkyGuardGuider");
 
-                StreamReader mySR = new StreamReader(request.GetResponse().GetResponseStream());
-                return mySR.ReadToEnd();
+                using (StreamReader reader = new StreamReader(response.GetResponseStream())) {
+                    return reader.ReadToEnd();
+                }
             }
             catch (InvalidOperationException operationEx)
             {
