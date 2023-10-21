@@ -36,5 +36,6 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         float GetTargetPosition(float position);
 
         float GetTargetMechanicalPosition(float position);
+        Task Reverse(bool reverse);
     }
 }

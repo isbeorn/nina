@@ -22,29 +22,21 @@ using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
-    internal class AscomRotator : AscomDevice<Rotator>, IRotator, IDisposable {
+    internal partial class AscomRotator : AscomDevice<Rotator>, IRotator, IDisposable {
 
         public AscomRotator(string id, string name) : base(id, name) {
         }
 
-        public bool CanReverse => GetProperty(nameof(Rotator.CanReverse), false);
+        public bool CanReverse => true;
 
-        public bool Reverse {
-            get {
-                if (CanReverse) {
-                    return GetProperty(nameof(Rotator.Reverse), false);
-                }
-                return false;
-            }
-            set {
-                if (CanReverse) {
-                    SetProperty(nameof(Rotator.Reverse), value);
-                }
-            }
-        }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Position))]
+        [NotifyPropertyChangedFor(nameof(MechanicalPosition))]
+        private bool reverse;
 
         public bool IsMoving => GetProperty(nameof(Rotator.IsMoving), false);
 
@@ -60,9 +52,9 @@ namespace NINA.Equipment.Equipment.MyRotator {
 
         private float offset = 0;
 
-        public float Position => AstroUtil.EuclidianModulus(MechanicalPosition + offset, 360);
+        public float Position => Reverse ? AstroUtil.EuclidianModulus(360 - MechanicalPosition + offset, 360) : AstroUtil.EuclidianModulus(MechanicalPosition + offset, 360);
 
-        public float MechanicalPosition => GetProperty(nameof(Rotator.Position), float.NaN);
+        public float MechanicalPosition => Reverse? AstroUtil.EuclidianModulus(360 - GetProperty(nameof(Rotator.Position), float.NaN), 360) : AstroUtil.EuclidianModulus(GetProperty(nameof(Rotator.Position), float.NaN), 360);
 
         public float StepSize => GetProperty(nameof(Rotator.StepSize), float.NaN);
 
@@ -91,7 +83,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
                 }
 
                 Logger.Debug($"ASCOM - Move relative by {angle}° - Mechanical Position reported by rotator {MechanicalPosition}° and offset {offset}");
-                await device.MoveAsync(angle, ct);
+                await device.MoveAsync(Reverse ? AstroUtil.EuclidianModulus(360 - angle, 360) : angle, ct);
 
                 return true;
             }

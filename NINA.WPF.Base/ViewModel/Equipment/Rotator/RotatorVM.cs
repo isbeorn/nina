@@ -33,10 +33,11 @@ using NINA.Equipment.Interfaces;
 using Nito.AsyncEx;
 using System.Linq;
 using NINA.Core.Utility.Extensions;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
-    public class RotatorVM : DockableVM, IRotatorVM {
+    public partial class RotatorVM : DockableVM, IRotatorVM {
 
         public RotatorVM(IProfileService profileService,
                          IRotatorMediator rotatorMediator,
@@ -52,14 +53,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             DeviceChooserVM = rotatorChooserVM;
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
-            CancelConnectCommand = new RelayCommand(CancelConnectRotator);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !RotatorInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
             MoveCommand = new AsyncCommand<float>(() => Task.Run(() => Move(TargetPosition, CancellationToken.None)), (p) => RotatorInfo.Connected && RotatorInfo.Synced);
             MoveMechanicalCommand = new AsyncCommand<float>(() => Task.Run(() => MoveMechanical(TargetPosition, CancellationToken.None)), (p) => RotatorInfo.Connected);
-            HaltCommand = new RelayCommand(Halt, (p) => RotatorInfo.Connected);
-            ReverseCommand = new RelayCommand(Reverse, (p) => RotatorInfo.Connected);
 
             updateTimer = new DeviceUpdateTimer(
                 GetRotatorValues,
@@ -79,20 +77,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             });
         }
 
-        private void Reverse(object obj) {
+        [RelayCommand]
+        public async Task Reverse(bool reverse) {
             try {
-                if (obj is bool) {
-                    var reverse = (bool)obj;
-                    if (Rotator != null && RotatorInfo.Connected) {
-                        Rotator.Reverse = reverse;
-                        profileService.ActiveProfile.RotatorSettings.Reverse2 = reverse;
-                    }
+                if (Rotator != null && RotatorInfo.Connected) {
+                    Rotator.Reverse = reverse;
+                    profileService.ActiveProfile.RotatorSettings.Reverse2 = reverse;
+
+                    await updateTimer.WaitForNextUpdate(CancellationToken.None);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
         }
 
+        [RelayCommand]
         private void Halt(object obj) {
             try {
                 _moveCts?.Cancel();
@@ -307,13 +306,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         private IApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand ConnectCommand { get; private set; }
-        public ICommand CancelConnectCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
         public IAsyncCommand RescanDevicesCommand { get; private set; }
         public IAsyncCommand MoveCommand { get; private set; }
         public IAsyncCommand MoveMechanicalCommand { get; private set; }
-        public ICommand HaltCommand { get; private set; }
-        public ICommand ReverseCommand { get; private set; }
 
         private CancellationTokenSource _connectRotatorCts;
         private CancellationTokenSource _moveCts;
@@ -407,7 +403,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             }
         }
 
-        private void CancelConnectRotator(object o) {
+        [RelayCommand]
+        private void CancelConnectRotator() {
             try { _connectRotatorCts?.Cancel(); } catch { }
         }
 

@@ -45,5 +45,9 @@ namespace NINA.WPF.Base.Mediator {
         public float GetTargetMechanicalPosition(float position) {
             return handler.GetTargetMechanicalPosition(position);
         }
+
+        public Task Reverse(bool reverse) {
+            return handler.Reverse(reverse);
+        }
     }
 }

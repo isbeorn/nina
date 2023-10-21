@@ -32,5 +32,7 @@ namespace NINA.Equipment.Interfaces.Mediator {
         float GetTargetPosition(float position);
 
         float GetTargetMechanicalPosition(float position);
+
+        Task Reverse(bool reverse);
     }
 }

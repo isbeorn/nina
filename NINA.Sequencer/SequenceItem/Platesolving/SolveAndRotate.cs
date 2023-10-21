@@ -20,6 +20,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.PlateSolving;
@@ -137,12 +138,32 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 stoppedGuiding = await guiderMediator.StopGuiding(token);
 
                 var targetRotation = (float)PositionAngle;
+                var previousSolve = double.NaN;
 
                 /* Loop until the rotation is within tolerances*/
                 do {
                     var solveResult = await Solve(progress, token);
                     if (!solveResult.Success) {
                         throw new SequenceEntityFailedException(Loc.Instance["LblPlatesolveFailed"]);
+                    }
+
+                    if (!double.IsNaN(previousSolve)) {
+                        // Check if the rotator needs to be reversed
+                        if (rotatorMediator.GetDevice() is not ManualRotator) {
+                            var diff = AstroUtil.EuclidianModulus(solveResult.PositionAngle - previousSolve, 360);
+                            var comparison = Math.Abs(diff - AstroUtil.EuclidianModulus(rotationDistance, 360));
+                            if (comparison > 180) {
+                                // Make sure the comparison is in the range of 0..180
+                                comparison -= 180;
+                            }
+
+                            // If we are off by more than 10 degrees, we most likely moved into the wrong direction
+                            // comparison is in the range of 0..180 and the 10 degree distance should be measured from both ends
+                            if (comparison > 10 && comparison < 170) {
+                                Logger.Info("Reversing rotator angle definition as the rotator most likely rotated into the wrong direction");
+                                await rotatorMediator.Reverse(!rotatorMediator.GetInfo().Reverse);
+                            }
+                        }
                     }
 
                     var orientation = (float)solveResult.PositionAngle;
@@ -178,6 +199,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                         progress?.Report(new ApplicationStatus() { Status = string.Empty });
                         token.ThrowIfCancellationRequested();
                     }
+
+                    previousSolve = solveResult.PositionAngle;
                 } while (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance)));
             } finally {
                 if (stoppedGuiding) {
