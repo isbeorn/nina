@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -204,13 +205,28 @@ namespace NINA.Imaging.ViewModel.Imaging {
 
         private object lockobj = new object();
 
+        private bool IsAutofocusForCurrentProfile(string fullPath) {
+            var filename = Path.GetFileNameWithoutExtension(fullPath);
+
+            // check if file path has a guid for the profile
+            var match = Regex.Match(filename, @"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
+            if (match.Success) {
+                return match.Value == profileService.ActiveProfile.Id.ToString();
+            } else {
+                // Fallback if there is no guid in the file to try to load it for backwards compatibility
+                return true;
+            }
+        }
+
         private void InitializeChartList() {
             var files = Directory.GetFiles(Path.Combine(WPF.Base.ViewModel.AutoFocus.AutoFocusVM.ReportDirectory));
             var l = new SortedSet<Chart>(new ChartComparer());
 
             foreach (string file in files) {
-                var item = new Chart(Path.GetFileName(file), file);
-                l.Add(item);
+                if(IsAutofocusForCurrentProfile(file)) {
+                    var item = new Chart(Path.GetFileName(file), file);
+                    l.Add(item);
+                }                
             }
             lock (lockobj) {
                 ChartList = new AsyncObservableCollection<Chart>(l);
@@ -220,6 +236,9 @@ namespace NINA.Imaging.ViewModel.Imaging {
         }
 
         private void ReportFileWatcher_Created(object sender, FileSystemEventArgs e) {
+            if(!IsAutofocusForCurrentProfile(e.FullPath)) {
+                return;
+            }
             Logger.Debug($"New AutoFocus chart created at {e.FullPath}");
             var item = new Chart(Path.GetFileName(e.FullPath), e.FullPath);
 

@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using ASCOM.Com.DriverAccess;
+using ASCOM.Common;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Exceptions;
@@ -133,13 +134,9 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                     throw new FlatDeviceCoverErrorException();
                 }
 
-                device.OpenCover();
-                while (CoverState != CoverState.Unknown && CoverState == CoverState.NeitherOpenNorClosed) {
-                    if (CoverState == CoverState.Error) {
-                        throw new FlatDeviceCoverErrorException();
-                    }
-
-                    await Task.Delay(delay);
+                await device.OpenCoverAsync(ct);
+                if (CoverState == CoverState.Error) {
+                    throw new FlatDeviceCoverErrorException();
                 }
             }
             return CoverState == CoverState.Open;
@@ -151,13 +148,9 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                     throw new FlatDeviceCoverErrorException();
                 }
 
-                device.CloseCover();
-                while (CoverState != CoverState.Unknown && CoverState == CoverState.NeitherOpenNorClosed) {
-                    if (CoverState == CoverState.Error) {
-                        throw new FlatDeviceCoverErrorException();
-                    }
-
-                    await Task.Delay(delay);
+                await device.CloseCoverAsync(ct);
+                if (CoverState == CoverState.Error) {
+                    throw new FlatDeviceCoverErrorException();
                 }
             }
             return CoverState == CoverState.Closed;

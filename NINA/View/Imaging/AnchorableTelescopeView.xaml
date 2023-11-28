@@ -46,16 +46,16 @@
                         BorderThickness="0"
                         Visibility="{Binding TelescopeInfo.AtPark, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUnparked}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblParked}" />
                             <CheckBox
                                 Width="20"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
-                                IsChecked="{Binding TelescopeInfo.AtPark, FallbackValue=False, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
+                                IsChecked="{Binding TelescopeInfo.AtPark, FallbackValue=False, Mode=OneWay}"
                                 IsEnabled="False"
-                                Style="{StaticResource CheckmarkCheckbox}" />
+                                Style="{StaticResource InvertedCheckmarkCheckbox}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -68,6 +68,24 @@
                                 Margin="5,0,0,0"
                                 Text="{Binding TelescopeInfo.TrackingRate, Converter={StaticResource TrackingRateConverter}}"
                                 Visibility="{Binding TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.Slewing, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSlewing}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding TelescopeInfo.Slewing, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
+                                Style="{StaticResource InvertedCheckmarkCheckbox}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -143,7 +161,8 @@
                     <Border
                         Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.GuideRateRightAscensionArcsecPerSec, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblTelescopeGuideRateRA}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.GuideRateRightAscensionArcsecPerSec, StringFormat=\{0:0.000\}}" />
@@ -152,7 +171,8 @@
                     <Border
                         Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.GuideRateDeclinationArcsecPerSec, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblTelescopeGuideRateDec}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.GuideRateDeclinationArcsecPerSec, StringFormat=\{0:0.000\}}" />

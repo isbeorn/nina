@@ -39,7 +39,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         private CancellationTokenSource domeFollowerTaskCTS;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
         private DomeInfo domeInfo = DeviceInfo.CreateDefaultInstance<DomeInfo>();
-        private Task<bool> domeRotationTask;
+        private Task<bool> domeRotationTask = Task.FromResult(true);
         private CancellationTokenSource domeRotationCTS;
 
         public DomeFollower(
@@ -178,29 +178,46 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             return true;
         }
 
-        public Task<bool> TriggerTelescopeSync() {
+        public async Task<bool> TriggerTelescopeSync() {
+            await WaitForPreviousSlew();
+
             if (!CanSyncDome()) {
                 Logger.Warning("Cannot sync dome at this time");
-                return Task.FromResult(false);
+                return false;
             }
 
             var calculatedTargetDomeCoordinates = GetSynchronizedDomeCoordinates(telescopeInfo);
             if(calculatedTargetDomeCoordinates != null) { 
-                return SyncToDomeAzimuth(calculatedTargetDomeCoordinates, CancellationToken.None);
+                return await SyncToDomeAzimuth(calculatedTargetDomeCoordinates, CancellationToken.None);
             } else {
-                return Task.FromResult(false);
+                return false;
             }
-
         }
 
-        public Task<bool> SyncToScopeCoordinates(Coordinates coordinates, PierSide sideOfPier, CancellationToken cancellationToken) {
+        private async Task WaitForPreviousSlew() {
+            if (domeInfo.Slewing || domeRotationTask?.IsCompleted == false) {
+                Logger.Info("Dome is already slewing. Waiting for previous slew to finish");
+                await (domeRotationTask ?? Task.CompletedTask);
+                using (var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5))) {
+                    try {
+                        while (domeInfo.Slewing) {
+                            await Task.Delay(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval), cts.Token);
+                        }
+                    } catch (OperationCanceledException) { }
+                }
+            }
+        }
+
+        public async Task<bool> SyncToScopeCoordinates(Coordinates coordinates, PierSide sideOfPier, CancellationToken cancellationToken) {
+            await WaitForPreviousSlew();
+
             if (!CanSyncDome()) {
                 Logger.Warning("Cannot sync dome at this time");
-                return Task.FromResult(false);
+                return false;
             }
 
             var calculatedTargetDomeCoordinates = GetSynchronizedDomeCoordinates(coordinates, sideOfPier);
-            return SyncToDomeAzimuth(calculatedTargetDomeCoordinates, cancellationToken);
+            return await SyncToDomeAzimuth(calculatedTargetDomeCoordinates, cancellationToken);
         }
 
         public bool IsDomeWithinTolerance(Angle currentDomeAzimuth, TopocentricCoordinates targetDomeCoordinates) {

@@ -30,6 +30,7 @@ using NINA.Equipment.Interfaces;
 using System.Drawing;
 using System.Collections;
 using System.Linq;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -430,29 +431,48 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public IList<string> ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes { get; private set; }
 
         public short ReadoutMode {
-            get => 0;
-            set { }
+            get {
+                sdk.get_Option(ToupTekAlikeOption.OPTION_CG, out var value);
+                Logger.Trace($"{Category} - Conversion Gain is set to {value}");
+                return (short)value;            }
+            set {
+                Logger.Trace($"{Category} - Setting Conversion Gain to {value}");
+                if (!sdk.put_Option(ToupTekAlikeOption.OPTION_CG, value)) {
+                    Logger.Error($"{Category} - Could not set HighGainMode to {value}");
+                } else {
+                    RaisePropertyChanged();
+                }
+            }
         }
 
-        private short _readoutModeForSnapImages = 0;
 
-        public short ReadoutModeForSnapImages {
-            get => _readoutModeForSnapImages;
+        private short _readoutModeForNormalImages = 0;
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
             set {
-                _readoutModeForSnapImages = value;
+                if (value >= 0 && value < ReadoutModes.Count) {
+                    _readoutModeForNormalImages = value;
+                } else {
+                    _readoutModeForNormalImages = 0;
+                }
+
                 RaisePropertyChanged();
             }
         }
 
-        private short _readoutModeForNormalImages = 0;
-
-        public short ReadoutModeForNormalImages {
-            get => _readoutModeForNormalImages;
+        private short _readoutModeForSnapImages = 0;
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
             set {
-                _readoutModeForNormalImages = value;
+                if (value >= 0 && value < ReadoutModes.Count) {
+                    _readoutModeForSnapImages = value;
+                } else {
+                    _readoutModeForSnapImages = 0;
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -620,14 +640,17 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         HasHighFullwell = false;
                     }
 
-                    if (((this.flags & ToupTekAlikeFlag.FLAG_CG) != 0) || ((this.flags & ToupTekAlikeFlag.FLAG_CGHDR) != 0)) {
-                        Logger.Trace($"{Category} - Camera has High Conversion Gain option");
-                        HasHighGain = true;
-                        HighGainMode = profile.TouptekAlikeHighGain;
-                        SupportedActions.Add(ToupTekActions.HighGainMode);
-                    } else {
-                        HasHighGain = false;
-                    }
+                    ReadoutModes = new List<string> { "Low Conversion Gain" };
+
+                    if ((this.flags & ToupTekAlikeFlag.FLAG_CG) != 0) {
+                        ReadoutModes.Add("High Conversion Gain");
+                        Logger.Debug($"{Category} - Camera has High Conversion Gain option");
+
+                        if ((this.flags & ToupTekAlikeFlag.FLAG_CGHDR) != 0) {
+                            ReadoutModes.Add("High Dynamic Range");
+                            Logger.Debug($"{Category} - Camera has HDR Gain option");
+                        }
+                    }  
 
                     if ((this.flags & ToupTekAlikeFlag.FLAG_TRIGGER_SOFTWARE) == 0) {
                         throw new Exception($"{Category} - This camera is not capable to be triggered by software and is not supported");
@@ -748,39 +771,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        private bool _hasHighGain;
-
-        public bool HasHighGain {
-            get => _hasHighGain;
-            set {
-                _hasHighGain = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool HighGainMode {
-            get {
-                if (HasHighGain) {
-                    sdk.get_Option(ToupTekAlikeOption.OPTION_CG, out var value);
-                    Logger.Trace($"{Category} - Conversion Gain is set to {value}");
-                    return value == 1 ? true : false;
-                } else {
-                    return false;
-                }
-            }
-            set {
-                if (HasHighGain) {
-                    Logger.Trace($"{Category} - Setting Conversion Gain to {value}");
-                    if (!sdk.put_Option(ToupTekAlikeOption.OPTION_CG, value ? 1 : 0)) {
-                        Logger.Error($"{Category} - Could not set HighGainMode to {value}");
-                    } else {
-                        profileService.ActiveProfile.CameraSettings.TouptekAlikeHighGain = value;
-                        RaisePropertyChanged();
-                    }
-                }
-            }
-        }
-
         private void OnEventCallback(ToupTekAlikeEvent nEvent) {
             Logger.Trace($"{Category} - OnEventCallback {nEvent}");
             switch (nEvent) {
@@ -859,13 +849,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
 
+            var metaData = new ImageMetaData();
+            metaData.FromCamera(this);
             var imageData = exposureDataFactory.CreateImageArrayExposureData(
                     input: data,
                     width: width,
                     height: height,
                     bitDepth: this.BitDepth,
                     isBayered: this.SensorType != SensorType.Monochrome,
-                    metaData: new ImageMetaData());
+                    metaData: metaData);
 
             return imageData;
         }
@@ -951,6 +943,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             imageReadyTCS?.TrySetCanceled();
             imageReadyTCS = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             Logger.Trace($"{Category} - created new downloadExposure Task with Id {imageReadyTCS.Task.Id}");
+
+            ReadoutMode = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT ? ReadoutModeForSnapImages : ReadoutModeForNormalImages;
 
             if (EnableSubSample) {
                 var rect = GetROI();
@@ -1043,19 +1037,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         }
                     }
                     break;
-                case ToupTekActions.HighGainMode:
-                    if (HasHighGain) {
-                        var flag = StringToBoolean(actionParameters);
-                        if (flag.HasValue) {
-                            Logger.Info($"Device Action {actionName}: {flag.Value}");
-                            HighGainMode = flag.Value;
-                            return "1";
-                        } else {
-                            Logger.Error($"Unrecognized parameter [{actionParameters}] for action [{actionName}].");
-                            return "0";
-                        }
-                    }
-                    break;
                 case ToupTekActions.HighFullwellMode:
                     if (HasHighFullwell) {
                         var flag = StringToBoolean(actionParameters);
@@ -1069,8 +1050,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         }
                     }
                     break;
-                case ToupTekActions.BinAverage:
-                    if (true) {
+                case ToupTekActions.BinAverage: { 
                         var flag = StringToBoolean(actionParameters);
                         if (flag.HasValue) {
                             Logger.Info($"Device Action {actionName}: {flag.Value}");
@@ -1081,7 +1061,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                             return "0";
                         }
                     }
-                    break;
                 case ToupTekActions.FanSpeed:
                     if (MaxFanSpeed > 0) {
                         if(int.TryParse(actionParameters, out var flag)) {
@@ -1144,7 +1123,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private static class ToupTekActions {
             public const string LowNoiseMode = "Ultra Mode";
-            public const string HighGainMode = "High Gain Mode";
             public const string HighFullwellMode = "High Fullwell Mode";
             public const string BinAverage = "Bin Average";
             public const string DewHeaterStrength = "Dew Heater Strength";

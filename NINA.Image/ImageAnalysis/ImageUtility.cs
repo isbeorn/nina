@@ -87,8 +87,8 @@ namespace NINA.Image.ImageAnalysis {
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        private static double NormalizeUShort(double val, int bitDepth) {
-            return val / (double)(1 << bitDepth);
+        public static double NormalizeUShort(double val, int bitDepth) {
+            return val / (double)((1 << bitDepth) - 1);
         }
 
         /// <summary>
@@ -96,8 +96,8 @@ namespace NINA.Image.ImageAnalysis {
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        private static ushort DenormalizeUShort(double val) {
-            return (ushort)(val * ushort.MaxValue);
+        public static ushort DenormalizeUShort(double val) {
+            return (ushort)(val * ushort.MaxValue + (val < 0.5 ? 0.5 : 0.0));
         }
 
         private static ushort[] GetStretchMap(IImageStatistics statistics, double targetHistogramMedianPercent, double shadowsClipping) {

@@ -49,7 +49,8 @@
                         Margin="5"
                         Data="{StaticResource ZoomIn}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
             </Button>
             <Button
@@ -66,7 +67,8 @@
                         Margin="5"
                         Data="{StaticResource ZoomOut}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
             </Button>
             <Button
@@ -83,7 +85,8 @@
                         Margin="5"
                         Data="{StaticResource Stretch}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
             </Button>
             <Button
@@ -193,7 +196,8 @@
                     Data="{StaticResource PictureSVG}"
                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
                     Opacity="0.4"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
                 <Viewbox Stretch="Uniform">
                     <Canvas
                         x:Name="PART_Canvas"

@@ -20,7 +20,6 @@ using NINA.ViewModel.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Windows.Data;
-using System.Windows.Forms;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
@@ -33,6 +32,7 @@ using NINA.WPF.Base.Model;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.ViewModel;
 using NINA.WPF.Base.Utility.AutoFocus;
+using Microsoft.Win32;
 
 namespace NINA.ViewModel.ImageHistory {
 
@@ -40,6 +40,7 @@ namespace NINA.ViewModel.ImageHistory {
 
         public ImageHistoryVM(IProfileService profileService, IImageSaveMediator imageSaveMediator) : base(profileService) {
             Title = Loc.Instance["LblHFRHistory"];
+            HasSettings = true;
 
             if (System.Windows.Application.Current != null) {
                 ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
@@ -302,10 +303,10 @@ namespace NINA.ViewModel.ImageHistory {
 
         public void PlotSave() {
             if (this.ObservableImageHistory.Count != 0) {
-                SaveFileDialog sfd = new SaveFileDialog();
+                FileDialog sfd = new SaveFileDialog();
                 sfd.FileName = NINA.Core.Utility.CoreUtil.ApplicationStartDate.ToString("yyyy-MM-dd") + "_history.csv";
                 sfd.InitialDirectory = Path.GetDirectoryName(ActiveProfile.SequenceSettings.DefaultSequenceFolder);
-                if (sfd.ShowDialog() == DialogResult.OK) {
+                if (sfd.ShowDialog() == true) {
                     if (!sfd.FileName.ToLower().EndsWith(".csv")) sfd.FileName += ".csv";
                     using (var writer = new StreamWriter(sfd.FileName))
                     using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture)) {

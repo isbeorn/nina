@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Image.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
@@ -24,6 +25,12 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
 
         Task Enqueue(IImageData imageData, Task<IRenderedImage> prepareTask, IProgress<ApplicationStatus> progress, CancellationToken token);
 
-        void Shutdown();
+        void Shutdown(); 
+        
+        event Func<object, BeforeImageSavedEventArgs, Task> BeforeImageSaved;
+
+        event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved;
+
+        event EventHandler<ImageSavedEventArgs> ImageSaved;
     }
 }

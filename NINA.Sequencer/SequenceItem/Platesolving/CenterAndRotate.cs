@@ -99,6 +99,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         public double DeprecatedRotation { set => PositionAngle = 360 - value; }
 
         private double positionAngle = 0;
+        [JsonProperty]
         public double PositionAngle {
             get => positionAngle;
             set {
@@ -169,14 +170,14 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                         }
                     }
 
-                    if (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance))) {
+                    if (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true)) {
                         Logger.Info($"Rotator not inside tolerance {profileService.ActiveProfile.PlateSolveSettings.RotationTolerance} - Current {orientation}° / Target: {PositionAngle}° - Moving rotator relatively by {rotationDistance}°"); 
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblRotating"] });
                         await rotatorMediator.MoveRelative(rotationDistance, token);
                         progress?.Report(new ApplicationStatus() { Status = string.Empty });
                         token.ThrowIfCancellationRequested();
                     }
-                } while (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance)));
+                } while (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true));
 
                 /* Once everything is in place do a centering of the object */
                 var centerResult = await base.DoCenter(progress, token);

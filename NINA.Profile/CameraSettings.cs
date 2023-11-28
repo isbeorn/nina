@@ -65,13 +65,16 @@ namespace NINA.Profile {
             trackingCameraASCOMServerLoggingEnabled = false;
 
 
-            touptekAlikeHighGain = true;
             touptekAlikeUltraMode = true;
             touptekAlikeHighFullwell = false;
             touptekAlikeDewHeaterStrength = -1;
 
             genericCameraDewHeaterStrength = 10;
             genericCameraFanSpeed = 70;
+
+            zwoAsiMonoBinMode = false;
+
+            ascomCreate32BitData = false;
         }
 
         private string id;
@@ -663,6 +666,32 @@ namespace NINA.Profile {
             }
         }
 
+        private bool? zwoAsiMonoBinMode;
+
+        [DataMember]
+        public bool? ZwoAsiMonoBinMode {
+            get => zwoAsiMonoBinMode;
+            set {
+                if (zwoAsiMonoBinMode != value) {
+                    zwoAsiMonoBinMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool ascomCreate32BitData;
+
+        [DataMember]
+        public bool ASCOMCreate32BitData {
+            get => ascomCreate32BitData;
+            set {
+                if(ascomCreate32BitData != value) {
+                    ascomCreate32BitData = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         #region GenericCamera
 
         private int genericCameraDewHeaterStrength;
@@ -692,17 +721,6 @@ namespace NINA.Profile {
         #endregion
 
         #region TouptekAlike
-        private bool touptekAlikeHighGain;
-        [DataMember]
-        public bool TouptekAlikeHighGain {
-            get => touptekAlikeHighGain;
-            set {
-                if (touptekAlikeHighGain != value) {
-                    touptekAlikeHighGain = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
         private bool touptekAlikeUltraMode;
         [DataMember]
         public bool TouptekAlikeUltraMode {

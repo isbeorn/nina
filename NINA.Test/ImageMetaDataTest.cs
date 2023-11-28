@@ -25,6 +25,9 @@ using NINA.Equipment.Utility;
 using NINA.Core.Model.Equipment;
 using NINA.Profile;
 using NINA.Core.Enum;
+using Moq;
+using NINA.Equipment.Interfaces;
+using FluentAssertions;
 
 namespace NINA.Test {
 
@@ -119,6 +122,76 @@ namespace NINA.Test {
             Assert.AreEqual(5, sut.Telescope.FocalRatio);
             Assert.AreEqual(10, sut.Observer.Latitude);
             Assert.AreEqual(20, sut.Observer.Longitude);
+        }
+
+        [Test]
+        public void FromCameraNotConnectedTest() {
+            var camera = new Mock<ICamera>();
+            camera.SetupGet(x => x.Connected).Returns(false);
+            camera.SetupGet(x => x.Name).Returns("TEST");
+            camera.SetupGet(x => x.Temperature).Returns(20.5);
+            camera.SetupGet(x => x.Gain).Returns(139);
+            camera.SetupGet(x => x.Offset).Returns(10);
+            camera.SetupGet(x => x.TemperatureSetPoint).Returns(-10);
+            camera.SetupGet(x => x.BinX).Returns(3);
+            camera.SetupGet(x => x.BinY).Returns(2);
+            camera.SetupGet(x => x.ElectronsPerADU).Returns(2.43);
+            camera.SetupGet(x => x.PixelSizeX).Returns(12);
+            camera.SetupGet(x => x.ReadoutMode).Returns(1);
+            camera.SetupGet(x => x.ReadoutModes).Returns(new List<string> { "mode1", "mode2" });
+
+            var sut = new ImageMetaData();
+            sut.FromCamera(camera.Object);
+
+            sut.Camera.Should()
+                .BeEquivalentTo(new {
+                    Name = string.Empty,
+                    Binning = "1x1",
+                    BinX = 1,
+                    BinY = 1,
+                    PixelSize = double.NaN,
+                    Temperature = double.NaN,
+                    Gain = -1,
+                    Offset = -1,
+                    ElectronsPerADU = double.NaN,
+                    SetPoint = double.NaN
+                });
+        }
+
+        [Test]
+        public void FromCameraConnectedTest() {
+            var camera = new Mock<ICamera>();
+            camera.SetupGet(x => x.Connected).Returns(true);
+            camera.SetupGet(x => x.Name).Returns("TEST");
+            camera.SetupGet(x => x.Temperature).Returns(20.5);
+            camera.SetupGet(x => x.CanGetGain).Returns(true);
+            camera.SetupGet(x => x.Gain).Returns(139);
+            camera.SetupGet(x => x.Offset).Returns(10);
+            camera.SetupGet(x => x.TemperatureSetPoint).Returns(-10);
+            camera.SetupGet(x => x.BinX).Returns(3);
+            camera.SetupGet(x => x.BinY).Returns(2);
+            camera.SetupGet(x => x.ElectronsPerADU).Returns(2.43);
+            camera.SetupGet(x => x.PixelSizeX).Returns(12);
+            camera.SetupGet(x => x.ReadoutMode).Returns(1);
+            camera.SetupGet(x => x.ReadoutModes).Returns(new List<string> { "mode1", "mode2" });
+
+            var sut = new ImageMetaData();
+            sut.FromCamera(camera.Object);
+
+            sut.Camera.Should()
+                .BeEquivalentTo(new {
+                    Name = "TEST",
+                    Binning = "3x2",
+                    BinX = 3,
+                    BinY = 2,
+                    PixelSize = 12,
+                    Temperature = 20.5,
+                    Gain = 139,
+                    Offset = 10,
+                    ElectronsPerADU = 2.43,
+                    SetPoint = -10,
+                    ReadoutModeName = "mode2"
+                });
         }
 
         [Test]

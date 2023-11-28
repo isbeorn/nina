@@ -31,8 +31,6 @@ using NINA.Core.Enum;
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
     public interface IAutoFocusVM {
-        double AverageContrast { get; }
-        double ContrastStdev { get; }
         DataPoint FinalFocusPoint { get; set; }
         AsyncObservableCollection<ScatterErrorPoint> FocusPoints { get; set; }
         GaussianFitting GaussianFitting { get; set; }

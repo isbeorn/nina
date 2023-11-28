@@ -16,6 +16,7 @@ using System;
 using NINA.Sequencer.SequenceItem;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
+using NINA.Sequencer.Container;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -35,9 +36,16 @@ namespace NINA.Sequencer.Serialization {
 
             if (jObject.TryGetValue("$type", out var token)) {
                 var t = GetType(token.ToString());
+                if (t == null) {
+                    return new UnknownSequenceItem(token?.ToString());
+                }
                 try {
                     var method = factory.GetType().GetMethod(nameof(factory.GetItem)).MakeGenericMethod(new Type[] { t });
                     var obj = method.Invoke(factory, null);
+                    if (obj == null) {
+                        Logger.Error($"Encountered unknown sequence item: {token?.ToString()}");
+                        return new UnknownSequenceItem(token?.ToString());
+                    }
                     return (ISequenceItem)obj;
                 } catch (Exception e) {
                     Logger.Error($"Encountered unknown sequence item: {token?.ToString()}", e);

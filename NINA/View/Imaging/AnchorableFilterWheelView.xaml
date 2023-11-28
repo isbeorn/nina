@@ -18,68 +18,93 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="5,0,5,0" IsEnabled="{Binding FilterWheelInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding FilterWheelInfo.Connected}">
-
-                <Border
-                    Margin="0,5,0,0"
-                    VerticalAlignment="Top"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
-                        <CheckBox
-                            Width="20"
-                            Height="20"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Left"
-                            BorderBrush="Transparent"
-                            IsChecked="{Binding FilterWheelInfo.Connected, FallbackValue=False, Mode=OneWay}"
-                            IsEnabled="False"
-                            Style="{StaticResource CheckmarkCheckbox}" />
-                    </UniformGrid>
-                </Border>
-
-                <StackPanel Orientation="Vertical" Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Margin="5,0,5,0" Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblInfoOnly}" />
+            <CheckBox
+                Grid.Column="1"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Left"
+                IsChecked="{Binding ActiveProfile.DockPanelSettings.FilterWheelInfoOnly, Mode=TwoWay}">
+                <CheckBox.ToolTip>
+                    <TextBlock Text="{ns:Loc LblInfoOnlyTooltip}" />
+                </CheckBox.ToolTip>
+            </CheckBox>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="5,0,5,0" IsEnabled="{Binding FilterWheelInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                <Grid IsEnabled="{Binding FilterWheelInfo.Connected}">
 
                     <Border
                         Margin="0,5,0,0"
+                        VerticalAlignment="Top"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
+                        BorderThickness="0"
+                        Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblActiveFilter}" />
-                            <TextBlock
-                                MinWidth="20"
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
                                 Margin="5,0,0,0"
-                                Text="{Binding FilterWheelInfo.SelectedFilter}" />
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding FilterWheelInfo.Connected, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
+                                Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
                     </Border>
 
-                    <UniformGrid Margin="0,5,5,0" Columns="2">
-                        <ComboBox
-                            Name="PART_FilterComboBox"
-                            Height="25"
-                            MinWidth="0"
-                            IsEnabled="{Binding FilterWheelInfo.IsMoving, Converter={StaticResource InverseBooleanConverter}}"
-                            ItemsSource="{Binding FW.Filters}"
-                            SelectedValue="{Binding TargetFilter}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Button
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Stretch"
-                            Command="{Binding ChangeFilterCommand}">
-                            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblChange}" />
-                        </Button>
-                    </UniformGrid>
-                </StackPanel>
+                    <StackPanel Orientation="Vertical" Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblActiveFilter}" />
+                                <TextBlock
+                                    MinWidth="20"
+                                    Margin="5,0,0,0"
+                                    Text="{Binding FilterWheelInfo.SelectedFilter}" />
+                            </UniformGrid>
+                        </Border>
+
+                        <UniformGrid
+                            Margin="0,5,5,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.DockPanelSettings.FilterWheelInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                            <ComboBox
+                                Name="PART_FilterComboBox"
+                                Height="25"
+                                MinWidth="0"
+                                IsEnabled="{Binding FilterWheelInfo.IsMoving, Converter={StaticResource InverseBooleanConverter}}"
+                                ItemsSource="{Binding FW.Filters}"
+                                SelectedValue="{Binding TargetFilter}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding ChangeFilterCommand}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblChange}" />
+                            </Button>
+                        </UniformGrid>
+                    </StackPanel>
+                </Grid>
             </Grid>
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

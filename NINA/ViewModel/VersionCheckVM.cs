@@ -51,7 +51,6 @@ namespace NINA.ViewModel {
         public IAsyncCommand ShowDownloadCommand { get; set; }
         private CancellationTokenSource checkCts;
         private CancellationTokenSource downloadCts;
-        private VersionInfo versionInfo;
 
         private string setupLocation;
 
@@ -77,7 +76,7 @@ namespace NINA.ViewModel {
                 checkCts?.Dispose();
                 checkCts = new CancellationTokenSource();
                 try {
-                    versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
+                    var versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                     if (versionInfo?.IsNewer() == true) {
                         UpdateAvailable = true;
                         var projectVersion = new ProjectVersion(versionInfo.Version);
@@ -88,7 +87,6 @@ namespace NINA.ViewModel {
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
-                    versionInfo = null;
                     Logger.Error(ex);
                 }
                 return true;
@@ -120,6 +118,7 @@ namespace NINA.ViewModel {
             downloadCts = new CancellationTokenSource();
             try {
                 Downloading = true;
+                var versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                 setupLocation = await DownloadLatestVersion(versionInfo);
                 if (ValidateChecksum(versionInfo, setupLocation)) {
                     setupLocation = Unzip(setupLocation);

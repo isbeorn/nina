@@ -21,20 +21,20 @@ using System.IO;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
+using System.Windows.Input;
 
 namespace NINA.Image.FileFormat.FITS {
-
     public class FITSHeader {
 
         public FITSHeader(int width, int height) {
-            Add("SIMPLE", true, "C# FITS");
-            Add("BITPIX", 16, "");
-            Add("NAXIS", 2, "Dimensionality");
-            Add("NAXIS1", width, "");
-            Add("NAXIS2", height, "");
-            Add("BZERO", 32768, "");
-            Add("EXTEND", true, "Extensions are permitted");
-        }
+                Add("SIMPLE", true, "C# FITS");
+                Add("BITPIX", 16, "");
+                Add("NAXIS", 2, "Dimensionality");
+                Add("NAXIS1", width, "");
+                Add("NAXIS2", height, "");
+                Add("BZERO", 32768, "");
+                Add("EXTEND", true, "Extensions are permitted");
+            }
 
         private Dictionary<string, FITSHeaderCard> _headerCards = new Dictionary<string, FITSHeaderCard>();
 
@@ -502,6 +502,12 @@ namespace NINA.Image.FileFormat.FITS {
                 Add("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
             }
 
+            if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
+                // Section 8.4.1 https://fits.gsfc.nasa.gov/standard40/fits_standard40aa-le.pdf
+                // Calendar date of the midpoint of the observation, expressed in the same way as the DATE-OBS keyword.
+                Add("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
+            }
+
             /* Camera */
             if (metaData.Camera.BinX > 0) {
                 Add("XBINNING", metaData.Camera.BinX, "X axis binning factor");
@@ -546,7 +552,7 @@ namespace NINA.Image.FileFormat.FITS {
                 Add("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
             }
 
-            if (metaData.Camera.SensorType != SensorType.Monochrome) {
+            if (metaData.Camera.SensorType != SensorType.Monochrome && metaData.Camera.BayerPattern != BayerPatternEnum.None) {
                 Add("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
                 Add("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
                 Add("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");

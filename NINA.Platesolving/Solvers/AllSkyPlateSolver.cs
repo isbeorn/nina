@@ -14,6 +14,7 @@
 
 using NINA.Astrometry;
 using NINA.Core.Locale;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -48,6 +49,9 @@ namespace NINA.PlateSolving.Solvers {
                         var fovH = lines[4];
 
                         result.Pixscale = double.Parse(lines[5]);
+                        if (!double.IsNaN(result.Pixscale)) {
+                            result.Radius = AstroUtil.ArcsecToDegree(Math.Sqrt(Math.Pow(imageProperties.ImageWidth * result.Pixscale, 2) + Math.Pow(imageProperties.ImageHeight * result.Pixscale, 2)) / 2d);
+                        }
                         result.PositionAngle = 360 - (180 - double.Parse(lines[6]) + 360);
 
                         var focalLength = lines[7];

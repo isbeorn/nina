@@ -35,7 +35,8 @@
                         <Path
                             Data="{TemplateBinding LoadingImage}"
                             Fill="{TemplateBinding LoadingImageBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                         <Grid.RenderTransform>
                             <RotateTransform Angle="0" />
                         </Grid.RenderTransform>

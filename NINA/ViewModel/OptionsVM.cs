@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Microsoft.Win32;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Interfaces;
@@ -24,9 +25,11 @@ using NINA.Core.Utility.Notification;
 using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using NINA.Image.ImageAnalysis;
+using NINA.Plugin;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Utility;
+using NINA.WPF.Base.InputBox;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Utility;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -59,7 +62,6 @@ namespace NINA.ViewModel {
                          IPluggableBehaviorSelector<IStarAnnotator> starAnnotatorSelector,
                          IPluggableBehaviorSelector<IAutoFocusVMFactory> autoFocusVMFactorySelector) : base(profileService) {
             Title = Loc.Instance["LblOptions"];
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
 
             DeviceConsumer = deviceConsumer;
@@ -71,6 +73,15 @@ namespace NINA.ViewModel {
             this.PluggableStarDetection = starDetectionSelector;
             this.PluggableStarAnnotator = starAnnotatorSelector;
             this.PluggableAutoFocusVMFactory = autoFocusVMFactorySelector;
+
+            PluginRepositories = new AsyncObservableCollection<string>(CoreUtil.DeserializeList<string>(Properties.Settings.Default.PluginRepositories));
+            if (!PluginRepositories.Any(x => x == Constants.MainPluginRepository)) {
+                // We enforce that the main plugin repository is always present
+                PluginRepositories.Insert(0, Constants.MainPluginRepository);
+            }
+
+            RemovePluginRepositoryCommand = new RelayCommand(RemovePluginRepository);
+            AddPluginRepositoryCommand = new RelayCommand(AddPluginRepository);
             OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -83,6 +94,7 @@ namespace NINA.ViewModel {
             OpenPS3FileDiagCommand = new RelayCommand(OpenPS3FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             OpenASTAPFileDiagCommand = new RelayCommand(OpenASTAPFileDiag);
+            OpenPinPointCatalogDiagCommand = new RelayCommand(OpenPinPointCatalogDiag);
             OpenHorizonFilePathDiagCommand = new RelayCommand(OpenHorizonFilePathDiag);
             OpenLogFolderCommand = new RelayCommand(OpenLogFolder);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
@@ -158,6 +170,8 @@ namespace NINA.ViewModel {
             ImagePatterns = patterns;
             RaisePropertyChanged(nameof(FilePatternPreview));
         }
+
+        public AsyncObservableCollection<string> PluginRepositories { get; set; }
 
         public string FilePattern {
             get => profileService.ActiveProfile.ImageFileSettings.FilePattern;
@@ -389,16 +403,12 @@ namespace NINA.ViewModel {
         }
 
         private void RemoveFilter(object obj) {
-            var filters = ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-            if (SelectedFilter == null && filters.Count > 0) {
-                SelectedFilter = filters.Last();
-            }
-            filters.Remove(SelectedFilter);
-            if (filters.Count > 0) {
-                SelectedFilter = filters.Last();
-            }
-            for (short i = 0; i < filters.Count; i++) {
-                filters[i].Position = i;
+            if (obj is FilterInfo filter) {
+                var filters = ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                filters.Remove(filter);
+                for (short i = 0; i < filters.Count; i++) {
+                    filters[i].Position = i;
+                }
             }
         }
 
@@ -422,23 +432,22 @@ namespace NINA.ViewModel {
         }
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+            var dialog = new OpenFolderDialog();
+            dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.SelectedPath;
-                }
+            if (dialog.ShowDialog() == true) {
+                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.FolderName;
             }
         }
 
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            var dialog = new OpenFolderDialog();
+            dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.SelectedPath;
-                }
+            if (dialog.ShowDialog() == true) {
+                ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.FolderName;
             }
+
         }
 
         private void DownloadIndexes(object obj) {
@@ -447,12 +456,10 @@ namespace NINA.ViewModel {
         }
 
         private void OpenImageFileDiag(object o) {
-            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
-                diag.SelectedPath = ActiveProfile.ImageFileSettings.FilePath;
-                System.Windows.Forms.DialogResult result = diag.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.ImageFileSettings.FilePath = diag.SelectedPath + "\\";
-                }
+            var diag = new OpenFolderDialog();
+            diag.FolderName = ActiveProfile.ImageFileSettings.FilePath;
+            if (diag.ShowDialog() == true) {
+                ActiveProfile.ImageFileSettings.FilePath = diag.FolderName + "\\";
             }
         }
 
@@ -469,43 +476,40 @@ namespace NINA.ViewModel {
         }
 
         private void OpenSequenceFolderDiag(object o) {
-            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
-                diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
-                System.Windows.Forms.DialogResult result = diag.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.SelectedPath + "\\";
-                }
+            var diag = new OpenFolderDialog();
+            diag.InitialDirectory = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            if (diag.ShowDialog() == true) {
+                ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.FolderName + "\\";
             }
+
         }
 
         private void OpenTargetsFolderDiag(object o) {
-            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
-                diag.SelectedPath = ActiveProfile.SequenceSettings.SequencerTargetsFolder;
-                System.Windows.Forms.DialogResult result = diag.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.SequenceSettings.SequencerTargetsFolder = diag.SelectedPath + "\\";
-                }
+            var diag = new OpenFolderDialog();
+            diag.InitialDirectory = ActiveProfile.SequenceSettings.SequencerTargetsFolder;
+            if (diag.ShowDialog() == true) {
+                ActiveProfile.SequenceSettings.SequencerTargetsFolder = diag.FolderName + "\\";
             }
+
         }
 
         private void OpenSequenceTemplateFolderDiag(object o) {
-            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
-                diag.SelectedPath = ActiveProfile.SequenceSettings.SequencerTemplatesFolder;
-                System.Windows.Forms.DialogResult result = diag.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.SequenceSettings.SequencerTemplatesFolder = diag.SelectedPath + "\\";
-                }
+            var diag = new OpenFolderDialog();
+            diag.InitialDirectory = ActiveProfile.SequenceSettings.SequencerTemplatesFolder;
+            if (diag.ShowDialog() == true) {
+                ActiveProfile.SequenceSettings.SequencerTemplatesFolder = diag.FolderName + "\\";
+
             }
         }
 
         private void OpenCygwinFileDiag(object o) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
+            var dialog = new OpenFolderDialog();
+            dialog.InitialDirectory = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.SelectedPath;
-                }
+            if(dialog.ShowDialog() == true) {
+                ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.FolderName;
             }
+
         }
 
         private void OpenPS2FileDiag(object o) {
@@ -533,6 +537,14 @@ namespace NINA.ViewModel {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation, "astap.exe", "ASTAP|astap.exe");
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.PlateSolveSettings.ASTAPLocation = dialog.FileName;
+            }
+        }
+
+        private void OpenPinPointCatalogDiag(object o) {
+            var dialog = new OpenFolderDialog();
+
+            if (dialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(dialog.FolderName)) {
+                ActiveProfile.PlateSolveSettings.PinPointCatalogRoot = dialog.FolderName;
             }
         }
 
@@ -576,6 +588,52 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void AddPluginRepository(object obj) {
+            var box = new InputBox(Loc.Instance["LblPluginRepositoryEnterUrl"], "https://<repository url>");
+            box.Owner = System.Windows.Application.Current.MainWindow;
+            box.Width = 350;
+            box.Height = 150;
+            box.Show();
+            box.Closing += (sender, e) => {
+                var d = sender as InputBox;
+                if (d.Canceled) {
+                    return;
+                }
+                var url = box.InputText;
+                bool isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                if (!isValidUrl) {
+                    Notification.ShowError(string.Format(Loc.Instance["LblPluginRepositoryUrlInvalid"], url));
+                    Logger.Error($"Plugin Repository Url is invalid: {url}");
+                    return;
+                }
+                try {
+                    this.PluginRepositories.Add(url);
+                    Properties.Settings.Default.PluginRepositories = CoreUtil.SerializeList<string>(this.PluginRepositories.ToList());
+                    CoreUtil.SaveSettings(Properties.Settings.Default);
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                    Logger.Error(ex);
+                }
+            };
+        }
+
+        private void RemovePluginRepository(object obj) {
+            if (obj is string url) {
+                try {
+                    if (url == Constants.MainPluginRepository) {
+                        // Removing the main repository is ignored
+                        return;
+                    }
+                    this.PluginRepositories.Remove(url);
+                    Properties.Settings.Default.PluginRepositories = CoreUtil.SerializeList<string>(this.PluginRepositories.ToList());
+                    CoreUtil.SaveSettings(Properties.Settings.Default);
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                    Logger.Error(ex);
+                }
+            }
+        }
+
         public ICommand DownloadIndexesCommand { get; private set; }
 
         public ICommand OpenCygwinFileDiagCommand { get; private set; }
@@ -589,6 +647,8 @@ namespace NINA.ViewModel {
         public ICommand OpenHorizonFilePathDiagCommand { get; private set; }
 
         public ICommand OpenASTAPFileDiagCommand { get; private set; }
+
+        public ICommand OpenPinPointCatalogDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
         public ICommand SensorAnalysisFolderChangedCommand { get; private set; }
@@ -622,6 +682,9 @@ namespace NINA.ViewModel {
         public ICommand SiteFromPlanetariumCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
+
+        public ICommand RemovePluginRepositoryCommand { get; }
+        public ICommand AddPluginRepositoryCommand { get; }
 
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
@@ -733,9 +796,13 @@ namespace NINA.ViewModel {
             ActiveProfile.ColorSchemaSettings.ToggleSchema();
         }
 
+        public static Dc3PoinPointCatalogEnum[] Dc3PoinPointCatalogs => Enum.GetValues(typeof(Dc3PoinPointCatalogEnum))
+                    .Cast<Dc3PoinPointCatalogEnum>()
+                    .ToArray();
+
 #pragma warning disable CS0612 // Type or member is obsolete
 
-        public FileTypeEnum[] FileTypes => Enum.GetValues(typeof(FileTypeEnum))
+        public static FileTypeEnum[] FileTypes => Enum.GetValues(typeof(FileTypeEnum))
                     .Cast<FileTypeEnum>()
                     .Where(p => p != FileTypeEnum.RAW)
                     .Where(p => p != FileTypeEnum.TIFF_LZW)
@@ -744,25 +811,29 @@ namespace NINA.ViewModel {
 
 #pragma warning restore CS0612 // Type or member is obsolete
 
-        public TIFFCompressionTypeEnum[] TIFFCompressionTypes => Enum.GetValues(typeof(TIFFCompressionTypeEnum))
+        public static TIFFCompressionTypeEnum[] TIFFCompressionTypes => Enum.GetValues(typeof(TIFFCompressionTypeEnum))
                     .Cast<TIFFCompressionTypeEnum>()
                     .ToArray();
 
-        public XISFCompressionTypeEnum[] XISFCompressionTypes => Enum.GetValues(typeof(XISFCompressionTypeEnum))
+        public static XISFCompressionTypeEnum[] XISFCompressionTypes => Enum.GetValues(typeof(XISFCompressionTypeEnum))
                     .Cast<XISFCompressionTypeEnum>()
                     .ToArray();
 
-        public XISFChecksumTypeEnum[] XISFChecksumTypes =>
+        public static XISFChecksumTypeEnum[] XISFChecksumTypes =>
                 /*
-* NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
-* being defined as part of the XISF 1.0 specification. We will not permit the user to choose
-* these as a checksum type until PixInsight also supports them.
-*/
+    * NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
+    * being defined as part of the XISF 1.0 specification. We will not permit the user to choose
+    * these as a checksum type until PixInsight also supports them.
+    */
                 Enum.GetValues(typeof(XISFChecksumTypeEnum))
                     .Cast<XISFChecksumTypeEnum>()
                     .Where(p => p != XISFChecksumTypeEnum.SHA3_256)
                     .Where(p => p != XISFChecksumTypeEnum.SHA3_512)
                     .ToArray();
+
+        public static FITSCompressionTypeEnum[] FITSCompressionTypes => Enum.GetValues(typeof(FITSCompressionTypeEnum))
+                   .Cast<FITSCompressionTypeEnum>()
+                   .ToArray();
 
         private ImagePatterns _imagePatterns;
 
@@ -816,7 +887,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
- 
+
 
         public int SaveQueueSize {
             get => Properties.Settings.Default.SaveQueueSize;

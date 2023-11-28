@@ -5554,7 +5554,7 @@ Dotyczy tylko sterownika kamery ASCOM!</value>
     <value>Sprawdź aktualizacje</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Zainstaluj za pośrednictwem menedżera wtyczek N.I.N.A. lub ręcznie pobierz i skopiuj plik DLL do %localappdata%\NINA\Plugins z:</value>
+    <value>Zainstaluj za pośrednictwem menedżera wtyczek N.I.N.A. lub ręcznie pobierz i skopiuj plik DLL do %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; z:</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>Zainstaluj za pośrednictwem menedżera wtyczek N.I.N.A. lub pobierz ręcznie i uruchom konfigurację z:</value>
@@ -6696,5 +6696,169 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
     <value>Podczas podłączania teleskopu określa się zachowanie w przypadku, gdy pozycja montażowa i pozycja aplikacji są różne.</value>
+  </data>
+  <data name="LblPHD2PeakDec" xml:space="preserve">
+    <value>Szczyt Dec: {0} ({1}")</value>
+  </data>
+  <data name="LblPHD2PeakRA" xml:space="preserve">
+    <value>Szczyt RA: {0} ({1}")</value>
+  </data>
+  <data name="LblPluginRepositories" xml:space="preserve">
+    <value>Repozytoria wtyczek</value>
+  </data>
+  <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
+    <value>Wprowadź adres URL repozytorium wtyczki</value>
+  </data>
+  <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
+    <value>Adres URL repozytorium wtyczek jest nieprawidłowy: {0}</value>
+  </data>
+  <data name="LblTSXImageLink" xml:space="preserve">
+    <value>Link do obrazu TheSkyX</value>
+  </data>
+  <data name="LblTSXHost" xml:space="preserve">
+    <value>Host TheSkyX</value>
+  </data>
+  <data name="LblTSXPort" xml:space="preserve">
+    <value>Port TheSkyX</value>
+  </data>
+  <data name="LblZwoMonoBinMode" xml:space="preserve">
+    <value>Mono bin</value>
+  </data>
+  <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
+    <value>Po włączeniu aparat będzie uśredniał zebrane piksele w celu uzyskania obrazu monochromatycznego</value>
+  </data>
+  <data name="LblPinPoint" xml:space="preserve">
+    <value>PinPoint</value>
+  </data>
+  <data name="LblPinPointCatalogRoot" xml:space="preserve">
+    <value>Katalog główny</value>
+  </data>
+  <data name="LblPinPointFailedInitialize" xml:space="preserve">
+    <value>Nie udało się zainicjować silnika Astrometrycznego PinPoint</value>
+  </data>
+  <data name="LblPinPointNotInstalled" xml:space="preserve">
+    <value>Inicjalizacja silnika astrometrycznego PinPoint nie powiodła się. Wygląda na to, że ten silnik lub jego 64-bitowy komponent nie jest zainstalowany.</value>
+  </data>
+  <data name="LblPinPointReferenceCatalog" xml:space="preserve">
+    <value>Katalog referencyjny</value>
+  </data>
+  <data name="LblPinPointCatAtas" xml:space="preserve">
+    <value>ATLAS / PanSTARRS+Gaia</value>
+  </data>
+  <data name="LblPinPointCatGscact" xml:space="preserve">
+    <value>Ulepszona gwiazda guidingu 1.1</value>
+  </data>
+  <data name="LblPinPointCatTycho2" xml:space="preserve">
+    <value>ESA Tycho-2</value>
+  </data>
+  <data name="LblPinPointCatType" xml:space="preserve">
+    <value>Katalog referencyjny</value>
+  </data>
+  <data name="LblPinPointCatUcac2" xml:space="preserve">
+    <value>USNO UKAC2</value>
+  </data>
+  <data name="LblPinPointCatUcac3" xml:space="preserve">
+    <value>USNO UKAC3</value>
+  </data>
+  <data name="LblPinPointCatUcac4" xml:space="preserve">
+    <value>USNO UKAC4</value>
+  </data>
+  <data name="LblPinPointCatUsnoA" xml:space="preserve">
+    <value>USNO A2.0</value>
+  </data>
+  <data name="LblPinPointCatUsnoB" xml:space="preserve">
+    <value>B1.0 USNO</value>
+  </data>
+  <data name="LblPinPointExpansion" xml:space="preserve">
+    <value>Rozszerzenie</value>
+  </data>
+  <data name="LblPinPointExpansionToolTip" xml:space="preserve">
+    <value>Rozszerzenie obszaru wyszukiwania katalogu poza wymiarem obrazu (min = 0, max = 80, domyślnie = 40)</value>
+  </data>
+  <data name="LblPinPointMaxMagnitude" xml:space="preserve">
+    <value>Max magnitudo</value>
+  </data>
+  <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
+    <value>Maksymalna wielkość (fazy) dla wyboru gwiazd z katalogu referencyjnego (min = 2.0, max = 20.0, domyślnie = 20.0)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
+    <value>Host API AllSky</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
+    <value>Astrometry.net/host API AllSky (domyślnie = nowa.astrometry.net)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
+    <value>Klucz API AllSky</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
+    <value>Astrometry.net/klucz API AllSky (opcjonalnie)</value>
+  </data>
+  <data name="LblPinPointAllSkySolve" xml:space="preserve">
+    <value>Rozwiązanie PinPoint AllSky</value>
+  </data>
+  <data name="LblPinPointLocalSolve" xml:space="preserve">
+    <value>Rozwiązanie lokalne PinPoint</value>
+  </data>
+  <data name="LblPinPointErrorMessage" xml:space="preserve">
+    <value>Wiadomość o błędzie PinPoint</value>
+  </data>
+  <data name="LblUnableToSetMountElevation" xml:space="preserve">
+    <value>Nie można ustawić wysokości montażu na {0}!</value>
+  </data>
+  <data name="LblSaveInCache" xml:space="preserve">
+    <value>Pamięć podręczna obrazu do użytku offline</value>
+    <comment>To store an image automatically in the framing assistant offline cache or not</comment>
+  </data>
+  <data name="LblSaveInCacheTooltip" xml:space="preserve">
+    <value>Gdy włączone, obraz zostanie zapisany na Twoim urządzeniu i może być wyświetlony na mapie nieba</value>
+  </data>
+  <data name="LblClose" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="LblShowHistogram" xml:space="preserve">
+    <value>Pokaż Histogram</value>
+  </data>
+  <data name="LblInfoOnly" xml:space="preserve">
+    <value>Tylko info</value>
+  </data>
+  <data name="LblInfoOnlyTooltip" xml:space="preserve">
+    <value>Przełącz między wyświetlaniem treści informacyjnych a wyświetlaniem interaktywnych urządzeń sterujących w panelu</value>
+  </data>
+  <data name="LblParked" xml:space="preserve">
+    <value>Zaparkowany</value>
+    <comment>When mount is at park position</comment>
+  </data>
+  <data name="LblSlewing" xml:space="preserve">
+    <value>Obracam się</value>
+  </data>
+  <data name="LblCompressionGZIP1" xml:space="preserve">
+    <value>GZIP 1</value>
+  </data>
+  <data name="LblCompressionGZIP2" xml:space="preserve">
+    <value>GZIP 2</value>
+  </data>
+  <data name="LblCompressionHCOMPRESS" xml:space="preserve">
+    <value>HCOMPRESS</value>
+  </data>
+  <data name="LblCompressionPLIO" xml:space="preserve">
+    <value>PLIO</value>
+  </data>
+  <data name="LblCompressionRICE" xml:space="preserve">
+    <value>RICE</value>
+  </data>
+  <data name="LblAddFzExtension" xml:space="preserve">
+    <value>Dodaj rozszerzenie .fz</value>
+  </data>
+  <data name="LblAddFzExtensionTooltip" xml:space="preserve">
+    <value>Dodaje dodatkowe rozszerzenie .fz do nazwy pliku skompresowanych plików FITS. Przykład: nazwa pliku.fits.fz</value>
+  </data>
+  <data name="LblASCOMCreate32BitData" xml:space="preserve">
+    <value>Utwórz 32-bitowe dane</value>
+  </data>
+  <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
+    <value>Gdy funkcja jest włączona, N.I.N.A. będzie generować dane obrazu z 32-bitową głębokością, zwiększając zakres wartości pikseli. 
+Należy jednak pamiętać, że ten proces będzie wymagał większej ilości pamięci, wydłużenia czasu przetwarzania i wykorzystania dodatkowego miejsca na dysku do każdej ekspozycji.
+Pamiętaj, że tylko formaty plików XISF i FITS mogą przechowywać dane obrazu w tym 32-bitowym formacie. 
+Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębię. Jeśli sterownik nie obsługuje 32-bitów, zwiększony rozmiar pliku wynikający z tego ustawienia doprowadziłby tylko do marnowania miejsca bez poprawy danych obrazu.</value>
   </data>
 </root>

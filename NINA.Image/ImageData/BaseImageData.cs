@@ -36,7 +36,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Image.ImageData {
 
-    public class BaseImageData : IImageData {
+    public partial class BaseImageData : IImageData {
         protected readonly IProfileService profileService;
         protected readonly IStarDetection starDetection;
         protected readonly IStarAnnotator starAnnotator;
@@ -55,11 +55,11 @@ namespace NINA.Image.ImageData {
         }
 
         public BaseImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData, IProfileService profileService, IStarDetection starDetection, IStarAnnotator starAnnotator) {
-            this.Data = imageArray;
-            this.MetaData = metaData;
-            this.Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, gain: metaData.Camera.Gain);
-            this.StarDetectionAnalysis = starDetection.CreateAnalysis();
-            this.Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
+            Data = imageArray;
+            MetaData = metaData;
+            Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, gain: metaData.Camera.Gain);
+            StarDetectionAnalysis = starDetection.CreateAnalysis();
+            Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
             this.profileService = profileService;
             this.starDetection = starDetection;
             this.starAnnotator = starAnnotator;
@@ -76,15 +76,15 @@ namespace NINA.Image.ImageData {
         public IStarDetectionAnalysis StarDetectionAnalysis { get; set; }
 
         public IRenderedImage RenderImage() {
-            return RenderedImage.Create(this.RenderBitmapSource(), this, profileService, starDetection, starAnnotator);
+            return RenderedImage.Create(RenderBitmapSource(), this, profileService, starDetection, starAnnotator);
         }
 
         public BitmapSource RenderBitmapSource() {
-            return ImageUtility.CreateSourceFromArray(this.Data, this.Properties, PixelFormats.Gray16);
+            return ImageUtility.CreateSourceFromArray(Data, Properties, PixelFormats.Gray16);
         }
 
         public void SetImageStatistics(IImageStatistics imageStatistics) {
-            this.Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(imageStatistics));
+            Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(() => Task.FromResult(imageStatistics));
         }
 
         #region "Save"
@@ -132,18 +132,18 @@ namespace NINA.Image.ImageData {
         /// <returns></returns>
         public string FinalizeSave(string file, string pattern, IList<ImagePattern> customPatterns) {
             try {
-                if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(this.MetaData.Camera.Temperature) && !string.IsNullOrEmpty(this.Data.RAWType)) {
+                if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(MetaData.Camera.Temperature) && !string.IsNullOrEmpty(Data.RAWType)) {
                     string sensorTemp = GetSensorTempFromExifTool(file);
                     pattern = pattern.Replace(ImagePatternKeys.SensorTemp, sensorTemp);
                 }
 
                 var imagePatterns = GetImagePatterns();
-                foreach(var cp in customPatterns) {
+                foreach (var cp in customPatterns) {
                     imagePatterns.Add(cp);
                 }
 
                 var fileName = imagePatterns.GetImageFileString(pattern);
-                var extension = Path.GetExtension(file);
+                var extension = GetFileExtensionsRegex().Match(file).Value;
                 var targetPath = Path.GetDirectoryName(file);
                 var newFileName = CoreUtil.GetUniqueFilePath(Path.Combine(targetPath, $"{fileName}{extension}"));
 
@@ -152,7 +152,7 @@ namespace NINA.Image.ImageData {
                     fi.Directory.Create();
                 }
 
-                FileInfo fileinfo = new FileInfo(file);
+                var fileinfo = new FileInfo(file);
 
                 Logger.Info($"Finalize image and moving it to {newFileName}");
                 fileinfo.MoveTo(newFileName);
@@ -164,6 +164,9 @@ namespace NINA.Image.ImageData {
             } finally {
             }
         }
+
+        [GeneratedRegex(@"(?:(?:\.\w+)?\.\w+$)")]
+        private static partial Regex GetFileExtensionsRegex();
 
         private string GetSensorTempFromExifTool(string file) {
             string tempString = string.Empty;
@@ -184,11 +187,11 @@ namespace NINA.Image.ImageData {
                 process.StartInfo = startInfo;
                 process.EnableRaisingEvents = true;
 
-                process.OutputDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                process.OutputDataReceived += (sender, e) => {
                     sb.AppendLine(e.Data);
                 };
 
-                process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                process.ErrorDataReceived += (sender, e) => {
                     sb.AppendLine(e.Data);
                 };
 
@@ -217,22 +220,22 @@ namespace NINA.Image.ImageData {
 
         public ImagePatterns GetImagePatterns() {
             var p = new ImagePatterns();
-            var metadata = this.MetaData;
+            var metadata = MetaData;
             p.Set(ImagePatternKeys.Filter, metadata.FilterWheel.Filter);
             p.Set(ImagePatternKeys.ExposureTime, metadata.Image.ExposureTime);
             p.Set(ImagePatternKeys.ApplicationStartDate, CoreUtil.ApplicationStartDate.ToString("yyyy-MM-dd"));
-            p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd"));
 
             // ExposureStart is initialized to DateTime.MinValue, and we cannot subtract time from that. Only evaluate
             // the $$DATEMINUS12$$ pattern if the time is at least 12 hours on from DateTime.MinValue.
             if (metadata.Image.ExposureStart > DateTime.MinValue.AddHours(12)) {
-                p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
+                p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.ToLocalTime().AddHours(-12).ToString("yyyy-MM-dd"));
             }
 
             p.Set(ImagePatternKeys.DateUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-dd"));
-            p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToString("HH-mm-ss"));
+            p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToLocalTime().ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.TimeUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("HH-mm-ss"));
-            p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd_HH-mm-ss"));
             p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber.ToString("0000"));
             p.Set(ImagePatternKeys.ImageType, metadata.Image.ImageType);
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
@@ -280,8 +283,8 @@ namespace NINA.Image.ImageData {
                 p.Set(ImagePatternKeys.USBLimit, metadata.Camera.USBLimit);
             }
 
-            if (!double.IsNaN(this.StarDetectionAnalysis.HFR)) {
-                p.Set(ImagePatternKeys.HFR, this.StarDetectionAnalysis.HFR);
+            if (!double.IsNaN(StarDetectionAnalysis.HFR)) {
+                p.Set(ImagePatternKeys.HFR, StarDetectionAnalysis.HFR);
             }
 
             if (!double.IsNaN(metadata.WeatherData.SkyQuality)) {
@@ -304,8 +307,8 @@ namespace NINA.Image.ImageData {
                 p.Set(ImagePatternKeys.RotatorAngle, metadata.Rotator.MechanicalPosition);
             }
 
-            if (this.StarDetectionAnalysis.DetectedStars >= 0) {
-                p.Set(ImagePatternKeys.StarCount, this.StarDetectionAnalysis.DetectedStars);
+            if (StarDetectionAnalysis.DetectedStars >= 0) {
+                p.Set(ImagePatternKeys.StarCount, StarDetectionAnalysis.DetectedStars);
             }
 
             p.Set(ImagePatternKeys.SequenceTitle, metadata.Sequence.Title);
@@ -401,7 +404,7 @@ namespace NINA.Image.ImageData {
                     }
                     sb.AppendLine("END");
                     metadata.Title = sb.ToString();
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error("Failed to generate TIFF metadata", ex);
                 }
 
@@ -413,35 +416,74 @@ namespace NINA.Image.ImageData {
             return uniquePath;
         }
 
+        private static CfitsioNative.COMPRESSION GetFITSCompression(FITSCompressionTypeEnum fITSCompressionTypeEnum) {
+            return fITSCompressionTypeEnum switch {
+                FITSCompressionTypeEnum.NONE => CfitsioNative.COMPRESSION.NOCOMPRESS,
+                FITSCompressionTypeEnum.RICE => CfitsioNative.COMPRESSION.RICE_1,
+                FITSCompressionTypeEnum.PLIO => CfitsioNative.COMPRESSION.PLIO_1,
+                FITSCompressionTypeEnum.HCOMPRESS => CfitsioNative.COMPRESSION.HCOMPRESS_1,
+                FITSCompressionTypeEnum.GZIP1 => CfitsioNative.COMPRESSION.GZIP_1,
+                FITSCompressionTypeEnum.GZIP2 => CfitsioNative.COMPRESSION.GZIP_2,
+                _ => CfitsioNative.COMPRESSION.NOCOMPRESS,
+            };
+        }
+
         private string SaveFits(FileSaveInfo fileSaveInfo) {
-            FITS f = new FITS(
-                Data.FlatArray,
-                Properties.Width,
-                Properties.Height
-            );
-
-            f.PopulateHeaderCards(MetaData);
-
+            string extension = ".fits";
             Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
-            string uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(".fits"));
 
-            using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                f.Write(fs);
+            if(fileSaveInfo.FITSUseLegacyWriter) {
+                var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension));
+                FITS f = new FITS(
+                    Data.FlatArray,
+                    Properties.Width,
+                    Properties.Height
+                );
+
+                f.PopulateHeaderCards(MetaData);
+
+                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
+                    f.Write(fs);
+                }
+                return uniquePath;
+            } else {
+                if (fileSaveInfo.FITSAddFzExtension && fileSaveInfo.FITSCompressionType != FITSCompressionTypeEnum.NONE) {
+                    extension += ".fz";
+                }
+                var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension));
+
+                var compression = GetFITSCompression(fileSaveInfo.FITSCompressionType);
+
+                CFitsioFITS f = null;
+                try {
+                    if (Data.FlatArrayInt != null) {
+                        f = new CFitsioFITS(uniquePath, Data.FlatArrayInt, Properties.Width, Properties.Height, compression);
+                    } else {
+                        f = new CFitsioFITS(uniquePath, Data.FlatArray, Properties.Width, Properties.Height, compression);
+                    }
+                    f.PopulateHeaderCards(MetaData);
+                } finally {
+                    f?.Close();
+                }
+                return uniquePath;
             }
-
-            return uniquePath;
         }
 
         private string SaveXisf(FileSaveInfo fileSaveInfo) {
             XISFHeader header = new XISFHeader();
 
-            header.AddImageMetaData(Properties, MetaData.Image.ImageType);
+            var sampleFormat = Data.FlatArrayInt != null ? XISFSampleFormat.UInt32 : XISFSampleFormat.UInt16;
+            header.AddImageMetaData(Properties, MetaData.Image.ImageType, sampleFormat);
 
             header.Populate(MetaData);
 
             XISF img = new XISF(header);
 
-            img.AddAttachedImage(Data.FlatArray, fileSaveInfo);
+            if (Data.FlatArrayInt != null) {
+                img.AddAttachedImageInt(Data.FlatArrayInt, fileSaveInfo);
+            } else {
+                img.AddAttachedImage(Data.FlatArray, fileSaveInfo);
+            }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
             string uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(".xisf"));
@@ -496,6 +538,7 @@ namespace NINA.Image.ImageData {
 
                     case ".fit":
                     case ".fits":
+                    case ".fz":
                         return await FITS.Load(new Uri(path), isBayered, imageDataFactory, ct);
 
                     case ".cr2":
@@ -526,7 +569,7 @@ namespace NINA.Image.ImageData {
 
         private static async Task<IImageData> RawToImageArray(string path, int bitDepth, IRawConverter rawConverter, CancellationToken ct) {
             using (var fs = new FileStream(path, FileMode.Open)) {
-                using (var ms = new System.IO.MemoryStream()) {
+                using (var ms = new MemoryStream()) {
                     await fs.CopyToAsync(ms);
                     var rawType = Path.GetExtension(path).ToLower().Substring(1);
                     var data = await rawConverter.Convert(s: ms, bitDepth: bitDepth, rawType: rawType, metaData: new ImageMetaData(), token: ct);
@@ -539,13 +582,13 @@ namespace NINA.Image.ImageData {
             var bmp = new FormatConvertedBitmap();
             bmp.BeginInit();
             bmp.Source = decoder.Frames[0];
-            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bmp.DestinationFormat = PixelFormats.Gray16;
             bmp.EndInit();
 
             var metaData = new ImageMetaData();
             if (decoder.Frames[0].Metadata is BitmapMetadata bmpMd) {
                 try {
-                if (!string.IsNullOrWhiteSpace(bmpMd.Title)) {
+                    if (!string.IsNullOrWhiteSpace(bmpMd.Title)) {
                         /* Parse potential FITS header on a best guess base by checking for a start of "SIMPLE" and stop at "END" or no more lines 
                          * Anything that would break the parse will just result in a failed meta data read and empty meta data is used instead.
                          */
@@ -557,36 +600,36 @@ namespace NINA.Image.ImageData {
                                 do {
                                     line = reader.ReadLine();
                                     if (line == null) { continue; }
-                                    if(line == "END") { break; }
+                                    if (line == "END") { break; }
 
                                     // do something with the line
                                     var indexSlash = line.IndexOf('/');
-                                    
+
                                     var key = line.Substring(0, 8).Trim();
 
                                     var value = string.Empty;
-                                    if(indexSlash > 0) {
+                                    if (indexSlash > 0) {
                                         value = line.Substring(9, indexSlash - 10).Trim();
                                     } else {
                                         value = line.Substring(9, 80 - 9).Trim();
-                                    }                                
+                                    }
 
                                     var comment = string.Empty;
-                                    if(indexSlash > 0) {
+                                    if (indexSlash > 0) {
                                         comment = line.Substring(indexSlash + 1, line.Length - indexSlash - 1).Trim();
                                     }
-                                
+
 
                                     if (value.Contains(".")) {
                                         if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedValue)) {
                                             fitsHeader.Add(key, parsedValue, comment);
                                         }
                                     } else {
-                                        if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedValue)) { 
+                                        if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedValue)) {
                                             fitsHeader.Add(key, parsedValue, comment);
                                         }
                                     }
-                                
+
 
                                 } while (line != null);
 

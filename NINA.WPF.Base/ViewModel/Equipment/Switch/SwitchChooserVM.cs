@@ -22,10 +22,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Equipment.Utility;
-using NINA.Equipment.Equipment.MySwitch.Eagle;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
-using NINA.Equipment.Equipment.MySwitch.Eagle4;
 using NINA.Equipment.Interfaces.ViewModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
@@ -37,11 +35,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
-            try {                
-                    var ascomInteraction = new ASCOMInteraction(profileService);
-                    var devices = new List<IDevice>();
+            try {
+                var ascomInteraction = new ASCOMInteraction(profileService);
+                var devices = new List<IDevice>();
 
-                    devices.Add(new DummyDevice(Loc.Instance["LblNoSwitch"]));
+                devices.Add(new DummyDevice(Loc.Instance["LblNoSwitch"]));
 
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
@@ -56,22 +54,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                 /* ASCOM */
                 try {
-                        foreach (ISwitchHub ascomSwitch in ascomInteraction.GetSwitches()) {
-                            devices.Add(ascomSwitch);
-                        }
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
+                    foreach (ISwitchHub ascomSwitch in ascomInteraction.GetSwitches()) {
+                        devices.Add(ascomSwitch);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
 
-                    /* PrimaLuceLab EAGLE */
-                    devices.Add(new Eagle(profileService));
-                    devices.Add(new Eagle4(profileService));
-
-                    DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id);
 
             } finally {
                 lockObj.Release();
-            }            
+            }
         }
     }
 }

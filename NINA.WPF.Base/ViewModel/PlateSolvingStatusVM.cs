@@ -29,6 +29,7 @@ namespace NINA.WPF.Base.ViewModel {
     public class PlateSolvingStatusVM : BaseINPC {
 
         public PlateSolvingStatusVM() {
+            PlateSolveHistory = new AsyncObservableCollection<PlateSolveResult>();
             Progress = new Progress<PlateSolveProgress>(x => {
                 if (x.Thumbnail != null) {
                     Thumbnail = x.Thumbnail;
@@ -38,10 +39,10 @@ namespace NINA.WPF.Base.ViewModel {
                 }
             });
         }
+        public AsyncObservableCollection<PlateSolveResult> PlateSolveHistory { get; }
 
         public string Title => Loc.Instance["LblPlateSolving"];
 
-        private PlateSolveResult plateSolveResult;
 
         public IProgress<PlateSolveProgress> Progress { get; }
 
@@ -61,34 +62,29 @@ namespace NINA.WPF.Base.ViewModel {
             }
         }
 
+        private object lockObj = new object();
+        private PlateSolveResult plateSolveResult;
         public PlateSolveResult PlateSolveResult {
             get => plateSolveResult;
 
             set {
                 plateSolveResult = value;
-                if (value != null) {
-                    var existingItem = PlateSolveHistory.FirstOrDefault(x => x.SolveTime == value.SolveTime);
-                    if (existingItem != null) {
-                        //In case an existing item is set again
-                        var index = PlateSolveHistory.IndexOf(existingItem);
-                        PlateSolveHistory[index] = existingItem;
-                    } else {
-                        PlateSolveHistory.Add(value);
+                if (value != null) {     
+                   lock (lockObj) {
+                        var existingItem = PlateSolveHistory.FirstOrDefault(x => x.SolveTime == value.SolveTime);
+                        if (existingItem != null) {
+                            //In case an existing item is set again
+                            var index = PlateSolveHistory.IndexOf(existingItem);
+                            PlateSolveHistory[index] = existingItem;
+                        } else {
+                            PlateSolveHistory.Add(value);
+                        }
                     }
                 }
                 RaisePropertyChanged();
             }
         }
 
-        private AsyncObservableCollection<PlateSolveResult> plateSolveHistory = new AsyncObservableCollection<PlateSolveResult>();
-
-        public AsyncObservableCollection<PlateSolveResult> PlateSolveHistory {
-            get => plateSolveHistory;
-            private set {
-                plateSolveHistory = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private BitmapSource thumbnail;
 

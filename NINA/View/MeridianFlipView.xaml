@@ -127,6 +127,7 @@
                                                             Data="{StaticResource CheckedCircledSVG}"
                                                             Fill="{StaticResource ButtonForegroundBrush}"
                                                             Stretch="Uniform"
+                                                            UseLayoutRounding="True"
                                                             Visibility="{Binding Finished, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
                                                     </StackPanel>
                                                 </Grid>

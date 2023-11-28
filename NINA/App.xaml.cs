@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -106,9 +107,11 @@ namespace NINA {
                         
                     }
 
-                    Application.Current.Shutdown();
                     // App restart is required, as even after deleting the configuration files the configuration manager still tries to use the old values
-                    System.Windows.Forms.Application.Restart();
+                    _profileService.Release();
+                    var startInfo = new ProcessStartInfo(Environment.ProcessPath) { UseShellExecute = false };
+                    Process.Start(startInfo);
+                    Application.Current.Shutdown();
                 } catch (Exception configDeleteException) {
                     userSettingsException = configDeleteException;
                 }

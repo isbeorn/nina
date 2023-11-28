@@ -33,8 +33,8 @@ namespace NINA.View {
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e) {
             // User scroll event : set or unset auto-scroll mode
-            if (e.ExtentWidthChange == 0) {   // Content unchanged : user scroll event
-                if (ScrollViewer.HorizontalOffset == ScrollViewer.ScrollableWidth) {
+            if (e.ExtentHeightChange == 0) {   // Content unchanged : user scroll event
+                if (ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight) {
                     // Scroll bar is most right position Set autoscroll mode
                     _autoScroll = true;
                 } else {
@@ -44,9 +44,9 @@ namespace NINA.View {
             }
 
             // Content scroll event : auto-scroll eventually
-            if (_autoScroll && e.ExtentWidthChange != 0) {
+            if (_autoScroll && e.ExtentHeightChange != 0) {
                 // Content changed and auto-scroll mode set Autoscroll
-                ScrollViewer.ScrollToHorizontalOffset(ScrollViewer.ExtentWidth);
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
             }
         }
     }

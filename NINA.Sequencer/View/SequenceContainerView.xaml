@@ -36,6 +36,13 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <i:Interaction.Behaviors>
+        <!--  Drop area above and below the Sequence Container  -->
+        <behaviors:DragOverBehavior
+            AllowDragCenter="False"
+            DragAboveSize="25"
+            DragBelowSize="15" />
+    </i:Interaction.Behaviors>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -89,7 +96,8 @@
                 x:Shared="false"
                 Data="{Binding Icon}"
                 Fill="{StaticResource PrimaryBrush}"
-                Stretch="Uniform" />
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
             <Path
                 x:Key="EntityMenuIcon"
                 Width="20"
@@ -98,7 +106,8 @@
                 x:Shared="false"
                 Data="{Binding Entity.Icon}"
                 Fill="{StaticResource PrimaryBrush}"
-                Stretch="Uniform" />
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
             <Path
                 x:Key="TemplateMenuIcon"
                 Width="20"
@@ -107,7 +116,8 @@
                 x:Shared="false"
                 Data="{Binding Container.Icon}"
                 Fill="{StaticResource PrimaryBrush}"
-                Stretch="Uniform" />
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
 
             <Style x:Key="ContainerStyle" TargetType="{x:Type GroupItem}">
                 <Setter Property="Template">
@@ -134,7 +144,6 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                             <StackPanel>
-                                <Border Height="10" BorderBrush="Transparent" />
                                 <Border
                                     x:Name="topBorder"
                                     BorderBrush="{StaticResource SecondaryBackgroundBrush}"
@@ -142,7 +151,7 @@
                                     <Grid
                                         x:Name="Head"
                                         Background="{StaticResource SecondaryBackgroundBrush}"
-                                        SnapsToDevicePixels="True">
+                                        UseLayoutRounding="True">
                                         <Grid.Resources>
                                             <Path
                                                 x:Key="TelescopeIcon"
@@ -151,7 +160,8 @@
                                                 Margin="5,0,0,0"
                                                 Data="{StaticResource TelescopeSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid.Resources>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30" />
@@ -167,14 +177,16 @@
                                             Margin="10,0,10,0"
                                             Data="{StaticResource ArrowRightSVG}"
                                             Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                         <Path
                                             x:Name="icon"
                                             Grid.Column="1"
                                             Margin="5,0,3,0"
                                             Data="{StaticResource BoxClosedSVG}"
                                             Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                         <Path
                                             Grid.Column="2"
                                             Width="20"
@@ -182,15 +194,17 @@
                                             Margin="5,0,3,0"
                                             Data="{Binding Icon}"
                                             Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                         <ContentPresenter
                                             Grid.Column="3"
                                             Margin="4,0,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             RecognizesAccessKey="True"
-                                            SnapsToDevicePixels="True">
+                                            UseLayoutRounding="True">
                                             <i:Interaction.Behaviors>
+                                                <!--  This gives the ability to drag and drop a sequence container by its header  -->
                                                 <behaviors:DragDropBehavior />
                                             </i:Interaction.Behaviors>
                                         </ContentPresenter>
@@ -216,16 +230,17 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="SequenceContainerExpander" TargetType="ninactrl:DetachingExpander">
+            <Style x:Key="SequenceContainerExpander" TargetType="{x:Type ninactrl:DetachingExpander}">
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="ninactrl:DetachingExpander">
+                        <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
                             <Border
+                                Margin="0,5,0,5"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Focusable="False"
-                                SnapsToDevicePixels="true">
+                                UseLayoutRounding="True">
                                 <DockPanel>
                                     <ToggleButton
                                         x:Name="HeaderSite"
@@ -247,27 +262,24 @@
                                         Foreground="{TemplateBinding Foreground}"
                                         IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         Style="{StaticResource SequenceContainerHeaderExpanderStyle}" />
-                                    <StackPanel DockPanel.Dock="Bottom">
-                                        <Border
-                                            Height="10"
-                                            Margin="0,0,0,0"
-                                            HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
-                                            Background="Transparent" />
-                                    </StackPanel>
-                                    <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="3,0,0,3">
+                                    <Border x:Name="ContainerBorder" BorderBrush="{StaticResource SecondaryBackgroundBrush}">
                                         <ContentPresenter
                                             x:Name="ExpandSite"
                                             Margin="{TemplateBinding Padding}"
                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            Focusable="false"
-                                            Visibility="Collapsed" />
+                                            Focusable="false" />
                                     </Border>
                                 </DockPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsExpanded" Value="true">
                                     <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="10,0,0,15" />
+                                </Trigger>
+                                <Trigger Property="IsExpanded" Value="False">
+                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
+                                    <Setter TargetName="ContainerBorder" Property="BorderThickness" Value="0" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
@@ -288,13 +300,6 @@
                     IsExpanded="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     IsHitTestVisible="True"
                     Style="{StaticResource SequenceContainerExpander}">
-                    <i:Interaction.Behaviors>
-                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
-                        <behaviors:DragOverBehavior
-                            AllowDragCenter="False"
-                            DragAboveSize="25"
-                            DragBelowSize="15" />
-                    </i:Interaction.Behaviors>
                     <ninactrl:DetachingExpander.Header>
                         <Grid
                             Name="PART_Header"
@@ -350,7 +355,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource PictureSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -383,7 +389,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource SaveAsSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -407,7 +414,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource PowerSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -431,7 +439,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource TrashCanSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -454,7 +463,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource RefreshSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -478,7 +488,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource CopySVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -501,7 +512,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource ArrowUpSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -525,7 +537,8 @@
                                                 Margin="5"
                                                 Data="{StaticResource ArrowDownSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                         <Button.ToolTip>
                                             <ToolTip>
@@ -571,8 +584,14 @@
                                                     IsHitTestVisible="True"
                                                     Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
                                                     <i:Interaction.Behaviors>
-                                                        <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc LblDragOver_AddTrigger}" DragOverDisplayAnchor="Right" />
-                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.SequenceTrigger" OnDropCommand="DropIntoTriggersCommand" />
+                                                        <!--  Drop area for Triggers  -->
+                                                        <behaviors:DragOverBehavior
+                                                            AllowDragAbove="False"
+                                                            AllowDragBelow="False"
+                                                            AllowDragCenter="{Binding Triggers.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                                            DragOverCenterText="{ns:Loc LblDragOver_AddTrigger}"
+                                                            DragOverDisplayAnchor="Right" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggersCommand" />
                                                     </i:Interaction.Behaviors>
                                                     <GroupBox.Header>
                                                         <Grid>
@@ -588,7 +607,8 @@
                                                                     Margin="5"
                                                                     Data="{StaticResource ThunderSVG}"
                                                                     Fill="{StaticResource PrimaryBrush}"
-                                                                    Stretch="Uniform" />
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
                                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTriggers}" />
                                                             </StackPanel>
 
@@ -602,7 +622,8 @@
                                                                     Margin="5"
                                                                     Data="{StaticResource AddSVG}"
                                                                     Fill="{StaticResource PrimaryBrush}"
-                                                                    Stretch="Uniform" />
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
                                                                 <Button.ToolTip>
                                                                     <ToolTip>
                                                                         <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddTrigger_Tooltip}" />
@@ -684,7 +705,8 @@
                                                                     Margin="5"
                                                                     Data="{StaticResource NotepadSVG}"
                                                                     Fill="{StaticResource PrimaryBrush}"
-                                                                    Stretch="Uniform" />
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
                                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
                                                             </StackPanel>
 
@@ -698,7 +720,8 @@
                                                                     Margin="5"
                                                                     Data="{StaticResource AddSVG}"
                                                                     Fill="{StaticResource PrimaryBrush}"
-                                                                    Stretch="Uniform" />
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
                                                                 <Button.ToolTip>
                                                                     <ToolTip>
                                                                         <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddCondition_Tooltip}" />
@@ -738,8 +761,14 @@
                                                         </Grid>
                                                     </GroupBox.Header>
                                                     <i:Interaction.Behaviors>
-                                                        <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc LblDragOver_AddCondition}" DragOverDisplayAnchor="Right" />
-                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Conditions.SequenceCondition" OnDropCommand="DropIntoConditionsCommand" />
+                                                        <!--  Drop area for Conditions  -->
+                                                        <behaviors:DragOverBehavior
+                                                            AllowDragAbove="False"
+                                                            AllowDragBelow="False"
+                                                            AllowDragCenter="{Binding Conditions.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                                            DragOverCenterText="{ns:Loc LblDragOver_AddCondition}"
+                                                            DragOverDisplayAnchor="Right" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Conditions.ISequenceCondition" OnDropCommand="DropIntoConditionsCommand" />
                                                     </i:Interaction.Behaviors>
                                                     <ItemsControl
                                                         Margin="0,0,0,0"
@@ -766,7 +795,14 @@
                                 Background="{StaticResource BackgroundBrush}"
                                 Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
                                 <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                    <!--  Drop area For Instructions  -->
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    <behaviors:DragOverBehavior
+                                        AllowDragAbove="False"
+                                        AllowDragBelow="False"
+                                        AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                        DragAboveSize="0"
+                                        DragBelowSize="0" />
                                 </i:Interaction.Behaviors>
                                 <ninactrl:HitTestGroupBox BorderBrush="Transparent">
                                     <GroupBox.Header>
@@ -783,7 +819,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource SequenceSVG}"
                                                     Fill="{StaticResource PrimaryBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblInstructions}" />
                                             </StackPanel>
 
@@ -797,7 +834,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource AddSVG}"
                                                     Fill="{StaticResource PrimaryBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                                 <Button.ToolTip>
                                                     <ToolTip>
                                                         <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddInstruction_Tooltip}" />
@@ -864,7 +902,7 @@
                                             </Button>
                                         </Grid>
                                     </GroupBox.Header>
-                                    <ItemsControl Margin="20,10,-5,10" ItemsSource="{Binding Items}">
+                                    <ItemsControl Margin="20,10,-5,25" ItemsSource="{Binding Items}">
                                         <ItemsControl.Resources>
                                             <ResourceDictionary>
                                                 <DataTemplate DataType="{x:Type seqItem:SequenceItem}">

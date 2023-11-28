@@ -37,6 +37,7 @@ using Nito.AsyncEx;
 using System.Linq;
 using NINA.Core.Enum;
 using Newtonsoft.Json.Linq;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
@@ -177,6 +178,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Dome. Id: {Dome.Id} Name: {Dome.Name} Driver Version: {Dome.DriverVersion}");
 
                             return true;
@@ -321,6 +323,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             DomeInfo = DeviceInfo.CreateDefaultInstance<DomeInfo>();
             BroadcastDomeInfo();
             RaiseAllPropertiesChanged();
+            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         private IDome dome;
@@ -774,6 +777,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         private readonly IProgress<ApplicationStatus> progress;
         private ITelescopeMediator telescopeMediator;
         private ISafetyMonitorMediator safetyMonitorMediator;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
+
         public IAsyncCommand ConnectCommand { get; private set; }
         public IAsyncCommand RescanDevicesCommand { get; private set; }
         public ICommand CancelConnectCommand { get; private set; }

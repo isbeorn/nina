@@ -48,10 +48,10 @@ namespace NINA.Test.Autofocus {
         private Mock<IFocuserMediator> focuserMediatorMock;
         private Mock<IGuiderMediator> guiderMediatorMock;
         private Mock<IImagingMediator> imagingMediatorMock;
-        private IRenderedImage renderedTestImage;
-        private IRenderedImage blurred1xRenderedImage;
-        private IRenderedImage blurred2xRenderedImage;
-        private IRenderedImage blurred3xRenderedImage;
+        private IExposureData renderedTestImage;
+        private IExposureData blurred1xRenderedImage;
+        private IExposureData blurred2xRenderedImage;
+        private IExposureData blurred3xRenderedImage;
         private ImageDataFactoryTestUtility dataFactoryUtility;
 
         [OneTimeSetUp]
@@ -65,9 +65,9 @@ namespace NINA.Test.Autofocus {
             imagingMediatorMock = new Mock<IImagingMediator>();
 
             var testImageData = await XISF.Load(new Uri(Path.Combine(TestContext.CurrentContext.TestDirectory, "Autofocus", "TestImage_Jelly.xisf")), false, dataFactoryUtility.ImageDataFactory, default);
-            renderedTestImage = testImageData.RenderImage();
+            renderedTestImage = dataFactoryUtility.ExposureDataFactory.CreateCachedExposureData(testImageData);
 
-            var bmp = ImageUtility.BitmapFromSource(renderedTestImage.Image);
+            var bmp = ImageUtility.BitmapFromSource(testImageData.RenderBitmapSource());
             var position1Bmp = new Blur().Apply(bmp);
             var position2Bmp = new Blur().Apply(position1Bmp);
             var position3Bmp = new Blur().Apply(position2Bmp);
@@ -78,9 +78,9 @@ namespace NINA.Test.Autofocus {
             source2.Freeze();
             var source3 = ImageUtility.ConvertBitmap(position3Bmp);
             source3.Freeze();
-            blurred1xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateRenderedImageFromBitmapSource(source1);
-            blurred2xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateRenderedImageFromBitmapSource(source2);
-            blurred3xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateRenderedImageFromBitmapSource(source3);
+            blurred1xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source1);
+            blurred2xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source2);
+            blurred3xRenderedImage = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source3);
         }
 
         [SetUp]
@@ -119,7 +119,7 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync((int y, CancellationToken c) => { position = y; return position; });
 
             imagingMediatorMock
-                .SetupSequence(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .SetupSequence(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()))
                 .ReturnsAsync(renderedTestImage)
                 .ReturnsAsync(blurred2xRenderedImage)
                 .ReturnsAsync(blurred1xRenderedImage)
@@ -127,6 +127,15 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync(blurred1xRenderedImage)
                 .ReturnsAsync(blurred2xRenderedImage)
                 .ReturnsAsync(renderedTestImage);
+            imagingMediatorMock
+                .SetupSequence(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred2xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred2xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage());
 
             dataFactoryUtility.StarDetectionSelectorMock.Setup(s => s.GetBehavior()).Returns(new StarDetection());
             var sut = new AutoFocusVM(profileServiceMock.Object, cameraMediatorMock.Object, fwMediatorMock.Object, focuserMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object, dataFactoryUtility.StarDetectionSelectorMock.Object, dataFactoryUtility.StarAnnotatorSelectorMock.Object);
@@ -138,7 +147,7 @@ namespace NINA.Test.Autofocus {
             position.Should().Be(5000);
             report.CalculatedFocusPoint.Position.Should().Be(5000);
             report.MeasurePoints.Should().HaveCount(5);
-            imagingMediatorMock.Verify(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Exactly(7));
+            imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(7));
         }
 
         [Test]
@@ -146,9 +155,9 @@ namespace NINA.Test.Autofocus {
             var ct = new CancellationToken();
 
             var testImageData = await XISF.Load(new Uri(Path.Combine(TestContext.CurrentContext.TestDirectory, "Autofocus", "TestImage_Jelly.xisf")), false, dataFactoryUtility.ImageDataFactory, ct);
-            var renderedTestImage = testImageData.RenderImage();
+            var renderedTestImage = dataFactoryUtility.ExposureDataFactory.CreateCachedExposureData(testImageData);
 
-            var bmp = ImageUtility.BitmapFromSource(renderedTestImage.Image);
+            var bmp = ImageUtility.BitmapFromSource(testImageData.RenderBitmapSource());
             var position1Bmp = new Blur().Apply(bmp);
             var position2Bmp = new Blur().Apply(position1Bmp);
 
@@ -156,8 +165,8 @@ namespace NINA.Test.Autofocus {
             source1.Freeze();
             var source2 = ImageUtility.ConvertBitmap(position2Bmp);
             source2.Freeze();
-            var blurredRenderedImage1 = await dataFactoryUtility.ExposureDataFactory.CreateRenderedImageFromBitmapSource(source1);
-            var blurredRenderedImage2 = await dataFactoryUtility.ExposureDataFactory.CreateRenderedImageFromBitmapSource(source2);
+            var blurredRenderedImage1 = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source1);
+            var blurredRenderedImage2 = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureDataFromBitmapSource(source2);
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusMethod).Returns(AFMethodEnum.STARHFR);
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusCurveFitting).Returns(AFCurveFittingEnum.TRENDLINES);
@@ -181,17 +190,27 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync((int y, CancellationToken c) => { position = y; return position; });
 
             imagingMediatorMock
-                .SetupSequence(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .SetupSequence(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()))
                 .ReturnsAsync(renderedTestImage)
-                .ReturnsAsync((IRenderedImage)null)
+                .ReturnsAsync((IExposureData)null)
                 .ReturnsAsync(blurredRenderedImage2)
                 .ReturnsAsync(blurredRenderedImage1)
                 .ReturnsAsync(renderedTestImage)
-                .ReturnsAsync((IRenderedImage)null)
-                .ReturnsAsync((IRenderedImage)null)
+                .ReturnsAsync((IExposureData)null)
+                .ReturnsAsync((IExposureData)null)
                 .ReturnsAsync(blurredRenderedImage1)
                 .ReturnsAsync(blurredRenderedImage2)
                 .ReturnsAsync(renderedTestImage);
+
+            imagingMediatorMock
+                .SetupSequence(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurredRenderedImage2.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurredRenderedImage1.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurredRenderedImage1.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurredRenderedImage2.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage());
 
             dataFactoryUtility.StarDetectionSelectorMock.Setup(s => s.GetBehavior()).Returns(new StarDetection());
             var sut = new AutoFocusVM(profileServiceMock.Object, cameraMediatorMock.Object, fwMediatorMock.Object, focuserMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object, dataFactoryUtility.StarDetectionSelectorMock.Object, dataFactoryUtility.StarAnnotatorSelectorMock.Object);
@@ -203,7 +222,7 @@ namespace NINA.Test.Autofocus {
             position.Should().Be(5000);
             report.CalculatedFocusPoint.Position.Should().Be(5000);
             report.MeasurePoints.Should().HaveCount(5);
-            imagingMediatorMock.Verify(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Exactly(10));
+            imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(10));
         }
 
         [Test]
@@ -232,7 +251,7 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync((int y, CancellationToken c) => { position = y; return position; });
 
             imagingMediatorMock
-                .SetupSequence(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .SetupSequence(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()))
                 .ReturnsAsync(blurred1xRenderedImage)
                 .ReturnsAsync(blurred3xRenderedImage)
                 .ReturnsAsync(blurred2xRenderedImage)
@@ -241,6 +260,17 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync(blurred1xRenderedImage)
                 .ReturnsAsync(blurred2xRenderedImage)
                 .ReturnsAsync(renderedTestImage);
+
+            imagingMediatorMock
+                .SetupSequence(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred3xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred2xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred2xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage());
 
             dataFactoryUtility.StarDetectionSelectorMock.Setup(s => s.GetBehavior()).Returns(new StarDetection());
             var sut = new AutoFocusVM(profileServiceMock.Object, cameraMediatorMock.Object, fwMediatorMock.Object, focuserMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object, dataFactoryUtility.StarDetectionSelectorMock.Object, dataFactoryUtility.StarAnnotatorSelectorMock.Object);
@@ -252,7 +282,7 @@ namespace NINA.Test.Autofocus {
             position.Should().Be(5006);
             report.CalculatedFocusPoint.Position.Should().Be(5006);
             report.MeasurePoints.Should().HaveCount(6);
-            imagingMediatorMock.Verify(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Exactly(8));
+            imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(8));
         }
 
 
@@ -285,7 +315,7 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync((int y, CancellationToken c) => { position = y; return position; });
 
             imagingMediatorMock
-                .SetupSequence(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()))
+                .SetupSequence(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()))
                 .ReturnsAsync(renderedTestImage)
                 .ReturnsAsync(blurred1xRenderedImage)
                 .ReturnsAsync(renderedTestImage)
@@ -336,6 +366,58 @@ namespace NINA.Test.Autofocus {
                 .ReturnsAsync(blurred1xRenderedImage)
                 ;
 
+
+            imagingMediatorMock
+                .SetupSequence(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(renderedTestImage.ToImageData().Result.RenderImage())
+                .ReturnsAsync(blurred1xRenderedImage.ToImageData().Result.RenderImage());
+
             dataFactoryUtility.StarDetectionSelectorMock.Setup(s => s.GetBehavior()).Returns(new StarDetection());
             var sut = new AutoFocusVM(profileServiceMock.Object, cameraMediatorMock.Object, fwMediatorMock.Object, focuserMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object, dataFactoryUtility.StarDetectionSelectorMock.Object, dataFactoryUtility.StarAnnotatorSelectorMock.Object);
 
@@ -346,7 +428,7 @@ namespace NINA.Test.Autofocus {
             position.Should().Be(5000);
             report.Should().BeNull();
 
-            imagingMediatorMock.Verify(x => x.CaptureAndPrepareImage(It.IsAny<CaptureSequence>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>()), Times.Exactly(42));
+            imagingMediatorMock.Verify(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<string>()), Times.Exactly(42));
         }
     }
 }

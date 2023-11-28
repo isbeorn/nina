@@ -31,17 +31,23 @@ namespace ZWOptical.ASISDK {
             ASI_TEMPERATURE,// return 10*temperature
             ASI_FLIP,
             ASI_AUTO_MAX_GAIN,
-            ASI_AUTO_MAX_EXP,
-            ASI_AUTO_TARGET_BRIGHTNESS,
+            ASI_AUTO_MAX_EXP,//micro second
+            ASI_AUTO_TARGET_BRIGHTNESS,//target brightness
             ASI_HARDWARE_BIN,
             ASI_HIGH_SPEED_MODE,
             ASI_COOLER_POWER_PERC,
             ASI_TARGET_TEMP,// not need *10
             ASI_COOLER_ON,
-            ASI_MONO_BIN,
+            ASI_MONO_BIN,//lead to less grid at software bin mode for color camera
             ASI_FAN_ON,
             ASI_PATTERN_ADJUST,
             ASI_ANTI_DEW_HEATER,
+            ASI_FAN_ADJUST,
+            ASI_PWRLED_BRIGNT,
+            ASI_GPS_SUPPORT,
+            ASI_GPS_START_LINE,
+            ASI_GPS_END_LINE,
+            ASI_ROLLING_INTERVAL,//microsecond
         }
 
 
@@ -95,6 +101,11 @@ namespace ZWOptical.ASISDK {
             ASI_ERROR_EXPOSURE_IN_PROGRESS,
             ASI_ERROR_GENERAL_ERROR,//general error, eg: value is out of valid range
             ASI_ERROR_INVALID_MODE,//the current mode is wrong
+            ASI_ERROR_GPS_NOT_SUPPORTED, //this camera do not support GPS
+            ASI_ERROR_GPS_VER_ERR, //the FPGA GPS ver is too low
+            ASI_ERROR_GPS_FPGA_ERR, //failed to read or write data to FPGA
+            ASI_ERROR_GPS_PARAM_OUT_OF_RANGE, //start line or end line out of range, should make them between 0 ~ MaxHeight - 1
+            ASI_ERROR_GPS_DATA_INVALID, //GPS has not yet found the satellite or FPGA cannot read GPS data
             ASI_ERROR_END
         };
         public enum ASI_BOOL {
@@ -179,6 +190,27 @@ namespace ZWOptical.ASISDK {
                 }
             }
         }
+        public struct ASI_DATE_TIME {
+            public int Year;
+            public int Month;
+            public int Day;
+            public int Hour;
+            public int Minute;
+            public int Second;
+            public int Msecond;
+            public int Usecond;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U1)]
+            public byte[] Unused;
+        }
+        public struct ASI_GPS_DATA {
+            public ASI_DATE_TIME Datetime;
+            public double Latitude;
+            public double Longitude;
+            public int Altitude;
+            public int SatelliteNum;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64, ArraySubType = UnmanagedType.U1)]
+            public byte[] Unused;
+        }
 
         [DllImport(DLLNAME, EntryPoint = "ASIGetNumOfConnectedCameras", CallingConvention = CallingConvention.Cdecl)]
         private static extern int ASIGetNumOfConnectedCameras();
@@ -219,6 +251,9 @@ namespace ZWOptical.ASISDK {
         [DllImport(DLLNAME, EntryPoint = "ASIGetStartPos", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetStartPos(int iCameraID, out int piStartX, out int piStartY);
 
+        [DllImport(DLLNAME, EntryPoint = "ASIGetDroppedFrames", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetDroppedFrames(int iCameraID, out int piDropFrames);
+
         [DllImport(DLLNAME, EntryPoint = "ASIStartVideoCapture", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIStartVideoCapture(int iCameraID);
 
@@ -257,6 +292,9 @@ namespace ZWOptical.ASISDK {
 
         [DllImport(DLLNAME, EntryPoint = "ASIGetSDKVersion", CallingConvention = CallingConvention.StdCall)]
         private static extern IntPtr ASIGetSDKVersion();
+        
+        [DllImport(DLLNAME, EntryPoint = "ASIGPSGetData", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGPSGetData(int iCameraID, out ASI_GPS_DATA startLineGPSData, out ASI_GPS_DATA endLineGPSData);
 
         [SecurityCritical]
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
@@ -286,6 +324,12 @@ namespace ZWOptical.ASISDK {
                 case ASI_ERROR_CODE.ASI_ERROR_VIDEO_MODE_ACTIVE:
                 case ASI_ERROR_CODE.ASI_ERROR_EXPOSURE_IN_PROGRESS:
                 case ASI_ERROR_CODE.ASI_ERROR_GENERAL_ERROR:
+                case ASI_ERROR_CODE.ASI_ERROR_INVALID_MODE:
+                case ASI_ERROR_CODE.ASI_ERROR_GPS_NOT_SUPPORTED:
+                case ASI_ERROR_CODE.ASI_ERROR_GPS_VER_ERR:
+                case ASI_ERROR_CODE.ASI_ERROR_GPS_FPGA_ERR:
+                case ASI_ERROR_CODE.ASI_ERROR_GPS_PARAM_OUT_OF_RANGE:
+                case ASI_ERROR_CODE.ASI_ERROR_GPS_DATA_INVALID:
                 case ASI_ERROR_CODE.ASI_ERROR_END:
                     throw new ASICameraException(errorCode, callingMethod, parameters);
                 default:
@@ -365,13 +409,13 @@ namespace ZWOptical.ASISDK {
             return new Point(x, y);
         }
 
-        /*public static int GetDroppedFrames(int cameraId) {
+        public static int GetDroppedFrames(int cameraId) {
             int result;
             CheckReturn(ASIGetDroppedFrames(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
             return result;
         }
 
-        public static bool EnableDarkSubtract(int cameraId, string darkFilePath) {
+        /*public static bool EnableDarkSubtract(int cameraId, string darkFilePath) {
             ASI_BOOL result;
             CheckReturn(ASIEnableDarkSubtract(cameraId, darkFilePath, out result), MethodBase.GetCurrentMethod(), cameraId, darkFilePath);
             return result != ASI_BOOL.ASI_FALSE;

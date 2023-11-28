@@ -43,7 +43,7 @@ namespace NINA.Core.Utility {
                 object instance = FormatterServices.GetUninitializedObject(type);
                 GCHandle.Alloc(instance, GCHandleType.Pinned).Free();
                 return true;
-            } catch (Exception e) {
+            } catch (Exception) {
                 return false;
             }
         }

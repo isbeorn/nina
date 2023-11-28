@@ -16,7 +16,7 @@ namespace NINA.Image.FileFormat.FITS {
             }
         }
 
-        private const string DLLNAME = "cfitsio.dll";
+        private const string DLLNAME = "cfitsionative.dll";
         static CfitsioNative() {
             DllLoader.LoadDll(Path.Combine("Cfitsio", DLLNAME));
         }
@@ -50,7 +50,9 @@ namespace NINA.Image.FileFormat.FITS {
         public enum BITPIX : int {
             BYTE_IMG = 8,
             SHORT_IMG = 16,
+            USHORT_IMG = 20,
             LONG_IMG = 32,
+            ULONG_IMG = 40,
             LONGLONG_IMG = 64,
             FLOAT_IMG = -32,
             DOUBLE_IMG = -64
@@ -75,6 +77,22 @@ namespace NINA.Image.FileFormat.FITS {
             TCOMPLEX = 83,
             TDBLCOMPLEX = 163
         }
+
+        public enum COMPRESSION : int {
+            RICE_1 = 11,
+            GZIP_1 = 21,
+            GZIP_2 = 22,
+            PLIO_1 = 31,
+            HCOMPRESS_1 = 41,
+            NOCOMPRESS = -1
+        }
+
+        public enum HDUTYPE : int {
+            IMAGE_HDU = 0,
+            ASCII_TBL = 1,
+            BINARY_TBL = 2,
+            ANY_HDU = -1
+        }
         #endregion
 
         public static void CheckStatus(string op, int statusCode) {
@@ -82,6 +100,13 @@ namespace NINA.Image.FileFormat.FITS {
                 throw new cfitsioException(op, statusCode);
             }
         }
+
+        public static void LogErrorStatus(string op, int statusCode) {
+            if(statusCode != 0) {
+                Logger.Error($"{op} failed with {statusCode} = {fits_get_errstatus(statusCode)}");
+            }
+        }
+
         // int CFITS_API ffomem(itsfile **fptr, const char* name, int mode, void** buffptr, size_t *buffsize, size_t deltasize, void* (* mem_realloc) (void* p, size_t newsize), int* status);
         [DllImport(DLLNAME, EntryPoint = "ffomem", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_open_memory(out IntPtr fptr, string filename, IOMODE iomode, ref IntPtr buffer, ref UIntPtr size, ref UIntPtr deltaSize, IntPtr fnMemRealloc, out int status);
@@ -116,7 +141,11 @@ namespace NINA.Image.FileFormat.FITS {
 
         // int CFITS_API ffgisz(fitsfile *fptr, int nlen, long *naxes, int *status);
         [DllImport(DLLNAME, EntryPoint = "ffgisz", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fits_get_img_size(IntPtr fptr, int nlen, int[] naxes, out int status);
+        public static extern int fits_get_img_size(IntPtr fptr, out int nlen, out int[] naxes, out int status);
+
+        // int CFITS_API ffpcks(fitsfile *fptr, int *status);
+        [DllImport(DLLNAME, EntryPoint = "ffpcks", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_chksum(IntPtr fptr, out int status);
 
         // int CFITS_API ffgpxv(fitsfile *fptr, int  datatype, long *firstpix, LONGLONG nelem, void* nulval, void* array, int* anynul, int* status);
         [DllImport(DLLNAME, EntryPoint = "ffgpxv", CallingConvention = CallingConvention.Cdecl)]
@@ -200,47 +229,47 @@ namespace NINA.Image.FileFormat.FITS {
 
         private static ushort[] ToUshortArray(byte[] src) {
             ushort[] pixels = new ushort[src.Length];
-            for (int i = 0; i < src.Length; ++i) {
-                pixels[i++] = (ushort)((src[i] / (double)byte.MaxValue) * ushort.MaxValue);
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (ushort)((src[i] / (double)byte.MaxValue) * ushort.MaxValue);
             }
             return pixels;
         }
 
         private static ushort[] ToUshortArray(double[] src) {
             ushort[] pixels = new ushort[src.Length];
-            for (int i = 0; i < src.Length; ++i) {
-                pixels[i++] = (ushort)(src[i] * ushort.MaxValue);
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (ushort)(src[i] * ushort.MaxValue);
             }
             return pixels;
         }
 
         private static ushort[] ToUshortArray(float[] src) {
             ushort[] pixels = new ushort[src.Length];
-            for (int i = 0; i < src.Length; ++i) {
-                pixels[i++] = (ushort)(src[i] * ushort.MaxValue);
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (ushort)(src[i]);
             }
             return pixels;
         }
 
         private static ushort[] ToUshortArray(long[] src) {
             ushort[] pixels = new ushort[src.Length];
-            for (int i = 0; i < src.Length; ++i) {
-                pixels[i++] = (ushort)((((double)src[i] - long.MinValue) / ((double)long.MaxValue - long.MinValue)) * ushort.MaxValue);
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (ushort)((((double)src[i] - long.MinValue) / ((double)long.MaxValue - long.MinValue)) * ushort.MaxValue);
             }
             return pixels;
         }
 
         private static ushort[] ToUshortArray(int[] src) {
             ushort[] pixels = new ushort[src.Length];
-            for (int i = 0; i < src.Length; ++i) {
-                pixels[i++] = (ushort)((((double)src[i] - int.MinValue) / ((double)int.MaxValue - int.MinValue)) * ushort.MaxValue);
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (ushort)((((double)src[i] - int.MinValue) / ((double)int.MaxValue - int.MinValue)) * ushort.MaxValue);
             }
             return pixels;
         }
 
         public static T[] read_pixels<T>(IntPtr fptr, int naxes, int nelem) where T : unmanaged {
             var firstpix = new int[naxes];
-            for (int i = 0; i < naxes; ++i) {
+            for (int i = 0; i < naxes; i++) {
                 firstpix[i] = 1;
             }
 
@@ -299,7 +328,7 @@ namespace NINA.Image.FileFormat.FITS {
 
         // int CFITS_API ffcrim(fitsfile *fptr, int bitpix, int naxis, long *naxes, int *status);
         [DllImport(DLLNAME, EntryPoint = "ffcrim", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fits_create_img(IntPtr fptr, int bitpix, int naxis, int[] naxes, out int status);
+        public static extern int fits_create_img(IntPtr fptr, BITPIX bitpix, int naxis, int[] naxes, out int status);
 
         // int CFITS_API ffinit(  fitsfile **fptr, const char *filename, int *status);
         [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffinit", CallingConvention = CallingConvention.Cdecl)]
@@ -307,5 +336,67 @@ namespace NINA.Image.FileFormat.FITS {
             out IntPtr fptr,
             [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_FILENAME)] string filename,
             out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, ushort[] array, out int status);
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img_int(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, int[] array, out int status);
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img_uint(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, uint[] array, out int status);
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img_float(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, float[] array, out int status);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr MemReallocDelegate(IntPtr ptr, IntPtr newSize);
+
+        [DllImport(DLLNAME, EntryPoint = "ffimem", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_create_memfile(out IntPtr fptr, ref IntPtr memptr, ref IntPtr memsize, IntPtr deltasize, MemReallocDelegate memRealloc, out int status);
+
+        public static IntPtr ReallocateMemory(IntPtr ptr, IntPtr newSize) {
+            // Reallocate the block of memory to the new size
+            return Marshal.ReAllocHGlobal(ptr, newSize);
+        }
+
+        public static int fits_update_key_dbl(IntPtr fptr, string keyname, ref double value, string comment, out int status) {
+            return fits_update_key(fptr, DATATYPE.TDOUBLE, keyname, ref value, comment, out status);
+        }
+
+        [DllImport(DLLNAME, EntryPoint = "ffuky", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_update_key(IntPtr fptr, DATATYPE datatype, string keyname, ref double value, string comment, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffukyj", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_update_key_lng(IntPtr fptr, string keyname, long value, string comment, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffukys", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_update_key_str(IntPtr fptr, string keyname, string value, string comment, out int status);
+
+        //[DllImport(DLLNAME, EntryPoint = "ffukyd", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int fits_update_key_dbl(IntPtr fptr, string keyname, double value, int decimals, string comment, out int status);
+
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_set_compression_type(IntPtr fptr, COMPRESSION compress_type, out int status);
+
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_is_compressed_image(IntPtr fptr, out int status);
+
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_get_compression_type(IntPtr fptr, out COMPRESSION compress_type, out int status);
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_img_decompress(IntPtr fptr, IntPtr outfptr, out int status);
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_img_decompress_header(IntPtr fptr, IntPtr outfptr, out int status);
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_uncompress_table(IntPtr fptr, out IntPtr outfptr, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffthdu", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_get_num_hdus(IntPtr fptr, out int hdunum, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffghdt", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_get_hdu_type(IntPtr fptr, out int hdutype, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffmahd", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_movabs_hdu(IntPtr fptr, int movenr, out int hdutype, out int status);
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_is_reentrant();
     }
 }

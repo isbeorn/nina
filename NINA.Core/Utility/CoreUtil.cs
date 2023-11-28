@@ -12,8 +12,10 @@
 
 #endregion "copyright"
 
+using Newtonsoft.Json;
 using NINA.Core.Model;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -279,6 +281,57 @@ namespace NINA.Core.Utility {
             } catch (Exception ex) {
                 Logger.Error($"Settings failed to save from {memberName}", ex);
                 settings.Reload();
+            }
+        }
+
+        public static void CopyDirectory(string source, string target) {            
+            var diSource = new DirectoryInfo(source);
+            var diTarget = new DirectoryInfo(target);
+
+            CopyDirectory(diSource, diTarget);
+        }
+        public static void CopyDirectory(DirectoryInfo source, DirectoryInfo target, int maxDepth = 15) {
+            if (source == target) { return; }
+            if (maxDepth < 0) { return; }
+
+            --maxDepth;
+            Logger.Info($"Creating directory {target.FullName}");
+            Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles()) {
+                var destinationFile = Path.Combine(target.FullName, fi.Name);
+                try {
+                    Logger.Info($"Copy file from {fi} to {destinationFile}");
+                    fi.CopyTo(destinationFile, true);
+                } catch(Exception ex) {
+                    Logger.Error($"Failed to copy file {fi} to {destinationFile}.", ex);
+                }
+                
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories()) {
+                Logger.Info($"Creating sub directory {diSourceSubDir.Name}");
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyDirectory(diSourceSubDir, nextTargetSubDir, maxDepth);
+            }
+        }
+        public static IList<T> DeserializeList<T>(string collection) {
+            try {
+                return JsonConvert.DeserializeObject<IList<T>>(collection, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto }) ?? new List<T>();
+            } catch (Exception) {
+                return new List<T>();
+            }
+
+        }
+
+        public static string SerializeList<T>(IList<T> l) {
+            try {
+                return JsonConvert.SerializeObject(l, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto }) ?? "";
+            } catch (Exception) {
+                return "";
             }
         }
     }

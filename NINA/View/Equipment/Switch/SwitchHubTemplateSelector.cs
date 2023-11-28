@@ -21,15 +21,11 @@ namespace NINA.View.Equipment.Switch {
 
     internal class SwitchHubTemplateSelector : DataTemplateSelector {
         public DataTemplate Generic { get; set; }
-        public DataTemplate Eagle { get; set; }
         public DataTemplate FailedToLoadTemplate { get; set; }
         public string Postfix { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             switch (item) {
-                case Eagle _:
-                    return Eagle;
-
                 default:
                     var templateKey = item?.GetType().FullName + Postfix;
                     if (item != null && Application.Current.Resources.Contains(templateKey)) {

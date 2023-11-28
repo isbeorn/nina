@@ -34,20 +34,21 @@
             Data="{StaticResource HistorySVG}"
             Fill="{StaticResource ButtonForegroundDisabledBrush}"
             Opacity="0.4"
-            Stretch="Uniform" />
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
 
         <ListBox
             x:Name="ListBox"
             Background="{StaticResource BackgroundBrush}"
             BorderBrush="Transparent"
             ItemsSource="{Binding Path=Thumbnails}"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.ScrollChanged="ScrollViewer_ScrollChanged"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
             SelectedValue="{Binding SelectedThumbnail}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" />
+                    <WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemContainerStyle>
@@ -59,7 +60,7 @@
                                 <Border
                                     Name="SelectedItemBorder"
                                     Padding="1"
-                                    SnapsToDevicePixels="true">
+                                    UseLayoutRounding="True">
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="BorderBrush" Value="Transparent" />
@@ -210,7 +211,8 @@
                                                     VerticalAlignment="Top"
                                                     Data="{Binding Grade, Converter={StaticResource ThumbnailGradeToImageConverter}}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                                 <Button
                                                     Width="30"
                                                     Height="30"
@@ -234,7 +236,8 @@
                                                         Margin="5"
                                                         Data="{Binding Grade, Converter={StaticResource ThumbnailGradeToButtonImageConverter}}"
                                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                                        Stretch="Uniform" />
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
                                                 </Button>
                                             </Grid>
                                         </Grid>

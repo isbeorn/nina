@@ -5555,7 +5555,7 @@ Només és rellevant quan s’utilitza un controlador de càmera ASCOM!</value>
     <value>Cerca actualitzacions</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Instal·leu-la mitjançant el gestor de connectors de N.I.N.A. o descarregueu manualment i copieu el fitxer DLL a %localappdata%\NINA\Plugins des de:</value>
+    <value>Instalar a través del gestor de complements (plugins) de N.I.N.A. o descarregar y copiar manualmente l'arxiu DLL a %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; des de:</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>Instal·leu-la mitjançant el gestor de connectors de N.I.N.A. o descarregueu manualment i executeu la configuració des de:</value>
@@ -6697,5 +6697,169 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
     <value>Quan es connecta el telescopi, es defineix com es comportarà quan la ubicació de la montura i de l' aplicació siguin diferents.</value>
+  </data>
+  <data name="LblPHD2PeakDec" xml:space="preserve">
+    <value>Pic Dec: {0} ({1}")</value>
+  </data>
+  <data name="LblPHD2PeakRA" xml:space="preserve">
+    <value>Peak AR: {0} ({1}")</value>
+  </data>
+  <data name="LblPluginRepositories" xml:space="preserve">
+    <value>Repositoris de complements</value>
+  </data>
+  <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
+    <value>Introduïu l'URL del dipòsit de complements (plugins)</value>
+  </data>
+  <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
+    <value>L'Url del dipòsit de complements (plugins) no és vàlid: {0}</value>
+  </data>
+  <data name="LblTSXImageLink" xml:space="preserve">
+    <value>Enllaç a Imatge TheSkyX</value>
+  </data>
+  <data name="LblTSXHost" xml:space="preserve">
+    <value>Servidor TheSkyX</value>
+  </data>
+  <data name="LblTSXPort" xml:space="preserve">
+    <value>Port TheSkyX</value>
+  </data>
+  <data name="LblZwoMonoBinMode" xml:space="preserve">
+    <value>Mono bin</value>
+  </data>
+  <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
+    <value>Quan estigui activada, la càmera farà una mitjana dels píxels agrupats per crear una sortida monocroma</value>
+  </data>
+  <data name="LblPinPoint" xml:space="preserve">
+    <value>PinPoint</value>
+  </data>
+  <data name="LblPinPointCatalogRoot" xml:space="preserve">
+    <value>Arrel del Catàleg</value>
+  </data>
+  <data name="LblPinPointFailedInitialize" xml:space="preserve">
+    <value>No s'ha pogut inicialitzar el motor astromètric PinPoint</value>
+  </data>
+  <data name="LblPinPointNotInstalled" xml:space="preserve">
+    <value>No s'ha pogut inicialitzar el motor astromètric PinPoint. Sembla que ell o el seu component de 64 bits no estiguin instal·lats.</value>
+  </data>
+  <data name="LblPinPointReferenceCatalog" xml:space="preserve">
+    <value>Catàleg de referència</value>
+  </data>
+  <data name="LblPinPointCatAtas" xml:space="preserve">
+    <value>ATLAS / PanSTARRS+Gaia</value>
+  </data>
+  <data name="LblPinPointCatGscact" xml:space="preserve">
+    <value>Estrella de la guia millorada 1.1</value>
+  </data>
+  <data name="LblPinPointCatTycho2" xml:space="preserve">
+    <value>ESA Tycho-2</value>
+  </data>
+  <data name="LblPinPointCatType" xml:space="preserve">
+    <value>Catàleg de Referència</value>
+  </data>
+  <data name="LblPinPointCatUcac2" xml:space="preserve">
+    <value>USNO UCAC2</value>
+  </data>
+  <data name="LblPinPointCatUcac3" xml:space="preserve">
+    <value>USNO UCAC3</value>
+  </data>
+  <data name="LblPinPointCatUcac4" xml:space="preserve">
+    <value>USNO UCAC4</value>
+  </data>
+  <data name="LblPinPointCatUsnoA" xml:space="preserve">
+    <value>USN A2.0</value>
+  </data>
+  <data name="LblPinPointCatUsnoB" xml:space="preserve">
+    <value>USNO B1.0</value>
+  </data>
+  <data name="LblPinPointExpansion" xml:space="preserve">
+    <value>Expansion</value>
+  </data>
+  <data name="LblPinPointExpansionToolTip" xml:space="preserve">
+    <value>Ampliació de l'àrea de cerca del catàleg fora de les dimensions de la imatge (mínim = 0, màxim = 80, predeterminat = 40)</value>
+  </data>
+  <data name="LblPinPointMaxMagnitude" xml:space="preserve">
+    <value>Max. Magnitud</value>
+  </data>
+  <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
+    <value>La magnitud màxima (més feble) per a la selecció d'estrelles del catàleg de referència (mínim = 2,0, màxim = 20,0, per defecte = 20,0)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
+    <value>AllSky API host</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
+    <value>Amfitrió de l'API Astrometry.net/AllSky (per defecte = nova.astrometry.net)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
+    <value>AllSky API key</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
+    <value>Clau de l'API Astrometry.net/AllSky (opcional)</value>
+  </data>
+  <data name="LblPinPointAllSkySolve" xml:space="preserve">
+    <value>PinPoin AllSky solucio astromètrica</value>
+  </data>
+  <data name="LblPinPointLocalSolve" xml:space="preserve">
+    <value>PinPoint solució astrometrica local</value>
+  </data>
+  <data name="LblPinPointErrorMessage" xml:space="preserve">
+    <value>PinPoint Missatge d'error</value>
+  </data>
+  <data name="LblUnableToSetMountElevation" xml:space="preserve">
+    <value>No es pot establir l'elevació de la muntura en {0}!</value>
+  </data>
+  <data name="LblSaveInCache" xml:space="preserve">
+    <value>Imatge de memòria cau per a ús fora de línia</value>
+    <comment>To store an image automatically in the framing assistant offline cache or not</comment>
+  </data>
+  <data name="LblSaveInCacheTooltip" xml:space="preserve">
+    <value>Quan està activat, la imatge es desarà al dispositiu i es podrà veure al mapa celeste fora de línia</value>
+  </data>
+  <data name="LblClose" xml:space="preserve">
+    <value>Tancar</value>
+  </data>
+  <data name="LblShowHistogram" xml:space="preserve">
+    <value>Mostra l'Histrograma</value>
+  </data>
+  <data name="LblInfoOnly" xml:space="preserve">
+    <value>Només info</value>
+  </data>
+  <data name="LblInfoOnlyTooltip" xml:space="preserve">
+    <value>Alterna entre mostrar només contingut informatiu i mostrar controls interactius dins del tauler</value>
+  </data>
+  <data name="LblParked" xml:space="preserve">
+    <value>Aparcat</value>
+    <comment>When mount is at park position</comment>
+  </data>
+  <data name="LblSlewing" xml:space="preserve">
+    <value>Girant</value>
+  </data>
+  <data name="LblCompressionGZIP1" xml:space="preserve">
+    <value>GZIP 1</value>
+  </data>
+  <data name="LblCompressionGZIP2" xml:space="preserve">
+    <value>GZIP 2</value>
+  </data>
+  <data name="LblCompressionHCOMPRESS" xml:space="preserve">
+    <value>HCOMPRESS</value>
+  </data>
+  <data name="LblCompressionPLIO" xml:space="preserve">
+    <value>PLIO</value>
+  </data>
+  <data name="LblCompressionRICE" xml:space="preserve">
+    <value>RICE</value>
+  </data>
+  <data name="LblAddFzExtension" xml:space="preserve">
+    <value>Afegir extensió .fz</value>
+  </data>
+  <data name="LblAddFzExtensionTooltip" xml:space="preserve">
+    <value>Afegeix una extensió .fz addicional al nom de fitxer dels arxius FITS comprimits. Exemple: nomfitxer.fits.fz</value>
+  </data>
+  <data name="LblASCOMCreate32BitData" xml:space="preserve">
+    <value>Crear dades de 32 bits</value>
+  </data>
+  <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
+    <value>Quan la funció està habilitada, N.I.N.A. generarà dades d'imatge amb una profunditat de 32 bits, millorant l'interval de valors de píxels.
+Tanmateix, és crucial tenir en compte que aquest procés requerirà més memòria, augmentarà el temps de processament i utilitzarà espai de disc addicional per a cada exposició.
+Tingueu en compte que només els formats de fitxer XISF i FITS poden emmagatzemar dades d'imatge en aquest format de 32 bits.
+A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta profunditat de 32 bits. Si el controlador no admet una profunditat de 32 bits, l'augment de la mida del fitxer resultant d'aquesta configuració només comportaria una pèrdua d'espai sense cap millora en les dades d'imatge.</value>
   </data>
 </root>

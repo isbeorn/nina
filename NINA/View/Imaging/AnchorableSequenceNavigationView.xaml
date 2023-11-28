@@ -44,7 +44,8 @@
                     Data="{StaticResource SatelliteDishSVG}"
                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
                     Opacity="0.4"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </DataTemplate>
             <seq:SequencerVMTemplateSelector
                 x:Key="ContentSelector"

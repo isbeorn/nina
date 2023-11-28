@@ -14,6 +14,7 @@
 
 using ASCOM;
 using ASCOM.Com.DriverAccess;
+using ASCOM.Common;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -130,16 +131,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             if (Connected) {
                 if (CanSetAzimuth) {
                     using (ct.Register(async () => await StopSlewing())) {
-                        await Task.Run(async () => {
-                            device?.SlewToAzimuth(azimuth);
-                            await Task.Delay(TimeSpan.FromSeconds(3), ct);
-                            ct.ThrowIfCancellationRequested();
-
-                            while (device != null && device.Slewing && !ct.IsCancellationRequested) {
-                                await Task.Delay(TimeSpan.FromSeconds(1), ct);
-                            }
-                            ct.ThrowIfCancellationRequested();
-                        }, ct);
+                        await (device?.SlewToAzimuthAsync(azimuth, ct) ?? Task.CompletedTask);                        
                     }
                 } else {
                     Logger.Warning("Dome cannot slew");
@@ -155,14 +147,14 @@ namespace NINA.Equipment.Equipment.MyDome {
             if (Connected) {
                 // ASCOM only allows you to stop all movement, which includes both shutter and slewing. If the shutter was opening or closing
                 // when this command is received, try and continue the operation afterwards
-                return Task.Run(() => {
+                return Task.Run(async () => {
                     var priorShutterStatus = ShutterStatus;
-                    device?.AbortSlew();
+                    await (device?.AbortSlewAsync() ?? Task.CompletedTask);
                     if (priorShutterStatus == ShutterState.ShutterClosing) {
-                        device?.CloseShutter();
+                        await (device?.CloseShutterAsync() ?? Task.CompletedTask);
                     } else if (priorShutterStatus == ShutterState.ShutterOpening) {
-                        device?.OpenShutter();
-                    }
+                        await (device?.OpenShutterAsync() ?? Task.CompletedTask);
+            }
                 });
             } else {
                 Logger.Warning("Dome is not connected");
@@ -204,7 +196,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                             Logger.Info($"Dome shutter already opening, so not sending another OpenShutter request");
                         } else {
                             Logger.Info($"Sending an OpenShutter request, since it is currently {ShutterStatus}");
-                            await Task.Run(() => device?.OpenShutter(), ct);
+                            await (device?.OpenShutterAsync(ct) ?? Task.CompletedTask);
                             ct.ThrowIfCancellationRequested();
                         }
 
@@ -242,7 +234,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                             Logger.Info($"Dome shutter already closing, so not sending another CloseShutter request");
                         } else {
                             Logger.Info($"Sending a CloseShutter request, since it is currently {ShutterStatus}");
-                            await Task.Run(() => device?.CloseShutter(), ct);
+                            await (device?.CloseShutterAsync(ct) ?? Task.CompletedTask);
                             ct.ThrowIfCancellationRequested();
                         }
 
@@ -278,12 +270,12 @@ namespace NINA.Equipment.Equipment.MyDome {
 
                     // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure FindHome works
                     if (device?.Slewing == true) {
-                        device?.AbortSlew();
+                        await (device?.AbortSlewAsync(ct) ?? Task.CompletedTask);
                         await Task.Delay(1000, ct);
                     }
 
                     using (ct.Register(() => device?.AbortSlew())) {
-                        await Task.Run(() => device.FindHome(), ct);
+                        await (device?.FindHomeAsync(ct) ?? Task.CompletedTask);
                         ct.ThrowIfCancellationRequested();
 
                         // Introduce an initial delay to give the dome a change to start slewing before we wait for it to complete
@@ -315,7 +307,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                     if (device?.Slewing == true) {
                         Logger.Info("Dome shutter or rotator slewing when a park was requested. Aborting all movement");
 
-                        device?.AbortSlew();
+                        await device?.AbortSlewAsync(ct);
                         await Task.Delay(TimeSpan.FromSeconds(1), ct);
                     }
 
@@ -324,8 +316,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         if (AtPark) {
                             Logger.Info("Dome already AtPark. Not sending a Park command");
                         } else {
-                            await Task.Run(() => device?.Park(), ct);
-                            ct.ThrowIfCancellationRequested();
+                            await (device?.ParkAsync(ct) ?? Task.CompletedTask);
                         }
 
                         if (CanSetShutter) {

@@ -77,7 +77,7 @@ namespace NINA.ViewModel {
             try {
                 var version = ASCOMInteraction.GetPlatformVersion();
                 Logger.Info($"ASCOM Platform {version} installed");
-                var recommendedVersion = new Version("6.6.1.3673");
+                var recommendedVersion = new Version("6.6.2.4195");
                 if (version < recommendedVersion) {
                     Logger.Error($"Outdated ASCOM Platform detected. Current: {version} - Minimum Required: {recommendedVersion}");
                     Notification.ShowWarning(Loc.Instance["LblASCOMPlatformOutdated"]);

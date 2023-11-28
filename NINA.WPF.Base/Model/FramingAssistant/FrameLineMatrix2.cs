@@ -21,165 +21,95 @@ using System.Linq;
 namespace NINA.WPF.Base.Model.FramingAssistant {
 
     public class FrameLineMatrix2 {
+        private const double MAXDEC = 89.999;
+        private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
+        private static Font gridAnnotationFont = new Font("Segoe UI", 7, System.Drawing.FontStyle.Italic);
+        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(Color.FromArgb(127, System.Drawing.Color.SteelBlue));
+        private double currentDecStep;
+        private double currentRAStep;
+        private ViewportFoV currentViewport;
+        private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
+        private object lockObj = new object();
+        private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
+        private double resolution;
         private List<double> STEPSIZES = new List<double>() { 1, 2, 4, 12, 20 };
 
         public FrameLineMatrix2() {
             RAPoints = new List<FrameLine>();
             DecPoints = new List<FrameLine>();
         }
+        public List<FrameLine> DecPoints { get; private set; }
 
-        private double resolution;
-        private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
-        private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
-
-        private const double MAXDEC = 89.999;
-
-        private void GenerateRACoordinateMatrix(double raStep) {
-            raCoordinateMatrix.Clear();
-            double i = 0;
-            do {
-                i = Math.Min(MAXDEC, i + resolution);
-
-                for (double ra = 0; ra < 360; ra += raStep) {
-                    var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
-                    var coordinate2 = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(-i), Epoch.J2000);
-                    if (!raCoordinateMatrix.ContainsKey(ra)) {
-                        raCoordinateMatrix[ra] = new List<Coordinates>();
-                    }
-
-                    raCoordinateMatrix[ra].Add(coordinate);
-                    raCoordinateMatrix[ra].Insert(0, coordinate2);
-                }
-            } while (i < MAXDEC);
-        }
-
-        private void GenerateDecCoordinateMatrix(double decStep) {
-            decCoordinateMatrix.Clear();
-
-            for (double i = 0; i < 360; i += resolution) {
-                for (double dec = 0; dec <= MAXDEC; dec += decStep) {
-                    var coordinate = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(dec), Epoch.J2000);
-                    var coordinate2 = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(-dec), Epoch.J2000);
-                    if (!decCoordinateMatrix.ContainsKey(dec)) {
-                        decCoordinateMatrix[dec] = new List<Coordinates>();
-                    }
-                    if (!decCoordinateMatrix.ContainsKey(-dec)) {
-                        decCoordinateMatrix[-dec] = new List<Coordinates>();
-                    }
-                    decCoordinateMatrix[dec].Add(coordinate);
-                    decCoordinateMatrix[-dec].Add(coordinate2);
-                }
-            }
-        }
-
-        private void DetermineStepSizes() {
-            var decStep = currentViewport.VFoVDeg / 4d;
-            decStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
-
-            var raStep = currentViewport.HFoVDeg / 4d;
-            raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
-
-            resolution = Math.Min(raStep, decStep) / 4;
-
-            if (currentRAStep != raStep) {
-                currentRAStep = raStep;
-                GenerateRACoordinateMatrix(raStep);
-            }
-            if (currentDecStep != decStep) {
-                currentDecStep = decStep;
-                GenerateDecCoordinateMatrix(decStep);
-            }
-        }
-
-        private double currentRAStep;
-        private double currentDecStep;
+        public List<FrameLine> RAPoints { get; private set; }
 
         public void CalculatePoints(ViewportFoV viewport) {
-            this.currentViewport = viewport;
-            DetermineStepSizes();
+            lock (lockObj) {
+                this.currentViewport = viewport;
+                DetermineStepSizes();
 
-            RAPoints.Clear();
-            DecPoints.Clear();
+                RAPoints.Clear();
+                DecPoints.Clear();
 
-            var raMin = nfmod(viewport.CalcRAMin - viewport.CalcRAMin % currentRAStep - currentRAStep, 360);
-            var raMax = nfmod(viewport.CalcRAMax - viewport.CalcRAMax % currentRAStep + currentRAStep, 360);
-            if (viewport.HFoVDeg == 360) {
-                raMin = 0;
-                raMax = 360 - currentRAStep;
-            }
-
-            if (raMin > raMax) {
-                for (double ra = 0; ra <= raMax; ra += currentRAStep) {
-                    CalculateRAPoints(ra);
+                var raMin = nfmod(viewport.CalcRAMin - viewport.CalcRAMin % currentRAStep - currentRAStep, 360);
+                var raMax = nfmod(viewport.CalcRAMax - viewport.CalcRAMax % currentRAStep + currentRAStep, 360);
+                if (viewport.HFoVDeg == 360) {
+                    raMin = 0;
+                    raMax = 360 - currentRAStep;
                 }
-                for (double ra = raMin; ra < 360; ra += currentRAStep) {
-                    CalculateRAPoints(ra);
-                }
-            } else {
-                for (double ra = raMin; ra <= raMax; ra += currentRAStep) {
-                    CalculateRAPoints(ra);
-                }
-            }
 
-            var currentMinDec = Math.Max(-MAXDEC, Math.Min(viewport.CalcTopDec, viewport.CalcBottomDec));
-            var currentMaxDec = Math.Min(MAXDEC, Math.Max(viewport.CalcTopDec, viewport.CalcBottomDec));
-
-            if (currentMaxDec > 0) {
-                var start = Math.Max(0, Math.Max(0, currentMinDec) % currentDecStep - currentDecStep);
-                for (double dec = start; dec <= currentMaxDec; dec += currentDecStep) {
-                    CalculateDecPoints(dec);
-                }
-            }
-
-            if (currentMinDec < 0) {
-                var start = Math.Min(0, Math.Min(0, currentMinDec) % currentDecStep + currentDecStep);
-                for (double dec = start; dec >= currentMinDec; dec -= currentDecStep) {
-                    CalculateDecPoints(dec);
-                }
-            }
-        }
-
-        private PointF Project(Coordinates coordinates) {
-            var p = coordinates.XYProjection(currentViewport);
-            return new PointF((float)p.X, (float)p.Y);
-        }
-
-        /// <summary>
-        /// Calculate the lines spanning from pole to pole
-        /// </summary>
-        /// <param name="viewport"></param>
-        /// <param name="ra"></param>
-        private void CalculateRAPoints(double ra) {
-            var list = new List<PointF>();
-            var thickness = 1;
-            Coordinates prevCoordinate = null;
-            bool atLeastOneInside = false;
-            foreach (var coordinate in raCoordinateMatrix[ra]) {
-                if (currentViewport.ContainsCoordinates(coordinate)) {
-                    atLeastOneInside = true;
-                    if (prevCoordinate != null) {
-                        list.Add(Project(prevCoordinate));
-                        prevCoordinate = null;
+                if (raMin > raMax) {
+                    for (double ra = 0; ra <= raMax; ra += currentRAStep) {
+                        CalculateRAPoints(ra);
                     }
-
-                    if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
-                        thickness = 3;
+                    for (double ra = raMin; ra < 360; ra += currentRAStep) {
+                        CalculateRAPoints(ra);
                     }
-                    list.Add(Project(coordinate));
                 } else {
-                    if (atLeastOneInside) {
-                        list.Add(Project(coordinate));
-                        break;
-                    } else {
-                        prevCoordinate = coordinate;
+                    for (double ra = raMin; ra <= raMax; ra += currentRAStep) {
+                        CalculateRAPoints(ra);
+                    }
+                }
+
+                var currentMinDec = Math.Max(-MAXDEC, Math.Min(viewport.CalcTopDec, viewport.CalcBottomDec));
+                var currentMaxDec = Math.Min(MAXDEC, Math.Max(viewport.CalcTopDec, viewport.CalcBottomDec));
+
+                if (currentMaxDec > 0) {
+                    var start = Math.Max(0, Math.Max(0, currentMinDec) % currentDecStep - currentDecStep);
+                    for (double dec = start; dec <= currentMaxDec; dec += currentDecStep) {
+                        CalculateDecPoints(dec);
+                    }
+                }
+
+                if (currentMinDec < 0) {
+                    var start = Math.Min(0, Math.Min(0, currentMinDec) % currentDecStep + currentDecStep);
+                    for (double dec = start; dec >= currentMinDec; dec -= currentDecStep) {
+                        CalculateDecPoints(dec);
                     }
                 }
             }
-            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(ra) });
+        }
+        public void Draw(Graphics g) {
+            lock (lockObj) {
+                foreach (var frameLine in this.RAPoints) {
+                    DrawRALineCollection(g, frameLine);
+                }
+
+                foreach (var frameLine in this.DecPoints) {
+                    DrawDecLineCollection(g, frameLine);
+                }
+            }
         }
 
-        private double nfmod(double a, double b) {
-            return a - b * Math.Floor(a / b);
+        private static void CalcCurve(PointF[] pts, float tension, out PointF p1, out PointF p2) {
+            float deltaX, deltaY;
+            deltaX = pts[2].X - pts[0].X;
+            deltaY = pts[2].Y - pts[0].Y;
+            p1 = new PointF((pts[1].X - tension * deltaX), (pts[1].Y - tension * deltaY));
+            p2 = new PointF((pts[1].X + tension * deltaX), (pts[1].Y + tension * deltaY));
+        }
+
+        private void CalcCurveEnd(PointF end, PointF adj, float tension, out PointF p1) {
+            p1 = new PointF(((tension * (adj.X - end.X) + end.X)), ((tension * (adj.Y - end.Y) + end.Y)));
         }
 
         /// <summary>
@@ -222,77 +152,38 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
             DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(dec) });
         }
 
-        public List<FrameLine> RAPoints { get; private set; }
+        /// <summary>
+        /// Calculate the lines spanning from pole to pole
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <param name="ra"></param>
+        private void CalculateRAPoints(double ra) {
+            var list = new List<PointF>();
+            var thickness = 1;
+            Coordinates prevCoordinate = null;
+            bool atLeastOneInside = false;
+            foreach (var coordinate in raCoordinateMatrix[ra]) {
+                if (currentViewport.ContainsCoordinates(coordinate)) {
+                    atLeastOneInside = true;
+                    if (prevCoordinate != null) {
+                        list.Add(Project(prevCoordinate));
+                        prevCoordinate = null;
+                    }
 
-        public List<FrameLine> DecPoints { get; private set; }
-
-        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(Color.FromArgb(127, System.Drawing.Color.SteelBlue));
-        private ViewportFoV currentViewport;
-
-        public void Draw(Graphics g) {
-            foreach (var frameLine in this.RAPoints) {
-                DrawRALineCollection(g, frameLine);
-            }
-
-            foreach (var frameLine in this.DecPoints) {
-                DrawDecLineCollection(g, frameLine);
-            }
-        }
-
-        private static Font gridAnnotationFont = new Font("Segoe UI", 7, System.Drawing.FontStyle.Italic);
-        private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
-
-        private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
-            if (frameLine.Collection.Count > 1) {
-                //Prevent annotations to overlap on southern pole
-                var southPole = new Coordinates(0, -MAXDEC, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(currentViewport);
-                PointF? position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height && Math.Abs(x.X - southPole.X) > 5 && Math.Abs(x.Y - southPole.Y) > 5);
-
-                if (position != null) {
-                    var hms = AstroUtil.HoursToHMS(frameLine.Angle.Hours);
-                    var text = $"{hms.Substring(0, hms.Length - 3)}h";
-                    var size = g.MeasureString(text, gridAnnotationFont);
-                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.Value.X), Math.Max(0, (position.Value.Y - size.Height)));
+                    if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
+                        thickness = 3;
+                    }
+                    list.Add(Project(coordinate));
+                } else {
+                    if (atLeastOneInside) {
+                        list.Add(Project(coordinate));
+                        break;
+                    } else {
+                        prevCoordinate = coordinate;
+                    }
                 }
-
-                DrawFrameLineCollection(g, frameLine);
             }
-        }
-
-        private void DrawDecLineCollection(Graphics g, FrameLine frameLine) {
-            if (frameLine.Collection.Count > 1) {
-                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0);
-                if (position != null) {
-                    var text = $"{string.Format("{0:N2}", frameLine.Angle.Degree)}°";
-                    var size = g.MeasureString(text, gridAnnotationFont);
-                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), (position.Y));
-                }
-                DrawFrameLineCollection(g, frameLine);
-            }
-        }
-
-        private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
-            var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
-
-            if (frameLine.StrokeThickness != 1) {
-                using (var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness)) {
-                    g.DrawBeziers(pen, points.ToArray());
-                }
-            } else {
-                g.DrawBeziers(gridPen, points.ToArray());
-            }
-        }
-
-        private static void CalcCurve(PointF[] pts, float tension, out PointF p1, out PointF p2) {
-            float deltaX, deltaY;
-            deltaX = pts[2].X - pts[0].X;
-            deltaY = pts[2].Y - pts[0].Y;
-            p1 = new PointF((pts[1].X - tension * deltaX), (pts[1].Y - tension * deltaY));
-            p2 = new PointF((pts[1].X + tension * deltaX), (pts[1].Y + tension * deltaY));
-        }
-
-        private void CalcCurveEnd(PointF end, PointF adj, float tension, out PointF p1) {
-            p1 = new PointF(((tension * (adj.X - end.X) + end.X)), ((tension * (adj.Y - end.Y) + end.Y)));
+            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(ra) });
         }
 
         private List<PointF> CardinalSpline(List<PointF> pts, float t, bool closed) {
@@ -332,6 +223,112 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
                 retPnt[nrRetPts - 1] = pts[pts.Count - 1];
             }
             return new List<PointF>(retPnt);
+        }
+
+        private void DetermineStepSizes() {
+            var decStep = currentViewport.VFoVDeg / 4d;
+            decStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
+
+            var raStep = currentViewport.HFoVDeg / 4d;
+            raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
+
+            resolution = Math.Min(raStep, decStep) / 4;
+
+            if (currentRAStep != raStep) {
+                currentRAStep = raStep;
+                GenerateRACoordinateMatrix(raStep);
+            }
+            if (currentDecStep != decStep) {
+                currentDecStep = decStep;
+                GenerateDecCoordinateMatrix(decStep);
+            }
+        }
+
+        private void DrawDecLineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0);
+                if (position != PointF.Empty) {
+                    var text = $"{string.Format("{0:N2}", frameLine.Angle.Degree)}°";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), (position.Y));
+                }
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
+            var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+
+            if (frameLine.StrokeThickness != 1) {
+                using (var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness)) {
+                    g.DrawBeziers(pen, points.ToArray());
+                }
+            } else {
+                g.DrawBeziers(gridPen, points.ToArray());
+            }
+        }
+
+        private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                //Prevent annotations to overlap on southern pole
+                var southPole = new Coordinates(0, -MAXDEC, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(currentViewport);
+                PointF? position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height && Math.Abs(x.X - southPole.X) > 5 && Math.Abs(x.Y - southPole.Y) > 5);
+
+                if (position != null) {
+                    var hms = AstroUtil.HoursToHMS(frameLine.Angle.Hours);
+                    var text = $"{hms.Substring(0, hms.Length - 3)}h";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.Value.X), Math.Max(0, (position.Value.Y - size.Height)));
+                }
+
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void GenerateDecCoordinateMatrix(double decStep) {
+            decCoordinateMatrix.Clear();
+
+            for (double i = 0; i < 360; i += resolution) {
+                for (double dec = 0; dec <= MAXDEC; dec += decStep) {
+                    var coordinate = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(dec), Epoch.J2000);
+                    var coordinate2 = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(-dec), Epoch.J2000);
+                    if (!decCoordinateMatrix.ContainsKey(dec)) {
+                        decCoordinateMatrix[dec] = new List<Coordinates>();
+                    }
+                    if (!decCoordinateMatrix.ContainsKey(-dec)) {
+                        decCoordinateMatrix[-dec] = new List<Coordinates>();
+                    }
+                    decCoordinateMatrix[dec].Add(coordinate);
+                    decCoordinateMatrix[-dec].Add(coordinate2);
+                }
+            }
+        }
+
+        private void GenerateRACoordinateMatrix(double raStep) {
+            raCoordinateMatrix.Clear();
+            double i = 0;
+            do {
+                i = Math.Min(MAXDEC, i + resolution);
+
+                for (double ra = 0; ra < 360; ra += raStep) {
+                    var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
+                    var coordinate2 = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(-i), Epoch.J2000);
+                    if (!raCoordinateMatrix.ContainsKey(ra)) {
+                        raCoordinateMatrix[ra] = new List<Coordinates>();
+                    }
+
+                    raCoordinateMatrix[ra].Add(coordinate);
+                    raCoordinateMatrix[ra].Insert(0, coordinate2);
+                }
+            } while (i < MAXDEC);
+        }
+        private double nfmod(double a, double b) {
+            return a - b * Math.Floor(a / b);
+        }
+
+        private PointF Project(Coordinates coordinates) {
+            var p = coordinates.XYProjection(currentViewport);
+            return new PointF((float)p.X, (float)p.Y);
         }
     }
 }

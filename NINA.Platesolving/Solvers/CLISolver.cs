@@ -66,10 +66,17 @@ namespace NINA.PlateSolving.Solvers {
 
                 outputPath = GetOutputPath(imagePath);
 
-                await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cancelToken);
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancelToken)) {
+                    cts.CancelAfter(TimeSpan.FromMinutes(10));
+                    await StartCLI(imagePath, outputPath, parameter, imageProperties, progress, cancelToken);
+                }
 
                 //Extract solution coordinates
                 result = ReadResult(outputPath, parameter, imageProperties);
+            } catch(OperationCanceledException) {
+                if (!cancelToken.IsCancellationRequested) {
+                    Logger.Error("Platesolver timed out after 10 minutes");
+                }
             } finally {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
 

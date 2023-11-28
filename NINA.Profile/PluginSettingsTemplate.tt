@@ -80,6 +80,19 @@ namespace NINA.Profile {
             if (!pluginStorage.ContainsKey(pluginId)) {
                 pluginStorage[pluginId] = new Dictionary<string, object>();
             }
+
+            if(pluginStorage[pluginId].TryGetValue(key, out var oldValueObj)) {
+                if(oldValueObj != null) {
+                    if(oldValueObj.GetType() == typeof(<#= type.Name #>)) {
+                        var oldValue = (<#= type.Name #>)oldValueObj;
+                        if(oldValue == value) {
+                            Logger.Trace($"Skip setting plugin {pluginId} field {key} with value {value} as it is equals to old value {oldValue}");
+                            return;
+                        }
+                    }
+                }
+            }
+            
             Logger.Trace($"Setting plugin {pluginId} field {key} with value {value}");
             pluginStorage[pluginId][key] = value;
             RaisePropertyChanged(pluginId + "-" + key);

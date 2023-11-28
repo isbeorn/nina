@@ -25,7 +25,8 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Data="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}"
-                            Fill="{StaticResource ButtonForegroundBrush}" />
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            UseLayoutRounding="True" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="true">

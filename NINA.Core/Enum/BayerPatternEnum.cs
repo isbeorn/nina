@@ -20,6 +20,9 @@ namespace NINA.Core.Enum {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum BayerPatternEnum {
 
+        [Description("LblNone")]
+        None = -1,
+
         [Description("LblAuto")]
         Auto = 0,
 

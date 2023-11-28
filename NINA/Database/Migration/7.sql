@@ -110,199 +110,200 @@ UPDATE dsodetail SET
     notes = 'M 8 contains NGC 6523 and NGC 6530',
     lastmodified = '2022-06-20 04:11:54'
     WHERE id = 'NGC6533';
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'M', '8');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'NAME', 'Lagoon Nebula');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'Sh2', '25');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'LBN', '25');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'Gum', '72');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6533', 'RCW', '126');
+INSERT OR REPLACE INTO cataloguenr VALUES 
+('NGC6533', 'M', '8'),
+('NGC6533', 'NAME', 'Lagoon Nebula'),
+('NGC6533', 'Sh2', '25'),
+('NGC6533', 'LBN', '25'),
+('NGC6533', 'Gum', '72'),
+('NGC6533', 'RCW', '126'),
 
 /* Missing popular designations for existing database objects */
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6302', 'Sh2', '6');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6302', 'Gum', '60');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6302', 'RCW', '124');
+('NGC6302', 'Sh2', '6'),
+('NGC6302', 'Gum', '60'),
+('NGC6302', 'RCW', '124'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6357', 'Sh2', '11');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6357', 'Gum', '66');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6357', 'RCW', '131');
+('NGC6357', 'Sh2', '11'),
+('NGC6357', 'Gum', '66'),
+('NGC6357', 'RCW', '131'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC410', 'LBN', '807');
+('IC410', 'LBN', '807'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC417', 'Sh2', '234');
+('IC417', 'Sh2', '234'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1931', 'LBN', '810');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1931', 'Sh2', '237');
+('NGC1931', 'LBN', '810'),
+('NGC1931', 'Sh2', '237'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-205', 'LBN', '701');
+('Sh2-205', 'LBN', '701'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC10', 'LBN', '591');
+('IC10', 'LBN', '591'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC281', 'LBN', '616');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC281', 'Sh2', '184');
+('NGC281', 'LBN', '616'),
+('NGC281', 'Sh2', '184'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'LBN', '654');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'Sh2', '190');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'Collinder', '26');
+('IC1805', 'LBN', '654'),
+('IC1805', 'Sh2', '190'),
+('IC1805', 'Collinder', '26'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'LBN', '667');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'Sh2', '199');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'Collinder', '32');
+('IC1848', 'LBN', '667'),
+('IC1848', 'Sh2', '199'),
+('IC1848', 'Collinder', '32'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-157', 'LBN', '537');
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-157', 'Sh1', '109');
+('Sh2-157', 'LBN', '537'),
+('Sh2-157', 'Sh1', '109'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7635', 'Sh2', '162');
+('NGC7635', 'Sh2', '162'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7822', 'Sh2', '171');
+('NGC7822', 'Sh2', '171'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Ced214', 'LBN', '581');
+('Ced214', 'LBN', '581'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7023', 'LBN', '487');
+('NGC7023', 'LBN', '487'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7129', 'LBN', '497');
+('NGC7129', 'LBN', '497'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7380', 'LBN', '511');
+('NGC7380', 'LBN', '511'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Ced90', 'LBN', '1039');
+('Ced90', 'LBN', '1039'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC468', 'LBN', '1040');
+('IC468', 'LBN', '1040'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2359', 'Gum', '4');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2359', 'RCW', '5');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2359', 'Sh2', '298');
+('NGC2359', 'Gum', '4'),
+('NGC2359', 'RCW', '5'),
+('NGC2359', 'Sh2', '298'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-91', 'LBN', '147');
+('Sh2-91', 'LBN', '147'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6847', 'Sh2', '97');
+('NGC6847', 'Sh2', '97'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-101', 'LBN', '168');
+('Sh2-101', 'LBN', '168'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1310', 'LBN', '181');
+('IC1310', 'LBN', '181'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-104', 'LBN', '195');
+('Sh2-104', 'LBN', '195'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6914', 'LBN', '280');
+('NGC6914', 'LBN', '280'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-115', 'LBN', '357');
+('Sh2-115', 'LBN', '357'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC5070', 'LBN', '350');
+('IC5070', 'LBN', '350'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7000', 'Sh2', '117');
+('NGC7000', 'Sh2', '117'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1909', 'LBN', '959');
+('NGC1909', 'LBN', '959'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC2169', 'LBN', '903');
+('IC2169', 'LBN', '903'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC446', 'LBN', '898');
+('IC446', 'LBN', '898'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2264', 'LBN', '911');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2264', 'Sh2', '273');
+('NGC2264', 'LBN', '911'),
+('NGC2264', 'Sh2', '273'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC466', 'Sh2', '288');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC466', 'LBN', '1013');
+('IC466', 'Sh2', '288'),
+('IC466', 'LBN', '1013'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-294', 'RCW', '3');
+('Sh2-294', 'RCW', '3'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1976', 'LBN', '974');
+('NGC1976', 'LBN', '974'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1980', 'LBN', '977');
+('NGC1980', 'LBN', '977'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2023', 'vdB', '52');
+('NGC2023', 'vdB', '52'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Ced62', 'LBN', '855');
+('Ced62', 'LBN', '855'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2175', 'LBN', '854');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2175', 'Sh2', '252');
+('NGC2175', 'LBN', '854'),
+('NGC2175', 'Sh2', '252'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC2162', 'LBN', '859');
+('IC2162', 'LBN', '859'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC348', 'LBN', '758');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC348', 'Collinder', '41');
+('IC348', 'LBN', '758'),
+('IC348', 'Collinder', '41'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1491', 'Sh2', '206');
+('NGC1491', 'Sh2', '206'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1499', 'Sh2', '220');
+('NGC1499', 'Sh2', '220'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1579', 'Sh2', '222');
+('NGC1579', 'Sh2', '222'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-302', 'LBN', '1046');
+('Sh2-302', 'LBN', '1046'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-307', 'LBN', '1051');
+('Sh2-307', 'LBN', '1051'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-311', 'RCW', '16');
+('Sh2-311', 'RCW', '16'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC2467', 'Sh2', '311');
+('NGC2467', 'Sh2', '311'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-312', 'LBN', '1077');
+('Sh2-312', 'LBN', '1077'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-9', 'LBN', '1101');
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-9', 'Gum', '65');
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-9', 'vDB', '104');
+('Sh2-9', 'LBN', '1101'),
+('Sh2-9', 'Gum', '65'),
+('Sh2-9', 'vDB', '104'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('vdB107', 'LBN', '1108');
+('vdB107', 'LBN', '1108'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6611', 'LBN', '67');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6611', 'IC', '4703');
+('NGC6611', 'LBN', '67'),
+('NGC6611', 'IC', '4703'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-82', 'LBN', '129');
+('Sh2-82', 'LBN', '129'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-84', 'LBN', '131');
+('Sh2-84', 'LBN', '131'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-16', 'LBN', '1124');
+('Sh2-16', 'LBN', '1124'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6514', 'LBN', '27');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6514', 'Collinder', '360');
+('NGC6514', 'LBN', '27'),
+('NGC6514', 'Collinder', '360'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC4684', 'LBN', '34');
+('IC4684', 'LBN', '34'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1274', 'LBN', '33');
+('IC1274', 'LBN', '33'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC4701', 'LBN', '55');
+('IC4701', 'LBN', '55'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6589', 'LBN', '43');
+('NGC6589', 'LBN', '43'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6590', 'vdB', '119');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6590', 'Sh2', '37');
+('NGC6590', 'vdB', '119'),
+('NGC6590', 'Sh2', '37'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6618', 'LBN', '60');
+('NGC6618', 'LBN', '60'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1952', 'LBN', '833');
+('NGC1952', 'LBN', '833'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-240', 'LBN', '822');
+('Sh2-240', 'LBN', '822'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6842', 'LBN', '149');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6842', 'Sh1', '72');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC6842', 'Sh2', '95');
+('NGC6842', 'LBN', '149'),
+('NGC6842', 'Sh1', '72'),
+('NGC6842', 'Sh2', '95'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC4954', 'LBN', '153');
+('IC4954', 'LBN', '153'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-223', 'LBN', '768');
+('Sh2-223', 'LBN', '768'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC410', 'LBN', '807');
+('IC410', 'LBN', '807'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC417', 'Sh2', '234');
+('IC417', 'Sh2', '234'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1931', 'LBN', '810');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC1931', 'Sh2', '237');
+('NGC1931', 'LBN', '810'),
+('NGC1931', 'Sh2', '237'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-205', 'LBN', '701');
+('Sh2-205', 'LBN', '701'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC10', 'LBN', '591');
+('IC10', 'LBN', '591'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC281', 'LBN', '616');
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC281', 'Sh2', '184');
+('NGC281', 'LBN', '616'),
+('NGC281', 'Sh2', '184'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'LBN', '654');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'Sh2', '190');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1805', 'Collinder', '26');
+('IC1805', 'LBN', '654'),
+('IC1805', 'Sh2', '190'),
+('IC1805', 'Collinder', '26'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'LBN', '667');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'Sh2', '199');
-INSERT OR REPLACE INTO cataloguenr VALUES ('IC1848', 'Collinder', '32');
+('IC1848', 'LBN', '667'),
+('IC1848', 'Sh2', '199'),
+('IC1848', 'Collinder', '32'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-157', 'LBN', '537');
-INSERT OR REPLACE INTO cataloguenr VALUES ('Sh2-157', 'Sh1', '109');
+('Sh2-157', 'LBN', '537'),
+('Sh2-157', 'Sh1', '109'),
 
-INSERT OR REPLACE INTO cataloguenr VALUES ('NGC7635', 'Sh2', '162');
+('NGC7635', 'Sh2', '162');
 
 PRAGMA user_version = 7;

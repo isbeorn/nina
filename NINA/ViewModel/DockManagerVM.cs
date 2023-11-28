@@ -127,6 +127,7 @@ namespace NINA.ViewModel {
             initAnchorableTools.Add(autoFocusToolVM);
             initAnchorableTools.Add(focusTargetsVM);
 
+            profileService.BeforeProfileChanging += ProfileService_BeforeProfileChanging; ;
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
             Task.Run(async () => {
@@ -144,6 +145,12 @@ namespace NINA.ViewModel {
                 AnchorableTools = initAnchorableTools;
                 Initialized = true;
             });
+        }
+
+        private void ProfileService_BeforeProfileChanging(object sender, EventArgs e) {
+            try {
+                SaveAvalonDockLayout();
+            } catch { }
         }
 
         private void RestoreDockLayoutFromFile(object obj) {

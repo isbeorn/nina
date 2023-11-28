@@ -19,6 +19,7 @@ using NINA.Core.Utility.Notification;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.SDK.CameraSDKs.AtikSDK;
+using NINA.Equipment.Utility;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
@@ -658,7 +659,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
                             await Task.Delay(100, token);
                         }
 
-                        return AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, exposureDataFactory);
+                        var data = AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, exposureDataFactory);
+                        data.MetaData.FromCamera(this);
+                        return data;
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);

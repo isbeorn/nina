@@ -56,5 +56,6 @@ namespace NINA.Equipment.Interfaces.ViewModel {
 
         IDeviceChooserVM DeviceChooserVM { get; set; }
         void SetUSBLimit(int usbLimit);
+        event Func<object, EventArgs, Task> DownloadTimeout;
     }
 }

@@ -38,7 +38,7 @@ namespace NINA.Profile {
             debayeredHFR = true;
             unlinkedStretch = true;
             annotateUnlimitedStars = false;
-            starSensitivity = StarSensitivityEnum.Normal;
+            starSensitivity = StarSensitivityEnum.High;
             noiseReduction = NoiseReductionEnum.None;
             detectStars = true;
             autoStretch = true;

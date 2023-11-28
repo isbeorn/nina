@@ -50,6 +50,8 @@ namespace NINA.Profile.Interfaces {
 
         event EventHandler LocationChanged;
 
+        event EventHandler BeforeProfileChanging;
+
         event EventHandler ProfileChanged;
 
         event EventHandler HorizonChanged;

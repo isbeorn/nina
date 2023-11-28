@@ -316,7 +316,7 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
             }
             catch (FileNotFoundException ex)
             {
-                Logger.Error(Loc.Instance["LblSkyGuardPathNotFound"]);
+                Logger.Error(Loc.Instance["LblSkyGuardPathNotFound"], ex);
                 Notification.ShowError(Loc.Instance["LblSkyGuardPathNotFound"]);
                 throw;
             }
@@ -624,6 +624,12 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
 
                 if (CanFocusStatus.Status == "success")
                 {
+                    if (CanFocusStatus.Data != "true") 
+                    {
+                        Logger.Warning("[SKSS_CanFocus] returns false, make sure you have a version above SkyGuide");
+                        return true;
+                    }
+
                     string focusingStatusResponse = ExecuteWebRequest($"{SKSS_Uri}/SKSS_GetfocusingStatus");
                     var focusingStatus = JsonConvert.DeserializeObject<SkyGuardStatusMessage>(focusingStatusResponse);
 
@@ -894,7 +900,6 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
 
                 NewTimeOut();
 
-                string isDitheringInProgress;
                 SkyGuardStatusMessage isDitheringInProgressStatus = new SkyGuardStatusMessage();
 
                 string guidingStatusResponse = ExecuteWebRequest($"{SKSS_Uri}/SKSS_GetGuidingStatus");

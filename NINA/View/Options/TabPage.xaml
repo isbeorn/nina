@@ -37,7 +37,8 @@
                                     Margin="5"
                                     Data="{StaticResource NINASVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -51,7 +52,8 @@
                             Margin="2.5"
                             Data="{StaticResource NINASVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>
@@ -73,7 +75,8 @@
                                     Margin="5"
                                     Data="{StaticResource TelescopeSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -87,7 +90,8 @@
                             Margin="2.5"
                             Data="{StaticResource TelescopeSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>
@@ -109,7 +113,8 @@
                                     Margin="5"
                                     Data="{StaticResource AutoFocusSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -123,7 +128,8 @@
                             Margin="2.5"
                             Data="{StaticResource AutoFocusSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>
@@ -145,7 +151,8 @@
                                     Margin="5"
                                     Data="{StaticResource ObservatorySVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -159,7 +166,8 @@
                             Margin="2.5"
                             Data="{StaticResource ObservatorySVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>
@@ -181,7 +189,8 @@
                                     Margin="5"
                                     Data="{StaticResource PictureSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -195,7 +204,8 @@
                             Margin="2.5"
                             Data="{StaticResource PictureSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>
@@ -217,7 +227,8 @@
                                     Margin="5"
                                     Data="{StaticResource PlatesolveSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
                         </Grid>
                         <TextBlock
@@ -231,7 +242,8 @@
                             Margin="2.5"
                             Data="{StaticResource PlatesolveSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
                     </Grid>
                 </Grid>
             </TabItem.Header>

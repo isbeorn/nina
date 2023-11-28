@@ -59,6 +59,55 @@ namespace NINA.Image.FileFormat.FITS {
                 CfitsioNative.fits_open_memory(out fitsPtr, string.Empty, CfitsioNative.IOMODE.READONLY, ref buffer, ref size, ref deltaSize, IntPtr.Zero, out var status);
                 CfitsioNative.CheckStatus("fits_open_memory", status);
 
+                try {
+                    CfitsioNative.fits_read_key_long(fitsPtr, "NAXIS1");
+                } catch {
+                    // When NAXIS1 does not exist, try at the last HDU - e.g. when the image is tile compressed
+                    CfitsioNative.fits_get_num_hdus(fitsPtr, out int hdunum, out status);
+                    CfitsioNative.CheckStatus("fits_get_num_hdus", status);
+                    if (hdunum > 1) {
+                        CfitsioNative.fits_movabs_hdu(fitsPtr, hdunum, out var hdutypenow, out status);
+                        CfitsioNative.CheckStatus("fits_movabs_hdu", status);
+                    }
+                }
+
+                // Check if the image is compressed
+                var compressionFlag = CfitsioNative.fits_is_compressed_image(fitsPtr, out status);
+                CfitsioNative.CheckStatus("fits_is_compressed_image", status);
+                if (compressionFlag > 0) {
+                    // When the image is compresse, we decompress it into a temporary file
+                    var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fits");
+                    CfitsioNative.fits_create_file(out var ptr, tempFile, out status);
+                    CfitsioNative.CheckStatus("fits_create_file", status);
+
+                    CfitsioNative.fits_img_decompress(fitsPtr, ptr, out status);
+                    CfitsioNative.CheckStatus("fits_img_decompress", status);
+
+                    // Free resources for current file
+                    if (fitsPtr != IntPtr.Zero) {
+                        CfitsioNative.fits_close_file(fitsPtr, out status);
+                        CfitsioNative.CheckStatus("fits_close_file", status);
+                        CfitsioNative.fits_close_file(ptr, out status);
+                        CfitsioNative.CheckStatus("fits_close_file", status);
+                    }
+                    if (buffer != IntPtr.Zero) {
+                        Marshal.FreeHGlobal(buffer);
+                    }
+
+                    // Read the temp file and clean it up once in memory
+                    bytes = File.ReadAllBytes(tempFile);
+                    File.Delete(tempFile);
+
+                    buffer = Marshal.AllocHGlobal(bytes.Length);
+                    size = new UIntPtr((uint)bytes.Length);
+                    deltaSize = UIntPtr.Zero;
+
+                    Marshal.Copy(bytes, 0, buffer, bytes.Length);
+                    fitsPtr = IntPtr.Zero;
+                    CfitsioNative.fits_open_memory(out fitsPtr, string.Empty, CfitsioNative.IOMODE.READONLY, ref buffer, ref size, ref deltaSize, IntPtr.Zero, out status);
+                    CfitsioNative.CheckStatus("fits_open_memory", status);
+                }
+
                 var dimensions = CfitsioNative.fits_read_key_long(fitsPtr, "NAXIS");
                 if (dimensions > 2) {
                     Logger.Warning("Reading debayered FITS images not supported. Reading the first 2 axes to get a monochrome image");
@@ -67,6 +116,7 @@ namespace NINA.Image.FileFormat.FITS {
                 var width = (int)CfitsioNative.fits_read_key_long(fitsPtr, "NAXIS1");
                 var height = (int)CfitsioNative.fits_read_key_long(fitsPtr, "NAXIS2");
                 var bitPix = (CfitsioNative.BITPIX)(int)CfitsioNative.fits_read_key_long(fitsPtr, "BITPIX");
+
                 var pixels = CfitsioNative.read_ushort_pixels(fitsPtr, bitPix, 2, width * height);
 
                 //Translate CFITSio into N.I.N.A. FITSHeader
@@ -118,7 +168,7 @@ namespace NINA.Image.FileFormat.FITS {
                 if (fitsPtr != IntPtr.Zero) {
                     try {
                         CfitsioNative.fits_close_file(fitsPtr, out var status);
-                    } catch(Exception) { }                    
+                    } catch (Exception) { }
                 }
                 if (buffer != IntPtr.Zero) {
                     Marshal.FreeHGlobal(buffer);

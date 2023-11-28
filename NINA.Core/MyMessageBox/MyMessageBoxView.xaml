@@ -83,7 +83,8 @@
                                             Margin="10"
                                             Data="{StaticResource CancelSVG}"
                                             Stretch="Uniform"
-                                            Style="{StaticResource WindowCloseButtonPath}" />
+                                            Style="{StaticResource WindowCloseButtonPath}"
+                                            UseLayoutRounding="True" />
                                     </Button>
                                 </StackPanel>
 

@@ -81,8 +81,37 @@ namespace NINA.Image.FileFormat.XISF {
             ByteShuffling = fileSaveInfo.XISFByteShuffling;
             ShuffleItemSize = sizeof(ushort);
 
-            Data = PrepareArray(data);
+
+            /*
+             * Convert the data array into a byte[]
+             * From here onwards we deal in byte arrays only
+             */
+            byte[] byteArray = new byte[data.Length * ShuffleItemSize];
+            Buffer.BlockCopy(data, 0, byteArray, 0, data.Length * ShuffleItemSize);
+
+            Data = PrepareArray(byteArray);
             Size = (uint)data.Length * sizeof(ushort);
+            CompressedSize = CompressionType == XISFCompressionTypeEnum.NONE ? 0 : (uint)Data.Length;
+        }
+
+        public XISFData(int[] data, FileSaveInfo fileSaveInfo) : this(Array.ConvertAll(data, item => (uint)item), fileSaveInfo) {
+        }
+
+        public XISFData(uint[] data, FileSaveInfo fileSaveInfo) {
+            CompressionType = fileSaveInfo.XISFCompressionType;
+            ChecksumType = fileSaveInfo.XISFChecksumType; ;
+            ByteShuffling = fileSaveInfo.XISFByteShuffling;
+            ShuffleItemSize = sizeof(uint);
+
+            /*
+             * Convert the data array into a byte[]
+             * From here onwards we deal in byte arrays only
+             */
+            byte[] byteArray = new byte[data.Length * ShuffleItemSize];
+            Buffer.BlockCopy(data, 0, byteArray, 0, data.Length * ShuffleItemSize);
+
+            Data = PrepareArray(byteArray);
+            Size = (uint)data.Length * sizeof(uint);
             CompressedSize = CompressionType == XISFCompressionTypeEnum.NONE ? 0 : (uint)Data.Length;
         }
 
@@ -100,15 +129,8 @@ namespace NINA.Image.FileFormat.XISF {
         /// </summary>
         /// <param name="data"></param>
         /// <returns>Uncompressed or compressed byte array</returns>
-        private byte[] PrepareArray(ushort[] data) {
+        private byte[] PrepareArray(byte[] byteArray) {
             byte[] outArray;
-
-            /*
-             * Convert the ushort[] into a byte[]
-             * From here onwards we deal in byte arrays only
-             */
-            byte[] byteArray = new byte[data.Length * ShuffleItemSize];
-            Buffer.BlockCopy(data, 0, byteArray, 0, data.Length * ShuffleItemSize);
 
             /*
              * Compress the data block as configured.
@@ -204,10 +226,18 @@ namespace NINA.Image.FileFormat.XISF {
                         break;
 
                     case XISFChecksumTypeEnum.SHA3_256:
-                        throw new NotSupportedException();                        
+                        SHA3_256 sha3_256 = SHA3_256.Create();
+                        Checksum = GetStringFromHash(sha3_256.ComputeHash(outArray));
+                        ChecksumName = "sha3-256";
+                        sha3_256.Dispose();
+                        break;
 
                     case XISFChecksumTypeEnum.SHA3_512:
-                        throw new NotSupportedException();                        
+                        SHA3_512 sha3_512 = SHA3_512.Create();
+                        Checksum = GetStringFromHash(sha3_512.ComputeHash(outArray));
+                        ChecksumName = "sha3-512";
+                        sha3_512.Dispose();
+                        break;
 
                     case XISFChecksumTypeEnum.NONE:
                     default:

@@ -26,16 +26,15 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="3*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.RowSpan="2">
+        <Grid>
             <GroupBox>
                 <GroupBox.Header>
                     <Grid>
@@ -331,6 +330,7 @@
                                 </DataTemplate>
                                 <local:CameraTemplateSelector
                                     x:Key="ContentSelector"
+                                    ASCOM="{StaticResource Default}"
                                     Atik="{StaticResource Default}"
                                     Canon="{StaticResource Default}"
                                     Default="{StaticResource Default}"
@@ -362,494 +362,517 @@
                             Text="{ns:Loc LblSettings}" />
                     </Grid>
                 </GroupBox.Header>
-                <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
-                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDefaultGain}" />
-                            <StackPanel
-                                Opacity="0.4"
-                                Orientation="Horizontal"
-                                Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="(" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.GainMin}" />
-                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.GainMax}" />
-                                <TextBlock VerticalAlignment="Center" Text=")" />
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
+                        <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
+                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDefaultGain}" />
+                                <StackPanel
+                                    Opacity="0.4"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="(" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.GainMin}" />
+                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.GainMax}" />
+                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                        <Grid>
+                            <Grid>
+                                <ninactrl:IntStepperControl
+                                    Width="200"
+                                    HorizontalAlignment="Right"
+                                    IsEnabled="{Binding Cam.CanSetGain}"
+                                    MaxValue="{Binding Cam.GainMax}"
+                                    MinValue="{Binding Cam.GainMin}"
+                                    StepSize="1"
+                                    Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}"
+                                    Value="{Binding DefaultGain, Mode=TwoWay}" />
+                                <ComboBox
+                                    Width="200"
+                                    HorizontalAlignment="Right"
+                                    ItemsSource="{Binding Cam.Gains}"
+                                    SelectedValue="{Binding DefaultGain}"
+                                    Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
+                            </Grid>
+                            <DockPanel.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDefaultGainTooltip}" />
+                            </DockPanel.ToolTip>
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
+
+                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDefaultOffset}" />
+                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="(" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.OffsetMin}" />
+                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.OffsetMax}" />
+                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                </StackPanel>
+                            </StackPanel>
                             <ninactrl:IntStepperControl
                                 Width="200"
                                 HorizontalAlignment="Right"
-                                IsEnabled="{Binding Cam.CanSetGain}"
-                                MaxValue="{Binding Cam.GainMax}"
-                                MinValue="{Binding Cam.GainMin}"
+                                MaxValue="{Binding Cam.OffsetMax}"
+                                MinValue="{Binding Cam.OffsetMin}"
                                 StepSize="1"
-                                Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}"
-                                Value="{Binding DefaultGain, Mode=TwoWay}" />
+                                Value="{Binding DefaultOffset, Mode=TwoWay}" />
+
+                            <DockPanel.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDefaultOffsetTooltip}" />
+                            </DockPanel.ToolTip>
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
+                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUSBLimit}" />
+                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="(" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.USBLimitMin}" />
+                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Cam.USBLimitMax}" />
+                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                </StackPanel>
+                            </StackPanel>
+                            <ninactrl:IntStepperControl
+                                Width="200"
+                                HorizontalAlignment="Right"
+                                MaxValue="{Binding Cam.USBLimitMax}"
+                                MinValue="{Binding Cam.USBLimitMin}"
+                                StepSize="{Binding Cam.USBLimitStep}"
+                                Value="{Binding Cam.USBLimit, Mode=TwoWay}" />
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForSnapImages}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <ComboBox
                                 Width="200"
                                 HorizontalAlignment="Right"
-                                ItemsSource="{Binding Cam.Gains}"
-                                SelectedValue="{Binding DefaultGain}"
-                                Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
-                        </Grid>
-                        <DockPanel.ToolTip>
-                            <TextBlock Text="{ns:Loc LblDefaultGainTooltip}" />
-                        </DockPanel.ToolTip>
-                    </DockPanel>
-                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding Cam.ReadoutModes}"
+                                SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForNormalImages}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                Width="200"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding Cam.ReadoutModes}"
+                                SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
+                        </DockPanel>
+                        <Grid>
+                            <Grid.Resources>
+                                <DataTemplate x:Key="Default">
+                                    <Grid />
+                                </DataTemplate>
+                                <DataTemplate x:Key="Altair">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasLowNoiseMode, Converter={StaticResource VisibilityConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblUltraMode}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding LowNoiseMode}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblUltraModeTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighFullwell, Converter={StaticResource VisibilityConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblHighFullwellMode}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding HighFullwellMode}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblHighFullwellModeTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblBinAverageEnabled}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding BinAverageEnabled}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip>
+                                                        <TextBlock Text="{ns:Loc LblBinAverageEnabledTooltop}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}}">
+                                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeaterStrength}" />
+                                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="(" />
+                                                    <TextBlock VerticalAlignment="Center" Text="1" />
+                                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding MaxDewHeaterStrength}" />
+                                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="{Binding MaxDewHeaterStrength}"
+                                                MinValue="0"
+                                                StepSize="1"
+                                                Value="{Binding TargetDewHeaterStrength, Mode=TwoWay}" />
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding MaxFanSpeed, Converter={StaticResource ZeroToVisibilityConverter}}">
+                                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFanSpeed}" />
+                                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="(" />
+                                                    <TextBlock VerticalAlignment="Center" Text="0" />
+                                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding MaxFanSpeed}" />
+                                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="{Binding MaxFanSpeed}"
+                                                MinValue="0"
+                                                StepSize="1"
+                                                Value="{Binding FanSpeed, Mode=TwoWay}" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
 
-                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDefaultOffset}" />
-                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="(" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.OffsetMin}" />
-                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.OffsetMax}" />
-                                <TextBlock VerticalAlignment="Center" Text=")" />
-                            </StackPanel>
-                        </StackPanel>
-                        <ninactrl:IntStepperControl
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            MaxValue="{Binding Cam.OffsetMax}"
-                            MinValue="{Binding Cam.OffsetMin}"
-                            StepSize="1"
-                            Value="{Binding DefaultOffset, Mode=TwoWay}" />
-
-                        <DockPanel.ToolTip>
-                            <TextBlock Text="{ns:Loc LblDefaultOffsetTooltip}" />
-                        </DockPanel.ToolTip>
-                    </DockPanel>
-                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
-                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUSBLimit}" />
-                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="(" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.USBLimitMin}" />
-                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Cam.USBLimitMax}" />
-                                <TextBlock VerticalAlignment="Center" Text=")" />
-                            </StackPanel>
-                        </StackPanel>
-                        <ninactrl:IntStepperControl
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            MaxValue="{Binding Cam.USBLimitMax}"
-                            MinValue="{Binding Cam.USBLimitMin}"
-                            StepSize="{Binding Cam.USBLimitStep}"
-                            Value="{Binding Cam.USBLimit, Mode=TwoWay}" />
-                    </DockPanel>
-                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForSnapImages}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <ComboBox
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            ItemsSource="{Binding Cam.ReadoutModes}"
-                            SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
-                    </DockPanel>
-                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForNormalImages}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <ComboBox
-                            Width="200"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            ItemsSource="{Binding Cam.ReadoutModes}"
-                            SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
-                    </DockPanel>
-                    <Grid>
-                        <Grid.Resources>
-                            <DataTemplate x:Key="Default">
-                                <Grid />
-                            </DataTemplate>
-                            <DataTemplate x:Key="Altair">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighGain, Converter={StaticResource VisibilityConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblHighGainMode}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding HighGainMode}">
-                                            <CheckBox.ToolTip>
-                                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                    <TextBlock Text="{ns:Loc LblHighGainModeTooltip}" />
-                                                </ToolTip>
-                                            </CheckBox.ToolTip>
-                                        </CheckBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasLowNoiseMode, Converter={StaticResource VisibilityConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblUltraMode}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding LowNoiseMode}">
-                                            <CheckBox.ToolTip>
-                                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                    <TextBlock Text="{ns:Loc LblUltraModeTooltip}" />
-                                                </ToolTip>
-                                            </CheckBox.ToolTip>
-                                        </CheckBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighFullwell, Converter={StaticResource VisibilityConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblHighFullwellMode}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding HighFullwellMode}">
-                                            <CheckBox.ToolTip>
-                                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                    <TextBlock Text="{ns:Loc LblHighFullwellModeTooltip}" />
-                                                </ToolTip>
-                                            </CheckBox.ToolTip>
-                                        </CheckBox>
-                                    </DockPanel>
+                                <DataTemplate x:Key="QhyCcd">
                                     <DockPanel Margin="0,0,0,6">
                                         <TextBlock
                                             MinWidth="100"
                                             VerticalAlignment="Center"
-                                            Text="{ns:Loc LblBinAverageEnabled}" />
+                                            Text="{ns:Loc LblQhyIncludeOverscan}" />
                                         <CheckBox
                                             Width="200"
                                             HorizontalAlignment="Right"
-                                            IsChecked="{Binding BinAverageEnabled}">
+                                            IsChecked="{Binding QhyIncludeOverscan}">
                                             <CheckBox.ToolTip>
-                                                <ToolTip>
-                                                    <TextBlock Text="{ns:Loc LblBinAverageEnabledTooltop}" />
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblQhyIncludeOverscanTooltip}" />
                                                 </ToolTip>
                                             </CheckBox.ToolTip>
                                         </CheckBox>
                                     </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}}">
-                                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeaterStrength}" />
-                                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Text="(" />
-                                                <TextBlock VerticalAlignment="Center" Text="1" />
-                                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding MaxDewHeaterStrength}" />
-                                                <TextBlock VerticalAlignment="Center" Text=")" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <ninactrl:IntStepperControl
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            MaxValue="{Binding MaxDewHeaterStrength}"
-                                            MinValue="0"
-                                            StepSize="1"
-                                            Value="{Binding TargetDewHeaterStrength, Mode=TwoWay}" />
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding MaxFanSpeed, Converter={StaticResource ZeroToVisibilityConverter}}">
-                                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFanSpeed}" />
-                                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Text="(" />
-                                                <TextBlock VerticalAlignment="Center" Text="0" />
-                                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding MaxFanSpeed}" />
-                                                <TextBlock VerticalAlignment="Center" Text=")" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <ninactrl:IntStepperControl
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            MaxValue="{Binding MaxFanSpeed}"
-                                            MinValue="0"
-                                            StepSize="1"
-                                            Value="{Binding FanSpeed, Mode=TwoWay}" />
-                                    </DockPanel>
-                                </StackPanel>
-                            </DataTemplate>
+                                </DataTemplate>
 
-                            <DataTemplate x:Key="QhyCcd">
-                                <DockPanel Margin="0,0,0,6">
+                                <DataTemplate x:Key="ASCOM">
+                                    <DockPanel Margin="0,5,0,0">
+                                        <TextBlock
+                                            MinWidth="100"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblASCOMCreate32BitData}">
+                                            <TextBlock.ToolTip>
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblASCOMCreate32BitDataTooltip}" />
+                                                </ToolTip>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <CheckBox HorizontalAlignment="Right" IsChecked="{Binding Create32BitData}">
+                                            <CheckBox.ToolTip>
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblASCOMCreate32BitDataTooltip}" />
+                                                </ToolTip>
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </DockPanel>
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="Canon">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6">
+                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMirrorLockupDelay}" />
+                                            <ninactrl:UnitTextBox
+                                                Width="200"
+                                                Margin="5,0,0,0"
+                                                HorizontalAlignment="Right"
+                                                VerticalContentAlignment="Center"
+                                                Unit="s">
+                                                <TextBox.Text>
+                                                    <Binding Mode="TwoWay" Path="MirrorLockupDelay">
+                                                        <Binding.ValidationRules>
+                                                            <util:GreaterZeroRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                                <TextBox.ToolTip>
+                                                    <ToolTip>
+                                                        <TextBlock Text="{ns:Loc LblMirrorLockupDelayTooltip}" />
+                                                    </ToolTip>
+                                                </TextBox.ToolTip>
+                                            </ninactrl:UnitTextBox>
+                                        </DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            FontStyle="Italic"
+                                            Text="{ns:Loc LblMirrorLockupDelayTooltip}"
+                                            TextAlignment="Right" />
+                                    </StackPanel>
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="LegacySbig">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTrackingCcd, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblTrackingASCOMServerEnabled}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding TrackingCcdAscomServerEnabled}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblTrackingASCOMServerEnabledTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTrackingCcd, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblTrackingASCOMServerPipeName}" />
+                                            <TextBox
+                                                Width="250"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center">
+                                                <TextBox.Text>
+                                                    <Binding
+                                                        Path="ActiveProfile.CameraSettings.TrackingCameraASCOMServerPipeName"
+                                                        Source="{StaticResource ProfileService}"
+                                                        UpdateSourceTrigger="LostFocus" />
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDualTracking, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblSBIGUseExternalTrackingCCD}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding UseExternalTrackingCcd}" />
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding TrackingCcdAscomServerEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblTrackingASCOMServerLoggingEnabled}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding TrackingCcdAscomServerLoggingEnabled}" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                                <DataTemplate x:Key="Failed">
                                     <TextBlock
-                                        MinWidth="100"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{ns:Loc LblQhyIncludeOverscan}" />
-                                    <CheckBox
-                                        Width="200"
-                                        HorizontalAlignment="Right"
-                                        IsChecked="{Binding QhyIncludeOverscan}">
-                                        <CheckBox.ToolTip>
-                                            <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                <TextBlock Text="{ns:Loc LblQhyIncludeOverscanTooltip}" />
-                                            </ToolTip>
-                                        </CheckBox.ToolTip>
-                                    </CheckBox>
-                                </DockPanel>
-                            </DataTemplate>
+                                        Text="Failed to load plugin data template" />
+                                </DataTemplate>
 
-                            <DataTemplate x:Key="Canon">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMirrorLockupDelay}" />
-                                        <ninactrl:UnitTextBox
-                                            Width="200"
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalContentAlignment="Center"
-                                            Unit="s">
-                                            <TextBox.Text>
-                                                <Binding Mode="TwoWay" Path="MirrorLockupDelay">
-                                                    <Binding.ValidationRules>
-                                                        <util:GreaterZeroRule />
-                                                    </Binding.ValidationRules>
-                                                </Binding>
-                                            </TextBox.Text>
-                                            <TextBox.ToolTip>
-                                                <ToolTip>
-                                                    <TextBlock Text="{ns:Loc LblMirrorLockupDelayTooltip}" />
-                                                </ToolTip>
-                                            </TextBox.ToolTip>
-                                        </ninactrl:UnitTextBox>
-                                    </DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Right"
-                                        FontStyle="Italic"
-                                        Text="{ns:Loc LblMirrorLockupDelayTooltip}"
-                                        TextAlignment="Right" />
-                                </StackPanel>
-                            </DataTemplate>
+                                <DataTemplate x:Key="Atik">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasGainPresets, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblAtikGainPreset}" />
+                                            <ComboBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                ItemsSource="{Binding GainPresets}"
+                                                SelectedIndex="{Binding GainPreset}" />
+                                        </DockPanel>
 
-                            <DataTemplate x:Key="LegacySbig">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTrackingCcd, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblTrackingASCOMServerEnabled}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding TrackingCcdAscomServerEnabled}">
-                                            <CheckBox.ToolTip>
-                                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                    <TextBlock Text="{ns:Loc LblTrackingASCOMServerEnabledTooltip}" />
-                                                </ToolTip>
-                                            </CheckBox.ToolTip>
-                                        </CheckBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasTrackingCcd, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblTrackingASCOMServerPipeName}" />
-                                        <TextBox
-                                            Width="250"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Center">
-                                            <TextBox.Text>
-                                                <Binding
-                                                    Path="ActiveProfile.CameraSettings.TrackingCameraASCOMServerPipeName"
-                                                    Source="{StaticResource ProfileService}"
-                                                    UpdateSourceTrigger="LostFocus" />
-                                            </TextBox.Text>
-                                        </TextBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDualTracking, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblSBIGUseExternalTrackingCCD}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding UseExternalTrackingCcd}" />
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding TrackingCcdAscomServerEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblTrackingASCOMServerLoggingEnabled}" />
-                                        <CheckBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            IsChecked="{Binding TrackingCcdAscomServerLoggingEnabled}" />
-                                    </DockPanel>
-                                </StackPanel>
-                            </DataTemplate>
-                            <DataTemplate x:Key="Failed">
-                                <TextBlock
-                                    Margin="5"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="Failed to load plugin data template" />
-                            </DataTemplate>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasExposureSpeed, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblAtikExposureSpeed}" />
+                                            <ComboBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                ItemsSource="{Binding ExposureSpeeds}"
+                                                SelectedIndex="{Binding ExposureSpeed}" />
+                                        </DockPanel>
 
-                            <DataTemplate x:Key="Atik">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasGainPresets, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblAtikGainPreset}" />
-                                        <ComboBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            ItemsSource="{Binding GainPresets}"
-                                            SelectedIndex="{Binding GainPreset}" />
-                                    </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblAtikWindowHeaterPowerLevel}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Text="(1 - 255)" />
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="255"
+                                                MinValue="1"
+                                                StepSize="1"
+                                                Value="{Binding WindowHeaterPowerLevel, Mode=TwoWay}" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
 
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasExposureSpeed, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblAtikExposureSpeed}" />
-                                        <ComboBox
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            ItemsSource="{Binding ExposureSpeeds}"
-                                            SelectedIndex="{Binding ExposureSpeed}" />
-                                    </DockPanel>
+                                <DataTemplate x:Key="Zwo">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasZwoAsiMonoBinMode, Converter={StaticResource VisibilityConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblZwoMonoBinMode}" />
+                                            <CheckBox HorizontalAlignment="Right" IsChecked="{Binding ZwoAsiMonoBinMode}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblZwoMonoBinModeTooltip}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DockPanel>
 
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblAtikWindowHeaterPowerLevel}" />
-                                        <TextBlock
-                                            Margin="5,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="(1 - 255)" />
-                                        <ninactrl:IntStepperControl
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            MaxValue="255"
-                                            MinValue="1"
-                                            StepSize="1"
-                                            Value="{Binding WindowHeaterPowerLevel, Mode=TwoWay}" />
-                                    </DockPanel>
-                                </StackPanel>
-                            </DataTemplate>
+                                        <DockPanel Margin="0,0,0,6">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblZwoDeviceId}" />
+                                            <TextBox
+                                                Width="75"
+                                                HorizontalAlignment="Right"
+                                                MaxLength="8"
+                                                Text="{Binding CameraAlias}">
+                                                <TextBox.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                        <TextBlock Text="{ns:Loc LblZwoDeviceIdTooltip}" />
+                                                    </ToolTip>
+                                                </TextBox.ToolTip>
+                                            </TextBox>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
 
-                            <DataTemplate x:Key="Zwo">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6">
-                                        <TextBlock
-                                            MinWidth="100"
-                                            VerticalAlignment="Center"
-                                            Text="{ns:Loc LblZwoDeviceId}" />
-                                        <TextBox
-                                            Width="75"
-                                            HorizontalAlignment="Right"
-                                            MaxLength="8"
-                                            Text="{Binding CameraAlias}">
-                                            <TextBox.ToolTip>
-                                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                    <TextBlock Text="{ns:Loc LblZwoDeviceIdTooltip}" />
-                                                </ToolTip>
-                                            </TextBox.ToolTip>
-                                        </TextBox>
-                                    </DockPanel>
-                                </StackPanel>
-                            </DataTemplate>
-
-                            <DataTemplate x:Key="Generic">
-                                <StackPanel Orientation="Vertical">
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}}">
-                                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeaterStrength}" />
-                                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Text="(" />
-                                                <TextBlock VerticalAlignment="Center" Text="10" />
-                                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                                <TextBlock VerticalAlignment="Center" Text="100" />
-                                                <TextBlock VerticalAlignment="Center" Text=")" />
+                                <DataTemplate x:Key="Generic">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasDewHeater, Converter={StaticResource VisibilityConverter}}">
+                                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeaterStrength}" />
+                                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="(" />
+                                                    <TextBlock VerticalAlignment="Center" Text="10" />
+                                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                                    <TextBlock VerticalAlignment="Center" Text="100" />
+                                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                                </StackPanel>
                                             </StackPanel>
-                                        </StackPanel>
-                                        <ninactrl:IntStepperControl
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            MaxValue="100"
-                                            MinValue="10"
-                                            StepSize="10"
-                                            Value="{Binding TargetDewHeaterStrength, Mode=TwoWay}" />
-                                    </DockPanel>
-                                    <DockPanel Margin="0,0,0,6" Visibility="{Binding HasAdjustableFan, Converter={StaticResource VisibilityConverter}}">
-                                        <StackPanel MinWidth="100" Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFanSpeed}" />
-                                            <StackPanel Opacity="0.4" Orientation="Horizontal">
-                                                <TextBlock
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Text="(" />
-                                                <TextBlock VerticalAlignment="Center" Text="10" />
-                                                <TextBlock VerticalAlignment="Center" Text="-" />
-                                                <TextBlock VerticalAlignment="Center" Text="100" />
-                                                <TextBlock VerticalAlignment="Center" Text=")" />
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="100"
+                                                MinValue="10"
+                                                StepSize="10"
+                                                Value="{Binding TargetDewHeaterStrength, Mode=TwoWay}" />
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding HasAdjustableFan, Converter={StaticResource VisibilityConverter}}">
+                                            <StackPanel MinWidth="100" Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFanSpeed}" />
+                                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="(" />
+                                                    <TextBlock VerticalAlignment="Center" Text="10" />
+                                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                                    <TextBlock VerticalAlignment="Center" Text="100" />
+                                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                                </StackPanel>
                                             </StackPanel>
-                                        </StackPanel>
-                                        <ninactrl:IntStepperControl
-                                            Width="200"
-                                            HorizontalAlignment="Right"
-                                            MaxValue="100"
-                                            MinValue="10"
-                                            StepSize="10"
-                                            Value="{Binding TargetFanSpeed, Mode=TwoWay}" />
-                                    </DockPanel>
-                                </StackPanel>
-                            </DataTemplate>
+                                            <ninactrl:IntStepperControl
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                MaxValue="100"
+                                                MinValue="10"
+                                                StepSize="10"
+                                                Value="{Binding TargetFanSpeed, Mode=TwoWay}" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </DataTemplate>
 
-                            <local:CameraTemplateSelector
-                                x:Key="ContentSelector"
-                                Atik="{StaticResource Atik}"
-                                Canon="{StaticResource Canon}"
-                                Default="{StaticResource Default}"
-                                FailedToLoadTemplate="{StaticResource Failed}"
-                                Generic="{StaticResource Generic}"
-                                LegacySbig="{StaticResource LegacySbig}"
-                                Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraSettings}"
-                                QhyCcd="{StaticResource QhyCcd}"
-                                Touptek="{StaticResource Altair}"
-                                Zwo="{StaticResource Zwo}" />
-                        </Grid.Resources>
-                        <ContentControl
-                            Content="{Binding}"
-                            ContentTemplateSelector="{StaticResource ContentSelector}"
-                            DataContext="{Binding Cam.Camera}" />
-                    </Grid>
-                </StackPanel>
+                                <local:CameraTemplateSelector
+                                    x:Key="ContentSelector"
+                                    ASCOM="{StaticResource ASCOM}"
+                                    Atik="{StaticResource Atik}"
+                                    Canon="{StaticResource Canon}"
+                                    Default="{StaticResource Default}"
+                                    FailedToLoadTemplate="{StaticResource Failed}"
+                                    Generic="{StaticResource Generic}"
+                                    LegacySbig="{StaticResource LegacySbig}"
+                                    Postfix="{x:Static wpfutil:DataTemplatePostfix.CameraSettings}"
+                                    QhyCcd="{StaticResource QhyCcd}"
+                                    Touptek="{StaticResource Altair}"
+                                    Zwo="{StaticResource Zwo}" />
+                            </Grid.Resources>
+                            <ContentControl
+                                Content="{Binding}"
+                                ContentTemplateSelector="{StaticResource ContentSelector}"
+                                DataContext="{Binding Cam.Camera}" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </GroupBox>
         </Grid>
         <Grid
-            Grid.RowSpan="3"
+            Grid.RowSpan="2"
             Grid.Column="1"
             IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding CameraInfo.Connected}">

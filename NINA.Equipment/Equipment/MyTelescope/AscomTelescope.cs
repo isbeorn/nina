@@ -29,6 +29,9 @@ using TelescopeAxes = NINA.Core.Enum.TelescopeAxes;
 using GuideDirections = NINA.Core.Enum.GuideDirections;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
+using ASCOM.Common;
+using ASCOM;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyTelescope {
 
@@ -81,7 +84,6 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public bool CanSetRightAscensionRate => GetProperty(nameof(Telescope.CanSetRightAscensionRate), false);
 
-        public bool CanSetTrackingRate => GetProperty(nameof(Telescope.CanSetTracking), false);
 
         public bool CanSlew => GetProperty(nameof(Telescope.CanSlew), false);
 
@@ -320,7 +322,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     localSiderealTime: Angle.ByHours(SiderealTime));
                 if (profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                     var sop = SideOfPier;
-                    Logger.Debug($"Mount side of pier is currently {sop}, and target is {targetSideOfPier}");
+                    Logger.Info($"Mount side of pier is currently {sop}, and target is {targetSideOfPier}");
                     if (targetSideOfPier == sop) {
                         Logger.Info($"Current Side of Pier ({sop}) is equal to Target Side of Pier ({targetSideOfPier}). No flip is required");
                         // No flip required
@@ -328,9 +330,26 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     }
                 }
 
+
                 targetCoordinates = targetCoordinates.Transform(EquatorialSystem);
                 TargetCoordinates = targetCoordinates;
-                bool pierSideSuccess = !CanSetPierSide;  // If we can't set the side of pier, consider our work done up front already
+                // If we can't set the side of pier, consider our work done up front already                
+                bool pierSideSuccess = !CanSetPierSide;
+
+                // check for the CURRENT mount position
+                // This is not necessarily equals to the target position after the flip (e.g. pause before meridian stops tracking)
+                var currentExpectedSideOfPier = NINA.Astrometry.MeridianFlip.ExpectedPierSide(
+                    coordinates: this.Coordinates,
+                    localSiderealTime: Angle.ByHours(SiderealTime));
+                var currentSoP = this.SideOfPier;
+                if (currentExpectedSideOfPier == currentSoP) {
+                    // we are not yet past meridian - the mount is in Counter Weight DOWN position
+                    // Hence it should be avoided setting SoP as a SoP change slew could result in a Counter Weight UP position
+                    Logger.Info($"Current side of pier is {currentSoP}, which should be a counter weight down position already. Setting side of pier will be skipped for safety and just a slew to target will be attempted.");
+                    pierSideSuccess = true;
+                } 
+
+
                 bool slewSuccess = false;
                 int retries = 0;
                 do {
@@ -483,12 +502,18 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             }
         }
 
-        public void Park() {
+        public async Task Park(CancellationToken token) {
             if (CanPark) {
-                device.Park();
+                try {
+                    await device.ParkAsync(token);
+                } catch (OperationCanceledException) {
+                    throw;
+                } catch (Exception e) {
+                    Logger.Error(e);
+                    Notification.ShowExternalError(e.Message, Loc.Instance["LblASCOMDriverError"]);
+                }
             }
         }
-
         public void Setpark() {
             if (CanSetPark) {
                 try {
@@ -519,14 +544,14 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 try {
                     TrackingEnabled = true;
                     TargetCoordinates = coordinates.Transform(EquatorialSystem);
+
                     if (CanSlewAsync) {
-                        device.SlewToCoordinatesAsync(TargetCoordinates.RA, TargetCoordinates.Dec);
+                        await device.SlewToCoordinatesTaskAsync(TargetCoordinates.RA, TargetCoordinates.Dec, token);
                     } else {
                         device.SlewToCoordinates(TargetCoordinates.RA, TargetCoordinates.Dec);
-                    }
-
-                    while (Slewing) {
-                        await CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval), token);
+                        while (Slewing) {
+                            await CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval), token);
+                        }
                     }
 
                     return true;
@@ -568,10 +593,12 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             return success;
         }
 
-        public void FindHome() {
+        public async Task FindHome(CancellationToken token) {
             if (CanFindHome) {
                 try {
-                    device.FindHome();
+                    await device.FindHomeAsync(token);
+                } catch(OperationCanceledException) {
+                    throw;
                 } catch (Exception e) {
                     Logger.Error(e);
                     Notification.ShowExternalError(e.Message, Loc.Instance["LblASCOMDriverError"]);
@@ -579,10 +606,12 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             }
         }
 
-        public void Unpark() {
+        public async Task Unpark(CancellationToken token) {
             if (CanUnpark) {
                 try {
-                    device.Unpark();
+                    await device.UnparkAsync(token);
+                } catch(OperationCanceledException) {
+                    throw;
                 } catch (Exception e) {
                     Logger.Error(e);
                     Notification.ShowExternalError(e.Message, Loc.Instance["LblASCOMDriverError"]);
@@ -753,6 +782,10 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     Logger.Info("Unable to check or set mount time");
                     return;
                 }
+            } catch (Exception e) {
+                // e.g. InvalidValueException, DriverException - docs are not entirely clear
+                Logger.Error("Unexpected exception when reading mount time. Skipping clock comparison and setting of mount time.", e);
+                return;
             }
 
             var systemTime = DateTime.UtcNow;
@@ -871,24 +904,29 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                         // Set the mode regardless of whether it is the same as what is currently set
                         // Some ASCOM drivers incorrectly report custom rates as Sidereal, and this can help force set the tracking mode to the desired value
                         var currentTrackingMode = TrackingRate.TrackingMode;
-                        switch (value) {
-                            case TrackingMode.Sidereal:
-                                device.TrackingRate = DriveRate.Sidereal;
-                                break;
+                        try {
+                            switch (value) {
+                                case TrackingMode.Sidereal:
+                                    device.TrackingRate = DriveRate.Sidereal;
+                                    break;
 
-                            case TrackingMode.Lunar:
-                                device.TrackingRate = DriveRate.Lunar;
-                                break;
+                                case TrackingMode.Lunar:
+                                    device.TrackingRate = DriveRate.Lunar;
+                                    break;
 
-                            case TrackingMode.Solar:
-                                device.TrackingRate = DriveRate.Solar;
-                                break;
+                                case TrackingMode.Solar:
+                                    device.TrackingRate = DriveRate.Solar;
+                                    break;
 
-                            case TrackingMode.King:
-                                device.TrackingRate = DriveRate.King;
-                                break;
+                                case TrackingMode.King:
+                                    device.TrackingRate = DriveRate.King;
+                                    break;
+                            }
+                        } catch (PropertyNotImplementedException pnie) {
+                            // TrackingRate Write can throw a PropertyNotImplementedException.
+                            Logger.Debug(pnie.Message);
                         }
-                        device.Tracking = (value != TrackingMode.Stopped);
+                    device.Tracking = (value != TrackingMode.Stopped);
 
                         if (currentTrackingMode != value) {
                             RaisePropertyChanged();
@@ -906,12 +944,19 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         protected override string ConnectionLostMessage => Loc.Instance["LblTelescopeConnectionLost"];
 
         public void SetCustomTrackingRate(double rightAscensionRate, double declinationRate) {
-            if (!this.TrackingModes.Contains(TrackingMode.Custom) || !this.CanSetTrackingRate) {
+            if (!this.TrackingModes.Contains(TrackingMode.Custom)) {
                 throw new NotSupportedException("Custom tracking rate not supported");
             }
 
-            this.device.TrackingRate = DriveRate.Sidereal;
-            this.device.Tracking = true;
+            try {
+                this.device.TrackingRate = DriveRate.Sidereal;
+            } catch (PropertyNotImplementedException pnie) {
+                // TrackingRate Write can throw a PropertyNotImplementedException.
+                Logger.Debug(pnie.Message);
+            }
+            if(this.CanSetTrackingEnabled) { 
+                this.device.Tracking = true;
+            }
             this.device.RightAscensionRate = rightAscensionRate;
             this.device.DeclinationRate = declinationRate;
             RaisePropertyChanged(nameof(TrackingMode));

@@ -93,14 +93,8 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
-            var customSchema = ColorSchemas.CreateDefaultSchema();
-            customSchema.Name = "Custom";
-            ColorSchemas.Items.Add(customSchema);
-            ColorSchema = ColorSchemas.Items.Where(x => x.Name == "Light").FirstOrDefault();
+            ColorSchema = ColorSchemas.Items.Where(x => x.Name == "Persian Faint").FirstOrDefault();
 
-            var altCustomSchema = ColorSchemas.CreateDefaultAltSchema();
-            altCustomSchema.Name = "Alternative Custom";
-            ColorSchemas.Items.Add(altCustomSchema);
             AltColorSchema = ColorSchemas.Items.Where(x => x.Name == "Dark").FirstOrDefault();
         }
 

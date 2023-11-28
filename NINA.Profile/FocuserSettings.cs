@@ -33,7 +33,7 @@ namespace NINA.Profile {
             useFilterWheelOffsets = false;
             autoFocusStepSize = 50;
             autoFocusInitialOffsetSteps = 4;
-            autoFocusExposureTime = 6;
+            autoFocusExposureTime = 4;
             autoFocusDisableGuiding = false;
             focuserSettleTime = 0;
             autoFocusMethod = AFMethodEnum.STARHFR;

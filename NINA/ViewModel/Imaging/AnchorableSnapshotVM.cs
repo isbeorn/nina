@@ -395,7 +395,7 @@ namespace NINA.ViewModel.Imaging {
                     }
                     prepareTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(), _captureImageToken.Token);
                     if (SnapSave) {
-                        progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSavingImage"] });                        
+                        progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSavingImage"] });
                         await imageSaveMediator.Enqueue(imageData, prepareTask, progress, _captureImageToken.Token);
                         imageHistoryVM.Add(imageData.MetaData.Image.Id, await imageData.Statistics, ImageTypes.SNAPSHOT);
                     }

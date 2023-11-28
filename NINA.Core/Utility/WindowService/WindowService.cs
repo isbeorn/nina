@@ -34,9 +34,13 @@ namespace NINA.Core.Utility.WindowService {
 
         public void Show(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
             dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
-                window = GenerateWindow(content, title, resizeMode, windowStyle, null);
-                                
-                window.Show();
+                try {
+                    window = GenerateWindow(content, title, resizeMode, windowStyle, null);
+
+                    window.Show();
+                } catch(Exception ex) { 
+                    Logger.Error(ex); 
+                }                
             }));
         }
 
@@ -49,7 +53,11 @@ namespace NINA.Core.Utility.WindowService {
 
         public async Task Close() {
             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                window?.Close();
+                try { 
+                    window?.Close(); 
+                } catch (Exception e) { 
+                    Logger.Error(e); 
+                }
             }));
         }
 
@@ -91,12 +99,16 @@ namespace NINA.Core.Utility.WindowService {
 
         public IDispatcherOperationWrapper ShowDialog(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None, ICommand closeCommand = null) {
             return new DispatcherOperationWrapper(dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                window = GenerateWindow(content, title, resizeMode, windowStyle, closeCommand);
-                                
-                Application.Current.MainWindow.Opacity = 0.8;
-                var result = window.ShowDialog();
-                this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
-                Application.Current.MainWindow.Opacity = 1;
+                try {
+                    window = GenerateWindow(content, title, resizeMode, windowStyle, closeCommand);
+
+                    Application.Current.MainWindow.Opacity = 0.8;
+                    var result = window.ShowDialog();
+                    this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
+                    Application.Current.MainWindow.Opacity = 1;
+                } catch (Exception e) {
+                    Logger.Error(e);
+                }
             })));
         }
 

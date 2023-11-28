@@ -198,7 +198,7 @@ namespace NINA.Sequencer.Utility {
                 if (baseTime < now) {
                     baseTime = baseTime.AddDays(1);
                 }
-                if (data.UseCustomHorizon) {
+                if (data.UseCustomHorizon && data.Horizon != null) {
                     // With custom horizons, we have to do significant iteration so we'll use 10 minutes as
                     // our iteration time
 
@@ -273,12 +273,12 @@ namespace NINA.Sequencer.Utility {
          * the actual time
          */
         public static void CalculateExpectedTimeCommon(WaitLoopData data, double offset, bool until, int allowance, Func<DateTime, ObserverInfo, double> getCurrentAltitude) {
-
             // Don't waste time on constructors
+            if (data == null) { return; }            
+            if (data.Coordinates == null) { return; }
+
             Coordinates coord = data.Coordinates.Coordinates;
-            if (coord.RADegrees == 0 && coord.Dec == 0) {
-                return;
-            }
+            if (coord.RADegrees == 0 && coord.Dec == 0) { return; }
 
             data.SetApproximate(false);
 

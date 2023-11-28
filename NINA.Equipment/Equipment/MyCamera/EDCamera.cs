@@ -34,6 +34,7 @@ using NINA.Equipment.Exceptions;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -43,10 +44,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
             _cam = cam;
+            portName = info.szPortName;
             Id = info.szDeviceDescription;
             Name = info.szDeviceDescription;
         }
-
+        private string portName;
         public string Category { get; } = "Canon";
 
         private IProfileService profileService;
@@ -322,6 +324,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 case EDSDK.StateEvent_Shutdown:
                     Logger.Error("CANON: Camera has suddenly disconnected");
                     Notification.ShowExternalError(string.Format(Loc.Instance["LblCanonCameraDisconnected"], Name), Loc.Instance["LblCanonDriverError"]);
+                    Disconnect();
                     break;
 
                 case EDSDK.StateEvent_InternalError:
@@ -496,9 +499,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public Task<IExposureData> DownloadExposure(CancellationToken token) {
             return Task.Run<IExposureData>(async () => {
-                while (DirectoryItem == IntPtr.Zero) {
-                    Logger.Error("CANON: No new image is ready for downlaod");
-                }
 
                 if (downloadExposure.Task.IsCanceled) { return null; }
 
@@ -512,6 +512,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     }
 
                     using (MyStopWatch.Measure("Canon - Image Download")) {
+                        if (DirectoryItem == IntPtr.Zero) {
+                            Logger.Error("CANON: No new image is ready for downlaod");
+                            return null;
+                        }
                         CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(DirectoryItem, out directoryItemInfo));
 
                         // Create a memory stream to accept the image
@@ -550,12 +554,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                         token.ThrowIfCancellationRequested();
 
+                        var metaData = new ImageMetaData();
+                        metaData.FromCamera(this);
                         return this.exposureDataFactory.CreateRAWExposureData(
                             converter: profileService.ActiveProfile.CameraSettings.RawConverter,
                             rawBytes: rawImageData,
                             rawType: GetFileType(directoryItemInfo),
                             bitDepth: BitDepth,
-                            metaData: new ImageMetaData());
+                            metaData: metaData);
                     }
                 } finally {
                     /* Memory cleanup */
@@ -888,13 +894,45 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private void CheckAndThrowError(uint err, [CallerMemberName] string memberName = "") {
             if (err != EDSDK.EDS_ERR_OK) {
                 var ex = new Exception(string.Format(Loc.Instance["LblCanonErrorOccurred"], ErrorCodeToString(err)));
-                if (err == EDSDK.EDS_ERR_INVALID_HANDLE) {
+                if (err == EDSDK.EDS_ERR_INVALID_HANDLE) {                    
                     ex = new CameraConnectionLostException(string.Format(Loc.Instance["LblCanonCameraDisconnected"], Name));
                 }
 
                 Logger.Error(ex, memberName);
                 throw ex;
             }
+        }
+
+        private void TryToRegainHandle() {
+            uint err = EDSDK.EdsGetCameraList(out var cameraList);
+            if (err == EDSDK.EDS_ERR_OK) {
+                int count;
+                err = EDSDK.EdsGetChildCount(cameraList, out count);
+
+                Logger.Info($"Found {count} Canon Cameras");
+                for (int i = 0; i < count; i++) {
+                    IntPtr cam;
+                    err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
+
+                    EDSDK.EdsDeviceInfo info;
+                    err = EDSDK.EdsGetDeviceInfo(cam, out info);
+
+                    if(info.szPortName == portName) {
+                        Logger.Info("CANON: Successfully regained camera handle");
+                        this._cam = cam;
+                    }
+                }
+            }
+        }
+
+        private uint SingleAutoRetry(Func<uint> fn) {
+            var err = fn();
+            if(err == EDSDK.EDS_ERR_INVALID_HANDLE) {
+                Logger.Info("CANON: Camera handle lost. Trying to regain handle to connect");
+                TryToRegainHandle();
+                err = fn();
+            }
+            return err;
         }
 
         private string ErrorCodeToString(uint err) {
@@ -911,7 +949,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
                 try {
-                    CheckAndThrowError(EDSDK.EdsOpenSession(_cam));
+                    CheckAndThrowError(SingleAutoRetry(() => EDSDK.EdsOpenSession(_cam)));
 
                     if (!Initialize()) {
                         Disconnect();
@@ -1012,13 +1050,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                         ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                         bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+                        var metaData = new ImageMetaData();
+                        metaData.FromCamera(this);
                         return exposureDataFactory.CreateImageArrayExposureData(
                             input: outArray,
                             width: bitmap.PixelWidth,
                             height: bitmap.PixelHeight,
                             bitDepth: 16,
                             isBayered: false,
-                            metaData: new ImageMetaData());
+                            metaData: metaData);
                     }
                 } finally {
                     /* Memory cleanup */

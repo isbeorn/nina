@@ -117,9 +117,6 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard.SkyGuardMessages {
             get => rADistanceRaw;
 
             set {
-                if (value == null) {
-                    rADistanceRaw = 0;
-                }
                 rADistanceRaw = value;
             }
         }

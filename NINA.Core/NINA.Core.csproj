@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
@@ -24,21 +24,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Protobuf">
-      <Version>3.24.0</Version>
+      <Version>3.25.1</Version>
     </PackageReference>
     <PackageReference Include="Google.Protobuf.Tools">
-      <Version>3.24.0</Version>
+      <Version>3.25.1</Version>
     </PackageReference>
     <PackageReference Include="Grpc.Core.Api">
-      <Version>2.55.0</Version>
+      <Version>2.59.0</Version>
     </PackageReference>
     <PackageReference Include="Grpc.Tools">
-      <Version>2.57.0</Version>
+      <Version>2.59.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -49,18 +49,18 @@
       <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Console">
-      <Version>4.1.0</Version>
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.File">
       <Version>5.0.0</Version>
     </PackageReference>
-    <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.118</Version>
     </PackageReference>
-    <PackageReference Include="System.IO.Ports" Version="7.0.0" />
-    <PackageReference Include="System.Management" Version="7.0.2" />
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
     <PackageReference Include="ToastNotifications">
       <Version>2.5.1</Version>
     </PackageReference>
@@ -75,7 +75,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>N.I.N.A. Core Library</Title>
-    <Version>3.0.0.1032-nightly</Version>
+    <Version>3.0.0.1085-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the core components of N.I.N.A.</Description>

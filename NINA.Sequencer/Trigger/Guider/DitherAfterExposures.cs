@@ -33,6 +33,7 @@ using NINA.Core.Locale;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
+using NINA.Sequencer.Interfaces;
 
 namespace NINA.Sequencer.Trigger.Guider {
 
@@ -102,7 +103,14 @@ namespace NINA.Sequencer.Trigger.Guider {
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (nextItem == null) { return false; }
+            if (!(nextItem is IExposureItem exposureItem)) { return false; }
+            if (exposureItem.ImageType != "LIGHT") { return false; }
+
             RaisePropertyChanged(nameof(ProgressExposures));
+            if(lastTriggerId > history.ImageHistory.Count) { 
+                // The image history was most likely cleared
+                lastTriggerId = 0;
+            }
             var shouldTrigger = lastTriggerId < history.ImageHistory.Count && history.ImageHistory.Count > 0 && ProgressExposures == 0;
 
             if (shouldTrigger) {

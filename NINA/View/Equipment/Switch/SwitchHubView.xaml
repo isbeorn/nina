@@ -69,9 +69,6 @@
         </GroupBox>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.Resources>
-                <DataTemplate x:Key="Eagle">
-                    <switch:Eagle />
-                </DataTemplate>
                 <DataTemplate x:Key="Generic">
                     <switch:Generic />
                 </DataTemplate>
@@ -84,7 +81,6 @@
                 </DataTemplate>
                 <switch:SwitchHubTemplateSelector
                     x:Key="ContentSelector"
-                    Eagle="{StaticResource Eagle}"
                     FailedToLoadTemplate="{StaticResource Failed}"
                     Generic="{StaticResource Generic}"
                     Postfix="{x:Static wpfutil:DataTemplatePostfix.SwitchSettings}" />

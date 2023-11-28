@@ -31,6 +31,15 @@ namespace NINA.Astrometry {
             return TimeSpan.FromHours(hoursToMeridian);
         }
 
+        /// <summary>
+        /// Returns the expected pier side for the current coordinates
+        /// Expected pier side is the pier side where the counter weight down position is expected to be
+        /// West: Hour Angle 0..12
+        /// East: Hour Angle 12..24
+        /// </summary>
+        /// <param name="coordinates"></param>
+        /// <param name="localSiderealTime"></param>
+        /// <returns></returns>
         public static PierSide ExpectedPierSide(Coordinates coordinates, Angle localSiderealTime) {
             coordinates = coordinates.Transform(Epoch.JNOW);
             var rightAscension = Angle.ByHours(coordinates.RA);

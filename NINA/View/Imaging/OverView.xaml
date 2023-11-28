@@ -271,7 +271,8 @@
                                                             <Path
                                                                 Margin="5"
                                                                 Data="{Binding ImageGeometry}"
-                                                                Stretch="Uniform" />
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True" />
                                                         </Setter.Value>
                                                     </Setter>
                                                 </Trigger>
@@ -282,7 +283,8 @@
                                                                 Margin="5"
                                                                 Data="{Binding ImageGeometry}"
                                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                                Stretch="Uniform" />
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True" />
                                                         </Setter.Value>
                                                     </Setter>
                                                 </Trigger>
@@ -293,7 +295,8 @@
                                                                 Margin="5"
                                                                 Data="{Binding ImageGeometry}"
                                                                 Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                                Stretch="Uniform" />
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True" />
                                                         </Setter.Value>
                                                     </Setter>
                                                 </Trigger>
@@ -360,7 +363,8 @@
                                                                 Margin="5"
                                                                 Data="{Binding ImageGeometry}"
                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                Stretch="Uniform">
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True">
                                                                 <Path.RenderTransform>
                                                                     <ScaleTransform ScaleX="-1" />
                                                                 </Path.RenderTransform>
@@ -376,7 +380,8 @@
                                                                 Data="{Binding ImageGeometry}"
                                                                 Fill="{StaticResource ButtonForegroundBrush}"
                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                Stretch="Uniform">
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True">
                                                                 <Path.RenderTransform>
                                                                     <ScaleTransform ScaleX="-1" />
                                                                 </Path.RenderTransform>
@@ -392,7 +397,8 @@
                                                                 Data="{Binding ImageGeometry}"
                                                                 Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                Stretch="Uniform">
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True">
                                                                 <Path.RenderTransform>
                                                                     <ScaleTransform ScaleX="-1" />
                                                                 </Path.RenderTransform>

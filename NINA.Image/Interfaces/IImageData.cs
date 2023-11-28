@@ -41,6 +41,8 @@ namespace NINA.Image.Interfaces {
 
         BitmapSource RenderBitmapSource();
 
+        ImagePatterns GetImagePatterns();
+
         Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default, bool forceFileType = false);
 
         Task<string> PrepareSave(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default);

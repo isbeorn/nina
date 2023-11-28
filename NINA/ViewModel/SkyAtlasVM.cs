@@ -134,6 +134,9 @@ namespace NINA.ViewModel {
         public DateTime FilterDate {
             get => filterDate;
             set {
+                if(value.Hour == 0) {
+                    value = value.AddHours(12);
+                }
                 value = NighttimeCalculator.GetReferenceDate(value);
                 if (filterDate != value) {
                     filterDate = value;
@@ -533,6 +536,7 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeObjectTypeFilters() {
+            ObjectTypes.Clear();
             var task = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             var list = task.Result?.OrderBy(x => x).ToList();
             foreach (var type in list) {

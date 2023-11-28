@@ -955,6 +955,7 @@
                                 HorizontalAlignment="Stretch"
                                 AddSVG="{StaticResource AddSVG}"
                                 MinValue="0"
+                                UseLayoutRounding="True"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
                                 Value="{Binding Conditions[0].Iterations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -981,6 +982,7 @@
                                 HorizontalAlignment="Stretch"
                                 AddSVG="{StaticResource AddSVG}"
                                 MinValue="0"
+                                UseLayoutRounding="True"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
                                 Value="{Binding Items[1].ExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -1111,6 +1113,7 @@
                                     HorizontalAlignment="Stretch"
                                     AddSVG="{StaticResource AddSVG}"
                                     MinValue="0"
+                                    UseLayoutRounding="True"
                                     StepSize="1"
                                     SubstractSVG="{StaticResource SubstractSVG}"
                                     Visibility="{Binding Dither, Converter={StaticResource VisibilityConverter}}"

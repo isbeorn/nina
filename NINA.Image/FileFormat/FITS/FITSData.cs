@@ -15,7 +15,6 @@
 using System.IO;
 
 namespace NINA.Image.FileFormat.FITS {
-
     public class FITSData {
         public ushort[] Data { get; }
 

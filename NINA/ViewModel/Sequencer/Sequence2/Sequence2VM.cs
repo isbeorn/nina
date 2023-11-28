@@ -485,6 +485,10 @@ namespace NINA.ViewModel.Sequencer {
                 cameraMediator.ReleaseCaptureBlock(this);
                 TaskBarProgressState = TaskbarItemProgressState.None;
                 IsRunning = false;
+                if(commandLineOptions.ExitAfterSequence) {
+                    Logger.Info("Quitting application after sequence is finished");
+                    Application.Current.Shutdown();
+                }
             }
         }
 

@@ -35,6 +35,10 @@ using NINA.WPF.Base.Utility.AutoFocus;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Interfaces;
 using NINA.WPF.Base.Interfaces;
+using NINA.Core.Utility;
+using NINA.WPF.Base.Model;
+using NINA.Core.Model;
+using static NINA.Equipment.Equipment.MyGPS.PegasusAstro.UnityApi.DriverUranusReport;
 
 namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
@@ -81,20 +85,20 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         [Test]
         public void Test_Initialize() {
             var filterWheelInfo = new FilterWheelInfo();
-            var filter = new FilterInfo();
+            var filter = new FilterInfo() { Name = "Filter1" };
             filterWheelInfo.SelectedFilter = filter;
             filterWheelMediatorMock.Setup(m => m.GetInfo())
                 .Returns(filterWheelInfo);
 
             sut.Initialize();
 
-            sut.LastAutoFocusFilter.Should().Be(filter);
+            sut.LastAutoFocusFilter.Should().Be(filter.Name);
         }
 
         [Test]
         public void Test_ShouldTrigger_WhenNoChangeNoTrigger() {
             var filterWheelInfo = new FilterWheelInfo();
-            var filter = new FilterInfo();
+            var filter = new FilterInfo() { Name = "Filter1" };
             filterWheelInfo.SelectedFilter = filter;
             filterWheelMediatorMock.Setup(m => m.GetInfo())
                 .Returns(filterWheelInfo);
@@ -133,6 +137,108 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var result = sut.ShouldTrigger(null, itemMock.Object);
 
             result.Should().BeTrue();
+        }
+
+        [Test]
+        public void Test_ShouldTrigger_DifferentFilterInHistory_WhenChangeThenTrigger() {
+            var filterWheelInfo = new FilterWheelInfo();
+            var filterInfo = new FilterInfo() {
+                Name = "Test1"
+            };
+            filterWheelInfo.SelectedFilter = filterInfo;
+
+            var nextFilterWheelInfo = new FilterWheelInfo();
+            var nextFilterInfo = new FilterInfo() {
+                Name = "Test2"
+            };
+            nextFilterWheelInfo.SelectedFilter = nextFilterInfo;
+
+            var point = new ImageHistoryPoint(1, "LIGHT");
+            point.PopulateAFPoint(new AutoFocusReport() { Filter = "Test1", InitialFocusPoint = new FocusPoint() { Position = 5000 }, CalculatedFocusPoint = new FocusPoint() { Position = 5000 }, Timestamp = DateTime.UtcNow });
+            historyMock.SetupGet(x => x.AutoFocusPoints).Returns(new AsyncObservableCollection<ImageHistoryPoint>() {
+                point
+            });
+
+            filterWheelMediatorMock.SetupSequence(m => m.GetInfo())
+                .Returns(nextFilterWheelInfo)
+                .Returns(nextFilterWheelInfo);
+
+            sut.Initialize();
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
+
+            result.Should().BeTrue();
+        }
+
+
+        [Test]
+        public void Test_ShouldTrigger_DifferentFilterInHistory_ButThatsAnAFFilter_WhenChangeThenNotTrigger() {
+            var filterWheelInfo = new FilterWheelInfo();
+            var filterInfo = new FilterInfo() {
+                Name = "Test1"
+            };
+            filterWheelInfo.SelectedFilter = filterInfo;
+
+            var nextFilterWheelInfo = new FilterWheelInfo();
+            var nextFilterInfo = new FilterInfo() {
+                Name = "Test2"
+            };
+            nextFilterWheelInfo.SelectedFilter = nextFilterInfo;
+
+            profileServiceMock.SetupGet(x => x.ActiveProfile.FilterWheelSettings.FilterWheelFilters).Returns(new ObserveAllCollection<FilterInfo>() { new FilterInfo() { Name = "Test1", AutoFocusFilter = true } });
+            var point = new ImageHistoryPoint(1, "LIGHT");
+            point.PopulateAFPoint(new AutoFocusReport() { Filter = "Test1", InitialFocusPoint = new FocusPoint() { Position = 5000 }, CalculatedFocusPoint = new FocusPoint() { Position = 5000 }, Timestamp = DateTime.UtcNow });
+            historyMock.SetupGet(x => x.AutoFocusPoints).Returns(new AsyncObservableCollection<ImageHistoryPoint>() {
+                point
+            });
+
+            filterWheelMediatorMock.SetupSequence(m => m.GetInfo())
+                .Returns(nextFilterWheelInfo)
+                .Returns(nextFilterWheelInfo);
+
+            sut.Initialize();
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
+
+            result.Should().BeFalse();
+        }
+
+
+        [Test]
+        public void Test_ShouldTrigger_SameFilterInHistory_WhenChangeThenTrigger() {
+            var filterWheelInfo = new FilterWheelInfo();
+            var filterInfo = new FilterInfo() {
+                Name = "Test1"
+            };
+            filterWheelInfo.SelectedFilter = filterInfo;
+
+            var nextFilterWheelInfo = new FilterWheelInfo();
+            var nextFilterInfo = new FilterInfo() {
+                Name = "Test2"
+            };
+            nextFilterWheelInfo.SelectedFilter = nextFilterInfo;
+
+            var point = new ImageHistoryPoint(1, "LIGHT");
+            point.PopulateAFPoint(new AutoFocusReport() { Filter = "Test2", InitialFocusPoint = new FocusPoint() { Position = 5000 }, CalculatedFocusPoint = new FocusPoint() { Position = 5000 }, Timestamp = DateTime.UtcNow });
+            historyMock.SetupGet(x => x.AutoFocusPoints).Returns(new AsyncObservableCollection<ImageHistoryPoint>() {
+                point
+            });
+
+            filterWheelMediatorMock.SetupSequence(m => m.GetInfo())
+                .Returns(filterWheelInfo)
+                .Returns(nextFilterWheelInfo);
+
+            sut.Initialize();
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
+
+            result.Should().BeFalse();
         }
 
         [Test]

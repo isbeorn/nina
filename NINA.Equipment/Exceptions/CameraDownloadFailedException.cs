@@ -23,7 +23,10 @@ namespace NINA.Equipment.Exceptions {
         public CameraDownloadFailedException() {
         }
 
-        public CameraDownloadFailedException(CaptureSequence sequence) : this($"Camera download failed. Exposure details: Exposure time: {sequence.ExposureTime}, Type: {sequence.ImageType}, Gain: {sequence.Gain}, Filter: {sequence.FilterType?.Name ?? string.Empty}") {
+        public CameraDownloadFailedException(CaptureSequence sequence) : this(sequence, $"Camera download failed") {
+        }
+
+        public CameraDownloadFailedException(CaptureSequence sequence, string message) : this($"{message} - Exposure details: Exposure time: {sequence.ExposureTime}, Type: {sequence.ImageType}, Gain: {sequence.Gain}, Filter: {sequence.FilterType?.Name ?? string.Empty}") {
         }
 
         public CameraDownloadFailedException(string message) : base(message) {

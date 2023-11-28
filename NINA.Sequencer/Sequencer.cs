@@ -51,6 +51,8 @@ namespace NINA.Sequencer {
         ) {
             MainContainer = sequenceRootContainer;
         }
+        // This is a hack to utilize the TreeView control. The Items will just point at the single item in the sequencer which is the root node in the tree
+        public List<ISequenceRootContainer> Items => new List<ISequenceRootContainer> { MainContainer };
 
         private ISequenceRootContainer mainContainer;
 
@@ -66,6 +68,7 @@ namespace NINA.Sequencer {
                 }
                 mainContainer = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Items));
             }
         }
 

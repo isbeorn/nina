@@ -67,6 +67,7 @@
             Fill="{StaticResource ButtonForegroundDisabledBrush}"
             Grid.ZIndex="99"
             Opacity="0.4"
-            Stretch="Uniform" />
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
     </Grid>
 </UserControl>

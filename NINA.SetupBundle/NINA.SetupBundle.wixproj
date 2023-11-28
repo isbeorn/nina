@@ -1,59 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project>
+  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>3de33b34-c3d7-4efb-9563-77b2f07a9f2d</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>NINASetupBundle</OutputName>
     <OutputType>Bundle</OutputType>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <Name>NINA.SetupBundle</Name>
+    <Configurations>Debug;Release;SignedRelease</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x86' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <SignOutput>True</SignOutput>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x64' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <SignOutput>True</SignOutput>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Bundle.wxs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WixExtension Include="WixUtilExtension">
-      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
-      <Name>WixUtilExtension</Name>
-    </WixExtension>
-    <WixExtension Include="WixBalExtension">
-      <HintPath>$(WixExtDir)\WixBalExtension.dll</HintPath>
-      <Name>WixBalExtension</Name>
-    </WixExtension>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="RtfTheme.wxl" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.3" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.3" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NINASetupBundle.wax" />
@@ -70,17 +47,13 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
-  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
-    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
-  </Target>
   <Target Name="SignBundleEngine">
     <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
   </Target>
   <Target Name="SignBundle">
     <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
   </Target>
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>
     <PreBuildEvent>%25LOCALAPPDATA%25\Pandoc\pandoc.exe "$(SolutionDir)RELEASE_NOTES.md" -f markdown -t rtf -s -o "$(SolutionDir)RELEASE_NOTES.rtf"</PreBuildEvent>
   </PropertyGroup>
@@ -88,47 +61,39 @@
     <PostBuildEvent>del $(SolutionDir)RELEASE_NOTES.rtf
 
 echo "Copy NINA.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.pdb" "$(TargetDir)NINA.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.pdb" "$(TargetDir)NINA.pdb" /Y
 
 echo "Copy NINA.Astrometry.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Astrometry.pdb" "$(TargetDir)NINA.Astrometry.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Astrometry.pdb" "$(TargetDir)NINA.Astrometry.pdb" /Y
 
 echo "Copy NINA.Core.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Core.pdb" "$(TargetDir)NINA.Core.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Core.pdb" "$(TargetDir)NINA.Core.pdb" /Y
 
 echo "Copy NINA.Equipment.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Equipment.pdb" "$(TargetDir)NINA.Equipment.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Equipment.pdb" "$(TargetDir)NINA.Equipment.pdb" /Y
 
 echo "Copy NINA.Image.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Image.pdb" "$(TargetDir)NINA.Image.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Image.pdb" "$(TargetDir)NINA.Image.pdb" /Y
 
 echo "Copy NINA.MGEN.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
 
 echo "Copy NINA.Platesolving.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Platesolving.pdb" "$(TargetDir)NINA.Platesolving.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.Platesolving.pdb" /Y
 
 echo "Copy NINA.Profile.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y
 
 echo "Copy NINA.Sequencer.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Sequencer.pdb" "$(TargetDir)NINA.Sequencer.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Sequencer.pdb" "$(TargetDir)NINA.Sequencer.pdb" /Y
 
 echo "Copy NINA.WPF.Base.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.WPF.Base.pdb" "$(TargetDir)NINA.WPF.Base.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.WPF.Base.pdb" "$(TargetDir)NINA.WPF.Base.pdb" /Y
 
 echo "Copy NINACustomControlLibrary.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.CustomControlLibrary.pdb" "$(TargetDir)NINA.CustomControlLibrary.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.CustomControlLibrary.pdb" "$(TargetDir)NINA.CustomControlLibrary.pdb" /Y
 
 echo "Copy NINA.Plugin.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\NINA.Plugin.pdb" "$(TargetDir)NINA.Plugin.pdb" /Y</PostBuildEvent>
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Plugin.pdb" "$(TargetDir)NINA.Plugin.pdb" /Y</PostBuildEvent>
   </PropertyGroup>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
 </Project>

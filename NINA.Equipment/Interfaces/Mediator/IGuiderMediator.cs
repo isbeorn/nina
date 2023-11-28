@@ -49,9 +49,7 @@ namespace NINA.Equipment.Interfaces.Mediator {
         LockPosition GetLockPosition();
 
         event Func<object, EventArgs, Task> AfterDither;
-        Task RaiseAfterDither(EventArgs e);
 
         event EventHandler<IGuideStep> GuideEvent;
-        void RaiseGuideEvent(IGuideStep e);
     }
 }

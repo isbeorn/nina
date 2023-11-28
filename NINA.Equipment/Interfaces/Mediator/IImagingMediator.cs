@@ -59,9 +59,7 @@ namespace NINA.Equipment.Interfaces.Mediator {
         int GetImageRotation();
         void SetImageRotation(int rotation);        
 
-        event EventHandler<ImagePreparedEventArgs> ImagePrepared;
-
-        void OnImagePrepared(ImagePreparedEventArgs e);
+        event EventHandler<ImagePreparedEventArgs> ImagePrepared;        
     }
 
     public class ImagePreparedEventArgs : EventArgs {

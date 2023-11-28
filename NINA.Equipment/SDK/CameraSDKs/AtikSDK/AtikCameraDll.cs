@@ -63,7 +63,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static bool IsConnected(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 return ArtemisIsConnected(camera);
             } else {
                 return false;
@@ -71,7 +71,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static void StartExposure(IntPtr camera, double exposuretime) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisStartExposure(camera, (float)exposuretime), MethodBase.GetCurrentMethod(), camera);
             }
         }
@@ -81,7 +81,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static void StartExposureMs(IntPtr camera, int ms) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisStartExposureMS(camera, ms), MethodBase.GetCurrentMethod(), camera);
             }
         }
@@ -97,7 +97,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static bool ImageReady(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 return ArtemisImageReady(camera);
             } else {
                 throw new Exception("Atik Camera not connected");
@@ -144,19 +144,19 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static void StopExposure(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisStopExposure(camera), MethodBase.GetCurrentMethod(), camera);
             }
         }
 
         public static void AbortExposure(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisAbortExposure(camera), MethodBase.GetCurrentMethod(), camera);
             }
         }
 
         public static void SetDarkMode(IntPtr camera, bool enabled) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisSetDarkMode(camera, enabled), MethodBase.GetCurrentMethod(), camera);
             }
         }
@@ -260,7 +260,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static bool IsConnectedEfw(IntPtr fw) {
-            if (fw != null && fw != IntPtr.Zero) {
+            if (fw != IntPtr.Zero) {
                 return ArtemisEfwIsConnected(fw);
             } else {
                 return false;
@@ -324,7 +324,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static int GetInternalFilterWheelPositions(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisFilterWheelInfo(camera, out int wheelCount, out int _, out int _, out int _), MethodBase.GetCurrentMethod(), camera);
                 return wheelCount;
             } else {
@@ -333,7 +333,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static bool GetInternalFilterWheelIsMoving(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisFilterWheelInfo(camera, out int _, out int moving, out int _, out int _), MethodBase.GetCurrentMethod(), camera);
                 return moving != 0;
             } else {
@@ -342,7 +342,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static short GetInternalFilterWheelCurrentPosition(IntPtr camera) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisFilterWheelInfo(camera, out int _, out int _, out int curentPos, out int _), MethodBase.GetCurrentMethod(), camera);
                 return (short)curentPos;
             } else {
@@ -351,7 +351,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         }
 
         public static void SetInternalFilterWheelTargetPosition(IntPtr camera, int position) {
-            if (camera != null && camera != IntPtr.Zero) {
+            if (camera != IntPtr.Zero) {
                 CheckError(ArtemisFilterWheelMove(camera, position), MethodBase.GetCurrentMethod(), camera);
             }
         }

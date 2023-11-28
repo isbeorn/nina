@@ -7,6 +7,7 @@ using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.ImageAnalysis;
+using NINA.Image.ImageData;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
@@ -52,6 +53,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 null,
                 profileService,
                 imagingMediator,
+                imageSaveMediator,
                 new CloseCover(flatDeviceMediator),
                 new ToggleLight(flatDeviceMediator) { OnOff = true },
                 new SwitchFilter(profileService, filterWheelMediator),
@@ -74,6 +76,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             AutoBrightnessFlat cloneMe,
             IProfileService profileService,
             IImagingMediator imagingMediator,
+            IImageSaveMediator imageSaveMediator,
             CloseCover closeCover,
             ToggleLight toggleLightOn,
             SwitchFilter switchFilter,
@@ -85,6 +88,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         ) {
             this.profileService = profileService;
             this.imagingMediator = imagingMediator;
+            this.imageSaveMediator = imageSaveMediator;
 
             this.Add(closeCover);
             this.Add(toggleLightOn);
@@ -140,6 +144,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 this,
                 profileService,
                 imagingMediator,
+                imageSaveMediator,
                 (CloseCover)this.GetCloseCoverItem().Clone(),
                 (ToggleLight)this.GetToggleLightItem().Clone(),
                 (SwitchFilter)this.GetSwitchFilterItem().Clone(),
@@ -264,6 +269,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     }
                 }
 
+                // we start at exposure + 1, as DetermineBrightness is already saving an exposure
+                GetIterations().CompletedIterations++;
+                GetExposureItem().ExposureCount = 1;
+
                 await base.Execute(
                     new Progress<ApplicationStatus>(
                         x => localProgress?.Report(new ApplicationStatus() {
@@ -316,7 +325,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var image = await imagingMediator.CaptureImage(sequence, ct, progress);
 
             var imageData = await image.ToImageData(progress, ct);
-            await imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
+            var prepTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
+            await prepTask;
             var statistics = await imageData.Statistics;
 
             var mean = statistics.Mean;
@@ -327,6 +337,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             switch (check) {
                 case HistogramMath.ExposureAduState.ExposureWithinBounds:
+                    // Go ahead and save the exposure, as it already fits the parameters
+                    FillTargetMetaData(imageData.MetaData);
+                    await imageSaveMediator.Enqueue(imageData, prepTask, progress, ct);
+
                     Logger.Info($"Found brightness at panel brightness {brightness} with histogram ADU {mean}");
                     progress?.Report(new ApplicationStatus() {
                         Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness"], brightness),
@@ -338,6 +352,34 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 case HistogramMath.ExposureAduState:
                     Logger.Info($"Exposure too bright at panel brightness {brightness}s. Retrying with lower exposure time");
                     return await DetermineBrightness(initialMin, initialMax, currentMin, brightness, ++iterations, progress, ct);
+            }
+        }
+        private void FillTargetMetaData(ImageMetaData metaData) {
+            var dsoContainer = RetrieveTarget(this.Parent);
+            if (dsoContainer != null) {
+                var target = dsoContainer.Target;
+                if (target != null) {
+                    metaData.Target.Name = target.DeepSkyObject.NameAsAscii;
+                    metaData.Target.Coordinates = target.InputCoordinates.Coordinates;
+                    metaData.Target.PositionAngle = target.PositionAngle;
+                }
+            }
+
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root != null) {
+                metaData.Sequence.Title = root.SequenceTitle;
+            }
+        }
+        private IDeepSkyObjectContainer RetrieveTarget(ISequenceContainer parent) {
+            if (parent != null) {
+                var container = parent as IDeepSkyObjectContainer;
+                if (container != null) {
+                    return container;
+                } else {
+                    return RetrieveTarget(parent.Parent);
+                }
+            } else {
+                return null;
             }
         }
 
@@ -411,6 +453,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         private double histogramTolerancePercentage;
+        private readonly IImageSaveMediator imageSaveMediator;
 
         [JsonProperty]
         public double HistogramTolerancePercentage {
@@ -426,6 +469,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 RaisePropertyChanged();
             }
         }
+
 
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();

@@ -11,7 +11,10 @@
 #endregion "copyright"
 using Microsoft.Win32;
 using NINA.Core.Utility;
+using SaveWindowState;
 using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -44,13 +47,19 @@ namespace NINA {
             base.OnSourceInitialized(e);
             ((HwndSource)PresentationSource.FromVisual(this)).AddHook(HookProc);
 
-            this.WindowState = Properties.Settings.Default.WindowState;
-            this.Top = Properties.Settings.Default.WindowTop;
-            this.Left = Properties.Settings.Default.WindowLeft;
-            this.Width = Properties.Settings.Default.WindowWidth;
-            this.Height = Properties.Settings.Default.WindowHeight;
-
-            sizeInitialized = true;
+            try {
+                // Load window placement details for previous application session from application settings
+                // Note - if window was closed on a monitor that is now disconnected from the computer,
+                //        SetWindowPlacement will place the window onto a visible monitor.
+                var wp = Properties.Settings.Default.WindowPlacement;
+                wp.length = Marshal.SizeOf(typeof(WindowPlacement));
+                wp.flags = 0;
+                wp.showCmd = (wp.showCmd == SwShowminimized ? SwShownormal : wp.showCmd);
+                var hwnd = new WindowInteropHelper(this).Handle;
+                SetWindowPlacement(hwnd, ref wp);
+            } catch {
+                // ignored
+            }
         }
 
         private IntPtr HookProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
@@ -65,22 +74,29 @@ namespace NINA {
             return IntPtr.Zero;
         }
 
-        private bool sizeInitialized = false;
+        // WARNING - Not fired when Application.SessionEnding is fired
+        protected override void OnClosing(CancelEventArgs e) {
+            // Persist window placement details to application settings
+            WindowPlacement wp;
+            var hwnd = new WindowInteropHelper(this).Handle;
+            GetWindowPlacement(hwnd, out wp);
+            Properties.Settings.Default.WindowPlacement = wp;
+            CoreUtil.SaveSettings(Properties.Settings.Default);
 
-        private void ThisWindow_LocationChanged(object sender, EventArgs e) {
-            if (sizeInitialized && this.WindowState != WindowState.Maximized) {
-                Properties.Settings.Default.WindowTop = this.Top;
-                Properties.Settings.Default.WindowLeft = this.Left;
-                Properties.Settings.Default.WindowWidth = this.Width;
-                Properties.Settings.Default.WindowHeight = this.Height;
-            }
+            base.OnClosing(e);
         }
 
-        private void ThisWindow_StateChanged(object sender, EventArgs e) {
-            if (sizeInitialized) {
-                Properties.Settings.Default.WindowState = this.WindowState;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-            }
-        }
+        #region Win32 API declarations to set and get window placement
+
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WindowPlacement lpwndpl);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowPlacement(IntPtr hWnd, out WindowPlacement lpwndpl);
+
+        private const int SwShownormal = 1;
+        private const int SwShowminimized = 2;
+
+        #endregion
     }
 }

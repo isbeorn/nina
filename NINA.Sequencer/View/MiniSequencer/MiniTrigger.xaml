@@ -60,7 +60,8 @@
                         HorizontalAlignment="Center"
                         Data="{StaticResource ThunderSVG}"
                         Fill="{StaticResource PrimaryBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                     <Path
                         x:Name="PART_Icon"
                         Grid.Row="0"
@@ -69,7 +70,8 @@
                         Height="16"
                         Data="{Binding Icon}"
                         Fill="{StaticResource PrimaryBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
 
                     <ContentPresenter
                         x:Name="PART_Progress"

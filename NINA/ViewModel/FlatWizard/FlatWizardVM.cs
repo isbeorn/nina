@@ -340,6 +340,7 @@ namespace NINA.ViewModel.FlatWizard {
             get => singleFlatWizardFilterSettings;
             set {
                 singleFlatWizardFilterSettings = value;
+                value.IsChecked = true;
                 RaisePropertyChanged();
             }
         }
@@ -420,7 +421,7 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> CaptureForSelectedFilters(PauseToken pt) {
             try {
                 cameraMediator.RegisterCaptureBlock(this);
-                return await StartFlatMagic(Filters.Where(f => f.IsChecked), pt);
+                return await StartFlatMagic(Filters, pt);
             } finally {
                 cameraMediator.ReleaseCaptureBlock(this);
             }
@@ -511,8 +512,11 @@ namespace NINA.ViewModel.FlatWizard {
 
                 var filterCount = 0;
                 var timesForDarks = new Dictionary<FlatWizardFilterSettingsWrapper, (double time, double brightness)>();
-                var totalCount = filterSettingsWrappers.Count();
                 foreach (var filterSettings in filterSettingsWrappers) {
+                    if (!filterSettings.IsChecked) {
+                        continue;
+                    }
+                    var totalCount = filterSettingsWrappers.Where(x => x.IsChecked).Count();
                     filterCount++;
                     if (PauseBetweenFilters) {
                         var dialogResult = messageBox.Show(
@@ -568,7 +572,6 @@ namespace NINA.ViewModel.FlatWizard {
                         }
                     }
 
-                    filterSettings.IsChecked = false;
                     await WaitWhilePaused(pt);
                 }
 

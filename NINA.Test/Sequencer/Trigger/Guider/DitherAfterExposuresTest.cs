@@ -31,6 +31,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Model;
 using NINA.Sequencer.SequenceItem;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Interfaces;
 
 namespace NINA.Test.Sequencer.Trigger.Guider {
 
@@ -108,7 +109,45 @@ namespace NINA.Test.Sequencer.Trigger.Guider {
             var sut = new DitherAfterExposures(guiderMediatorMock.Object, historyMock.Object, profileServiceMock.Object);
             sut.AfterExposures = afterExpsoures;
 
-            var trigger = sut.ShouldTrigger(null, new Mock<ISequenceItem>().Object);
+            var nextItem = new Mock<IExposureItem>();
+            nextItem.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var trigger = sut.ShouldTrigger(null, nextItem.Object);
+
+            trigger.Should().Be(shouldTrigger);
+        }
+
+        [Test]
+        [TestCase(0, 1, false)]
+        [TestCase(1, 1, false)]
+        [TestCase(0, 3, false)]
+        [TestCase(1, 3, false)]
+        [TestCase(2, 3, false)]
+        [TestCase(3, 3, false)]
+        [TestCase(4, 3, false)]
+        [TestCase(5, 3, false)]
+        [TestCase(6, 3, false)]
+        [TestCase(7, 3, false)]
+        [TestCase(8, 3, false)]
+        [TestCase(9, 3, false)]
+        [TestCase(0, 10, false)]
+        [TestCase(10, 10, false)]
+        [TestCase(15, 10, false)]
+        [TestCase(20, 10, false)]
+        [TestCase(22, 10, false)]
+        [TestCase(27, 10, false)]
+        [TestCase(30, 10, false)]
+        public void ShouldTrigger_HistoryExists_NextItemIsNoExposure_AlwaysFalse(int historyItems, int afterExpsoures, bool shouldTrigger) {
+            var history = new List<ImageHistoryPoint>();
+            for (int i = 0; i < historyItems; i++) {
+                history.Add(new ImageHistoryPoint(i, null, "LIGHT"));
+            }
+            historyMock.SetupGet(x => x.ImageHistory).Returns(history);
+
+            var sut = new DitherAfterExposures(guiderMediatorMock.Object, historyMock.Object, profileServiceMock.Object);
+            sut.AfterExposures = afterExpsoures;
+
+            var nextItem = new Mock<ISequenceItem>();            
+            var trigger = sut.ShouldTrigger(null, nextItem.Object);
 
             trigger.Should().Be(shouldTrigger);
         }
@@ -124,12 +163,40 @@ namespace NINA.Test.Sequencer.Trigger.Guider {
             var sut = new DitherAfterExposures(guiderMediatorMock.Object, historyMock.Object, profileServiceMock.Object);
             sut.AfterExposures = 1;
 
-            var test1 = sut.ShouldTrigger(null, new Mock<ISequenceItem>().Object);
+            var nextItem = new Mock<IExposureItem>();
+            nextItem.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var test1 = sut.ShouldTrigger(null, nextItem.Object);
             await sut.Execute(default, default, default);
-            var test2 = sut.ShouldTrigger(null, new Mock<ISequenceItem>().Object);
+            var test2 = sut.ShouldTrigger(null, nextItem.Object);
 
             history.Add(new ImageHistoryPoint(100, null, "LIGHT"));
-            var test3 = sut.ShouldTrigger(null, new Mock<ISequenceItem>().Object);
+            var test3 = sut.ShouldTrigger(null, nextItem.Object);
+
+            test1.Should().BeTrue();
+            test2.Should().BeFalse();
+            test3.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ShouldTrigger_WithExecute_FlowTest_WhenHistoryIsCleared() {
+            var history = new List<ImageHistoryPoint>();
+            for (int i = 0; i < 10; i++) {
+                history.Add(new ImageHistoryPoint(i, null, "LIGHT"));
+            }
+            historyMock.SetupGet(x => x.ImageHistory).Returns(history);
+            var nextItem = new Mock<IExposureItem>();
+            nextItem.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            var sut = new DitherAfterExposures(guiderMediatorMock.Object, historyMock.Object, profileServiceMock.Object);
+            sut.AfterExposures = 1;
+
+            var test1 = sut.ShouldTrigger(null, nextItem.Object);
+            await sut.Execute(default, default, default);
+            var test2 = sut.ShouldTrigger(null, nextItem.Object);
+
+            history.Clear();
+            history.Add(new ImageHistoryPoint(100, null, "LIGHT"));
+            var test3 = sut.ShouldTrigger(null, nextItem.Object);
 
             test1.Should().BeTrue();
             test2.Should().BeFalse();

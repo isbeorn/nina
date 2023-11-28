@@ -12,9 +12,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
-    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     MinWidth="400"
     MinHeight="150"
     d:DesignHeight="450"
@@ -51,7 +51,8 @@
                         Margin="2,10,2,0"
                         Data="{StaticResource DotsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Button>
             </Grid>
             <UniformGrid Margin="0,5,0,0" Columns="2">
@@ -76,9 +77,9 @@
             <UniformGrid Margin="0,5,0,0" Columns="2">
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDownloadDelay}" />
                 <ninactrl:UnitTextBox
-                VerticalAlignment="Center"
-                Text="{Binding DownloadDelay}"
-                Unit="s" />
+                    VerticalAlignment="Center"
+                    Text="{Binding DownloadDelay}"
+                    Unit="s" />
             </UniformGrid>
         </StackPanel>
         <Button

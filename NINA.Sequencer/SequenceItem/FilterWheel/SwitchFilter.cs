@@ -28,6 +28,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
+using System.Windows;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -41,13 +43,31 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
-            this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
+            MatchFilter();
         }
 
         [ImportingConstructor]
         public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator) {
             this.profileService = profileservice;
             this.filterWheelMediator = filterWheelMediator;
+
+            WeakEventManager<IProfileService, EventArgs>.AddHandler(profileService, nameof(profileService.ProfileChanged), ProfileService_ProfileChanged);
+        }
+
+        private void MatchFilter() {
+            try {
+                var idx = this.Filter?.Position ?? -1;
+                this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
+                if (this.Filter == null && idx >= 0) {
+                    this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            MatchFilter();
         }
 
         private SwitchFilter(SwitchFilter cloneMe) : this(cloneMe.profileService, cloneMe.filterWheelMediator) {
@@ -99,7 +119,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             return i.Count == 0;
         }
 
-        public override void AfterParentChanged() {
+        public override void AfterParentChanged() {            
             Validate();
         }
 

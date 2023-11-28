@@ -83,7 +83,8 @@
                                     Margin="5"
                                     Data="{StaticResource CameraSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
@@ -96,6 +97,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -110,7 +112,8 @@
                             Margin="2.5"
                             Data="{StaticResource CameraSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -122,6 +125,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -145,7 +149,8 @@
                                     Margin="5"
                                     Data="{StaticResource FWSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
@@ -158,6 +163,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -172,7 +178,8 @@
                             Margin="2.5"
                             Data="{StaticResource FWSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -184,6 +191,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -207,7 +215,8 @@
                                     Margin="5"
                                     Data="{StaticResource FocusSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
@@ -220,6 +229,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -234,7 +244,8 @@
                             Margin="2.5"
                             Data="{StaticResource FocusSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -246,6 +257,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -270,7 +282,8 @@
                                     Margin="5"
                                     Data="{StaticResource RotatorSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Margin="0,0,0,5" Visibility="{Binding RotatorVM.RotatorInfo, Converter={StaticResource NullToVisibilityConverter}}">
@@ -283,6 +296,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding RotatorVM.RotatorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -297,7 +311,8 @@
                             Margin="2.5"
                             Data="{StaticResource RotatorSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Margin="0,0,0,5" Visibility="{Binding RotatorVM.RotatorInfo, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -309,6 +324,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding RotatorVM.RotatorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -333,7 +349,8 @@
                                     Margin="5"
                                     Data="{StaticResource TelescopeSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
@@ -346,6 +363,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -360,7 +378,8 @@
                             Margin="2.5"
                             Data="{StaticResource TelescopeSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -372,6 +391,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -395,7 +415,8 @@
                                     Margin="5"
                                     Data="{StaticResource GuiderSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
@@ -408,6 +429,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -422,7 +444,8 @@
                             Margin="2.5"
                             Data="{StaticResource GuiderSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -434,6 +457,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -457,7 +481,8 @@
                                     Margin="5"
                                     Data="{StaticResource SwitchesSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding SwitchVM.SwitchHub, Converter={StaticResource NullToVisibilityConverter}}">
@@ -470,6 +495,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding SwitchVM.SwitchHub.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -484,7 +510,8 @@
                             Margin="2.5"
                             Data="{StaticResource SwitchesSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding SwitchVM.SwitchHub, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -496,6 +523,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding SwitchVM.SwitchHub.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -520,7 +548,8 @@
                                     Margin="5"
                                     Data="{StaticResource LightBulbSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Margin="0,0,0,5" Visibility="{Binding FlatDeviceVM.FlatDeviceInfo, Converter={StaticResource NullToVisibilityConverter}}">
@@ -533,6 +562,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding FlatDeviceVM.FlatDeviceInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -547,7 +577,8 @@
                             Margin="2.5"
                             Data="{StaticResource LightBulbSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Margin="0,0,0,5" Visibility="{Binding FlatDeviceVM.FlatDeviceInfo, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -559,6 +590,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding FlatDeviceVM.FlatDeviceInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -583,7 +615,8 @@
                                     Margin="5"
                                     Data="{StaticResource CloudSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding WeatherDataVM.WeatherData, Converter={StaticResource NullToVisibilityConverter}}">
@@ -596,6 +629,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding WeatherDataVM.WeatherData.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -610,7 +644,8 @@
                             Margin="2.5"
                             Data="{StaticResource CloudSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding WeatherDataVM.WeatherData, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -622,6 +657,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding WeatherDataVM.WeatherData.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -646,7 +682,8 @@
                                     Margin="5"
                                     Data="{StaticResource ObservatorySVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding DomeVM.Dome, Converter={StaticResource NullToVisibilityConverter}}">
@@ -659,6 +696,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding DomeVM.Dome.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -673,7 +711,8 @@
                             Margin="2.5"
                             Data="{StaticResource ObservatorySVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding DomeVM.Dome, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -685,6 +724,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding DomeVM.Dome.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>
@@ -708,7 +748,8 @@
                                     Margin="5"
                                     Data="{StaticResource ShieldSVG}"
                                     Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
                             </Grid>
 
                             <Grid Visibility="{Binding SafetyMonitorVM.SafetyMonitorInfo, Converter={StaticResource NullToVisibilityConverter}}">
@@ -721,6 +762,7 @@
                                     Data="{StaticResource PowerSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True"
                                     Visibility="{Binding SafetyMonitorVM.SafetyMonitorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -735,7 +777,8 @@
                             Margin="2.5"
                             Data="{StaticResource ShieldSVG}"
                             Stretch="Uniform"
-                            Style="{StaticResource TabItemPath}" />
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
 
                         <Grid Visibility="{Binding SafetyMonitorVM.SafetyMonitorInfo, Converter={StaticResource NullToVisibilityConverter}}">
                             <Path
@@ -747,6 +790,7 @@
                                 Data="{StaticResource PowerSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}"
+                                UseLayoutRounding="True"
                                 Visibility="{Binding SafetyMonitorVM.SafetyMonitorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Grid>

@@ -59,7 +59,7 @@ namespace NINA.Image.FileFormat.XISF {
             Xisf.Add(MetaData);
 
             Content = new XDocument(
-            new XDeclaration("1.0", "UTF-8", null),
+                new XDeclaration("1.0", "UTF-8", null), 
                 Xisf
             );
         }
@@ -83,7 +83,14 @@ namespace NINA.Image.FileFormat.XISF {
             Xisf.Add(Image);
         }
 
-        public int ByteCount => Encoding.UTF8.GetByteCount(Content.ToString());
+        public int ByteCount {
+            get {
+                using (MemoryStream memoryStream = new MemoryStream()) {
+                    Save(memoryStream);
+                    return (int)memoryStream.Length;
+                }
+            }
+        }
 
         public ImageMetaData ExtractMetaData() {
             var metaData = new ImageMetaData();
@@ -91,6 +98,10 @@ namespace NINA.Image.FileFormat.XISF {
 
             if (TryGetImageProperty(XISFImageProperty.Observation.Time.Start, out var value)) {
                 metaData.Image.ExposureStart = DateTime.Parse(value);
+            }
+
+            if (TryGetFITSProperty("DATE-AVG", out value)) {
+                metaData.Image.ExposureMidPoint = DateTime.Parse(value);
             }
 
             if (TryGetImageProperty(XISFImageProperty.Instrument.ExposureTime, out value)) {
@@ -355,11 +366,11 @@ namespace NINA.Image.FileFormat.XISF {
             var elements = Image.Elements(xmlns + "FITSKeyword");
             if (!elements.Any()) { return l; }
 
-            foreach(var elem in elements) {
+            foreach (var elem in elements) {
                 if (elem == null) { continue; }
 
                 var key = elem.Attribute("name")?.Value;
-                if(key == null) { continue; }
+                if (key == null) { continue; }
 
                 var value = elem.Attribute("value").Value;
                 var comment = elem.Attribute("comment")?.Value ?? string.Empty;
@@ -385,6 +396,10 @@ namespace NINA.Image.FileFormat.XISF {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
                 AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
+            }
+
+            if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
+                AddImageFITSKeyword("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
             }
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
@@ -435,7 +450,7 @@ namespace NINA.Image.FileFormat.XISF {
                 AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
             }
 
-            if (metaData.Camera.SensorType != SensorType.Monochrome) {
+            if (metaData.Camera.SensorType != SensorType.Monochrome && metaData.Camera.BayerPattern != BayerPatternEnum.None) {
                 AddImageFITSKeyword("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
                 AddImageFITSKeyword("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
                 AddImageFITSKeyword("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");
@@ -724,7 +739,7 @@ namespace NINA.Image.FileFormat.XISF {
             if (Image == null) { throw new InvalidOperationException("No Image component available to add FITS Keyword!"); }
 
             var exists = Image.Elements(xmlns + "FITSKeyword").Attributes("name").Any(x => x.Value == name);
-            if(!exists) { 
+            if (!exists) {
                 Image.Add(new XElement(xmlns + "FITSKeyword",
                             new XAttribute("name", name),
                             new XAttribute("value", RemoveInvalidXMLChars(value)),
@@ -822,12 +837,12 @@ namespace NINA.Image.FileFormat.XISF {
         /// </summary>
         /// <param name="imageProperties"></param>
         /// <param name="imageType"></param>
-        public void AddImageMetaData(ImageProperties imageProperties, string imageType) {
-            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
+        public void AddImageMetaData(ImageProperties imageProperties, string imageType, XISFSampleFormat format = XISFSampleFormat.UInt16) {
+            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; } 
 
             XElement image = new XElement(xmlns + "Image",
                     new XAttribute("geometry", imageProperties.Width + ":" + imageProperties.Height + ":" + "1"),
-                    new XAttribute("sampleFormat", "UInt16"),
+                    new XAttribute("sampleFormat", format.ToString()),
                     new XAttribute("imageType", imageType),
                     new XAttribute("colorSpace", "Gray")
                     );
@@ -838,9 +853,14 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void Save(Stream s) {
-            using (System.Xml.XmlWriter sw = System.Xml.XmlWriter.Create(s, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, Encoding = Encoding.UTF8 })) {
+            using (System.Xml.XmlWriter sw = System.Xml.XmlWriter.Create(s, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = false, Indent = true, Encoding = new UTF8Encoding(false) })) {
                 Content.Save(sw);
             }
         }
+    }
+
+    public enum XISFSampleFormat {
+        UInt16,
+        UInt32
     }
 }

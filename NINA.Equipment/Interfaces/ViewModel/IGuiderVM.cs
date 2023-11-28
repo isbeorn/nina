@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Core.Interfaces;
 using NINA.Core.Model;
 using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Equipment.MyGuider.PHD2;
@@ -45,5 +46,8 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         Task<bool> StopShifting(CancellationToken ct);
 
         LockPosition GetLockPosition();
+        event Func<object, EventArgs, Task> AfterDither;
+
+        event EventHandler<IGuideStep> GuideEvent;
     }
 }

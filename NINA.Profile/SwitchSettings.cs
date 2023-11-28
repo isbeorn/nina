@@ -30,7 +30,6 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
-            eagleUrl = "http://localhost:1380/";
         }
 
         private string id;
@@ -44,19 +43,6 @@ namespace NINA.Profile {
                     RaisePropertyChanged();
                 }
             }
-        }
-
-        private string eagleUrl;
-
-        [DataMember]
-        public string EagleUrl {
-            get => eagleUrl;
-            set {
-                if (eagleUrl != value) {
-                    eagleUrl = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }        
+        }   
     }
 }

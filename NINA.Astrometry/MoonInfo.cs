@@ -101,6 +101,7 @@ namespace NINA.Astrometry {
         private static object lockObj = new object();
         private void CalculateMoonData() {
             lock(lockObj) { 
+                if(_referenceDate == DateTime.MinValue) { return;  }
                 if(!Points.ContainsKey(_referenceDate)) {
                     var list = new List<DataPoint>();
 

@@ -99,7 +99,8 @@
                     Margin="5"
                     Data="{StaticResource SettingsSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </Grid>
         </Button>
         <ninactrl:AsyncProcessButton
@@ -145,7 +146,8 @@
                         Margin="5"
                         Data="{StaticResource PowerSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Grid>
             </Button>
         </Grid>

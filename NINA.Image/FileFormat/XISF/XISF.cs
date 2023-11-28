@@ -387,10 +387,16 @@ namespace NINA.Image.FileFormat.XISF {
                         break;
 
                     case XISFChecksumTypeEnum.SHA3_256:
-                        throw new NotSupportedException();
+                        SHA3_256 sha3_256 = SHA3_256.Create();
+                        computedCksum = GetStringFromHash(sha3_256.ComputeHash(raw));
+                        sha3_256.Dispose();
+                        break;
 
                     case XISFChecksumTypeEnum.SHA3_512:
-                        throw new NotSupportedException();
+                        SHA3_512 sha3_512 = SHA3_512.Create();
+                        computedCksum = GetStringFromHash(sha3_512.ComputeHash(raw));
+                        sha3_512.Dispose();
+                        break;
 
                     default:
                         return false;
@@ -441,6 +447,36 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void AddAttachedImage(ushort[] data, FileSaveInfo fileSaveInfo) {
+            if (Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
+
+            // Add Attached data location info to header
+            Data = new XISFData(data, fileSaveInfo);
+
+            if (Data.ChecksumType != XISFChecksumTypeEnum.NONE) {
+                Header.Image.Add(new XAttribute("checksum", $"{Data.ChecksumName}:{Data.Checksum}"));
+            }
+
+            int headerLengthBytes = 4;
+            int reservedBytes = 4;
+            int attachmentInfoMaxBytes = 256; // Assume max 256 bytes for the attachment, compression, and checksum attributes.
+            int currentHeaderSize = Header.ByteCount + xisfSignature.Length + headerLengthBytes + reservedBytes + attachmentInfoMaxBytes;
+
+            int dataBlockStart = currentHeaderSize + (PaddedBlockSize - currentHeaderSize % PaddedBlockSize);
+
+            if (Data.CompressionType != XISFCompressionTypeEnum.NONE) {
+                Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{Data.CompressedSize}"));
+
+                if (Data.ByteShuffling == true) {
+                    Header.Image.Add(new XAttribute("compression", $"{Data.CompressionName}:{Data.Size}:{Data.ShuffleItemSize}"));
+                } else {
+                    Header.Image.Add(new XAttribute("compression", $"{Data.CompressionName}:{Data.Size}"));
+                }
+            } else {
+                Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{Data.Size}"));
+            }
+        }
+
+        public void AddAttachedImageInt(int[] data, FileSaveInfo fileSaveInfo) {
             if (Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
 
             // Add Attached data location info to header

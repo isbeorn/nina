@@ -23,6 +23,10 @@ using System.Windows.Media;
 
 namespace NINA.Sequencer.Behaviors {
 
+    /// <summary>
+    /// A behavior to handle dragging an item over the item where the behavior is registered.
+    /// When the dragged item is dropped the behavior will look for a correspondign DragIntoBehavior that is part of the drop target or one of its parent elements
+    /// </summary>
     public class DragOverBehavior : Behavior<FrameworkElement> {
 
         public DragOverBehavior() {
@@ -30,6 +34,8 @@ namespace NINA.Sequencer.Behaviors {
 
         public static readonly DependencyProperty DragBelowSizeProperty = DependencyProperty.Register(nameof(DragBelowSize), typeof(double), typeof(DragOverBehavior), new PropertyMetadata(0d));
         public static readonly DependencyProperty AllowDragCenterProperty = DependencyProperty.Register(nameof(AllowDragCenter), typeof(bool), typeof(DragOverBehavior), new PropertyMetadata(true));
+        public static readonly DependencyProperty AllowDragAboveProperty = DependencyProperty.Register(nameof(AllowDragAbove), typeof(bool), typeof(DragOverBehavior), new PropertyMetadata(true));
+        public static readonly DependencyProperty AllowDragBelowProperty = DependencyProperty.Register(nameof(AllowDragBelow), typeof(bool), typeof(DragOverBehavior), new PropertyMetadata(true));
         public static readonly DependencyProperty DragAboveSizeProperty = DependencyProperty.Register(nameof(DragAboveSize), typeof(double), typeof(DragOverBehavior), new PropertyMetadata(0d));
         public static readonly DependencyProperty EnabledProperty = DependencyProperty.Register(nameof(Enabled), typeof(bool), typeof(DragOverBehavior), new PropertyMetadata(true));
         public static readonly DependencyProperty DragOverDisplayAnchorProperty = DependencyProperty.Register(nameof(DragOverDisplayAnchor), typeof(DragOverDisplayAnchor), typeof(DragOverBehavior), new PropertyMetadata(DragOverDisplayAnchor.Right));
@@ -81,6 +87,16 @@ namespace NINA.Sequencer.Behaviors {
             set => SetValue(AllowDragCenterProperty, value);
         }
 
+        public bool AllowDragBelow {
+            get => (bool)GetValue(AllowDragBelowProperty);
+            set => SetValue(AllowDragBelowProperty, value);
+        }
+
+        public bool AllowDragAbove {
+            get => (bool)GetValue(AllowDragAboveProperty);
+            set => SetValue(AllowDragAboveProperty, value);
+        }
+
         public DropTargetEnum DropTarget { get; set; }
 
         private bool hasDragOverElement = false;
@@ -104,7 +120,7 @@ namespace NINA.Sequencer.Behaviors {
                 new HitTestResultCallback(FindFirstItemUnderDropItem),
                 new PointHitTestParameters(mousePosition));
 
-            if (hasDragOverElement && hitElement.DataContext == AssociatedObject.DataContext) {
+            if (hasDragOverElement /*&& hitElement.DataContext == AssociatedObject.DataContext*/) {
                 // check if we can actually drop into the found element
                 var behaviors = Interaction.GetBehaviors(hitElement);
                 var dropIntoBehavior = behaviors.FirstOrDefault(ex => ex is DropIntoBehavior) as DropIntoBehavior;
@@ -117,9 +133,9 @@ namespace NINA.Sequencer.Behaviors {
                 var mousePos = e.GetPosition(AssociatedObject);
                 var dropTarget = lastDropTarget;
                 // check for mouse position relative to the current object
-                if (DragAboveSize > mousePos.Y) {
+                if (AllowDragAbove && DragAboveSize > mousePos.Y) {
                     lastDropTarget = DropTargetEnum.Top;
-                } else if (AssociatedObject.ActualHeight - DragBelowSize < mousePos.Y) {
+                } else if (AllowDragBelow && AssociatedObject.ActualHeight - DragBelowSize < mousePos.Y) {
                     lastDropTarget = DropTargetEnum.Bottom;
                 } else {
                     if (AllowDragCenter) {

@@ -468,5 +468,45 @@ namespace NINA.Test {
             var toleranceAngle = Angle.ByDegree(tolerance);
             Assert.IsFalse(lhsAngle.Equals(rhsAngle, toleranceAngle));
         }
+
+
+        [Test]
+        [TestCase(1.0, 1.0, 0)]
+        [TestCase(1.0, 2.0, 1.0)]
+        [TestCase(1.0, 2.0, 4.0)]
+        [TestCase(359.9, 0.1, 0.2)]
+        [TestCase(1.0, 181.0, 0)]
+        [TestCase(1.0, 182.0, 1.0)]
+        [TestCase(1.0, 182.0, 4.0)]
+        [TestCase(359.9, 180.1, 0.2)]
+        [TestCase(90, 270, 0.1)]
+        [TestCase(45, 225, 0.1)]
+        [TestCase(135, 315, 0.1)]
+        public void EqualWithTolerance180Test(double lhs, double rhs, double tolerance) {
+            var lhsAngle = Angle.ByDegree(lhs);
+            var rhsAngle = Angle.ByDegree(rhs);
+            var toleranceAngle = Angle.ByDegree(tolerance);
+            Assert.IsTrue(lhsAngle.Equals(rhsAngle, toleranceAngle, true));
+        }
+
+        [Test]
+        [TestCase(2.0, 0.0, 1.0)]
+        [TestCase(1.0, 1.2, 0.1)]
+        [TestCase(1.0, 2.0, 0.9)]
+        [TestCase(1.0, 2.0, 0.1)]
+        [TestCase(359.9, 0.1, 0.1)]
+        [TestCase(2.0, 180.0, 1.0)]
+        [TestCase(1.0, 181.2, 0.1)]
+        [TestCase(1.0, 182.0, 0.9)]
+        [TestCase(1.0, 182.0, 0.1)]
+        [TestCase(359.9, 180.1, 0.1)]
+        [TestCase(45, 315, 0.1)]
+        [TestCase(135, 225, 0.1)]
+        public void NotEqualWithTolerance180Test(double lhs, double rhs, double tolerance) {
+            var lhsAngle = Angle.ByDegree(lhs);
+            var rhsAngle = Angle.ByDegree(rhs);
+            var toleranceAngle = Angle.ByDegree(tolerance);
+            Assert.IsFalse(lhsAngle.Equals(rhsAngle, toleranceAngle, true));
+        }
     }
 }

@@ -18,6 +18,7 @@ using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
@@ -54,6 +55,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                             ICameraMediator cameraMediator,
                             IDeviceChooserVM flatDeviceChooserVm,
                             IImageGeometryProvider imageGeometryProvider) : base(profileService) {
+            Title = Loc.Instance["LblFlatDevice"];
+            ImageGeometry = imageGeometryProvider.GetImageGeometry("LightBulbSVG");
+            HasSettings = true;
+
             this.applicationStatusMediator = applicationStatusMediator;
             this.flatDeviceMediator = flatDeviceMediator;
             this.flatDeviceMediator.RegisterHandler(this);
@@ -61,8 +66,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             this.cameraMediator.RegisterConsumer(this);
             DeviceChooserVM = flatDeviceChooserVm;
 
-            Title = Loc.Instance["LblFlatDevice"];
-            ImageGeometry = imageGeometryProvider.GetImageGeometry("LightBulbSVG");
             var progress = new Progress<ApplicationStatus>(x => { x.Source = this.Title; applicationStatusMediator.StatusUpdate(x); });
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
@@ -217,7 +220,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;
 
-                        Logger.Trace(
+                        await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                        Logger.Info(
                             $"Successfully connected flat device. Id: {newDevice.Id} Name: {newDevice.Name} Driver Version: {newDevice.DriverVersion}");
 
                         return true;
@@ -261,7 +265,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             FlatDevice = null;
             FlatDeviceInfo = DeviceInfo.CreateDefaultInstance<FlatDeviceInfo>();
             BroadcastFlatDeviceInfo();
-            Logger.Trace("Disconnected Flat Device");
+            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            Logger.Info("Disconnected Flat Device");
         }
 
         private async Task<bool> DisconnectFlatDeviceDialog() {
@@ -450,6 +455,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         }
 
         private CameraInfo cameraInfo;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
 
         public CameraInfo CameraInfo {
             get => cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();

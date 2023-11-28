@@ -41,6 +41,9 @@ namespace NINA.Profile {
             xisfCompressionType = XISFCompressionTypeEnum.NONE;
             xisfChecksumType = XISFChecksumTypeEnum.SHA256;
             xisfByteShuffling = false;
+            fitsCompressionType = FITSCompressionTypeEnum.NONE;
+            fitsAddFzExtension = true;
+            fitsUseLegacyWriter = true;
         }
 
         private string filePath;
@@ -203,6 +206,44 @@ namespace NINA.Profile {
             set {
                 if (xisfByteShuffling != value) {
                     xisfByteShuffling = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private FITSCompressionTypeEnum fitsCompressionType;
+
+        [DataMember]
+        public FITSCompressionTypeEnum FITSCompressionType {
+            get => fitsCompressionType;
+            set {
+                if (fitsCompressionType != value) {
+                    fitsCompressionType = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fitsAddFzExtension;
+
+        [DataMember]
+        public bool FITSAddFzExtension {
+            get => fitsAddFzExtension;
+            set {
+                if (fitsAddFzExtension != value) {
+                    fitsAddFzExtension = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fitsUseLegacyWriter;
+        [DataMember]
+        public bool FITSUseLegacyWriter {
+            get => fitsUseLegacyWriter;
+            set {
+                if(fitsUseLegacyWriter != value) {
+                    fitsUseLegacyWriter = value;
                     RaisePropertyChanged();
                 }
             }

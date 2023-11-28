@@ -64,12 +64,14 @@ namespace NINA.Profile.Interfaces {
         ushort? AtikExposureSpeed { get; set; }
         int? AtikWindowHeaterPowerLevel { get; set; }
 
-        bool TouptekAlikeHighGain { get; set; }
         bool TouptekAlikeUltraMode { get; set; }
         bool TouptekAlikeHighFullwell { get; set; }
         int TouptekAlikeDewHeaterStrength { get; set; }
 
         int GenericCameraDewHeaterStrength { get; set; }
         int GenericCameraFanSpeed { get; set; }
+
+        bool? ZwoAsiMonoBinMode { get; set; }
+        bool ASCOMCreate32BitData { get; set; }
     }
 }

@@ -115,7 +115,7 @@ namespace NINA.Equipment.Interfaces {
 
         void PulseGuide(GuideDirections direction, int duration);
 
-        void Park();
+        Task Park(CancellationToken token);
 
         void Setpark();
 
@@ -125,11 +125,11 @@ namespace NINA.Equipment.Interfaces {
 
         bool Sync(Coordinates coordinates);
 
-        void Unpark();
+        Task Unpark(CancellationToken token);
 
         void SetCustomTrackingRate(double rightAscensionRate, double declinationRate);
 
-        void FindHome();
+        Task FindHome(CancellationToken token);
 
         PierSide DestinationSideOfPier(Coordinates coordinates);
     }

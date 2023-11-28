@@ -240,14 +240,19 @@ namespace NINA.ViewModel.FramingAssistant {
                     sequenceMediator.AddSimpleTarget(dso);
                 }
             }, (object o) => sequenceMediator.Initialized && RectangleCalculated);
-            SetSequencerTargetCommand = new RelayCommand((object o) => {
+            SetSequencerTargetCommand = new RelayCommand(async (object o) => {
                 applicationMediator.ChangeTab(ApplicationTab.SEQUENCE);
-
-                var template = o as IDeepSkyObjectContainer;
-                foreach (var container in GetDSOContainerListFromFraming(template)) {
-                    Logger.Info($"Adding target to advanced sequencer: {container.Target.DeepSkyObject.Name} - {container.Target.DeepSkyObject.Coordinates}");
-                    sequenceMediator.AddAdvancedTarget(container);
-                }
+                await Task.Run(async () => {
+                    // This is needed for the tab to start loading and the virtualizing stack panel to allocate proper space. otherwise we run into problems
+                    await Task.Delay(100);
+                    var template = o as IDeepSkyObjectContainer;
+                    await Application.Current.Dispatcher.BeginInvoke(() => {
+                        foreach (var container in GetDSOContainerListFromFraming(template)) {
+                            Logger.Info($"Adding target to advanced sequencer: {container.Target.DeepSkyObject.Name} - {container.Target.DeepSkyObject.Coordinates}");
+                            sequenceMediator.AddAdvancedTarget(container);
+                        }
+                    });
+                });
             }, (object o) => sequenceMediator.Initialized && RectangleCalculated);
 
             AddTargetToTargetListCommand = new RelayCommand((object o) => {
@@ -501,6 +506,14 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        public bool SaveImageInOfflineCache {
+            get => profileService.ActiveProfile.FramingAssistantSettings.SaveImageInOfflineCache;
+            set {
+                profileService.ActiveProfile.FramingAssistantSettings.SaveImageInOfflineCache = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool preserveAlignment;
 
         // When enabled the rotation for the framing rectangle rotation will be adjusted for field curvature
@@ -548,6 +561,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 if (RectangleCalculated) {
                     Rectangle.TotalRotation = value;
+                    profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(RectangleRotation));
                     DragMove(new DragResult() { Delta = new Vector() });
@@ -794,7 +808,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public double DecSeconds {
             get {
-                var seconds = Math.Round(DSO.Coordinates.Dec * 60.0d * 60.0d % 60, 5);
+                var seconds = Math.Round((Math.Abs(DSO.Coordinates.Dec * 60.0d * 60.0d) % 60), 5);
                 if (seconds >= 60d) {
                     seconds = 0;
                 }
@@ -1124,15 +1138,17 @@ namespace NINA.ViewModel.FramingAssistant {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS /*&& FramingAssistantSource != SkySurveySource.FILE*/) {
+                        if (Cache != null && SaveImageInOfflineCache && FramingAssistantSource != SkySurveySource.SKYATLAS) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
                         await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, AstroUtil.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, Cache, _loadImageSource.Token);
                         SkyMapAnnotator.DynamicFoV = FramingAssistantSource == SkySurveySource.SKYATLAS;
-
                         CalculateRectangle(SkyMapAnnotator.ViewportFoV);
+                        if(FramingAssistantSource != SkySurveySource.FILE) { 
+                            RectangleTotalRotation = profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
+                        }
                     }
                 } catch (OperationCanceledException) {
                     Logger.Info("Loading image for framing has been cancelled");

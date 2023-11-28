@@ -3,6 +3,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
@@ -260,13 +261,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             var (x, y, width, height, binning) = sdk.GetROI();
 
+            var metaData = new ImageMetaData();
+            metaData.FromCamera(this);
             return exposureDataFactory.CreateImageArrayExposureData(
                         input: data,
                         width: width,
                         height: height,
                         bitDepth: this.BitDepth,
                         isBayered: SensorType != SensorType.Monochrome,
-                        metaData: new ImageMetaData());
+                        metaData: metaData);
         }
 
         #region "Temperature Control"
@@ -440,13 +443,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     var (x, y, width, height, binning) = sdk.GetROI();
 
+                    var metaData = new ImageMetaData();
+                    metaData.FromCamera(this);
                     return exposureDataFactory.CreateImageArrayExposureData(
                                 input: data,
                                 width: width,
                                 height: height,
                                 bitDepth: this.BitDepth,
                                 isBayered: SensorType != SensorType.Monochrome,
-                                metaData: new ImageMetaData());
+                                metaData: metaData);
                 } catch (OperationCanceledException) {
                 }
                 return null;

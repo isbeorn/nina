@@ -22,6 +22,7 @@ using NINA.Profile.Interfaces;
 using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,8 +39,6 @@ namespace NINA.ViewModel.Plugins {
         public PluginsVM(IPluginLoader pluginProvider, IProfileService profileService) : base(profileService) {
             this.pluginProvider = pluginProvider;
 
-            this.repositories = new List<string>();
-            this.repositories.Add("https://nighttime-imaging.eu/wp-json/nina/v1");
             FetchPluginsCommand = new AsyncCommand<bool>((object o) => {
                 if (o?.ToString() == "Initial") {
                     if (firstTime) {
@@ -79,8 +78,9 @@ namespace NINA.ViewModel.Plugins {
 
         private void Restart(object obj) {
             profileService.Release();
+            var startInfo = new ProcessStartInfo(Environment.ProcessPath) { UseShellExecute = false };
+            Process.Start(startInfo);
             Application.Current.Shutdown();
-            System.Windows.Forms.Application.Restart();
         }
 
         private object lockObj = new object();
@@ -196,7 +196,6 @@ namespace NINA.ViewModel.Plugins {
         public ICommand CancelFetchPluginsCommand { get; }
         public ICommand CancelInstallPluginCommand { get; }
         public ICommand RestartCommand { get; }
-
         public IAsyncCommand UpdatePluginCommand { get; }
         public IAsyncRelayCommand UpdateAllPluginsCommand { get; }
         public IAsyncCommand UninstallPluginCommand { get; }
@@ -233,16 +232,6 @@ namespace NINA.ViewModel.Plugins {
             }
         }
 
-        private IList<string> repositories;
-
-        private IList<string> Repositories {
-            get => repositories;
-            set {
-                repositories = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private CancellationTokenSource fetchCts;
 
         public async Task<bool> FetchPlugins() {
@@ -251,6 +240,13 @@ namespace NINA.ViewModel.Plugins {
                 var progress = new Progress<ApplicationStatus>(p => { });
                 var onlinePlugins = new List<IPluginManifest>();
                 using (fetchCts = new CancellationTokenSource()) {
+
+                    var repositories = CoreUtil.DeserializeList<string>(Properties.Settings.Default.PluginRepositories);
+                    if(!repositories.Any(x => x == Constants.MainPluginRepository)) {
+                        // We enforce that the main plugin repository is always present
+                        repositories.Add(Constants.MainPluginRepository);
+                    }
+
                     foreach (var repo in repositories) {
                         try {
                             var fetcher = new PluginFetcher(repo);

@@ -28,6 +28,9 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Sequencer.Behaviors {
 
+    /// <summary>
+    /// This behavior will allow an element to be dragged and dropped to another place
+    /// </summary>
     public class DragDropBehavior : Behavior<FrameworkElement> {
 
         public DragDropBehavior(Grid layoutParent) {

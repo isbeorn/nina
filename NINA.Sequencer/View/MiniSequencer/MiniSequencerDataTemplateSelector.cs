@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Trigger;
@@ -43,9 +44,15 @@ namespace NINA.View.Sequencer.MiniSequencer {
         public DataTemplate SequenceCondition { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            if (resources.Contains(item.GetType().FullName + DataTemplatePostfix.MiniSequence)) {
-                return (DataTemplate)resources[item.GetType().FullName + DataTemplatePostfix.MiniSequence];
-            } else if (item is IImmutableContainer) {
+            var key = item.GetType().FullName + DataTemplatePostfix.MiniSequence;
+            if (resources.Contains(key)) {
+                try {
+                    return (DataTemplate)resources[key];
+                } catch(Exception ex) {
+                    Logger.Error($"Datatemplate {key} failed to load", ex);
+                }                
+            }
+            if (item is IImmutableContainer) {
                 return SequenceItem;
             } else if (item is IDeepSkyObjectContainer) {
                 return DeepSkyObjectContainer;

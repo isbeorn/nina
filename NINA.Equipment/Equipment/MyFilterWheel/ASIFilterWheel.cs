@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using ZWOptical.EFWSDK;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
@@ -81,53 +82,15 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
         public IList<string> SupportedActions => new List<string>();
 
+        private object lockObj = new object();
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
-                var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                var positions = efwInfo.slotNum;
+                lock (lockObj) {
+                    var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                    var positions = efwInfo.slotNum;
 
-                // Find duplicate positions due to data corruption and remove duplicates
-                var duplicates = filtersList.GroupBy(x => x.Position).Where(x => x.Count() > 1).ToList();
-                foreach (var group in duplicates) {
-                    foreach (var filterToRemove in group) {
-                        Logger.Warning($"Duplicate filter position defined in filter list. Removing the duplicates and importing from filter wheel again. Removing filter: {filterToRemove.Name}, focus offset: {filterToRemove.FocusOffset}");
-                        filtersList.Remove(filterToRemove);
-                    }
+                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
                 }
-
-                if (filtersList.Count > 0) {
-                    // Scan for missing position indexes between 0 .. maxPosition and reimport them
-                    var existingPositions = filtersList.Select(x => (int)x.Position).ToList();
-                    var missingPositions = Enumerable.Range(0, existingPositions.Max()).Except(existingPositions);
-                    foreach (var position in missingPositions) {
-                        if (positions > position) {
-                            var filterToAdd = new FilterInfo(string.Format($"Slot {position}"), 0, (short)position);
-                            Logger.Warning($"Missing filter position. Importing filter: {filterToAdd.Name}, focus offset: {filterToAdd.FocusOffset}");
-                            filtersList.Insert(position, filterToAdd);
-                        }
-                    }
-                }
-
-                int i = filtersList.Count;
-
-
-                if (positions < i) {
-                    /* Too many filters defined. Truncate the list */
-                    for (; i > positions; i--) {
-                        var filterToRemove = filtersList[i - 1];
-                        Logger.Warning($"Too many filters defined in the equipment filter list. Removing filter: {filterToRemove.Name}, focus offset: {filterToRemove.FocusOffset}");
-                        filtersList.Remove(filterToRemove);
-                    }
-                } else if (positions > i) {
-                    /* Too few filters defined. Add missing filter names using Slot <#> format */
-                    for (; i <= positions; i++) {
-                        var filter = new FilterInfo(string.Format($"Slot {i}"), 0, (short)i);
-                        filtersList.Add(filter);
-                        Logger.Info($"Not enough filters defined in the equipment filter list. Importing filter: {filter.Name}, focus offset: {filter.FocusOffset}");
-                    }
-                }
-
-                return filtersList;
             }
         }
 
@@ -190,9 +153,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     }
 
                     DriverInfo = $"SDK: {EFWdll.GetSDKVersion()}; FW: {GetFwVersionString()}";
+                    Connected = true;
+
                     Unidirectional = profileService.ActiveProfile.FilterWheelSettings.Unidirectional;
 
-                    Connected = true;
                     return true;
                 } else {
                     Logger.Error("Failed to connect to EFW");

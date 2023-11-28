@@ -23,21 +23,39 @@ namespace NINA.Image.FileFormat.FITS {
         private static Encoding ascii = Encoding.GetEncoding("iso-8859-1");
 
         public FITSHeaderCard(string key, string value, string comment) {
+            this.Key = key;
+            if (value == null) { value = string.Empty; }
+            
             /*
              * FITS Standard 4.0, Section 4.2.1:
              * A single quote is represented within a string as two successive single quotes
              */
-            this.Key = key;
-            if (value == null) { value = string.Empty; }
-            if (value.Length > 20) {
-                value = value.Substring(0, 20);
+            value = value.Replace(@"'", @"''");
+
+            // Header total is 80 - Keyword = 8, Keyword Separator = 2, String Quotes = 2,
+            var totalLength = 68;
+            var valueMaxLength = totalLength;
+            var commentSeparatorLenght = 3;
+            var valueMaxLengthWithComment = totalLength - commentSeparatorLenght - 1;
+            if (!string.IsNullOrWhiteSpace(comment) && value.Length <= valueMaxLengthWithComment) {
+                // with a comment the total length is reduced by 4 for the " / " separator
+                // but skip the comment if value is too long
+                // otherwise make sure the comment gets at least one character
+                valueMaxLength = valueMaxLengthWithComment;
             }
-            this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20);
+
+            if (value.Length > valueMaxLength) {
+                value = value.Substring(0, valueMaxLength);
+            }
 
             if (comment == null) { comment = string.Empty; }
-            if (comment?.Length > 43) {
-                comment = comment.Substring(0, 43);
+            var commentLength = Math.Min(47, Math.Max(0, totalLength - value.Length - commentSeparatorLenght));
+            if (comment?.Length > commentLength) {
+                comment = comment.Substring(0, commentLength);
             }
+
+            
+            this.Value = $"'{value}'".PadRight(totalLength - commentLength - commentSeparatorLenght + 2);
             this.Comment = comment;
         }
 
@@ -98,7 +116,10 @@ namespace NINA.Image.FileFormat.FITS {
             var encodedKeyword = Key.ToUpper().PadRight(8);
             var encodedValue = Value.PadLeft(20);
 
-            var header = $"{encodedKeyword}= {encodedValue} / ";
+            var header = $"{encodedKeyword}= {encodedValue}";
+            if (!string.IsNullOrWhiteSpace(Comment)) {
+                header += " / ";
+            }
             var encodedComment = Comment.PadRight(80 - header.Length);
             header += encodedComment;
             return header;

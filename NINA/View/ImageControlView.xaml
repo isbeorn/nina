@@ -140,7 +140,8 @@
                             Data="{StaticResource RotatorSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             RenderTransformOrigin="0.5,0.5"
-                            Stretch="Uniform">
+                            Stretch="Uniform"
+                            UseLayoutRounding="True">
                             <Path.RenderTransform>
                                 <ScaleTransform ScaleX="-1.0" />
                             </Path.RenderTransform>
@@ -165,7 +166,8 @@
                                                     Margin="7"
                                                     Data="{StaticResource FlipHorizontalSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -176,7 +178,8 @@
                                                     Margin="7"
                                                     Data="{StaticResource FlipHorizontalSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -204,7 +207,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource AberrationInspectorSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -215,7 +219,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource AberrationInspectorSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -253,7 +258,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource CrosshairSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -264,7 +270,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource CrosshairSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -293,7 +300,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource WandSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -304,7 +312,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource WandSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -333,7 +342,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource StarSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -344,7 +354,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource StarSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -373,7 +384,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource BahtinovSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -384,7 +396,8 @@
                                                     Margin="5"
                                                     Data="{StaticResource BahtinovSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Setter.Value>
                                         </Setter>
                                     </Trigger>
@@ -406,6 +419,7 @@
                         Stretch="Uniform"
                         Stroke="{StaticResource ButtonBackgroundSelectedBrush}"
                         StrokeThickness="1"
+                        UseLayoutRounding="True"
                         Visibility="{Binding ShowCrossHair, Converter={StaticResource VisibilityConverter}}" />
 
                     <Grid Visibility="{Binding ShowBahtinovAnalyzer, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">

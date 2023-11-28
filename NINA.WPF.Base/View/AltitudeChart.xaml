@@ -177,12 +177,14 @@
                                                 Margin="5"
                                                 Data="{StaticResource NewMoonSVG}"
                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                             <Path
                                                 Margin="5"
                                                 Data="{Binding Moon.Phase, Converter={StaticResource MoonPhaseToGeometryConverter}}"
                                                 Fill="Black"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                     </Setter.Value>
                                 </Setter>
@@ -195,12 +197,14 @@
                                                 Margin="5"
                                                 Data="{StaticResource NewMoonSVG}"
                                                 Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                             <Path
                                                 Margin="5"
                                                 Data="{Binding Moon.Phase, Converter={StaticResource MoonPhaseToGeometryConverter}}"
                                                 Fill="Black"
-                                                Stretch="Uniform" />
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
                                         </Grid>
                                     </Setter.Value>
                                 </Setter>

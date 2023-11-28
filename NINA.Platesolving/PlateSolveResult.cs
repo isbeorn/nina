@@ -12,19 +12,25 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Astrometry;
+using NINA.Core.Utility;
 using System;
 
 namespace NINA.PlateSolving {
 
-    public class PlateSolveResult {
+    public partial class PlateSolveResult : BaseINPC {
 
         public PlateSolveResult() {
             Success = true;
             SolveTime = DateTime.Now;
         }
+        public PlateSolveResult(DateTime solveTime) {
+            Success = true;
+            SolveTime = solveTime;
+        }
 
-        public DateTime SolveTime { get; private set; }
+        public DateTime SolveTime { get; }
 
         [Obsolete("Use PositionAngle instead")]
         public double Orientation {
@@ -53,8 +59,13 @@ namespace NINA.PlateSolving {
         public bool Flipped { get; set; }
 
         public bool Success { get; set; }
-
-        public Separation Separation { get; set; }
+        
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RaErrorString))]
+        [NotifyPropertyChangedFor(nameof(RaPixError))]
+        [NotifyPropertyChangedFor(nameof(DecPixError))]
+        [NotifyPropertyChangedFor(nameof(DecErrorString))]
+        private Separation separation;
 
         public string RaErrorString => Separation == null ? "--" : AstroUtil.DegreesToHMS(Separation.RA.Degree);
 

@@ -28,6 +28,7 @@ using System.Xml.Linq;
 using NINA.Image.FileFormat.FITS;
 using NINA.Image.FileFormat.XISF;
 using NINA.Image.FileFormat;
+using System.Text;
 
 namespace NINA.Test {
 
@@ -97,8 +98,8 @@ namespace NINA.Test {
         }
 
         [Test]
-        [TestCase("000000000000000000000000", "7168")]
-        [TestCase("00000000000000000000000", "6144")]
+        [TestCase("0000000000000000000000000000000000", "7168")]
+        [TestCase("000000000000000000000000000000000", "6144")]
         public async Task XISFAddAttachedImage_Special_Test(string value, string expectedAttachmentLocation) {
             var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false, gain: 0);
             const string imageType = "LIGHT";
@@ -117,7 +118,7 @@ namespace NINA.Test {
             var header = new XISFHeader();
             header.AddImageMetaData(props, imageType);
             for (var i = 0; i < 50; i++) {
-                header.AddImageFITSKeyword($"test{i:00}", "000000000000000000000000000000000000000000000000");
+                header.AddImageFITSKeyword($"test{i:00}", "00000000000000000000000000000000000000000000000");
             }
             header.AddImageFITSKeyword("t", value);
             var sut = new XISF(header);
@@ -401,6 +402,8 @@ namespace NINA.Test {
             XNamespace ns = "http://www.pixinsight.com/xisf";
             XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
 
+            var xDeclaration = new XDeclaration("1.0", "UTF-8", null);
+
             sut.Content
                 .Should().HaveRoot(ns + "xisf")
                 .Which.Should().HaveAttribute("version", "1.0")
@@ -422,7 +425,7 @@ namespace NINA.Test {
 
             sut.Image.Should().BeNull();
 
-            sut.ByteCount.Should().Be(472);
+            sut.ByteCount.Should().Be(472 + Encoding.UTF8.GetByteCount(xDeclaration.ToString() + Environment.NewLine));
         }
 
         [Test]
@@ -703,9 +706,12 @@ namespace NINA.Test {
             //Arrange
             var metaData = new ImageMetaData();
             var now = DateTime.Now;
+            var mid = now + TimeSpan.FromTicks(1000000);
+
             XNamespace ns = "http://www.pixinsight.com/xisf";
             metaData.Image.ImageType = "TEST";
             metaData.Image.ExposureStart = now;
+            metaData.Image.ExposureMidPoint = mid;
             metaData.Image.ExposureTime = 10.23;
 
             var expectedFITSKeywords = new List<FITSHeaderCard>() {
@@ -714,6 +720,7 @@ namespace NINA.Test {
                 new FITSHeaderCard("EXPTIME", metaData.Image.ExposureTime, "[s] Exposure duration"),
                 new FITSHeaderCard("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)"),
                 new FITSHeaderCard("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)"),
+                new FITSHeaderCard("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)"),
             };
 
             var expectedProperties = new[] {

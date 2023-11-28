@@ -22,11 +22,17 @@ using NINA.Core.Model;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.Mediator {
 
     public class CameraMediator : DeviceMediator<ICameraVM, ICameraConsumer, CameraInfo>, ICameraMediator {
         private object blockingConsumer;
+
+        public event Func<object, EventArgs, Task> DownloadTimeout {
+            add { this.handler.DownloadTimeout += value; }
+            remove { this.handler.DownloadTimeout -= value; }
+        }
 
         public Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {

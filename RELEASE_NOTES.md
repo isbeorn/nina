@@ -3,26 +3,27 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-### <span style="color:red;">Nightly Status: EXPERIMENTAL - DO NOT USE FOR PRODUCTION!</span>
-### <span style="color:red;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
+### <span style="color:orange;">Nightly Status: ALPHA - USE WITH CAUTION, NOT RECOMMENDED FOR PRODUCTION!</span>
+### <span style="color:orange;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
 # Version 3.0 - NIGHTLY
 
 ## Important Changes
-- Rotation values in N.I.N.A. are now displayed in counter clockwise notation to follow the standard of "East of North of North Celestial Pole" that is used in most astro applications. Templates, Targets and other saved items in previous versions will be auto migrated to this adjusted approach.
+Rotation values in N.I.N.A. have been updated to use the counter-clockwise notation, aligning with the common "East of North of North Celestial Pole" standard used in most astronomical applications. Existing templates, targets, and other saved items from previous versions will be automatically migrated to reflect this change.
 - ZWO: Persistent device IDs (Aliases) are now supported for ZWO cameras and filter wheels. If one is already set in either of these devices and has not yet connected to it under NINA 3.0, the device will need to be selected again and connected in NINA's Camera or Filter Wheel equipment selection list. This change makes it easier to support setups where multiple ZWO cameras and filter wheels are present.
     - Device IDs are limited to 8 ASCII characters in length.
     - ZWO EFWs must have firmware version 3.0.9 or later to support storing persistent device IDs.
-- The command line options have been revisited. Previously `/profileid <profile id>` was available. This has been changed to `--profileid <profile id>`
+- The command line options have been revisited. Previously `/profileid <profile id>` was available. This has been changed to `--profileid <profile id>`. See below for more details.
 - Flat Wizard logic has been revamped and can now also be used inside the sequencer. See below for more details.
-- "Loop for time" condition and "Wait for time" instruction have been redesigned. When choosing dawn or dusk times the rollover will no longer happen at noon, but instead at sunrise or sunset. (e.g. when choosing dusk, the rollover will be at dawn)
+- The "Loop for time" condition and "Wait for time" instruction have been redesigned. When selecting dawn or dusk times, the rollover will now occur at sunrise or sunset, respectively. For example, when dusk is selected, the rollover will happen at dawn.
 - The native driver for Pegasus Ultimate Power Box v2 has been removed. The Pegasus Unity ASCOM driver supersedes this implemenatation and should be used instead.
+- The native driver for PrimaLuceLab EAGLE has been removed. The EAGLE ASCOM Switch Driver supersedes this implemenatation and should be used instead.
 - SGP Server API has been removed from the core application. Instead this is available as a plugin via "SGP Server Emulation"
+- Touptek, RisingCam, Altair, MallinCam, OgmaCam and OmegonCam now supports HDR modes if available. The "High Conversion Gain" toggle has been removed and instead this is controlled via ReadoutModes!
 
-## .NET 7
-- The application has been lifted to utilize .NET 7. This is much more than just a Version shift of the previously used .NET Framework 4.8 as .NET 6 is based on .NET Core which is a complete rewrite of the .NET Framework by Microsoft and thus a major technical upgrade for N.I.N.A.
-- Issues due to the technology shift are expected during the early nightly versions, as the complete app has to undergo a full retest!
-- Plugins of prior versions are disabled and need to be patched and target the new version specifically to ensure full compatibility with .NET 7
+## .NET 8
+- The application has transitioned to .NET 8. This is not merely a version upgrade from the previously used .NET Framework 4.8. Instead, .NET 8 is rooted in .NET Core, representing a complete rewrite of the .NET Framework by Microsoft. This marks a significant technical advancement for N.I.N.A.
+- Plugins from previous versions are disabled. They must be patched by the plugin authors and targeted specifically for the new version to ensure compatibility with .NET 8.
 
 ## Improvements
 - Profile Chooser on startup will now be shown before the whole application is initializing
@@ -30,6 +31,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The guider tab will now also show the dither pixels translated to the main camera based on the guider pixel scale reported by the connected guiding application
 - N.I.N.A. will attempt to synchronize the mount's clock with that of the computer's. Not all mount drivers support this feature. A warning will be displayed if the difference between the clocks is more than 10 seconds and the mount time cannot be set
 - ZWO: Native driver for ZWO EFWs now supports setting the Unidirectional option as well as initiate a calibration run.
+- ZWO: The native driver for ZWO cameras now supports managing the [Mono Bin](https://astronomy-imaging-camera.com/tutorials/everything-you-need-to-know-about-astrophotography-pixel-binning-the-fundamentals/) feature of models with color sensors.
+- QHY: Added support for 6x6 and 8x8 bin modes to the QHY native driver. This applies to camera models that support these modes.
 - GNSS devices: Support for retrieving site location information has been expanded to enable different types of sources:
     - NMEA serial GNSS devices
     - PegasusAstro Uranus Meteo
@@ -37,40 +40,116 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In the Imaging Tab above the image preview, a new button to flip an image horizontally per click is added. Each following image will then also be flipped. This flip is for display only and doesn't affect the data.
 - Further parallelization of post image capture actions. This should especially speed up capturing using a dslr native driver where the time consuming raw conversion will no longer hold up the next exposure.
 - Added an option to Options > Equipment > Telescope to define automatic sync direction of location. This can be used to supress a user prompt for automatic connection and control.
+- Plugin folder in `%localappdata%\NINA\Plugins` now contain a subfolder with the `Major.Minor.Revision` version of the application containing plugins for the current version. This will make it simpler to upgrade and downgrade application versions without having to exchange plugins for developers. From user perspective nothing will change as everything is automatically migrated.
+- Sequencer Sidebar Tab for Templates and Targets now indicate a load progress when the list is refreshed and should also load faster.
+- In Options you can now specify custom plugin repositories for privately hosted plugins
+- Autofocus report JSON files now append the profile id in their filename and get filtered in the application by only using the relevant files from the current profile
+- Mini sequencer will now auto scroll to active items
+- The SkyX Imagelink is now available as a plate solver
+- DC-3 Dreams PinPoint is now available as a plate solver
+- When switching profiles the "Switch Filter" instruction will rematch the filter selection based on the name or the index
+- In framing tab and Deep Sky Object Containers you can now paste in full text coordinates into the RA/Dec text fields and they will be parsed into the separate boxes - e.g. when pasting the following string into the textbox the coordinates will be fully populated: `RA: 05h43m05s.90 DEC: +52°10′58″.0`
+- When sending location to the telescope the elevation is now handled separately and a different error message is shown
+- DitherAfterExposures will only trigger when the next item is an exposure item of type LIGHT
+- Added a new toggle in the framing assistant to control the automatic saving of images for the offline sky map. If you're using the complete offline map from the homepage, you can disable this setting to prevent changes to the cache.
+- Within the imaging tab, several panels now feature a settings button on the upper right corner. This button allows you to reveal or conceal adjustable settings for that particular panel.
+  - In conjunction with this update, the HFR History panel has been modified. It will now use the aforementioned settings button, eliminating the previous feature where settings appeared upon mouse hover.
+  - Every equipment panel now features an "Info only" switch, allowing users to opt for purely informational displays or to incorporate interactive controls.
+- Changed the default application theme to "Persian Faint"
+- Reverse autofocus direction when backlash compensation mode is set to "Overshoot" and a BacklashIN value is specified, to reduce the amount of required backlash compensation during autofocus
+- Native autofocus will now properly show star detection result in the image statistics panel
+- The native autofocus mechanism has been upgraded to simultaneously process images while shifting to new focus points, which enhances the speed of the entire autofocus operation.
+
 
 ## Commandline Options
 - Multiple command line options have been added to be able to adjust some of the startup parameters for the application
 ```
--p, --profileid     Load profile for a given id at startup.
--s, --sequencefile  Load a sequence file at startup.
--r, --runsequence   (Default: false) Automatically start a sequence loaded with -s and switch to Imaging tab.
--h, --help          Display this help screen.
--v, --version       Display version information
+-p, --profileid         Load profile for a given id at startup.
+-s, --sequencefile      Load a sequence file at startup.
+-r, --runsequence       (Default: false) Automatically start a sequence loaded with -s and switch to Imaging tab.
+-x, --exitaftersequence (Default: false) Automatically exit the application after the sequence has been finished.
+--help                  Display this help screen.
+--version               Display version information
 ```
 
 ## Flat Wizard Rework
 ### Flat Wizard screen
-- Binning and Gain settings have been moved down to the other settings and can now also be set filter specific
+- The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.
 - Additionally it is now also possible to specify a camera offset
-- A step size is no longer required. Instead the algorithm will now start at (Min+Max/2) and constantly divide further to find the exposure time.
-- Selection for dark frames is hidden when choosing sky flats. When using sky flats the exposure time will constantly change making dark flats useless.
+- A step size is no longer required. The algorithm will now initiate at (Min+Max/2) and continually halve to determine the optimal exposure time.
+- The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, dark flats become redundant.
 - Internally the flat wizard will now use the new advanced sequencer instructions
+- The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time
 
 ### Trained Flat Exposure List
 - The settings page to view and maintain the trained flat exposures for the flat device has been reworked
-- Instead of multiple grids the list of trained exposures is now displayed in one uniform grid
-- This new format should be easier to understand and make it much simpler to manually adjust values
-- All settings from a previous version will be automatically upgraded to the new format
+- Trained exposures are now presented in a single unified grid, replacing the previous multiple grids.
+- The new layout aims to enhance user comprehension and simplify manual adjustments.
+- Settings from previous versions will be seamlessly migrated to this new format.
 
 ### New Instructions for advanced sequencer
 - Auto Exposure Flat: An instruction to find an exposure time for a static flat brightness
 - Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time
 - Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.
 
+
+## File Formats
+
+### FITS
+- Implemented functionality to read compressed data into Framing Assistant and Camera Simulator
+- Added a toggle to use CFITSIO to write FITS files. This enables the following features:
+  - Introduced checksum support for enhanced data integrity.
+  - Expanded storage options to include compressed formats, utilizing RICE, GZIP1, GZIP2, PLIO, and HCOMPRESS algorithms. Notably, RICE offers an optimal balance of speed and compression efficiency
+  - Enabled the storage of compressed FITS files with the ".fits.fz" extension for improved file identification
+  - Added support for storing data in a 32-bit unsigned integer format
+
+### XISF
+- Added support for storing data in a 32-bit unsigned integer format
+
 ## Bugfixes
 - Fixed SVBony Native driver, that was sometimes showing the exposure before the latest one after a cancelled exposure
 - Fixed PlayerOne resolution not fully resetting to complete size after subframe or binning
 - Added automatic retry of exposure start when POA_ERROR_EXPOSING error happens
+- Selecting a date in sky atlas no longer sets the date one day earlier than selected
+- Radius will now always be calculated and displayed in the plate solver window
+- AF after Exposures will now properly consider previous autofocus runs and reset its counter accordingly
+- Dither after exposures will no longer fail to run when clearing the image statistics history
+- Sky Atlas date picker now correctly sets the selected date instead of the day before the selected one
+- For relative ASCOM focusers the MaxIncrement is now considered for move commands
+- SBIG native driver no longer stores (incorrect 0) Gain in image meta data
+- When an update notification in the app was available but after the initial pop-up a new version was published, it will no longer fail the checksum check
+- ASCOM Camera ImageArray can now properly transform Byte[,], Short[,], UShort[,] in addition to the existing Int[,] to the 16 bit data structure N.I.N.A. is using
+- Dragging an instruction below a sequence container when nothing else is below it will now work correctly
+- When switching profiles, the dock layout will be saved piror to switching
+
+# Version 2.3 Hotfix 2
+
+## Improvements 
+- Framing tab will now remember the last selected rotation value between sessions
+- The method the application uses to store and recall the window's position and size has been enhanced. This ensures that the window's location is more consistently retained across sessions.
+  - Due to this update, please re-adjust the window to the desired position and size once after the upgrade. From then on, the application will remember the settings.
+
+## Bugfixes
+- Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException - this time for real
+- Fix potential race condition in PlateSolvingStatusVM when setting platesolve result
+- Dither after exposures will no longer fail when clearing the image history
+- SkyAtlas: Date Picker will now set the correct date
+- FLICamera - Fix Exposure time that it can also set fractions of a second
+
+# Version 2.3 Hotfix 1
+
+## Bugfixes
+- Database migration and creation on first time upgrade or installation will now be much faster
+- Fixed Issue in QHY Driver when overscan area was being shown in video mode.
+- Side Of Pier during Meridian Flip will not be flipped when the current position is already a counter weight down position (e.g. when having a pause before meridian time set)
+- Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException
+- Fixed an issue when changing the profiles that the ObjectTypes in Framing Assistant were duplicated
+- Exposure Info: When the total exposure time exceeds 24 hours, it will now be displayed properly.
+
+## Improvements
+- In Options it is now possible to specify custom plugin repositories. Only add software repositories from sources that you trust! 
+- Sequencer Target Sidebar will now load much faster when having a large number of targets
+- A grid splitter is added to the plugin tab so that the list of plugins can be minimized and more room for the detail page is available
 
 # Version 2.3
 

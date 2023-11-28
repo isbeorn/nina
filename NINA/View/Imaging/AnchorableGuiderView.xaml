@@ -52,59 +52,61 @@
                         Text="{Binding GuideStepsHistory.RMS.TotalText}" />
                 </Border>
 
-                <ComboBox
-                    Height="25"
-                    MinWidth="0"
-                    MinHeight="0"
-                    Margin="5,0,0,0"
-                    DataContext="{Binding GuideStepsHistory}"
-                    ItemStringFormat="y: +/-{0}&quot;"
-                    SelectedValue="{Binding ElementName=UC, Path=DataContext.GuiderMaxY}"
-                    SelectedValuePath="Content">
-                    <ComboBoxItem>0.25</ComboBoxItem>
-                    <ComboBoxItem>0.5</ComboBoxItem>
-                    <ComboBoxItem>1</ComboBoxItem>
-                    <ComboBoxItem>2</ComboBoxItem>
-                    <ComboBoxItem>4</ComboBoxItem>
-                    <ComboBoxItem>8</ComboBoxItem>
-                    <ComboBoxItem>16</ComboBoxItem>
-                    <ComboBoxItem>32</ComboBoxItem>
-                    <ComboBoxItem>64</ComboBoxItem>
-                </ComboBox>
-                <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
-                <ComboBox
-                    Height="25"
-                    MinWidth="0"
-                    MinHeight="0"
-                    Margin="5,0,0,0"
-                    DataContext="{Binding GuideStepsHistory}"
-                    ItemStringFormat="x: {0}"
-                    SelectedValue="{Binding ElementName=UC, Path=DataContext.HistorySize}"
-                    SelectedValuePath="Content">
-                    <ComboBoxItem>50</ComboBoxItem>
-                    <ComboBoxItem>100</ComboBoxItem>
-                    <ComboBoxItem>200</ComboBoxItem>
-                    <ComboBoxItem>400</ComboBoxItem>
-                </ComboBox>
-                <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
-                <ComboBox
-                    Height="25"
-                    MinWidth="0"
-                    MinHeight="0"
-                    Margin="5,0,0,0"
-                    DataContext="{Binding GuideStepsHistory}"
-                    ItemStringFormat="unit: {0}"
-                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
-                    SelectedItem="{Binding ElementName=UC, Path=DataContext.GuiderScale}" />
-                <Button
-                    Grid.Column="3"
-                    Height="25"
-                    MinWidth="50"
-                    MaxWidth="60"
-                    Margin="5,0,0,0"
-                    Command="{Binding ClearGraphCommand}">
-                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
-                </Button>
+                <WrapPanel Orientation="Horizontal" Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <ComboBox
+                        Height="25"
+                        MinWidth="0"
+                        MinHeight="0"
+                        Margin="5,0,0,0"
+                        DataContext="{Binding GuideStepsHistory}"
+                        ItemStringFormat="y: +/-{0}&quot;"
+                        SelectedValue="{Binding ElementName=UC, Path=DataContext.GuiderMaxY}"
+                        SelectedValuePath="Content">
+                        <ComboBoxItem>0.25</ComboBoxItem>
+                        <ComboBoxItem>0.5</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>32</ComboBoxItem>
+                        <ComboBoxItem>64</ComboBoxItem>
+                    </ComboBox>
+                    <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
+                    <ComboBox
+                        Height="25"
+                        MinWidth="0"
+                        MinHeight="0"
+                        Margin="5,0,0,0"
+                        DataContext="{Binding GuideStepsHistory}"
+                        ItemStringFormat="x: {0}"
+                        SelectedValue="{Binding ElementName=UC, Path=DataContext.HistorySize}"
+                        SelectedValuePath="Content">
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>100</ComboBoxItem>
+                        <ComboBoxItem>200</ComboBoxItem>
+                        <ComboBoxItem>400</ComboBoxItem>
+                    </ComboBox>
+                    <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
+                    <ComboBox
+                        Height="25"
+                        MinWidth="0"
+                        MinHeight="0"
+                        Margin="5,0,0,0"
+                        DataContext="{Binding GuideStepsHistory}"
+                        ItemStringFormat="unit: {0}"
+                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
+                        SelectedItem="{Binding ElementName=UC, Path=DataContext.GuiderScale}" />
+                    <Button
+                        Grid.Column="3"
+                        Height="25"
+                        MinWidth="50"
+                        MaxWidth="60"
+                        Margin="5,0,0,0"
+                        Command="{Binding ClearGraphCommand}">
+                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+                    </Button>
+                </WrapPanel>
             </WrapPanel>
 
             <oxy:Plot

@@ -58,5 +58,7 @@ namespace NINA.Equipment.Interfaces.ViewModel {
             CancellationToken token);
 
         Task<bool> StartLiveView(CaptureSequence sequence, CancellationToken ct);
+
+        event EventHandler<ImagePreparedEventArgs> ImagePrepared;
     }
 }

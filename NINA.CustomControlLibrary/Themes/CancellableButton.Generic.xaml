@@ -32,7 +32,8 @@
                                 Data="{TemplateBinding CancelButtonImage}"
                                 Fill="{TemplateBinding ButtonForegroundBrush}"
                                 RenderTransformOrigin="0.5,0.5"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                             <Button.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="True">
                                     <TextBlock Text="{TemplateBinding CancelToolTip}" />
@@ -56,7 +57,8 @@
                                     Data="{TemplateBinding ButtonImage}"
                                     Fill="{TemplateBinding ButtonForegroundBrush}"
                                     RenderTransformOrigin="0.5,0.5"
-                                    Stretch="Uniform" />
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
                                 <TextBlock
                                     Padding="{TemplateBinding Padding}"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

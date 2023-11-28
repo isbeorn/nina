@@ -18,6 +18,7 @@ using NINA.Core.Utility.Notification;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
 using NINA.Equipment.SDK.CameraSDKs.SBIGSDK.SbigSharp;
+using NINA.Equipment.Utility;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -67,51 +68,15 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
         public IList<string> SupportedActions => new List<string>();
 
+        private object lockObj = new object();
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
-                var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                int positions = (int)sbigFilterWheelInfo.FilterCount;
+                lock (lockObj) {
+                    var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                    int positions = (int)sbigFilterWheelInfo.FilterCount;
 
-                var seen = new bool[positions];
-                for (int i = filtersList.Count - 1; i >= 0; --i) {
-                    if (filtersList[i].Position < 0 || filtersList[i].Position >= positions) {
-                        // Remove any that are out of bounds
-                        var filterToRemove = filtersList[i];
-                        Logger.Warning($"Too many filters defined in the equipment filter list. Removing filter: {filterToRemove.Name}, focus offset: {filterToRemove.FocusOffset}");
-                        filtersList.Remove(filterToRemove);
-                    } else if (seen[filtersList[i].Position]) {
-                        // Remove duplicates
-                        var filterToRemove = filtersList[i];
-                        Logger.Warning($"Duplicate filters defined in the equipment filter list. Removing filter: {filterToRemove.Name}, focus offset: {filterToRemove.FocusOffset}");
-                        filtersList.Remove(filterToRemove);
-                    } else {
-                        seen[filtersList[i].Position] = true;
-                    }
+                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
                 }
-
-                var sorted = true;
-                for (int i = 0; i < positions; ++i) {
-                    if (!seen[i]) {
-                        var filter = new FilterInfo(string.Format($"Slot {i}"), 0, (short)i);
-                        if (i != filtersList.Count) {
-                            sorted = false;
-                        }
-                        Logger.Info($"Not enough filters defined in the equipment filter list. Importing filter: {filter.Name}, focus offset: {filter.FocusOffset}");
-                        filtersList.Add(filter);
-                    } else if (filtersList[i].Position != i) {
-                        sorted = false;
-                    }
-                }
-
-                // Lastly, ensure the filters are sorted by position
-                if (!sorted) {
-                    var filtersListSortedCopy = filtersList.OrderBy(x => x.Position).ToList();
-                    filtersList.Clear();
-                    foreach (var filter in filtersListSortedCopy) {
-                        filtersList.Add(filter);
-                    }
-                }
-                return filtersList;
             }
         }
 

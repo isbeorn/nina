@@ -13,6 +13,7 @@ using FluentAssertions;
 using NINA.Astrometry;
 using NUnit.Framework;
 using System;
+using System.Text.RegularExpressions;
 
 namespace NINA.Test.AstrometryTest {
 
@@ -713,6 +714,55 @@ namespace NINA.Test.AstrometryTest {
             } else {
                 arcsec.Should().BeApproximately(expectedArcsecDistance, tolerance);
             }            
+        }
+
+        [Test]
+        [TestCase("Right ascension\t00h 42m 44.3s[1]", 10.684583333333)] // Wikipedia
+        [TestCase("RA center: 00h42m29s.54", 10.62083333333)] // Astrobin
+        [TestCase("20hr 34' 54\"", 308.725)] // Telescopius
+        [TestCase("20hr 34′ 54″", 308.725)] // Telescopius
+        public void ExtractHMS_ValidInput_SuccessfullyMatches(string sut, double expectedDegree) {
+            var pattern = AstroUtil.HMSPattern;
+            var match = Regex.Match(sut, pattern);
+            match.Success.Should().BeTrue();
+
+            AstroUtil.HMSToDegrees(match.Value).Should().BeApproximately(expectedDegree, MODULUS_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase("Declination\t+41° 16′ 9″[1]")] // Wikipedia
+        [TestCase("DEC center: +41°11′12″.2")] // Astrobin
+        [TestCase("60º 09' 00\"")] // Telescopius
+        public void ExtractHMS_InvalidInput_FailsMatches(string sut) {
+            var pattern = AstroUtil.HMSPattern;
+            var match = Regex.Match(sut, pattern);
+            match.Success.Should().BeFalse();
+        }
+
+        [Test]
+        [TestCase("Declination\t+41° 16′ 9″[1]", 41.2691666666)] // Wikipedia
+        [TestCase("Declination\t+41° 16' 9\"[1]", 41.2691666666)] // Wikipedia
+        [TestCase("DEC center: +41°11'12\".2", 41.186666666)] // Astrobin
+        [TestCase("DEC center: +41°11′12″.2", 41.186666666)] // Astrobin
+        [TestCase("60º 09' 00\"", 60.15)] // Telescopius
+        [TestCase("07 50 34.9", 7.843028)] // NASA Horizon
+        [TestCase("+41 49 29", 41.824722)] // MPC
+        public void ExtractDMS_ValidInput_SuccessfullyMatches(string sut, double expectedDegree) {
+            var pattern = AstroUtil.DMSPattern;
+            var match = Regex.Match(sut, pattern);
+            match.Success.Should().BeTrue();
+
+            AstroUtil.DMSToDegrees(match.Value).Should().BeApproximately(expectedDegree, MODULUS_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase("Right ascension\t00h 42m 44.3s[1]")] // Wikipedia
+        [TestCase("RA center: 00h42m29s.54")] // Astrobin
+        [TestCase("20hr 34' 54\"")] // Telescopius
+        public void ExtractDMS_InvalidInput_FailsMatches(string sut) {
+            var pattern = AstroUtil.DMSPattern;
+            var match = Regex.Match(sut, pattern);
+            match.Success.Should().BeFalse();
         }
     }
 }

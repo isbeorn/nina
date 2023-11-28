@@ -9,6 +9,7 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
+using NINA.Core.Utility;
 using NINA.Plugin.Interfaces;
 using NINA.WPF.Base.Utility;
 using System;
@@ -27,8 +28,14 @@ namespace NINA.ViewModel.Plugins {
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             var plugin = item as IPluginManifest;
             if (plugin != null) {
-                if (Application.Current.Resources.Contains(plugin.Name + DataTemplatePostfix.Options)) {
-                    return (DataTemplate)Application.Current.Resources[plugin.Name + DataTemplatePostfix.Options];
+                var  key = plugin.Name + DataTemplatePostfix.Options;
+                if (Application.Current.Resources.Contains(key)) {
+                    try {
+                        return (DataTemplate)Application.Current.Resources[key];
+                    } catch (Exception ex) {
+                        Logger.Error($"Datatemplate {key} failed to load", ex);
+                    }
+                    
                 }
             }
             return Default;

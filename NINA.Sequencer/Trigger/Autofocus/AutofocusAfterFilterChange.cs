@@ -87,9 +87,9 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
-        private FilterInfo lastFilter;
+        private string lastFilter;
 
-        public FilterInfo LastAutoFocusFilter {
+        public string LastAutoFocusFilter {
             get => lastFilter;
             private set { lastFilter = value; RaisePropertyChanged(); }
         }
@@ -99,11 +99,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         public override void Initialize() {
-            LastAutoFocusFilter = filterWheelMediator.GetInfo()?.SelectedFilter;
+            LastAutoFocusFilter = filterWheelMediator.GetInfo()?.SelectedFilter?.Name;
         }
 
         public override void SequenceBlockInitialize() {
-            LastAutoFocusFilter = filterWheelMediator.GetInfo()?.SelectedFilter;
+            LastAutoFocusFilter = filterWheelMediator.GetInfo()?.SelectedFilter?.Name;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -111,13 +111,21 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
 
+            var hasAutofocusFilter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.Where(f => f.AutoFocusFilter == true).FirstOrDefault() != null;
+            if (!hasAutofocusFilter) {
+              var lastAF = history.AutoFocusPoints?.LastOrDefault();
+              if (lastAF != null) {
+                  LastAutoFocusFilter = lastAF.AutoFocusPoint?.Filter;
+              }
+            }
+
             var currentFwInfo = filterWheelMediator.GetInfo();
             bool shouldTrigger = false;
             if (LastAutoFocusFilter == null) {
-                LastAutoFocusFilter = currentFwInfo?.SelectedFilter;
+                LastAutoFocusFilter = currentFwInfo?.SelectedFilter?.Name;
             } else {
-                if (LastAutoFocusFilter != currentFwInfo?.SelectedFilter) {
-                    LastAutoFocusFilter = currentFwInfo?.SelectedFilter;
+                if (LastAutoFocusFilter != currentFwInfo?.SelectedFilter?.Name) {
+                    LastAutoFocusFilter = currentFwInfo?.SelectedFilter?.Name;
                     shouldTrigger = true;
                 }
             }

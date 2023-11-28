@@ -33,6 +33,9 @@ namespace NINA.Core.Enum {
         ASTAP,
 
         [Description("LblPlatesolve3")]
-        PLATESOLVE3
+        PLATESOLVE3,
+
+        [Description("LblPinPoint")]
+        PINPOINT,
     }
 }

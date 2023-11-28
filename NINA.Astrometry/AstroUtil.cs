@@ -37,6 +37,9 @@ namespace NINA.Astrometry {
         public const double SIDEREAL_RATE_ARCSECONDS_PER_SECOND = 15.041;
         private const double ArcSecPerPixConversionFactor = RadiansToDegreeFactor * 60d * 60d / 1000d;
 
+        public const string HMSPattern = @"(([0-9]{1,2})([h|:| ]|[?]{2}|[h|r]{2})\s*([0-9]{1,2})([m|'|′|:| ]|[?]{2})?\s*([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|""|″|:| ]|[?]{2})?\s*)";
+        public const string DMSPattern = @"([\+|-]?([0-9]{1,2})([d|°|º|:| ]|[?]{2})\s*([0-9]{1,2})([m|'|′|:| ]|[?]{2})\s*([0-9]{1,2}(?:\.[0-9]+)?)?([s|""|″|:| ]|[?]{2})?\s*)";
+
         /// <summary>
         /// Convert degree to radians
         /// </summary>

@@ -21,6 +21,8 @@ using Serilog.Core;
 using Serilog.Sinks.File;
 using System.Text;
 using Serilog.Events;
+using System.Globalization;
+using System.Management;
 
 namespace NINA.Core.Utility {
 
@@ -31,10 +33,10 @@ namespace NINA.Core.Utility {
             var logDate = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var logDir = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "Logs");
             var processId = Environment.ProcessId;
-            var logFilePath = Path.Combine(logDir, $"{logDate}-{CoreUtil.Version}.{processId}.log");
+            var logFilePath = Path.Combine(logDir, $"{logDate}-{CoreUtil.Version}.{processId}-.log");
 
             levelSwitch = new LoggingLevelSwitch();
-            levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Information;
+            levelSwitch.MinimumLevel = LogEventLevel.Information;
 
             if (!Directory.Exists(logDir)) {
                 Directory.CreateDirectory(logDir);
@@ -49,7 +51,7 @@ namespace NINA.Core.Utility {
                     outputTemplate: "{Timestamp:yyyy-MM-ddTHH:mm:ss.ffff}|{LegacyLogLevel}|{Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(logFilePath,
                     rollOnFileSizeLimit: true,
-                    rollingInterval: RollingInterval.Infinite,
+                    rollingInterval: RollingInterval.Month,
                     outputTemplate: "{Timestamp:yyyy-MM-ddTHH:mm:ss.ffff}|{LegacyLogLevel}|{Message:lj}{NewLine}{Exception}",
                     shared: false,
                     buffered: false,
@@ -64,21 +66,42 @@ namespace NINA.Core.Utility {
             var sb = new StringBuilder();
             var os = Environment.OSVersion;
             sb.AppendLine(PadBoth("", 70, '-'));
-            sb.AppendLine(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
-            sb.AppendLine(PadBoth(string.Format("Running NINA Version {0}", CoreUtil.Version), 70, '-'));
+            sb.AppendLine(PadBoth(CoreUtil.Title, 70, '-'));
+            sb.AppendLine(PadBoth(string.Format("Version {0}", CoreUtil.Version), 70, '-'));
             sb.AppendLine(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
-            sb.AppendLine(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
-            sb.AppendLine(PadBoth("Oparating System Information", 70, '-'));
-            sb.AppendLine(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
-            sb.AppendLine(PadBoth("Is 64bit Process {0}", 70, '-', Environment.Is64BitProcess.ToString()));
+            sb.AppendLine(PadBoth("Is 64bit {0}", 70, '-', Environment.Is64BitProcess.ToString()));
+            sb.AppendLine(PadBoth("", 70, '-'));
+            sb.AppendLine(PadBoth("{0}", 70, '-', os.VersionString));
             sb.AppendLine(PadBoth("Platform {0:G}", 70, '-', os.Platform.ToString()));
-            sb.AppendLine(PadBoth("Version {0}", 70, '-', os.VersionString));
             sb.AppendLine(PadBoth("Major {0} Minor {1}", 70, '-', os.Version.Major.ToString(), os.Version.Minor.ToString()));
             sb.AppendLine(PadBoth("Service Pack {0}", 70, '-', os.ServicePack));
+            sb.AppendLine(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
+            sb.AppendLine(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
+            sb.AppendLine(PadBoth("", 70, '-'));
+            sb.AppendLine(PadBoth("Processor Count {0}", 70, '-', Environment.ProcessorCount.ToString()));
+            sb.AppendLine(PadBoth("Total Physical Memory {0} GB", 70, '-', Math.Round(GetTotalPhysicalMemory() / 1024d / 1024d / 1024d, 2).ToString()));
+            foreach(var drive in DriveInfo.GetDrives()) {
+                if(drive.IsReady) {
+                    sb.AppendLine(PadBoth("Available Space on Drive {0}: {1} GB", 70, '-', drive.Name, Math.Round(drive.AvailableFreeSpace / (1024d * 1024d * 1024d), 2).ToString(CultureInfo.InvariantCulture)));
+                } else {
+                    sb.AppendLine(PadBoth("Drive {0} is not ready", 70, '-', drive.Name));
+                }
+            }
             sb.AppendLine(PadBoth("", 70, '-'));
             sb.Append("DATE|LEVEL|SOURCE|MEMBER|LINE|MESSAGE");
 
             return sb.ToString();
+        }
+
+        private static long GetTotalPhysicalMemory() {
+            ObjectQuery winQuery = new ObjectQuery("SELECT * FROM Win32_ComputerSystem");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(winQuery);
+
+            foreach (ManagementObject item in searcher.Get()) {
+                return Convert.ToInt64(item["TotalPhysicalMemory"]);
+            }
+
+            return 0; // Return 0 if the information could not be retrieved
         }
 
         private static string PadBoth(string msg, int length, char paddingChar, params string[] msgParams) {
@@ -89,43 +112,29 @@ namespace NINA.Core.Utility {
         }
 
         public static void SetLogLevel(LogLevelEnum logLevel) {
-            switch (logLevel) {
-                case LogLevelEnum.TRACE:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
-                    break;
-
-                case LogLevelEnum.DEBUG:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Debug;
-                    break;
-
-                case LogLevelEnum.INFO:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Information;
-                    break;
-
-                case LogLevelEnum.WARNING:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Warning;
-                    break;
-
-                case LogLevelEnum.ERROR:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Error;
-                    break;
-
-                default:
-                    levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Information;
-                    break;
-            }
+            levelSwitch.MinimumLevel = logLevel switch {
+                LogLevelEnum.TRACE => LogEventLevel.Verbose,
+                LogLevelEnum.DEBUG => LogEventLevel.Debug,
+                LogLevelEnum.INFO => LogEventLevel.Information,
+                LogLevelEnum.WARNING => LogEventLevel.Warning,
+                LogLevelEnum.ERROR => LogEventLevel.Error,
+                _ => LogEventLevel.Information,
+            };
         }
 
         public static void CloseAndFlush() {
             Log.CloseAndFlush();
         }
 
+        private const string ErrorTemplate = "{source}|{member}|{line}";
+        private const string MessageTemplate = "{source}|{member}|{line}|{message}";
+
         public static void Error(
                 Exception ex,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Error(ex, "{source}|{member}|{line}", ExtractFileName(sourceFilePath), memberName, lineNumber);
+            Log.Error(ex, ErrorTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber);
         }
 
         public static void Error(
@@ -134,48 +143,42 @@ namespace NINA.Core.Utility {
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Error(ex, "{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, customMsg);
+            Log.Error(ex, MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, customMsg);
         }
 
         public static void Error(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Error("{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, message);
+            Log.Error(MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, message);
         }
 
         public static void Warning(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Warning("{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, message);
-        }
-
-        private static string ExtractFileName(string sourceFilePath) {
-            string file = string.Empty;
-            try { file = Path.GetFileName(sourceFilePath); } catch (Exception) { }
-            return file;
+            Log.Warning(MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, message);
         }
 
         public static void Info(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Information("{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, message);
+            Log.Information(MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, message);
         }
 
         public static void Debug(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Debug("{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, message);
+            Log.Debug(MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, message);
         }
 
         public static void Trace(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int lineNumber = 0) {
-            Log.Verbose("{source}|{member}|{line}|{message}", ExtractFileName(sourceFilePath), memberName, lineNumber, message);
+            Log.Verbose(MessageTemplate, Path.GetFileName(sourceFilePath), memberName, lineNumber, message);
         }
 
         private class HeaderWriter : FileLifecycleHooks {
@@ -201,40 +204,27 @@ namespace NINA.Core.Utility {
         }
 
         private class LegacyLogLevelMappingEnricher : ILogEventEnricher {
+            private static readonly string LEGACYLOGLEVELPROPERTY = "LegacyLogLevel";
+            private static readonly string TRACE = LogLevelEnum.TRACE.ToString();
+            private static readonly string DEBUG = LogLevelEnum.DEBUG.ToString();
+            private static readonly string INFO = LogLevelEnum.INFO.ToString();
+            private static readonly string WARNING = LogLevelEnum.WARNING.ToString();
+            private static readonly string ERROR = LogLevelEnum.ERROR.ToString();
+            private static readonly string FATAL = "FATAL";
+            private static readonly string UNKNOWN = "UNKNOWN";
 
             public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory) {
-                string LegacyLogLevel = string.Empty;
-
-                switch (logEvent.Level) {
-                    case LogEventLevel.Verbose:
-                        LegacyLogLevel = LogLevelEnum.TRACE.ToString();
-                        break;
-
-                    case LogEventLevel.Debug:
-                        LegacyLogLevel = LogLevelEnum.DEBUG.ToString();
-                        break;
-
-                    case LogEventLevel.Information:
-                        LegacyLogLevel = LogLevelEnum.INFO.ToString();
-                        break;
-
-                    case LogEventLevel.Warning:
-                        LegacyLogLevel = LogLevelEnum.WARNING.ToString();
-                        break;
-
-                    case LogEventLevel.Error:
-                        LegacyLogLevel = LogLevelEnum.ERROR.ToString();
-                        break;
-
-                    case LogEventLevel.Fatal:
-                        LegacyLogLevel = "FATAL";
-                        break;
-
-                    default:
-                        LegacyLogLevel = "UNKNOWN";
-                        break;
-                }
-                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("LegacyLogLevel", LegacyLogLevel));
+                
+                var legacyLogLevel = logEvent.Level switch {
+                    LogEventLevel.Verbose => TRACE,
+                    LogEventLevel.Debug => DEBUG,
+                    LogEventLevel.Information => INFO,
+                    LogEventLevel.Warning => WARNING,
+                    LogEventLevel.Error => ERROR,
+                    LogEventLevel.Fatal => FATAL,
+                    _ => UNKNOWN
+                };
+                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(LEGACYLOGLEVELPROPERTY, legacyLogLevel));
             }
         }
     }

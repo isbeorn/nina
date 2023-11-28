@@ -19,202 +19,249 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="5,0,5,0" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding FocuserInfo.Connected}">
-                <Grid>
-                    <Border
-                        Margin="0,5,0,0"
-                        VerticalAlignment="Top"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0"
-                        Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                        <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
-                            <CheckBox
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Left"
-                                BorderBrush="Transparent"
-                                IsChecked="{Binding FocuserInfo.Connected, FallbackValue=False, Mode=OneWay}"
-                                IsEnabled="False"
-                                Style="{StaticResource CheckmarkCheckbox}" />
-                        </UniformGrid>
-                    </Border>
-
-                    <StackPanel Orientation="Vertical" Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Margin="5,0,5,0" Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblInfoOnly}" />
+            <CheckBox
+                Grid.Column="1"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Left"
+                IsChecked="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Mode=TwoWay}">
+                <CheckBox.ToolTip>
+                    <TextBlock Text="{ns:Loc LblInfoOnlyTooltip}" />
+                </CheckBox.ToolTip>
+            </CheckBox>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="5,0,5,0" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                <Grid IsEnabled="{Binding FocuserInfo.Connected}">
+                    <Grid>
                         <Border
                             Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsMoving}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding FocuserInfo.IsMoving, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource InvertedCheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsSettling}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding FocuserInfo.IsSettling, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource InvertedCheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock Text="{ns:Loc LblPosition}" />
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    Text="{Binding FocuserInfo.Position}"
-                                    TextWrapping="WrapWithOverflow" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock Text="{ns:Loc LblTemperature}" />
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    Text="{Binding FocuserInfo.Temperature, Converter={StaticResource UnitConverter}, ConverterParameter=' °C|2'}"
-                                    TextWrapping="WrapWithOverflow" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
+                            VerticalAlignment="Top"
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
-                            IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}">
+                            Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                             <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTempComp}" />
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
                                 <CheckBox
-                                    Height="25"
+                                    Width="20"
+                                    Height="20"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding ToggleTempCompCommand}"
-                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                    IsChecked="{Binding FocuserInfo.TempComp}" />
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding FocuserInfo.Connected, FallbackValue=False, Mode=OneWay}"
+                                    IsEnabled="False"
+                                    Style="{StaticResource CheckmarkCheckbox}" />
                             </UniformGrid>
                         </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetPosition}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        Height="25"
-                                        MinWidth="90"
+
+                        <StackPanel Orientation="Vertical" Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsMoving}" />
+                                    <CheckBox
+                                        Width="20"
+                                        Height="20"
                                         Margin="5,0,0,0"
-                                        VerticalContentAlignment="Center">
+                                        HorizontalAlignment="Left"
+                                        BorderBrush="Transparent"
+                                        IsChecked="{Binding FocuserInfo.IsMoving, FallbackValue=False, Mode=OneWay}"
+                                        IsEnabled="False"
+                                        Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsSettling}" />
+                                    <CheckBox
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        BorderBrush="Transparent"
+                                        IsChecked="{Binding FocuserInfo.IsSettling, FallbackValue=False, Mode=OneWay}"
+                                        IsEnabled="False"
+                                        Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock Text="{ns:Loc LblPosition}" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        Text="{Binding FocuserInfo.Position}"
+                                        TextWrapping="WrapWithOverflow" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock Text="{ns:Loc LblTemperature}" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        Text="{Binding FocuserInfo.Temperature, Converter={StaticResource UnitConverter}, ConverterParameter=' °C|2'}"
+                                        TextWrapping="WrapWithOverflow" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}"
+                                Visibility="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTempComp}" />
+                                    <CheckBox
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        BorderBrush="Transparent"
+                                        IsChecked="{Binding FocuserInfo.TempComp}"
+                                        IsEnabled="False"
+                                        Style="{StaticResource NoColorCheckmarkCheckbox}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}"
+                                Visibility="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTempComp}" />
+                                    <CheckBox
+                                        Height="25"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        Command="{Binding ToggleTempCompCommand}"
+                                        CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                        IsChecked="{Binding FocuserInfo.TempComp}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                Visibility="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetPosition}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            Height="25"
+                                            MinWidth="90"
+                                            Margin="5,0,0,0"
+                                            VerticalContentAlignment="Center">
 
-                                        <TextBox.Text>
-                                            <Binding Path="TargetPosition">
-                                                <Binding.ValidationRules>
-                                                    <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </StackPanel>
+                                            <TextBox.Text>
+                                                <Binding Path="TargetPosition">
+                                                    <Binding.ValidationRules>
+                                                        <rules:GreaterZeroRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                </UniformGrid>
+                            </Border>
+
+                            <Grid
+                                Margin="0,5,0,0"
+                                IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}"
+                                Visibility="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <ninactrl:CancellableButton
+                                    Height="25"
+                                    Margin="10,5,10,0"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="{ns:Loc LblMove}"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    CancelToolTip="{ns:Loc LblCancel}"
+                                    Command="{Binding MoveFocuserCommand}"
+                                    ToolTip="{ns:Loc LblMoveFocuserTooltip}" />
+                            </Grid>
+                            <UniformGrid
+                                Margin="0,2,0,2"
+                                VerticalAlignment="Center"
+                                Columns="4"
+                                Visibility="{Binding ActiveProfile.DockPanelSettings.FocuserInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:CancellableButton
+                                        Height="20"
+                                        Margin="1,0,1,0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        ButtonText="&lt;&lt;"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding HaltFocuserCommand}"
+                                        CancelToolTip="{ns:Loc LblCancel}"
+                                        Command="{Binding MoveFocuserInLargeCommand}"
+                                        ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
+                                </Grid>
+                                <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:CancellableButton
+                                        Height="20"
+                                        Margin="1,0,1,0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        ButtonText="&lt;"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding HaltFocuserCommand}"
+                                        CancelToolTip="{ns:Loc LblCancel}"
+                                        Command="{Binding MoveFocuserInSmallCommand}"
+                                        ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
+                                </Grid>
+                                <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:CancellableButton
+                                        Height="20"
+                                        Margin="1,0,1,0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        ButtonText="&gt;"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding HaltFocuserCommand}"
+                                        CancelToolTip="{ns:Loc LblCancel}"
+                                        Command="{Binding MoveFocuserOutSmallCommand}"
+                                        ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
+                                </Grid>
+                                <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:CancellableButton
+                                        Height="20"
+                                        Margin="1,0,1,0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        ButtonText="&gt;&gt;"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding HaltFocuserCommand}"
+                                        CancelToolTip="{ns:Loc LblCancel}"
+                                        Command="{Binding MoveFocuserOutLargeCommand}"
+                                        ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
+                                </Grid>
                             </UniformGrid>
-                        </Border>
-
-                        <Grid Margin="0,5,0,0" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                            <ninactrl:CancellableButton
-                                Height="25"
-                                Margin="10,5,10,0"
-                                HorizontalContentAlignment="Center"
-                                ButtonText="{ns:Loc LblMove}"
-                                CancelButtonImage="{StaticResource CancelSVG}"
-                                CancelCommand="{Binding HaltFocuserCommand}"
-                                CancelToolTip="{ns:Loc LblCancel}"
-                                Command="{Binding MoveFocuserCommand}"
-                                ToolTip="{ns:Loc LblMoveFocuserTooltip}" />
-                        </Grid>
-                        <UniformGrid
-                            Margin="0,2,0,2"
-                            VerticalAlignment="Center"
-                            Columns="4">
-                            <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                <ninactrl:CancellableButton
-                                    Height="20"
-                                    Margin="1,0,1,0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    ButtonText="&lt;&lt;"
-                                    CancelButtonImage="{StaticResource CancelSVG}"
-                                    CancelCommand="{Binding HaltFocuserCommand}"
-                                    CancelToolTip="{ns:Loc LblCancel}"
-                                    Command="{Binding MoveFocuserInLargeCommand}"
-                                    ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
-                            </Grid>
-                            <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                <ninactrl:CancellableButton
-                                    Height="20"
-                                    Margin="1,0,1,0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    ButtonText="&lt;"
-                                    CancelButtonImage="{StaticResource CancelSVG}"
-                                    CancelCommand="{Binding HaltFocuserCommand}"
-                                    CancelToolTip="{ns:Loc LblCancel}"
-                                    Command="{Binding MoveFocuserInSmallCommand}"
-                                    ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
-                            </Grid>
-                            <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                <ninactrl:CancellableButton
-                                    Height="20"
-                                    Margin="1,0,1,0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    ButtonText="&gt;"
-                                    CancelButtonImage="{StaticResource CancelSVG}"
-                                    CancelCommand="{Binding HaltFocuserCommand}"
-                                    CancelToolTip="{ns:Loc LblCancel}"
-                                    Command="{Binding MoveFocuserOutSmallCommand}"
-                                    ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
-                            </Grid>
-                            <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                <ninactrl:CancellableButton
-                                    Height="20"
-                                    Margin="1,0,1,0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    ButtonText="&gt;&gt;"
-                                    CancelButtonImage="{StaticResource CancelSVG}"
-                                    CancelCommand="{Binding HaltFocuserCommand}"
-                                    CancelToolTip="{ns:Loc LblCancel}"
-                                    Command="{Binding MoveFocuserOutLargeCommand}"
-                                    ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
-                            </Grid>
-                        </UniformGrid>
-                    </StackPanel>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

@@ -41,5 +41,23 @@ namespace NINA.View.Sequencer {
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters) {
             return new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
+
+        /// <summary>
+        /// TreeView.OnKeyDown handler has a custom handler for shift+Tab
+        /// This event handler code prevents the custom handler to allow for expected keyboard navigation inside the sequencer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TreeView_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) && e.Key == Key.Tab) {
+                var focusedElement = Keyboard.FocusedElement;
+                var elem = focusedElement as UIElement;
+                if (elem != null) {
+                    elem.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
+                }
+
+                e.Handled = true;
+            }
+        }
     }
 }

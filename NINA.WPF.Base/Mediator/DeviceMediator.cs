@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility.Extensions;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -33,11 +34,21 @@ namespace NINA.WPF.Base.Mediator {
         protected THandler handler;
         protected List<TConsumer> consumers = new List<TConsumer>();
 
+        public event Func<object, EventArgs, Task> Connected {
+            add { this.handler.Connected += value; }
+            remove { this.handler.Connected -= value; }
+        }
+        public event Func<object, EventArgs, Task> Disconnected {
+            add { this.handler.Disconnected += value; }
+            remove { this.handler.Disconnected -= value; }
+        }
+
         public void RegisterHandler(THandler handler) {            
             if (this.handler != null) {
                 throw new Exception("Handler already registered!");
             }
             this.handler = handler;
+
             var info = handler.GetDeviceInfo();
             Broadcast(info);
         }

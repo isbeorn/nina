@@ -30,6 +30,7 @@ using NINA.Core.Locale;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -731,13 +732,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 BGFlushStart();
 
+                var metaData = new ImageMetaData();
+                metaData.FromCamera(this);
                 return exposureDataFactory.CreateImageArrayExposureData(
                     input: imgData,
                     width: width,
                     height: height,
                     bitDepth: this.BitDepth,
                     isBayered: this.SensorType != SensorType.Monochrome,
-                    metaData: new ImageMetaData());
+                    metaData: metaData);
             }, ct);
         }
 
@@ -806,7 +809,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             /*
              * Convert exposure seconds to milliseconds and set the camera with it.
              */
-            ExposureLength = (uint)sequence.ExposureTime * 1000;
+            ExposureLength = (uint)(sequence.ExposureTime * 1000);
 
             /*
              * Set bin levels
@@ -872,7 +875,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             Logger.Debug($"FLI: RBI: Flooding for {FLIFloodDuration * 1e3}ms and flushing {FLIFlushCount} times at {FLIFloodBin.Name} binning");
 
             FrameType = LibFLI.FLIFrameType.RBI_FLUSH;
-            ExposureLength = (uint)FLIFloodDuration * 1000;
+            ExposureLength = (uint)(FLIFloodDuration * 1000);
             ReadoutMode = ReadoutModeForSnapImages;
             SetBinning(FLIFloodBin.X, FLIFloodBin.Y);
 

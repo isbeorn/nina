@@ -99,7 +99,8 @@ namespace NINA.Core.Database {
 
                 var migration = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database", "Migration");
 
-                foreach (var migrationFile in Directory.GetFiles(migration, "*.sql")) {
+                var files = Directory.GetFiles(migration, "*.sql").OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x)));
+                foreach (var migrationFile in files) {
                     if (!int.TryParse(Path.GetFileName(migrationFile).Split('.').First(), out int sqlVersion)) {
                         continue;
                     }

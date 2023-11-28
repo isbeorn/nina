@@ -32,10 +32,11 @@ using System.Windows.Input;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Locale;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Sequencer {
 
-    public class TemplateController {
+    public partial class TemplateController : BaseINPC {
         private readonly SequenceJsonConverter sequenceJsonConverter;
         private readonly IProfileService profileService;
         private readonly string defaultTemplatePath;
@@ -64,6 +65,13 @@ namespace NINA.Sequencer {
                 TemplatesView.Refresh();
             }
         }
+
+        [ObservableProperty]
+        private bool templatesLoading = true;
+        [ObservableProperty]
+        private int templatesLoadingProgress;
+        [ObservableProperty]
+        private int templatesLoadingTotalCount;
 
         public TemplateController(SequenceJsonConverter sequenceJsonConverter, IProfileService profileService) {
             this.sequenceJsonConverter = sequenceJsonConverter;
@@ -150,6 +158,7 @@ namespace NINA.Sequencer {
         private Task LoadUserTemplates() {
             return Task.Run(async () => {
                 try {
+                    TemplatesLoading = true;
                     userTemplatePath = profileService.ActiveProfile.SequenceSettings.SequencerTemplatesFolder;
                     var rootParts = userTemplatePath.Split(new char[] { Path.DirectorySeparatorChar }, System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -160,8 +169,13 @@ namespace NINA.Sequencer {
                     foreach (var template in Templates.Where(t => t.Group != DefaultTemplatesGroup).ToList()) {
                         await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Templates.Remove(template)));
                     }
+                    TemplatesLoadingProgress = 0;
+                    TemplatesLoadingTotalCount = 1;
 
-                    foreach (var file in Directory.GetFiles(userTemplatePath, "*" + TemplateFileExtension, SearchOption.AllDirectories)) {
+                    var files = Directory.GetFiles(userTemplatePath, "*" + TemplateFileExtension, SearchOption.AllDirectories);
+                    TemplatesLoadingTotalCount = files.Length;
+
+                    foreach (var file in files) {
                         try {
                             var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file));
                             if (container is ISequenceRootContainer) continue;
@@ -174,6 +188,7 @@ namespace NINA.Sequencer {
                         } catch (Exception ex) {
                             Logger.Error("Invalid template JSON", ex);
                         }
+                        TemplatesLoadingProgress++;
                     }
 
                     await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => {
@@ -187,6 +202,8 @@ namespace NINA.Sequencer {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Loc.Instance["Lbl_SequenceTemplateController_LoadUserTemplatesFailed"]);
+                } finally {
+                    TemplatesLoading = false;
                 }
             });
         }

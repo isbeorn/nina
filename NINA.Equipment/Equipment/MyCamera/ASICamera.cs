@@ -30,6 +30,7 @@ using NINA.Core.Locale;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -81,7 +82,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     int cc = ASICameraDll.GetNumOfControls(_cameraId);
                     _controls = new List<CameraControl>();
                     for (int i = 0; i < cc; i++) {
-                        _controls.Add(new CameraControl(_cameraId, i));
+                        try {
+                            var control = new CameraControl(_cameraId, i);
+                            _ = control.Value; // check if querying a value is possible
+                            _controls.Add(control);
+                        } catch(Exception ex) {
+                            Logger.Debug($"Control capability at index {i} threw an exception: " + ex.Message);
+                        }
                     }
                 }
 
@@ -248,6 +255,29 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public SensorType SensorType { get; private set; } = SensorType.Monochrome;
 
+        private bool hasZwoAsiMonoBinMode = false;
+
+        public bool HasZwoAsiMonoBinMode {
+            get => hasZwoAsiMonoBinMode;
+            set {
+                hasZwoAsiMonoBinMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool ZwoAsiMonoBinMode {
+            get {
+                var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_MONO_BIN);
+                return value != 0;
+            }
+            set {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_MONO_BIN, value ? 1 : 0)) {
+                    profileService.ActiveProfile.CameraSettings.ZwoAsiMonoBinMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public short BayerOffsetX { get; } = 0;
         public short BayerOffsetY { get; } = 0;
 
@@ -397,13 +427,20 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                     }
 
+                    var metaData = new ImageMetaData();
+                    metaData.FromCamera(this);
+
+                    if (HasZwoAsiMonoBinMode && ZwoAsiMonoBinMode && BinX > 1) {
+                        metaData.Camera.BayerPattern = BayerPatternEnum.None;
+                    }
+
                     return exposureDataFactory.CreateImageArrayExposureData(
                         input: arr,
                         width: width,
                         height: height,
                         bitDepth: BitDepth,
-                        isBayered: SensorType != SensorType.Monochrome,
-                        metaData: new ImageMetaData());
+                        isBayered: SensorType != SensorType.Monochrome && metaData.Camera.BayerPattern != BayerPatternEnum.None,
+                        metaData: metaData);
                 } catch (OperationCanceledException) {
                 } catch (CameraDownloadFailedException ex) {
                     Notification.ShowExternalError(ex.Message, Loc.Instance["LblZWODriverError"]);
@@ -623,16 +660,24 @@ namespace NINA.Equipment.Equipment.MyCamera {
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAMMA, 50);
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HIGH_SPEED_MODE, 0);
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, 0);
-            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_MONO_BIN, 0);
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_OVERCLOCK, 0);
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_PATTERN_ADJUST, 0);
+
+            // Assumption that all color models support mono binning mode
+            HasZwoAsiMonoBinMode = Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE;
+
+            if (HasZwoAsiMonoBinMode && profileService.ActiveProfile.CameraSettings.ZwoAsiMonoBinMode == true) {
+                ZwoAsiMonoBinMode = true;
+            } else {
+                ZwoAsiMonoBinMode = false;
+            }
 
             var id = ASICameraDll.GetId(_cameraId);
             Logger.Info($"Camera ID: {id}");
         }
 
         public async Task<bool> Connect(CancellationToken token) {
-            return await Task<bool>.Run(() => {
+            return await Task.Run(() => {
                 var success = false;
                 try {
                     ASICameraDll.OpenCamera(_cameraId);
@@ -726,17 +771,30 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     ushort[] arr = new ushort[size];
                     int buffersize = width * height * 2;
+                    DateTime startDateTime = DateTime.UtcNow;
                     if (!GetVideoData(arr, buffersize)) {
-                        throw new Exception(Loc.Instance["LblASIImageDownloadError"]);
+                        throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                     }
+
+                    DateTime midpointDateTime = startDateTime + TimeSpan.FromTicks((DateTime.UtcNow - startDateTime).Ticks / 2);
+                    var metaData = new ImageMetaData();
+                    metaData.FromCamera(this);
+                    metaData.Image.ExposureMidPoint = midpointDateTime;
+
+                    if (HasZwoAsiMonoBinMode && ZwoAsiMonoBinMode && BinX > 1) {
+                        metaData.Camera.BayerPattern = BayerPatternEnum.None;
+                    }
+
+                    // get dropped frames
+                    DroppedFrames = ASICameraDll.GetDroppedFrames(_cameraId);
 
                     return exposureDataFactory.CreateImageArrayExposureData(
                         input: arr,
                         width: width,
                         height: height,
                         bitDepth: BitDepth,
-                        isBayered: SensorType != SensorType.Monochrome,
-                        metaData: new ImageMetaData());
+                        isBayered: SensorType != SensorType.Monochrome && metaData.Camera.BayerPattern != BayerPatternEnum.None,
+                        metaData: metaData);
                 } catch (OperationCanceledException) {
                 } catch (CameraDownloadFailedException ex) {
                     Notification.ShowExternalError(ex.Message, Loc.Instance["LblZWODriverError"]);
@@ -765,11 +823,47 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
         }
+        public int DroppedFrames { get; private set; }
 
         public bool HasBattery => false;
 
         public string Action(string actionName, string actionParameters) {
-            throw new NotImplementedException();
+            switch (actionName) {
+                case "GetDroppedFrames": { 
+                    return DroppedFrames.ToString();
+                    }
+                case "HighSpeedMode": {
+                        var value = StringToBoolean(actionParameters);
+                        if(value.HasValue) { 
+                            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HIGH_SPEED_MODE, value.Value ? 1 : 0);
+                        }
+                        return "";
+                    }
+                case "HardwareBin": {
+                        var value = StringToBoolean(actionParameters);
+                        if (value.HasValue) {
+                            SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value.Value ? 1 : 0);
+                        }
+                        return "";
+                    }
+                default:
+                    return "";
+            }
+        }
+
+        private bool? StringToBoolean(string input) {
+            if (string.IsNullOrWhiteSpace(input)) { return null; }
+
+            string[] booleanFalse = { "0", "off", "no", "false", "f" };
+            string[] booleanTrue = { "1", "on", "yes", "true", "t" };
+
+            if (booleanFalse.Contains(input.ToLower())) {
+                return false;
+            }
+            if (booleanTrue.Contains(input.ToLower())) {
+                return true;
+            }
+            return null;
         }
 
         public string SendCommandString(string command, bool raw) {

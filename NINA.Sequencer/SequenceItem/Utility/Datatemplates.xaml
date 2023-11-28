@@ -265,7 +265,8 @@
                             Margin="2,10,2,0"
                             Data="{StaticResource DotsSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                 </Grid>
             </view:SequenceBlockView.SequenceItemContent>

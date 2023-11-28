@@ -144,19 +144,19 @@ namespace NINA.Sequencer {
         public ICollectionView TriggersView { get; }
 
         public T GetContainer<T>() where T : ISequenceContainer {
-            return (T)Container.FirstOrDefault(x => x.GetType() == typeof(T)).Clone();
+            return (T)(Container.FirstOrDefault(x => x.GetType() == typeof(T))?.Clone() ?? default(T));
         }
 
         public T GetItem<T>() where T : ISequenceItem {
-            return (T)Items.FirstOrDefault(x => x.GetType() == typeof(T)).Clone();
+            return (T)(Items.FirstOrDefault(x => x.GetType() == typeof(T))?.Clone() ?? default(T));
         }
 
         public T GetCondition<T>() where T : ISequenceCondition {
-            return (T)Conditions.FirstOrDefault(x => x.GetType() == typeof(T)).Clone();
+            return (T)(Conditions.FirstOrDefault(x => x.GetType() == typeof(T))?.Clone() ?? default(T));
         }
 
         public T GetTrigger<T>() where T : ISequenceTrigger {
-            return (T)Triggers.FirstOrDefault(x => x.GetType() == typeof(T)).Clone();
+            return (T)(Triggers.FirstOrDefault(x => x.GetType() == typeof(T))?.Clone() ?? default(T));
         }
     }
 

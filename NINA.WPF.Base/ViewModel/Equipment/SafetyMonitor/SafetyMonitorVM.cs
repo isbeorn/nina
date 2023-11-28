@@ -32,6 +32,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Interfaces;
 using Nito.AsyncEx;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
@@ -150,6 +151,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Safety Monitor. Id: {sm.Id} Name: {sm.Name} Driver Version: {sm.DriverVersion}");
 
                             return true;
@@ -189,6 +191,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                 SafetyMonitor = null;
                 SafetyMonitorInfo = DeviceInfo.CreateDefaultInstance<SafetyMonitorInfo>();
                 BroadcastMonitorInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Safety Monitor");
             }
         }
@@ -233,6 +236,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
         }
 
         private SafetyMonitorInfo safetyMonitorInfo;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
 
         public SafetyMonitorInfo SafetyMonitorInfo {
             get {

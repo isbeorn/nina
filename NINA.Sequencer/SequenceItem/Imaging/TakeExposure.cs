@@ -39,6 +39,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.Interfaces;
+using NINA.Sequencer.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -227,12 +228,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                     }
                 }
 
-                ISequenceContainer parent = Parent;
-                while (parent != null && !(parent is SequenceRootContainer)) {
-                    parent = parent.Parent;
-                }
-                if (parent is SequenceRootContainer item) {
-                    imageData.MetaData.Sequence.Title = item.SequenceTitle;
+                var root = ItemUtility.GetRootContainer(this.Parent);
+                if (root != null) {
+                    imageData.MetaData.Sequence.Title = root.SequenceTitle;
                 }
 
                 await imageSaveMediator.Enqueue(imageData, prepareTask, progress, token);

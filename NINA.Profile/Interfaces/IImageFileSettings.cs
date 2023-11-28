@@ -28,7 +28,9 @@ namespace NINA.Profile.Interfaces {
         XISFCompressionTypeEnum XISFCompressionType { get; set; }
         XISFChecksumTypeEnum XISFChecksumType { get; set; }
         bool XISFByteShuffling { get; set; }
-
+        FITSCompressionTypeEnum FITSCompressionType { get; set; }
+        bool FITSAddFzExtension { get; set; }
+        bool FITSUseLegacyWriter { get; set; }
         string GetFilePattern(string imageType);
     }
 }

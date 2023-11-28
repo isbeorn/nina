@@ -59,61 +59,189 @@ namespace NINA.Image.ImageData {
     public class Flipped2DExposureData : BaseExposureData {
         private readonly Array flipped2DArray;
         public bool IsBayered { get; private set; }
+        public bool Create32BitData { get; }
 
         public Flipped2DExposureData(
             Array flipped2DArray,
             int bitDepth,
             bool isBayered,
             ImageMetaData metaData,
-            IImageDataFactory imageDataFactory)
+            IImageDataFactory imageDataFactory,
+            bool create32BitData = false)
             : base(bitDepth, metaData, imageDataFactory) {
             if (flipped2DArray.Rank > 2) { throw new NotSupportedException(); }
             this.flipped2DArray = flipped2DArray;
             this.IsBayered = isBayered;
+            Create32BitData = create32BitData;
         }
 
         public override async Task<IImageData> ToImageData(IProgress<ApplicationStatus> progress = default, CancellationToken cancelToken = default) {
             try {
                 progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblPrepareExposure"] });
-                var flatArray = await Task.Run(() => FlipAndConvert2d(this.flipped2DArray), cancelToken);
-                return imageDataFactory.CreateBaseImageData(
-                    imageArray: new ImageArray(flatArray),
-                    width: this.flipped2DArray.GetLength(0),
-                    height: this.flipped2DArray.GetLength(1),
-                    bitDepth: this.BitDepth,
-                    isBayered: this.IsBayered,
-                    metaData: this.MetaData);
+
+                if(this.Create32BitData && this.flipped2DArray.GetType() == typeof(int[,])) {
+                    var flatArray = await Task.Run(() => FilpAndProcessAsInt((int[,])this.flipped2DArray, this.flipped2DArray.GetLength(0), this.flipped2DArray.GetLength(1), (int)(this.flipped2DArray.GetLength(0) * this.flipped2DArray.GetLength(1))));
+                    return imageDataFactory.CreateBaseImageData(
+                        imageArray: new ImageArrayInt(flatArray),
+                        width: this.flipped2DArray.GetLength(0),
+                        height: this.flipped2DArray.GetLength(1),
+                        bitDepth: this.BitDepth,
+                        isBayered: this.IsBayered,
+                        metaData: this.MetaData);
+                } else {
+                    var flatArray = await Task.Run(() => FlipAndConvert2d(this.flipped2DArray), cancelToken);
+                    return imageDataFactory.CreateBaseImageData(
+                        imageArray: new ImageArray(flatArray),
+                        width: this.flipped2DArray.GetLength(0),
+                        height: this.flipped2DArray.GetLength(1),
+                        bitDepth: this.BitDepth,
+                        isBayered: this.IsBayered,
+                        metaData: this.MetaData);
+                }
             } finally {
                 progress?.Report(new ApplicationStatus { Status = string.Empty });
             }
         }
 
-        private static ushort[] FlipAndConvert2d(Array input) {
-            using (MyStopWatch.Measure("FlipAndConvert2d")) {
-                Int32[,] arr = (Int32[,])input;
-                int width = arr.GetLength(0);
-                int height = arr.GetLength(1);
+        private static ushort[] ProcessAsByte(byte[,] arr, int width, int height, int length) {
+            ushort[] flatArray = new ushort[length];
+            ushort value;
+            unsafe {
+                fixed (byte* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (ushort)ptr[i];
 
-                int length = width * height;
-                ushort[] flatArray = new ushort[length];
-                ushort value;
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
 
-                unsafe {
-                    fixed (Int32* ptr = arr) {
-                        int idx = 0, row = 0;
-                        for (int i = 0; i < length; i++) {
-                            value = (ushort)ptr[i];
-
-                            idx = ((i % height) * width) + row;
-                            if ((i % (height)) == (height - 1)) row++;
-
-                            ushort b = value;
-                            flatArray[idx] = b;
-                        }
+                        ushort b = value;
+                        flatArray[idx] = b;
                     }
                 }
-                return flatArray;
             }
+            return flatArray;
+        }
+
+        private static ushort[] ProcessAsShort(short[,] arr, int width, int height, int length) {
+            ushort[] flatArray = new ushort[length];
+            ushort value;
+            unsafe {
+                fixed (short* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (ushort)ptr[i];
+
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
+
+                        ushort b = value;
+                        flatArray[idx] = b;
+                    }
+                }
+            }
+            return flatArray;
+        }
+
+        private static ushort[] ProcessAsUShort(ushort[,] arr, int width, int height, int length) {
+            ushort[] flatArray = new ushort[length];
+            ushort value;
+            unsafe {
+                fixed (ushort* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (ushort)ptr[i];
+
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
+
+                        ushort b = value;
+                        flatArray[idx] = b;
+                    }
+                }
+            }
+            return flatArray;
+        }
+
+        private static ushort[] ProcessAsUInt(uint[,] arr, int width, int height, int length) {
+            ushort[] flatArray = new ushort[length];
+            ushort value;
+            unsafe {
+                fixed (uint* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (ushort)ptr[i];
+
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
+
+                        ushort b = value;
+                        flatArray[idx] = b;
+                    }
+                }
+            }
+            return flatArray;
+        }
+        private static ushort[] ProcessAsInt(int[,] arr, int width, int height, int length) {
+            ushort[] flatArray = new ushort[length];
+            ushort value;
+            unsafe {
+                fixed (int* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (ushort)ptr[i];
+
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
+
+                        ushort b = value;
+                        flatArray[idx] = b;
+                    }
+                }
+            }
+            return flatArray;
+        }
+
+        private static ushort[] FlipAndConvert2d(Array input) {
+            using (MyStopWatch.Measure("FlipAndConvert2d")) {
+                int width = input.GetLength(0);
+                int height = input.GetLength(1);
+                int length = width * height;
+                ushort[] flatArray = new ushort[length];
+
+                if (input.GetType() == typeof(byte[,])) {
+                    return ProcessAsByte((byte[,])input, width, height, length);
+                } else if (input.GetType() == typeof(short[,])) {
+                    return ProcessAsShort((short[,])input, width, height, length);
+                } else if (input.GetType() == typeof(ushort[,])) {
+                    return ProcessAsUShort((ushort[,])input, width, height, length);
+                } else if (input.GetType() == typeof(uint[,])) {
+                    return ProcessAsUInt((uint[,])input, width, height, length);
+                } else if (input.GetType() == typeof(int[,])) {
+                    return ProcessAsInt((int[,])input, width, height, length);
+                } else {
+                    throw new NotSupportedException("Unsupported data type");
+                }
+            }
+        }
+        private static int[] FilpAndProcessAsInt(int[,] arr, int width, int height, int length) {
+            int[] flatArray = new int[length];
+            int value;
+            unsafe {
+                fixed (int* ptr = arr) {
+                    int idx = 0, row = 0;
+                    for (int i = 0; i < length; i++) {
+                        value = (int)ptr[i];
+
+                        idx = ((i % height) * width) + row;
+                        if ((i % (height)) == (height - 1)) row++;
+
+                        int b = value;
+                        flatArray[idx] = b;
+                    }
+                }
+            }
+            return flatArray;
         }
     }
 
@@ -171,7 +299,7 @@ namespace NINA.Image.ImageData {
         }
 
         public Flipped2DExposureData CreateFlipped2DExposureData(Array flipped2DArray, int bitDepth, bool isBayered, ImageMetaData metaData) {
-            return new Flipped2DExposureData(flipped2DArray, bitDepth, isBayered, metaData, imageDataFactory);
+            return new Flipped2DExposureData(flipped2DArray, bitDepth, isBayered, metaData, imageDataFactory, profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData);
         }
 
         public RAWExposureData CreateRAWExposureData(RawConverterEnum converter, byte[] rawBytes, string rawType, int bitDepth, ImageMetaData metaData) {
@@ -179,6 +307,9 @@ namespace NINA.Image.ImageData {
         }
 
         public ImageArrayExposureData CreateImageArrayExposureData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
+            return new ImageArrayExposureData(input, width, height, bitDepth, isBayered, metaData, imageDataFactory);
+        }
+        public ImageArrayExposureData CreateImageArrayExposureDataInt(int[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
             return new ImageArrayExposureData(input, width, height, bitDepth, isBayered, metaData, imageDataFactory);
         }
 

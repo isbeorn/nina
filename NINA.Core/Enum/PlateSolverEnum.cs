@@ -36,6 +36,12 @@ namespace NINA.Core.Enum {
         ASPS,
 
         [Description("LblASTAPShort")]
-        ASTAP
+        ASTAP,
+
+        [Description("LblTSXImageLink")]
+        TSX_IMAGELINK,
+
+        [Description("LblPinPoint")]
+        PINPONT
     }
 }

@@ -117,11 +117,12 @@
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="1">
                 <Viewbox>
-                    <Canvas
-                        Width="{Binding CameraInfo.XSize}"
-                        Height="{Binding CameraInfo.YSize}">
+                    <Canvas Width="{Binding CameraInfo.XSize}" Height="{Binding CameraInfo.YSize}">
                         <Canvas.Background>
-                            <ImageBrush x:Name="fullImage" ImageSource="{Binding Image}"  Stretch="UniformToFill"/>
+                            <ImageBrush
+                                x:Name="fullImage"
+                                ImageSource="{Binding Image}"
+                                Stretch="UniformToFill" />
                         </Canvas.Background>
                         <Rectangle
                             Canvas.Left="{Binding SubSampleRectangle.X}"

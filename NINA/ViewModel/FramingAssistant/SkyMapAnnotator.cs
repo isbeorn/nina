@@ -511,12 +511,9 @@ namespace NINA.ViewModel.FramingAssistant {
                         }
                     }
                     ct.ThrowIfCancellationRequested();
-                    renderTimer?.Stop();
                     
-                    await Task.Delay(renderTimer?.Interval ?? 200);
                     Render();
                 } catch (Exception) {
-                    renderTimer?.Stop();
                 } finally {
                 }
             });
@@ -560,11 +557,6 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void OnTimer(object sender, EventArgs e) {
-            Render();
-        }
-
-        private System.Windows.Forms.Timer renderTimer;
         private CancellationTokenSource renderCts;
         private Task renderTask;
         private Coordinates oldCenter;
@@ -576,7 +568,6 @@ namespace NINA.ViewModel.FramingAssistant {
                 var fov = ViewportFoV.OriginalHFoV;
                 var needFullRedraw = center != oldCenter || fov != oldFoV || UseCachedImages != oldUseCachedImages || renderTask == null || renderTask.Status < TaskStatus.RanToCompletion;
                 try {
-                    renderTimer?.Stop();
                     try { renderCts?.Cancel(); } catch { }
                     while (renderTask != null && (renderTask.Status < TaskStatus.RanToCompletion)) {
                     }
@@ -593,13 +584,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 Render();
 
                 if (UseCachedImages && needFullRedraw) {
-                    renderTimer = new System.Windows.Forms.Timer();
-                    renderTimer.Interval = 200;
-                    renderTimer.Tick += new EventHandler(this.OnTimer);
-                    renderTimer.Start();
-
                     renderCts = new CancellationTokenSource();
-
                     renderTask = DrawBufferedDSOImages(renderCts.Token);
                 }
             }

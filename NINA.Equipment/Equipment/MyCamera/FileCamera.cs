@@ -32,6 +32,7 @@ using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Image.ImageData;
 using NINA.Equipment.Interfaces;
+using Microsoft.Win32;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -48,12 +49,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private void OpenFolderDiag(object obj) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.SelectedPath = FolderPath;
+            var dialog = new OpenFolderDialog();
+            dialog.InitialDirectory = FolderPath;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    FolderPath = dialog.SelectedPath;
-                }
+            if (dialog.ShowDialog() == true) {
+                FolderPath = dialog.FolderName;
             }
         }
 

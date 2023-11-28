@@ -34,8 +34,7 @@ namespace NINA.ViewModel {
 
         public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory) : base(profileService) {
             Title = Loc.Instance["LblImageHistory"];
-            CanClose = false;
-            ImageGeometry = (GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"]; 
+            ImageGeometry = (GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
             thumbnails = new ObservableLimitedSizedStack<Thumbnail>(50);
 
             this.imagingMediator = imagingMediator;
@@ -88,25 +87,31 @@ namespace NINA.ViewModel {
 
         private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
             return Task.Run(async () => {
-                var factor = 100 / msg.Image.Width;
+                if(msg.Image != null) { 
+                    var factor = 100 / msg.Image.Width;
 
-                var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
-                scaledBitmap.Freeze();
+                    var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
+                    scaledBitmap.Freeze();
 
-                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var thumbnail = new Thumbnail(imageDataFactory) {
-                        ThumbnailImage = scaledBitmap,
-                        ImagePath = msg.PathToImage,
-                        FileType = msg.FileType,
-                        Duration = msg.Duration,
-                        ImageStatistics = msg.Statistics,
-                        StarDetectionAnalysis = msg.StarDetectionAnalysis,
-                        Filter = msg.Filter,
-                        IsBayered = msg.IsBayered
-                    };
-                    Thumbnails.Add(thumbnail);
-                    SelectedThumbnail = thumbnail;
-                }));
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        try {
+                            var thumbnail = new Thumbnail(imageDataFactory) {
+                                ThumbnailImage = scaledBitmap,
+                                ImagePath = msg.PathToImage,
+                                FileType = msg.FileType,
+                                Duration = msg.Duration,
+                                ImageStatistics = msg.Statistics,
+                                StarDetectionAnalysis = msg.StarDetectionAnalysis,
+                                Filter = msg.Filter,
+                                IsBayered = msg.IsBayered
+                            };
+                            Thumbnails.Add(thumbnail);
+                            SelectedThumbnail = thumbnail;
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }));
+                }
                 return true;
             });
         }

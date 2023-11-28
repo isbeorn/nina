@@ -154,7 +154,8 @@
                                                                 Margin="5"
                                                                 Data="{StaticResource LoopSVG}"
                                                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                                                Stretch="Uniform" />
+                                                                Stretch="Uniform"
+                                                                UseLayoutRounding="True" />
                                                         </Grid>
                                                     </Button>
                                                     <Button
@@ -171,7 +172,8 @@
                                                             Margin="5"
                                                             Data="{StaticResource TrashCanSVG}"
                                                             Fill="{StaticResource ButtonForegroundBrush}"
-                                                            Stretch="Uniform" />
+                                                            Stretch="Uniform"
+                                                            UseLayoutRounding="True" />
                                                     </Button>
                                                 </Grid>
                                             </Grid>
@@ -210,7 +212,8 @@
                                 Margin="5"
                                 Data="{StaticResource ArrowLeftSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                         </Button>
                         <Button
                             Grid.Column="2"
@@ -226,7 +229,8 @@
                                 Margin="5"
                                 Data="{StaticResource ArrowRightSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                         </Button>
                         <Button
                             Grid.Column="3"
@@ -241,7 +245,8 @@
                                 Margin="5"
                                 Data="{StaticResource SaveSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                         </Button>
                         <Button
                             Grid.Column="4"
@@ -256,7 +261,8 @@
                                 Margin="5"
                                 Data="{StaticResource AddSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -424,7 +430,8 @@
                             Margin="5"
                             Data="{StaticResource BackSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                     <Button
                         Width="40"
@@ -439,7 +446,8 @@
                             Margin="5"
                             Data="{StaticResource AddSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                     <Button
                         Width="40"
@@ -454,7 +462,8 @@
                             Margin="5"
                             Data="{StaticResource TrashCanSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
 
                     <Button
@@ -471,7 +480,8 @@
                             Margin="4"
                             Data="{StaticResource LoopSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
 
                     <Button
@@ -487,7 +497,8 @@
                             Margin="5"
                             Data="{StaticResource ArrowUpSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
 
                     <Button
@@ -503,7 +514,8 @@
                             Margin="5"
                             Data="{StaticResource ArrowDownSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                 </StackPanel>
                 <Button
@@ -519,7 +531,8 @@
                         Margin="5"
                         Data="{StaticResource SaveSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Button>
 
                 <Button
@@ -535,7 +548,8 @@
                         Margin="5"
                         Data="{StaticResource SaveAsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Button>
 
                 <Button
@@ -551,7 +565,8 @@
                         Margin="5"
                         Data="{StaticResource LoadSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                 </Button>
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
@@ -566,7 +581,8 @@
                             Margin="5"
                             Data="{StaticResource SketchSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                 </Grid>
                 <Grid MinWidth="300" Margin="5,0,0,0">

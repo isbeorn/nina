@@ -295,12 +295,27 @@ namespace NINA.Core.Utility.ColorSchema {
             });
 
 
-            return schemas;
-        }
+            schemas.Items.Add(new ColorSchema {
+                Name = "Custom",
+                PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFF5F4FA"),
+                SecondaryColor = (Color)ColorConverter.ConvertFromString("#68808080"),
+                BorderColor = (Color)ColorConverter.ConvertFromString("#AA3E4146"),
+                BackgroundColor = (Color)ColorConverter.ConvertFromString("#E1191A1C"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF1E2024"),
+                TertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF404144"),
+                ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF34373D"),
+                ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF696C70"),
+                ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF6495ED"),
+                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
+                NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFBA5E07"),
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF")
+            });
 
-        public ColorSchema CreateDefaultAltSchema() {
-            return new ColorSchema {
-                Name = "Dark",
+
+            schemas.Items.Add(new ColorSchema {
+                Name = "Alternative Custom",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
@@ -315,27 +330,10 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A")
-            };
-        }
+            });
 
-        public ColorSchema CreateDefaultSchema() {
-            return new ColorSchema {
-                Name = "Light",
-                PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
-                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
-                BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
-                BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956"),
-                TertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF114f77"),
-                ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
-                ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB"),
-                ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db"),
-                NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
-                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
-                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF")
-            };
+
+            return schemas;
         }
     }
 

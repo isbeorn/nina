@@ -9,7 +9,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:dock="https://github.com/Dirkster99/AvalonDock">
+    xmlns:dock="https://github.com/Dirkster99/AvalonDock"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core">
 
     <dock:ActivateCommandLayoutItemFromLayoutModelConverter x:Key="ActivateCommandLayoutItemFromLayoutModelConverter" />
 
@@ -74,7 +75,8 @@
                                             Margin="2"
                                             Data="{StaticResource CancelSVG}"
                                             Fill="{StaticResource PrimaryBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                         <!--<Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinClose.png" />-->
                                     </Button>
                                 </Grid>
@@ -162,7 +164,7 @@
                     <Grid
                         ClipToBounds="False"
                         KeyboardNavigation.TabNavigation="Local"
-                        SnapsToDevicePixels="true">
+                        UseLayoutRounding="True">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -246,7 +248,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabItem}">
-                                <Grid SnapsToDevicePixels="true">
+                                <Grid UseLayoutRounding="True">
                                     <Border
                                         x:Name="Bd"
                                         Padding="{TemplateBinding Padding}"
@@ -325,7 +327,7 @@
                     <Grid
                         ClipToBounds="True"
                         KeyboardNavigation.TabNavigation="Local"
-                        SnapsToDevicePixels="True">
+                        UseLayoutRounding="True">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -372,7 +374,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabItem}">
-                                <Grid SnapsToDevicePixels="true">
+                                <Grid UseLayoutRounding="True">
                                     <Border
                                         x:Name="Bd"
                                         Padding="{TemplateBinding Padding}"
@@ -473,6 +475,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Border
                                 x:Name="PART_TitleBorder"
@@ -485,39 +488,39 @@
                                 Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}"
                                 ContentTemplate="{StaticResource AnchorableTitleContentTemplate}"
                                 ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <!-- Context menu disabled
-                            <dock:DropDownControlArea DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}" DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
-                            </dock:DropDownControlArea>-->
 
-                            <!--<avalonDockControls:DropDownButton x:Name="PART_ContextMenu"
-                                Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
-                                Focusable="False"
+
+                            <!--  Directly bind to the model content. Assume this is an IDockableVM  -->
+                            <ToggleButton
+                                x:Name="PART_SettingsPin"
                                 Grid.Column="1"
-                                DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
-                                DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
-                                ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}">
-                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinMenu.png" />
-                            </avalonDockControls:DropDownButton>-->
-
-                            <!--<Button x:Name="PART_AutoHidePin"
-                                Grid.Column="2"
+                                Margin="5,1,7.5,1"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{Binding Model.Content.ToggleSettingsCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                 Focusable="False"
-                                Background="{StaticResource BackgroundBrush}"
-                                Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                                Command="{Binding Path=LayoutItem.AutoHideCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                ToolTip="">
-                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinAutoHide.png" />
-                            </Button>-->
+                                Style="{StaticResource TB}"
+                                ToolTip="{ns:Loc LblSettings}"
+                                Visibility="{Binding Model.Content.HasSettings, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    Margin="2"
+                                    Data="{StaticResource SettingsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </ToggleButton>
 
                             <Button
                                 x:Name="PART_HidePin"
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 Margin="1"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Command="{Binding Path=LayoutItem.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                 Focusable="False"
-                                ToolTip="Hide"
+                                ToolTip="{ns:Loc LblClose}"
                                 Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
                                 <Path
                                     Width="10"
@@ -525,8 +528,8 @@
                                     Margin="2"
                                     Data="{StaticResource CancelSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                                <!--<Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinClose.png" />-->
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
                             </Button>
                         </Grid>
                     </Border>
@@ -534,17 +537,18 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PART_TitleBorder" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </Trigger>
-                        <!--<DataTrigger Binding="{Binding Model.IsAutoHidden, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                            <Setter Property="LayoutTransform" TargetName="PART_AutoHidePin">
-                                <Setter.Value>
-                                    <RotateTransform Angle="90" />
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>-->
-                        <!--<DataTrigger Binding="{Binding Path=CanClose}" Value="false">
-                            <Setter Property="IsEnabled" Value="False" TargetName="PART_HidePin" />
-                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ContextMenu" />
-                        </DataTrigger>-->
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_HidePin}" Value="True">
+                            <Setter TargetName="PART_HidePin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                            <Setter TargetName="PART_TitleBorder" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=PART_SettingsPin}" Value="True">
+                            <Setter TargetName="PART_SettingsPin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_SettingsPin}" Value="True">
+                            <Setter TargetName="PART_SettingsPin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                            <Setter TargetName="PART_TitleBorder" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                        </DataTrigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -554,163 +558,102 @@
     <Style TargetType="{x:Type dock:LayoutAnchorableFloatingWindowControl}">
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-    </Style>
-
-    <!--<Style x:Key="{x:Type dock:OverlayWindow}" TargetType="{x:Type dock:OverlayWindow}">
-        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type dock:OverlayWindow}">
-                    <Canvas x:Name="PART_DropTargetsContainer" Opacity="0.9">
-                        <Path
-                            x:Name="PART_PreviewBox"
-                            Fill="AliceBlue"
-                            Stroke="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
-                            StrokeThickness="2" />
-                        <Grid x:Name="PART_DockingManagerDropTargets">
-                            <Path
-                                x:Name="PART_DockingManagerDropTargetLeft"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Data="{StaticResource CancelSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="None" />
-    -->
-    <!--<Image
-                                x:Name="PART_DockingManagerDropTargetLeft"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockLeft.PNG"
-                                Stretch="None" />-->
-    <!--
-                            <Image
-                                x:Name="PART_DockingManagerDropTargetRight"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockRight.PNG"
-                                Stretch="None" />
-                            <Image
-                                x:Name="PART_DockingManagerDropTargetBottom"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Bottom"
-                                Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockBottom.PNG"
-                                Stretch="None" />
-                            <Image
-                                x:Name="PART_DockingManagerDropTargetTop"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockTop.PNG"
-                                Stretch="None" />
-                        </Grid>
-                        <Grid x:Name="PART_AnchorablePaneDropTargets">
-                            <Grid
-                                Width="88"
-                                Height="88"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                <ControlTemplate TargetType="{x:Type dock:LayoutAnchorableFloatingWindowControl}">
+                    <Grid>
+                        <Border
+                            x:Name="WindowBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid Margin="3">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
+                                    <!--  Workaround as the first row seems to be not clickable  -->
+                                    <RowDefinition Height="Auto" MinHeight="16" />
+                                    <RowDefinition Height="Auto" MinHeight="16" />
+                                    <!--  https://github.com/xceedsoftware/wpftoolkit/issues/1203  -->
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <Image
-                                    Grid.RowSpan="3"
-                                    Grid.ColumnSpan="3"
-                                    Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockPaneEmpty.PNG"
-                                    Stretch="Uniform" />
-                                <Border
-                                    Name="PART_AnchorablePaneDropTargetTop"
-                                    Grid.Row="0"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneTop.png" Stretch="None" />
+                                <Border Visibility="{Binding Path=Model.IsSinglePane, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <dock:DropDownControlArea DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}" DropDownContextMenuDataContext="{Binding Path=SingleContentLayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <ContentPresenter
+                                            Content="{Binding Model.SinglePane.SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+                                            ContentTemplate="{Binding Model.Root.Manager.AnchorableTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+                                            ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    </dock:DropDownControlArea>
                                 </Border>
-                                <Border
-                                    Name="PART_AnchorablePaneDropTargetRight"
-                                    Grid.Row="1"
-                                    Grid.Column="2">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneRight.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_AnchorablePaneDropTargetBottom"
-                                    Grid.Row="2"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneBottom.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_AnchorablePaneDropTargetLeft"
-                                    Grid.Row="1"
-                                    Grid.Column="0">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneLeft.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_AnchorablePaneDropTargetInto"
-                                    Grid.Row="1"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneInside.png" Stretch="None" />
-                                </Border>
+                                <Grid Grid.Row="1" UseLayoutRounding="True">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <!--  Directly bind to the model content. Assume this is an IDockableVM  -->
+                                    <ToggleButton
+                                        x:Name="PART_SettingsPin"
+                                        Grid.Column="1"
+                                        Margin="5,1,7.5,1"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding Model.SinglePane.SelectedContent.Content.ToggleSettingsCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Focusable="False"
+                                        Style="{StaticResource TB}"
+                                        ToolTip="{ns:Loc LblSettings}"
+                                        Visibility="{Binding Model.SinglePane.SelectedContent.Content.HasSettings, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            Margin="2"
+                                            Data="{StaticResource SettingsSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </ToggleButton>
+                                    <Button
+                                        x:Name="PART_HidePin"
+                                        Grid.Column="3"
+                                        Margin="1"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding Model.SinglePane.SelectedContent.Content.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Focusable="False"
+                                        ToolTip="{ns:Loc LblClose}"
+                                        Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            Margin="2"
+                                            Data="{StaticResource CancelSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+
+                                </Grid>
+                                <ContentPresenter Grid.Row="2" Content="{TemplateBinding Content}" />
                             </Grid>
-                        </Grid>
-                        <Grid x:Name="PART_DocumentPaneDropTargets">
-                            <Grid
-                                Width="88"
-                                Height="88"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Image
-                                    Grid.RowSpan="3"
-                                    Grid.ColumnSpan="3"
-                                    Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/DockPaneEmpty.PNG"
-                                    Stretch="Uniform" />
-                                <Border
-                                    Name="PART_DocumentPaneDropTargetTop"
-                                    Grid.Row="0"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockDocPaneTop.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_DocumentPaneDropTargetRight"
-                                    Grid.Row="1"
-                                    Grid.Column="2">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockDocPaneRight.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_DocumentPaneDropTargetBottom"
-                                    Grid.Row="2"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockDocPaneBottom.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_DocumentPaneDropTargetLeft"
-                                    Grid.Row="1"
-                                    Grid.Column="0">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockDocPaneLeft.png" Stretch="None" />
-                                </Border>
-                                <Border
-                                    Name="PART_DocumentPaneDropTargetInto"
-                                    Grid.Row="1"
-                                    Grid.Column="1">
-                                    <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/InnerDockPaneInside.png" Stretch="None" />
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </Canvas>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="WindowBorder" Property="Padding" Value="3" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_HidePin}" Value="True">
+                            <Setter TargetName="PART_HidePin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=PART_SettingsPin}" Value="True">
+                            <Setter TargetName="PART_SettingsPin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_SettingsPin}" Value="True">
+                            <Setter TargetName="PART_SettingsPin" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>-->
+    </Style>
 </ResourceDictionary>

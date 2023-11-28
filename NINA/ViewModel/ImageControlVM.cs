@@ -586,6 +586,8 @@ namespace NINA.ViewModel {
         private ITelescopeMediator telescopeMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
+        public event EventHandler<ImagePreparedEventArgs> ImagePrepared;
+
         public async Task<IRenderedImage> PrepareImage(
             IImageData data,
             PrepareImageParameters parameters,
@@ -631,7 +633,7 @@ namespace NINA.ViewModel {
             PrepareImageParameters parameters,
             CancellationToken cancelToken) {
             var processedImage = await ProcessImage(renderedImage, parameters, cancelToken);
-            imagingMediator.OnImagePrepared(new ImagePreparedEventArgs { RenderedImage = renderedImage, Parameters = parameters });
+            ImagePrepared?.Invoke(this, new ImagePreparedEventArgs { RenderedImage = renderedImage, Parameters = parameters });            
 
             this.RenderedImage = processedImage;
             if (ShowAberration) {

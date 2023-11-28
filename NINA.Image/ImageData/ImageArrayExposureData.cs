@@ -43,6 +43,20 @@ namespace NINA.Image.ImageData {
             this.Height = height;
             this.IsBayered = isBayered;
         }
+        public ImageArrayExposureData(
+            int[] input,
+            int width,
+            int height,
+            int bitDepth,
+            bool isBayered,
+            ImageMetaData metaData,
+            IImageDataFactory imageDataFactory)
+            : base(bitDepth, metaData, imageDataFactory) {
+            this.imageArray = new ImageArrayInt(input);
+            this.Width = width;
+            this.Height = height;
+            this.IsBayered = isBayered;
+        }
 
         public override Task<IImageData> ToImageData(IProgress<ApplicationStatus> progress = default, CancellationToken cancelToken = default) {
             return Task.FromResult<IImageData>(
@@ -55,7 +69,7 @@ namespace NINA.Image.ImageData {
                     metaData: this.MetaData));
         }
 
-        public static async Task<ImageArrayExposureData> FromBitmapSource(BitmapSource source, IImageDataFactory imageDataFactory) {
+        public static async Task<ImageArrayExposureData> FromBitmapSource(BitmapSource source, IImageDataFactory imageDataFactory) {            
             var pixels = await Task.Run(() => ArrayFromSource(source));
             return new ImageArrayExposureData(
                 input: pixels,

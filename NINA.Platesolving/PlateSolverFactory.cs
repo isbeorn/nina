@@ -13,7 +13,6 @@
 #endregion "copyright"
 
 using NINA.Profile.Interfaces;
-using System;
 using NINA.PlateSolving.Solvers;
 using NINA.Core.Enum;
 using NINA.PlateSolving.Interfaces;
@@ -54,25 +53,16 @@ namespace NINA.PlateSolving {
         /// <param name="solver"> Plate Solver that should be used</param>
         /// <returns></returns>
         private static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings, PlateSolverEnum solver) {
-            switch (solver) {
-                case PlateSolverEnum.ASTROMETRY_NET:
-                    return new AstrometryPlateSolver(plateSolveSettings.AstrometryURL, plateSolveSettings.AstrometryAPIKey);
-
-                case PlateSolverEnum.LOCAL:
-                    return new LocalPlateSolver(plateSolveSettings.CygwinLocation);
-
-                case PlateSolverEnum.PLATESOLVE2:
-                    return new Platesolve2Solver(plateSolveSettings.PS2Location);
-
-                case PlateSolverEnum.PLATESOLVE3:
-                    return new Platesolve3Solver(plateSolveSettings.PS3Location);
-
-                case PlateSolverEnum.ASPS:
-                    return new AllSkyPlateSolver(plateSolveSettings.AspsLocation);
-
-                default:
-                    return new ASTAPSolver(plateSolveSettings.ASTAPLocation);
-            }
+            return solver switch {
+                PlateSolverEnum.ASTROMETRY_NET => new AstrometryPlateSolver(plateSolveSettings.AstrometryURL, plateSolveSettings.AstrometryAPIKey),
+                PlateSolverEnum.LOCAL => new LocalPlateSolver(plateSolveSettings.CygwinLocation),
+                PlateSolverEnum.PLATESOLVE2 => new Platesolve2Solver(plateSolveSettings.PS2Location),
+                PlateSolverEnum.PLATESOLVE3 => new Platesolve3Solver(plateSolveSettings.PS3Location),
+                PlateSolverEnum.ASPS => new AllSkyPlateSolver(plateSolveSettings.AspsLocation),
+                PlateSolverEnum.TSX_IMAGELINK => new TheSkyXImageLinkSolver(plateSolveSettings.TheSkyXHost, plateSolveSettings.TheSkyXPort),
+                PlateSolverEnum.PINPONT => new Dc3PinPointSolver(plateSolveSettings),
+                _ => new ASTAPSolver(plateSolveSettings.ASTAPLocation),
+            };
         }
 
         public static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings) {
@@ -80,16 +70,14 @@ namespace NINA.PlateSolving {
         }
 
         public static IPlateSolver GetBlindSolver(IPlateSolveSettings plateSolveSettings) {
-            var type = PlateSolverEnum.ASTAP;
-            if (plateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
-                type = PlateSolverEnum.LOCAL;
-            } else if (plateSolveSettings.BlindSolverType == BlindSolverEnum.ASPS) {
-                type = PlateSolverEnum.ASPS;
-            } else if (plateSolveSettings.BlindSolverType == BlindSolverEnum.ASTROMETRY_NET) {
-                type = PlateSolverEnum.ASTROMETRY_NET;
-            } else if (plateSolveSettings.BlindSolverType == BlindSolverEnum.PLATESOLVE3) {
-                type = PlateSolverEnum.PLATESOLVE3;
-            }
+            var type = plateSolveSettings.BlindSolverType switch {
+                BlindSolverEnum.ASTROMETRY_NET => PlateSolverEnum.ASTROMETRY_NET,
+                BlindSolverEnum.LOCAL => PlateSolverEnum.LOCAL,
+                BlindSolverEnum.PLATESOLVE3 => PlateSolverEnum.PLATESOLVE3,
+                BlindSolverEnum.ASPS => PlateSolverEnum.ASPS,
+                BlindSolverEnum.PINPOINT => PlateSolverEnum.PINPONT,
+                _ => PlateSolverEnum.ASTAP
+            };
 
             return GetPlateSolver(plateSolveSettings, type);
         }

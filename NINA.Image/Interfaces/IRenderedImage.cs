@@ -43,5 +43,6 @@ namespace NINA.Image.Interfaces {
             IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>));
 
         Task<BitmapSource> GetThumbnail();
+        void UpdateAnalysis(StarDetectionParams p, StarDetectionResult result);
     }
 }

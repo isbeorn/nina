@@ -13,6 +13,8 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib">
 
     <Style TargetType="local:UnitTextBox">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:UnitTextBox}">

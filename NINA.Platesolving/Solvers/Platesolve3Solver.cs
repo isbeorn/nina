@@ -14,6 +14,7 @@
 
 using NINA.Astrometry;
 using NINA.Core.Locale;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -104,6 +105,9 @@ namespace NINA.PlateSolving.Solvers {
                         if (linenr == 2) {
                             if (resultArr.Length >= 2) {
                                 result.Pixscale = 206264.8d / double.Parse(resultArr[0], CultureInfo.InvariantCulture);
+                                if (!double.IsNaN(result.Pixscale)) {
+                                    result.Radius = AstroUtil.ArcsecToDegree(Math.Sqrt(Math.Pow(imageProperties.ImageWidth * result.Pixscale, 2) + Math.Pow(imageProperties.ImageHeight * result.Pixscale, 2)) / 2d);
+                                }
                                 result.PositionAngle = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
                             }
                         }

@@ -24,6 +24,8 @@ using NINA.Image.ImageAnalysis;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Image.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using System;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
@@ -54,5 +56,7 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         Task<IRenderedImage> PrepareImage(IImageData data, PrepareImageParameters parameters, CancellationToken cancelToken);
 
         void UpdateDeviceInfo(CameraInfo cameraInfo);
+
+        event EventHandler<ImagePreparedEventArgs> ImagePrepared;
     }
 }

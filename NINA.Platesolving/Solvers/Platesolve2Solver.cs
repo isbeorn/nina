@@ -14,6 +14,7 @@
 
 using NINA.Astrometry;
 using NINA.Core.Locale;
+using System;
 using System.Globalization;
 using System.IO;
 
@@ -115,6 +116,9 @@ namespace NINA.PlateSolving.Solvers {
                                 }
                                 if (result.Flipped) {
                                     result.PositionAngle = result.PositionAngle + 180;
+                                }
+                                if (!double.IsNaN(result.Pixscale)) {
+                                    result.Radius = AstroUtil.ArcsecToDegree(Math.Sqrt(Math.Pow(imageProperties.ImageWidth * result.Pixscale, 2) + Math.Pow(imageProperties.ImageHeight * result.Pixscale, 2)) / 2d);
                                 }
                             }
                         }

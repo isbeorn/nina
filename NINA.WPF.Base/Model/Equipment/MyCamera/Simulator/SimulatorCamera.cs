@@ -32,8 +32,9 @@ using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.SkySurvey;
-using System.Windows.Forms;
 using System.Linq;
+using NINA.Equipment.Utility;
+using Microsoft.Win32;
 
 namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
@@ -306,7 +307,9 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
                 Connected = true;
                 try {
                     // Trigger a download to ensure the the properties from the previously saved image settings are intialized
-                    _ = await this.DownloadExposure(token);
+                    if(Settings.Type != CameraType.SKYSURVEY) { 
+                        _ = await this.DownloadExposure(token);
+                    }
                     currentFile = 0;
                 } catch (Exception e) {
                     Logger.Error("Failed to download image on connect", e);
@@ -354,13 +357,15 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
                         input[i] = (ushort)randNormal;
                     }
 
+                    var metaData = new ImageMetaData();
+                    metaData.FromCamera(this);
                     return exposureDataFactory.CreateImageArrayExposureData(
                         input: input,
                         width: width,
                         height: height,
                         bitDepth: this.BitDepth,
                         isBayered: false,
-                        metaData: new ImageMetaData());
+                        metaData: metaData);
 
                 case CameraType.IMAGE:
                     if (SimulatorImage == null && !string.IsNullOrWhiteSpace(Settings.ImageSettings.ImagePath)) {
@@ -499,13 +504,12 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
         private bool LoadDirectoryDialog() {
             if (settings.DirectorySettings.DirectoryPath == "")
                 settings.DirectorySettings.DirectoryPath = Path.GetDirectoryName(profileService.ActiveProfile.ImageFileSettings.FilePath);
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = "Load Image Directory";
-            dialog.SelectedPath = settings.DirectorySettings.DirectoryPath;
-            DialogResult result = dialog.ShowDialog();
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath)) {
-                settings.DirectorySettings.DirectoryPath = dialog.SelectedPath;
-                files = Directory.GetFiles(dialog.SelectedPath).Where(BaseImageData.FileIsSupported).ToArray();
+            OpenFolderDialog dialog = new OpenFolderDialog();
+            dialog.Title = "Load Image Directory";
+            dialog.InitialDirectory = settings.DirectorySettings.DirectoryPath;
+            if (dialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(dialog.FolderName)) {
+                settings.DirectorySettings.DirectoryPath = dialog.FolderName;
+                files = Directory.GetFiles(dialog.FolderName).Where(BaseImageData.FileIsSupported).ToArray();
                 currentFile = 0;
                 return true;
             }

@@ -16,13 +16,17 @@ namespace NINA.Core.Enum {
 
     public enum PierSide {
 
-        //Telescope is East of Pier
+        // Telescope is East of Pier
+        // This is CW Down when going from highest altitude to lowest altitude of an object (Hour Angle 0 .. 12)
+        // It is CW Up when the meridian has been traversed at the lowest point
         pierEast = 0,
 
         //Telescope Side of Pier is Unknown
         pierUnknown = -1,
 
         //Telescope is West of Pier
+        // This is CW Down when going from lowest altitude to highest altitude of an object (Hour Angle 12 .. 24)
+        // It is CW Up when the meridian has been traversed at the highest point
         pierWest = 1
     }
 }

@@ -21,10 +21,24 @@
         <Grid Margin="5,0,5,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
+            <Grid Margin="5" Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblShowHistogram}" />
+                <CheckBox
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding ActiveProfile.DockPanelSettings.ShowImagingHistogram}" />
+            </Grid>
+
+            <StackPanel Grid.Row="1">
                 <StackPanel
                     Margin="5"
                     VerticalAlignment="Top"
@@ -204,10 +218,13 @@
                 </StackPanel>
             </StackPanel>
 
-            <local:HistogramView
-                Grid.Row="1"
-                MinHeight="80"
-                DataContext="{Binding Statistics}" />
+            <Grid
+                Grid.Row="2"
+                VerticalAlignment="Stretch"
+                Visibility="{Binding ActiveProfile.DockPanelSettings.ShowImagingHistogram, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <local:HistogramView MinHeight="80" DataContext="{Binding Statistics}" />
+
+            </Grid>
         </Grid>
     </ScrollViewer>
 </UserControl>

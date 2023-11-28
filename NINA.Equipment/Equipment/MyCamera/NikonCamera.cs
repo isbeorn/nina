@@ -32,6 +32,7 @@ using NINA.Image.RawConverter;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -117,13 +118,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                     bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
+                    var metaData = new ImageMetaData();
+                    metaData.FromCamera(this);
                     return exposureDataFactory.CreateImageArrayExposureData(
                             input: outArray,
                             width: bitmap.PixelWidth,
                             height: bitmap.PixelHeight,
                             bitDepth: 16,
                             isBayered: false,
-                            metaData: new ImageMetaData());
+                            metaData: metaData);
                 }
             });
         }
@@ -585,12 +588,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             try {
                 var rawImageData = _memoryStream.ToArray();
+                var metaData = new ImageMetaData();
+                metaData.FromCamera(this);
                 return exposureDataFactory.CreateRAWExposureData(
                     converter: profileService.ActiveProfile.CameraSettings.RawConverter,
                     rawBytes: rawImageData,
                     rawType: "nef",
                     bitDepth: this.BitDepth,
-                    metaData: new ImageMetaData());
+                    metaData: metaData);
             } finally {
                 if (_memoryStream != null) {
                     _memoryStream.Dispose();

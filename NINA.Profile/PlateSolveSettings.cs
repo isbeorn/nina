@@ -16,6 +16,7 @@ using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
 using NINA.Profile.Interfaces;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace NINA.Profile {
 
     [Serializable()]
     [DataContract]
-    public class PlateSolveSettings : Settings, IPlateSolveSettings {
+    public partial class PlateSolveSettings : Settings, IPlateSolveSettings {
         private PlateSolverEnum plateSolverType = PlateSolverEnum.ASTAP;
 
         [OnDeserializing]
@@ -65,6 +66,16 @@ namespace NINA.Profile {
             aSTAPLocation = File.Exists(defaultASTAPLocation)
                  ? defaultASTAPLocation
                  : string.Empty;
+
+            _theSkyXHost = "localhost";
+            _theSkyXPort = 3040;
+
+            pinPointCatalogType = Dc3PoinPointCatalogEnum.ppGSCACT;
+            pinPointCatalogRoot = Environment.ExpandEnvironmentVariables(@"%SYSTEMDRIVE%\GSC11\");
+            pinPointMaxMagnitude = 20;
+            pinPointExpansion = 40;
+            pinPointAllSkyApiKey = string.Empty;
+            pinPointAllSkyApiHost = "nova.astrometry.net";
         }
 
         [DataMember]
@@ -98,7 +109,7 @@ namespace NINA.Profile {
             get => astrometryURL;
             set {
                 // Clear out any whitespace characters in the URL
-                string url = Regex.Replace(value, @"\s", string.Empty);
+                string url = Whitespace().Replace(value, string.Empty);
 
                 if (astrometryURL != url) {
                     astrometryURL = url;
@@ -116,7 +127,7 @@ namespace NINA.Profile {
                 // Whitespace characters are not valid characaters in an Astrometry.net API key.
                 // Help the user by removing any that might be present. Copy and pasting from the astrometry.net API page
                 // can sometimes insert a space at the end of the API key string, and it's not very obvious.
-                string key = Regex.Replace(value, @"\s", string.Empty);
+                string key = Whitespace().Replace(value, string.Empty);
 
                 if (astrometryAPIKey != key) {
                     astrometryAPIKey = key;
@@ -374,9 +385,7 @@ namespace NINA.Profile {
 
         private bool blindFailoverEnabled;
 
-
         [DataMember]
-
         public bool BlindFailoverEnabled {
             get => blindFailoverEnabled;
             set {
@@ -386,5 +395,123 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private string _theSkyXHost;
+
+        [DataMember]
+        public string TheSkyXHost {
+            get => _theSkyXHost;
+            set {
+                if (_theSkyXHost != value) {
+                    _theSkyXHost = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int _theSkyXPort;
+
+        [DataMember]
+        public int TheSkyXPort {
+            get => _theSkyXPort;
+            set {
+                if (_theSkyXPort != value) {
+                    _theSkyXPort = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private Dc3PoinPointCatalogEnum pinPointCatalogType;
+
+        [DataMember]
+        public Dc3PoinPointCatalogEnum PinPointCatalogType {
+            get => pinPointCatalogType;
+            set {
+                if (pinPointCatalogType != value) {
+                    pinPointCatalogType = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private string pinPointCatalogRoot;
+
+        [DataMember]
+        public string PinPointCatalogRoot {
+            get => pinPointCatalogRoot;
+            set {
+                if (pinPointCatalogRoot != value) {
+                    pinPointCatalogRoot = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private double pinPointMaxMagnitude;
+
+        [DataMember]
+        public double PinPointMaxMagnitude {
+            get => pinPointMaxMagnitude;
+            set {
+                if (pinPointMaxMagnitude != value) {
+                    pinPointMaxMagnitude = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private double pinPointExpansion;
+
+        [DataMember]
+        public double PinPointExpansion {
+            get => pinPointExpansion;
+            set {
+                if (pinPointExpansion != value) {
+                    pinPointExpansion = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private string pinPointAllSkyApiKey;
+
+        [DataMember]
+        public string PinPointAllSkyApiKey {
+            get => pinPointAllSkyApiKey;
+            set {
+                string key = Whitespace().Replace(value, string.Empty);
+
+                if (pinPointAllSkyApiKey != key) {
+                    pinPointAllSkyApiKey = key;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private string pinPointAllSkyApiHost;
+
+        [DataMember]
+        public string PinPointAllSkyApiHost {
+            get => pinPointAllSkyApiHost;
+            set {
+                string host = value.Trim();
+
+                if (pinPointAllSkyApiHost != host) {
+                    pinPointAllSkyApiHost = host;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        [GeneratedRegex(@"\s")]
+        private static partial Regex Whitespace();
     }
 }

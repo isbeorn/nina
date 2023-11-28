@@ -14,6 +14,7 @@
 
 using NINA.Core.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -48,5 +49,8 @@ namespace NINA.Equipment.Interfaces.Mediator {
         /// Please use this only when no other method is available via the viewmodel
         /// </summary>
         IDevice GetDevice();
+
+        event Func<object, EventArgs, Task> Connected;
+        event Func<object, EventArgs, Task> Disconnected;
     }
 }

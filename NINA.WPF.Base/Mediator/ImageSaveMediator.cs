@@ -42,22 +42,19 @@ namespace NINA.WPF.Base.Mediator {
             this.handler = handler;
         }
 
-        public event Func<object, BeforeImageSavedEventArgs, Task> BeforeImageSaved;
-
-        public async Task OnBeforeImageSaved(BeforeImageSavedEventArgs e) {
-            await (BeforeImageSaved?.InvokeAsync(this, e) ?? Task.CompletedTask);
+        public event Func<object, BeforeImageSavedEventArgs, Task> BeforeImageSaved {
+            add { this.handler.BeforeImageSaved += value; }
+            remove { this.handler.BeforeImageSaved -= value; }
         }
 
-        public event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved;
-
-        public async Task OnBeforeFinalizeImageSaved(BeforeFinalizeImageSavedEventArgs e) {
-            await (BeforeFinalizeImageSaved?.InvokeAsync(this, e) ?? Task.CompletedTask);
+        public event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved {
+            add { this.handler.BeforeFinalizeImageSaved += value; }
+            remove { this.handler.BeforeFinalizeImageSaved -= value; }
         }
 
-        public event EventHandler<ImageSavedEventArgs> ImageSaved;
-
-        public void OnImageSaved(ImageSavedEventArgs e) {
-            ImageSaved?.Invoke(handler, e);
+        public event EventHandler<ImageSavedEventArgs> ImageSaved {
+            add { this.handler.ImageSaved += value; }
+            remove { this.handler.ImageSaved -= value; }
         }
 
         public void Shutdown() {

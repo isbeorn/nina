@@ -31,6 +31,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
@@ -44,6 +45,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                              IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = Loc.Instance["LblFilterWheel"];
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
+            HasSettings = true;
 
             DeviceChooserVM = filterWheelChooserVM;
             this.filterWheelMediator = filterWheelMediator;
@@ -86,6 +88,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         public async Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
             //Lock access so only one instance can change the filter
             await semaphoreSlim.WaitAsync(token);
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            // Add a generous timeout of 5 minutes to filter changes - just to prevent the procedure being stuck
+            timeoutCts.CancelAfter(TimeSpan.FromMinutes(5));
             try {
                 if (FW?.Connected == true) {
                     var prevFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == FilterWheelInfo.SelectedFilter?.Position).FirstOrDefault();
@@ -117,12 +122,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
                                             // This codepath is also hit during auto focus, but guiding should already be disabled by the time it gets here. StopGuiding returns false
                                             // if it isn't currently guiding, so this indicates FilterWheelVM is "responsible" for resuming guiding afterwards
-                                            activeGuidingStopped = await this.guiderMediator.StopGuiding(token);
+                                            activeGuidingStopped = await this.guiderMediator.StopGuiding(timeoutCts.Token);
                                             if (activeGuidingStopped) {
                                                 Logger.Info($"Disabled guiding during filter change that caused focuser movement");
                                             }
                                         }
-                                        changeFocus = focuserMediator.MoveFocuserRelative(offset, token);
+                                        changeFocus = focuserMediator.MoveFocuserRelative(offset, timeoutCts.Token);
                                     }
                                 }
                             }
@@ -131,8 +136,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                         FW.Position = filter.Position;
                         var changeFilter = Task.Run(async () => {
                             do {
-                                await Task.Delay(500, token);
-                                token.ThrowIfCancellationRequested();
+                                await Task.Delay(500, timeoutCts.Token);
                             } while (FW.Position == -1);
                         });
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblSwitchingFilter"] });
@@ -144,7 +148,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                         await changeFilter;
 
                         if (activeGuidingStopped) {
-                            var resumedGuiding = await this.guiderMediator.StartGuiding(false, progress, token);
+                            var resumedGuiding = await this.guiderMediator.StartGuiding(false, progress, timeoutCts.Token);
                             if (resumedGuiding) {
                                 Logger.Info($"Resumed guiding after filter change");
                             } else {
@@ -162,6 +166,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                     FilterWheelInfo.SelectedFilter = filter;
                 } else {
                     await Disconnect();
+                }
+            } catch(OperationCanceledException) {
+                if(!timeoutCts?.IsCancellationRequested == true) {
+                    throw;
+                } else {
+                    Logger.Error("Switching filter timed out after 5 Minutes");
                 }
             } finally {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
@@ -252,6 +262,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
                             BroadcastFilterWheelInfo();
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Filter Wheel. Id: {FW.Id} Name: {FW.Name} Driver Version: {FW.DriverVersion}");
 
                             return true;
@@ -295,7 +306,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             return true;
         }
 
-        public Task Disconnect() {
+        public async Task Disconnect() {
             if (FW != null) {
                 try { _changeFilterCancellationSource?.Cancel(); } catch { }
                 FW.Disconnect();
@@ -303,17 +314,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 RaisePropertyChanged(nameof(FW));
                 BroadcastFilterWheelInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Filter Wheel");
             }
-            return Task.CompletedTask;
+            return;
         }
 
-        private readonly FilterWheelChooserVM _filterWheelChooserVM;
         private readonly IFilterWheelMediator filterWheelMediator;
         private readonly IFocuserMediator focuserMediator;
         private readonly IGuiderMediator guiderMediator;
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private FilterWheelInfo filterWheelInfo;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
 
         public FilterWheelInfo FilterWheelInfo {
             get {

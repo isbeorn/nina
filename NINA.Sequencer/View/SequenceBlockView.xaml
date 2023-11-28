@@ -47,7 +47,11 @@
     </UserControl.Resources>
     <StackPanel Margin="0,0,0,1" Orientation="Vertical">
         <i:Interaction.Behaviors>
-            <behaviors:DragOverBehavior DragAboveSize="25" DragBelowSize="25" />
+            <behaviors:DragDropBehavior />
+            <behaviors:DragOverBehavior
+                AllowDragCenter="False"
+                DragAboveSize="25"
+                DragBelowSize="15" />
         </i:Interaction.Behaviors>
         <Border MinHeight="25">
             <i:Interaction.Triggers>
@@ -104,7 +108,8 @@
                             Margin="5,0,0,0"
                             Data="{Binding Icon}"
                             Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                         <TextBlock
                             Grid.Column="1"
                             Margin="10,0,0,0"
@@ -134,7 +139,8 @@
                                     HorizontalAlignment="Right"
                                     Data="{StaticResource ExclamationCircledSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
                                 <Border.ToolTip>
                                     <ItemsControl ItemsSource="{Binding Issues}" />
                                 </Border.ToolTip>
@@ -142,10 +148,6 @@
 
                         </Grid>
                     </Grid>
-
-                    <i:Interaction.Behaviors>
-                        <behaviors:DragDropBehavior />
-                    </i:Interaction.Behaviors>
 
                     <Border.Style>
                         <Style TargetType="Border">
@@ -183,144 +185,164 @@
                     Grid.Column="3"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <DataTemplate x:Key="WithAttempts">
+                            <StackPanel Orientation="Horizontal">
 
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center ">
-                        <Grid.Resources>
-                            <sys:Double x:Key="comparisonValue">1</sys:Double>
-                        </Grid.Resources>
-                        <Grid.Visibility>
-                            <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
-                                <Binding Path="Attempts" />
-                                <Binding Source="{StaticResource comparisonValue}" />
-                            </MultiBinding>
-                        </Grid.Visibility>
-                        <Grid.ToolTip>
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center ">
+                                    <Grid.Resources>
+                                        <sys:Double x:Key="comparisonValue">1</sys:Double>
+                                    </Grid.Resources>
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
+                                            <Binding Path="Attempts" />
+                                            <Binding Source="{StaticResource comparisonValue}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>
+                                    <Grid.ToolTip>
 
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
-                        </Grid.ToolTip>
-                        <Path
-                            Width="25"
-                            Height="20"
-                            Margin="5"
-                            Data="{StaticResource RefreshSVG}"
-                            Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
-                        <TextBlock
-                            Padding="0,0,2,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>
-                                <PriorityBinding>
-                                    <Binding Path="Attempts" />
-                                </PriorityBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
+                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
+                                    </Grid.ToolTip>
+                                    <Path
+                                        Width="25"
+                                        Height="20"
+                                        Margin="5"
+                                        Data="{StaticResource RefreshSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                    <TextBlock
+                                        Padding="0,0,2,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <PriorityBinding>
+                                                <Binding Path="Attempts" />
+                                            </PriorityBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
+
+                                <ContentControl
+                                    Height="25"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                    <ContentControl.Resources>
+                                        <sys:Double x:Key="comparisonValue">0</sys:Double>
+                                    </ContentControl.Resources>
+                                    <ContentControl.Visibility>
+                                        <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
+                                            <Binding ElementName="PART_ErrorBehavior" Path="SelectedIndex" />
+                                            <Binding Source="{StaticResource comparisonValue}" />
+                                        </MultiBinding>
+                                    </ContentControl.Visibility>
+                                    <ContentControl.ToolTip>
+                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
+                                    </ContentControl.ToolTip>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="1">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Skip current instruction set  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource SkipSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="2">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Abort Sequence  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource StopSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="3">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Skip to end of sequence instructions  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource FlagFinishSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="NoAttempts" />
+                        <local:SequenceDataTemplateSelector
+                            x:Key="AttemptsDataTemplateSelector"
+                            DeepSkyObjectContainer="{StaticResource NoAttempts}"
+                            SequenceCondition="{StaticResource NoAttempts}"
+                            SequenceContainer="{StaticResource NoAttempts}"
+                            SequenceItem="{StaticResource WithAttempts}"
+                            SequenceTrigger="{StaticResource NoAttempts}" />
+                    </StackPanel.Resources>
 
                     <ContentControl
-                        Height="25"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <ContentControl.Resources>
-                            <sys:Double x:Key="comparisonValue">0</sys:Double>
-                        </ContentControl.Resources>
-                        <ContentControl.Visibility>
-                            <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
-                                <Binding ElementName="PART_ErrorBehavior" Path="SelectedIndex" />
-                                <Binding Source="{StaticResource comparisonValue}" />
-                            </MultiBinding>
-                        </ContentControl.Visibility>
-                        <ContentControl.ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
-                        </ContentControl.ToolTip>
-                        <ContentControl.Style>
-                            <Style TargetType="{x:Type ContentControl}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="1">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-
-                                                <!--  Skip current instruction set  -->
-
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="5,5,0,5"
-                                                        Data="{StaticResource CancelCircledSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Text="→" />
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="0,5,5,5"
-                                                        Data="{StaticResource SkipSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                </StackPanel>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="2">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-
-                                                <!--  Abort Sequence  -->
-
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="5,5,0,5"
-                                                        Data="{StaticResource CancelCircledSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Text="→" />
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="0,5,5,5"
-                                                        Data="{StaticResource StopSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                </StackPanel>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="3">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-
-                                                <!--  Skip to end of sequence instructions  -->
-
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="5,5,0,5"
-                                                        Data="{StaticResource CancelCircledSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Text="→" />
-                                                    <Path
-                                                        Width="25"
-                                                        Margin="0,5,5,5"
-                                                        Data="{StaticResource FlagFinishSVG}"
-                                                        Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
-                                                </StackPanel>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentControl.Style>
-                    </ContentControl>
+                        Content="{Binding}"
+                        ContentTemplateSelector="{StaticResource AttemptsDataTemplateSelector}"
+                        IsTabStop="False" />
                 </StackPanel>
 
                 <ContentPresenter
@@ -346,7 +368,8 @@
                             Margin="5"
                             Data="{StaticResource TrashCanSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -374,7 +397,8 @@
                             Margin="5"
                             Data="{StaticResource DotsVerticalSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -402,7 +426,8 @@
                             Margin="5"
                             Data="{StaticResource PowerSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -424,46 +449,59 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
+                <WrapPanel.Resources>
+                    <DataTemplate x:Key="WithAttempts">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblNumberOfAttempts}">
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblNumberOfAttempts}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                MinWidth="40"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.ToolTip>
+                                    <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
+                                </TextBox.ToolTip>
+                                <TextBox.Text>
+                                    <PriorityBinding>
+                                        <Binding Path="Attempts" />
+                                    </PriorityBinding>
+                                </TextBox.Text>
+                                <TextBox.Visibility>
 
-                        <TextBlock.ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center">
-                        <TextBox.ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
-                        </TextBox.ToolTip>
-                        <TextBox.Text>
-                            <PriorityBinding>
-                                <Binding Path="Attempts" />
-                            </PriorityBinding>
-                        </TextBox.Text>
-                        <TextBox.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Attempts" />
+                                    </PriorityBinding>
+                                </TextBox.Visibility>
+                            </TextBox>
+                            <StackPanel.Visibility>
+                                <PriorityBinding>
+                                    <Binding
+                                        Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                        FallbackValue="Collapsed"
+                                        Path="Attempts" />
+                                </PriorityBinding>
+                            </StackPanel.Visibility>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="NoAttempts" />
+                    <local:SequenceDataTemplateSelector
+                        x:Key="AttemptsDataTemplateSelector"
+                        DeepSkyObjectContainer="{StaticResource NoAttempts}"
+                        SequenceCondition="{StaticResource NoAttempts}"
+                        SequenceContainer="{StaticResource NoAttempts}"
+                        SequenceItem="{StaticResource WithAttempts}"
+                        SequenceTrigger="{StaticResource NoAttempts}" />
+                </WrapPanel.Resources>
 
-                            <PriorityBinding>
-                                <Binding
-                                    Converter="{StaticResource NullToVisibilityCollapsedConverter}"
-                                    FallbackValue="Collapsed"
-                                    Path="Attempts" />
-                            </PriorityBinding>
-                        </TextBox.Visibility>
-                    </TextBox>
-                    <StackPanel.Visibility>
-                        <PriorityBinding>
-                            <Binding
-                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
-                                FallbackValue="Collapsed"
-                                Path="Attempts" />
-                        </PriorityBinding>
-                    </StackPanel.Visibility>
-                </StackPanel>
+                <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource AttemptsDataTemplateSelector}" />
 
                 <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
 
@@ -521,7 +559,8 @@
                             Margin="5"
                             Data="{StaticResource PowerSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -556,7 +595,8 @@
                             Margin="5"
                             Data="{StaticResource RefreshSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -592,7 +632,8 @@
                             Margin="5"
                             Data="{StaticResource CopySVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -616,7 +657,8 @@
                             Margin="5"
                             Data="{StaticResource ArrowUpSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -640,7 +682,8 @@
                             Margin="5"
                             Data="{StaticResource ArrowDownSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>

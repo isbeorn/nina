@@ -364,6 +364,48 @@ namespace QHYCCD {
             return GetQHYCCDMemLength(handle);
         }
 
+        public uint SetQHYCCDGPSVCOXFreq(ushort freq) {
+            lock (lockobj) {
+                return SetQHYCCDGPSVCOXFreq(handle, freq);
+            }
+        }
+
+        public uint SetQHYCCDGPSLedCalMode(byte mode) {
+            lock (lockobj) {
+                return SetQHYCCDGPSLedCalMode(handle, mode);
+            }
+        }
+
+        public uint SetQHYCCDGPSMasterSlave(byte mode) {
+            lock (lockobj) {
+                return SetQHYCCDGPSMasterSlave(handle, mode);
+            }
+        }
+
+        public void SetQHYCCDGPSPOSA(uint pos, byte width) {
+            lock (lockobj) {
+                SetQHYCCDGPSPOSA(handle, pos, width);
+            }
+        }
+
+        public void SetQHYCCDGPSPOSB(uint pos, byte width) {
+            lock (lockobj) {
+                SetQHYCCDGPSPOSB(handle, pos, width);
+            }
+        }
+
+        public uint GetQHYCCDPreciseExposureInfo(ref uint pixelPeriod, ref uint linePeriod, ref uint framePeriod, ref uint clocksPerLine, ref uint linesPerFrame, ref uint actualExposureTime, ref byte isLongExposureMode) {
+            lock (lockobj) {
+                return GetQHYCCDPreciseExposureInfo(handle, ref pixelPeriod, ref linePeriod, ref framePeriod, ref clocksPerLine, ref linesPerFrame, ref actualExposureTime, ref isLongExposureMode);
+            }
+        }
+
+        public uint GetQHYCCDRollingShutterEndOffset(uint row, ref double offset) {
+            lock (lockobj) {
+                return GetQHYCCDRollingShutterEndOffset(handle, row, ref offset);
+            }
+        }
+
         #endregion Utility Methods
 
         #region Exception Generator
@@ -843,6 +885,71 @@ namespace QHYCCD {
             /// check if camera support burst mode
             /// </summary>
             CAM_BURST_MODE,
+
+            /// <summary>
+            /// for OEM-600
+            /// </summary>
+            CAM_SPEAKER_LED_ALARM,
+
+            /// <summary>
+            /// for _QHY5III178C Celestron, SDK have to feed this dog or it go reset
+            /// </summary>
+            CAM_WATCH_DOG_FPGA,
+
+            /// <summary>
+            /// check if camera has bin6x6 mode
+            /// </summary>
+            CAM_BIN6X6MODE,
+
+            /// <summary>
+            /// check if camera has bin8x8 mode
+            /// </summary>
+            CAM_BIN8X8MODE,
+
+            /// <summary>
+            /// Show GPS LED tab on sharpCap
+            /// </summary>
+            CAM_GlobalSensorGPSLED,
+
+            /// <summary>
+            /// Process image
+            /// </summary>
+            CONTROL_ImgProc,
+
+            /// <summary>
+            /// Remove single RBI
+            /// </summary>
+            CONTROL_RemoveRBI,
+
+            /// <summary>
+            /// image stabilization
+            /// </summary>
+            CONTROL_GlobalReset,
+
+            /// <summary>
+            /// QHY undocumented
+            /// </summary>
+            CONTROL_FrameDetect,
+
+            /// <summary>
+            /// Supports the conversion between db and gain
+            /// </summary>
+            CAM_GainDBConversion,
+
+            /// <summary>
+            /// QHY undocumented
+            /// </summary>
+            CAM_CurveSystemGain,
+
+            /// <summary>
+            /// QHY undocumented
+            /// </summary>
+            CAM_CurveFullWell,
+
+            /// <summary>
+            /// QHY undocumented
+            /// </summary>
+            CAM_CurveReadoutNoise,
         };
 
         /// <summary>
@@ -861,6 +968,18 @@ namespace QHYCCD {
             /// </summary>
             VIDEO_STREAM
         };
+
+        /// <summary>
+        /// For setting on-camera image processing
+        /// </summary>
+        public enum QHY_IMAGE_PROC : byte {
+            NOPROC = 0,
+            ROTATION180,
+            ROTATION90L,
+            ROTATION90R,
+            MIRRORH,
+            MIRRORV,
+        }
 
         #endregion QHY SDK constants
 
@@ -1006,6 +1125,27 @@ namespace QHYCCD {
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDMemLength", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         private static extern unsafe uint GetQHYCCDMemLength(IntPtr handle);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDGPSVCOXFreq", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe uint SetQHYCCDGPSVCOXFreq(IntPtr handle, ushort freq);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDGPSLedCalMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe uint SetQHYCCDGPSLedCalMode(IntPtr handle, byte mode);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDGPSMasterSlave", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe uint SetQHYCCDGPSMasterSlave(IntPtr handle, byte mode);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDGPSPOSA", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe void SetQHYCCDGPSPOSA(IntPtr handle, uint pos, byte width);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDGPSPOSB", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe void SetQHYCCDGPSPOSB(IntPtr handle, uint pos, byte width);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDPreciseExposureInfo", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe uint GetQHYCCDPreciseExposureInfo(IntPtr handle, ref uint pixelPeriod, ref uint linePeriod, ref uint framePeriod, ref uint clocksPerLine, ref uint linesPerFrame, ref uint actualExposureTime, ref byte isLongExposureMode);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDRollingShutterEndOffset", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        private static extern unsafe uint GetQHYCCDRollingShutterEndOffset(IntPtr handle, uint row, ref double offset);
 
         #endregion DLL Imports
 

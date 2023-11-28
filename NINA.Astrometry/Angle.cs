@@ -94,6 +94,16 @@ namespace NINA.Astrometry {
             return (diffDegrees - toleranceDegrees) <= EQUALS_EPSILON
                 || ((360.0 - diffDegrees) - toleranceDegrees) <= EQUALS_EPSILON;
         }
+        public bool Equals(Angle that, Angle tolerance, bool oneEightyIsEqual) {
+            if(!oneEightyIsEqual) { return this.Equals(that, tolerance); }
+
+            var thisDegrees = AstroUtil.EuclidianModulus(this.Degree, 180.0);
+            var thatDegrees = AstroUtil.EuclidianModulus(that.Degree, 180.0);
+            var diffDegrees = Math.Abs(thisDegrees - thatDegrees);
+            var toleranceDegrees = AstroUtil.EuclidianModulus(tolerance.Degree, 180);
+            return (diffDegrees - toleranceDegrees) <= EQUALS_EPSILON
+                || ((180 - diffDegrees) - toleranceDegrees) <= EQUALS_EPSILON;
+        }
 
         public override bool Equals(object obj) {
             return obj is Angle angle &&

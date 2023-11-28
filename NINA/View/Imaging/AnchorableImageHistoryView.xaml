@@ -115,7 +115,7 @@
                     <Style TargetType="{x:Type StackPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=Control, Path=IsMouseOver}" Value="True">
+                            <DataTrigger Binding="{Binding SettingsVisible}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>

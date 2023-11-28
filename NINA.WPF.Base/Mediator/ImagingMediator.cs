@@ -75,10 +75,9 @@ namespace NINA.WPF.Base.Mediator {
             return handler.StartLiveView(sequence, ct);
         }
 
-        public event EventHandler<ImagePreparedEventArgs> ImagePrepared;
-
-        public void OnImagePrepared(ImagePreparedEventArgs e) {
-            ImagePrepared?.Invoke(handler, e);
+        public event EventHandler<ImagePreparedEventArgs> ImagePrepared {
+            add { this.handler.ImagePrepared += value; }
+            remove { this.handler.ImagePrepared -= value; }
         }
 
         public int GetImageRotation() {

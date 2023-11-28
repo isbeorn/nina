@@ -187,7 +187,8 @@
                                             Margin="5"
                                             Data="{StaticResource LoopSVG}"
                                             Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -198,7 +199,8 @@
                                             Margin="5"
                                             Data="{StaticResource LoopSVG}"
                                             Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>

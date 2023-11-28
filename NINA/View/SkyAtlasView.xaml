@@ -67,7 +67,8 @@
                                     Margin="5"
                                     Data="{StaticResource ResetSVG}"
                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                    Stretch="Uniform" />
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
                             </Button>
                         </Grid>
 
@@ -417,13 +418,15 @@
                             Height="49"
                             Data="{StaticResource NewMoonSVG}"
                             Fill="Yellow"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                         <Path
                             Width="50"
                             Height="50"
                             Data="{Binding NighttimeData.MoonPhase, Converter={StaticResource MoonPhaseToGeometryConverter}}"
                             Fill="Black"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
 
                     <Border
@@ -534,6 +537,7 @@
             Fill="{StaticResource ButtonForegroundDisabledBrush}"
             Opacity="0.4"
             Stretch="Uniform"
+            UseLayoutRounding="True"
             Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
 
         <!--  Search result area  -->
@@ -675,13 +679,15 @@
                                                         Height="20"
                                                         Data="{StaticResource NewMoonSVG}"
                                                         Fill="LightGray"
-                                                        Stretch="Uniform" />
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
                                                     <Path
                                                         Width="20"
                                                         Height="20"
                                                         Data="{Binding Moon.Phase, Converter={StaticResource MoonPhaseToGeometryConverter}}"
                                                         Fill="Black"
-                                                        Stretch="Uniform" />
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
                                                 </Grid>
                                                 <TextBlock
                                                     Grid.Row="1"
@@ -716,7 +722,8 @@
                                                         Data="{StaticResource LightBulbSVG}"
                                                         Fill="LightGray"
                                                         Stretch="Uniform"
-                                                        ToolTip="{ns:Loc LblMagnitude}" />
+                                                        ToolTip="{ns:Loc LblMagnitude}"
+                                                        UseLayoutRounding="True" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
@@ -735,7 +742,8 @@
                                                         Data="{StaticResource BrightnessSVG}"
                                                         Fill="LightGray"
                                                         Stretch="Uniform"
-                                                        ToolTip="{ns:Loc LblSurfaceBrightness}" />
+                                                        ToolTip="{ns:Loc LblSurfaceBrightness}"
+                                                        UseLayoutRounding="True" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
@@ -755,7 +763,8 @@
                                                         Data="{StaticResource Stretch}"
                                                         Fill="LightGray"
                                                         Stretch="Uniform"
-                                                        ToolTip="{ns:Loc LblSize}" />
+                                                        ToolTip="{ns:Loc LblSize}"
+                                                        UseLayoutRounding="True" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
@@ -826,7 +835,8 @@
                                                         x:Shared="false"
                                                         Data="{Binding Icon}"
                                                         Fill="{StaticResource PrimaryBrush}"
-                                                        Stretch="Uniform" />
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
                                                 </Style.Resources>
                                                 <Style.Triggers>
                                                     <EventTrigger RoutedEvent="Click">

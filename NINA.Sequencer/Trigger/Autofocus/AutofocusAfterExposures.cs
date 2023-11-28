@@ -54,7 +54,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private IFocuserMediator focuserMediator;
         private IAutoFocusVMFactory autoFocusVMFactory;
 
-        private int lastTriggerId = 0;
         private int afterExposures;
 
         [ImportingConstructor]
@@ -102,7 +101,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         public int ProgressExposures { get; private set; }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            lastTriggerId = history.ImageHistory.Count;
             await TriggerRunner.Run(progress, token);
         }
 
@@ -111,15 +109,17 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
 
-            var lightImageHistory = history.ImageHistory.Where(x => x.Type == "LIGHT").ToList();
+
+            var lastAFId = history.AutoFocusPoints?.LastOrDefault()?.Id ?? 0;
+            var lightImageHistory = history.ImageHistory.Where(x => x.Type == "LIGHT" && x.Id > lastAFId).ToList();
             ProgressExposures = lightImageHistory.Count % AfterExposures;
             RaisePropertyChanged(nameof(ProgressExposures));
 
+
             var shouldTrigger =
-                lastTriggerId < history.ImageHistory.Count
+                lastAFId < history.ImageHistory.Count
                 && history.ImageHistory.Count > 0
-                && ProgressExposures == 0
-                && history.ImageHistory.Last().AutoFocusPoint == null;
+                && ProgressExposures == 0;
 
             if (shouldTrigger) {
                 if (ItemUtility.IsTooCloseToMeridianFlip(Parent, TriggerRunner.GetItemsSnapshot().First().GetEstimatedDuration() + nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero)) {

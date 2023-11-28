@@ -73,6 +73,7 @@
             <TextBlock Text="Marc Blank" />
             <TextBlock Text="Ethan Chappel" />
             <TextBlock Text="Tom Palmer" />
+            <TextBlock Text="Roy Salisbury" />
         </StackPanel>
     </StackPanel>
 </UserControl>

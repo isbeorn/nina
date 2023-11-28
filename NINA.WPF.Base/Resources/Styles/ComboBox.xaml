@@ -34,7 +34,8 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Data="M 0 0 L 4 4 L 8 0 Z"
-                Fill="{StaticResource PrimaryBrush}" />
+                Fill="{StaticResource PrimaryBrush}"
+                UseLayoutRounding="True" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -112,13 +113,13 @@
                                 Name="DropDown"
                                 MinWidth="{TemplateBinding ActualWidth}"
                                 MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                SnapsToDevicePixels="True">
+                                UseLayoutRounding="True">
                                 <Border
                                     x:Name="DropDownBorder"
                                     Background="{StaticResource BackgroundBrush}"
                                     BorderBrush="{StaticResource BorderBrush}"
                                     BorderThickness="1,0,1,1" />
-                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                <ScrollViewer Margin="4,6,4,6" UseLayoutRounding="True">
                                     <ItemsPresenter
                                         x:Name="ItemsPresenter"
                                         KeyboardNavigation.DirectionalNavigation="Contained"
@@ -165,7 +166,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBoxItem">
-                    <Border Name="Border" SnapsToDevicePixels="true">
+                    <Border Name="Border" UseLayoutRounding="True">
 
                         <TextBlock Name="TextBlock" TextAlignment="Center">
                             <ContentPresenter />

@@ -93,7 +93,8 @@
                                 Margin="5"
                                 Data="{StaticResource SatelliteDishSVG}"
                                 Fill="{StaticResource PrimaryBrush}"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                             <TextBlock
                                 FontSize="16"
                                 FontStyle="Italic"
@@ -140,7 +141,8 @@
                                         Margin="5"
                                         Data="{StaticResource AddSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -174,7 +176,8 @@
                                         Margin="5"
                                         Data="{StaticResource CopySVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -201,7 +204,8 @@
                                         Margin="5"
                                         Data="{StaticResource ImagingSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -227,7 +231,8 @@
                                         Margin="5"
                                         Data="{StaticResource LoadSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -253,7 +258,8 @@
                                         Margin="5"
                                         Data="{StaticResource DownloadSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -279,7 +285,8 @@
                                         Margin="5"
                                         Data="{StaticResource SketchSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <TextBlock
                                         FontStyle="Italic"
                                         Foreground="{StaticResource ButtonForegroundBrush}"
@@ -295,9 +302,7 @@
                     Navigation="{StaticResource Navigation}"
                     Simple="{StaticResource Simple}" />
             </Grid.Resources>
-            <ContentPresenter
-                Content="{Binding ActiveSequencerVM}"
-                ContentTemplateSelector="{StaticResource ContentSelector}" />
+            <ContentPresenter Content="{Binding ActiveSequencerVM}" ContentTemplateSelector="{StaticResource ContentSelector}" />
         </Grid>
     </Grid>
 </UserControl>

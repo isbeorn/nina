@@ -12,7 +12,7 @@ namespace NINA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.4.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -133,66 +133,6 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double WindowTop {
-            get {
-                return ((double)(this["WindowTop"]));
-            }
-            set {
-                this["WindowTop"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double WindowLeft {
-            get {
-                return ((double)(this["WindowLeft"]));
-            }
-            set {
-                this["WindowLeft"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("720")]
-        public double WindowHeight {
-            get {
-                return ((double)(this["WindowHeight"]));
-            }
-            set {
-                this["WindowHeight"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1280")]
-        public double WindowWidth {
-            get {
-                return ((double)(this["WindowWidth"]));
-            }
-            set {
-                this["WindowWidth"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
-        public global::System.Windows.WindowState WindowState {
-            get {
-                return ((global::System.Windows.WindowState)(this["WindowState"]));
-            }
-            set {
-                this["WindowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int SaveQueueSize {
             get {
@@ -236,6 +176,50 @@ namespace NINA.Properties {
             }
             set {
                 this["HardwareAcceleration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[\"https://nighttime-imaging.eu/wp-json/nina/v1\"]")]
+        public string PluginRepositories {
+            get {
+                return ((string)(this["PluginRepositories"]));
+            }
+            set {
+                this["PluginRepositories"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"
+                    <WindowPlacement xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                        <length>0</length>
+                        <flags>0</flags>
+                        <showCmd>0</showCmd>
+                        <minPosition>
+                            <X>0</X>
+                            <Y>0</Y>
+                        </minPosition>
+                        <maxPosition>
+                            <X>0</X>
+                            <Y>0</Y>
+                        </maxPosition>
+                        <normalPosition>
+                            <Left>0</Left>
+                            <Top>0</Top>
+                            <Right>0</Right>
+                            <Bottom>0</Bottom>
+                        </normalPosition>
+                    </WindowPlacement>
+                ")]
+        public global::SaveWindowState.WindowPlacement WindowPlacement {
+            get {
+                return ((global::SaveWindowState.WindowPlacement)(this["WindowPlacement"]));
+            }
+            set {
+                this["WindowPlacement"] = value;
             }
         }
     }

@@ -157,7 +157,7 @@
                 Margin="-4,0,0,0"
                 Fill="{StaticResource PrimaryBrush}"
                 IsHitTestVisible="False"
-                SnapsToDevicePixels="True"
+                UseLayoutRounding="True"
                 Visibility="Visible" />
         </Grid>
     </ControlTemplate>
@@ -193,7 +193,7 @@
                 Margin="0,-4,0,0"
                 Fill="{StaticResource BackgroundBrush}"
                 IsHitTestVisible="False"
-                SnapsToDevicePixels="True"
+                UseLayoutRounding="True"
                 Visibility="Visible" />
         </Grid>
         <ControlTemplate.Triggers>

@@ -5560,7 +5560,7 @@ Má význam pouze při použití ovladače kamery ASCOM!</value>
     <value>Zkontrolovat aktualizace</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Nainstalujte prostřednictvím správce N.I.N.A.plugin nebo ručně stáhněte a zkopírujte soubor DLL do %localappdata%\NINA\Plugins z:</value>
+    <value>Instalujte pomocí správce pluginů N.I.N.A. nebo ručně stáhněte a zkopírujte soubor DLL do %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; z:</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>Nainstalujte prostřednictvím správce N.I.N.A. pluginů nebo ručně stáhněte a spusťte instalační program z:</value>
@@ -6701,5 +6701,169 @@ Prodlužte minimální dobu expozice nebo počkejte, až bude jasnější.</valu
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
     <value>Při připojení dalekohledu se definuje chování, jak postupovat v případě, že se poloha montáže a poloha aplikace liší.</value>
+  </data>
+  <data name="LblPHD2PeakDec" xml:space="preserve">
+    <value>Vrchol Dec: {0} ({1}")</value>
+  </data>
+  <data name="LblPHD2PeakRA" xml:space="preserve">
+    <value>Vrchol RA: {0} ({1}")</value>
+  </data>
+  <data name="LblPluginRepositories" xml:space="preserve">
+    <value>Úložiště Pluginů</value>
+  </data>
+  <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
+    <value>Zadej URL Úložiště Pluginu</value>
+  </data>
+  <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
+    <value>Url Úložiště Pluginu je neplatná: {0}</value>
+  </data>
+  <data name="LblTSXImageLink" xml:space="preserve">
+    <value>TheSkyX ObrazovýZdroj</value>
+  </data>
+  <data name="LblTSXHost" xml:space="preserve">
+    <value>TheSkyX Host</value>
+  </data>
+  <data name="LblTSXPort" xml:space="preserve">
+    <value>TheSkyX Port</value>
+  </data>
+  <data name="LblZwoMonoBinMode" xml:space="preserve">
+    <value>Černobílý binning</value>
+  </data>
+  <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
+    <value>Je-li zapnuto, kamera zprůměruje binované pixely a vytvoří černobílý výstup</value>
+  </data>
+  <data name="LblPinPoint" xml:space="preserve">
+    <value>PinPoint</value>
+  </data>
+  <data name="LblPinPointCatalogRoot" xml:space="preserve">
+    <value>Kořen katalogu</value>
+  </data>
+  <data name="LblPinPointFailedInitialize" xml:space="preserve">
+    <value>Selhání při inicializaci nástroje PinPoint Astrometric Engine</value>
+  </data>
+  <data name="LblPinPointNotInstalled" xml:space="preserve">
+    <value>Nepodařilo se inicializovat PinPoint Astrometric Engine. Zdá se, že není nainstalován ani tento program, ani jeho 64bitový komponent.</value>
+  </data>
+  <data name="LblPinPointReferenceCatalog" xml:space="preserve">
+    <value>Referenční katalog</value>
+  </data>
+  <data name="LblPinPointCatAtas" xml:space="preserve">
+    <value>ATLAS / PanSTARRS+Gaia</value>
+  </data>
+  <data name="LblPinPointCatGscact" xml:space="preserve">
+    <value>Vylepšený Guide Star 1.1</value>
+  </data>
+  <data name="LblPinPointCatTycho2" xml:space="preserve">
+    <value>ESA Tycho-2</value>
+  </data>
+  <data name="LblPinPointCatType" xml:space="preserve">
+    <value>Referenční katalog</value>
+  </data>
+  <data name="LblPinPointCatUcac2" xml:space="preserve">
+    <value>Referenční katalog</value>
+  </data>
+  <data name="LblPinPointCatUcac3" xml:space="preserve">
+    <value>Referenční katalog</value>
+  </data>
+  <data name="LblPinPointCatUcac4" xml:space="preserve">
+    <value>USNO UCAC4</value>
+  </data>
+  <data name="LblPinPointCatUsnoA" xml:space="preserve">
+    <value>USNO A2.0</value>
+  </data>
+  <data name="LblPinPointCatUsnoB" xml:space="preserve">
+    <value>USNO B1.0</value>
+  </data>
+  <data name="LblPinPointExpansion" xml:space="preserve">
+    <value>Rozšíření</value>
+  </data>
+  <data name="LblPinPointExpansionToolTip" xml:space="preserve">
+    <value>Rozšíření oblasti vyhledávání v katalogu mimo rozměry snímku (min = 0, max = 80, výchozí = 40)</value>
+  </data>
+  <data name="LblPinPointMaxMagnitude" xml:space="preserve">
+    <value>Max. magnituda</value>
+  </data>
+  <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
+    <value>Maximální (slabší) magnituda pro výběr hvězd z referenčního katalogu (min = 2.0, max = 20.0, výchozí = 20.0)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
+    <value>AllSky API host</value>
+  </data>
+  <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
+    <value>Astrometry.net/AllSky API host (výchozí = nova.astrometry.net)</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
+    <value>API klíč AllSky</value>
+  </data>
+  <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
+    <value>Astrometry.net/AllSky API klíč (nepovinné)</value>
+  </data>
+  <data name="LblPinPointAllSkySolve" xml:space="preserve">
+    <value>PinPoint AllSky astrometrie</value>
+  </data>
+  <data name="LblPinPointLocalSolve" xml:space="preserve">
+    <value>Místní astrometrie PinPoint</value>
+  </data>
+  <data name="LblPinPointErrorMessage" xml:space="preserve">
+    <value>Chybová Zpráva PinPoint</value>
+  </data>
+  <data name="LblUnableToSetMountElevation" xml:space="preserve">
+    <value>Nelze nastavit výšku montáže na {0}!</value>
+  </data>
+  <data name="LblSaveInCache" xml:space="preserve">
+    <value>Obrázek Mezipaměti pro Offline Užití</value>
+    <comment>To store an image automatically in the framing assistant offline cache or not</comment>
+  </data>
+  <data name="LblSaveInCacheTooltip" xml:space="preserve">
+    <value>Pokud je tato funkce povolena, obrázek se uloží do zařízení a lze jej zobrazit na mapě oblohy offline</value>
+  </data>
+  <data name="LblClose" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="LblShowHistogram" xml:space="preserve">
+    <value>Zobrazit Histogram</value>
+  </data>
+  <data name="LblInfoOnly" xml:space="preserve">
+    <value>Pouze informační</value>
+  </data>
+  <data name="LblInfoOnlyTooltip" xml:space="preserve">
+    <value>Přepínání mezi zobrazením pouze informačního obsahu a zobrazením interaktivních ovládacích prvků v rámci panelu</value>
+  </data>
+  <data name="LblParked" xml:space="preserve">
+    <value>Zaparkovaný</value>
+    <comment>When mount is at park position</comment>
+  </data>
+  <data name="LblSlewing" xml:space="preserve">
+    <value>Přejíždění</value>
+  </data>
+  <data name="LblCompressionGZIP1" xml:space="preserve">
+    <value>GZIP 1</value>
+  </data>
+  <data name="LblCompressionGZIP2" xml:space="preserve">
+    <value>GZIP 2</value>
+  </data>
+  <data name="LblCompressionHCOMPRESS" xml:space="preserve">
+    <value>HCOMPRESS</value>
+  </data>
+  <data name="LblCompressionPLIO" xml:space="preserve">
+    <value>PLIO</value>
+  </data>
+  <data name="LblCompressionRICE" xml:space="preserve">
+    <value>RICE</value>
+  </data>
+  <data name="LblAddFzExtension" xml:space="preserve">
+    <value>Přidat příponu .fz</value>
+  </data>
+  <data name="LblAddFzExtensionTooltip" xml:space="preserve">
+    <value>Přidá k názvu komprimovaných souborů FITS další příponu .fz. Příklad: filename.fits.fz</value>
+  </data>
+  <data name="LblASCOMCreate32BitData" xml:space="preserve">
+    <value>Vytvořit 32bitová data</value>
+  </data>
+  <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
+    <value>Pokud je tato funkce povolena, bude N.I.N.A. generovat obrazová data s 32bitovou hloubkou, čímž se zvýší rozsah hodnot pixelů. 
+Je však důležité si uvědomit, že tento proces bude vyžadovat více paměti, prodlouží dobu zpracování a využije další místo na disku pro každou expozici.
+Mějte na paměti, že pouze formáty souborů XISF a FITS mohou ukládat obrazová data v tomto 32bitovém formátu. 
+Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také podporoval. Pokud ovladač 32bitovou hloubku nepodporuje, zvýšená velikost souboru vyplývající z tohoto nastavení by vedla pouze k plýtvání místem bez jakéhokoli zlepšení obrazových dat.</value>
   </data>
 </root>

@@ -211,23 +211,30 @@ namespace NINA.PlateSolving.Solvers {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
-                progress.Report(new ApplicationStatus() { Status = "Authenticating to Astrometery.net..." });
-                var session = await GetAuthenticationToken(cancelToken);
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancelToken)) {
+                    cts.CancelAfter(TimeSpan.FromMinutes(10));
 
-                progress.Report(new ApplicationStatus() { Status = "Uploading image to Astrometry.net..." });
-                var jobId = await SubmitImageJob(progress, source, session, cancelToken);
+                    progress.Report(new ApplicationStatus() { Status = "Authenticating to Astrometery.net..." });
+                    var session = await GetAuthenticationToken(cancelToken);
 
-                progress.Report(new ApplicationStatus() { Status = $"Getting result for Astrometry.net job {jobId}..." });
-                Calibration jobinfo = await GetJobResult(jobId, cancelToken);
+                    progress.Report(new ApplicationStatus() { Status = "Uploading image to Astrometry.net..." });
+                    var jobId = await SubmitImageJob(progress, source, session, cancelToken);
 
-                /* The orientation is mirrored on the x-axis */
-                result.Flipped = jobinfo.parity < 0;
-                result.PositionAngle = 360 - (180 - jobinfo.orientation + 360);
+                    progress.Report(new ApplicationStatus() { Status = $"Getting result for Astrometry.net job {jobId}..." });
+                    Calibration jobinfo = await GetJobResult(jobId, cancelToken);
 
-                result.Pixscale = jobinfo.pixscale;
-                result.Coordinates = new Astrometry.Coordinates(jobinfo.ra, jobinfo.dec, Astrometry.Epoch.J2000, Astrometry.Coordinates.RAType.Degrees);
-                result.Radius = jobinfo.radius;
+                    /* The orientation is mirrored on the x-axis */
+                    result.Flipped = jobinfo.parity < 0;
+                    result.PositionAngle = 360 - (180 - jobinfo.orientation + 360);
+
+                    result.Pixscale = jobinfo.pixscale;
+                    result.Coordinates = new Astrometry.Coordinates(jobinfo.ra, jobinfo.dec, Astrometry.Epoch.J2000, Astrometry.Coordinates.RAType.Degrees);
+                    result.Radius = jobinfo.radius;
+                }
             } catch (OperationCanceledException) {
+                if (!cancelToken.IsCancellationRequested) {
+                    Logger.Error("Platesolver timed out after 10 minutes");
+                }
                 result.Success = false;
             } catch (Exception ex) {
                 result.Success = false;

@@ -218,6 +218,7 @@
                                             HorizontalAlignment="Center"
                                             BorderBrush="Transparent"
                                             IsChecked="{Binding Success, FallbackValue=False, Mode=OneWay}"
+                                            IsEnabled="False"
                                             Style="{StaticResource CheckmarkCheckbox}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

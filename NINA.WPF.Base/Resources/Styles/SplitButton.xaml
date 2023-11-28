@@ -262,7 +262,7 @@
                     <Grid
                         x:Name="MainGrid"
                         IsEnabled="{TemplateBinding IsEnabled}"
-                        SnapsToDevicePixels="True">
+                        UseLayoutRounding="True">
                         <xceed:ButtonChrome
                             x:Name="ControlChrome"
                             Background="{TemplateBinding Background}"
@@ -336,7 +336,8 @@
                                                     Height="5"
                                                     Margin="0,1,0,0"
                                                     Data="{StaticResource ArrowDownSVG}"
-                                                    Fill="{TemplateBinding Foreground}" />
+                                                    Fill="{TemplateBinding Foreground}"
+                                                    UseLayoutRounding="True" />
                                             </Grid>
                                         </xceed:ButtonChrome>
                                     </Grid>

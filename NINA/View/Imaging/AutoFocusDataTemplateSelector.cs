@@ -12,6 +12,8 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,11 +31,19 @@ namespace NINA.View.Imaging {
         public DataTemplate BuiltIn { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            if (item != null && resources.Contains(item.GetType().FullName + "_Dockable")) {
-                return (DataTemplate)resources[item.GetType().FullName + "_Dockable"];
-            } else {
-                return BuiltIn;
+            if (item != null) {
+                var key = item.GetType().FullName + "_Dockable";
+                if (resources.Contains(key)) {
+                    try {
+                        return (DataTemplate)resources[key];
+                    } catch (Exception ex) {
+                        Logger.Error($"Datatemplate {key} failed to load", ex);
+                    }
+
+                }
             }
+            return BuiltIn;
+            
         }
     }
 }

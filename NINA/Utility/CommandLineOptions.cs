@@ -18,6 +18,9 @@ namespace NINA.Utility {
 
             [Option(shortName: 'r', longName: "runsequence", Default = false, HelpText = "Automatically start a sequence loaded with -s and switch to Imaging tab.")]
             public bool RunSequence { get; set; }
+
+            [Option(shortName: 'x', longName: "exitaftersequence", Default = false, HelpText = "Automatically exit the application after the sequence has been finished.")]
+            public bool ExitAfterSequence { get; set; }
         }
 
         public CommandLineOptions(string[] args) {
@@ -33,12 +36,14 @@ namespace NINA.Utility {
         public string? ProfileId { get; private set; }
         public string? SequenceFile { get; private set; }
         public bool RunSequence { get; private set; }
+        public bool ExitAfterSequence { get; private set; }
         public bool HasErrors { get; private set; }
 
         private void CaptureOptions(Options opts) {
             ProfileId = opts.ProfileId;
             SequenceFile = opts.SequenceFile;
             RunSequence = opts.RunSequence;
+            ExitAfterSequence = opts.ExitAfterSequence;
         }
 
         private void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs) {

@@ -137,7 +137,7 @@ namespace NINA.Plugin {
             this.twilightCalculator = twilightCalculator;
 
             DateTimeProviders = new List<IDateTimeProvider>() {
-                new TimeProvider(nighttimeCalculator),
+                new Sequencer.Utility.DateTimeProvider.TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
                 new NauticalDuskProvider(nighttimeCalculator),
                 new DuskProvider(nighttimeCalculator),
@@ -182,9 +182,14 @@ namespace NINA.Plugin {
                     Logger.Error("Pluging deployment from staging failed", ex);
                 } finally {
                     try {
-                        Directory.Delete(staging, true);
-                    } catch(Exception ex) {
+                        Directory.Delete(Constants.StagingFolder, true);
+                    } catch (Exception ex) {
                         Logger.Error("Deleting staging folder failed", ex);
+                    }
+                    try {
+                        Directory.Delete(Constants.BaseStagingFolder, true);
+                    } catch(Exception ex) {
+                        Logger.Error("Deleting base staging folder failed", ex);
                     }                    
                 }
             }
@@ -206,8 +211,8 @@ namespace NINA.Plugin {
 
         private void DeleteFromDeletion() {
             try {
-                if (Directory.Exists(Constants.DeletionFolder)) {
-                    Directory.Delete(Constants.DeletionFolder, true);
+                if (Directory.Exists(Constants.BaseDeletionFolder)) {
+                    Directory.Delete(Constants.BaseDeletionFolder, true);
                 }
             } catch (Exception ex) {
                 Logger.Error("Plugin deletion from deletion folder failed", ex);
@@ -215,7 +220,7 @@ namespace NINA.Plugin {
         }
 
         public Task Load() {
-            return Task.Run(async () => {
+            return Task.Run(() => {
                 lock (lockobj) {
                     if (!initialized) {
                         try {
@@ -248,13 +253,56 @@ namespace NINA.Plugin {
 
                             var files = new List<string>();
 
-                            if (Directory.Exists(Constants.CoreExtensionsFolder)) {
-                                files.AddRange(Directory.GetFiles(Constants.CoreExtensionsFolder, "*.dll"));
-                            }
 
-                            // Enumerate only 1 level deep, where we'd expect plugin dlls to be in the root of the plugin folder
+                            var baseUserExtensionsDirectory = new DirectoryInfo(Constants.BaseUserExtensionsFolder);
                             var userExtensionsDirectory = new DirectoryInfo(Constants.UserExtensionsFolder);
-                            if (userExtensionsDirectory.Exists) {
+
+
+                            if(baseUserExtensionsDirectory.Exists) {
+                                if (!userExtensionsDirectory.Exists) {
+                                    // Search for an existing directory of a previous version and copy files over if they exist
+                                    var maxDirectoryVersion = baseUserExtensionsDirectory.GetDirectories()
+                                        .Where(dir => { 
+                                            if (Version.TryParse(dir.Name, out var v)) { if(v < new Version(Constants.ApplicationVersionWithoutRevision)) return true; } 
+                                            return false; })
+                                        .Max(x => new Version(x.Name));
+
+
+                                    if(maxDirectoryVersion == null) {
+                                        // An upgrade from 2.x to current will move all existing plugins into the first version specific folder
+
+                                        var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName));
+
+                                        // To prevent recursion of the folder we create we copy existing plugins to a temp folder in staging and then copy those into the destination folder        
+                                        var tempFolderString = Path.Combine(Constants.BaseStagingFolder, "__TEMP__");
+                                        Logger.Info($"Creating Directory {tempFolderString}");
+                                        var tempFolder = Directory.CreateDirectory(tempFolderString);
+                                        Logger.Info($"Copying Directory from {sourceFolder} to {tempFolder}");
+                                        CoreUtil.CopyDirectory(sourceFolder, tempFolder);
+
+                                        // User Extensions do not exist for current Version - Create directory
+                                        Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
+                                        var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
+
+                                        Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
+                                        CoreUtil.CopyDirectory(tempFolder, destinationFolder);
+
+                                        Logger.Info($"Deleting {tempFolder}");
+                                        Directory.Delete(tempFolder.FullName, true);                                        
+                                    } else if (maxDirectoryVersion < new Version(Constants.ApplicationVersionWithoutRevision)) {
+                                        // An upgrade from a versioned folder to a higher version folder
+                                        var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName, maxDirectoryVersion.ToString()));
+
+                                        // User Extensions do not exist for current Version - Create directory
+                                        Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
+                                        var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
+
+                                        Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
+                                        CoreUtil.CopyDirectory(sourceFolder, destinationFolder);
+                                    }
+                                }
+
+                                // Enumerate only 1 level deep, where we'd expect plugin dlls to be in the root of the plugin folder
                                 files.AddRange(userExtensionsDirectory.GetFiles("*.dll").Select(fi => fi.FullName));
                                 foreach (var subDirectory in userExtensionsDirectory.GetDirectories()) {
                                     files.AddRange(subDirectory.GetFiles("*.dll").Select(fi => fi.FullName));

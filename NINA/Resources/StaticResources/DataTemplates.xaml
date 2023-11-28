@@ -11,7 +11,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:af="clr-namespace:NINA.WPF.Base.ViewModel.AutoFocus;assembly=NINA.WPF.Base"
     xmlns:camera="clr-namespace:NINA.Equipment.Equipment.MyCamera;assembly=NINA.Equipment"
-    xmlns:eagle="clr-namespace:NINA.Equipment.Equipment.MySwitch.Eagle;assembly=NINA.Equipment"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
     xmlns:flatdevice="clr-namespace:NINA.Equipment.Equipment.MyFlatDevice;assembly=NINA.Equipment"
     xmlns:focuser="clr-namespace:NINA.Equipment.Equipment.MyFocuser;assembly=NINA.Equipment"
@@ -20,7 +19,6 @@
     xmlns:guider="clr-namespace:NINA.Equipment.Equipment.MyGuider;assembly=NINA.Equipment"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
-    xmlns:pegasus="clr-namespace:NINA.Equipment.Equipment.MySwitch.PegasusAstro;assembly=NINA.Equipment"
     xmlns:phd2="clr-namespace:NINA.Equipment.Equipment.MyGuider.PHD2;assembly=NINA.Equipment"
     xmlns:rotator="clr-namespace:NINA.Equipment.Equipment.MyRotator;assembly=NINA.Equipment"
     xmlns:safety="clr-namespace:NINA.WPF.Base.Model.Equipment.MySafetyMonitor.Simulator;assembly=NINA.WPF.Base"
@@ -83,10 +81,6 @@
 
     <DataTemplate DataType="{x:Type guider:MGENGuider}">
         <equip:MGenSetupView />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type eagle:Eagle}">
-        <switchview:EagleSetupView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type flatdevice:AlnitakFlatDevice}">

@@ -84,7 +84,8 @@
                     Margin="5"
                     Data="{StaticResource BackSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </Button>
             <Button
                 Width="80"
@@ -99,7 +100,8 @@
                     Margin="5"
                     Data="{StaticResource SaveAsSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </Button>
             <Button
                 Width="80"
@@ -119,7 +121,8 @@
                     Margin="5"
                     Data="{StaticResource SaveSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </Button>
             <Button
                 Width="80"
@@ -134,7 +137,8 @@
                     Margin="5"
                     Data="{StaticResource LoadSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
             </Button>
         </StackPanel>
 
@@ -193,7 +197,8 @@
                 Margin="0,0,0,0"
                 Data="{StaticResource TrashCanSVG}"
                 Fill="{StaticResource ButtonForegroundBrush}"
-                Stretch="Uniform" />
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
         </Border>
 
         <Grid
@@ -235,7 +240,8 @@
                                             Data="{StaticResource SkipSVG}"
                                             Fill="{StaticResource ButtonForegroundBrush}"
                                             RenderTransformOrigin="0.5,0.5"
-                                            Stretch="Uniform" />
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
                                     </xceed:SplitButton.Content>
                                     <xceed:SplitButton.DropDownContent>
                                         <StackPanel Orientation="Vertical">
@@ -252,7 +258,8 @@
                                                     Data="{StaticResource FlagFinishSVG}"
                                                     Fill="{StaticResource PrimaryBrush}"
                                                     RenderTransformOrigin="0.5,0.5"
-                                                    Stretch="Uniform" />
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
                                             </Button>
                                         </StackPanel>
                                     </xceed:SplitButton.DropDownContent>
@@ -273,7 +280,8 @@
                                         Data="{StaticResource StopSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         RenderTransformOrigin="0.5,0.5"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
                                             <TextBlock Text="{ns:Loc LblStopSequence}" />
@@ -285,9 +293,9 @@
                     </Grid>
                     <Button
                         Command="{Binding StartSequenceCommand}"
-                        Visibility="{Binding StartSequenceCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                        ToolTip="{Binding StartSequenceTooltip}"
                         ToolTipService.ShowOnDisabled="true"
-                        ToolTip="{Binding StartSequenceTooltip}" >
+                        Visibility="{Binding StartSequenceCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                         <Grid>
                             <Path
                                 Width="40"
@@ -295,7 +303,8 @@
                                 Data="{StaticResource PlaySVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
                                 RenderTransformOrigin="0.5,0.5"
-                                Stretch="Uniform" />
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                             <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" />
                         </Grid>
                     </Button>

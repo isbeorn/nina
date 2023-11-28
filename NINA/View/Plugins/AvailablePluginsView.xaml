@@ -41,7 +41,8 @@
                 Margin="2"
                 Data="{StaticResource CheckedCircledSVG}"
                 Stretch="Uniform"
-                Style="{StaticResource WindowButtonPath}" />
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
         </DataTemplate>
 
         <DataTemplate x:Key="InstalledAndRequiresRestartIcon">
@@ -49,7 +50,8 @@
                 Margin="2"
                 Data="{StaticResource RefreshSVG}"
                 Stretch="Uniform"
-                Style="{StaticResource WindowButtonPath}" />
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
         </DataTemplate>
 
         <DataTemplate x:Key="NotInstalledIcon">
@@ -61,7 +63,8 @@
                 Margin="2"
                 Data="{StaticResource DownloadSVG}"
                 Stretch="Uniform"
-                Style="{StaticResource WindowButtonPath}" />
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
         </DataTemplate>
 
         <DataTemplate x:Key="InstalledButton">
@@ -126,104 +129,103 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="250" />
+                <ColumnDefinition Width="Auto" MaxWidth="350" />
+                <ColumnDefinition Width="5" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <GroupBox Header="{ns:Loc LblPlugins}">
-                        <Grid>
-                            <ListView
-                                MinWidth="180"
-                                MaxWidth="350"
-                                Margin="-25,0,-25,0"
-                                BorderThickness="0"
-                                ItemsSource="{Binding AvailablePlugins}"
-                                SelectedItem="{Binding SelectedAvailablePlugin}"
-                                SelectionMode="Single">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Style.Setters>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="ListBoxItem">
-                                                        <Border
-                                                            Name="Border"
-                                                            Margin="0,2.5,0,2.5"
-                                                            Padding="2,0,2,0"
-                                                            HorizontalAlignment="Stretch"
-                                                            BorderBrush="{StaticResource BorderBrush}"
-                                                            BorderThickness="0,0,0,1"
-                                                            SnapsToDevicePixels="true">
-                                                            <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                                                        </Border>
-                                                        <ControlTemplate.Triggers>
-                                                            <Trigger Property="IsSelected" Value="true">
-                                                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBrush}" />
-                                                            </Trigger>
-                                                            <Trigger Property="IsMouseOver" Value="true">
-                                                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
-                                                            </Trigger>
-                                                            <Trigger Property="IsEnabled" Value="false">
-                                                                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
-                                                            </Trigger>
-                                                        </ControlTemplate.Triggers>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style.Setters>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.Resources>
-                                    <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </Style>
-                                </ListView.Resources>
-                                <ListView.View>
-                                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                                        <GridViewColumn Width="Auto" Header="">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Image
-                                                        MaxWidth="25"
-                                                        MaxHeight="25"
-                                                        RenderOptions.BitmapScalingMode="HighQuality"
-                                                        Source="{Binding Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Width="Auto" Header="">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock
-                                                        VerticalAlignment="Center"
-                                                        FontSize="16"
-                                                        Text="{Binding Path=Name}" />
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Width="Auto" Header="">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ContentControl
-                                                        Height="25"
-                                                        Margin="2.5"
-                                                        VerticalAlignment="Center"
-                                                        Content="{Binding Path=State}"
-                                                        ContentTemplateSelector="{StaticResource PluginStateToIconDataTemplateSelector}" />
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                        </Grid>
-                    </GroupBox>
-                    <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <GroupBox Header="{ns:Loc LblPlugins}" />
+                    <ListView
+                        Grid.Row="1"
+                        MinWidth="180"
+                        Margin="5,-15,0,0"
+                        BorderThickness="0"
+                        ItemsSource="{Binding AvailablePlugins}"
+                        SelectedItem="{Binding SelectedAvailablePlugin}"
+                        SelectionMode="Single">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border
+                                                    Name="Border"
+                                                    Margin="0,2.5,0,2.5"
+                                                    Padding="2,0,2,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1"
+                                                    UseLayoutRounding="True">
+                                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="false">
+                                                        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Resources>
+                            <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image
+                                                MaxWidth="25"
+                                                MaxHeight="25"
+                                                RenderOptions.BitmapScalingMode="HighQuality"
+                                                Source="{Binding Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Text="{Binding Path=Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentControl
+                                                Height="25"
+                                                Margin="2.5"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding Path=State}"
+                                                ContentTemplateSelector="{StaticResource PluginStateToIconDataTemplateSelector}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel Grid.Row="2" Orientation="Vertical">
                         <ninactrl:AsyncProcessButton
                             Height="25"
                             Margin="5,0,5,5"
@@ -263,7 +265,8 @@
                         Data="{StaticResource PuzzlePieceSVG}"
                         Fill="{StaticResource PrimaryBrush}"
                         Stretch="Uniform"
-                        Style="{StaticResource TabItemPath}" />
+                        Style="{StaticResource TabItemPath}"
+                        UseLayoutRounding="True" />
 
                     <TextBlock
                         HorizontalAlignment="Center"
@@ -273,8 +276,12 @@
                         Text="{ns:Loc LblNoPluginsFound}" />
                 </StackPanel>
             </Grid>
-            <Grid
+            <GridSplitter
                 Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+            <Grid
+                Grid.Column="2"
                 Margin="5"
                 DataContext="{Binding SelectedAvailablePlugin}"
                 Visibility="{Binding DataContext.AvailablePlugins, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=local:AvailablePluginsView}}">

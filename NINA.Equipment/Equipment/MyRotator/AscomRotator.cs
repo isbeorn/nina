@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using ASCOM.Common.DeviceInterfaces;
+using ASCOM.Common;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
@@ -90,12 +91,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
                 }
 
                 Logger.Debug($"ASCOM - Move relative by {angle}° - Mechanical Position reported by rotator {MechanicalPosition}° and offset {offset}");
-                await Task.Run(() => {
-                    using (ct.Register(() => device?.Halt())) {
-                        device?.Move(angle);
-                    }
-                    ct.ThrowIfCancellationRequested();
-                }, ct);
+                await device.MoveAsync(angle, ct);
 
                 return true;
             }

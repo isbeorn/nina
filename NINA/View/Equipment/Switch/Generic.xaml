@@ -134,7 +134,8 @@
                                         Margin="5"
                                         Data="{StaticResource CheckedCircledSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                 </Button>
                                 <TextBlock
                                     Margin="5,0,0,0"

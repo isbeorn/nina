@@ -32,10 +32,12 @@ using NINA.Core.Utility.Notification;
 using NINA.Core.Locale;
 using OxyPlot.Axes;
 using System.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.Sequencer {
 
-    public class TargetController : BaseINPC {
+    public partial class TargetController : BaseINPC {
         private readonly SequenceJsonConverter sequenceJsonConverter;
         private readonly IProfileService profileService;
         private string targetPath;
@@ -60,12 +62,34 @@ namespace NINA.Sequencer {
             }
         }
 
+        [ObservableProperty]
+        private bool targetsLoading = true;
+        [ObservableProperty]
+        private int targetsLoadingProgress;
+        [ObservableProperty]
+        private int targetsLoadingTotalCount;
+        [ObservableProperty]
+        private bool sortByRelevance;
+        partial void OnSortByRelevanceChanged(bool oldValue, bool newValue) {
+            if(newValue) {
+                SortByName = false;
+            }
+        }
+
+        [ObservableProperty]
+        private bool sortByName;
+        partial void OnSortByNameChanged(bool oldValue, bool newValue) {
+            if (newValue) {
+                SortByRelevance = false;
+            }
+        }
+
         public TargetController(SequenceJsonConverter sequenceJsonConverter, IProfileService profileService) {
             this.sequenceJsonConverter = sequenceJsonConverter;
             this.profileService = profileService;
 
             Targets = new List<TargetSequenceContainer>();
-
+            
             targetsView = new CollectionViewSource { Source = Targets };
             targetsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TargetSequenceContainer.Grouping)));
             TargetsView.SortDescriptions.Add(new SortDescription(nameof(TargetSequenceContainer.Weight), ListSortDirection.Ascending));
@@ -87,10 +111,9 @@ namespace NINA.Sequencer {
                 activeSequenceSettings = profileService.ActiveProfile.SequenceSettings;
                 activeSequenceSettings.PropertyChanged += SequenceSettings_SequencerTargetsFolderChanged;
             });
-
-            ToggleSortCommand = new GalaSoft.MvvmLight.Command.RelayCommand(ToggleSort);
         }
 
+        [RelayCommand]
         private void ToggleSort() {
             if (SortByRelevance) {
                 TargetsView.SortDescriptions.RemoveAt(0);
@@ -101,33 +124,7 @@ namespace NINA.Sequencer {
             }
         }
 
-        private bool sortByRelevance;
 
-        public bool SortByRelevance {
-            get => sortByRelevance;
-            set {
-                sortByRelevance = value;
-                if (value) {
-                    SortByName = false;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool sortByName;
-
-        public bool SortByName {
-            get => sortByName;
-            set {
-                sortByName = value;
-                if (value) {
-                    SortByRelevance = false;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
-        public ICommand ToggleSortCommand { get; }
 
         private bool ApplyViewFilter(object obj) {
             return (obj as TargetSequenceContainer).Name.IndexOf(ViewFilter, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -184,6 +181,7 @@ namespace NINA.Sequencer {
         private Task LoadTargets() {
             return Task.Run(async () => {
                 try {
+                    TargetsLoading = true;
                     targetPath = profileService.ActiveProfile.SequenceSettings.SequencerTargetsFolder;
                     var rootParts = targetPath.Split(new char[] { Path.DirectorySeparatorChar }, System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -195,7 +193,12 @@ namespace NINA.Sequencer {
                         await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Targets.Remove(target)));
                     }
 
-                    foreach (var file in Directory.GetFiles(targetPath, "*" + TargetsFileExtension, SearchOption.AllDirectories)) {
+                    TargetsLoadingProgress = 0;
+                    TargetsLoadingTotalCount = 1;
+
+                    var files = Directory.GetFiles(targetPath, "*" + TargetsFileExtension, SearchOption.AllDirectories);
+                    TargetsLoadingTotalCount = files.Length;
+                    foreach (var file in files) {
                         try {
                             var container = sequenceJsonConverter.Deserialize(File.ReadAllText(file));
 
@@ -212,11 +215,14 @@ namespace NINA.Sequencer {
                         } catch (Exception ex) {
                             Logger.Error($"Invalid target JSON {file}", ex);
                         }
+                        TargetsLoadingProgress++;
                     }
                     await RefreshFilters();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Loc.Instance["Lbl_SequenceTargetController_LoadUserTargetFailed"]);
+                } finally {
+                    TargetsLoading = false;
                 }
             });
         }

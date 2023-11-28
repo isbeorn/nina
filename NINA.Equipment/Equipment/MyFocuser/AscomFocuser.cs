@@ -21,6 +21,7 @@ using NINA.Equipment.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ASCOM.Common;
 
 namespace NINA.Equipment.Equipment.MyFocuser {
 
@@ -94,11 +95,8 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 int samePositionCount = 0;
                 var lastMovementTime = DateTime.Now;
                 while (position != device.Position && !ct.IsCancellationRequested) {
-                    device.Move(position);
-                    while (IsMoving && !ct.IsCancellationRequested) {
-                        await CoreUtil.Wait(TimeSpan.FromMilliseconds(waitInMs), ct);
-                    }
-
+                    await device.MoveAsync(position, ct);
+                    
                     if (lastPosition == device.Position) {
                         ++samePositionCount;
                         var samePositionTime = DateTime.Now - lastMovementTime;
@@ -130,7 +128,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
                 var relativeOffsetRemaining = position - this.Position;
                 while (relativeOffsetRemaining != 0 && !ct.IsCancellationRequested) {
-                    var moveAmount = Math.Min(MaxStep, Math.Abs(relativeOffsetRemaining));
+                    var moveAmount = Math.Min(MaxIncrement, Math.Abs(relativeOffsetRemaining));
                     if (relativeOffsetRemaining < 0) {
                         moveAmount *= -1;
                     }

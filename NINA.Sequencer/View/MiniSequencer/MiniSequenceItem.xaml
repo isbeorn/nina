@@ -63,7 +63,8 @@
                         HorizontalAlignment="Center"
                         Data="{Binding Icon}"
                         Fill="{StaticResource PrimaryBrush}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
                     <TextBlock
                         x:Name="PART_Name"
                         Grid.Column="2"

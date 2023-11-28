@@ -28,7 +28,8 @@
             Height="15"
             Data="{StaticResource CheckedSVG}"
             Fill="{StaticResource PrimaryBrush}"
-            Stretch="Uniform" />
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
     </DataTemplate>
     <DataTemplate x:Key="FailedItem">
         <Border
@@ -41,7 +42,8 @@
             <Path
                 Data="{StaticResource CancelCircledSVG}"
                 Fill="{StaticResource PrimaryBrush}"
-                Stretch="Uniform" />
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
         </Border>
     </DataTemplate>
     <DataTemplate x:Key="SkippedItem">
@@ -50,7 +52,8 @@
             Height="15"
             Data="{StaticResource SkipSVG}"
             Fill="{StaticResource PrimaryBrush}"
-            Stretch="Uniform" />
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
     </DataTemplate>
     <Style x:Key="ProgressPresenter" TargetType="ContentPresenter">
         <Setter Property="ContentTemplate" Value="{StaticResource CreatedItem}" />

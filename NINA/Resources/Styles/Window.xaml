@@ -28,11 +28,10 @@
                         <Border BorderBrush="Transparent">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="BorderThickness" Value="0" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=ThisWindow, Path=WindowState}" Value="Maximized">
                                             <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />-->
-                                            <Setter Property="BorderThickness" Value="4" />
+                                            <Setter Property="Padding" Value="8" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -105,7 +104,8 @@
                                                 Margin="2"
                                                 Data="{StaticResource DownloadSVG}"
                                                 Stretch="Uniform"
-                                                Style="{StaticResource WindowButtonPath}" />
+                                                Style="{StaticResource WindowButtonPath}"
+                                                UseLayoutRounding="True" />
                                         </StackPanel>
                                     </Button>
                                     <Button
@@ -118,7 +118,8 @@
                                             Width="12"
                                             Data="{StaticResource MinimizeWindowSVG}"
                                             Stretch="Uniform"
-                                            Style="{StaticResource WindowButtonPath}" />
+                                            Style="{StaticResource WindowButtonPath}"
+                                            UseLayoutRounding="True" />
                                     </Button>
                                     <Button
                                         Width="45"
@@ -131,7 +132,8 @@
                                             Margin="10"
                                             Data="{StaticResource MaximizeSVG}"
                                             Stretch="Uniform"
-                                            Style="{StaticResource WindowButtonPath}" />
+                                            Style="{StaticResource WindowButtonPath}"
+                                            UseLayoutRounding="True" />
                                     </Button>
                                     <Button
                                         Width="45"
@@ -143,7 +145,8 @@
                                             Margin="10"
                                             Data="{StaticResource CancelSVG}"
                                             Stretch="Uniform"
-                                            Style="{StaticResource WindowCloseButtonPath}" />
+                                            Style="{StaticResource WindowCloseButtonPath}"
+                                            UseLayoutRounding="True" />
                                     </Button>
                                 </StackPanel>
 
@@ -235,7 +238,8 @@
                                         Margin="10"
                                         Data="{StaticResource CancelSVG}"
                                         Stretch="Uniform"
-                                        Style="{StaticResource WindowCloseButtonPath}" />
+                                        Style="{StaticResource WindowCloseButtonPath}"
+                                        UseLayoutRounding="True" />
                                 </Button>
                             </StackPanel>
 

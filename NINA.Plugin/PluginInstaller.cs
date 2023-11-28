@@ -39,6 +39,9 @@ namespace NINA.Plugin {
         /// <param name="manifest"></param>
         public void Uninstall(IPluginManifest manifest) {
             try {
+                if (!Directory.Exists(Constants.BaseDeletionFolder)) {
+                    Directory.CreateDirectory(Constants.BaseDeletionFolder);
+                }
                 if (!Directory.Exists(Constants.DeletionFolder)) {
                     Directory.CreateDirectory(Constants.DeletionFolder);
                 }
@@ -68,8 +71,14 @@ namespace NINA.Plugin {
         public async Task Install(IPluginManifest manifest, bool update, CancellationToken ct) {
             var tempFile = Path.Combine(Path.GetTempPath(), manifest.Name + ".dll");
             try {
+                if (!Directory.Exists(Constants.BaseStagingFolder)) {
+                    Directory.CreateDirectory(Constants.BaseStagingFolder);
+                }
                 if (!Directory.Exists(Constants.StagingFolder)) {
                     Directory.CreateDirectory(Constants.StagingFolder);
+                }
+                if (!Directory.Exists(Constants.BaseDeletionFolder)) {
+                    Directory.CreateDirectory(Constants.BaseDeletionFolder);
                 }
                 if (!Directory.Exists(Constants.DeletionFolder)) {
                     Directory.CreateDirectory(Constants.DeletionFolder);

@@ -31,6 +31,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
 using Nito.AsyncEx;
 using System.Linq;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
@@ -136,6 +137,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} Driver Version: {weatherdev.DriverVersion}");
 
                             return true;
@@ -284,6 +286,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
             WeatherDataInfo = DeviceInfo.CreateDefaultInstance<WeatherDataInfo>();
             BroadcastWeatherDataInfo();
             RaisePropertyChanged(nameof(WeatherData));
+            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public string Action(string actionName, string actionParameters = "") {
@@ -321,6 +324,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
         private DeviceUpdateTimer updateTimer;
         private IWeatherDataMediator weatherDataMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
+
         public IAsyncCommand ConnectCommand { get; private set; }
         public IAsyncCommand RescanDevicesCommand { get; private set; }
         public ICommand CancelConnectCommand { get; private set; }

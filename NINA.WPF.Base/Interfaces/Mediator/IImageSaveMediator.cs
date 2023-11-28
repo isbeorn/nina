@@ -33,7 +33,6 @@ namespace NINA.WPF.Base.Interfaces.Mediator {
         event Func<object, BeforeImageSavedEventArgs, Task> BeforeImageSaved;
         
         
-        Task OnBeforeImageSaved(BeforeImageSavedEventArgs e);
         /// <summary>
         /// Called before the image is saved to the disk, but also before the image is processed fully (e.g. stretch and star detection)
         /// It is possible to wait for the image processing by awaiting the BeforeFinalizeImageSavedEventArgs.ImagePrepareTask if necessary
@@ -41,7 +40,6 @@ namespace NINA.WPF.Base.Interfaces.Mediator {
         /// </summary>
         /// <param name="e"></param>
         event Func<object, BeforeFinalizeImageSavedEventArgs, Task> BeforeFinalizeImageSaved;
-        Task OnBeforeFinalizeImageSaved(BeforeFinalizeImageSavedEventArgs e);
         /// <summary>
         /// Called after the image is saved to the disk but before it is moved to the final destination. Here the image is processed fully (e.g. stretch and star detection) and the saved to a temporary place.
         /// Altering Image Meta Data will NOT be reflected in the written file when altered here!
@@ -51,7 +49,6 @@ namespace NINA.WPF.Base.Interfaces.Mediator {
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 
-        void OnImageSaved(ImageSavedEventArgs e);
 
         void Shutdown();
     }

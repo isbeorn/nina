@@ -184,6 +184,20 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 return false;
             }
 
+            if(telescopeInfo.AtPark) {
+                EarliestFlipTime = DateTime.MinValue;
+                LatestFlipTime = DateTime.MinValue;
+                Logger.Info("Meridian Flip - Telescope is parked. Skip flip evaluation");
+                return false;
+            }
+
+            if (telescopeInfo.AtHome) {
+                EarliestFlipTime = DateTime.MinValue;
+                LatestFlipTime = DateTime.MinValue;
+                Logger.Info("Meridian Flip - Telescope is at home position. Skip flip evaluation");
+                return false;
+            }
+
             if (!telescopeInfo.TrackingEnabled) {
                 EarliestFlipTime = DateTime.MinValue;
                 LatestFlipTime = DateTime.MinValue;

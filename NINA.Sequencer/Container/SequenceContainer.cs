@@ -214,8 +214,12 @@ namespace NINA.Sequencer.Container {
                     item.AfterParentChanged();
 
                     IValidatable validatable = (item as IValidatable);
-                    if (validatable != null) {
-                        validatable.Validate();
+                    if (validatable != null) {                        
+                        try {
+                            validatable.Validate();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
                     }
                 }
                 foreach (var condition in Conditions) {
@@ -223,7 +227,11 @@ namespace NINA.Sequencer.Container {
 
                     IValidatable validatable = (condition as IValidatable);
                     if (validatable != null) {
-                        validatable.Validate();
+                        try {
+                            validatable.Validate();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
                     }
                 }
                 foreach (var trigger in Triggers) {
@@ -231,7 +239,11 @@ namespace NINA.Sequencer.Container {
 
                     IValidatable validatable = (trigger as IValidatable);
                     if (validatable != null) {
-                        validatable.Validate();
+                        try {
+                            validatable.Validate();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
                     }
                 }
             }
@@ -524,19 +536,34 @@ namespace NINA.Sequencer.Container {
                 foreach (var item in Items) {
                     IValidatable validatable = (item as IValidatable);
                     if (validatable != null) {
-                        valid = validatable.Validate() && valid;
+                        try {
+                            valid = validatable.Validate() && valid;
+                        } catch(Exception ex) {
+                            Logger.Error(ex);
+                            valid = false;
+                        }                        
                     }
                 }
                 foreach (var item in Conditions) {
                     IValidatable validatable = (item as IValidatable);
                     if (validatable != null) {
-                        valid = validatable.Validate() && valid;
+                        try {
+                            valid = validatable.Validate() && valid;
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                            valid = false;
+                        }
                     }
                 }
                 foreach (var item in Triggers) {
                     IValidatable validatable = (item as IValidatable);
                     if (validatable != null) {
-                        valid = validatable.Validate() && valid;
+                        try {
+                            valid = validatable.Validate() && valid;
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                            valid = false;
+                        }
                     }
                 }
                 return valid;

@@ -75,16 +75,14 @@ namespace NINA.WPF.Base.Mediator {
         /// <summary>
         /// Will be raised each time the application receives guide pulse info from the guider
         /// </summary>
-        public event EventHandler<IGuideStep> GuideEvent;
-        
-        public void RaiseGuideEvent(IGuideStep e) {
-            GuideEvent?.Invoke(this, e);
+        public event EventHandler<IGuideStep> GuideEvent {
+            add { this.handler.GuideEvent += value; }
+            remove { this.handler.GuideEvent -= value; }
         }
 
-        public event Func<object, EventArgs, Task> AfterDither;
-
-        public async Task RaiseAfterDither(EventArgs e) {
-            await (AfterDither?.InvokeAsync(this, e) ?? Task.CompletedTask);
+        public event Func<object, EventArgs, Task> AfterDither {
+            add { this.handler.AfterDither += value; }
+            remove { this.handler.AfterDither -= value; }
         }
     }
 }

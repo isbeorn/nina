@@ -19,7 +19,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                    <Grid SnapsToDevicePixels="True">
+                    <Grid UseLayoutRounding="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -48,7 +48,7 @@
                                     <Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Data="{StaticResource ArrowUpSVG}" />
+                            <Path Data="{StaticResource ArrowUpSVG}" UseLayoutRounding="True" />
                         </RepeatButton>
                         <RepeatButton
                             Grid.Row="2"
@@ -67,7 +67,7 @@
                                     <Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Data="{StaticResource ArrowDownSVG}" />
+                            <Path Data="{StaticResource ArrowDownSVG}" UseLayoutRounding="True" />
                         </RepeatButton>
                     </Grid>
                 </ControlTemplate>
@@ -143,7 +143,7 @@
                         Background="{StaticResource BackgroundBrush}"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1"
-                        SnapsToDevicePixels="True">
+                        UseLayoutRounding="True">
                         <ScrollViewer CanContentScroll="True" Style="{StaticResource MenuScrollViewer}">
                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                         </ScrollViewer>
@@ -217,9 +217,9 @@
                         Width="7"
                         Height="7"
                         Data="M 0 0 L 7 7 M 0 7 L 7 0"
-                        SnapsToDevicePixels="False"
                         Stroke="{StaticResource BorderBrush}"
                         StrokeThickness="2"
+                        UseLayoutRounding="True"
                         Visibility="Hidden" />
                 </Border>
                 <ContentPresenter
@@ -288,7 +288,8 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Data="M 0 0 L 0 7 L 4 3.5 Z"
-                    Fill="{StaticResource BorderBrush}" />
+                    Fill="{StaticResource BorderBrush}"
+                    UseLayoutRounding="True" />
                 <Popup
                     x:Name="Popup"
                     AllowsTransparency="True"
@@ -302,7 +303,7 @@
                         Background="{StaticResource BackgroundBrush}"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1"
-                        SnapsToDevicePixels="True">
+                        UseLayoutRounding="True">
                         <ScrollViewer CanContentScroll="True" Style="{StaticResource MenuScrollViewer}">
                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                         </ScrollViewer>

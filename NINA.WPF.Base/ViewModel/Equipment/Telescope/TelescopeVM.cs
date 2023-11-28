@@ -34,7 +34,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Equipment;
-using Newtonsoft.Json.Linq;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
@@ -133,7 +133,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     if (Telescope.CanPark) {
                         if (!Telescope.AtPark) {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToPark"] });
-                            Telescope.Park();
+                            await Telescope.Park(token);
 
                             // Detect if the parking process was cancelled by an external force, such as the user hitting the stop button
                             // in another app or in the driver's own UI, external to NINA.
@@ -239,23 +239,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     if (Telescope.CanUnpark) {
                         try {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToUnpark"] });
-                            Telescope.Unpark();
-
-                            while (Telescope.AtPark) {
-                                if (token.IsCancellationRequested) {
-                                    Logger.Warning("Unpark cancelled");
-                                    throw new OperationCanceledException();
-                                }
-
-                                await CoreUtil.Delay(TimeSpan.FromSeconds(2), token);
-                            }
+                            await Telescope.Unpark(token);
 
                             success = true;
                             await updateTimer.WaitForNextUpdate(token);
                         } catch (OperationCanceledException) {
                             Notification.ShowWarning(Loc.Instance["LblTelescopeUnparkCancelled"]);
+                            Logger.Warning("Unpark cancelled");
                         } catch (Exception e) {
                             Notification.ShowError(e.Message);
+                            Logger.Error(e);
                         } finally {
                             progress?.Report(new ApplicationStatus { Status = string.Empty });
                         }
@@ -283,7 +276,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             if (!Telescope.AtPark) {
                                 try {
                                     progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToFindHome"] });
-                                    Telescope.FindHome();
+                                    await Telescope.FindHome(token);
 
                                     // Detect if the homing process was cancelled by an external force, such as the user hitting the stop button
                                     // in another app or in the driver's own UI, external to NINA.
@@ -307,9 +300,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                     success = true;
                                 } catch (OperationCanceledException) {
                                     Notification.ShowWarning(Loc.Instance["LblTelescopeFindHomeCancelled"]);
+                                    Logger.Warning("Find Home cancelled");
                                 } catch (Exception e) {
                                     reason = e.Message;
                                     Notification.ShowError(e.Message);
+                                    Logger.Error(e);
                                 } finally {
                                     IsParkingOrHoming = false;
                                     progress?.Report(new ApplicationStatus { Status = string.Empty });
@@ -434,9 +429,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                     Telescope.SiteElevation = targetElevation;
 
                                     if (Math.Abs(Telescope.SiteLatitude - targetLatitude) > LAT_LONG_TOLERANCE
-                                        || Math.Abs(Telescope.SiteLongitude - targetLongitude) > LAT_LONG_TOLERANCE
-                                        || Math.Abs(Telescope.SiteElevation - targetElevation) > SITE_ELEVATION_TOLERANCE) {
+                                        || Math.Abs(Telescope.SiteLongitude - targetLongitude) > LAT_LONG_TOLERANCE) {
+                                        Logger.Error(string.Format("Unable to set mount latitude to {0} and longitude to {1}!", Math.Round(targetLatitude, 3), Math.Round(targetLongitude, 3)));
                                         Notification.ShowError(string.Format(Loc.Instance["LblUnableToSetMountLatLong"], Math.Round(targetLatitude, 3), Math.Round(targetLongitude, 3)));
+                                    }
+                                    if(Math.Abs(Telescope.SiteElevation - targetElevation) > SITE_ELEVATION_TOLERANCE) {
+                                        Logger.Error(string.Format("Unable to set mount elevation to {0}!", targetElevation));
+                                        Notification.ShowError(string.Format(Loc.Instance["LblUnableToSetMountElevation"], Math.Round(targetElevation, 3)));
                                     }
                                 }
                                 
@@ -507,6 +506,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} Driver Version: {telescope.DriverVersion}");
 
                             return true;
@@ -749,6 +749,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             Telescope = null;
             TelescopeInfo.Reset();
             BroadcastTelescopeInfo();
+            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public void MoveAxis(TelescopeAxes axis, double rate) {
@@ -870,6 +871,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task<bool> SlewToCoordinatesAsync(Coordinates coords, CancellationToken token) {
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
+            timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
             try {
                 coords = coords.Transform(TelescopeInfo.EquatorialSystem);
                 if (Telescope?.Connected == true) {
@@ -885,7 +889,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             }
                         );
 
-                        await WaitForSlew(token);
+                        await WaitForSlew(timeoutCts.Token);
                     }
 
                     if (Telescope?.AtPark == true) {
@@ -910,25 +914,32 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             var targetSideOfPier = Astrometry.MeridianFlip.ExpectedPierSide(coords, Angle.ByHours(this.TelescopeInfo.SiderealTime));
                             domeSyncTask = Task.Run(async () => {
                                 try {
-                                    return await this.domeMediator.SyncToScopeCoordinates(coords, targetSideOfPier, token);
+                                    return await this.domeMediator.SyncToScopeCoordinates(coords, targetSideOfPier, timeoutCts.Token);
                                 } catch (Exception e) {
                                     Logger.Error("Failed to sync dome when issuing a scope slew. Continuing with the scope slew", e);
                                     return false;
                                 }
-                            }, token);
+                            }, timeoutCts.Token);
                         }
                     }
 
-                    await Telescope.SlewToCoordinates(coords, token);
-                    var waitForUpdate = updateTimer.WaitForNextUpdate(token);
+                    await Telescope.SlewToCoordinates(coords, timeoutCts.Token);
+                    var waitForUpdate = updateTimer.WaitForNextUpdate(timeoutCts.Token);
                     await Task.WhenAll(
-                        CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime), true, token, progress, Loc.Instance["LblSettle"]),
+                        CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime), true, timeoutCts.Token, progress, Loc.Instance["LblSettle"]),
                         domeSyncTask,
                         waitForUpdate);
                     BroadcastTelescopeInfo();
                     return true;
                 } else {
                     Logger.Warning("Telescope is not connected to slew");
+                    return false;
+                }
+            } catch (OperationCanceledException) {
+                if (!timeoutCts?.IsCancellationRequested == true) {
+                    throw;
+                } else {
+                    Logger.Error("Telescope slew timed out after 10 Minutes");
                     return false;
                 }
             } finally {
@@ -1003,7 +1014,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             if (Telescope?.Connected == true && !Telescope.AtPark && trackingMode != TrackingMode.Custom) {                
                 Telescope.TrackingMode = trackingMode;
                 if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
-                    Telescope.SetCustomTrackingRate(0.0d, 0.0d);
+                    try { 
+                        Telescope.SetCustomTrackingRate(0.0d, 0.0d);
+                    } catch(Exception ex) {
+                        Logger.Debug(ex.Message);
+                    }
                 }
 
                 return Telescope.TrackingMode == trackingMode;
@@ -1026,6 +1041,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         private AsyncObservableCollection<TrackingMode> supportedTrackingModes = new AsyncObservableCollection<TrackingMode>();
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
 
         public AsyncObservableCollection<TrackingMode> SupportedTrackingModes {
             get => supportedTrackingModes;

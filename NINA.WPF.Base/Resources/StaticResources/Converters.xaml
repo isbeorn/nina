@@ -90,5 +90,6 @@
     <converters:CameraStateToVisibilityConverter x:Key="CameraStateToVisibilityConverter" />
     <converters:TimeSpanZeroToVisibilityConverter x:Key="TimeSpanZeroToVisibilityConverter" />
     <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
+    <converters:ZeroToBooleanTrueConverter x:Key="ZeroToBooleanTrueConverter" />
     <astroConverters:ReverseAngleConverter x:Key="ReverseAngleConverter" />
 </ResourceDictionary>

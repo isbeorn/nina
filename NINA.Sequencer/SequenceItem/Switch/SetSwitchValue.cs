@@ -101,7 +101,7 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             get => selectedSwitch;
             set {
                 selectedSwitch = value;
-                SwitchIndex = (short)WritableSwitches.IndexOf(selectedSwitch);
+                SwitchIndex = (short)(WritableSwitches?.IndexOf(selectedSwitch) ?? -1);
                 RaisePropertyChanged();
             }
         }
@@ -125,54 +125,60 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             for (short i = 0; i < 20; i++) {
                 dummySwitches.Add(new DummySwitch((short)(i + 1)));
             }
-            return dummySwitches;
+            return dummySwitches;        
         }
 
         public bool Validate() {
-            var i = new List<string>();
-            var info = switchMediator.GetInfo();
-            if (info?.Connected != true) {
-                //When switch gets disconnected the real list will be changed to the dummy list
-                if (!(WritableSwitches.FirstOrDefault() is DummySwitch)) {
-                    WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
-                }
-
-                i.Add(Loc.Instance["LblSwitchNotConnected"]);
-            } else {
-                if (WritableSwitches.Count > 0) {
-                    //When switch gets connected the dummy list will be changed to the real list
-                    if (WritableSwitches.FirstOrDefault() is DummySwitch) {
-                        WritableSwitches = info.WritableSwitches;
-
-                        if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
-                            SelectedSwitch = WritableSwitches[switchIndex];
-                        } else {
-                            SelectedSwitch = null;
-                        }
+            try {
+                var i = new List<string>();
+                var info = switchMediator.GetInfo();
+                if (info?.Connected != true) {
+                    //When switch gets disconnected the real list will be changed to the dummy list
+                    if (!(WritableSwitches.FirstOrDefault() is DummySwitch)) {
+                        WritableSwitches = new ReadOnlyCollection<IWritableSwitch>(CreateDummyList());
                     }
+
+                    i.Add(Loc.Instance["LblSwitchNotConnected"]);
                 } else {
-                    SelectedSwitch = null;
-                    i.Add(Loc.Instance["Lbl_SequenceItem_Validation_NoWritableSwitch"]);
+                    if (WritableSwitches.Count > 0) {
+                        //When switch gets connected the dummy list will be changed to the real list
+                        if (WritableSwitches.FirstOrDefault() is DummySwitch) {
+                            WritableSwitches = info.WritableSwitches;
+
+                            if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
+                                SelectedSwitch = WritableSwitches[switchIndex];
+                            } else {
+                                SelectedSwitch = null;
+                            }
+                        }
+                    } else {
+                        SelectedSwitch = null;
+                        i.Add(Loc.Instance["Lbl_SequenceItem_Validation_NoWritableSwitch"]);
+                    }
                 }
-            }
 
-            if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
-                if (WritableSwitches[switchIndex] != SelectedSwitch) {
-                    SelectedSwitch = WritableSwitches[switchIndex];
+                if (switchIndex >= 0 && WritableSwitches.Count > switchIndex) {
+                    if (WritableSwitches[switchIndex] != SelectedSwitch) {
+                        SelectedSwitch = WritableSwitches[switchIndex];
+                    }
                 }
+
+                var s = SelectedSwitch;
+
+                if (s == null) {
+                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_NoSwitchSelected"]));
+                } else {
+                    if (Value < s.Minimum || Value > s.Maximum)
+                        i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], s.Minimum, s.Maximum, s.StepSize));
+                }
+
+                Issues = i;
+                return Issues.Count == 0;
+            } catch (Exception ex) {
+                Issues = new List<string>() { "An unexpected error occurred" };
+                Logger.Error(ex);
+                return false;
             }
-
-            var s = SelectedSwitch;
-
-            if (s == null) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_NoSwitchSelected"]));
-            } else {
-                if (Value < s.Minimum || Value > s.Maximum)
-                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], s.Minimum, s.Maximum, s.StepSize));
-            }
-
-            Issues = i;
-            return i.Count == 0;
         }
 
         public override string ToString() {

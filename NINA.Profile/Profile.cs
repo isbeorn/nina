@@ -52,6 +52,7 @@ namespace NINA.Profile {
     [KnownType(typeof(SafetyMonitorSettings))]
     [KnownType(typeof(PluginSettings))]
     [KnownType(typeof(GnssSettings))]
+    [KnownType(typeof(DockPanelSettings))]
 
     public class Profile : SerializableINPC, IProfile {
 
@@ -109,6 +110,7 @@ namespace NINA.Profile {
             SafetyMonitorSettings = new SafetyMonitorSettings();
             PluginSettings = new PluginSettings();
             GnssSettings = new GnssSettings();
+            DockPanelSettings = new DockPanelSettings();
         }
 
         /// <summary>
@@ -140,6 +142,7 @@ namespace NINA.Profile {
             SafetyMonitorSettings.PropertyChanged += SettingsChanged;
             PluginSettings.PropertyChanged += SettingsChanged;
             GnssSettings.PropertyChanged += SettingsChanged;
+            DockPanelSettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -286,6 +289,9 @@ namespace NINA.Profile {
         [DataMember]
         public IGnssSettings GnssSettings { get; set; }
 
+        [DataMember]
+        public IDockPanelSettings DockPanelSettings { get; set; }
+
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name
         /// </summary>
@@ -332,18 +338,18 @@ namespace NINA.Profile {
         /// </summary>
         public void Save() {
             using (MyStopWatch.Measure()) {
+                if (File.Exists(Location)) {
+                    var fi = new FileInfo(Location);
+                    if (fi.Length > 0) {
+                        File.Copy(Location, Location + ".bkp", true);
+                    }
+                }
+
                 if (fs == null) {
                     // When profile is in memory only yet
                     fs = new FileStream(Location, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
                 } else {
                     fs.Position = 0;
-                }
-
-                if(fs.Length > 0) { 
-                    using (var temp = new FileStream(Location + ".bkp", FileMode.Create, FileAccess.Write)) {
-                        fs.CopyTo(temp);
-                        temp.Flush();
-                    }
                 }
 
                 fs.SetLength(0);

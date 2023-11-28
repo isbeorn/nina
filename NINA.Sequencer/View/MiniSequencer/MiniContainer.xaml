@@ -90,7 +90,8 @@
             HorizontalAlignment="Center"
             Data="{Binding Icon}"
             Fill="{StaticResource PrimaryBrush}"
-            Stretch="Uniform">
+            Stretch="Uniform"
+            UseLayoutRounding="True">
             <Path.Style>
                 <Style TargetType="{x:Type Path}">
                     <Style.Triggers>

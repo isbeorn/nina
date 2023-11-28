@@ -358,7 +358,8 @@
                             Margin="5"
                             Data="{StaticResource AddSVG}"
                             Fill="{StaticResource PrimaryBrush}"
-                            Stretch="Uniform" />
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Button>
                 </Grid>
             </GroupBox.Header>
@@ -665,8 +666,10 @@
                                     HorizontalAlignment="Stretch"
                                     AddSVG="{StaticResource AddSVG}"
                                     MinValue="0"
+                                    SnapsToDevicePixels="True"
                                     StepSize="1"
                                     SubstractSVG="{StaticResource SubstractSVG}"
+                                    UseLayoutRounding="True"
                                     Value="{Binding Brightness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
@@ -725,7 +728,8 @@
                                         Margin="5"
                                         Data="{StaticResource TrashCanSVG}"
                                         Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
                                 </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

@@ -202,7 +202,7 @@ namespace NINA.Profile {
         public bool ProfileWasSpecifiedFromCommandLineArgs { get; private set; }
 
         public event EventHandler LocaleChanged;
-
+        
         public void ChangeLocale(CultureInfo language) {
             ActiveProfile.ApplicationSettings.Language = language;
 
@@ -210,22 +210,34 @@ namespace NINA.Profile {
             System.Threading.Thread.CurrentThread.CurrentCulture = language;
 
             Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
-            LocaleChanged?.Invoke(this, null);
+            var eventHandler = LocaleChanged;
+            if (eventHandler != null) { 
+                Application.Current.Dispatcher?.Invoke(eventHandler, this, null);
+            }
         }
 
         public void ChangeLatitude(double latitude) {
             ActiveProfile.AstrometrySettings.Latitude = latitude;
-            LocationChanged?.Invoke(this, null);
+            var eventHandler = LocationChanged;
+            if (eventHandler != null) {
+                Application.Current.Dispatcher?.Invoke(eventHandler, this, null);
+            }
         }
 
         public void ChangeLongitude(double longitude) {
             ActiveProfile.AstrometrySettings.Longitude = longitude;
-            LocationChanged?.Invoke(this, null);
+            var eventHandler = LocationChanged;
+            if (eventHandler != null) {
+                Application.Current.Dispatcher?.Invoke(LocationChanged, this, null);
+            }
         }
 
         public void ChangeElevation(double elevation) {
             ActiveProfile.AstrometrySettings.Elevation = elevation;
-            LocationChanged?.Invoke(this, null);
+            var eventHandler = LocationChanged;
+            if (eventHandler != null) {
+                Application.Current.Dispatcher?.Invoke(eventHandler, this, null);
+            }
         }
 
         public void ChangeHorizon(string horizonFilePath) {
@@ -245,10 +257,14 @@ namespace NINA.Profile {
                 Notification.ShowError(Loc.Instance["LblFailedToLoadCustomHorizon"] + ex.Message);
             }
 
-            HorizonChanged?.Invoke(this, null);
+            var eventHandler = HorizonChanged;
+            if (eventHandler != null) {
+                Application.Current.Dispatcher?.Invoke(eventHandler, this, null);
+            }
         }
 
         public event EventHandler LocationChanged;
+        public event EventHandler BeforeProfileChanging;
 
         public event EventHandler ProfileChanged;
 
@@ -312,6 +328,11 @@ namespace NINA.Profile {
             lock (lockobj) {
                 using (MyStopWatch.Measure()) {
                     try {
+                        var eventHandlerBeforeProfileChanging = BeforeProfileChanging;
+                        if (eventHandlerBeforeProfileChanging != null) {
+                            Application.Current.Dispatcher?.Invoke(eventHandlerBeforeProfileChanging, this, new EventArgs());
+
+                        }
                         var old = activeProfile;
                         var p = Profile.Load(info.Location);
 
@@ -328,9 +349,19 @@ namespace NINA.Profile {
                         System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
                         Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
 
-                        LocaleChanged?.Invoke(this, null);
-                        ProfileChanged?.Invoke(this, new ProfileChangedEventArgs(old, ActiveProfile));
-                        LocationChanged?.Invoke(this, null);
+                        var eventHandlerProfile = ProfileChanged;
+                        if (eventHandlerProfile != null) {
+                            Application.Current.Dispatcher?.Invoke(eventHandlerProfile, this, new ProfileChangedEventArgs(old, ActiveProfile));
+
+                        }
+                        var eventHandlerLocale = LocaleChanged;
+                        if (eventHandlerLocale != null) {
+                            Application.Current.Dispatcher?.Invoke(eventHandlerLocale, this, null);
+                        }
+                        var eventHandlerLocation = LocationChanged;
+                        if (eventHandlerLocation != null) {
+                            Application.Current.Dispatcher?.Invoke(eventHandlerLocation, this, null);
+                        }
                         RegisterChangedEventHandlers();
                     } catch (Exception ex) {
                         Logger.Debug(ex.Message + Environment.NewLine + ex.StackTrace);

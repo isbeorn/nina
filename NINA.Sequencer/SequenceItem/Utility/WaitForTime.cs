@@ -104,7 +104,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        public bool HasFixedTimeProvider => selectedProvider != null && !(selectedProvider is TimeProvider);
+        public bool HasFixedTimeProvider => selectedProvider != null && !(selectedProvider is NINA.Sequencer.Utility.DateTimeProvider.TimeProvider);
 
         [JsonProperty]
         public int Hours {

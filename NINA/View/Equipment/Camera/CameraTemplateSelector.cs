@@ -30,6 +30,7 @@ namespace NINA.View.Equipment {
         public DataTemplate Zwo { get; set; }
         public DataTemplate Generic { get; set; }
         public DataTemplate FailedToLoadTemplate { get; set; }
+        public DataTemplate ASCOM { get; set; }
 
         public string Postfix { get; set; }
 
@@ -46,6 +47,8 @@ namespace NINA.View.Equipment {
                 return Atik;
             } else if (item is ASICamera) {
                 return Zwo;
+            } else if (item is AscomCamera) {
+                return ASCOM;
             } else if (item is GenericCamera) {
                 return Generic;
             } else {

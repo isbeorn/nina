@@ -50,6 +50,8 @@ namespace NINA.Sequencer.Conditions {
                         while (true) {
                             try {
                                 await WatchDogOperation();
+                            } catch (OperationCanceledException) {
+                                Logger.Debug("Condition watchdog was canceled");                            
                             } catch (Exception ex) {
                                 Logger.Error(ex);
                             }

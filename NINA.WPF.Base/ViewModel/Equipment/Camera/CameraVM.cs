@@ -38,6 +38,8 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
 using Nito.AsyncEx;
 using NINA.Core.Enum;
+using NINA.Equipment.Exceptions;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
@@ -49,6 +51,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         IDeviceChooserVM cameraChooserVM) : base(profileService) {
             Title = Loc.Instance["LblCamera"];
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
+            HasSettings = true;
 
             DeviceChooserVM = cameraChooserVM;
 
@@ -162,10 +165,17 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 });
 
                 if (Cam.Temperature < 20) {
-                    try {
-                        await RegulateTemperature(20, duration, false, progressRouter, ct);
-                    } catch (CannotReachTargetTemperatureException) {
-                        Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
+                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
+                        try {
+                            timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
+                            await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
+                        } catch(OperationCanceledException) { 
+                            if(timeoutCts?.IsCancellationRequested != true) {
+                                throw;
+                            }
+                        } catch (CannotReachTargetTemperatureException) {
+                            Logger.Info("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
+                        }
                     }
                 }
 
@@ -427,6 +437,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 TargetTemp = this.profileService.ActiveProfile.CameraSettings.Temperature ?? -10;
                             }
 
+                            await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} Driver Version: {Cam.DriverVersion}");
 
                             return true;
@@ -621,15 +632,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             Cam = null;
             CameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
             BroadcastCameraInfo();
-        }
-
-        public IAsyncEnumerable<int> GetValues() {
-            return new AsyncEnumerable<int>(async yield => {
-                await _cam.DownloadLiveView(new CancellationToken()).ConfigureAwait(false);
-
-                // Yes, it's even needed for 'yield.ReturnAsync'
-                await yield.ReturnAsync(123).ConfigureAwait(false);
-            });
+            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public IAsyncEnumerable<IExposureData> LiveView(CaptureSequence sequence, CancellationToken ct) {
@@ -746,8 +749,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
                             Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
                             if (!token.IsCancellationRequested) {
-                                Logger.Error($"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
-                                Notification.ShowError(string.Format(Loc.Instance["LblCameraTimeout"], profileService.ActiveProfile.CameraSettings.Timeout));
+                                var downloadFailedException = new CameraDownloadFailedException(sequence, $"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
+                                Logger.Error(downloadFailedException);
+                                await (DownloadTimeout?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                                throw downloadFailedException;
                             }
                         } finally {
                             try { progressCountCts?.Cancel(); } catch { }
@@ -852,7 +857,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 BroadcastCameraInfo();
                 if (output != null) {
                     output.MetaData.FromProfile(this.profileService.ActiveProfile);
-                    output.MetaData.FromCameraInfo(this.CameraInfo);
                     output.MetaData.Image.ExposureTime = this.exposureTime;
                 }
                 return output;
@@ -972,6 +976,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         private IApplicationStatusMediator applicationStatusMediator;
         private double exposureTime;
+
+        public event Func<object, EventArgs, Task> Connected;
+        public event Func<object, EventArgs, Task> Disconnected;
+        public event Func<object, EventArgs, Task> DownloadTimeout;
 
         public IAsyncCommand ConnectCommand { get; private set; }
 

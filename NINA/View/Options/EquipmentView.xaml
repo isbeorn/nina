@@ -38,7 +38,14 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <GroupBox DataContext="{Binding CameraSettings}" Header="{ns:Loc LblCamera}">
+            <GroupBox DataContext="{Binding CameraSettings}">
+                <GroupBox.Header>
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblCamera}" />
+                </GroupBox.Header>
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
                         <UniformGrid
@@ -343,41 +350,48 @@
             <GroupBox
                 Grid.RowSpan="2"
                 Grid.Column="1"
-                DataContext="{Binding FilterWheelSettings}"
-                Header="{ns:Loc LblFilterWheel}">
+                DataContext="{Binding FilterWheelSettings}">
+
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="20"
+                            Text="{ns:Loc LblFilterWheel}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="35"
+                            Height="35"
+                            Margin="5,0,5,0"
+                            Command="{Binding Data.AddFilterCommand, Source={StaticResource proxy}}"
+                            Style="{StaticResource BackgroundButton}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource AddSVG}"
+                                Fill="{StaticResource PrimaryBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </GroupBox.Header>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
                         <RowDefinition />
-                        <RowDefinition Height="50" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,5,0,0"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                MinWidth="200"
-                                MinHeight="20"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblDisableGuidingOnFilterChange}">
-                                <TextBlock.ToolTip>
-                                    <TextBlock Text="{ns:Loc LblDisableGuidingOnFilterChangeTooltip}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding DisableGuidingOnFilterChange}" />
-                        </UniformGrid>
-                    </UniformGrid>
                     <DataGrid
-                        Grid.Row="1"
                         Margin="0,10,0,0"
                         AutoGenerateColumns="False"
                         CanUserAddRows="False"
                         HeadersVisibility="Column"
                         HorizontalScrollBarVisibility="Disabled"
                         ItemsSource="{Binding FilterWheelFilters}"
-                        SelectedItem="{Binding DataContext.SelectedFilter, ElementName=UC}"
                         SelectionMode="Single"
                         VerticalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
@@ -418,37 +432,48 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="40"
+                                Header=""
+                                IsReadOnly="True">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                            Width="25"
+                                            Height="25"
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding Data.RemoveFilterCommand, Source={StaticResource proxy}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource BackgroundButton}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource TrashCanSVG}"
+                                                Fill="{StaticResource PrimaryBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Grid Grid.Row="2" DataContext="{Binding DataContext, ElementName=UC}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <Button
-                                Width="40"
-                                Margin="0,5,0,5"
-                                Command="{Binding AddFilterCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource AddSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Grid.Column="1"
-                                Width="40"
-                                Margin="1,5,0,5"
-                                Command="{Binding RemoveFilterCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource TrashCanSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDisableGuidingOnFilterChange}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDisableGuidingOnFilterChangeTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox HorizontalAlignment="Left" IsChecked="{Binding DisableGuidingOnFilterChange}" />
+                    </StackPanel>
                 </Grid>
             </GroupBox>
             <GroupBox
@@ -613,133 +638,125 @@
                 DataContext="{Binding WeatherDataSettings}"
                 Header="{ns:Loc LblWeather}">
 
-                <StackPanel Orientation="Vertical">
-                    <UniformGrid Columns="2">
+                <StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblOpenWeatherMapAPIKey}" />
+                        <DockPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding OpenWeatherMapAPIKey}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
 
-                        <UniformGrid
-                            Margin="0,5,0,0"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="160"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblOpenWeatherMapAPIKey}" />
-                            <DockPanel>
-                                <TextBox
-                                    MinWidth="190"
-                                    MaxWidth="190"
-                                    DockPanel.Dock="Left"
-                                    Text="{Binding OpenWeatherMapAPIKey}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Width="Auto"
-                                    Margin="2,0,0,0"
-                                    VerticalAlignment="Center"
-                                    DockPanel.Dock="Right"
-                                    FontWeight="Bold"
-                                    Text="">
-                                    <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
-                                        <Run Text="?" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </DockPanel>
-                        </UniformGrid>
-                    </UniformGrid>
 
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,5,0,0"
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Columns="2">
+                            Text="{ns:Loc LblTheWeatherCompanyAPIKey}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding TheWeatherCompanyAPIKey}" />
                             <TextBlock
-                                Width="200"
-                                HorizontalAlignment="Left"
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblTheWeatherCompanyAPIKey}" />
-                            <DockPanel>
-                                <TextBox
-                                    MinWidth="190"
-                                    MaxWidth="190"
-                                    DockPanel.Dock="Left"
-                                    Text="{Binding TheWeatherCompanyAPIKey}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Width="Auto"
-                                    Margin="2,0,0,0"
-                                    VerticalAlignment="Center"
-                                    DockPanel.Dock="Right"
-                                    FontWeight="Bold"
-                                    Text="">
-                                    <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://weather.service-now.com/apicustomer">
-                                        <Run Text="?" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </DockPanel>
-                        </UniformGrid>
-                    </UniformGrid>
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,5,0,0"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://weather.service-now.com/apicustomer">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
+
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Columns="2">
+                            Text="{ns:Loc LblWeatherUndergroundAPIKey}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding WeatherUndergroundAPIKey}" />
                             <TextBlock
-                                Width="200"
-                                HorizontalAlignment="Left"
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblWeatherUndergroundAPIKey}" />
-                            <DockPanel>
-                                <TextBox
-                                    MinWidth="190"
-                                    MaxWidth="190"
-                                    DockPanel.Dock="Left"
-                                    Text="{Binding WeatherUndergroundAPIKey}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Width="Auto"
-                                    Margin="2,0,0,0"
-                                    VerticalAlignment="Center"
-                                    DockPanel.Dock="Right"
-                                    FontWeight="Bold"
-                                    Text="">
-                                    <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
-                                        <Run Text="?" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </DockPanel>
-                        </UniformGrid>
-                    </UniformGrid>
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,5,0,0"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                    </Grid>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Columns="2">
+                            Text="{ns:Loc LblWeatherUndergroundStationID}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding WeatherUndergroundStation}" />
                             <TextBlock
-                                Width="200"
-                                HorizontalAlignment="Left"
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblWeatherUndergroundStationID}" />
-                            <DockPanel>
-                                <TextBox
-                                    MinWidth="190"
-                                    MaxWidth="190"
-                                    DockPanel.Dock="Left"
-                                    Text="{Binding WeatherUndergroundStation}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Width="Auto"
-                                    Margin="2,0,0,0"
-                                    VerticalAlignment="Center"
-                                    DockPanel.Dock="Right"
-                                    FontWeight="Bold"
-                                    Text="">
-                                    <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
-                                        <Run Text="?" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </DockPanel>
-                        </UniformGrid>
-                    </UniformGrid>
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
 
@@ -777,182 +794,179 @@
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
-                            <ComboBox
-                                Name="PART_PlanetariumList"
-                                Grid.Column="1"
-                                MinWidth="150"
-                                Margin="10,0,0,0"
-                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
-                                SelectedItem="{Binding PreferredPlanetarium}" />
-                        </StackPanel>
-                    </Grid>
-                    <Grid Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel
-                            Margin="0,5,0,0"
-                            Orientation="Horizontal"
-                            Visibility="Visible">
-                            <TextBlock
-                                Width="140"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblHost}" />
-                            <TextBox Height="25" MinWidth="200">
-                                <TextBox.Style>
-                                    <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="CdCHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="StellariumHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="TSXHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="HNSKYHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="C2AHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="SkytechXHost" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-                        </StackPanel>
-
-                        <StackPanel
-                            Grid.Row="0"
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
+                        <ComboBox
+                            Name="PART_PlanetariumList"
                             Grid.Column="1"
-                            Margin="5,5,0,0"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Width="140"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblPort}" />
-                            <TextBox Height="25" MinWidth="150">
-                                <TextBox.Style>
-                                    <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="CdCPort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="StellariumPort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="TSXPort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="HNSKYPort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="C2APort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
-                                                <Setter Property="Text">
-                                                    <Setter.Value>
-                                                        <Binding Mode="TwoWay" Path="SkytechXPort">
-                                                            <Binding.ValidationRules>
-                                                                <rules:IsValidIpPortRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-                        </StackPanel>
+                            MinWidth="150"
+                            Margin="10,0,0,0"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
+                            SelectedItem="{Binding PreferredPlanetarium}" />
 
-                        <StackPanel
+                        <TextBlock
                             Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="0,5,0,5"
-                            Orientation="Horizontal">
-                            <StackPanel.Style>
-                                <Style TargetType="{x:Type StackPanel}">
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblHost}" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Height="25"
+                            MinWidth="200"
+                            Margin="10,5,0,0">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="CdCHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="StellariumHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="TSXHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="HNSKYHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="C2AHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="SkytechXHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPort}" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Height="25"
+                            MinWidth="150"
+                            Margin="10,5,0,0">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="CdCPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="StellariumPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="TSXPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="HNSKYPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="C2APort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="SkytechXPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlanetariumUseSelectedObject}">
+
+                            <TextBlock.Style>
+                                <Style BasedOn="{StaticResource StandardTextBlock}" TargetType="{x:Type TextBlock}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=PART_PlanetariumList}" Value="THESKYX">
@@ -960,16 +974,28 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </StackPanel.Style>
-                            <TextBlock
-                                MinWidth="185"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblPlanetariumUseSelectedObject}" />
-                            <CheckBox
-                                Height="25"
-                                HorizontalAlignment="Left"
-                                IsChecked="{Binding TSXUseSelectedObject}" />
-                        </StackPanel>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <CheckBox
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Height="25"
+                            Margin="10,5,0,0"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding TSXUseSelectedObject}">
+
+
+                            <CheckBox.Style>
+                                <Style BasedOn="{StaticResource StandardCheckBox}" TargetType="{x:Type CheckBox}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=PART_PlanetariumList}" Value="THESKYX">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
                     </Grid>
                 </StackPanel>
             </GroupBox>
