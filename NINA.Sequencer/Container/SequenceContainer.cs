@@ -468,8 +468,20 @@ namespace NINA.Sequencer.Container {
             }
         }
 
+        public void ResetTriggers() {
+            lock (lockObj) {
+                foreach (ISequenceTrigger trigger in Triggers) {
+                    trigger.Status = SequenceEntityStatus.CREATED;
+                    if (trigger is SequenceTrigger seqTrigger) {
+                        seqTrigger.TriggerRunner.ResetAll();
+                    }
+                }
+            }
+        }
+
         public void ResetAll() {
             lock (lockObj) {
+                ResetTriggers();
                 ResetConditions();
                 ResetProgress();
                 foreach (var child in Items) {
