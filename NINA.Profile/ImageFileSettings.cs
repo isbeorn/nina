@@ -35,7 +35,6 @@ namespace NINA.Profile {
             filePatternDARK = "";
             filePatternBIAS = "";
             filePatternFLAT = "";
-            filePatternDARKFLAT = "";
             fileType = FileTypeEnum.FITS;
             tiffCompressionType = TIFFCompressionTypeEnum.NONE;
             xisfCompressionType = XISFCompressionTypeEnum.NONE;
@@ -93,19 +92,6 @@ namespace NINA.Profile {
             set {
                 if (filePatternFLAT != value) {
                     filePatternFLAT = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private string filePatternDARKFLAT;
-
-        [DataMember]
-        public string FilePatternDARKFLAT {
-            get => filePatternDARKFLAT;
-            set {
-                if (filePatternDARKFLAT != value) {
-                    filePatternDARKFLAT = value;
                     RaisePropertyChanged();
                 }
             }
@@ -257,9 +243,6 @@ namespace NINA.Profile {
             }
             if (imageType == "FLAT" && !string.IsNullOrWhiteSpace(FilePatternFLAT)) {
                 pattern = FilePatternFLAT;
-            }
-            if (imageType == "DARKFLAT" && !string.IsNullOrWhiteSpace(FilePatternDARKFLAT)) {
-                pattern = FilePatternDARKFLAT;
             }
             if (imageType == "BIAS" && !string.IsNullOrWhiteSpace(FilePatternBIAS)) {
                 pattern = FilePatternBIAS;

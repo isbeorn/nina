@@ -958,7 +958,7 @@ Dec: {1}</value>
     <value>Против часовой стрелки</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Покройте телескоп сейчас и нажмите OK, чтобы начать съёмку дарк флэтов.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Покройте телескоп сейчас</value>
@@ -985,7 +985,7 @@ Dec: {1}</value>
     <value>Каталог Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Дарк флэты снять</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Перемещение для процедуры D.A.R.V.</value>
@@ -1477,7 +1477,7 @@ Dec: {1}</value>
     <value>Открыть</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Задать</value>
@@ -2538,7 +2538,7 @@ Dec: {1}</value>
     <value>Подготовка изображения</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Подготовка серии дарк флэтов</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Флэты для фильтра: {0}</value>
@@ -2610,7 +2610,7 @@ Dec: {1}</value>
     <value>Режим чтения для серий</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Этот режим чтения вашей камеры будет использоваться для кадров LIGHT, BIAS, DARK, FLAT и DARKFLAT в серии.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Режим чтения для снимков</value>
@@ -5283,10 +5283,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Перемещение ротатора в позицию {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Находит настроенное значение экспозиции для указанных параметров и делает темные флэт экспозиции</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Обученная дарк флэт экспозиция</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Левая сторона</value>
@@ -6864,5 +6864,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

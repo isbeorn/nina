@@ -113,6 +113,12 @@ namespace NINA.Equipment.Model {
                 xmlSerializer.UnknownAttribute += XmlSerializer_UnknownAttribute;
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
+                foreach (var s in l.Items) {
+                    // Migration of values prior to 3.0
+                    if (s.ImageType == "DARKFLAT") {
+                        s.ImageType = CaptureSequence.ImageTypes.DARK;
+                    }
+                }
                 AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -155,11 +161,17 @@ namespace NINA.Equipment.Model {
             List<CaptureSequenceList> c = null;
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<CaptureSequenceList>));
-                xmlSerializer.UnknownAttribute += XmlSerializer_UnknownAttribute;
+                xmlSerializer.UnknownAttribute += XmlSerializer_UnknownAttribute;                
 
                 c = (List<CaptureSequenceList>)xmlSerializer.Deserialize(stream);
                 
                 foreach (var l in c) {
+                    foreach(var s in l.Items) {
+                        // Migration of values prior to 3.0
+                        if (s.ImageType == "DARKFLAT") {
+                            s.ImageType = CaptureSequence.ImageTypes.DARK;
+                        }
+                    }
                     AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
                 }
             } catch (Exception ex) {

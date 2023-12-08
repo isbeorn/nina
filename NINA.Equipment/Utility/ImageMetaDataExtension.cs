@@ -48,6 +48,7 @@ namespace NINA.Equipment.Utility {
                 data.Camera.USBLimit = info.USBLimit;
 
                 if (info.ReadoutModes?.Count > 1) {
+                    data.Camera.ReadoutModeIndex = info.ReadoutMode;
                     data.Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
                 }
 
@@ -83,6 +84,7 @@ namespace NINA.Equipment.Utility {
                 data.Camera.USBLimit = info.USBLimit;
 
                 if (info.ReadoutModes.Count() > 1) {
+                    data.Camera.ReadoutModeIndex = info.ReadoutMode;
                     data.Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
                 }
 

@@ -57,7 +57,7 @@ namespace NINA.Image.ImageData {
         public BaseImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData, IProfileService profileService, IStarDetection starDetection, IStarAnnotator starAnnotator) {
             Data = imageArray;
             MetaData = metaData;
-            Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, gain: metaData.Camera.Gain);
+            Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, gain: metaData.Camera.Gain, offset: metaData.Camera.Offset);
             StarDetectionAnalysis = starDetection.CreateAnalysis();
             Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
             this.profileService = profileService;

@@ -393,6 +393,11 @@ namespace NINA.Astrometry {
                 }
             }
 
+            // Prevent "-0" when using ToString
+            if(arcsec == 0) { arcsec = 0; }
+            if(arcmin == 0) { arcmin = 0; }
+            if(degree == 0) { degree = 0; }
+
             return string.Format(pattern, degree, arcmin, arcsec);
         }
 

@@ -956,7 +956,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>En sentido contrario al reloj</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cubre ahora tu telescopio y presiona OK para comenzar a tomar los dark flats.</value>
+    <value>Cubre ahora tu telescopio y presiona OK para comenzar a tomar los dark.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Cubre ahora tu telescopio</value>
@@ -983,7 +983,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Directorio de Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Dark Flats a capturar</value>
+    <value>Darks a capturar</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Ir a D.A.R.V. </value>
@@ -1475,7 +1475,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Abrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Abrir la tapa para tomar dark flats</value>
+    <value>Abrir la tapa para tomar darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fijar</value>
@@ -2536,7 +2536,7 @@ HFR calculada: {2}
     <value>Preparando Imagen</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparando secuencia de DarkFlats</value>
+    <value>Preparando secuencia de Darks</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flats para el filtro: {0}</value>
@@ -2608,7 +2608,7 @@ HFR calculada: {2}
     <value>Modo de lectura para Secuencias</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Este modo de lectura de tu cámara se usará para capturas LIGHT, BIAS, DARK, FLAT y DARKFLAT en las secuencias.</value>
+    <value>Este modo de lectura de tu cámara se usará para capturas LIGHT, BIAS, DARK y FLAT en las secuencias.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Modo de lectura para capturas</value>
@@ -5279,10 +5279,10 @@ Para condiciones que cambian rápidamente, un menor tamaño de muestra ayudará 
     <value>Moviendo el rotador a la posición {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Busca el valor de exposición entrenado para los parámetros especificados y toma los darkflats con ellos</value>
+    <value>Busca el valor de exposición entrenado para los parámetros especificados y toma los darks</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Exposición estimada para darkflats</value>
+    <value>Exposición entrenada de darks</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Lado izquierdo</value>
@@ -6860,5 +6860,11 @@ Aumenta el tiempo mínimo de exposición o espera hasta que sea más brillante.<
 Sin embargo, es crucial tener en cuenta que este proceso requerirá más memoria, aumentará el tiempo de procesamiento y utilizará espacio adicional en disco para cada exposición.
 Tenga en cuenta que sólo los formatos de archivo XISF y FITS pueden almacenar datos de imagen en este formato de 32 bits. 
 Además, es esencial que el controlador ASCOM utilizado también admita esta profundidad de 32 bits. Si el controlador no admite la profundidad de 32 bits, el aumento del tamaño del archivo resultante de esta configuración sólo supondría un desperdicio de espacio sin ninguna mejora en los datos de imagen.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Usar CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>Cuando esta función está activada, los archivos FITS se crearán usando la biblioteca CFITSIO, que es una alternativa al método por defecto del programa de escribir estos archivos. Este cambio permite funciones adicionales, tales como la capacidad de comprimir archivos FITS en un tamaño de archivo reducido y la opción de almacenar datos en un formato de 32 bits para mejorar la precisión de los datos.</value>
   </data>
 </root>

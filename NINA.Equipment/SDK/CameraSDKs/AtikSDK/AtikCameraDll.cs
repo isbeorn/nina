@@ -30,6 +30,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         private const string DLLNAME = "AtikCameras.dll";
 
         static AtikCameraDll() {
+            DllLoader.LoadDll(Path.Combine("Atik", "Atik.Core.dll"));
             DllLoader.LoadDll(Path.Combine("Atik", DLLNAME));
         }
 
@@ -74,6 +75,20 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
             if (camera != IntPtr.Zero) {
                 CheckError(ArtemisStartExposure(camera, (float)exposuretime), MethodBase.GetCurrentMethod(), camera);
             }
+        }
+
+        public static void StartFastExposure(IntPtr camera, int milliseconds) {
+            if (camera != IntPtr.Zero) {
+                ArtemisStartFastExposure(camera, milliseconds);
+            }
+        }
+
+        public static bool SetFastCallbackEx(IntPtr camera, ArtemisSetFastCallback func) {
+            return ArtemisSetFastCallbackEx(camera, func);
+        }
+
+        public static bool HasFastMode(IntPtr camera) {
+            return ArtemisHasFastMode(camera);
         }
 
         public static void SetSubFrame(IntPtr camera, int x, int y, int width, int height) {
@@ -221,7 +236,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
             return outstruct;
         }
 
-        public static bool HasCameraSpecificOption(IntPtr camera, ushort id) {
+        public static bool HasCameraSpecificOption(IntPtr camera, AtikCameraSpecificOptions id) {
             return ArtemisHasCameraSpecificOption(camera, id);
         }
 
@@ -229,12 +244,12 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
             CheckError(ArtemisSetAmplifierSwitched(camera, isOn), MethodBase.GetCurrentMethod(), camera);
         }
 
-        public static void CameraSpecificOptionGetData(IntPtr camera, ushort id, ref byte[] data) {
+        public static void CameraSpecificOptionGetData(IntPtr camera, AtikCameraSpecificOptions id, ref byte[] data) {
             int length = 0;
             CheckError(ArtemisCameraSpecificOptionGetData(camera, id, data, data.Length, ref length), MethodBase.GetCurrentMethod(), camera);
         }
 
-        public static void CameraSpecificOptionSetData(IntPtr camera, ushort id, byte[] data) {
+        public static void CameraSpecificOptionSetData(IntPtr camera, AtikCameraSpecificOptions id, byte[] data) {
             CheckError(ArtemisCameraSpecificOptionSetData(camera, id, data, data.Length), MethodBase.GetCurrentMethod(), camera);
         }
 
@@ -529,6 +544,19 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         [DllImport(DLLNAME, EntryPoint = "ArtemisStartExposureMS", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern ArtemisErrorCode ArtemisStartExposureMS(IntPtr camera, int milliseconds);
 
+        /// <summary>
+        /// Start continous expsures using the current camera settings. Image data is retrieved via callback.
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisStartFastExposure", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern bool ArtemisStartFastExposure(IntPtr camera, int milliseconds);
+
+        [DllImport(DLLNAME, EntryPoint = "ArtemisSetFastCallbackEx", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern bool ArtemisSetFastCallbackEx(IntPtr camera, ArtemisSetFastCallback func);
+
+        [DllImport(DLLNAME, EntryPoint = "ArtemisHasFastMode", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern bool ArtemisHasFastMode(IntPtr camera);
+
+        /// <summary>
         /// Set camera dark mode to enabled (will keep shutter closed)
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisSetDarkMode", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -571,14 +599,14 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// Will populate the given values with the details of the image
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisGetImageData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisGetImageData(IntPtr camera, out int x, out int y, out int w, out int h, out int binX, out int binY);
+        public static extern ArtemisErrorCode ArtemisGetImageData(IntPtr camera, out int x, out int y, out int w, out int h, out int binX, out int binY);
 
         /// <summary>
         /// Returns a pointer to the image buffer. You should call ArtemisGetImageData first to find
         /// out the dimensions of the image. This will return 0 if there is no image.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisImageBuffer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern IntPtr ArtemisImageBuffer(IntPtr camera);
+        public static extern IntPtr ArtemisImageBuffer(IntPtr camera);
 
         /// <summary>
         /// Used to set the binning values of the exposure. The function will return an error code as
@@ -671,7 +699,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// <param name="id">the camera specific option</param>
         /// <returns>true if supported, false if not.</returns>
         [DllImport(DLLNAME, EntryPoint = "ArtemisHasCameraSpecificOption", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern bool ArtemisHasCameraSpecificOption(IntPtr camera, ushort id);
+        private static extern bool ArtemisHasCameraSpecificOption(IntPtr camera, AtikCameraSpecificOptions id);
 
         /// <summary>
         /// Used to get the specified option's current value. Please check that the current camera has this option using ArtemisHasCameraSpecificOption()
@@ -683,7 +711,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// <param name="actualLength"></param>
         /// <returns>ARTEMIS_OK on success, ARTEMIS_INVALID_PARAM if the opton is not available or ARTEMISERROR on failure</returns>
         [DllImport(DLLNAME, EntryPoint = "ArtemisCameraSpecificOptionGetData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisCameraSpecificOptionGetData(IntPtr camera, ushort id, [In, Out] byte[] data, int dataLength, ref int actualLength);
+        private static extern ArtemisErrorCode ArtemisCameraSpecificOptionGetData(IntPtr camera, AtikCameraSpecificOptions id, [In, Out] byte[] data, int dataLength, ref int actualLength);
 
         /// <summary>
         /// Used to set the specified option's value. Please check that the current camera has this option using ArtemisHasCameraSpecificOption()
@@ -694,7 +722,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// <param name="dataLength"></param>
         /// <returns>ARTEMIS_OK on success, ARTEMIS_INVALID_PARAM if the opton is not available or ARTEMISERROR on failure</returns>
         [DllImport(DLLNAME, EntryPoint = "ArtemisCameraSpecificOptionSetData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisCameraSpecificOptionSetData(IntPtr camera, ushort id, [In, Out] byte[] data, int dataLength);
+        private static extern ArtemisErrorCode ArtemisCameraSpecificOptionSetData(IntPtr camera, AtikCameraSpecificOptions id, [In, Out] byte[] data, int dataLength);
 
         /// <summary>
         /// Gets the window heater power.
@@ -722,6 +750,9 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// <returns>ARTEMIS_OK on success, ARTEMARTEMIS_INVALID_PARAMETER if the device does not have a window heater, or ARTEMISERROR enumeration on failure</returns>
         [DllImport(DLLNAME, EntryPoint = "ArtemisSetAmplifierSwitched", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern ArtemisErrorCode ArtemisSetAmplifierSwitched(IntPtr camera, bool isOn);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void ArtemisSetFastCallback(IntPtr camera, int x, int y, int w, int h, int binx, int biny, IntPtr imageBuffer, IntPtr info);
 
         /*
          * Not yet added: Internal and External Filter Wheel and Guiding Methods.
@@ -1113,6 +1144,13 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
             public SensorType SensorType { get; set; } = SensorType.Monochrome;
             public short BayerOffsetX { get; set; } = 0;
             public short BayerOffsetY { get; set; } = 0;
+        }
+
+        public class PresetInformation {
+            public AtikCameraSpecificOptions Id { get; set; } = 0;
+            public string Name { get; set; } = string.Empty;
+            public ushort Gain { get; set; } = 0;
+            public ushort Offset { get; set; } = 0;
         }
 
         private static void CheckError(ArtemisErrorCode code, MethodBase callingMethod, params object[] parameters) {

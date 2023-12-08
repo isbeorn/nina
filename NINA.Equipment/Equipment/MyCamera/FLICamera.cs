@@ -801,8 +801,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
              * Darks and Bias frames both get set to same type.
              */
             isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
-                sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
-                sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
+                sequence.ImageType == CaptureSequence.ImageTypes.DARK;
 
             FrameType = isDarkFrame ? LibFLI.FLIFrameType.DARK : LibFLI.FLIFrameType.NORMAL;
 

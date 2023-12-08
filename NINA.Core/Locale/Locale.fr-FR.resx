@@ -964,7 +964,7 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>Antihoraire</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Couvrez votre tube maintenant et pressez OK pour démarrer la prise des Noirs.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Couvrez votre tube maintenant</value>
@@ -991,7 +991,7 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>Répertoire Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Noirs de PLU</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. pointage</value>
@@ -1484,7 +1484,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Ouvrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ajuster</value>
@@ -2545,7 +2545,7 @@ HFR calculé: {2}</value>
     <value>Image en préparation</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Séquence des Noirs de PLUs en préparation</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Filtre pour PLU: {0}</value>
@@ -2617,7 +2617,7 @@ HFR calculé: {2}</value>
     <value>Mode de lecture pour les séquences</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Ce mode de lecture de votre caméra sera utilisé pour les images LIGHT, BIAS, DARK, FLAT et DARKFLAT dans les séquences.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Mode de lecture pour les instantanés</value>
@@ -5287,10 +5287,10 @@ Un nombre plus restreint aidera à répondre plus rapidement à un changement de
     <value>Déplacement du rotateur vers la position {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Recherche la valeur d'exposition formée pour les paramètres spécifiés et prend des expositions de dark flat</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Valeur d'exposition de dark flat</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Côté gauche</value>
@@ -6867,5 +6867,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

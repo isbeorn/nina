@@ -17,6 +17,7 @@ using NINA.Sequencer.SequenceItem;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
+using System.Diagnostics;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -32,6 +33,13 @@ namespace NINA.Sequencer.Serialization {
         public override ISequenceItem Create(Type objectType, JObject jObject) {
             if (jObject.SelectToken("Strategy.$type") != null) {
                 return sequenceContainerCreationConverter.Create(objectType, jObject);
+            }
+
+            if(jObject.TryGetValue("ImageType", out var value)) {                
+                if(value.Value<string>() == "DARKFLAT") {
+                    // Migration of values prior to 3.0
+                    jObject["ImageType"] = new JValue("DARK");
+                }
             }
 
             if (jObject.TryGetValue("$type", out var token)) {

@@ -964,7 +964,7 @@ Se è necessaria una durata più lunga, è possibile specificare una durata e l'
     <value>Antiorario</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Copri il telescopio e premi OK per iniziare a catturare i flat scuri.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Copri il telescopio ora</value>
@@ -991,7 +991,7 @@ Se è necessaria una durata più lunga, è possibile specificare una durata e l'
     <value>Directory Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Flats Scuri da prendere</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Puntamento D.A.R.V</value>
@@ -1484,7 +1484,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Aperto</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Insieme</value>
@@ -2545,7 +2545,7 @@ HFR Calcolato: {2}
     <value>Preparazione Immagine</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparazione Sequenza Flat Scuri</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flats per filtro: {0}</value>
@@ -2617,7 +2617,7 @@ HFR Calcolato: {2}
     <value>Modalità lettura per Sequenze</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Questa modalità lettura della tua camera sarà usata per fotogrammi LIGHT, BIAS, DARK, FLAT e DARKFLAT nelle sequenze.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Modo lettura per snapshot</value>
@@ -5288,10 +5288,10 @@ Per condizoini che cambiano rapidamente, una dimensione del campione più piccol
     <value>Spostamento del rotatore alla posizione {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Cerca il valore di esposizione addestrato per i parametri specificati e scatta dark flats</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Esposizione Dark Flats Addestrata</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Lato sinistro</value>
@@ -6869,5 +6869,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

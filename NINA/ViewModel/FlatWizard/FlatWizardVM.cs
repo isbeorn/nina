@@ -536,7 +536,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                     SequenceContainer flatInstruction = GetInstructionForMode(filterSettings);
 
-                    // Keep the panel closed when there are more filters to take flats with or if the user specified to take dark flats and the setting to open for dark flats is off
+                    // Keep the panel closed when there are more filters to take flats with or if the user specified to take darks and the setting to open for darks is off
                     if((filterCount < totalCount) || (!profileService.ActiveProfile.FlatWizardSettings.OpenForDarkFlats && DarkFlatCount > 0)) { 
                         if (flatInstruction is AutoExposureFlat aef1) {
                             aef1.KeepPanelClosed = true;
@@ -617,7 +617,7 @@ namespace NINA.ViewModel.FlatWizard {
                         });
 
                         var darkFlatsSequence = new CaptureSequence(keyValuePair.Value.time,
-                                                                    CaptureSequence.ImageTypes.DARKFLAT,
+                                                                    CaptureSequence.ImageTypes.DARK,
                                                                     keyValuePair.Key.Filter,
                                                                     keyValuePair.Key.Settings.Binning,
                                                                     DarkFlatCount) { Gain = keyValuePair.Key.Settings.Gain, Offset = keyValuePair.Key.Settings.Offset };

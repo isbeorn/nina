@@ -70,7 +70,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFAddAttachedImageTest() {
-            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[] {
                 1,1,1,
@@ -101,7 +101,7 @@ namespace NINA.Test {
         [TestCase("0000000000000000000000000000000000", "7168")]
         [TestCase("000000000000000000000000000000000", "6144")]
         public async Task XISFAddAttachedImage_Special_Test(string value, string expectedAttachmentLocation) {
-            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[] {
                 1,1,1,
@@ -141,7 +141,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressLZ4Test() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -169,7 +169,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressLZ4ShuffledTest() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -198,7 +198,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressLZ4HCTest() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -226,7 +226,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressLZ4HCShuffledTest() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -255,7 +255,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressZLibTest() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -283,7 +283,7 @@ namespace NINA.Test {
         [Test]
         public void XISFCompressZLibShuffledTest() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             var length = data.Length * sizeof(ushort);
@@ -312,7 +312,7 @@ namespace NINA.Test {
         [Test]
         public void XISFChecksumSHA1Test() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             const string checksum = "ca711c69165e1fa5be72993b9a7870ef6d485249";
@@ -339,7 +339,7 @@ namespace NINA.Test {
         [Test]
         public void XISFChecksumSHA256Test() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             const string checksum = "2d864c0b789a43214eee8524d3182075125e5ca2cd527f3582ec87ffd94076bc";
@@ -366,7 +366,7 @@ namespace NINA.Test {
         [Test]
         public void XISFChecksumSHA512Test() {
             const int imgSize = 128;
-            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: imgSize, height: imgSize, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             const string imageType = "LIGHT";
             var data = new ushort[imgSize * imgSize];
             const string checksum = "b0dbd95e5dbe70819049ae5f10340a2c29fa630ac3afd6b3cbf97865cea418dbecf718ea6e15a596c7e8a40b9372b85ac82f602092438570247afc418650db0b";
@@ -430,7 +430,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImageMetaDataTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "TestType";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -450,7 +450,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImageMetaDataSNAPTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "SNAPSHOT";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -550,7 +550,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImagePropertyNoFITSTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "TestType";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -573,7 +573,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImagePropertyNoAutoFITSTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "TestType";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -597,7 +597,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImagePropertyAutoFITSTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "TestType";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -634,7 +634,7 @@ namespace NINA.Test {
 
         [Test]
         public void XISFHeaderAddImageFITSKeywordTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false, gain: 0, offset: 0);
             var imageType = "TestType";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -666,7 +666,7 @@ namespace NINA.Test {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), "LIGHT");
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), "LIGHT");
             sut.Populate(metaData);
 
             //Assert
@@ -730,7 +730,7 @@ namespace NINA.Test {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -800,7 +800,7 @@ namespace NINA.Test {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -851,7 +851,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -907,7 +907,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -954,7 +954,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -1004,7 +1004,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -1058,7 +1058,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -1105,7 +1105,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -1161,7 +1161,7 @@ namespace NINA.Test {
             var sut = new XISFHeader();
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
-            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false, gain: 0, offset: 0), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             foreach (var property in expectedProperties) {

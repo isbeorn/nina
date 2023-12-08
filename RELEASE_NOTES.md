@@ -20,6 +20,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 - The native driver for PrimaLuceLab EAGLE has been removed. The EAGLE ASCOM Switch Driver supersedes this implemenatation and should be used instead.
 - SGP Server API has been removed from the core application. Instead this is available as a plugin via "SGP Server Emulation"
 - Touptek, RisingCam, Altair, MallinCam, OgmaCam and OmegonCam now supports HDR modes if available. The "High Conversion Gain" toggle has been removed and instead this is controlled via ReadoutModes!
+- DARKFLAT has been removed from the selection of image types. They really are just DARKs and are classified as such. Previous saved sequences and templates will be automatically migrated.
 
 ## .NET 8
 - The application has transitioned to .NET 8. This is not merely a version upgrade from the previously used .NET Framework 4.8. Instead, .NET 8 is rooted in .NET Core, representing a complete rewrite of the .NET Framework by Microsoft. This marks a significant technical advancement for N.I.N.A.
@@ -59,7 +60,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 - Reverse autofocus direction when backlash compensation mode is set to "Overshoot" and a BacklashIN value is specified, to reduce the amount of required backlash compensation during autofocus
 - Native autofocus will now properly show star detection result in the image statistics panel
 - The native autofocus mechanism has been upgraded to simultaneously process images while shifting to new focus points, which enhances the speed of the entire autofocus operation.
-
+- Offset is now displayed next to Gain in the Image Statistics window
 
 ## Commandline Options
 - Multiple command line options have been added to be able to adjust some of the startup parameters for the application
@@ -77,7 +78,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 - The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.
 - Additionally it is now also possible to specify a camera offset
 - A step size is no longer required. The algorithm will now initiate at (Min+Max/2) and continually halve to determine the optimal exposure time.
-- The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, dark flats become redundant.
+- The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, darks become redundant.
 - Internally the flat wizard will now use the new advanced sequencer instructions
 - The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time
 

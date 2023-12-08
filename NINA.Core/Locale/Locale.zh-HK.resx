@@ -964,7 +964,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>逆時針</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>而家起埋你望遠鏡鏡頭蓋, 按 "確定" 開始拍攝暗场。</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>而家起埋你望遠鏡鏡頭蓋</value>
@@ -991,7 +991,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Cygwin 目錄</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>黑平場拍攝張數</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>極軸漂迻法移動</value>
@@ -1484,7 +1484,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>打開</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>設定</value>
@@ -2545,7 +2545,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>準備拍攝</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>帶暗平場序列</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>平場拍攝濾鏡: {0}</value>
@@ -2617,7 +2617,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>序列的讀出模式</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>相機嘅呢種讀出模式將用于序列中嘅光場, 偏置, 暗场, 平場同暗平場。</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>快照的讀取模式</value>
@@ -5290,10 +5290,10 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>Moving rotator to position {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark flat exposures</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Flat Exposure</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Left side</value>
@@ -6871,5 +6871,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

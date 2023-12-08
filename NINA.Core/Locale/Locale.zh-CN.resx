@@ -963,7 +963,7 @@
     <value>逆时针</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>现在盖上你的望远镜镜头盖，按“确定”开始拍摄暗场。</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>现在盖上你的望远镜镜头盖</value>
@@ -990,7 +990,7 @@
     <value>Cygwin 目录</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>暗平场拍摄张数</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Robert Vice 极轴漂移法</value>
@@ -1483,7 +1483,7 @@
     <value>打开</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>拍摄暗平场时打开镜头盖</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>设定</value>
@@ -2540,7 +2540,7 @@
     <value>准备拍摄</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>准备暗平场序列</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>平场拍摄滤镜: {0}</value>
@@ -2612,7 +2612,7 @@
     <value>序列的读出模式</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>相机的这种读出模式将用于序列中的亮场，偏置，暗场，平场和暗平场。</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>快照的读出模式</value>
@@ -5281,10 +5281,10 @@
     <value>移动旋转器到位置 {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>根据“训练过的平场曝光时间”，拍摄平场和暗平场</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>经过训练的暗平场曝光时间</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>左侧</value>
@@ -6861,5 +6861,11 @@ This should only be disabled when having a good pointing model that must not be 
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

@@ -482,7 +482,7 @@ namespace NINA.ViewModel {
 
 
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(0, Loc.Instance["LblAny"]));
-            for (int i = 10; i <= 90; i += 10) {
+            for (int i = 10; i <= 80; i += 10) {
                 MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(i, i + "°"));
             }
             MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(ALTITUDEABOVEHORIZONFILTER, Loc.Instance["LblAboveHorizon"]));

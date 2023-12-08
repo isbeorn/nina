@@ -618,8 +618,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public void StartExposure(CaptureSequence sequence) {
             var isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
-                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
-                               sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
+                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS;
             var readoutMode = SDK.CameraSDKs.SBIGSDK.ReadoutMode.Create(BinX);
             Point exposureStart;
             Size exposureSize;

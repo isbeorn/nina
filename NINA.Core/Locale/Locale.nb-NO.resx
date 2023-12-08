@@ -959,7 +959,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Mot klokka</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Dekk til teleskopet og klikk OK for å ta de mørke flatbildene.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Dekk til teleskopet nå</value>
@@ -986,7 +986,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Cygwin-mappe</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Antall mørke flatbilder</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. drift-poljustering</value>
@@ -1477,7 +1477,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
     <value>Åpne</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Åpne deksel for mørke flatbilder</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Sett</value>
@@ -2538,7 +2538,7 @@ Forventet HFR: {2}</value>
     <value>Forbereder bilde</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Forbereder sekvens for mørke flatbilder</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flatbilder for filter: {0}</value>
@@ -2610,7 +2610,7 @@ Forventet HFR: {2}</value>
     <value>Utlesingsmodus for sekvenser</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Denne utlesingsmodusen blir brukt til LIGHT, BIAS, DARK, FLAT og DARKFLAT-bilder i sekvenser.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Utlesingsmodus for enkeltbilder</value>
@@ -5274,10 +5274,10 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
     <value>Dreier til posisjon {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Finn innlært eksponeringstid basert på angitte parametre, og ta mørke flatbilder</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Innlært mørkt flatbilde</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Venstre side</value>
@@ -6850,5 +6850,11 @@ Reduser minste eksponeringstid eller vent til himmelen er mørkere.</value>
 Hvert eneste bilde vil da oppta mer minne, kreve lengre prosesseringstid og bruke mer lagringsplass.
 Husk at bare XISF og FITS-filformater kan lagre bildedata i 32 bit-format. 
 Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis ikke vil filstørrelsen øke uten økning i bitdybde.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Bruk CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>Når denne funksjonen er aktivert, vil FITS-filer bli skrevet ved hjelp av CFITSIO-biblioteket, som et alternativ til NINAs innebygde metoder. CFITSIO har mer funksjonalitet, som komprimering for å redusere filstørrelse og muligheten til å lagre data i 32-bits format for bedre presisjon.</value>
   </data>
 </root>

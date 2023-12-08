@@ -960,7 +960,7 @@ En cas que es necessiti una durada més llarga, es pot especificar aquesta durad
     <value>Sentit contrari a les agulles del rellotge</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Tapeu el vostre telescopi ara i premeu D'ACORD per començar a prendre els dark flats.</value>
+    <value>Tapeu el vostre abast ara i premeu D'ACORD per començar a prendre la foscor.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Tapa el telescopi ara</value>
@@ -987,7 +987,7 @@ En cas que es necessiti una durada més llarga, es pot especificar aquesta durad
     <value>Directori de Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Dark Flats a capturar</value>
+    <value>Darks per agafar</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Girar a D.A.R.V.</value>
@@ -1480,7 +1480,7 @@ Quan es desactivi aquest, l'aplicació només saltarà a l'inici de l'exposició
     <value>Obert</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Obre la tapa per a Dark flats</value>
+    <value>Obriu la coberta per als darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fixar</value>
@@ -2540,7 +2540,7 @@ HFR calculat: {2}    </value>
     <value>Preparant Imatge</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparant seqüència de Dark Flats</value>
+    <value>Preparant la seqüència de darks</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flats per al filtre: {0}</value>
@@ -2612,7 +2612,7 @@ HFR calculat: {2}    </value>
     <value>Mode de lectura de seqüències</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Aquest mode de lectura de la càmera s’utilitzarà per a fotogrames LIGHT, BIAS, DARK, FLAT i DARKFLAT en seqüències.</value>
+    <value>Aquest mode de lectura de la càmera s'utilitzarà per a fotogrames LIGHTS, BIAS, DARKS i FLATS en les seqüències.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Mode de lectura per a instantànies</value>
@@ -5279,10 +5279,10 @@ Per a condicions de canvi sobtat, una mida de mostra més petita ajudarà a resp
     <value>Movent el rotador a la posició {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Cerca el valor d’exposició entrenat per als paràmetres especificats i pren exposicions dark flat</value>
+    <value>Busca el valor d'exposició entrenat per als paràmetres especificats i pren exposicions darks</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Exposició de dark flat entrenada</value>
+    <value>Exposició entrenada de darks</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Costat esquerra</value>
@@ -6861,5 +6861,11 @@ Augmenta el temps d'exposició mínim o espera fins que sigui més brillant.</va
 Tanmateix, és crucial tenir en compte que aquest procés requerirà més memòria, augmentarà el temps de processament i utilitzarà espai de disc addicional per a cada exposició.
 Tingueu en compte que només els formats de fitxer XISF i FITS poden emmagatzemar dades d'imatge en aquest format de 32 bits.
 A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta profunditat de 32 bits. Si el controlador no admet una profunditat de 32 bits, l'augment de la mida del fitxer resultant d'aquesta configuració només comportaria una pèrdua d'espai sense cap millora en les dades d'imatge.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Utilitza CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>Quan està activada aquesta funció, els fitxers FITS es crearan mitjançant la biblioteca CFITSIO, que és una alternativa al mètode predeterminat del programa per escriure aquests fitxers. Aquest canvi permet funcionalitats addicionals, com ara la capacitat de comprimir fitxers FITS per reduir la mida del fitxer i l'opció d'emmagatzemar dades en un format de 32 bits per millorar la precisió de les dades.</value>
   </data>
 </root>

@@ -952,7 +952,7 @@ Dec[적위]: {1}</value>
     <value>반 시계 방향</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>망원경 덮개를 덮고 확인 버튼을 눌러 다크 플랫 촬영을 시작합니다.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>망원경 덮개를 덮어주세요</value>
@@ -979,7 +979,7 @@ Dec[적위]: {1}</value>
     <value>Cygwin 폴더</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>다크 플랫 촬영</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. 도입[Slew]</value>
@@ -1474,7 +1474,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>열기</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>설정</value>
@@ -2533,7 +2533,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>이미지 준비 중</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>다크 플랫 시퀀스 준비 중</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>플랫을 위해 {0} 필터 사용</value>
@@ -2605,7 +2605,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스용 읽기 모드</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>카메라의 읽기 모드는 시퀀스의 라이트, 바이어스, 다크, 플랫, 다크플랫 프레임에 사용됩니다.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>스냅샷용 읽기 모드</value>
@@ -5287,10 +5287,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>회전장치의 위치 이동 {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>지정된 파라미터로 산출된 노출 시간을 조사하여 다크 플랫을 촬영합니다.</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>학습된 다크 플랫 노출</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>왼쪽</value>
@@ -6888,5 +6888,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

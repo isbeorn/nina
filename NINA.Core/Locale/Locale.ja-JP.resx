@@ -953,7 +953,7 @@
     <value>反時計回り</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>望遠鏡にカバーを付けてOKを押すとダークフラットを撮像開始します。</value>
+    <value>望遠鏡にカバーを付けてOKを押すと、ダークの撮影を開始します。</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>望遠鏡にカバーを付けて下さい。</value>
@@ -980,7 +980,7 @@
     <value>Cygwinディレクトリー</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>フラットダーク撮影</value>
+    <value>撮影ダーク</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.Vダーゲット導入</value>
@@ -1470,7 +1470,7 @@
     <value>開</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>フラットダーク撮影のためにカバーを開けて下さい。</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>設定</value>
@@ -2529,7 +2529,7 @@
     <value>画像の準備中</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>フラットダーク撮像シーケンスの準備中</value>
+    <value>ダーク撮像シーケンスの準備中</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>フィルター:{0} 使用のフラット</value>
@@ -2601,7 +2601,7 @@
     <value>シーケンス用の読み出しモード</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>このカメラ読み出しモードは、シーケンス内のライト、バイアス、ダーク、フラット、及びフラットダークフレームに使用されます。</value>
+    <value>このカメラの読み出しモードは、シーケンス内のライト、バイアス、ダーク、フラットフレームに使用されます。</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>スナップショット用の読み出しモード</value>
@@ -5266,10 +5266,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>回転装置を位置{0}に移動しています</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>指定されたパラメータで、算出された露出時間を調べ、ダークフラットを撮影します</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>算出されたダークフラットの露出時間</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>左側</value>
@@ -6839,5 +6839,11 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>　この機能を有効にすると、N.I.N.A.はピクセル値の範囲を広げた、32ビット深度の画像データを生成します。
 　しかし、画像を処理するのに、多くの記憶領域を必要とし、処理時間が長くなり、ディスク領域を多く使用することに、留意する必要があります。また、XISFとFITSファイル形式だけが、32ビットデータを保存できることも覚えておいてください。
 　さらに、使っているASCOMドライバーも32ビット深度をサポートしていることが必要です。ドライバーが32ビット深度をサポートしていないのにこの設定をすると、画像データの質は向上しないのに、無駄にファイルサイズが大きくなってしまいます。</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>CFITSIOを使用</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>この機能を有効にすると、CFITSIOライブラリを使用してFITSファイルが作成されます。これは、ファイルを書き出すデフォルトの方法に代わるものです。 この変更により、追加の機能が有効になります。 例えば、ファイルサイズを小さくするためにFITSファイルを圧縮する機能や、データの精度を向上させるために32ビット形式でデータを保存するオプションなどです。</value>
   </data>
 </root>

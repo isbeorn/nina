@@ -139,8 +139,7 @@ namespace NINA.ViewModel {
                 Profiles.Refresh();
                 FilePatternsExpanded = !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternBIAS)
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
-                    || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT)
-                    || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARKFLAT);
+                    || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
             };
 
             FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
@@ -151,8 +150,7 @@ namespace NINA.ViewModel {
 
             FilePatternsExpanded = !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternBIAS)
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
-                || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT)
-                || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARKFLAT);
+                || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
         }
 
         public bool IsX64 => !DllLoader.IsX86();
@@ -209,15 +207,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string FilePatternDARKFLAT {
-            get => profileService.ActiveProfile.ImageFileSettings.FilePatternDARKFLAT;
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FilePatternDARKFLAT = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(FilePatternPreviewDARKFLAT));
-            }
-        }
-
         private bool filePatternsExpanded;
 
         public bool FilePatternsExpanded {
@@ -235,8 +224,6 @@ namespace NINA.ViewModel {
         public string FilePatternPreviewBIAS => ImagePatterns.GetImageFileString(FilePatternBIAS, "BIAS").Replace("\\", " › ");
 
         public string FilePatternPreviewFLAT => ImagePatterns.GetImageFileString(FilePatternFLAT, "FLAT").Replace("\\", " › ");
-
-        public string FilePatternPreviewDARKFLAT => ImagePatterns.GetImageFileString(FilePatternDARKFLAT, "DARKFLAT").Replace("\\", " › ");
 
         private List<ImagePattern> customPatterns;
 

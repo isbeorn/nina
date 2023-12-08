@@ -1182,7 +1182,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             /* Open or close the shutter if camera is equipped with one */
             if (HasShutter == true) {
                 if (sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
-                        sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT ||
                         sequence.ImageType == CaptureSequence.ImageTypes.BIAS) {
                     Logger.Debug($"QHYCCD: Closing shutter for {sequence.ImageType} frame");
                     _ = Sdk.ControlShutter(1);

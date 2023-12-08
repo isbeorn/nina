@@ -370,26 +370,6 @@
                                 PreviewDragOver="TextBox_PreviewDragOver"
                                 Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternBIAS, UpdateSourceTrigger=PropertyChanged}"
                                 TextWrapping="Wrap" />
-
-                            <TextBlock
-                                Grid.Row="3"
-                                Margin="20,5,0,0"
-                                VerticalAlignment="Center"
-                                Text="DARKFLAT" />
-                            <ninactrl:HintTextBox
-                                x:Name="FilePatternDARKFLATTextBox"
-                                Grid.Row="3"
-                                Grid.Column="1"
-                                Margin="5,5,0,0"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Stretch"
-                                AllowDrop="True"
-                                DragEnter="TextBox_DragEnter"
-                                Drop="TextBox_Drop"
-                                HintText="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePattern, UpdateSourceTrigger=PropertyChanged}"
-                                PreviewDragOver="TextBox_PreviewDragOver"
-                                Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARKFLAT, UpdateSourceTrigger=PropertyChanged}"
-                                TextWrapping="Wrap" />
                         </Grid>
                     </Expander.Content>
                 </Expander>
@@ -474,24 +454,6 @@
                         Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreviewBIAS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap"
                         Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternBIAS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
-
-
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Margin="20,5,0,0"
-                        VerticalAlignment="Center"
-                        Text="DARKFLAT"
-                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARKFLAT, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
-                    <TextBox
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Margin="0,5,0,0"
-                        VerticalAlignment="Center"
-                        IsReadOnly="True"
-                        Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreviewDARKFLAT, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARKFLAT, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
                 </Grid>
 
                 <Grid

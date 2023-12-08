@@ -22,7 +22,6 @@ namespace NINA.Profile.Interfaces {
         string FilePatternDARK { get; set; }
         string FilePatternBIAS { get; set; }
         string FilePatternFLAT { get; set; }
-        string FilePatternDARKFLAT { get; set; }
         FileTypeEnum FileType { get; set; }
         TIFFCompressionTypeEnum TIFFCompressionType { get; set; }
         XISFCompressionTypeEnum XISFCompressionType { get; set; }

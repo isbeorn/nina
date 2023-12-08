@@ -957,7 +957,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Przeciwnie do ruchu wskazówek zegara</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Zasłoń swój teleskop i naciśnij OK, aby rozpocząć wykonywanie plików dark flats.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Zasłoń teraz obiektyw swojego teleskopu</value>
@@ -984,7 +984,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Katalog Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Ilość dark flat</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Obrót D.A.R.V.</value>
@@ -1476,7 +1476,7 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
     <value>Otwórz</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Zdejmij pokrywę dla klatek Dark Flat</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ustaw</value>
@@ -2536,7 +2536,7 @@ Obliczone HFR: {2}</value>
     <value>Przygotowywanie obrazu</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Przygotowanie sekwencji Dark Flat</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flat dla filtra: {0}</value>
@@ -2608,7 +2608,7 @@ Obliczone HFR: {2}</value>
     <value>Tryb odczytu dla sekwencji</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Następujące tryby odczytu dla Twojej kamery będą użyte dla klatek LIGHT, BIAS, DARK, FLAT i DARKFLAT sekwencjach.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Tryb odczytu dla migawek</value>
@@ -5281,10 +5281,10 @@ Sekwencja może być zaplanowana od podstaw przy użyciu drobnych instrukcji, wy
     <value>Obróć rotator do pozycji {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Pobiera wzorcową wartość ekspozycji dla określonych parametrów i tworzy klatki dark flat</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Wzorzec klatek dark flat</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Lewa strona</value>
@@ -6860,5 +6860,11 @@ Zwiększ minimalny czas ekspozycji lub poczekaj aż będzie jaśniejsze.</value>
 Należy jednak pamiętać, że ten proces będzie wymagał większej ilości pamięci, wydłużenia czasu przetwarzania i wykorzystania dodatkowego miejsca na dysku do każdej ekspozycji.
 Pamiętaj, że tylko formaty plików XISF i FITS mogą przechowywać dane obrazu w tym 32-bitowym formacie. 
 Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębię. Jeśli sterownik nie obsługuje 32-bitów, zwiększony rozmiar pliku wynikający z tego ustawienia doprowadziłby tylko do marnowania miejsca bez poprawy danych obrazu.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Użyj CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>Po aktywacji tej funkcji pliki FITS zostaną utworzone przy użyciu biblioteki CFITSIO, która jest alternatywą dla domyślnej metody zapisu tych plików przez program. Zmiana ta umożliwia dodatkowe funkcje, np. możliwość kompresji plików FITS w celu zmniejszenia rozmiaru pliku oraz możliwość przechowywania danych w 32-bitowym formacie w celu poprawy dokładności danych.</value>
   </data>
 </root>

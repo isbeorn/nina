@@ -956,7 +956,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Saat yönü aksine</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Şimdi teleskopu örtün ve siyah düz kare çekmek için OK basın.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Şimdi teleskopu örtün</value>
@@ -983,7 +983,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Cygwin Dizini</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Çekilecek siyah düz kareler</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V Çevirmesi</value>
@@ -1476,7 +1476,7 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
     <value>Aç</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ayarla</value>
@@ -2537,7 +2537,7 @@ Hesaplanan HFR: {2}
     <value>Resim hazırlanıyor</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Siyah Düz Kare sekansı hazırlanıyor</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Düz kare için filtre:{0}</value>
@@ -2609,7 +2609,7 @@ Hesaplanan HFR: {2}
     <value>Sekanslar için Readout modu</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Kameranızın bu readout modu sekanslardaki RESİM, BIAS, SİYAH, DÜZ ve SİYAHDÜZ kareler için kullanılacak.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Enstantane okuma modu</value>
@@ -5278,10 +5278,10 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Çevirici pozisyon {0} a getiriliyor</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Belirtilen parametreler için denenmiş pozlama değerini arar ve siyah düz kareler alır</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Denenmiş siyah düz kare pozlama</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Sol taraf</value>
@@ -6859,5 +6859,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

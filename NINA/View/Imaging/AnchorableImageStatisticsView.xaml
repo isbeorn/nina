@@ -214,6 +214,17 @@
                                 VerticalAlignment="Center"
                                 Text="{Binding ImageProperties.Gain, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="55"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblOffset}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ImageProperties.Offset, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
+                        </StackPanel>
                     </UniformGrid>
                 </StackPanel>
             </StackPanel>

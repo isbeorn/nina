@@ -149,6 +149,7 @@ namespace NINA.Image.ImageData {
         public int Offset { get; set; } = -1;
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
+        public short ReadoutModeIndex { get; set; } = 0;
         public string ReadoutModeName { get; set; } = string.Empty;
         public BayerPatternEnum BayerPattern = BayerPatternEnum.Auto;
         public SensorType SensorType { get; set; } = SensorType.Monochrome;

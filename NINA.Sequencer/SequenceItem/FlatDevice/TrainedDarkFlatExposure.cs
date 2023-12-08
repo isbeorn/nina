@@ -69,7 +69,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new SwitchFilter(profileService, filterWheelMediator),
                 new SetBrightness(flatDeviceMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARKFLAT },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARK },
                 new LoopCondition() { Iterations = 1 },
                 new OpenCover(flatDeviceMediator)
 
@@ -199,8 +199,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var loop = GetIterations();
             if (loop.CompletedIterations >= loop.Iterations) {
-                Logger.Warning($"The Trained Dark Flat Exposure progress is already complete ({loop.CompletedIterations}/{loop.Iterations}). The instruction will be skipped");
-                throw new SequenceItemSkippedException($"The Trained Dark Flat Exposure progress is already complete ({loop.CompletedIterations}/{loop.Iterations}). The instruction will be skipped");
+                Logger.Warning($"The Trained Dark Exposure progress is already complete ({loop.CompletedIterations}/{loop.Iterations}). The instruction will be skipped");
+                throw new SequenceItemSkippedException($"The Trained Dark Exposure progress is already complete ({loop.CompletedIterations}/{loop.Iterations}). The instruction will be skipped");
             }
 
             /* Lookup trained values and set brightness and exposure time accordingly */

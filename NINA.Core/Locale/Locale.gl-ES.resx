@@ -965,7 +965,7 @@ No caso de precisarse unha duración maior, pódese especificar unha duración e
     <value>Sentido antihorario</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cubre o telescopio e preme OK para iniciar a toma de dark flats.</value>
+    <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Cubre agora o telescopio</value>
@@ -992,7 +992,7 @@ No caso de precisarse unha duración maior, pódese especificar unha duración e
     <value>Cartafol Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Dark Flats a capturar</value>
+    <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Desprazamento D.A.R.V</value>
@@ -1485,7 +1485,7 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
     <value>Aberto</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Config.</value>
@@ -2546,7 +2546,7 @@ HFR calculado: {2}
     <value>Preparando imaxe</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparando secuencia de Dark Flat</value>
+    <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flats por filtro: {0}</value>
@@ -2618,7 +2618,7 @@ HFR calculado: {2}
     <value>Modo de lectura para secuencias</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>Este modo de lectura da cámara hase usar para LIGHT, BIAS, DARK, FLAT e DARKFLAT en secuencias.</value>
+    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Modo de lectura para snapshots</value>
@@ -5290,10 +5290,10 @@ Para condicións de cambio rápido, un tamaño de mostra máis pequeno axudará 
     <value>Movendo o rotador á posición {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Busca o valor de exposición adestrado para os parámetros especificados e realiza exposicións planas escuras</value>
+    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Exposición de Dark Flats Adestrada</value>
+    <value>Trained Dark Exposure</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Lado esquerdo</value>
@@ -6872,5 +6872,11 @@ Increase minimum exposure time or wait until it is brighter.</value>
 However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
 Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+  </data>
+  <data name="LblUseCfitsio" xml:space="preserve">
+    <value>Use CFITSIO</value>
+  </data>
+  <data name="LblUseCfitsioTooltip" xml:space="preserve">
+    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
 </root>

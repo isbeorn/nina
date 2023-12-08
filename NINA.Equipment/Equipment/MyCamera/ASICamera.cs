@@ -468,8 +468,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             exposureSettings.IsAuto = false;
 
             var isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
-                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
-                               sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
+                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS;
 
             if (EnableSubSample) {
                 CaptureAreaInfo = new CaptureAreaInfo(

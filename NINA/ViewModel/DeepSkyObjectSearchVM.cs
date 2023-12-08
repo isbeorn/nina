@@ -104,11 +104,15 @@ namespace NINA.ViewModel {
                 selectedTargetSearchResult = value;
                 if (selectedTargetSearchResult != null) {
                     this.SetTargetNameWithoutSearch(selectedTargetSearchResult.Column1);
-                    Coordinates = new Coordinates(
+                    if(value is DSOAutoCompleteItem dSOAutoCompleteItem) {
+                        Coordinates = dSOAutoCompleteItem.Coordinates;
+                    } else {
+                        Coordinates = new Coordinates(
                         AstroUtil.HMSToDegrees(value.Column2),
                         AstroUtil.DMSToDegrees(value.Column3),
                         Epoch.J2000,
                         Coordinates.RAType.Degrees);
+                    }
                 }
                 RaisePropertyChanged();
             }
@@ -130,6 +134,7 @@ namespace NINA.ViewModel {
             public string Column2 { get; set; }
 
             public string Column3 { get; set; }
+            public Coordinates Coordinates { get; set; }
         }
 
         private Task<List<IAutoCompleteItem>> SearchDSOs(string searchString, CancellationToken ct) {
@@ -142,7 +147,7 @@ namespace NINA.ViewModel {
                 var result = await db.GetDeepSkyObjects(string.Empty, null, searchParams, ct);
                 var list = new List<IAutoCompleteItem>();
                 foreach (var item in result) {
-                    list.Add(new DSOAutoCompleteItem() { Column1 = item.Name, Column2 = item.Coordinates.RAString, Column3 = item.Coordinates.DecString });
+                    list.Add(new DSOAutoCompleteItem() { Column1 = item.Name, Column2 = item.Coordinates.RAString, Column3 = item.Coordinates.DecString, Coordinates = item.Coordinates });
                     ct.ThrowIfCancellationRequested();
                 }
                 return list;
