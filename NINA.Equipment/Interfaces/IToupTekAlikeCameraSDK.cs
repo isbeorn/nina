@@ -151,10 +151,16 @@ namespace NINA.Equipment.Interfaces {
         FLAG_LOW_NOISE = 0x0000010000000000,  /* support low noise mode (Higher signal noise ratio, lower frame rate) */
         FLAG_LEVELRANGE_HARDWARE = 0x0000020000000000,  /* hardware level range, put(get)_LevelRangeV2 */
         FLAG_EVENT_HARDWARE = 0x0000040000000000,  /* hardware event, such as exposure start & stop */
-        FLAG_LIGHTSOURCE = 0x0000080000000000,  /* light source */
-        FLAG_FILTERWHEEL = 0x0000100000000000,  /* filter wheel */
-        FLAG_GIGE = 0x0000200000000000,  /* GigE */
-        FLAG_10GIGE = 0x0000400000000000   /* 10 Gige */
+        FLAG_LIGHTSOURCE = 0x0000080000000000,  /* embedded light source */
+        FLAG_FILTERWHEEL = 0x0000100000000000,  /* astro filter wheel */
+        FLAG_GIGE = 0x0000200000000000,  /* 1 Gigabit GigE */
+        FLAG_10GIGE = 0x0000400000000000,  /* 10 Gigabit GigE */
+        FLAG_5GIGE = 0x0000800000000000,  /* 5 Gigabit GigE */
+        FLAG_25GIGE = 0x0001000000000000,  /* 2.5 Gigabit GigE */
+        FLAG_AUTOFOCUSER = 0x0002000000000000,  /* astro auto focuser */
+        FLAG_LIGHT_SOURCE = 0x0004000000000000,  /* stand alone light source */
+        FLAG_CAMERALINK = 0x0008000000000000,  /* camera link */
+        FLAG_CXP = 0x0010000000000000   /* CXP: CoaXPress */
     };
 
     public enum ToupTekAlikeEvent : uint {
@@ -187,12 +193,12 @@ namespace NINA.Equipment.Interfaces {
     };
 
     public enum ToupTekAlikeOption : uint {
-        OPTION_NOFRAME_TIMEOUT = 0x01,       /* no frame timeout: 0 => disable, positive value (>= 500) => timeout milliseconds. default: disable */
+        OPTION_NOFRAME_TIMEOUT = 0x01,       /* no frame timeout: 0 => disable, positive value (>= NOFRAME_TIMEOUT_MIN) => timeout milliseconds. default: disable */
         OPTION_THREAD_PRIORITY = 0x02,       /* set the priority of the internal thread which grab data from the usb device.
-                                                         Win: iValue: 0 = THREAD_PRIORITY_NORMAL; 1 = THREAD_PRIORITY_ABOVE_NORMAL; 2 = THREAD_PRIORITY_HIGHEST; 3 = THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
+                                                         Win: iValue: 0 => THREAD_PRIORITY_NORMAL; 1 => THREAD_PRIORITY_ABOVE_NORMAL; 2 => THREAD_PRIORITY_HIGHEST; 3 => THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
                                                          Linux & macOS: The high 16 bits for the scheduling policy, and the low 16 bits for the priority; see: https://linux.die.net/man/3/pthread_setschedparam
                                                     */
-        OPTION_RAW = 0x04,       /* raw data mode, read the sensor "raw" data. This can be set only BEFORE Toupcam_StartXXX(). 0 = rgb, 1 = raw, default value: 0 */
+        OPTION_RAW = 0x04,       /* raw data mode, read the sensor "raw" data. This can be set only while camea is NOT running. 0 = rgb, 1 = raw, default value: 0 */
         OPTION_HISTOGRAM = 0x05,       /* 0 = only one, 1 = continue mode */
         OPTION_BITDEPTH = 0x06,       /* 0 = 8 bits mode, 1 = 16 bits mode */
         OPTION_FAN = 0x07,       /* 0 = turn off the cooling fan, [1, max] = fan speed */
@@ -220,7 +226,7 @@ namespace NINA.Equipment.Interfaces {
         OPTION_BINNING = 0x17,       /* binning
                                                            0x01: (no binning)
                                                            n: (saturating add, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
-                                                           0x40 | n: (unsaturated add in RAW mode, n*n), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
+                                                           0x40 | n: (unsaturated add, n*n, works only in RAW mode), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
                                                            0x80 | n: (average, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
                                                        The final image size is rounded down to an even number, such as 640/3 to get 212
                                                     */
@@ -275,7 +281,7 @@ namespace NINA.Equipment.Interfaces {
         OPTION_AFZONE = 0x26,       /* auto focus zone */
         OPTION_AFFEEDBACK = 0x27,       /* auto focus information feedback; 0:unknown; 1:focused; 2:focusing; 3:defocus; 4:up; 5:down */
         OPTION_TESTPATTERN = 0x28,       /* test pattern:
-                                                        0: TestPattern Off
+                                                        0: off
                                                         3: monochrome diagonal stripes
                                                         5: monochrome vertical stripes
                                                         7: monochrome horizontal stripes
@@ -283,7 +289,7 @@ namespace NINA.Equipment.Interfaces {
                                                     */
         OPTION_AUTOEXP_THRESHOLD = 0x29,       /* threshold of auto exposure, default value: 5, range = [2, 15] */
         OPTION_BYTEORDER = 0x2a,       /* Byte order, BGR or RGB: 0 => RGB, 1 => BGR, default value: 1(Win), 0(macOS, Linux, Android) */
-        OPTION_NOPACKET_TIMEOUT = 0x2b,       /* no packet timeout: 0 = disable, positive value = timeout milliseconds. default: disable */
+        OPTION_NOPACKET_TIMEOUT = 0x2b,       /* no packet timeout: 0 => disable, positive value (>= NOPACKET_TIMEOUT_MIN) => timeout milliseconds. default: disable */
         OPTION_MAX_PRECISE_FRAMERATE = 0x2c,       /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
         OPTION_PRECISE_FRAMERATE = 0x2d,       /* precise frame rate current value in 0.1 fps, range:[1~maximum] */
         OPTION_BANDWIDTH = 0x2e,       /* bandwidth, [1-100]% */
@@ -307,7 +313,7 @@ namespace NINA.Equipment.Interfaces {
         OPTION_LOW_NOISE = 0x38,       /* low noise mode (Higher signal noise ratio, lower frame rate): 1 => enable */
         OPTION_POWER = 0x39,       /* get power consumption, unit: milliwatt */
         OPTION_GLOBAL_RESET_MODE = 0x3a,       /* global reset mode */
-        OPTION_OPEN_USB_ERRORCODE = 0x3b,       /* get the open usb error code */
+        OPTION_OPEN_ERRORCODE = 0x3b,       /* get the open camera error code */
         OPTION_FLUSH = 0x3d,        /* 1 = hard flush, discard frames cached by camera DDR (if any)
                                                         2 = soft flush, discard frames cached by toupcam.dll (if any)
                                                         3 = both flush
@@ -365,6 +371,43 @@ namespace NINA.Equipment.Interfaces {
                                                              high 16 bits: max
                                                              low 16 bits: min
                                                      */
-        OPTION_HIGH_FULLWELL = 0x55         /* high fullwell capacity: 0 => disable, 1 => enable */
+        OPTION_HIGH_FULLWELL = 0x55,        /* high fullwell capacity: 0 => disable, 1 => enable */
+        OPTION_DYNAMIC_DEFECT = 0x56,        /* dynamic defect pixel correction:
+                                                             threshold, t1: (high 16 bits): [10, 100], means: [1.0, 10.0]
+                                                             value, t2: (low 16 bits): [0, 100], means: [0.00, 1.00]
+                                                     */
+        OPTION_HDR_KB = 0x57,        /* HDR synthesize
+                                                             K (high 16 bits): [1, 25500]
+                                                             B (low 16 bits): [0, 65535]
+                                                             0xffffffff => set to default
+                                                     */
+        OPTION_HDR_THRESHOLD = 0x58,        /* HDR synthesize
+                                                             threshold: [1, 4094]
+                                                             0xffffffff => set to default
+                                                     */
+        OPTION_GIGETIMEOUT = 0x5a,        /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
+                                                        If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
+                                                        When the application is stopped by the debugger, the application cannot create the heartbeat signals
+                                                             0 => auto: when the camera is opened, disable if debugger is present or enable if no debugger is present
+                                                             1 => enable
+                                                             2 => disable
+                                                             default: auto
+                                                     */
+        OPTION_EEPROM_SIZE = 0x5b,        /* get EEPROM size */
+        OPTION_OVERCLOCK_MAX = 0x5c,        /* get overclock range: [0, max] */
+        OPTION_OVERCLOCK = 0x5d,        /* overclock, default: 0 */
+        OPTION_RESET_SENSOR = 0x5e,        /* reset sensor */
+        OPTION_ADC = 0x08000000,  /* Analog-Digital Conversion:
+                                                            get:
+                                                                (option | 'C'): get the current value
+                                                                (option | 'N'): get the supported ADC number
+                                                                (option | n): get the nth supported ADC value, such as 11bits, 12bits, etc; the first value is the default
+                                                            set: val = ADC value, such as 11bits, 12bits, etc
+                                                     */
+        OPTION_ISP = 0x5f,        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
+        OPTION_AUTOEXP_EXPOTIME_STEP = 0x60,        /* Auto exposure: time step (thousandths) */
+        OPTION_AUTOEXP_GAIN_STEP = 0x61,        /* Auto exposure: gain step (thousandths) */
+        OPTION_MOTOR_NUMBER = 0x62,        /* range: [1, 20] */
+        OPTION_MOTOR_POS = 0x10000000   /* range: [1, 702] */
     };
 }

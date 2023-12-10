@@ -158,7 +158,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var toupTekCameras = ToupTek.ToupCam.EnumV2();
                     Logger.Info($"Found {toupTekCameras?.Length} ToupTek Cameras");
                     foreach (var instance in toupTekCameras) {
-                        var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new ToupTekSDKWrapper(), profileService, exposureDataFactory);
+                        var info = instance.ToDeviceInfo();
+                        if(((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new ToupTekSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
                 } catch (Exception ex) {
@@ -170,7 +173,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var ogmaCameras = Ogmacam.EnumV2();
                     Logger.Info($"Found {ogmaCameras?.Length} Ogma Cameras");
                     foreach (var instance in ogmaCameras) {
-                        var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new OgmaSDKWrapper(), profileService, exposureDataFactory);
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new OgmaSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
                 } catch (Exception ex) {
@@ -182,7 +188,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var omegonCameras = Omegon.Omegonprocam.EnumV2();
                     Logger.Info($"Found {omegonCameras?.Length} Omegon Cameras");
                     foreach (var instance in omegonCameras) {
-                        var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new OmegonSDKWrapper(), profileService, exposureDataFactory);
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new OmegonSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
                 } catch (Exception ex) {
@@ -194,7 +203,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var risingCamCameras = Nncam.EnumV2();
                     Logger.Info($"Found {risingCamCameras?.Length} RisingCam Cameras");
                     foreach (var instance in risingCamCameras) {
-                        var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new RisingcamSDKWrapper(), profileService, exposureDataFactory);
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new RisingcamSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
                 } catch (Exception ex) {
@@ -206,7 +218,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var mallinCamCameras = MallinCam.MallinCam.EnumV2();
                     Logger.Info($"Found {mallinCamCameras?.Length} MallinCam Cameras");
                     foreach (var instance in mallinCamCameras) {
-                        var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new MallinCamSDKWrapper(), profileService, exposureDataFactory);
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new MallinCamSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
                 } catch (Exception ex) {

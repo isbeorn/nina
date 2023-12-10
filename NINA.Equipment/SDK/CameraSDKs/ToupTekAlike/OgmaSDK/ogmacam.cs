@@ -227,13 +227,13 @@ public class Ogmacam : IDisposable {
         OPTION_FRONTEND_DEQUE_LENGTH = 0x31,       /* frontend (raw) frame buffer deque length, range: [2, 1024], default: 4
                                                         All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
                                                     */
-        OPTION_FRAME_DEQUE_LENGTH = 0x31,       /* alias of OGMACAM_OPTION_FRONTEND_DEQUE_LENGTH */
+        OPTION_FRAME_DEQUE_LENGTH = 0x31,       /* alias of TOUPCAM_OPTION_FRONTEND_DEQUE_LENGTH */
         OPTION_MIN_PRECISE_FRAMERATE = 0x32,       /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
         OPTION_SEQUENCER_ONOFF = 0x33,       /* sequencer trigger: on/off */
         OPTION_SEQUENCER_NUMBER = 0x34,       /* sequencer trigger: number, range = [1, 255] */
         OPTION_SEQUENCER_EXPOTIME = 0x01000000, /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
                                                         For example, to set the exposure time of the third group to 50ms, call:
-                                                           Ogmacam_put_Option(OGMACAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
+                                                           Toupcam_put_Option(TOUPCAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
                                                     */
         OPTION_SEQUENCER_EXPOGAIN = 0x02000000, /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
         OPTION_DENOISE = 0x35,       /* denoise, strength range: [0, 100], 0 means disable */
@@ -244,9 +244,9 @@ public class Ogmacam : IDisposable {
         OPTION_GLOBAL_RESET_MODE = 0x3a,       /* global reset mode */
         OPTION_OPEN_ERRORCODE = 0x3b,       /* get the open camera error code */
         OPTION_FLUSH = 0x3d,        /* 1 = hard flush, discard frames cached by camera DDR (if any)
-                                                        2 = soft flush, discard frames cached by ogmacam.dll (if any)
+                                                        2 = soft flush, discard frames cached by toupcam.dll (if any)
                                                         3 = both flush
-                                                        Ogmacam_Flush means 'both flush'
+                                                        Toupcam_Flush means 'both flush'
                                                         return the number of soft flushed frames if successful, HRESULT if failed
                                                      */
         OPTION_NUMBER_DROP_FRAME = 0x3e,        /* get the number of frames that have been grabbed from the USB but dropped by the software */
@@ -265,8 +265,8 @@ public class Ogmacam : IDisposable {
         OPTION_FRONTEND_DEQUE_CURRENT = 0x45,        /* get the current number in frontend deque */
         OPTION_BACKEND_DEQUE_CURRENT = 0x46,        /* get the current number in backend deque */
         OPTION_EVENT_HARDWARE = 0x04000000,  /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
-                                                            (1) iOption = OGMACAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
-                                                            (2) iOption = OGMACAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
+                                                            (1) iOption = TOUPCAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
+                                                            (2) iOption = TOUPCAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
                                                         Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
                                                      */
         OPTION_PACKET_NUMBER = 0x47,        /* get the received packet number */
@@ -333,12 +333,16 @@ public class Ogmacam : IDisposable {
                                                                 (option | n): get the nth supported ADC value, such as 11bits, 12bits, etc; the first value is the default
                                                             set: val = ADC value, such as 11bits, 12bits, etc
                                                      */
-        OPTION_ISP = 0x5f         /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
+        OPTION_ISP = 0x5f,        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
+        OPTION_AUTOEXP_EXPOTIME_STEP = 0x60,        /* Auto exposure: time step (thousandths) */
+        OPTION_AUTOEXP_GAIN_STEP = 0x61,        /* Auto exposure: gain step (thousandths) */
+        OPTION_MOTOR_NUMBER = 0x62,        /* range: [1, 20] */
+        OPTION_MOTOR_POS = 0x10000000   /* range: [1, 702] */
     };
 
     /* HRESULT: error code */
     public const int S_OK = 0x00000000;                             /* Success */
-    public const int S_FALSE = 0x00000001;                          /* Yet another success */
+    public const int S_FALSE = 0x00000001;                          /* Success with noop */
     public const int E_UNEXPECTED = unchecked((int)0x8000ffff);     /* Catastrophic failure */
     public const int E_NOTIMPL = unchecked((int)0x80004001);        /* Not supported or not implemented */
     public const int E_NOINTERFACE = unchecked((int)0x80004002);
@@ -400,6 +404,9 @@ public class Ogmacam : IDisposable {
     public const int AUTOEXPO_THRESHOLD_DEF = 5;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MIN = 2;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MAX = 15;       /* auto exposure threshold */
+    public const int AUTOEXPO_STEP_DEF = 1000;     /* auto exposure step: thousandths */
+    public const int AUTOEXPO_STEP_MIN = 1;        /* auto exposure step: thousandths */
+    public const int AUTOEXPO_STEP_MAX = 1000;     /* auto exposure step: thousandths */
     public const int BANDWIDTH_DEF = 100;      /* bandwidth */
     public const int BANDWIDTH_MIN = 1;        /* bandwidth */
     public const int BANDWIDTH_MAX = 100;      /* bandwidth */
