@@ -468,7 +468,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public void ResetTriggers() {
+        private void ResetTriggers() {
             lock (lockObj) {
                 foreach (ISequenceTrigger trigger in Triggers) {
                     trigger.Status = SequenceEntityStatus.CREATED;
