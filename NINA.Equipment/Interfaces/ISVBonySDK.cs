@@ -23,69 +23,12 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Interfaces {
 
-    public interface ISVBonySDK {
-        bool Connected { get; }
-
-        void Connect();
-
-        void Disconnect();
-
-        int[] GetBinningInfo();
-
-        (int, int) GetDimensions();
-
-        int GetGain();
-
-        int GetMaxGain();
-
-        int GetMaxOffset();
-
-        int GetMaxUSBLimit();
-
-        int GetMinGain();
-
-        int GetMinOffset();
-
-        int GetMinUSBLimit();
-
-        int GetOffset();
-
-        double GetPixelSize();
-
-        int GetUSBLimit();
-
-        SensorType GetSensorInfo();
-
-        bool SetGain(int value);
-
-        bool SetOffset(int value);
-
-        bool SetUSBLimit(int value);
-
-        double GetMaxExposureTime();
-
-        double GetMinExposureTime();
-
-        Task<ushort[]> StartExposure(double exposureTime, int width, int height, CancellationToken ct);
-
-        bool SetROI(int startX, int startY, int width, int height, int binning);
-
-        int GetBitDepth();
-
-        (int, int, int, int, int) GetROI();
-
-        bool HasTemperatureControl();
-
-        bool SetCooler(bool onOff);
-
-        bool GetCoolerOnOff();
-
-        bool SetTargetTemperature(double temperature);
-
-        double GetTargetTemperature();
-
-        double GetTemperature();
-
-        double GetCoolerPower();
+    public interface ISVBonySDK : IGenericCameraSDK {
+        bool GetBadPixelCorrection();
+        bool SetBadPixelCorrection(bool onOff);
+        int GetBadPixelCorrectionThreshold();
+        int GetMinBadPixelCorrectionThreshold();
+        int GetMaxBadPixelCorrectionThreshold();
+        bool SetBadPixelCorrectionThreshold(int threshold);
     }
 }

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
+using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Mediator {
 
@@ -39,75 +40,87 @@ namespace NINA.Sequencer.Mediator {
         public bool Initialized => sequenceNavigation.Initialized;
 
         public void AddSimpleTarget(IDeepSkyObject deepSkyObject) {
-            if (Initialized) {
-                sequenceNavigation.AddSimpleTarget(deepSkyObject);
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.AddSimpleTarget(deepSkyObject);
         }
 
         public void AddAdvancedTarget(IDeepSkyObjectContainer container) {
-            if (Initialized) {
-                sequenceNavigation.AddAdvancedTarget(container);
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.AddAdvancedTarget(container);
         }
 
         public void SetAdvancedSequence(ISequenceRootContainer container) {
-            if (Initialized) {
-                sequenceNavigation.SetAdvancedSequence(container);
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.SetAdvancedSequence(container);
         }
 
         public IList<IDeepSkyObjectContainer> GetDeepSkyObjectContainerTemplates() {
-            if (Initialized) {
-                return sequenceNavigation.GetDeepSkyObjectContainerTemplates();
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            return sequenceNavigation.GetDeepSkyObjectContainerTemplates();
         }
 
         public void SwitchToAdvancedView() {
-            if (Initialized) {
-                sequenceNavigation.SwitchToAdvancedView();
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.SwitchToAdvancedView();
         }
 
         public void SwitchToOverview() {
-            if (Initialized) {
-                sequenceNavigation.SwitchToOverview();
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.SwitchToOverview();
         }
 
         public void AddTargetToTargetList(IDeepSkyObjectContainer container) {
-            if (Initialized) {
-                sequenceNavigation.AddTargetToTargetList(container);
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            sequenceNavigation.AddTargetToTargetList(container);
         }
 
         public IList<IDeepSkyObjectContainer> GetAllTargetsInAdvancedSequence() {
-            if (Initialized) {
-                return sequenceNavigation.GetAllTargetsInAdvancedSequence();
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            return sequenceNavigation.GetAllTargetsInAdvancedSequence();
         }
 
         public IList<IDeepSkyObjectContainer> GetAllTargetsInSimpleSequence() {
-            if (Initialized) {
-                return sequenceNavigation.GetAllTargetsInSimpleSequence();
-            } else {
+            if (!Initialized) {
                 throw SequenceMediatorException;
             }
+            return sequenceNavigation.GetAllTargetsInSimpleSequence();
+        }
+
+        public Task StartAdvancedSequence(bool skipValidation) {
+            if (IsAdvancedSequenceRunning()) {
+                throw new Exception("Advanced sequence is still running!");
+            }
+            return sequenceNavigation.Sequence2VM.StartSequenceCommand.ExecuteAsync(skipValidation);
+        }
+
+        public void CancelAdvancedSequence() {
+            if (!Initialized) {
+                throw SequenceMediatorException;
+            }
+            sequenceNavigation.Sequence2VM.CancelSequenceCommand.Execute(null);
+        }
+
+        public bool IsAdvancedSequenceRunning() {
+            if (!Initialized) {
+                throw SequenceMediatorException;
+            }
+            return sequenceNavigation.Sequence2VM.IsRunning;
         }
     }
 }

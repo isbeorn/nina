@@ -730,6 +730,9 @@ namespace NINA.Equipment.SDK.CameraSDKs.SVBonySDK {
         SVB_TARGET_TEMPERATURE,  //unit is 0.1C
         SVB_CURRENT_TEMPERATURE, //unit is 0.1C
         SVB_COOLER_POWER,  //range: 0-100
+
+        SVB_BAD_PIXEL_CORRECTION_ENABLE,
+        SVB_BAD_PIXEL_CORRECTION_THRESHOLD,
     }
 
     public enum SVB_IMG_TYPE {//Supported Video Format

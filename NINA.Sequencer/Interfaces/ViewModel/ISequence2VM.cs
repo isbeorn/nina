@@ -27,6 +27,8 @@ namespace NINA.ViewModel.Sequencer {
         NINA.Sequencer.ISequencer Sequencer { get; }
         NINA.Sequencer.ISequencerFactory SequencerFactory { get; }
 
+        bool IsRunning { get; }
+
         Task Initialize();
 
         IList<IDeepSkyObjectContainer> GetDeepSkyObjectContainerTemplates();

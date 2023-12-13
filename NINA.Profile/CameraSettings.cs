@@ -72,6 +72,9 @@ namespace NINA.Profile {
             genericCameraDewHeaterStrength = 10;
             genericCameraFanSpeed = 70;
 
+            badPixelCorrection = true;
+            badPixelCorrectionThreshold = 60;
+
             zwoAsiMonoBinMode = false;
 
             ascomCreate32BitData = false;
@@ -717,7 +720,32 @@ namespace NINA.Profile {
             }
         }
 
-        
+
+        #endregion
+
+        #region SVBony
+        private bool badPixelCorrection;
+        [DataMember]
+        public bool BadPixelCorrection {
+            get => badPixelCorrection;
+            set {
+                if (badPixelCorrection != value) {
+                    badPixelCorrection = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private int badPixelCorrectionThreshold;
+        [DataMember]
+        public int BadPixelCorrectionThreshold {
+            get => badPixelCorrectionThreshold;
+            set {
+                if (badPixelCorrectionThreshold != value) {
+                    badPixelCorrectionThreshold = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region TouptekAlike

@@ -17,6 +17,7 @@ using NINA.Astrometry.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.ViewModel.Sequencer;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Interfaces.Mediator {
 
@@ -42,5 +43,9 @@ namespace NINA.Sequencer.Interfaces.Mediator {
 
         IList<IDeepSkyObjectContainer> GetAllTargetsInAdvancedSequence();
         IList<IDeepSkyObjectContainer> GetAllTargetsInSimpleSequence();
+
+        Task StartAdvancedSequence(bool skipValidation);
+        void CancelAdvancedSequence();
+        bool IsAdvancedSequenceRunning();
     }
 }

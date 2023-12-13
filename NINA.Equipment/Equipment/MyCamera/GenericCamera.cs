@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace NINA.Equipment.Equipment.MyCamera {
     public class GenericCamera : BaseINPC, ICamera {
         private IGenericCameraSDK sdk;
-        private IProfileService profileService;
+        protected IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
 
         public GenericCamera(int id, string name, string category, string driverVersion, bool supportBitScaling, IGenericCameraSDK sdk, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
@@ -35,7 +35,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool Connected => sdk.Connected;
 
-        private void Initialize() {
+        protected virtual void Initialize() {
             BinningModes = new AsyncObservableCollection<BinningMode>();
             var binnings = sdk.GetBinningInfo();
             if (binnings.Length > 0) {

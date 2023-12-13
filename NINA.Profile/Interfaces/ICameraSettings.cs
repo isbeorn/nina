@@ -73,5 +73,7 @@ namespace NINA.Profile.Interfaces {
 
         bool? ZwoAsiMonoBinMode { get; set; }
         bool ASCOMCreate32BitData { get; set; }
+        bool BadPixelCorrection { get; set; }
+        int BadPixelCorrectionThreshold { get; set; }
     }
 }

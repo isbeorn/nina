@@ -327,6 +327,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Offset {
             get {
+                if (!CanSetOffset) { return -1; }
+
                 if (GainPreset == 0) {
                     return GetOffset();
                 } else {
@@ -334,7 +336,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
             set {
-                if (value > ushort.MaxValue) { return; }
+                if (CanSetOffset == false || value > ushort.MaxValue) { return; }
 
                 if (GainPreset == 0) {
                     SetOffset(value);
@@ -355,7 +357,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int USBLimitMin => -1;
         public int USBLimitStep => -1;
 
-        private bool _canGetGain = true;
+        private bool _canGetGain = false;
 
         public bool CanGetGain {
             get => _canGetGain;
@@ -397,6 +399,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Gain {
             get {
+                if (!CanGetGain) { return -1; }
+
                 if (GainPreset == 0) {
                     return GetGain();
                 } else {
@@ -404,7 +408,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
             set {
-                if (value > ushort.MaxValue) { return; }
+                if (!CanSetGain || value > ushort.MaxValue) { return; }
 
                 if (GainPreset == 0) {
                     SetGain(value);
@@ -618,8 +622,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                             var gainData = new byte[6];
                             var offsetData = new byte[6];
 
-                            CanSetGain = CanSetOffset = CanGetGain = true;
-
                             CameraSpecificOptionGetData(_cameraP, AtikCameraSpecificOptions.ID_GOCustomGain, ref gainData);
                             GainMin = OptionBytesToUShort(gainData, 0, 1);
                             GainMax = OptionBytesToUShort(gainData, 2, 3);
@@ -685,6 +687,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                             Logger.Debug($"Preset \"{preset.Id}\": Name={preset.Name}, Gain={preset.Gain}, Offset={preset.Offset}");
                         }
 
+                        CanSetGain = CanSetOffset = CanGetGain = true;
                         GainPreset =  profileService.ActiveProfile.CameraSettings.AtikGainPreset ?? 0;
                     }
 
