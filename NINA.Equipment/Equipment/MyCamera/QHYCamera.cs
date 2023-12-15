@@ -467,13 +467,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                                 Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {mode} ({modeName})");
 
-                                if ((rv = Sdk.SetBinMode(1, 1)) != QhySdk.QHYCCD_SUCCESS) {
-                                    Logger.Error($"QHYCCD: SetQHYCCDBinMode() failed. Returned {rv}");
-                                    return;
-                                }
-
                                 if ((rv = Sdk.SetReadMode(mode)) != QhySdk.QHYCCD_SUCCESS) {
                                     Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
+                                    return;
+                                }
+                                if ((rv = Sdk.SetStreamMode((byte)QhySdk.QHYCCD_CAMERA_MODE.SINGLE_EXPOSURE)) != QhySdk.QHYCCD_SUCCESS) {
+                                    Logger.Error($"QHYCCD: SetQHYCCDStreamMode() failed. Returned {rv}");
                                     return;
                                 }
 
@@ -536,6 +535,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public void SetGPS() {
             if ((string)_gpsSettings["SetGPS"] == "True") {
+                Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_GPS, 0); // first turn it off
                 if (!Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_GPS, 1)) {
                     Logger.Debug("Failed to set GPS");
                     _gpsSettings["SetGPS"] = "False";
@@ -1140,19 +1140,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private bool SetResolution(out uint startx, out uint starty, out uint sizex, out uint sizey) {
+            if (QhyIncludeOverscan) {
+                StartPixelX = StartPixelY = 0;
+            } else {
+                StartPixelX = Info.EffectiveArea.StartX;
+                StartPixelY = Info.EffectiveArea.StartY;
+            }
+
             /* ROI coordinates and resolution */
             if (EnableSubSample == true) {
-                startx = (uint)SubSampleX / (uint)BinX;
-                starty = (uint)SubSampleY / (uint)BinY;
-                sizex = (uint)SubSampleWidth / (uint)BinX;
-                sizey = (uint)SubSampleHeight / (uint)BinY;
+                startx = (StartPixelX + (uint)SubSampleX) / (uint)BinX;
+                starty = (StartPixelY + (uint)SubSampleY) / (uint)BinY;
+                uint subWidth = Math.Min((uint)SubSampleX + (uint)SubSampleWidth, QhyIncludeOverscan ? (uint)CameraXSize : Info.EffectiveArea.SizeX) - (uint)SubSampleX;
+                uint subHeight = Math.Min((uint)SubSampleY + (uint)SubSampleHeight, QhyIncludeOverscan ? (uint)CameraYSize : Info.EffectiveArea.SizeY) - (uint)SubSampleY;
+                sizex = (uint)subWidth / (uint)BinX;
+                sizey = (uint)subHeight / (uint)BinY;
             } else {
                 startx = StartPixelX / (uint)BinX;
                 starty = StartPixelY / (uint)BinY;
-                sizex = (uint)CameraXSize / (uint)BinX;
-                sizey = (uint)CameraYSize / (uint)BinY;
+                if (QhyIncludeOverscan) {
+                    sizex = (uint)CameraXSize / (uint)BinX;
+                    sizey = (uint)CameraYSize / (uint)BinY;
+                } else {
+                    sizex = (uint)Info.EffectiveArea.SizeX / (uint)BinX;
+                    sizey = (uint)Info.EffectiveArea.SizeY / (uint)BinY;
+                }
             }
-            
+
             uint rv;
             Logger.Debug($"QHYCCD: Setting image resolution: startx={startx}, starty={starty}, sizex={sizex}, sizey={sizey}");
             if ((rv = Sdk.SetResolution(startx, starty, sizex, sizey)) != QhySdk.QHYCCD_SUCCESS) {
@@ -1162,6 +1176,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             SetGPS(); // set gps again as work around for gps getting stuck
             return true;
         }
+
 
         public void StartExposure(CaptureSequence sequence) {
             RaiseIfNotConnected();
@@ -1527,7 +1542,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get => profileService.ActiveProfile.CameraSettings.QhyIncludeOverscan;
             set {
                 profileService.ActiveProfile.CameraSettings.QhyIncludeOverscan = value;
-                SetImageResolution();
             }
         }
 
@@ -1659,6 +1673,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             Info.FullArea.StartX = Info.FullArea.StartY = 0;
             Logger.Debug($"QHYCCD: Chip Info: ChipX={Info.ChipX}mm, ChipY={Info.ChipY}mm, SizeX={Info.FullArea.SizeX}, SizeY={Info.FullArea.SizeY}, PixelX={pixelx}um, PixelY={pixely}um, bpp={Info.Bpp}");
+            CameraXSize = (int)Info.FullArea.SizeX;
+            CameraYSize = (int)Info.FullArea.SizeY;
 
             /*
              * Update the pixel size if it has changed (eg; QHY294M/C Pro)
@@ -1669,6 +1685,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 PixelSizeY = pixely;
             }
 
+            // Set binmode before getting the effective area
+            uint rv;
+            if ((rv = Sdk.SetBinMode(1, 1)) != QhySdk.QHYCCD_SUCCESS) {
+                Logger.Error($"QHYCCD: SetQHYCCDBinMode() failed. Returned {rv}");
+                return;
+            }
+
             /*
              * The Effective Area is a sensor's real imaging area. On sensors that have an overscan area, the effective area will be smaller than
              * the sensor's dimensions that were reported by GetQHYCCDChipInfo(). If the sensor does not have an overscan area, the values should be equal.
@@ -1676,15 +1699,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             ThrowOnFailure("GetQHYCCDEffectiveArea", Sdk.GetEffectiveArea(ref Info.EffectiveArea.StartX, ref Info.EffectiveArea.StartY, ref Info.EffectiveArea.SizeX, ref Info.EffectiveArea.SizeY));
             Logger.Debug($"QHYCCD: Effective Area: StartX={Info.EffectiveArea.StartX}, StartY={Info.EffectiveArea.StartY}, SizeX={Info.EffectiveArea.SizeX}, SizeY={Info.EffectiveArea.SizeY}");
 
-            if (QhyIncludeOverscan) {
-                CameraXSize = (int)Info.FullArea.SizeX;
-                CameraYSize = (int)Info.FullArea.SizeY;
-                Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_IGNOREOVERSCAN_INTERFACE, 0d);
-            } else {
-                CameraXSize = (int)Info.EffectiveArea.SizeX;
-                CameraYSize = (int)Info.EffectiveArea.SizeY;
-                Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_IGNOREOVERSCAN_INTERFACE, 1d);
-            }
+            // Always include overscan. Use EffectiveArea roi to get the image without overscan. See SetResolution.
+            Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_IGNOREOVERSCAN_INTERFACE, 0d);
 
             Logger.Debug($"QHYCCD: Sensor dimensions used: Overscan={QhyIncludeOverscan}, SizeX={CameraXSize}, SizeY={CameraYSize}");
         }
