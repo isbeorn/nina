@@ -80,8 +80,16 @@
                                     VerticalAlignment="Center"
                                     FontWeight="Bold"
                                     Foreground="Red"
-                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsReleaseBuild}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                                    ! UNSTABLE NIGHTLY VERSION !
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsNightlyBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    ! NIGHTLY UNSTABLE VERSION !
+                                </TextBlock>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Foreground="Yellow"
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsBetaBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    ! BETA PREVIEW VERSION !
                                 </TextBlock>
 
                                 <StackPanel
