@@ -1,6 +1,6 @@
 #region "copyright"
 /*
-    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -222,8 +222,8 @@ namespace NINA.ViewModel.FlatWizard {
             set {
                 cameraConnected = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged("StartFlatExposureTooltip");
-                RaisePropertyChanged("StartFlatExposureMultiTooltip");
+                RaisePropertyChanged(nameof(StartFlatExposureTooltip));
+                RaisePropertyChanged(nameof(StartFlatExposureMultiTooltip));
             }
         }
 
@@ -737,24 +737,24 @@ namespace NINA.ViewModel.FlatWizard {
                 filter.BitDepth = bitDepth;
                 filter.CameraInfo = deviceInfo;
             }
-            RaisePropertyChanged("StartFlatExposureTooltip");
-            RaisePropertyChanged("StartFlatExposureMultiTooltip");
+            RaisePropertyChanged(nameof(StartFlatExposureTooltip));
+            RaisePropertyChanged(nameof(StartFlatExposureMultiTooltip));
         }
 
         private FilterWheelInfo filterWheelInfo;
 
         public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
             filterWheelInfo = deviceInfo;
-            RaisePropertyChanged("StartFlatExposureTooltip");
-            RaisePropertyChanged("StartFlatExposureMultiTooltip");
+            RaisePropertyChanged(nameof(StartFlatExposureTooltip));
+            RaisePropertyChanged(nameof(StartFlatExposureMultiTooltip));
         }
 
         private TelescopeInfo telescopeInfo;
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             telescopeInfo = deviceInfo;
-            RaisePropertyChanged("SlewToZenithTooltip");
-            RaisePropertyChanged("SlewToZenithTooltipEnabled");
+            RaisePropertyChanged(nameof(SlewToZenithTooltip));
+            RaisePropertyChanged(nameof(SlewToZenithTooltipEnabled));
         }
 
         public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {

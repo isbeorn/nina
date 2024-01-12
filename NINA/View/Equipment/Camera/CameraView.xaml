@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -179,14 +179,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblMinExpTime}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.ExposureMin}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.ExposureMin, StringFormat=\{0:0.0######\} s}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblMaxExpTime}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.ExposureMax}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.ExposureMax, StringFormat=\{0:0.0######\} s}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -215,14 +215,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblPixelSizeX}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeX, Converter={StaticResource UnitConverter}, ConverterParameter=' µm'}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeX, Converter={StaticResource UnitConverter}, ConverterParameter=' µm|2'}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblPixelSizeY}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeY, Converter={StaticResource UnitConverter}, ConverterParameter=' µm'}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeY, Converter={StaticResource UnitConverter}, ConverterParameter=' µm|2'}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>

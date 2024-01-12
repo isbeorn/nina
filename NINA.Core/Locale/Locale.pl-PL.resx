@@ -957,7 +957,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Przeciwnie do ruchu wskazówek zegara</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Zasłoń teleskop i naciśnij OK, aby rozpocząć wykonywanie plików dark.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Zasłoń teraz obiektyw swojego teleskopu</value>
@@ -984,7 +984,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Katalog Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>Do zrobienia - Dark</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Obrót D.A.R.V.</value>
@@ -1476,7 +1476,7 @@ Jeśli wyzwalacz jest wyłączony, ten krok jest pomijany</value>
     <value>Otwórz</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>Zdejmij pokrywę dla klatek Dark</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ustaw</value>
@@ -2536,7 +2536,7 @@ Obliczone HFR: {2}</value>
     <value>Przygotowywanie obrazu</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>Przygotowanie sekwencji Dark</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flat dla filtra: {0}</value>
@@ -2608,7 +2608,7 @@ Obliczone HFR: {2}</value>
     <value>Tryb odczytu dla sekwencji</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>Następujące tryby odczytu dla Twojej kamery będą użyte dla klatek LIGHT, BIAS, DARK, FLAT w sekwencjach.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Tryb odczytu dla migawek</value>
@@ -5281,10 +5281,10 @@ Sekwencja może być zaplanowana od podstaw przy użyciu drobnych instrukcji, wy
     <value>Obróć rotator do pozycji {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>Pobiera wzorcową wartość ekspozycji dla określonych parametrów i tworzy klatki dark</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>Wzorzec klatek dark</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Lewa strona</value>
@@ -6866,5 +6866,11 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   </data>
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>Po aktywacji tej funkcji pliki FITS zostaną utworzone przy użyciu biblioteki CFITSIO, która jest alternatywą dla domyślnej metody zapisu tych plików przez program. Zmiana ta umożliwia dodatkowe funkcje, np. możliwość kompresji plików FITS w celu zmniejszenia rozmiaru pliku oraz możliwość przechowywania danych w 32-bitowym formacie w celu poprawy dokładności danych.</value>
+  </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Korekcja błędnych pikseli</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Poziom korekty błędnych pikseli</value>
   </data>
 </root>

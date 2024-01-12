@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -714,8 +714,8 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
 
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR && rSquaredThreshold <= 0) {
                 if (initialHFR != 0 && hfr > (initialHFR * 1.15)) {
-                    Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
-                    Notification.ShowWarning(string.Format(Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
+                    Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr.ToString("F3"), initialHFR.ToString("F3")));
+                    Notification.ShowWarning(string.Format(Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr.ToString("F3"), initialHFR.ToString("F3")));
                     return false;
                 }
             }

@@ -6872,4 +6872,10 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>Je-li tato funkce aktivována, budou soubory FITS vytvářeny pomocí knihovny CFITSIO, což je alternativa k výchozímu způsobu zápisu těchto souborů v programu. Tato změna umožňuje další funkce, například možnost komprese souborů FITS pro snížení velikosti souboru a možnost ukládat data ve 32bitovém formátu pro zvýšení přesnosti dat.</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Oprava Chybných Pixelů</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Mezní Hodnota Chybných Pixelů</value>
+  </data>
 </root>

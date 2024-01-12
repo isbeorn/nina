@@ -6868,4 +6868,10 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>Quan està activada aquesta funció, els fitxers FITS es crearan mitjançant la biblioteca CFITSIO, que és una alternativa al mètode predeterminat del programa per escriure aquests fitxers. Aquest canvi permet funcionalitats addicionals, com ara la capacitat de comprimir fitxers FITS per reduir la mida del fitxer i l'opció d'emmagatzemar dades en un format de 32 bits per millorar la precisió de les dades.</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Bad Pixel Correction</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Bad Pixel Correction Threshold</value>
+  </data>
 </root>

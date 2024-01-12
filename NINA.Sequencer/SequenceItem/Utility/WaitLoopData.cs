@@ -105,9 +105,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             set {
                 if (targetAltitude != value) {
                     targetAltitude = value;
-                    ExpectedDateTime = DateTime.MinValue;
-                    // While "thinking" we show this.  For some reason, the time doesn't get updated til next pass...
-                    ExpectedTime = "...";
+                    // While "thinking" we show this. 
+                    if(!ExpectedTime.EndsWith("\u231B")) {
+                        ExpectedTime = ExpectedTime + "\u231B";
+                    }
                     RaisePropertyChanged();
                 }
             }

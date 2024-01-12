@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -116,11 +116,12 @@
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
-                                    Columns="2">
+                                    Columns="2"
+                                    Visibility="{Binding DomeInfo.Azimuth, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                                     <TextBlock Text="{ns:Loc LblDomeAzimuth}" />
                                     <TextBlock
                                         Margin="5,0,0,0"
-                                        Text="{Binding DomeInfo.Azimuth}"
+                                        Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter='°|2'}"
                                         TextWrapping="WrapWithOverflow" />
                                 </UniformGrid>
                                 <UniformGrid
@@ -129,7 +130,9 @@
                                     Columns="2"
                                     Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
                                     <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        Text="{Binding DomeInfo.ShutterStatus}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>

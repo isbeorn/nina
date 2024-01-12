@@ -6857,4 +6857,10 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>Når denne funksjonen er aktivert, vil FITS-filer bli skrevet ved hjelp av CFITSIO-biblioteket, som et alternativ til NINAs innebygde metoder. CFITSIO har mer funksjonalitet, som komprimering for å redusere filstørrelse og muligheten til å lagre data i 32-bits format for bedre presisjon.</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Bad Pixel Correction</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Bad Pixel Correction Threshold</value>
+  </data>
 </root>

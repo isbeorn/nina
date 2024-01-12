@@ -44,7 +44,7 @@
     <Company>$(Authors)</Company>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the astronomy components of N.I.N.A.</Description>
-    <Copyright>Copyright ©  2016 - 2023 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
     <PackageIcon>ninasplash.png</PackageIcon>

@@ -6846,4 +6846,10 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>この機能を有効にすると、CFITSIOライブラリを使用してFITSファイルが作成されます。これは、ファイルを書き出すデフォルトの方法に代わるものです。 この変更により、追加の機能が有効になります。 例えば、ファイルサイズを小さくするためにFITSファイルを圧縮する機能や、データの精度を向上させるために32ビット形式でデータを保存するオプションなどです。</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>不正なピクセル補正</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>不正なピクセル補正のしきい値</value>
+  </data>
 </root>

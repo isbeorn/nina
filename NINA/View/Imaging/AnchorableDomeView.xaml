@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -45,135 +45,6 @@
                             Margin="0,5,0,0"
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0" />
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0"
-                            Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeDriverCanFollow}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.DriverCanFollow, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanSetShutter}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanSetShutter, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanSetPark}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanSetPark, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanSetAzimuth}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanSetAzimuth, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanSyncAzimuth}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanSyncAzimuth, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanPark}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanPark, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeCanFindHome}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.CanFindHome, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
                         <Border
                             Margin="0,5,0,0"
                             BorderBrush="{StaticResource BorderBrush}"
@@ -246,10 +117,20 @@
                             Margin="0,5,0,0"
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
+                            Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
                             Visibility="{Binding DomeInfo.Azimuth, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                             <UniformGrid VerticalAlignment="Center" Columns="2">
                                 <TextBlock Text="{ns:Loc LblDomeAzimuth}" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter=°}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter='°|2'}" />
                             </UniformGrid>
                         </Border>
                     </StackPanel>

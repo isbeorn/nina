@@ -6895,4 +6895,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Bad Pixel Correction</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Bad Pixel Correction Threshold</value>
+  </data>
 </root>

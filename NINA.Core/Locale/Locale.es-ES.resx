@@ -6867,4 +6867,10 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
     <value>Cuando esta función está activada, los archivos FITS se crearán usando la biblioteca CFITSIO, que es una alternativa al método por defecto del programa de escribir estos archivos. Este cambio permite funciones adicionales, tales como la capacidad de comprimir archivos FITS en un tamaño de archivo reducido y la opción de almacenar datos en un formato de 32 bits para mejorar la precisión de los datos.</value>
   </data>
+  <data name="LblBadPixelCorrection" xml:space="preserve">
+    <value>Corrección de píxeles erróneos</value>
+  </data>
+  <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
+    <value>Umbral de corrección de píxeles erróneos</value>
+  </data>
 </root>
