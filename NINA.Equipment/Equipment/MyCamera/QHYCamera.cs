@@ -1697,6 +1697,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 profileService.ActiveProfile.CameraSettings.PixelSize = PixelSizeX = pixelx;
                 PixelSizeY = pixely;
             }
+            // Make sure binning is set to 1 because it changes the effective area.
+            uint rv;
+            if ((rv = Sdk.SetBinMode(1, 1)) != QhySdk.QHYCCD_SUCCESS) {
+                Logger.Error($"QHYCCD: SetQHYCCDBinMode() failed. Returned {rv}");
+                return;
+            }
 
             // Set binmode before getting the effective area
             uint rv;
@@ -1712,10 +1718,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
             ThrowOnFailure("GetQHYCCDEffectiveArea", Sdk.GetEffectiveArea(ref Info.EffectiveArea.StartX, ref Info.EffectiveArea.StartY, ref Info.EffectiveArea.SizeX, ref Info.EffectiveArea.SizeY));
             Logger.Debug($"QHYCCD: Effective Area: StartX={Info.EffectiveArea.StartX}, StartY={Info.EffectiveArea.StartY}, SizeX={Info.EffectiveArea.SizeX}, SizeY={Info.EffectiveArea.SizeY}");
 
-            // Always include overscan. Use EffectiveArea roi to get the image without overscan. See SetResolution.
+            // Always include overscan. Use EffectiveArea to get the image without overscan. See SetResolution.
             Sdk.SetControlValue(QhySdk.CONTROL_ID.CAM_IGNOREOVERSCAN_INTERFACE, 0d);
 
-            Logger.Debug($"QHYCCD: Sensor dimensions used: Overscan={QhyIncludeOverscan}, SizeX={CameraXSize}, SizeY={CameraYSize}");
+            Logger.Debug($"QHYCCD: Sensor dimensions used: Overscan={QhyIncludeOverscan}, StartX={StartPixelX}, StartY{StartPixelY}, SizeX={CameraXSize}, SizeY={CameraYSize}");
         }
 
         private uint StartPixelX {

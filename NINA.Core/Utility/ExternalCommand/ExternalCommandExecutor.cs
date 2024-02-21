@@ -36,6 +36,7 @@ namespace NINA.Core.Utility.ExternalCommand {
                 return false;
             }
             try {
+                sequenceCompleteCommand = sequenceCompleteCommand.Trim();
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
                 string src = Locale.Loc.Instance["LblSequenceCommandSource"];

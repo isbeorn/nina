@@ -676,7 +676,7 @@ namespace NINA.Image.FileFormat.XISF {
                         AddImageFITSKeyword(d.Key, d.Value, d.Comment);
                         break;
                     case BoolMetaDataHeader b:
-                        AddImageFITSKeyword(b.Key, b.Value ? "T" : "F", b.Comment);
+                        AddImageFITSKeyword(b.Key, b.Value, b.Comment);
                         break;
                     case DateTimeMetaDataHeader d:
                         AddImageFITSKeyword(d.Key, d.Value, d.Comment);
@@ -714,35 +714,39 @@ namespace NINA.Image.FileFormat.XISF {
         /// <param name="value">      value of that specific property</param>
         /// <param name="comment">    optional comment</param>
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
-        public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true, string fitsvalue = null) {
+        public void AddImagePropertyInternal(string[] property, string value, string comment, bool autoaddfits, string fitsvalue) {
             if (Image == null) { throw new InvalidOperationException("No Image component available to add property!"); }
             AddProperty(Image, property, value, comment);
             if (property.Length > 2 && autoaddfits) {
                 if (fitsvalue == null) {
-                    AddImageFITSKeyword(property[2], value, comment);
+                    AddImageFITSKeywordInternal(property[2], value, comment);
                 } else {
-                    AddImageFITSKeyword(property[2], fitsvalue, comment);
+                    AddImageFITSKeywordInternal(property[2], fitsvalue, comment);
                 }
             }
         }
 
+        public void AddImageProperty(string[] property, String value, string comment = "", bool autoaddfits = true) {
+            AddImagePropertyInternal(property, value, comment, autoaddfits, "'" + value + "'");
+        }
+
         public void AddImageProperty(string[] property, DateTime value, string comment = "", bool autoaddfits = true) {
-            AddImageProperty(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment, autoaddfits);
+            AddImagePropertyInternal(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment, autoaddfits, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'");
         }
 
         public void AddImageProperty(string[] property, int value, string comment = "", bool autoaddfits = true) {
-            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits);
+            AddImagePropertyInternal(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, value.ToString(CultureInfo.InvariantCulture));
         }
 
         public void AddImageProperty(string[] property, double value, string comment = "", bool autoaddfits = true) {
-            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, DoubleToFitsString(value));
+            AddImagePropertyInternal(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, DoubleToFitsString(value));
         }
 
         public void AddImageProperty(string[] property, float value, string comment = "", bool autoaddfits = true) {
-            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, FloatToFitsString(value));
+            AddImagePropertyInternal(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, FloatToFitsString(value));
         }
 
-        public void AddImageFITSKeyword(string name, string value, string comment = "") {
+        private void AddImageFITSKeywordInternal(string name, string value, string comment = "") {
             if (Image == null) { throw new InvalidOperationException("No Image component available to add FITS Keyword!"); }
 
             var exists = Image.Elements(xmlns + "FITSKeyword").Attributes("name").Any(x => x.Value == name);
@@ -754,20 +758,27 @@ namespace NINA.Image.FileFormat.XISF {
             }
         }
 
+        public void AddImageFITSKeyword(string name, string value, string comment = "") {
+            AddImageFITSKeywordInternal(name, "'" + value + "'", comment);
+        }
+        public void AddImageFITSKeyword(string name, bool value, string comment = "") {
+            AddImageFITSKeywordInternal(name, value ? "T" : "F", comment);
+        }
+
         public void AddImageFITSKeyword(string name, DateTime value, string comment = "") {
-            AddImageFITSKeyword(name, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
+            AddImageFITSKeywordInternal(name, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'", comment);
         }
 
         public void AddImageFITSKeyword(string name, int value, string comment = "") {
-            AddImageFITSKeyword(name, value.ToString(CultureInfo.InvariantCulture), comment);
+            AddImageFITSKeywordInternal(name, value.ToString(CultureInfo.InvariantCulture), comment);
         }
 
         public void AddImageFITSKeyword(string name, double value, string comment = "") {
-            AddImageFITSKeyword(name, DoubleToFitsString(value), comment);
+            AddImageFITSKeywordInternal(name, DoubleToFitsString(value), comment);
         }
 
         public void AddImageFITSKeyword(string name, float value, string comment = "") {
-            AddImageFITSKeyword(name, FloatToFitsString(value), comment);
+            AddImageFITSKeywordInternal(name, FloatToFitsString(value), comment);
         }
 
         private string DoubleToFitsString(double value) {

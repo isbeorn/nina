@@ -134,6 +134,10 @@ namespace NINA {
                 return;
             }
 
+            if (_commandLineOptions.Debug) {
+                CoreUtil.DebugMode = _commandLineOptions.Debug;
+            }
+
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
             var userSettingsException = InitializeUserSettings();

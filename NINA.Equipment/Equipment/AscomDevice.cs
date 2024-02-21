@@ -385,6 +385,9 @@ namespace NINA.Equipment.Equipment {
                 try {
                     if (memory.IsImplemented && Connected) {
                         memory.SetValue(device, value);
+                        if(propertyGETMemory.TryGetValue(propertyName, out var getmemory)) {
+                            getmemory.InvalidateCache();
+                        }
 
                         Logger.Trace($"SET {type.Name}.{propertyName}: {value}");
                         RaisePropertyChanged(originalPropertyName);
@@ -444,6 +447,10 @@ namespace NINA.Equipment.Equipment {
             public bool IsImplemented { get; set; }
             public object LastValue { get; set; }
             public DateTimeOffset LastValueUpdate { get; set; }
+
+            public void InvalidateCache() {
+                LastValueUpdate = DateTimeOffset.MinValue;
+            }
 
             public object GetValue(DeviceT device) {
                 lock (lockObj) {

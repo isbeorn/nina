@@ -6,5 +6,6 @@
         bool RunSequence { get; }
         bool ExitAfterSequence { get; }
         bool HasErrors { get; }
+        bool Debug { get; }
     }
 }

@@ -145,6 +145,18 @@ namespace NINA.ViewModel {
             service.Show(window, Title + " - " + Loc.Instance["LblAbout"], ResizeMode.NoResize, WindowStyle.ToolWindow);
         }
 
+        [RelayCommand]
+        private void ChangeResolution(string resolution) {
+            var split = resolution.Split("x");
+            if (split.Length == 2) {
+                var width = double.Parse(split[0]);
+                var height = double.Parse(split[1]);
+                Application.Current.MainWindow.WindowState = WindowState.Normal;
+                Application.Current.MainWindow.Width = width;
+                Application.Current.MainWindow.Height = height;
+            }
+        }
+
         public void ChangeTab(ApplicationTab tab) {
             TabIndex = (int)tab;
         }
