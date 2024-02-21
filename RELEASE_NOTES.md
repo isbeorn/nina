@@ -71,6 +71,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 -s, --sequencefile      Load a sequence file at startup.
 -r, --runsequence       (Default: false) Automatically start a sequence loaded with -s and switch to Imaging tab.
 -x, --exitaftersequence (Default: false) Automatically exit the application after the sequence has been finished.
+-d, --debug             (Default: false) Activates Debug Mode in the application, revealing additional UI elements and features that are available only for development and testing purposes. This mode is intended to assist developers and testers in diagnosing issues, understanding application flow, and verifying UI elements that are not accessible in the standard operation mode.
 --help                  Display this help screen.
 --version               Display version information
 ```
@@ -116,6 +117,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 
 ### XISF
 - Added support for storing data in a 32-bit unsigned integer format
+- FITS Header Cards are now correctly enclosed with single quotes
 
 ## Alpaca
 - ASCOM Alpaca discovery is now available in N.I.N.A. and discovered devices are selectable in the equipment choosers to connect to

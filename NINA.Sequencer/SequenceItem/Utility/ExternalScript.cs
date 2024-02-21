@@ -77,9 +77,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [JsonProperty]
         public string Script {
-            get => script;
+            get => script?.Trim();
             set {
-                script = value;
+                script = value?.Trim();
                 RaisePropertyChanged();
             }
         }

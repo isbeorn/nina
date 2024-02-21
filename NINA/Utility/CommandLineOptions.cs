@@ -21,6 +21,9 @@ namespace NINA.Utility {
 
             [Option(shortName: 'x', longName: "exitaftersequence", Default = false, HelpText = "Automatically exit the application after the sequence has been finished.")]
             public bool ExitAfterSequence { get; set; }
+
+            [Option(shortName: 'd', longName: "debug", Default = false, HelpText = "Activates Debug Mode in the application, revealing additional UI elements and features that are available only for development and testing purposes. This mode is intended to assist developers and testers in diagnosing issues, understanding application flow, and verifying UI elements that are not accessible in the standard operation mode.")]
+            public bool Debug { get; set; }
         }
 
         public CommandLineOptions(string[] args) {
@@ -38,12 +41,14 @@ namespace NINA.Utility {
         public bool RunSequence { get; private set; }
         public bool ExitAfterSequence { get; private set; }
         public bool HasErrors { get; private set; }
+        public bool Debug { get; private set; }
 
         private void CaptureOptions(Options opts) {
             ProfileId = opts.ProfileId;
             SequenceFile = opts.SequenceFile;
             RunSequence = opts.RunSequence;
             ExitAfterSequence = opts.ExitAfterSequence;
+            Debug = opts.Debug;
         }
 
         private void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs) {

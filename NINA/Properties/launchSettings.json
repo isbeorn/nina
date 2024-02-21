@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "NINA": {
+      "commandName": "Project"
+    },
+    "DebugMode": {
+      "commandName": "Project",
+      "commandLineArgs": "--debug"
+    }
+  }
+}
