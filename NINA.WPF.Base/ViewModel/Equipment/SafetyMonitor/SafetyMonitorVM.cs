@@ -85,8 +85,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             monitorValues.TryGetValue(nameof(SafetyMonitorInfo.Connected), out o);
             SafetyMonitorInfo.Connected = (bool)(o ?? false);
 
+            bool isSafe = SafetyMonitorInfo.IsSafe;
             monitorValues.TryGetValue(nameof(SafetyMonitorInfo.IsSafe), out o);
             SafetyMonitorInfo.IsSafe = (bool)(o ?? false);
+            if (SafetyMonitorInfo.IsSafe != isSafe) {
+                Logger.Info("SafetyMonitorInfo state changed to " + (isSafe ? "Unsafe" : "Safe"));
+            }
 
             BroadcastMonitorInfo();
         }
