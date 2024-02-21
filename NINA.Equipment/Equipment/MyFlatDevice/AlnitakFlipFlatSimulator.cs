@@ -35,6 +35,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public string Id => "flip_flat_simulator";
         public string Name => "Flip-Flat Simulator";
+        public string DisplayName => Name;
         public string Category => "Alnitak Astrosystems";
 
         public bool Connected { get; private set; }

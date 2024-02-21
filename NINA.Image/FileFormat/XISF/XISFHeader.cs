@@ -113,6 +113,10 @@ namespace NINA.Image.FileFormat.XISF {
                 metaData.Camera.Name = value;
             }
 
+            if (TryGetFITSProperty("CAMERAID", out value)) {
+                metaData.Camera.Id = value;
+            }
+
             if (TryGetFITSProperty("GAIN", out value)) {
                 metaData.Camera.Gain = int.Parse(value, CultureInfo.InvariantCulture);
             }
@@ -410,6 +414,9 @@ namespace NINA.Image.FileFormat.XISF {
             /* Camera */
             if (!string.IsNullOrWhiteSpace(metaData.Camera.Name)) {
                 AddImageProperty(XISFImageProperty.Instrument.Camera.Name, metaData.Camera.Name, "Imaging instrument name");
+            }
+            if (!string.IsNullOrWhiteSpace(metaData.Camera.Id)) {
+                AddImageFITSKeyword("CAMERAID", metaData.Camera.Id, "Imaging instrument identifier");
             }
             if (metaData.Camera.Gain >= 0) {
                 AddImageFITSKeyword("GAIN", metaData.Camera.Gain, "Sensor gain");

@@ -74,7 +74,9 @@ namespace NINA.Equipment.Equipment.MyRotator {
 
         public string Id => "Manual Rotator";
 
-        public string Name => Loc.Instance["LblManualRotator"];
+        public string Name => "Manual Rotator";
+
+        public string DisplayName => Loc.Instance["LblManualRotator"];
 
         public string Description => Loc.Instance["LblManualRotatorDescription"];
 

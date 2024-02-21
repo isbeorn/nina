@@ -63,6 +63,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         public string Id => this.focuser.Id;
 
         public string Name => this.focuser.Name;
+        public string DisplayName => this.focuser.DisplayName;
 
         public string Category => this.focuser.Category;
 

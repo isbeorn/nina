@@ -370,7 +370,7 @@
                         <TextBlock
                             Grid.Row="1"
                             Style="{StaticResource SideBarTextBlock}"
-                            Text="{ns:Loc LblTelescope}" />
+                            Text="{ns:Loc LblMount}" />
                     </Grid>
                     <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <Path

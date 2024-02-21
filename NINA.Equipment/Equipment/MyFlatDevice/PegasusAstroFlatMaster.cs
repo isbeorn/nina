@@ -59,7 +59,8 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public bool HasSetupDialog => !Connected;
         public string Id => "b4aee7ad-effe-4cf8-b02b-fd94f2780974";
-        public string Name => $"{Loc.Instance["LblPegasusFlatMaster"]}";
+        public string Name => "Pegasus Flat Master";
+        public string DisplayName => $"{Loc.Instance["LblPegasusFlatMaster"]}";
         public string Category => "Pegasus Astro";
 
         private bool _connected;

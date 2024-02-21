@@ -31,13 +31,15 @@ namespace NINA.Profile {
         protected override void SetDefaultValues() {
             id = "No_Device";
             name = string.Empty;
+            mountName = string.Empty;
             focalLength = double.NaN;
             focalRatio = double.NaN;
             snapPortStart = ":SNAP1,1#";
             snapPortStop = "SNAP1,0#";
             settleTime = 5;
             noSync = false;
-            TelescopeLocationSyncDirection = TelescopeLocationSyncDirection.PROMPT;
+            timeSync = true;
+            telescopeLocationSyncDirection = TelescopeLocationSyncDirection.PROMPT;
         }
 
         private string id;
@@ -61,6 +63,19 @@ namespace NINA.Profile {
             set {
                 if (name != value) {
                     name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string mountName;
+
+        [DataMember]
+        public string MountName {
+            get => mountName;
+            set {
+                if (mountName != value) {
+                    mountName = value;
                     RaisePropertyChanged();
                 }
             }
@@ -179,6 +194,18 @@ namespace NINA.Profile {
                     telescopeLocationSyncDirection = value;
                     RaisePropertyChanged();
                 }                
+            }
+        }
+
+        private bool timeSync;
+        [DataMember]
+        public bool TimeSync {
+            get => timeSync;
+            set {
+                if(timeSync != value) {
+                    timeSync = value;
+                    RaisePropertyChanged();
+                }
             }
         }
     }

@@ -35,10 +35,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
-                devices.Add(new DummyDevice(Loc.Instance["LblNoTelescope"]));
+                devices.Add(new DummyDevice(Loc.Instance["LblNoMount"]));
 
                 /* Plugin Providers */
                 foreach (var provider in await equipmentProviders.GetProviders()) {
@@ -52,9 +51,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (ITelescope telescope in ascomInteraction.GetTelescopes()) {
                         devices.Add(telescope);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaTelescopes = await alpacaInteraction.GetTelescopes(default);
+                    foreach (ITelescope t in alpacaTelescopes) {
+                        devices.Add(t);
+                    }
+                    Logger.Info($"Found {alpacaTelescopes?.Count} Alpaca Telescopes");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

@@ -208,9 +208,11 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public string Id => "4C0BBF74-0D95-41F6-AAD8-D6D58668CF2C";
 
-        public string Name {
+        public string Name => "N.I.N.A. Simulator Camera";
+
+        public string DisplayName {
             get {
-                string cameraName = "N.I.N.A. Simulator Camera";
+                string cameraName = Name;
 
                 if (SimulatorImage?.RawImageData?.MetaData?.Camera.Name.Length > 0) {
                     cameraName = cameraName + " (" + SimulatorImage.RawImageData.MetaData.Camera.Name + ")";

@@ -23,7 +23,7 @@ namespace NINA.Equipment.Interfaces {
         bool HasSetupDialog { get; }
         string Id { get; }
         string Name { get; }
-
+        string DisplayName { get; }
         string Category { get; }
         bool Connected { get; }
         string Description { get; }

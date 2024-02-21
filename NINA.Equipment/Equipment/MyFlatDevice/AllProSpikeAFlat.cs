@@ -96,7 +96,9 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public string Id => "AFE4C45C-47DB-471B-B570-9044FF6F6374";
 
-        public string Name => $"{Loc.Instance["LblAllProSpikeAFlatPanel"]}";
+        public string Name => "AllPro Spike-a-Flat Panel";
+
+        public string DisplayName => $"{Loc.Instance["LblAllProSpikeAFlatPanel"]}";
 
         public string Category => "AllPro Software";
 

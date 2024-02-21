@@ -34,7 +34,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
                 devices.Add(new DummyDevice(Loc.Instance["LblFlatDeviceNoDevice"]));
 
@@ -50,9 +49,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (IFlatDevice flatDevice in ascomInteraction.GetCoverCalibrators()) {
                         devices.Add(flatDevice);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaCoverCalibrators = await alpacaInteraction.GetCoverCalibrators(default);
+                    foreach (IFlatDevice fd in alpacaCoverCalibrators) {
+                        devices.Add(fd);
+                    }
+                    Logger.Info($"Found {alpacaCoverCalibrators?.Count} Alpaca Cover Calibrators");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

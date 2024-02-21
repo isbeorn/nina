@@ -686,12 +686,12 @@ namespace NINA.Profile {
 
         [DataMember]
         public bool ASCOMCreate32BitData {
-            get => ascomCreate32BitData;
+            get => false; //ascomCreate32BitData;
             set {
-                if(ascomCreate32BitData != value) {
-                    ascomCreate32BitData = value;
-                    RaisePropertyChanged();
-                }
+                //if(ascomCreate32BitData != value) {
+                //    ascomCreate32BitData = value;
+                //    RaisePropertyChanged();
+                //}
             }
         }
 

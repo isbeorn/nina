@@ -53,6 +53,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         public string Category => _category;
         public string Id => _driverId;
         public string Name => _driverName;
+        public string DisplayName => Name;
         public string DriverInfo => Loc.Instance["LblWeatherUndergroundClientInfo"];
         public string DriverVersion => _driverVersion;
         public string Description => Loc.Instance["LblWeatherUndergroundClientDescription"];

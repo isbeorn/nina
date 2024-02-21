@@ -106,6 +106,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 RaisePropertyChanged();
             }
         }
+        public string DisplayName => Name;
 
         public string Description => "Canon Camera";
 

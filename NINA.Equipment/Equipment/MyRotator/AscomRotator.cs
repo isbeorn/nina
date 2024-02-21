@@ -22,12 +22,15 @@ using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Common;
+using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
-    internal class AscomRotator : AscomDevice<Rotator>, IRotator, IDisposable {
+    internal class AscomRotator : AscomDevice<IRotatorV3>, IRotator, IDisposable {
 
         public AscomRotator(string id, string name) : base(id, name) {
+        }
+        public AscomRotator(AscomDevice deviceMeta) : base(deviceMeta) {
         }
 
         public bool CanReverse => GetProperty(nameof(Rotator.CanReverse), false);
@@ -119,8 +122,12 @@ namespace NINA.Equipment.Equipment.MyRotator {
             return Task.CompletedTask;
         }
 
-        protected override Rotator GetInstance(string id) {
-            return new Rotator(id);
+        protected override IRotatorV3 GetInstance() {
+            if (deviceMeta == null) {
+                return new Rotator(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaRotator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

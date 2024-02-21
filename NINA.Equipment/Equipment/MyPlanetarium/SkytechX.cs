@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
+using System.Threading;
 
 namespace NINA.Equipment.Equipment.MyPlanetarium {
 
@@ -73,7 +74,7 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
         /// Return the configured user location
         /// </summary>
         /// <returns></returns>
-        public Task<Location> GetSite() {
+        public Task<Location> GetSite(CancellationToken token) {
             throw new InvalidOperationException();
         }
 

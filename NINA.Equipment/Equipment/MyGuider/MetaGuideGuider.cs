@@ -73,6 +73,8 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public string Name => "MetaGuide";
+
+        public string DisplayName => Name;
         public string Id => "MetaGuide";
 
         public event EventHandler<IGuideStep> GuideEvent;

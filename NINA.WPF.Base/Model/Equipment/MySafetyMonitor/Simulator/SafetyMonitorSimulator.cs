@@ -33,6 +33,8 @@ namespace NINA.WPF.Base.Model.Equipment.MySafetyMonitor.Simulator {
 
         public string Name => "N.I.N.A. Simulator Safety Device";
 
+        public string DisplayName => Name;
+
         public string Category => "N.I.N.A.";
 
         public bool Connected { get; private set; }

@@ -53,7 +53,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             this.applicationStatusMediator = applicationStatusMediator;
             this.domeMediator = domeMediator;
             this.DeviceChooserVM = deviceChooserVM;
-            Title = Loc.Instance["LblTelescope"];
+            Title = Loc.Instance["LblMount"];
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
 
             progress = new Progress<ApplicationStatus>(p => {
@@ -129,11 +129,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 Logger.Info("Telescope has been commanded to park");
                 IsParkingOrHoming = true;
 
+                using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
+                timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
                 try {
                     if (Telescope.CanPark) {
                         if (!Telescope.AtPark) {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToPark"] });
-                            await Telescope.Park(token);
+                            await Telescope.Park(timeoutCts.Token);
 
                             // Detect if the parking process was cancelled by an external force, such as the user hitting the stop button
                             // in another app or in the driver's own UI, external to NINA.
@@ -144,29 +147,35 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 // Defend against drivers that might surprise us with a non-conformant async Park()
                                 // Also catch cases where the user cancelled the procedure by hitting the Stop button
                                 while (!Telescope.AtPark && Telescope.Slewing) {
-                                    if (token.IsCancellationRequested) {
+                                    if (timeoutCts.Token.IsCancellationRequested) {
                                         Logger.Warning("Park operation cancelled");
                                         throw new OperationCanceledException();
                                     }
 
-                                    await CoreUtil.Delay(TimeSpan.FromSeconds(2), token);
+                                    await CoreUtil.Delay(TimeSpan.FromSeconds(2), timeoutCts.Token);
                                 }
                             }
-                            await updateTimer.WaitForNextUpdate(token);
+                            await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                         } else {
                             Logger.Info("Telescope commanded to park but it is already parked");
                         }
                     } else { // Telescope is incapable of parking. Slew safely to the celestial pole and stop tracking instead
                         Coordinates targetCoords = GetHomeCoordinates(telescopeInfo.Coordinates);
                         Logger.Trace($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
-                        await SlewToCoordinatesAsync(targetCoords, token);
+                        await SlewToCoordinatesAsync(targetCoords, timeoutCts.Token);
 
                         Logger.Trace("Telescope will stop tracking");
                         result = SetTrackingEnabled(false);
-                        await updateTimer.WaitForNextUpdate(token);
+                        await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                     }
                 } catch (OperationCanceledException) {
-                    Notification.ShowWarning(Loc.Instance["LblTelescopeParkCancelled"]);
+                    if(timeoutCts?.IsCancellationRequested == true) {
+                        Logger.Error("Park has timed out after 10 minutes");
+                        Notification.ShowError(string.Format(Loc.Instance["LblTelescopeParkTimeout"], 10));
+                    } else {
+                        Notification.ShowWarning(Loc.Instance["LblTelescopeParkCancelled"]);
+                        Logger.Warning("Park cancelled");
+                    }
                     result = false;
                 } catch (Exception e) {
                     Logger.Error($"An error occured while attmepting to park: {e}");
@@ -237,15 +246,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             await Task.Run(async () => {
                 if (Telescope.AtPark) {
                     if (Telescope.CanUnpark) {
+                        using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                        // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
+                        timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
+
                         try {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToUnpark"] });
-                            await Telescope.Unpark(token);
+                            await Telescope.Unpark(timeoutCts.Token);
 
                             success = true;
-                            await updateTimer.WaitForNextUpdate(token);
+                            await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                         } catch (OperationCanceledException) {
-                            Notification.ShowWarning(Loc.Instance["LblTelescopeUnparkCancelled"]);
-                            Logger.Warning("Unpark cancelled");
+                            if (timeoutCts?.IsCancellationRequested == true) {
+                                Logger.Error("Unpark has timed out after 10 minutes");
+                                Notification.ShowError(string.Format(Loc.Instance["LblTelescopeUnparkTimeout"], 10));
+                            } else {
+                                Notification.ShowWarning(Loc.Instance["LblTelescopeUnparkCancelled"]);
+                                Logger.Warning("Unpark cancelled");
+                            }
                         } catch (Exception e) {
                             Notification.ShowError(e.Message);
                             Logger.Error(e);
@@ -274,9 +292,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     if (Telescope.CanFindHome) {
                         if (!Telescope.AtHome) {
                             if (!Telescope.AtPark) {
+                                using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                                // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
+                                timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
+
                                 try {
                                     progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToFindHome"] });
-                                    await Telescope.FindHome(token);
+                                    await Telescope.FindHome(timeoutCts.Token);
 
                                     // Detect if the homing process was cancelled by an external force, such as the user hitting the stop button
                                     // in another app or in the driver's own UI, external to NINA.
@@ -287,20 +309,26 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                         // Defend against drivers that might surprise us with a non-conformant async FindHome()
                                         // Also catch cases where the user cancelled the procedure by hitting the Stop button
                                         while (!Telescope.AtHome && Telescope.Slewing) {
-                                            if (token.IsCancellationRequested) {
+                                            if (timeoutCts.Token.IsCancellationRequested) {
                                                 Logger.Warning("Find home cancelled");
                                                 throw new OperationCanceledException();
                                             }
 
-                                            await CoreUtil.Delay(TimeSpan.FromSeconds(2), token);
+                                            await CoreUtil.Delay(TimeSpan.FromSeconds(2), timeoutCts.Token);
                                         }
                                     }
-                                    await updateTimer.WaitForNextUpdate(token);
+                                    await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                                     // We are home
                                     success = true;
                                 } catch (OperationCanceledException) {
-                                    Notification.ShowWarning(Loc.Instance["LblTelescopeFindHomeCancelled"]);
-                                    Logger.Warning("Find Home cancelled");
+                                    if (timeoutCts?.IsCancellationRequested == true) {
+                                        Logger.Error("Find home has timed out after 10 minutes");
+                                        Notification.ShowError(string.Format(Loc.Instance["LblTelescopeFindHomeTimeout"], 10));
+                                        reason = "it has timed out";
+                                    } else {
+                                        Notification.ShowWarning(Loc.Instance["LblTelescopeFindHomeCancelled"]);
+                                        Logger.Warning("Find Home cancelled");
+                                    }                                    
                                 } catch (Exception e) {
                                     reason = e.Message;
                                     Notification.ShowError(e.Message);
@@ -455,6 +483,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 DeclinationString = Telescope.DeclinationString,
                                 HoursToMeridianString = Telescope.HoursToMeridianString,
                                 Name = Telescope.Name,
+                                DisplayName = Telescope.DisplayName,
                                 DeviceId = Telescope.Id,
                                 RightAscension = Telescope.RightAscension,
                                 RightAscensionString = Telescope.RightAscensionString,
@@ -507,7 +536,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} Driver Version: {telescope.DriverVersion}");
+                            Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");
 
                             return true;
                         } else {
@@ -733,7 +762,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         private async Task<bool> DisconnectTelescope() {
-            var diag = MyMessageBox.Show(Loc.Instance["LblDisconnectTelescope"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.Show(Loc.Instance["LblDisconnectMount"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 await Disconnect();
             }
@@ -741,7 +770,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task Disconnect() {
-            if (Telescope != null) { Logger.Info("Disconnected Telescope"); }
+            if (Telescope != null) { Logger.Info("Disconnected Mount"); }
             if (updateTimer != null) {
                 await updateTimer.Stop();
             }
@@ -936,11 +965,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     return false;
                 }
             } catch (OperationCanceledException) {
-                if (!timeoutCts?.IsCancellationRequested == true) {
-                    throw;
-                } else {
+                if (timeoutCts?.IsCancellationRequested == true) {
                     Logger.Error("Telescope slew timed out after 10 Minutes");
                     return false;
+                } else {
+                    throw;
                 }
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

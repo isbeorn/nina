@@ -36,7 +36,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
                 devices.Add(new DummyDevice(Loc.Instance["LblNoFocuser"]));
 
@@ -52,7 +51,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     devices.AddRange(ascomInteraction.GetFocusers());
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaFocusers = await alpacaInteraction.GetFocusers(default);
+                    foreach (IFocuser focuser in alpacaFocusers) {
+                        devices.Add(focuser);
+                    }
+                    Logger.Info($"Found {alpacaFocusers?.Count} Alpaca Focusers");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

@@ -363,6 +363,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public short MaxBinY => 16;
 
         public string Name => Info.Model;
+        public string DisplayName => $"{Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
 
         public int Offset {
             get => -1;

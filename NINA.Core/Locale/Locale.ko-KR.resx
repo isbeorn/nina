@@ -142,7 +142,7 @@
     <value>활성 시퀀스 정보</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>시퀀스 타겟으로 추가</value>
+    <value>시퀀스에 타겟 추가</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
     <value>고급 설정</value>
@@ -189,12 +189,12 @@
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
     <value>3단계 고도 오류 측정
 1. 이미지를 촬영하고 현재 위치에서 플레이트 솔버로 현재 좌표 계산
-2. Ra[적경] 0.5도 도입[Slew]
+2. Ra 0.5도 이동
 3. 새로운 위치에서 이미지를 촬영하고, 플레이트 솔버로 좌표를 다시 계산.
 1,3에서 획득한 2개의 좌표로 고도 오류 측정</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>망원경을 동쪽 또는 서쪽의 Dec[적위] 0 근처 및 수평선 근처에 위치시켜주세요.</value>
+    <value>망원경을 동쪽 또는 서쪽의 Dec 0 근처 및 수평선 근처에 위치시켜주세요.</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
     <value>고도 측정 부분</value>
@@ -274,7 +274,7 @@
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>측성학</value>
+    <value>경도/위도 설정</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
@@ -352,7 +352,7 @@
     <value>시작 시</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>오토포커스 내부 자르기 비율</value>
+    <value>오토포커스 외부 자르기 비율</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
     <value>오토포커스를 다시 시도하는 중</value>
@@ -393,7 +393,7 @@
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
     <value>방위각 오차를 측정하는 3단계 순서.
 1. 현재 위치에서 실제 좌표에 대한 이미지를 촬영 및 플레이트솔브를 합니다.
-2. Ra[적경] 을 이용하여 망원경을 0.5도 도입[Slew]
+2. Ra 을 이용하여 망원경을 0.5도 Go-To
 3. 새 위치에서 이미지를 촬영하여 플레이트솔브를 합니다. 이 두 지점을 사용하여 실제 방위각 오차가 계산되고 표시됩니다.</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
@@ -415,7 +415,7 @@
     <value>바이어스 평균값(16비트)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>바이어스 중앙값(16비트)</value>
+    <value>바이어스 중간 값(16비트)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>비닝</value>
@@ -424,19 +424,19 @@
     <value>카메라 비닝</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>비트 깊이</value>
+    <value>Bit</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>ADU의 비트 깊이</value>
+    <value>ADU bit</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
     <value>검은색 클립핑</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
     <value>프레이밍을 위해 이미지를 플레이트 솔빙해야 합니다.
-기준 좌표를 취해야 합니까?
-Ra[적경]: {0}
-Dec[적위]: {1}</value>
+기준 좌표를 취득 하시겠습니까?
+Ra: {0}
+Dec: {1}</value>
   </data>
   <data name="LblBlindSolver" xml:space="preserve">
     <value>블라인드 솔버</value>
@@ -548,19 +548,19 @@ Dec[적위]: {1}</value>
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>중심 Dec[적위]</value>
+    <value>중심 Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>중심 Dec[적위], 도분초</value>
+    <value>중심 Dec, 도분초</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>중심 Ra[적경]</value>
+    <value>중심 Ra</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>중심 Ra[적경], 시분초</value>
+    <value>중심 Ra, 시분초</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
-    <value>중심 타겟</value>
+    <value>타겟 중심</value>
   </data>
   <data name="LblChange" xml:space="preserve">
     <value>변경</value>
@@ -952,7 +952,7 @@ Dec[적위]: {1}</value>
     <value>반 시계 방향</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>망원경 덮개를 덮고 확인 버튼을 눌러 다크 프레임 촬영을 시작합니다.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>망원경 덮개를 덮어주세요</value>
@@ -979,17 +979,17 @@ Dec[적위]: {1}</value>
     <value>Cygwin 폴더</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>다크 프레임 촬영</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
-    <value>D.A.R.V. 도입[Slew]</value>
+    <value>D.A.R.V. Go-To</value>
   </data>
   <data name="LblDARVSlewButtonTooltip" xml:space="preserve">
-    <value>망원경을 한쪽으로 천천히 도입[Slew] 하면서 촬영합니다. 극축정렬의 오류가 있는 경우 선이 정렬되지 않습니다.</value>
+    <value>망원경을 한쪽으로 천천히 Go-To 하면서 촬영합니다. 극축정렬의 오류가 있는 경우 선이 정렬되지 않습니다.</value>
   </data>
   <data name="LblDARVSlewDescription" xml:space="preserve">
     <value>D.A.R.V의 기간을 설정합니다. 
-망원경은 Ra[적경] 축에서 한 방향으로 시간의 절반을 도입[Slew] 후 다시 뒤로 도입[Slew] 합니다.
+망원경은 Ra 축에서 한 방향으로 시간의 절반을 Go-To 후 다시 뒤로 Go-To합니다.
 극축정렬 오류가 없는 경우 직선으로 표시됩니다. 그렇지 않은 경우 V자 모양의 선이 됩니다. 방위각 오류 측정은 자오선, 동쪽, 서쪽을 향해야 합니다.</value>
   </data>
   <data name="LblDataProvidedBy" xml:space="preserve">
@@ -1035,19 +1035,19 @@ Dec[적위]: {1}</value>
     <value>디버그</value>
   </data>
   <data name="LblDec" xml:space="preserve">
-    <value>Dec[적위]</value>
+    <value>Dec</value>
   </data>
   <data name="LblDecCorrections" xml:space="preserve">
-    <value>Dec[적위] 수정</value>
+    <value>Dec 교정</value>
   </data>
   <data name="LblDecError" xml:space="preserve">
-    <value>Dec[적위] 오차</value>
+    <value>Dec 오차</value>
   </data>
   <data name="LblDeclination" xml:space="preserve">
-    <value>Dec[적위]</value>
+    <value>Dec</value>
   </data>
   <data name="LblDecPixError" xml:space="preserve">
-    <value>Dec[적위] 픽셀 오차</value>
+    <value>Dec 픽셀 오차</value>
   </data>
   <data name="LblDefaultAutoFocusExposureTime" xml:space="preserve">
     <value>오토포커스 노출 기본 값</value>
@@ -1101,22 +1101,22 @@ Dec[적위]: {1}</value>
     <value>일반적인 펄스 가이드 지속 시간, 초</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
-    <value>Ra[적경] 가이드 속도</value>
+    <value>Ra 가이드 속도</value>
   </data>
   <data name="LblRightAscensionGuideRateTooltip" xml:space="preserve">
-    <value>Ra[적경] 가이드 속도, 아크초/초</value>
+    <value>Ra 가이드 속도, 아크초/초</value>
   </data>
   <data name="LblDeclinationGuideRate" xml:space="preserve">
-    <value>Dec[적위] 가이드 속도</value>
+    <value>Dec 가이드 속도</value>
   </data>
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
-    <value>Dec[적위] 가이드 속도, 아크초/초</value>
+    <value>Dec 가이드 속도, 아크초/초</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>다이렉트 가이더를 망원경에 연결할 수 없습니다.</value>
+    <value>다이렉트 가이더를 가대에 연결할 수 없습니다.</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>망원경 연결이 끊어졌습니다. 다이렉트 가이더 연결이 끊어집니다. 디더링은 더 이상 효과가 없습니다!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>가대 연결이 끊어졌습니다. 다이렉트 가이더 연결이 끊어집니다. 디더링은 더 이상 효과가 없습니다!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>이미지를 저장할 폴더를 찾을 수 없습니다!</value>
@@ -1146,7 +1146,7 @@ Dec[적위]: {1}</value>
     <value>디더링</value>
   </data>
   <data name="LblDitherEveryNoFrame" xml:space="preserve">
-    <value># 이미지 마다 디더링</value>
+    <value># 마다 디더링</value>
   </data>
   <data name="LblDitherOnButGuiderNotConnected" xml:space="preserve">
     <value>디더링을 사용하도록 설정했지만 가이더가 연결되지 않았습니다.</value>
@@ -1158,7 +1158,7 @@ Dec[적위]: {1}</value>
     <value>디더링할 일반적인 픽셀 수입니다. 디더링은 목표 값을 중심으로 정규 분포를 따르며, 이 목표 값은 표준 편차를 사용합니다. 67%의 디더링이 이 범위 내에 있을 것입니다.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
-    <value>Ra[적경] 만 디더링</value>
+    <value>Ra 만 디더링</value>
   </data>
   <data name="LblDome" xml:space="preserve">
     <value>돔</value>
@@ -1167,7 +1167,7 @@ Dec[적위]: {1}</value>
     <value>ASCOM 돔 드라이버에 연결할 수 없습니다.</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>드라이버가 따라갈 수 있습니다.</value>
+    <value>돔이 따라갈 수 있습니다.</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>셔터 상태</value>
@@ -1197,10 +1197,10 @@ Dec[적위]: {1}</value>
     <value>홈포지션에서</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>드라이버는 망원경을 따라갑니다.</value>
+    <value>돔이 망원경을 따라가는 중</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>도입 중[Slewing]</value>
+    <value>Go-To 중</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>방위각</value>
@@ -1209,7 +1209,7 @@ Dec[적위]: {1}</value>
     <value>돔에 관련된 소스가 없습니다</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>돔을 도입[Slew] 할 수 없습니다</value>
+    <value>돔을 Go-To할 수 없습니다</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
     <value>돔이 홈포지션을 찾을 수 없습니다.</value>
@@ -1408,7 +1408,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>FITS</value>
   </data>
   <data name="LblFlatCalculatedExposureTime" xml:space="preserve">
-    <value>계산된 목표 노출 시간</value>
+    <value>계산된 타겟 노출 시간</value>
   </data>
   <data name="LblFlatCalculatedHistogramMean" xml:space="preserve">
     <value>계산된 목표 히스토그램 평균</value>
@@ -1474,19 +1474,19 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>열기</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>다크 프레임 촬영을 위해 커버를 열어주세요</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>설정</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>플랫 마법사가 노출 시간을 학습합니다</value>
+    <value>플랫 마법사에서 산출된 노출 시간</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>알 수 없음</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>학습된 노출 시간을 사용</value>
+    <value>산출된 노출 시간 사용</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>평균 ADU는 {0} 이고 {1} 에서 노출 시간 계산을 시작했습니다.</value>
@@ -1644,7 +1644,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>부터</value>
   </data>
   <data name="LblFullWellCapacity" xml:space="preserve">
-    <value>전체 용량 [e]</value>
+    <value>Full Well 용량 [e]</value>
   </data>
   <data name="LblGain" xml:space="preserve">
     <value>게인</value>
@@ -1656,19 +1656,19 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>일반</value>
   </data>
   <data name="LblGnssConnectFail" xml:space="preserve">
-    <value>Failed to connect to {0}</value>
+    <value>{0} 연결에 실패하였습니다.</value>
   </data>
   <data name="LblGnssLocationSet" xml:space="preserve">
-    <value>Location set from {0}</value>
+    <value>{0} 에서 설정된 위치</value>
   </data>
   <data name="LblGnssNoFix" xml:space="preserve">
-    <value>{0} reports that it does not have a fix</value>
+    <value>{0} 에서 수정 사항이 없음을 보고</value>
   </data>
   <data name="LblGnssNotFound" xml:space="preserve">
-    <value>No {0} device detected</value>
+    <value>{0} 장치를 찾을 수 없습니다.</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Import location from a GNSS device</value>
+    <value>GNSS 장치에서 위치 정보 가져오기</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>가이더</value>
@@ -1701,16 +1701,16 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>노출 중 가이드의 제곱 평균 제곱근[Rms] 오차[픽셀]</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
-    <value>노출 중 최대 RA[적경] 가이드 오류(아크 초)</value>
+    <value>노출 중 최대 RA 가이드 오류(아크 초)</value>
   </data>
   <data name="LblGuidingPeakRADescription" xml:space="preserve">
-    <value>노출 중 최대 RA[적경] 가이드 오류(픽셀)</value>
+    <value>노출 중 최대 RA 가이드 오류(픽셀)</value>
   </data>
   <data name="LblGuidingPeakDecArcSecDescription" xml:space="preserve">
-    <value>노출 중 최대 Dec[적위] 가이드 오류(아크 초)</value>
+    <value>노출 중 최대 Dec 가이드 오류(아크 초)</value>
   </data>
   <data name="LblGuidingPeakDecDescription" xml:space="preserve">
-    <value>노출 중 최대 Dec[적위] 가이드 오류(픽셀)</value>
+    <value>노출 중 최대 Dec 가이드 오류(픽셀)</value>
   </data>
   <data name="LblHalt" xml:space="preserve">
     <value>중단</value>
@@ -1860,7 +1860,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>화면 구성</value>
   </data>
   <data name="LblLblBlackClippingTooltip" xml:space="preserve">
-    <value>중앙 값으로부터 시그마 유닛에서의 블랙 클립핑 비율</value>
+    <value>중간 값으로부터 시그마 유닛에서의 블랙 클립핑 비율</value>
   </data>
   <data name="LblLoadImage" xml:space="preserve">
     <value>이미지 불러오기</value>
@@ -1872,7 +1872,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>파일에서 이미지를 읽고, 블라인드 솔버를 사용하여 좌표 획득</value>
   </data>
   <data name="LblLoadProfile" xml:space="preserve">
-    <value>프로필 불러오기</value>
+    <value>불러오기</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
     <value>프로필을 불러올 수 없습니다. 이미 다른 N.I.N.A 인스턴스가 실행 중입니다.</value>
@@ -1926,7 +1926,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>옵션 내부에 설정된 필터를 미러링합니다. 필터 변경이 요청되면 필터를 수동으로 변경하라는 알림이 표시됩니다.</value>
   </data>
   <data name="LblManualFocusTargets" xml:space="preserve">
-    <value>수동 초점 타겟</value>
+    <value>수동 초점 목표</value>
   </data>
   <data name="LblManualNotFound" xml:space="preserve">
     <value>설명서를 찾을 수 없습니다.</value>
@@ -1965,7 +1965,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>포커서 백래시 측정</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
-    <value>중앙 값</value>
+    <value>중간 값</value>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
     <value>자오선 플립 실패</value>
@@ -2058,8 +2058,8 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>N.I.N.A.에서 망원경으로</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>N.I.N.A.에서 가대로</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>아니오</value>
@@ -2116,10 +2116,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>동기화 안함</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>활성화되면 프로그램이 망원경에 동기화 명령을 보내지 않습니다. 확립된 포인팅 모델이 있고, 변경해서는 안되는 경우에만 사용하세요</value>
+    <value>활성화되면 프로그램이 가대에 동기화 명령을 보내지 않습니다. 정확한 포인팅 모델이 있고, 변경해서는 안되는 경우에만 사용하세요</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>망원경 없음</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>가대 없음</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>알림 오류</value>
@@ -2318,7 +2318,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>%</value>
   </data>
   <data name="LblPHD2DecRMS" xml:space="preserve">
-    <value>Dec[적위]: {0}({1}")</value>
+    <value>Dec: {0}({1}")</value>
   </data>
   <data name="LblPhd2FailedEquipmentConnection" xml:space="preserve">
     <value>PHD2가 장비와 연결할 수 없습니다.</value>
@@ -2339,7 +2339,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>PHD2를 시작할 수 없습니다. 경로를 찾을 수 없음</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
-    <value>Ra[적경]: {0} ({1}")</value>
+    <value>Ra: {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
     <value>PHD2 서버 연결이 끊어졌습니다.</value>
@@ -2434,13 +2434,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>플레이트솔브2</value>
   </data>
   <data name="LblPlatesolve2Directory" xml:space="preserve">
-    <value>플레이트솔브2 위치</value>
+    <value>경로</value>
   </data>
   <data name="LblPlatesolve2NoCoordinates" xml:space="preserve">
     <value>좌표가 없습니다. 플레이트솔브2를 사용하려면 좌표가 필수입니다!</value>
   </data>
   <data name="LblPlatesolve2NotFound" xml:space="preserve">
-    <value>플레이트솔브2 exe를 찾을 수 없습니다.</value>
+    <value>Platesolve2 exe를 찾을 수 없습니다.</value>
   </data>
   <data name="LblPlateSolvedPolarAlignment" xml:space="preserve">
     <value>플레이트솔빙 극축정렬</value>
@@ -2476,7 +2476,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경이 공차를 벗어났습니다. 다시 시도합니다...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>망원경이 공차를 벗어났습니다. 타겟을 향해 다시 도입[Slew] 합니다.</value>
+    <value>망원경이 공차를 벗어났습니다. 타겟을 향해 다시 Go-To 합니다.</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
     <value>망원경이 공차를 벗어났습니다. 망원경과 동기화를 시도합니다...</value>
@@ -2497,7 +2497,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>플레이트솔빙</value>
   </data>
   <data name="LblCenterAfterDrift" xml:space="preserve">
-    <value>너무 많은 이동 후 다시 중앙[Recentering]</value>
+    <value>큰 움직임 이 후 다시 중심 잡기</value>
   </data>
   <data name="LblNoTarget" xml:space="preserve">
     <value>설정된 타겟 없음</value>
@@ -2521,7 +2521,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>상대 위치</value>
   </data>
   <data name="LblClearGuidingCalibration" xml:space="preserve">
-    <value>캘리브레이션 지우기</value>
+    <value>캘리브레이션 초기화</value>
   </data>
   <data name="LblPreferredPlanetarium" xml:space="preserve">
     <value>선호하는 플라네티움 소프트웨어</value>
@@ -2533,7 +2533,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>이미지 준비 중</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>다크 시퀀스 준비 중</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>플랫을 위해 {0} 필터 사용</value>
@@ -2566,22 +2566,22 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>px</value>
   </data>
   <data name="LblRA" xml:space="preserve">
-    <value>Ra[적경]</value>
+    <value>Ra</value>
   </data>
   <data name="LblRACorrections" xml:space="preserve">
-    <value>Ra[적경] 교정</value>
+    <value>Ra 교정</value>
   </data>
   <data name="LblRadius" xml:space="preserve">
     <value>반경</value>
   </data>
   <data name="LblRAError" xml:space="preserve">
-    <value>Ra[적경] 오차</value>
+    <value>Ra 오차</value>
   </data>
   <data name="LblRainRate" xml:space="preserve">
     <value>강수량</value>
   </data>
   <data name="LblRAPixError" xml:space="preserve">
-    <value>RA[적경] 픽셀 오차</value>
+    <value>RA 픽셀 오차</value>
   </data>
   <data name="LblRate" xml:space="preserve">
     <value>속도</value>
@@ -2605,7 +2605,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스용 읽기 모드</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>카메라의 읽기 모드는 시퀀스의 LIGHT, BIAS, DARK, FLAT 프레임에 사용됩니다.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>스냅샷용 읽기 모드</value>
@@ -2614,13 +2614,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>카메라의 읽기 모드는 플레이트솔빙, 프레이밍, 오토포커스에 사용됩니다.</value>
   </data>
   <data name="LblRecenter" xml:space="preserve">
-    <value>중심 다시 잡기[Recenter]</value>
+    <value>중심 다시 잡기</value>
   </data>
   <data name="LblRecenterAfterFlip" xml:space="preserve">
-    <value>플립 후 중심 다시 잡기[Recenter]</value>
+    <value>플립 후 중심 다시 잡기</value>
   </data>
   <data name="LblRecenterImage" xml:space="preserve">
-    <value>이미지 중심 다시 잡기[Recenter]</value>
+    <value>이미지 중심 다시 잡기</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
     <value>추천하는 노출 시간</value>
@@ -2637,8 +2637,8 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>포커서를 다시 연결해주세요!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>망원경을 다시 연결해주세요!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>가대를 다시 연결해주세요!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>참조 날짜</value>
@@ -2680,7 +2680,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>레이아웃을 재 설정 할까요?</value>
   </data>
   <data name="LblReslewToTarget" xml:space="preserve">
-    <value>타겟으로 다시 도입[ReSlew]</value>
+    <value>타겟으로 다시 Go-To</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
     <value>오토가이딩 재개</value>
@@ -2734,7 +2734,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>이미지 저장 포맷</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
-    <value>DSLR 네이티브 드라이버를 사용할 때 이 설정은 무시됩니다. 이미지는 카메라의 Raw 포맷으로 저장됩니다.</value>
+    <value>DSLR 네이티브 드라이버를 사용할 때 이 설정은 무시됨. 이미지는 카메라의 Raw 포맷으로 저장됩니다.</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>선택된 프로필을 저장하고, 다음에 묻지 않기</value>
@@ -2761,7 +2761,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>보조</value>
   </data>
   <data name="LblSecondaryBackground" xml:space="preserve">
-    <value>보조 배경</value>
+    <value>2차 배경</value>
   </data>
   <data name="LblSelectGuidestar" xml:space="preserve">
     <value>새로운 가이드 별 선택</value>
@@ -2840,7 +2840,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>선택되면, 필터 오프셋을 사용하여 항상 선택된 필터로 오토포커스를 수행합니다.</value>
   </data>
   <data name="LblSetForFramingAssistant" xml:space="preserve">
-    <value>프레이밍 보조를 위해 설정</value>
+    <value>프레이밍 보조 설정</value>
   </data>
   <data name="LblSetNewValue" xml:space="preserve">
     <value>새로운 값 설정</value>
@@ -2861,7 +2861,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>안정화 픽셀 공차</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
-    <value>도입[Slew] 후 안정화[s]</value>
+    <value>Go-To 후 안정화 시간[s]</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>안정화 시간 초과</value>
@@ -2927,28 +2927,28 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>대기 온도</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
-    <value>도입[Slew]</value>
+    <value>Go-To</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
-    <value>도입[Slew] 과 중심</value>
+    <value>Go-To와 중심</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
-    <value>도입[Slew] 시간</value>
+    <value>Go-To 시간</value>
   </data>
   <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>타겟을 향해 도입[Slew] 중이지만 망원경이 연결되지 않았습니다.</value>
+    <value>타겟을 향해 Go-To 중이지만 망원경이 연결되지 않았습니다.</value>
   </data>
   <data name="LblSlewRateDegSec" xml:space="preserve">
-    <value>도입[Slew] 속도(각도/초)</value>
+    <value>Go-To 속도(각도/초)</value>
   </data>
   <data name="LblSlewToTarget" xml:space="preserve">
-    <value>타겟으로 도입[Slew]</value>
+    <value>타겟 Go-To</value>
   </data>
   <data name="LblSlewToZenith" xml:space="preserve">
-    <value>천정으로 도입[Slew]</value>
+    <value>천정으로 Go-To</value>
   </data>
   <data name="LblSlewWhenTargetCoordsUnset" xml:space="preserve">
-    <value>하나 이상의 타겟을 향해 도입[Slew] 중 이지만 대상의 좌표가 없습니다.</value>
+    <value>하나 이상의 타겟을 향해 Go-To 중 이지만 대상의 좌표가 없습니다.</value>
   </data>
   <data name="LblSnapPortStart" xml:space="preserve">
     <value>스냅 포트 시작 명령</value>
@@ -3015,10 +3015,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>통계</value>
   </data>
   <data name="LblStDev" xml:space="preserve">
-    <value>SD</value>
+    <value>표준편차</value>
   </data>
   <data name="LblHFRStDev" xml:space="preserve">
-    <value>HFR SD</value>
+    <value>HFR 표준편차</value>
   </data>
   <data name="LblStellarium" xml:space="preserve">
     <value>Stellarium</value>
@@ -3042,7 +3042,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>추적 중지</value>
   </data>
   <data name="LblStretchImage" xml:space="preserve">
-    <value>이미지 늘리기[Stretching]</value>
+    <value>이미지 스트레치</value>
   </data>
   <data name="LblStsciSkySurvey" xml:space="preserve">
     <value>Stsci Sky Survey</value>
@@ -3078,24 +3078,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>동기화</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>망원경 동기화 실패</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>동기화된 PHD2(실험)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-이 프로필은 이미 PHD2 가이더에 연결되어 있습니다.
-같은 프로필에서 연결할 수 없습니다. 다른 NINA 프로필을 선택해주세요.    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>동기화된 PHD2 서비스가 중단되었습니다. 동기화된 PHD2 가이더 서비스를 다시 시작합니다.</value>
+    <value>가대 동기화 실패</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>관측지 설정 동기화</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>망원경 관측지 설정이 NINA와 다릅니다.
+    <value>가대의 관측지 설정이 N.I.N.A와 다릅니다.
 
 설정을 동기화 할까요?</value>
   </data>
@@ -3103,7 +3092,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>타겟</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
-    <value>타겟 적위[Dec]</value>
+    <value>타겟 Dec</value>
   </data>
   <data name="LblTargetHeightDegrees" xml:space="preserve">
     <value>최소 높이(각도)</value>
@@ -3118,7 +3107,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>타겟 위치</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
-    <value>타겟 적경[Ra]</value>
+    <value>타겟 RA</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
     <value>타겟</value>
@@ -3139,7 +3128,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경이 펄스 가이드를 사용할 수 없습니다.</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
-    <value>망원경이 도입[Slew] 할 수 없습니다.</value>
+    <value>망원경이 Go-To 할 수 없습니다.</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
     <value>망원경 연결됨</value>
@@ -3160,7 +3149,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경의 추적 기능이 동작하지 않습니다. 동기화는 추적 시에만 이용 가능합니다.</value>
   </data>
   <data name="LblTelescopeParkedWarn" xml:space="preserve">
-    <value>망원경이 파킹되었습니다. 파킹 중에는 도입[Slew] 할 수 없습니다.</value>
+    <value>망원경이 파킹되었습니다. 파킹 중에는 Go-To 할 수 없습니다.</value>
   </data>
   <data name="LblTelescopeSnapPort" xml:space="preserve">
     <value>망원경 스냅 포트</value>
@@ -3168,14 +3157,14 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>망원경이 좌표에 동기화됨</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>망원경에서 N.I.N.A로</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>가대에서 N.I.N.A로</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
-    <value>Ra[적경] 가이드 속도</value>
+    <value>Ra 가이드 속도</value>
   </data>
   <data name="LblTelescopeGuideRateDec" xml:space="preserve">
-    <value>Dec[적위] 가이드 속도</value>
+    <value>Dec 가이드 속도</value>
   </data>
   <data name="LblTempComp" xml:space="preserve">
     <value>온도 보정</value>
@@ -3360,7 +3349,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>카메라 노출을 시작할 수 없습니다.</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>동기화 할 수 없습니다. 망원경이 연결되지 않았습니다.</value>
+    <value>동기화 할 수 없습니다. 가대가 연결되지 않았습니다.</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>예기치 않은 오류가 발생했습니다.</value>
@@ -3369,11 +3358,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>처리할 수 없는 예외가 발생했습니다.</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
-    <value>스트래치[Stretch] 연결 없음</value>
+    <value>비동기 스트레치</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
-    <value>
-활성화 되어 있으면 컬러 채널이 개별적으로 스트레칭[Stretch] 됩니다.
+    <value>활성화 되어 있으면 컬러 채널이 개별적으로 스트레칭[Stretch] 됩니다.
 빈 배경을 숨기기 쉬워 자동 초점 및 플레이트솔브의 신뢰도가 향상됩니다.
 특히, 광해지에서 효과적이지만, 처리시간이 길어집니다.    </value>
   </data>
@@ -3480,7 +3468,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
-    <value>USB 한계</value>
+    <value>USB Limit</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
     <value>플레이트솔브 실패, 블라인드솔버를 사용하시겠습니까?</value>
@@ -3526,9 +3514,6 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>경고</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>망원경은 파킹되었습니다. 시퀀스가 시작되면 파킹이 자동으로 해제됩니다.</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>날씨</value>
@@ -3682,7 +3667,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시리얼 포트 {0} 를 열 수 없습니다 [{1}]</value>
   </data>
   <data name="LblPointingTolerance" xml:space="preserve">
-    <value>도입[Slew] 정밀도</value>
+    <value>Go-To 정밀도</value>
   </data>
   <data name="LblAutoFocusAfterFlip" xml:space="preserve">
     <value>플립 후 오토포커스</value>
@@ -3703,10 +3688,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>가대[Mount] 가 알 수 없는 좌표 시스템[{0}] 을 사용합니다. 적도의 드라이버가 올바른지 확인해주세요.</value>
+    <value>가대 가 알 수 없는 좌표 시스템[{0}] 을 사용합니다. 적도의 드라이버가 올바른지 확인해주세요.</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>가대[Mount]는 지원되지 않는 좌표 시스템 {0} 을 사용합니다.</value>
+    <value>가대는 지원되지 않는 좌표 시스템 {0} 을 사용합니다.</value>
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
     <value>지원되지 않는 CFA/Bayer 패턴: {0}</value>
@@ -3799,7 +3784,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>카메라를 높은 게인 모드로 설정합니다. 이 모드는 낮은 게인에 비해 읽기 노이즈가 적으며, 대부분의 카메라에서 항상 설정하는 것이 좋습니다. 하지만, 동적 범위를 최대화하고 게인을 최소화하려는 경우에는 비활성화 하는 것이 좋습니다.</value>
   </data>
   <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
-    <value>절대 위치[absolute positions] 기능이 없는 포커서는 지원되지 않습니다.</value>
+    <value>기계적 위치 조절 기능이 없는 포커서는 지원되지 않습니다.</value>
   </data>
   <data name="LblQhyIncludeOverscan" xml:space="preserve">
     <value>오버스캔 영역 포함</value>
@@ -3848,10 +3833,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>셔터</value>
   </data>
   <data name="LblDomeShutterClose" xml:space="preserve">
-    <value>셔터 닫기</value>
+    <value>셔터 닫힘</value>
   </data>
   <data name="LblDomeShutterOpen" xml:space="preserve">
-    <value>셔터 열기</value>
+    <value>셔터 열림</value>
   </data>
   <data name="LblDomeRotateCW" xml:space="preserve">
     <value>시계방향으로 회전</value>
@@ -3893,13 +3878,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>최소 플랫 패널 밝기</value>
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
-    <value>마법사 모드</value>
+    <value>모드</value>
   </data>
   <data name="LblDomeAzimuthToleranceDegrees" xml:space="preserve">
     <value>방위각 공차</value>
   </data>
   <data name="LblDomeAzimuthToleranceDegreesTooltip" xml:space="preserve">
-    <value>타겟 방위각이 이 값을 벗어나면 돔이 도입[Slew] 합니다.</value>
+    <value>타겟 방위각이 이 값을 벗어나면 돔이 Go-To 합니다.</value>
   </data>
   <data name="LblDomeDirectDriver" xml:space="preserve">
     <value>NINA 다이렉트 팔로우 사용</value>
@@ -3911,8 +3896,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>GEM 축 길이</value>
   </data>
   <data name="LblDomeGemAxisLengthTooltip" xml:space="preserve">
-    <value>경위대[Alt/Az] 의 경우 0이어야 합니다. 적도의에서는 Ra[적경] 를 +/- 90도까지 도입[Slew]
-하여 회전 축에서 망원경의 중심까지의 횡방향 거리(mm) 를 측정합니다.</value>
+    <value>경위대[Alt/Az] 의 경우 0이어야 합니다. 적도의에서는 Ra를 +/- 90도까지 Go-To 하여 회전 축에서 망원경의 중심까지의 횡방향 거리(mm) 를 측정합니다.</value>
   </data>
   <data name="LblDomeLateralAxisLength" xml:space="preserve">
     <value>가로 축 길이</value>
@@ -3930,13 +3914,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경 위치 동/서</value>
   </data>
   <data name="LblDomeScopeEWTooltip" xml:space="preserve">
-    <value>돔의 중앙에서 가대[Mount] 중심의 동쪽 혹은 서쪽 오프셋을(mm) 측정합니다. 동쪽이 양의 값입니다.</value>
+    <value>돔의 중앙에서 가대 중심의 동쪽 혹은 서쪽 오프셋을(mm) 측정합니다. 동쪽이 양의 값입니다.</value>
   </data>
   <data name="LblDomeScopeNS" xml:space="preserve">
     <value>망원경 위치 북/남</value>
   </data>
   <data name="LblDomeFollowPointingError" xml:space="preserve">
-    <value>돔 추적은 부정확할 수 있습니다. 가대[Mount] 역기점[epoch] 이 올바르게 구성되었는지 확인하고 플레이트솔브 동기화를 하세요</value>
+    <value>돔 추적은 부정확할 수 있습니다. 가대를 올바르게 구성되었는지 확인하고 플레이트솔브 동기화를 하세요</value>
   </data>
   <data name="LblDomeFollowError" xml:space="preserve">
     <value>돔 동기화 중 오류 발생. 돔 추적 중지됨.</value>
@@ -3945,7 +3929,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스 취소</value>
   </data>
   <data name="LblDomeScopeNSTooltip" xml:space="preserve">
-    <value>돔의 중앙에서 가대[Mount] 중심의 북쪽 혹은 남쪽 오프셋을(mm) 측정합니다. 북쪽이 양의 값입니다.</value>
+    <value>돔의 중앙에서 가대 중심의 북쪽 혹은 남쪽 오프셋을(mm) 측정합니다. 북쪽이 양의 값입니다.</value>
   </data>
   <data name="LblPauseSequence" xml:space="preserve">
     <value>시퀀스 일시 정지</value>
@@ -3954,7 +3938,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경 위치 +업/-다운</value>
   </data>
   <data name="LblDomeScopeUDTooltip" xml:space="preserve">
-    <value>돔의 베이스[Base] 로부터 가대[Mount] 축 중심에 대한 높이 차이(mm) 를 측정합니다. 경위대[Alt/Az] 의 경우, 이 위치는 고도 축의 중앙이고, 적도의의 경우 적경[RA] 와 적위[DEC] 축이 교차하는 지점입니다. 양수는 축 중심이 돔의 베이스보다 높음을 의미하고, 음수는 낮음을 의미합니다.</value>
+    <value>돔의 베이스 로부터 가대 축 중심에 대한 높이 차이(mm) 를 측정합니다. 경위대[Alt/Az] 의 경우, 이 위치는 고도 축의 중앙이고, 적도의의 경우 RA 와 DEC 축이 교차하는 지점입니다. 양수는 축 중심이 돔의 베이스보다 높음을 의미하고, 음수는 낮음을 의미합니다.</value>
   </data>
   <data name="LblDomeSettings" xml:space="preserve">
     <value>돔 설정</value>
@@ -3963,7 +3947,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스 재개</value>
   </data>
   <data name="LblDomeFollowing" xml:space="preserve">
-    <value>돔이 망원경을 추적합니다.</value>
+    <value>돔이 망원경을 따라갑니다..</value>
   </data>
   <data name="LblDomeFollowError_DriverFollowing" xml:space="preserve">
     <value>돔 드라이버가 이미 망원경을 추적 중입니다.</value>
@@ -3987,7 +3971,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>자오선 플립</value>
   </data>
   <data name="LblMeridianFlipCenterFailed" xml:space="preserve">
-    <value>자오선 반전 실패 후 중심</value>
+    <value>자오선 반전 실패 후 중심 잡기</value>
   </data>
   <data name="LblDefaultGain" xml:space="preserve">
     <value>게인 기본 값</value>
@@ -4022,11 +4006,11 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>회전 장치의 연결을 끊을까요?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>망원경의 연결을 끊을까요?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>가대의 연결을 끊을까요?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
-    <value>망원경이 파킹되었습니다. 도입[Slew] 하기 전 망원경의 파킹 해제가 필요합니다.</value>
+    <value>망원경이 파킹되었습니다. Go-To 하기 전 망원경의 파킹 해제가 필요합니다.</value>
   </data>
   <data name="LblSideOfPier" xml:space="preserve">
     <value>Side of Pier</value>
@@ -4074,7 +4058,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>자오선 반전 후 돔 동기화에 실패했습니다.</value>
   </data>
   <data name="LblDomeSyncFailureDuringCentering" xml:space="preserve">
-    <value>센터링 중 돔을 동기화 할 수 없습니다.</value>
+    <value>중심잡기 중 돔을 동기화 할 수 없습니다.</value>
   </data>
   <data name="LblCloseDomeShutterAtSequenceEnd" xml:space="preserve">
     <value>시퀀스 종료 시 돔 셔터 닫기</value>
@@ -4086,25 +4070,25 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스 종료 후 돔 파킹</value>
   </data>
   <data name="LblDomeSyncDuringMountSlew" xml:space="preserve">
-    <value>가대[Mount] 도입[Slew] 중 동기화 허용</value>
+    <value>가대 Go-To 중 동기화 허용</value>
   </data>
   <data name="LblDomeSyncDuringMountSlewTooltip" xml:space="preserve">
     <value>돔 추적이 활성화되었을 때, NINA는 돔이 망원경과 정렬하기 위해 회전해야 하는지를 자주 확인합니다. 플라네타리움과 핸드 셋과 같은 외부 응용 프로그램이 망원경을 움직일 경우, 망원경이 돔을 회전시키기 위해 더 이상 움직이지 않을 때까지 기다리는 것이 도움이 될 수 있습니다.</value>
   </data>
   <data name="LblDomeSyncSlewWhenMountSlew" xml:space="preserve">
-    <value>망원경을 이동[Slew] 할때 돔의 도입[Slew] 동기화</value>
+    <value>망원경과 돔의 Go-To 동기화</value>
   </data>
   <data name="LblDomeSyncSlewWhenMountSlewTooltip" xml:space="preserve">
-    <value>망원경을 도입[Slew] 할 때 돔을 회전하여 망원경의 위치와 동기화 합니다. 망원경이 추적할 때 이 설정으로 돔이 동기화되지는 않습니다.</value>
+    <value>망원경을 Go-To 할 때 돔을 회전하여 망원경의 위치와 동기화 합니다. 망원경이 추적할 때 이 설정으로 돔이 동기화되지는 않습니다.</value>
   </data>
   <data name="LblDomeFindHomeBeforePark" xml:space="preserve">
     <value>파킹 전에 홈포지션 찾기</value>
   </data>
   <data name="LblDomeSlewCW" xml:space="preserve">
-    <value>시계 방향으로 도입[Slew]</value>
+    <value>시계 방향으로 이동</value>
   </data>
   <data name="LblDomeSlewCCW" xml:space="preserve">
-    <value>반 시계 방향으로 도입[Slew]</value>
+    <value>반 시계 방향으로 이동</value>
   </data>
   <data name="LblDomeFindHomeBeforeParkTooltip" xml:space="preserve">
     <value>드라이버가 홈 포지션 찾기를 지원하는 경우 파킹 전에 정확한 위치로 이동할 수 있습니다. 셔터 모터의 배터리가 파킹 중에 충전되는 경우 유용합니다.</value>
@@ -4197,7 +4181,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>메시지</value>
   </data>
   <data name="LblLoopUntil" xml:space="preserve">
-    <value>최대 반복</value>
+    <value>까지 반복</value>
   </data>
   <data name="LblTriggers" xml:space="preserve">
     <value>트리거</value>
@@ -4236,7 +4220,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>HIPS 2 FITS Sky Survey</value>
   </data>
   <data name="LblMechanicalPosition" xml:space="preserve">
-    <value>기계적 위치</value>
+    <value>물리적 위치</value>
   </data>
   <data name="LblSkyPosition" xml:space="preserve">
     <value>하늘 위치</value>
@@ -4248,7 +4232,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>타겟 하늘 위치</value>
   </data>
   <data name="LblMoveMechanicalPosition" xml:space="preserve">
-    <value>기계적 위치로 이동</value>
+    <value>기계적 위치 이동</value>
   </data>
   <data name="LblMoveSkyPosition" xml:space="preserve">
     <value>하늘 위치 이동</value>
@@ -4290,7 +4274,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스 명령셋처럼 작동하며, 필요 시 딥스카이 개채를 지정해서 좌표와 회전을 포함한 명령이 자동으로 채워지게도 할 수 있습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
-    <value>Deep Sky Object Instruction Set</value>
+    <value>딥스카이 대상 명령 세트</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>이 명령어세트의 모든 명령은 병렬로 실행됩니다. 명령어세트는 모든 명령이 완료될 때까지 조건 이나 트리거 를 확인하지 않습니다.</value>
@@ -4314,7 +4298,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>설정 온도 및 시간 동안 카메라를 냉각합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_CoolCamera_Name" xml:space="preserve">
-    <value>카메라 냉각[Cool]</value>
+    <value>카메라 냉각</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_WarmCamera_Description" xml:space="preserve">
     <value>설정 시간 동안 카메라를 예열합니다.</value>
@@ -4380,16 +4364,16 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>노출</value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_Description" xml:space="preserve">
-    <value>플레이트솔빙을 이용하여 망원경을 해당 좌표로 이동하고, 대상을 중심에 도입[Slew] 하고, 회전시킵니다. 회전 장치를 통해 망원경을 주어진 좌표로 회전시킵니다.</value>
+    <value>플레이트솔빙을 이용하여 망원경을 해당 좌표로 이동 및 중심을 잡고, 회전시킵니다. 회전 장치를 통해 망원경을 주어진 좌표로 회전시킵니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_Name" xml:space="preserve">
-    <value>도입[Slew], 중심, 회전</value>
+    <value>Go-To, 중심 잡기, 회전</value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_Center_Description" xml:space="preserve">
-    <value>주어진 좌표에 대해 플레이트솔빙을 통해 대상으로 이동하고 중심에 도입[Slew] 합니다.</value>
+    <value>주어진 좌표에 대해 플레이트솔빙 후 타겟의 중심으로 Go-To 합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_Center_Name" xml:space="preserve">
-    <value>도입[Slew] 과 중심</value>
+    <value>Go-To와 중심잡기</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_ParkScope_Description" xml:space="preserve">
     <value>망원경을 파킹 위치에 파킹합니다.</value>
@@ -4398,16 +4382,16 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>망원경 파킹</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description" xml:space="preserve">
-    <value>망원경을 주어진 고도 및 방위 좌표까지 도입[Slew] 시킵니다.</value>
+    <value>망원경을 주어진 고도 및 방위 좌표까지 Go-To 시킵니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Name" xml:space="preserve">
-    <value>고도[Alt]/방위각[Az] 으로 도입[Slew]</value>
+    <value>고도[Alt]/방위각[Az] 으로 Go-To</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToRaDec_Description" xml:space="preserve">
-    <value>주어진 Ra[적위] 와 Dec[적경] 의 좌표로 망원경을 도입[Slew] 합니다.</value>
+    <value>주어진 Ra 와 Dec 의 좌표로 망원경을 Go-To 합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SlewScopeToRaDec_Name" xml:space="preserve">
-    <value>Ra[적경]/Dec[적위] 으로 도입[Slew]</value>
+    <value>Ra/Dec 로 Go-To</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_UnparkScope_Description" xml:space="preserve">
     <value>망원평 파킹해제</value>
@@ -4419,10 +4403,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>추적 설정</value>
   </data>
   <data name="Lbl_SequenceItem_Telescope_SetTracking_Description" xml:space="preserve">
-    <value>가대[Mount] 의 추적 모드를 설정합니다.</value>
+    <value>가대 의 추적 모드를 설정합니다.</value>
   </data>
   <data name="LblTrackingModeNotSupported" xml:space="preserve">
-    <value>해당 가대[Mount] 는 추적 모드를 지원하지 않습니다.</value>
+    <value>해당 가대는 추적 모드를 지원하지 않습니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_Annotation_Description" xml:space="preserve">
     <value>시퀀스에 주석을 추가하는 유틸리티 항목</value>
@@ -4461,7 +4445,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>지정 시간 대기</value>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Name" xml:space="preserve">
-    <value>이동[Drift] 후 중심</value>
+    <value>이동 후 중심잡기</value>
   </data>
   <data name="Lbl_SequenceTrigger_CenterAfterDriftTrigger_Description" xml:space="preserve">
     <value>플레이트솔빙이 망원경이 목표 좌표에서 너무 멀리 표류했다고 판단한 후 대상을 중앙으로 재 도입을 시작하는 트리거</value>
@@ -4656,13 +4640,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>조명 전환</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Description" xml:space="preserve">
-    <value>지정된 매개변수에 대해 학습된 노출 값을 조회하고 플랫 노출을 수행합니다.</value>
+    <value>지정된 매개변수에 대해 산출된 노출 값을 조회하고 플랫 노출을 수행합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_Name" xml:space="preserve">
-    <value>학습된 플랫 노출</value>
+    <value>산출된 플랫 노출</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_FlatDeviceTrainedExposureNotFound" xml:space="preserve">
-    <value>필터 {0}, 게인 {1}, 비닝 {2} 조합에 대한 학습된 노출 값을 찾을 수 없습니다.</value>
+    <value>필터 {0}, 게인 {1}, 비닝 {2} 조합에 대한 산출된 노출 값을 찾을 수 없습니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_SequenceRootContainer_EndArea" xml:space="preserve">
     <value>시퀀스 종료 영역</value>
@@ -4672,7 +4656,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="Lbl_SequenceContainer_SequenceRootContainer_TargetArea" xml:space="preserve">
     <value>시퀀스 타겟 영역
-여기에 딥스카이 타겟 시퀀스를 추가하거나 성도[Sky Atlas] 또는 프레이밍 보조를 통해 타겟을 추가합니다.</value>
+여기에 딥스카이 타겟 시퀀스를 추가하거나 성도 또는 프레이밍 도우미를 통해 타겟을 추가합니다.</value>
   </data>
   <data name="Lbl_SequenceContainer_Conditions_Header" xml:space="preserve">
     <value>반복 조건</value>
@@ -4763,7 +4747,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>시퀀스 명령 병렬 종료</value>
   </data>
   <data name="Lbl_OldSequencer_TargetImaging" xml:space="preserve">
-    <value>타겟 촬영[Imaging] 명령</value>
+    <value>타겟 촬영 명령</value>
   </data>
   <data name="Lbl_SequenceContainer_SequenceRootContainer_Name" xml:space="preserve">
     <value>시퀀스</value>
@@ -4788,13 +4772,13 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>타겟 세트 열기</value>
   </data>
   <data name="Lbl_OldSequencer_Title" xml:space="preserve">
-    <value>Legacy Sequencer</value>
+    <value>Legacy 시퀀서</value>
   </data>
   <data name="Lbl_OldSequencer_EndOfSequenceHeader" xml:space="preserve">
     <value>마지막 타겟 옵션</value>
   </data>
   <data name="Lbl_OldSequencer_Template" xml:space="preserve">
-    <value>Legacy Sequence Template</value>
+    <value>Legacy 시퀀서 템플릿</value>
   </data>
   <data name="Lbl_OldSequencer_ImportTarget" xml:space="preserve">
     <value>타겟 가져오기</value>
@@ -4863,10 +4847,10 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>돔의 홈포지션 찾기</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_SetDomeAzimuth_Description" xml:space="preserve">
-    <value>돔을 절대 방위각 위치로 도입[Slew]</value>
+    <value>돔을 절대 방위각 위치로 Go-To</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_SetDomeAzimuth_Name" xml:space="preserve">
-    <value>돔 방위각 도입[Slew]</value>
+    <value>돔 방위각 Go-To</value>
   </data>
   <data name="Lbl_OldSequencer_StartOfSequence" xml:space="preserve">
     <value>시퀀스 명령의 병렬 시작</value>
@@ -5021,7 +5005,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>포커서가 유효한 온도가 아닙니다.</value>
   </data>
   <data name="LblServerEnabled" xml:space="preserve">
-    <value>서버 활성화됨</value>
+    <value>서버 활성화</value>
   </data>
   <data name="LblServerEnabledTooltip" xml:space="preserve">
     <value>기존 응용프로그램과 상호 운용하기 위해 현재 SGP와 동일한 API를 사용하는 포트 59590에서 서비스를 호스팅합니다. 서비스가 시작되지 않으면 netsh를 사용하여 일부 방화벽 설정을 업데이트해야 할 수 있습니다(NINA 설명서 참조).</value>
@@ -5063,8 +5047,8 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>고급 시퀀스를 생성할까요?</value>
   </data>
   <data name="Lbl_OldSequencer_BuildAdvanced_Text" xml:space="preserve">
-    <value>Are you sure to export the sequence to the advanced sequence?
-Note: Advanced sequences are NOT backwards compatible and it is not possible to revert to the legacy sequence!</value>
+    <value>시퀀스를 고급 시퀀스로 내보내시겠습니까?
+참고: 고급 시퀀스는 하위 호환성이 없으므로 기존 시퀀스로 되돌릴 수 없습니다!</value>
   </data>
   <data name="Lbl_OldSequencer_SwitchToAdvanced" xml:space="preserve">
     <value>고급 시퀀서</value>
@@ -5074,10 +5058,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
 여기에서 세부적인 지침, 트리거 및 조건을 사용하여 처음부터 시퀀스를 계획할 수 있습니다.</value>
   </data>
   <data name="LblDisableSimpleSequencer" xml:space="preserve">
-    <value>Disable Legacy Sequencer</value>
+    <value>Legacy 시퀀서 비활성화</value>
   </data>
   <data name="LblDisableSimpleSequencerTooltip" xml:space="preserve">
-    <value>This will disable the legacy sequencer and directly show the advanced sequencer in the sequence tab.</value>
+    <value>이렇게 하면 Legacy시퀀서가 비활성화되고 시퀀스 탭에 고급 시퀀서가 직접 표시됩니다.</value>
   </data>
   <data name="Lbl_Sequencer_SwitchToOverview" xml:space="preserve">
     <value>시퀀서 대시보드로 다시 전환</value>
@@ -5200,7 +5184,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>달의 밝기가 지정된 매개변수와 일치하면 반복 종료</value>
   </data>
   <data name="Lbl_SequenceCondition_MoonIlluminationCondition_Name" xml:space="preserve">
-    <value>달의 조도</value>
+    <value>달의 밝기</value>
   </data>
   <data name="Lbl_OldSequencer_TargetClosure" xml:space="preserve">
     <value>타겟 종료 명령</value>
@@ -5275,7 +5259,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>타겟이 수평선 위로 있는 동안 반복하고, 그 후 현재 명령 세트를 중지하는 조건</value>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>지평선 고도 위로 올라올때 까지 반복</value>
+    <value>지평선 위에 있을 때 까지 반복</value>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>타겟은 수평선 위로 오지 않습니다.</value>
@@ -5287,10 +5271,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>회전장치의 위치 이동 {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>지정된 매개변수에 대해 산출된 노출 값을 조회하고 다크 프레임 노출을 수행합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>산출된 다크 노출</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>왼쪽</value>
@@ -5305,7 +5289,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>스냅샷</value>
   </data>
   <data name="LblSlewCenterRotate" xml:space="preserve">
-    <value>도입[Slew], 중심, 회전</value>
+    <value>Go-To, 중심잡기, 회전</value>
   </data>
   <data name="LblFindHomeToolTip" xml:space="preserve">
     <value>망원경에 홈 포지션을 확인하도록 명령합니다.</value>
@@ -5359,7 +5343,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>빠른</value>
   </data>
   <data name="LblSetButtonMoveRateToolTip" xml:space="preserve">
-    <value>버튼의 도입[Slew] 속도를 도/초로 설정</value>
+    <value>버튼의 Go-To 속도를 도/초로 설정</value>
   </data>
   <data name="LblFirmwareVersion" xml:space="preserve">
     <value>펌웨어 버전</value>
@@ -5525,17 +5509,17 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>망원경의 보조 축을 이동 할 수 없습니다.</value>
   </data>
   <data name="LblPrimaryReversed" xml:space="preserve">
-    <value>첫 번째 반전</value>
+    <value>Ra 반전</value>
   </data>
   <data name="LblPrimaryReversedToolTip" xml:space="preserve">
-    <value>일부 가대[Mount] 드라이버는 기본 축 이동을 반대로 구현합니다.
+    <value>일부 가대 드라이버는 기본 축 이동을 반대로 구현합니다.
 기본 축에 대한 이동 명령의 방향을 반전시키려면 이 옵션을 활성화합니다.</value>
   </data>
   <data name="LblSecondaryReversed" xml:space="preserve">
-    <value>두 번째 반전</value>
+    <value>Dec 반전</value>
   </data>
   <data name="LblSecondaryReversedToolTip" xml:space="preserve">
-    <value>일부 가대[Mount] 드라이버는 보조 축 이동을 반대로 구현합니다. 보조 축에 대한 이동 명령의 방향을 반전시키려면 이 옵션을 활성화합니다.</value>
+    <value>일부 가대 드라이버는 보조 축 이동을 반대로 구현합니다. 보조 축에 대한 이동 명령의 방향을 반전시키려면 이 옵션을 활성화합니다.</value>
   </data>
   <data name="LblSequenceTitle" xml:space="preserve">
     <value>현재 시퀀스 제목</value>
@@ -5572,7 +5556,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>업데이트 확인</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Install via the N.I.N.A. plugin manager or manually download and copy the DLL file into %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; from:</value>
+    <value>N.I.N.A. 플러그인 관리자를 통해 설치하거나 DLL 파일을 수동으로 다운로드하여 %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; 경로에 복사합니다.</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>N.I.N.A. 플러그인 관리자에서 설치하거나 수동으로 다운로드한 다음 여기에서 설정합니다.</value>
@@ -5642,7 +5626,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>계속</value>
   </data>
   <data name="LblOnError" xml:space="preserve">
-    <value>오류 발생 시</value>
+    <value>오류 처리</value>
   </data>
   <data name="LblRetries" xml:space="preserve">
     <value>재 시도</value>
@@ -5679,7 +5663,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>타겟 "{0}" 이 업데이트되었습니다.</value>
   </data>
   <data name="LblWaitingForSlew" xml:space="preserve">
-    <value>이전 도입[Slew] 대기 중</value>
+    <value>이전 Go-To 대기 중</value>
   </data>
   <data name="Lbl_SequenceContainer_SequenceRootContainer_ResetPrompt" xml:space="preserve">
     <value>시퀀스 전체를 재 설정할까요?</value>
@@ -5688,7 +5672,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>시퀀스를 재설정할까요?</value>
   </data>
   <data name="LblMountType" xml:space="preserve">
-    <value>가대[Mount] 종류</value>
+    <value>가대 종류</value>
   </data>
   <data name="LblEquatorial" xml:space="preserve">
     <value>적도의</value>
@@ -5697,10 +5681,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>웨지식 포크 가대</value>
   </data>
   <data name="LblDomeDecOffsetHorizontal" xml:space="preserve">
-    <value>Dec[적위] 의 수평 오프셋</value>
+    <value>Dec 의 수평 오프셋</value>
   </data>
   <data name="LblDomeDecOffsetHorizontalTooltip" xml:space="preserve">
-    <value>Dec[적위] 축(포크 마운트 베이스에 있는 모터) 에 대한 OTA 중심의 수평 오프셋입니다. 양수(+) 는 "오른쪽"으로 북반구는 동쪽, 남반구는 서쪽이다.</value>
+    <value>Dec 축(포크 마운트 베이스에 있는 모터) 에 대한 OTA 중심의 수평 오프셋입니다. 양수(+) 는 "오른쪽"으로 북반구는 동쪽, 남반구는 서쪽이다.</value>
   </data>
   <data name="LblDomeRadiusMisconfigured" xml:space="preserve">
     <value>돔 반경이 올바르게 설정되지 않았습니다. 계산된 망원경의 위치가 돔을 초과합니다.</value>
@@ -5749,10 +5733,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>타겟 옵션</value>
   </data>
   <data name="LblCoolCamera" xml:space="preserve">
-    <value>카메라 냉각[Cool]</value>
+    <value>카메라 냉각</value>
   </data>
   <data name="LblParkMount" xml:space="preserve">
-    <value>가대[Mount] 파킹</value>
+    <value>가대 파킹</value>
   </data>
   <data name="LblTargetSetEndOptions" xml:space="preserve">
     <value>타겟 설정 종료 옵션</value>
@@ -5761,7 +5745,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>타겟 설정 시작 옵션</value>
   </data>
   <data name="LblUnparkMount" xml:space="preserve">
-    <value>가대[Mount] 파킹 해제</value>
+    <value>가대 파킹 해제</value>
   </data>
   <data name="LblWarmCamera" xml:space="preserve">
     <value>카메라 예열[Warm Camera]</value>
@@ -5789,7 +5773,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>90도</value>
   </data>
   <data name="LblRotatorRangeQuarterTooltip" xml:space="preserve">
-    <value>90도 기계적 히전 범위가 지원됩니다.
+    <value>90도 기계적 회전 범위가 지원됩니다.
 주로 정사각형 센서에 유효합니다.
 범위를 벗어난 방위는 설정된 범위 내에 맞도록 조정됩니다.</value>
   </data>
@@ -5797,31 +5781,31 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>회전 장치의 목표 각도를 {0} 으로 조정했습니다.</value>
   </data>
   <data name="LblFramingWizardSlewFailed" xml:space="preserve">
-    <value>프레이밍 마법사에서 {0} 을 하는데 실패했습니다.</value>
+    <value>프레이밍 마법사에서 {0} 실패했습니다.</value>
   </data>
   <data name="LblUnableToSetMountLatLong" xml:space="preserve">
-    <value>가대[Mount] 의 위도 {0}, 경도 {1} 로 설정할 수 없습니다!</value>
+    <value>가대 의 위도 {0}, 경도 {1} 로 설정할 수 없습니다!</value>
   </data>
   <data name="LblMGENDitherSettleTime" xml:space="preserve">
     <value>디더링 안정화 시간</value>
   </data>
   <data name="LblTrackingASCOMServerStartFailed" xml:space="preserve">
-    <value>추적CCD의 ASCOM 서버 시작에 실패했습니다. {0}</value>
+    <value>Tracking CCD의 ASCOM 서버 시작에 실패했습니다. {0}</value>
   </data>
   <data name="LblTrackingASCOMServerStarted" xml:space="preserve">
-    <value>추적[Tracking] CCD의 ASCOM 서버를 시작했습니다.</value>
+    <value>Tracking CCD ASCOM 서버를 시작</value>
   </data>
   <data name="LblTrackingASCOMServerStopped" xml:space="preserve">
-    <value>추적[Tracking] CCD의 ASCOM 서버가 정지됬습니다.</value>
+    <value>Tracking CCD ASCOM 서버가 정지</value>
   </data>
   <data name="LblTrackingASCOMServerEnabled" xml:space="preserve">
-    <value>추적[Tracking] CCD의 ASCOM 서버가 활성화됬습니다.</value>
+    <value>Tracking CCD ASCOM 서버가 활성화</value>
   </data>
   <data name="LblTrackingASCOMServerEnabledTooltip" xml:space="preserve">
     <value>백그라운드에서 서버를 실행하고 다른 응용프로그램에서 내장된 추적 카메라를 제어합니다.</value>
   </data>
   <data name="LblTrackingASCOMServerLoggingEnabled" xml:space="preserve">
-    <value>추적[Tracking] CCD의 ASCOM 서버 기록 활성화</value>
+    <value>Tracking CCD ASCOM 서버 기록</value>
   </data>
   <data name="LblTrackingASCOMServerPipeName" xml:space="preserve">
     <value>서버 Pipe 이름</value>
@@ -5830,7 +5814,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>서버에서 불러온 ASCOM 드라이버의 Pipe이름은 설정한 Pipe이름과 동일해야 합니다.</value>
   </data>
   <data name="LblSBIGUseExternalTrackingCCD" xml:space="preserve">
-    <value>외부 추적 CCD 사용</value>
+    <value>외부 Tracking CCD 사용</value>
   </data>
   <data name="LblSBIGUseExternalTrackingCCDChanged" xml:space="preserve">
     <value>외부 추적 CCD 설정이 변경되었습니다.
@@ -5977,7 +5961,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>시퀀스의 모든 명령, 트리거, 조건을 제거합니다.</value>
   </data>
   <data name="LblMountTimeDifferenceTooLarge" xml:space="preserve">
-    <value>가대[Mount] 와 컴퓨터의 시간이 {0:0}초 차이가 있습니다. 이동이 부정확해지거나 플레이트솔브 문제가 발생 할 수 있습니다. 가대의 시간 설정에 관해 설명서를 확인해보세요.</value>
+    <value>가대 와 컴퓨터의 시간이 {0:0}초 차이가 있습니다. 이동이 부정확해지거나 플레이트솔브 문제가 발생 할 수 있습니다. 가대의 시간 설정에 관해 설명서를 확인해보세요.</value>
   </data>
   <data name="LblCanonMluNotSupported" xml:space="preserve">
     <value>{0} 은 미러 잠금(MLU) 을 사용하도록 설정되어 있지만, USB를 사용하는 MLU 촬영은 지원되지 않습니다. 촬영을 하려면 카메라의 사용자 정의 기능 메뉴에서 MLU를 비활성화하세요.</value>
@@ -6041,12 +6025,12 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>최신 버전으로 업데이트 할 수 있는 모든 플러그인 업데이트</value>
   </data>
   <data name="LblMeridianFlipRetry" xml:space="preserve">
-    <value>자오선 플립 도입[Slew] 이 실패했습니다.
+    <value>자오선 플립이 실패했습니다.
 {0} 초 후에 다시 시도합니다.
 시도 {1}/{2}</value>
   </data>
   <data name="LblMeridianFlipRetryFailed" xml:space="preserve">
-    <value>자오선 플립 도입[Slew] 이 최대 시도 횟수 실패했습니다. 중지합니다.</value>
+    <value>자오선 플립이 최대 시도 횟수를 초과하여 실패했습니다. 중지합니다.</value>
   </data>
   <data name="LblROI" xml:space="preserve">
     <value>ROI</value>
@@ -6059,7 +6043,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>지정된 관심영역[ROI] 를 지속시간, 게인, 오프셋을 노출합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeSubframeExposure_Name" xml:space="preserve">
-    <value>서브프레임 노출[Exposure]</value>
+    <value>서브프레임 노출</value>
   </data>
   <data name="LblPreserveAlignment" xml:space="preserve">
     <value>정렬 유지</value>
@@ -6122,10 +6106,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>Shift 활성화됨</value>
   </data>
   <data name="LblGuiderRAShiftRate" xml:space="preserve">
-    <value>RA[적경] Shift 속도</value>
+    <value>RA Shift 속도</value>
   </data>
   <data name="LblGuiderDecShiftRate" xml:space="preserve">
-    <value>Dec[적위] Shift 속도</value>
+    <value>Dec Shift 속도</value>
   </data>
   <data name="LblPhd2GuiderShiftAxis" xml:space="preserve">
     <value>Shift 축</value>
@@ -6267,7 +6251,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>프레임 캐시에서 이미지를 꺼내 오프라인 Sky Map에 그려 프레임을 만듭니다. 수평 시야가 10° 이하이고 0.1° 이상의 이미지만 사용됩니다.</value>
   </data>
   <data name="LblAny" xml:space="preserve">
-    <value>어떤</value>
+    <value>전체</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
     <value>임의의 지속시간</value>
@@ -6317,268 +6301,268 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>MGEN 설정</value>
   </data>
   <data name="LblSingleImagingLayout" xml:space="preserve">
-    <value>Single imaging tab layout</value>
+    <value>단일 이미징 탭 레이아웃</value>
   </data>
   <data name="LblSingleImagingLayoutTooltip" xml:space="preserve">
-    <value>When enabled, the imaging tab will have only one layout for all profiles instead of being profile dependent</value>
+    <value>이 옵션을 선택하면 이미징 탭에 프로파일 종속이 아닌 모든 프로파일에 대해 하나의 레이아웃만 표시됩니다</value>
   </data>
   <data name="LblPlatesolve3" xml:space="preserve">
-    <value>Platesolve3</value>
+    <value>플레이트솔브3</value>
   </data>
   <data name="LblPlatesolve3Directory" xml:space="preserve">
-    <value>Platesolve3 Location</value>
+    <value>경로</value>
   </data>
   <data name="LblPlatesolve3NoCoordinates" xml:space="preserve">
-    <value>No coordinates available. Platesolve3 requires coordinates to solve!</value>
+    <value>좌표가 없습니다. 플레이트솔브3를 사용하려면 좌표가 필수입니다!</value>
   </data>
   <data name="LblPlatesolve3NotFound" xml:space="preserve">
-    <value>Platesolve3 exe not found</value>
+    <value>플레이트솔브3 exe를 찾을 수 없습니다.</value>
   </data>
   <data name="LblBackupDockLayout" xml:space="preserve">
-    <value>Backup Layout</value>
+    <value>레이아웃 백업</value>
   </data>
   <data name="LblBackupDockLayoutFailed" xml:space="preserve">
-    <value>Backup layout failed</value>
+    <value>레이아웃 백업 실패</value>
   </data>
   <data name="LblBackupDockLayoutSuccessful" xml:space="preserve">
-    <value>Imaging tab layout backed up</value>
+    <value>이미징 탭 레이아웃 백업</value>
   </data>
   <data name="LblBackupDockLayoutTooltip" xml:space="preserve">
-    <value>Backup the imaging tab layout to a file, so it can be restored at a later point</value>
+    <value>나중에 복원할 수 있도록 이미징 탭 레이아웃을 파일로 백업</value>
   </data>
   <data name="LblDockLayoutReset" xml:space="preserve">
-    <value>Imaging tab layout reset</value>
+    <value>이미징 탭 레이아웃 초기화</value>
   </data>
   <data name="LblDockLayoutRestored" xml:space="preserve">
-    <value>Imaging tab layout restored</value>
+    <value>이미징 탭 레이아웃 복원</value>
   </data>
   <data name="LblRestoreDockLayoutFromFile" xml:space="preserve">
-    <value>Restore Layout</value>
+    <value>레이아웃 복원</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileFailed" xml:space="preserve">
-    <value>Restore layout failed</value>
+    <value>레이아웃 복원 실패</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileTooltip" xml:space="preserve">
-    <value>Restore imaging tab layout from a backup</value>
+    <value>백업에서 이미징 탭 레이아웃 복원</value>
   </data>
   <data name="LblTotal" xml:space="preserve">
-    <value>Total</value>
+    <value>전체</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo" xml:space="preserve">
-    <value>Exposure Info</value>
+    <value>노출 정보</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_UpdateTarget" xml:space="preserve">
-    <value>UPDATE TARGET</value>
+    <value>타겟 업데이트</value>
   </data>
   <data name="LblNoFilter" xml:space="preserve">
-    <value>No Filter</value>
+    <value>필터 없음</value>
   </data>
   <data name="LblAtikExposureSpeed" xml:space="preserve">
-    <value>Exposure speed</value>
+    <value>노출 시간</value>
   </data>
   <data name="LblAtikGainPreset" xml:space="preserve">
-    <value>Gain preset</value>
+    <value>Gain 프리셋</value>
   </data>
   <data name="LblAtikWindowHeaterPowerLevel" xml:space="preserve">
-    <value>Heater power level</value>
+    <value>히터 전원 레벨</value>
   </data>
   <data name="LblSkyGuardTimeLapsDitherChecked" xml:space="preserve">
-    <value>Dither Settling</value>
+    <value>디더링 안정성</value>
   </data>
   <data name="LblAutoFocusPointLimitReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Maximum number of measurement points reached.</value>
+    <value>오토포커스를 완료하지 못했습니다. 최대 측정점 수에 도달했습니다.</value>
   </data>
   <data name="LblAutoFocusZeroPositionReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Focuser Position reached 0.</value>
+    <value>자동초점을 완료하지 못했습니다. 포커스 위치가 0 입니다.</value>
   </data>
   <data name="LblRotateImageTooltip" xml:space="preserve">
-    <value>Rotates the image by 90° clockwise. Following images will then also be rotated by the same amount. This is for displaying purposes only and won't affect the image data.</value>
+    <value>이미지를 시계 방향으로 90° 회전시킵니다. 다음 이미지도 동일한 양만큼 회전합니다. 이는 표시를 위한 것일 뿐, 이미지 데이터에 영향을 미치지 않습니다.</value>
   </data>
   <data name="LblFramingPlateSolvePromptText" xml:space="preserve">
-    <value>Image needs to be solved for framing.
-Please confirm the meta data to use for solving.
-Once confirmed choose which solver should be used.</value>
+    <value>이미지의 프레임 솔빙이 필요합니다.
+솔빙에 사용할 메타 데이터를 확인해 주세요.
+확인되면 솔버를 선택합니다.</value>
   </data>
   <data name="LblPlateSolveRequired" xml:space="preserve">
-    <value>Platesolve required</value>
+    <value>플레이트 솔브 필요</value>
   </data>
   <data name="LblFramingSolveWithBlindSolver" xml:space="preserve">
-    <value>When blind solver is selected, the coordinates will be ignored and the blind solver that is set up in the options will be used.</value>
+    <value>블라인드 솔버를 선택하면 좌표가 무시되고 옵션에 설정된 블라인드 솔버가 사용됩니다.</value>
   </data>
   <data name="LblFramingSolveWithPlateSolver" xml:space="preserve">
-    <value>When plate solver is selected, the coordinates will be used as reference coordinates and used for the plate solver that is set up in the options.</value>
+    <value>플레이트 솔버를 선택하면 좌표가 기준 좌표로 사용되며 옵션에 설정된 플레이트 솔버가 사용됩니다.</value>
   </data>
   <data name="LblGuideGraphDeclinationColor" xml:space="preserve">
-    <value>Guide Graph Dec Color</value>
+    <value>가이드 그래프의 Dec 색상</value>
   </data>
   <data name="LblGuideGraphRightAscensionColor" xml:space="preserve">
-    <value>Guide Graph RA Color</value>
+    <value>가이드 그래프의 RA 색상</value>
   </data>
   <data name="LblGuideGraphShowCorrections" xml:space="preserve">
-    <value>Guide Graph Show Corrections</value>
+    <value>가이드 그래프 교정 값 표시</value>
   </data>
   <data name="LblRotateImageAfterFlip" xml:space="preserve">
-    <value>Rotate image after flip</value>
+    <value>플립 이후 이미지 회전</value>
   </data>
   <data name="LblRotateImageAfterFlipTooltip" xml:space="preserve">
-    <value>When enabled, this will rotate the image by 180° in the imaging tab after the flip. This is for displaying purposes only and won't affect the image data.</value>
+    <value>활성화하면 플립 후 이미징 탭에서 이미지가 180° 회전합니다. 표시 목적으로만 사용되며 이미지 데이터에는 영향을 미치지 않습니다.</value>
   </data>
   <data name="LblDisableGuidingOnFilterChange" xml:space="preserve">
-    <value>Disable guiding during filter change</value>
+    <value>필터 변경 중 가이드 비활성화</value>
   </data>
   <data name="LblDisableGuidingOnFilterChangeTooltip" xml:space="preserve">
-    <value>When this option is enabled, every time a filter is changed the guiding will be disabled while the filter is being changed and re-enabled afterwards.</value>
+    <value>활성화하면 필터가 변경될 때마다 가이드가 비활성화되고, 필터가 변경되면 다시 활성화됩니다.</value>
   </data>
   <data name="LblEphemerisNotFound" xml:space="preserve">
-    <value>Ephemeris file to calculate celestial trajectories not found. Please run a repair on your N.I.N.A. installation.</value>
+    <value>천체의 궤도를 계산할 천체력 파일을 찾을 수 없습니다.N.I.N.A. 설치로 복구를 실행하십시오.</value>
   </data>
   <data name="LblPHD2InstanceNumber" xml:space="preserve">
-    <value>PHD2 instance number</value>
+    <value>PHD2 인스턴스 번호</value>
   </data>
   <data name="LblDomeMountGeometry" xml:space="preserve">
-    <value>Dome &amp; mount geometry</value>
+    <value>돔과 가대 설치 위치</value>
   </data>
   <data name="LblDomeNotConnectedError" xml:space="preserve">
-    <value>The dome driver is not connected!</value>
+    <value>돔 드라이버와 연결되지 않았습니다!</value>
   </data>
   <data name="LblDomeShutterCoordination" xml:space="preserve">
-    <value>Shutter coordination</value>
+    <value>셔터 조정</value>
   </data>
   <data name="LblMountDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is disconnected. Mount status cannot be determined. This can be unsafe!</value>
+    <value>셔터 또는 루프를 이동하라는 명령을 받았지만 가대가 분리되었습니다. 가대의 상태를 확인할 수 없습니다. 안전하지 않을 수 있습니다!</value>
   </data>
   <data name="LblMountUnparkedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is unparked. This can be unsafe!</value>
+    <value>셔터나 지붕이 움직이도록 명령을 받았지만 가대가 파킹되어 있지 않습니다. 안전하지 않을 수 있습니다!</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovement" xml:space="preserve">
-    <value>Park dome before shutter operation</value>
+    <value>셔터 작동 전 돔 파킹</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Sends the dome to its park position before attempting to open or cloose the shutter</value>
+    <value>셔터를 열거나 닫기 전 돔 파킹</value>
   </data>
   <data name="LblParkMountBeforeShutterMovement" xml:space="preserve">
-    <value>Park mount before shutter operation</value>
+    <value>셔터 작동 전 가대 파킹</value>
   </data>
   <data name="LblParkMountBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Attempt to park the mount before opening or closing the shutter</value>
+    <value>셔터를 열거나 닫기 전 가대를 파킹을 시도합니다.</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparked" xml:space="preserve">
-    <value>Refuse open or close if mount is unparked</value>
+    <value>가대가 파킹되어 있지 않아 개폐 거부</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparkedTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open or close the shutter or roof if the mount is in an unparked state.
-This is evaluated AFTER the "Park mount before moving the shutter" setting.</value>
+    <value>가대가 파킹되지 않은 경우 N.I.N.A.가 셔터/루프를 열거나 닫지 않도록 합니다.
+이는 "셔터 이동 전 가대 파킹" 설정 후 평가됩니다.</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDevice" xml:space="preserve">
-    <value>Refuse open if a Safety Monitor is not connected</value>
+    <value>안전 모니터가 연결되어 있지 않은 경우 개방 거부</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDeviceTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
+    <value>안전 모니터 장치가 연결되어 있지 않으면 N.I.N.A가 셔터나 지붕 여는 것이 거부될 수 있습니다.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>개방이 중단되었습니다. 셔터 또는 돔을 열도록 명령했지만 안전 모니터 장치가 분리되었습니다.</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>주의: 이 설정은 장비 안전과 관련이 있습니다. 신중하게 고려해야 하며 설정에 대한 지식이 충분해야 합니다. N.I.N.A에 접속되어 있는 기기만 제어 및 관리하는 것이며, N.I.N.A에 접속되어 있지 않은 경우 아무런 효과가 없습니다. 돔이나 지붕의 원치 않는 움직임을 방지하기 위해 안전 메커니즘은 항상 HW백업과 전기 연동장치를 갖추고 있어야 합니다. 이 설정과 돔 드라이버의 설정이 일치하지 않는 것에 대한 책임은 본인에게 있습니다.</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
-    <value>Collapses the left sidebars to only show smaller icons without text</value>
+    <value>왼쪽 사이드 바를 접어 텍스트를 없애고 작은 아이콘으로 표시합니다.</value>
   </data>
   <data name="LblExpandSidebarTooltip" xml:space="preserve">
-    <value>Expands the left sidebars to show larger icons with text</value>
+    <value>왼쪽 사이드 바를 확장하여 텍스트와 함께 큰 아이콘을 표시합니다.</value>
   </data>
   <data name="Lbl_Sequencer_InstructionsSidebar_SettingsModeTooltip" xml:space="preserve">
-    <value>Enable settings mode. When this mode is enabled each instruction can be disabled or enabled. A disabled instruction will then not be shown inside the sidebar outside of settings mode.</value>
+    <value>설정모드를 활성화합니다. 이 모드를 활성화하면 각 명령어를 활성화하거나 비활성화 할 수 있습니다. 비활성화된 명령어는 설정 모드 이외의 사이드바에 표시되지 않습니다.</value>
   </data>
   <data name="LblCollapseAll" xml:space="preserve">
-    <value>Collapse All</value>
+    <value>모두 접기</value>
   </data>
   <data name="LblExpandAll" xml:space="preserve">
-    <value>Expand All</value>
+    <value>모두 펼치기</value>
   </data>
   <data name="LblRotating" xml:space="preserve">
-    <value>Rotating</value>
+    <value>회전중</value>
   </data>
   <data name="LblASCOMTelescopeDriveRateInvalid" xml:space="preserve">
-    <value>The drive rate {0} is invalid to move the telescope axis. Please enter a different rate.</value>
+    <value>망원경 축을 이동시키는 드라이브 속도 {0} 가 올바르지 않습니다. 다른 속도를 입력하세요.</value>
   </data>
   <data name="LblFilterChangeFailed" xml:space="preserve">
-    <value>Failed to move filter wheel to filter {0} at position {1}</value>
+    <value>필터 휠을 {1} 에서 {0} 으로 이동 실패</value>
     <comment>First parameter is filter name and second parameter is filter position number</comment>
   </data>
   <data name="LblSwitches" xml:space="preserve">
-    <value>Switches</value>
+    <value>스위치</value>
   </data>
   <data name="LblGauges" xml:space="preserve">
-    <value>Gauges</value>
+    <value>게이지</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Description" xml:space="preserve">
-    <value>Sets the USB limit for the camera if available</value>
+    <value>이용 가능한 경우 카메라의 USB Limit 설정</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Name" xml:space="preserve">
-    <value>Set USB Limit</value>
+    <value>USB Limit 설정</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CannotSetUSBLimit" xml:space="preserve">
-    <value>Camera cannot set USB limit</value>
+    <value>카메라 USB Limit 설정 불가능</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_InvalidUSBLimit" xml:space="preserve">
-    <value>Invalid value for USB limit for the camera</value>
+    <value>카메라의 USB Limit 값이 잘못되었습니다.</value>
   </data>
   <data name="LblHighFullwellMode" xml:space="preserve">
-    <value>High Fullwell Mode</value>
+    <value>높은 Fullwell 모드</value>
   </data>
   <data name="LblHighFullwellModeTooltip" xml:space="preserve">
-    <value>Enables the high fullwell mode for extended fullwell</value>
+    <value>Fullwell의 확장을 위해 높은 Fullwell 모드 활성화</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
-    <value>Target Dew Heater Strength</value>
+    <value>이슬 방지 열선 강도 설정</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
-    <value>Hardware Acceleration</value>
+    <value>하드웨어 가속</value>
   </data>
   <data name="LblHardwareAccelerationTooltip" xml:space="preserve">
-    <value>This will enable or disable hardware accelerated rendering of the application.
-In case you are having rendering issues, or the application is turning blank when using a remote software while there is no monitor attached disabling hardware acceleration might be beneficial.
-Keep in mind that disabling hardware acceleration might reduce overall application performance.
+    <value>응용 프로그램의 하드웨어 가속 렌더링이 활성화되거나 비활성화됩니다.
+렌더링 문제가 있거나 모니터가 연결되어 있지 않은 상태에서 원격으로 접속할 때 하드웨어 가속을 비활성화하는 것이 유용할 수 있습니다.
+하드웨어 가속 기능을 사용하지 않도록 설정하면 전체 애플리케이션 성능이 저하될 수 있습니다.
 
-Changing the value will require an app restart to take affect.</value>
+값을 변경하려면 앱을 다시 시작해야 합니다.</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>프로필</value>
     <comment>The equipment profile that is used in the application that stores all the settings</comment>
   </data>
   <data name="LblAutomaticMountSync" xml:space="preserve">
-    <value>Automatic Sync</value>
+    <value>자동 동기화</value>
     <comment>The option to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblAutomaticMountSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will send a sync command to the mount during platesolve &amp; center operations. 
-This should only be disabled when having a good pointing model that must not be altered in any way. When disabled the plate solve panel in imaging tab will also not show the sync toggle.</value>
+    <value>활성화되면 플레이트 솔빙 중에 애플리케이션이 마운트에 동기화 명령을 전송합니다.
+이것은 어떤 식으로든 변경되어서는 안 되는 좋은 포인팅 모델이 있는 경우에만 비활성화되어야 합니다. 이미징 탭의 플레이트 솔브 패널이 비활성화되면 동기화가 표시되지 않습니다.</value>
     <comment>The option tooltip to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblCameraDitherPixels" xml:space="preserve">
-    <value>Camera Dither Pixels</value>
+    <value>카메라 디더링 픽셀 수</value>
   </data>
   <data name="LblCameraPixelScale" xml:space="preserve">
-    <value>Camera Pixel Scale</value>
+    <value>카메라 픽셀 스케일</value>
   </data>
   <data name="LblGuiderDitherPixels" xml:space="preserve">
-    <value>Guider Dither Pixels</value>
+    <value>가이드 디더링 픽셀 수</value>
   </data>
   <data name="LblGuiderPixelScale" xml:space="preserve">
-    <value>Guider Pixel Scale</value>
+    <value>가이드 픽셀 스케일</value>
   </data>
   <data name="LblZwoDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>장치 ID</value>
   </data>
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>연결된 ZWO 장치에 할당할 수 있는 ASCII 8자 이름입니다. 이를 통해 동일한 장치 모델을 고유하게 식별 할 수 있습니다.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
-    <value>Unidirectional</value>
+    <value>단방향</value>
   </data>
   <data name="LblCalibrate" xml:space="preserve">
-    <value>Calibrate</value>
+    <value>보정</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
     <value>NMEA Serial GNSS</value>
@@ -6587,158 +6571,158 @@ This should only be disabled when having a good pointing model that must not be 
     <value>PrimaLuceLab Eagle</value>
   </data>
   <data name="LblGnssGgaMissingError" xml:space="preserve">
-    <value>Did not observe a GGA sentence within {0} seconds</value>
+    <value>{0} 초 이내에 GGA Sentence 감지 하지 못했습니다.</value>
   </data>
   <data name="LblGnssGgaQualityError" xml:space="preserve">
-    <value>GGA sentence indicates the fix quality is {0}</value>
+    <value>GGA Sentence에서 품질이 {0} 입니다.</value>
   </data>
   <data name="LblGnss" xml:space="preserve">
     <value>GNSS</value>
   </data>
   <data name="LblPegasusUranusNotFound" xml:space="preserve">
-    <value>PegasusAstro Uranus Meteo not found</value>
+    <value>PegasusAstro Uranus Meteo 찾을 수 없음</value>
   </data>
   <data name="LblPegausAstroUranus" xml:space="preserve">
     <value>PegasusAstro Uranus Meteo</value>
   </data>
   <data name="LblIsValidIpPortRule" xml:space="preserve">
-    <value>Port number must be between {0} and {1}</value>
+    <value>포트 넘버는 {0} 과 {1} 사이여야 합니다.</value>
   </data>
   <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
-    <value>Use all interfaces</value>
+    <value>모든 인터페이스 사용</value>
   </data>
   <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
-    <value>Listen on all interfaces for MegaGuide broadcasts. By default, N.I.N.A. will listen on loopback (127.0.0.1) only</value>
+    <value>MegaGuide 브로드캐스트의 모든 인터페이스를 Listen합니다. 기본적으로 N.I.N.A는 루프백(127.0.0.1)만 Listen합니다</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat exposures similar to the flat wizard for a fixed panel brightness,.</value>
+    <value>플랫 마법사와 유사하게 고정된 플랫 패널 밝기에 대해 플랫 노출 시간을 자동으로 결정합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
-    <value>Auto Exposure Flat</value>
+    <value>플랫 프레임 자동 노출</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat panel brightness similar to the flat wizard for a fixed exposure time.</value>
+    <value>플랫마법사와 유사하게 고정된 노출시간에 대해 플랫 패널 밝기를 자동으로 결정합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
-    <value>Auto Brightness Flat</value>
+    <value>플랫 자동 밝기</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine exposure times similar to the flat wizard for sky flats.</value>
+    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Sky Flat</value>
+    <value>Twilight Sky Flats</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
-    <value>Closing Cover</value>
+    <value>커버 폐쇄</value>
   </data>
   <data name="LblOpeningCover" xml:space="preserve">
-    <value>Opening Cover</value>
+    <value>커버 개방</value>
   </data>
   <data name="LblSettingBrightness" xml:space="preserve">
-    <value>Setting brightness to {0}</value>
+    <value>{0} 로 밝기 설정</value>
   </data>
   <data name="LblToggleLight" xml:space="preserve">
-    <value>Toggling light to {0}</value>
+    <value>라이트를 {0} 로 전환</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
-    <value>Determining brightness using {0}. Attempt {1} / {2}.</value>
+    <value>{0} 을 사용하여 밝기를 결정합니다. {1} / {2} 를 시도해 주세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
-    <value>Found brightness at panel brightness {0}. Capturing flats.</value>
+    <value>플랫 패널 {0} 로 밝기 결정. 플랫 촬영 중</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>{0} 을 사용하여 노출을 결정합니다. {1} / {2} 를 시도해 주세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing flats.</value>
+    <value>노출 시간을 {0} 로 결정. 플랫 촬영 중</value>
   </data>
   <data name="LblFlatWizardFailed" xml:space="preserve">
-    <value>Flat Wizard failed.
-Reason: {0}</value>
+    <value>플랫 마법사 실패.
+원인: {0}</value>
     <comment>When flat wizard fails in single mode</comment>
   </data>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
-    <value>Flat Wizard failed for filter {0}.
-Reason: {1}</value>
+    <value>필터 {0} 의 플랫 마법사 실패.
+원인: {1}}</value>
     <comment>When flat wizard fails in multi mode</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too bright.
-Decrease minimum panel brightness or exposure time.</value>
+    <value>플랫 패널의 밝기를 확인하지 못했습니다. (광원이 너무 밝습니다.)
+최소 패널 밝기 또는 노출 시간을 줄이세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too dim.
-Increase maximum panel brightness or exposure time.</value>
+    <value>플랫 패널의 밝기를 확인하지 못했습니다. (광원이 너무 어둡습니다.)
+최소 패널 밝기 또는 노출 시간을 늘리세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too bright.
-Decrease panel brightness or minimum exposure time.</value>
+    <value>플랫의 노출 시간을 결정하지 못했습니다. (광원이 너무 밝습니다.)
+최소 패널 밝기 또는 노출 시간을 줄이세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too dim.
-Increase panel brightness or maximum exposure time.</value>
+    <value>플랫의 노출 시간을 결정하지 못했습니다. (광원이 너무 어둡습니다.)
+최소 패널 밝기 또는 노출 시간을 늘리세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>{0} 을 사용하여 노출 시간을 결정합니다. {1} / {2} 를 시도해 주세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing sky flats.</value>
+    <value>노출 시간 {0} s로 결정. 스카이 플랫 촬영 중</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too bright. 
-Decrease minimum exposure time or wait until it is darker.</value>
+    <value>스카이 플랫의 노출 시간을 결정하지 못했습니다. (하늘이 너무 밝습니다.)
+노출 시간을 줄이거나 어두워질 때까지 기다리세요.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too dim.
-Increase minimum exposure time or wait until it is brighter.</value>
+    <value>스카이 플랫의 노출 시간을 결정하지 못했습니다. (하늘이 너무 어둡습니다.)
+노출 시간을 늘리거나 밝아질 때까지 기다리세요.</value>
   </data>
   <data name="LblFlatDeviceError" xml:space="preserve">
-    <value>Errored</value>
+    <value>오류</value>
   </data>
   <data name="LblFlatDeviceCoverError" xml:space="preserve">
-    <value>{0} reports that the cover is in an errored state</value>
+    <value>{0} 커버 오류 상태</value>
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
-    <value>Not present</value>
+    <value>존재하지 않음</value>
   </data>
   <data name="LblFlipImageTooltip" xml:space="preserve">
-    <value>Flips image horizontally</value>
+    <value>이미지를 수평 방향으로 반전</value>
   </data>
   <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
-    <value>The ASCOM Sensor Type is currently configured to return already debayered images, which is not supported. Please adjust the driver settings to return bayered images instead!</value>
+    <value>ASCOM Sensor Type이 지원되지 않는 Debayered 이미지를 반환하도록 구성되어 있습니다. Bayered 이미지를 반환하도록 드라이버 설정을 조정하십시오!</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
-    <value>Location sync</value>
+    <value>위치 정보 동기화</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>프롬프트</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
-    <value>Sync to application</value>
+    <value>앱에 동기화</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
-    <value>Sync to telescope</value>
+    <value>망원경에 동기화</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
-    <value>No sync</value>
+    <value>동기화되지 않음</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
-    <value>When connecting the telescope this defines the behavior how to react when the mount location and application location differs.</value>
+    <value>망원경을 연결할 때 가대 위치와 앱의 위치가 다를 때 어떻게 해야 하는지 동작을 정의합니다.</value>
   </data>
   <data name="LblPHD2PeakDec" xml:space="preserve">
-    <value>Peak Dec: {0} ({1}")</value>
+    <value>Dec 피크: {0} ({1}")</value>
   </data>
   <data name="LblPHD2PeakRA" xml:space="preserve">
-    <value>Peak RA: {0} ({1}")</value>
+    <value>RA 피크: {0} ({1}")</value>
   </data>
   <data name="LblPluginRepositories" xml:space="preserve">
-    <value>Plugin Repositories</value>
+    <value>플러그인 저장소</value>
   </data>
   <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
-    <value>Enter Plugin Repository URL</value>
+    <value>플러그인 저장소 URL 입력</value>
   </data>
   <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
-    <value>Plugin Repository Url is invalid: {0}</value>
+    <value>플러그인 저장소 Url이 잘못됨: {0}</value>
   </data>
   <data name="LblTSXImageLink" xml:space="preserve">
     <value>TheSkyX Imagelink</value>
@@ -6747,28 +6731,28 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>TheSkyX Host</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
-    <value>TheSkyX Port</value>
+    <value>TheSkyX 포트</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
     <value>Mono bin</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
-    <value>When on, the camera will average binned pixels to create monochrome output</value>
+    <value>활성화 되면, 카메라가 평균 비닝 픽셀을 사용하여 단색으로 출력합니다.</value>
   </data>
   <data name="LblPinPoint" xml:space="preserve">
     <value>PinPoint</value>
   </data>
   <data name="LblPinPointCatalogRoot" xml:space="preserve">
-    <value>Catalog root</value>
+    <value>카탈로그 루트</value>
   </data>
   <data name="LblPinPointFailedInitialize" xml:space="preserve">
-    <value>Failure to initialize PinPoint Astrometric Engine</value>
+    <value>PinPoint Astrometric Engine 초기화 실패</value>
   </data>
   <data name="LblPinPointNotInstalled" xml:space="preserve">
-    <value>Failed to initialize PinPoint Astrometric Engine. It or its 64bit component does not appear to be installed.</value>
+    <value>PinPoint Astrometric Engine을 초기화하지 못했습니다. PinPoint Astrometric Engine 또는 해당 64비트 구성 요소가 설치되지 않은 것 같습니다.</value>
   </data>
   <data name="LblPinPointReferenceCatalog" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>참조 카탈로그</value>
   </data>
   <data name="LblPinPointCatAtas" xml:space="preserve">
     <value>ATLAS / PanSTARRS+Gaia</value>
@@ -6780,7 +6764,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>ESA Tycho-2</value>
   </data>
   <data name="LblPinPointCatType" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>참조 카탈로그</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
@@ -6798,22 +6782,22 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>USNO B1.0</value>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
-    <value>Expansion</value>
+    <value>확장장</value>
   </data>
   <data name="LblPinPointExpansionToolTip" xml:space="preserve">
-    <value>Expansion of catalog search area outside the image dimensions (min = 0, max = 80, default = 40)</value>
+    <value>이미지 영역 밖 카탈로그 검색 영역 확장(최소=0, 최대=80, 기본=40)</value>
   </data>
   <data name="LblPinPointMaxMagnitude" xml:space="preserve">
-    <value>Max. magnitude</value>
+    <value>한계 등급</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
-    <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
+    <value>참조 카탈로그에서 선택하는 별의 한계 등급 (최소=2.0, 최대=20.0, 기본=20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
     <value>AllSky API host</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (default = nova.astrometry.net)</value>
+    <value>Astrometry.net/AllSky API host (기본 값= nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
     <value>AllSky API key</value>
@@ -6828,36 +6812,36 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>PinPoint local solve</value>
   </data>
   <data name="LblPinPointErrorMessage" xml:space="preserve">
-    <value>PinPoint Error Message</value>
+    <value>PinPoint 오류 메시지</value>
   </data>
   <data name="LblUnableToSetMountElevation" xml:space="preserve">
-    <value>Unable to set mount elevation to {0}!</value>
+    <value>가대의 높이를 {0} 로 설정할 수 없습니다!</value>
   </data>
   <data name="LblSaveInCache" xml:space="preserve">
-    <value>Cache Image for Offline Use</value>
+    <value>오프라인 사용을 위한 캐시 이미지</value>
     <comment>To store an image automatically in the framing assistant offline cache or not</comment>
   </data>
   <data name="LblSaveInCacheTooltip" xml:space="preserve">
-    <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
+    <value>활성화 시 이미지가 장치에 저장되고 오프라인 스카이 맵에서 확인 가능</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>닫기</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
-    <value>Show Histogram</value>
+    <value>히스토그램 보기</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info only</value>
+    <value>Info Only</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
-    <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
+    <value>패널 내에서 정보 내용만 표시하는 것과 컨트롤을 표시하는 것 사이 전환</value>
   </data>
   <data name="LblParked" xml:space="preserve">
-    <value>Parked</value>
+    <value>파킹 상태</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Go-To 중</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6875,30 +6859,115 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>RICE</value>
   </data>
   <data name="LblAddFzExtension" xml:space="preserve">
-    <value>Add .fz extension</value>
+    <value>Add .fz 확장</value>
   </data>
   <data name="LblAddFzExtensionTooltip" xml:space="preserve">
-    <value>Adds an additional .fz extension to the file name of compressed FITS files. Example: filename.fits.fz</value>
+    <value>FITS 파일의 파일 이름에 .fz 확장자를 추가합니다. 예: filename.fits.fz</value>
   </data>
   <data name="LblASCOMCreate32BitData" xml:space="preserve">
-    <value>Create 32-bit data</value>
+    <value>32-bit 데이터 생성</value>
   </data>
   <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
-    <value>When the feature is enabled, N.I.N.A. will generate image data with a 32-bit depth, enhancing the pixel value range. 
-However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
-Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
-Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+    <value>활성화되면 N.I.N.A.는 32bit 이미지 데이터를 생성하여 픽셀 값 범위를 확장합니다.
+그러나 이 설정은 메모리가 더 많이 필요하고 처리 시간이 길어지며 노출마다 디스크 공간이 더 많이 사용된다.
+이미지 데이터를 이 32bit 형식으로 저장할 수 있는 것은 XISF 및 FITS 파일 형식입니다.
+또한 사용하는 ASCOM 드라이버도 이 32bit를 지원해야 합니다. 드라이버가 32bit를 지원하지 않으면 이 설정으로 인해 증가한 파일 크기는 이미지 데이터의 개선 없이 공간만 낭비하게 됩니다.</value>
   </data>
   <data name="LblUseCfitsio" xml:space="preserve">
-    <value>Use CFITSIO</value>
+    <value>CFITSIO사용</value>
   </data>
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
-    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
+    <value>활성화하면 프로그램의 기본 파일 작성 방법을 대체하는 CFITSIO 라이브러리를 사용하여 FITS 파일이 생성됩니다. 이를 통해 FITS 파일을 압축하여 파일 크기를 줄일 수 있고 데이터 정밀도를 높이기 위해 32bit 형식으로 데이터를 저장할 수 있는 옵션과 같은 추가 기능을 사용할 수 있습니다.</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>불량 화소 교정</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>불량 화소 교정 임계 값</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>닫힘</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>닫는 중</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>열기</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>여는 중</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>망원경의 홈 포지션 찾기가 {0} 분 후 취소됩니다.</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>망원경의 파킹이 {0} 분 후 취소됩니다.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>망원경의 파킹 해제가 {0} 분 후 취소 됩니다.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>시간 동기화</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>활성화되면 가대 시간을 시스템 시간으로 동기화합니다.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>좌표 동기화</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>가대</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>가대 이름</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Discovery duration</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Discovery Port</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># of broadcasts</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolve DNS name</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Use HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Use IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Use IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
   </data>
 </root>

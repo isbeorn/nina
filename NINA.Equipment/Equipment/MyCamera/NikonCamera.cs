@@ -266,6 +266,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 RaisePropertyChanged();
             }
         }
+        public string DisplayName => Name;
 
         public bool CanShowLiveView => _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
 

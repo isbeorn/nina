@@ -1117,10 +1117,10 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Míra pointace deklinace v obloukových sekundách za sekundu</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Pointace se nepřipojila k Dalekohledu</value>
+    <value>Přímé Navádění se nepodařilo navázat spojení s Mountáží</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Dalekohled odpojen. Pointace odpojena. Dithering nefunguje!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>Montáž byla odpojena. Přímé navádění se odpojí. Dithering již není účinný!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Adresář pro uložení obrázku nebyl nalezen!</value>
@@ -1171,7 +1171,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Připojit k ovladači ASCOM Dome selhalo:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Ovladač může sledovat</value>
+    <value>Kopule může sledovat</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Stav štěrbiny</value>
@@ -1201,7 +1201,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Ve výchozí pozici</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Ovladač sleduje dalekohled</value>
+    <value>Kopule sleduje dalekohled</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Přejíždění</value>
@@ -2063,8 +2063,8 @@ Přeskočit.</value>
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>Z N.I.N.A. do Dalekohledu</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>Z N.I.N.A. do Mountáže</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Ne</value>
@@ -2123,8 +2123,8 @@ Přeskočit.</value>
   <data name="LblNoSyncTooltip" xml:space="preserve">
     <value>Pokud je povoleno, aplikace neposílá synchronizační příkaz do montáže. To by mělo být použito v případě, že existuje vynikající montáž, a neměli byste provádět žádné změny.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Žádný Dalekohled</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>Žádná Montáž</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Chyba Oznámení</value>
@@ -2643,8 +2643,8 @@ Klient odpojen od synchronizované služby PHD2.
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>Připojit zaostření!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Připojit dalekohled!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>Znovu připojit montáž!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Referenční Datum</value>
@@ -3084,27 +3084,15 @@ Než bude pokračovat, ujistěte se, že je co nejpřesněji zaostřeno</value>
     <value>Synchronizace</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Synchronizace dalekohledu selhala</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>Synchronizace PHD2 (Experimentální)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        Tento profil je již připojen k synchronizovanému pointování PHD2.
-        Stejný profil nelze připojit dvakrát. Vyberte jiný profil NINA.
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Služba synchronizace PHD2 zastavena, ovladač PHD2 se restartuje jako služba</value>
+    <value>Synchronizace montáže se nezdařila</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Synchronizovat nastavení místa</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Nastavení místa dalekohledu se liší od nastavení NINA.
+    <value>Nastavení monmtáže se liší od nastavení aplikace N.I.N.A.
 
-Chcete synchronizovat nastavení?</value>
+Měla by se nastavení synchronizovat?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>Cíl</value>
@@ -3175,8 +3163,8 @@ Chcete synchronizovat nastavení?</value>
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Dalekohled synchronizovaný se souřadnicemi</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>Od Dalekohledu k N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>Z Montáže do N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>Míra Pointace RA</value>
@@ -3367,7 +3355,7 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
     <value>Nelze zahájit expozici kamery</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Nelze synchronizovat. Dalekohled nepřipojen</value>
+    <value>Nelze synchronizovat. Montáž není připojena</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Došlo k neočekávané chybě</value>
@@ -3534,9 +3522,6 @@ Přesunout obdélník na část snímku, který chcete snímat, a aktivujte čá
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Varování</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>Dalekohled v parkovací poloze se automaticky odparkuje, když uživatel zahájí sekvenci</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Počasí</value>
@@ -4033,8 +4018,8 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>Odpojit Rotátor?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Odpojit Dalekohled?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>Odpojit Montáž?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Dalekohled v parkovací poloze. Před zahájením přejezdu jej možná budete muset odparkovat.</value>
@@ -6600,10 +6585,10 @@ Tato funkce by měla být vypnuta pouze v případě, že máte k dispozici vyni
     <value>Auto Flat Jas</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>Tato instrukce automaticky určí doby expozice podobné průvodci pro flat expozice z oblohy.</value>
+    <value>Tento pokyn automaticky upravuje expoziční časy pro zachycení snímků soumračné oblohy, podobně jako nástroj průvodce flatem. Po každém snímku dynamicky upravuje dobu expozice na základě předpovědí změn jasu oblohy v reálném čase.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Flat z Oblohy</value>
+    <value>Flaty Soumraku Oblohy</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Uzavřít Kryt</value>
@@ -6877,5 +6862,90 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
     <value>Mezní Hodnota Chybných Pixelů</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Zavírání</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Otevřít</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Otevírání</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>Hledání dalekohledu ve výchozí pozici skončilo po {0} minutách</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>Parkování dalekohledu skončilo po {0} minutách.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>Odparkování dalekohledu skončilo po {0} minutách.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Synchronizace času</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>Je-li tato funkce povolena, aplikace při připojení provede aktualizaci času montáže tak, aby byl synchronizován se systémovým časem.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Synchronizace souřadnic</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Montáž</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Jméno Montáže</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Délka hledání</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>Délka hledání zařízení ASCOM Alpaca (výchozí: 1 sekunda)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Port Hledání</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>Číslo IP portu pro hledání ASCOM Alpaca (výchozí: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># počet vysílání</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Počet vysílání detekce zařízení ASCOM Alpaca (výchozí: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Vyřešit název DNS</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Pokus o řešení názvů DNS pro zařízení ASCOM Alpaca (Výchozí: vypnuto)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Použít HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Určuje, zda má detekce zařízení ASCOM Alpaca používat protokol HTTP nebo HTTPS (výchozí: vypnuto)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Použít IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Použít IPv4 pro detekci zařízení ASCOM Alpaca (Výchozí: zapnuto)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Použít IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Použít IPv6 pro detekci zařízení ASCOM Alpaca (Výchozí: zapnuto)</value>
   </data>
 </root>

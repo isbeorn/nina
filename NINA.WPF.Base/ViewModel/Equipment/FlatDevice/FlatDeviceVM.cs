@@ -203,6 +203,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                             DriverVersion = newDevice.DriverVersion,
                             LightOn = newDevice.LightOn,
                             Name = newDevice.Name,
+                            DisplayName = newDevice.DisplayName,
                             DeviceId = newDevice.Id,
                             SupportsOpenClose = newDevice.SupportsOpenClose,
                             SupportsOnOff = newDevice.SupportsOnOff,
@@ -222,7 +223,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         Logger.Info(
-                            $"Successfully connected flat device. Id: {newDevice.Id} Name: {newDevice.Name} Driver Version: {newDevice.DriverVersion}");
+                            $"Successfully connected flat device. Id: {newDevice.Id} Name: {newDevice.Name} DisplayName: {newDevice.DisplayName} Driver Version: {newDevice.DriverVersion}");
 
                         return true;
                     } else {
@@ -295,7 +296,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 return result;
             } catch (FlatDeviceCoverErrorException) {
                 Logger.Error("Flat device reports the cover is in an Error state");
-                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.Name));
+                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.DisplayName));
                 return false;
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -323,7 +324,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 return result;
             } catch (FlatDeviceCoverErrorException) {
                 Logger.Error("Flat device reports the cover is in an Error state");
-                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.Name));
+                Notification.ShowError(string.Format(Loc.Instance["LblFlatDeviceCoverError"], FlatDevice.DisplayName));
                 return false;
             } catch (Exception ex) {
                 Logger.Error(ex);

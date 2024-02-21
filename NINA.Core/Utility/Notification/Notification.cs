@@ -38,7 +38,6 @@ namespace NINA.Core.Utility.Notification {
             lock (_lock) {
                 Initialize();
             }
-            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
         private static Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
@@ -48,6 +47,7 @@ namespace NINA.Core.Utility.Notification {
         private static object _lock = new object();
 
         private static void Initialize() {
+            
             notifier = new Notifier(cfg => {
                 /*cfg.PositionProvider = new WindowPositionProvider(
                     parentWindow: Application.Current.MainWindow,
@@ -62,12 +62,6 @@ namespace NINA.Core.Utility.Notification {
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
             });
-        }
-
-        private static void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e) {
-            lock (_lock) {
-                Initialize();
-            }
         }
 
         public static void ShowInformation(string message) {
@@ -289,6 +283,9 @@ namespace NINA.Core.Utility.Notification {
         }
 
         public void PushNotification(INotification notification) {
+            if (_disposed) {
+                return;
+            }
             var lifetime = TimeSpan.FromSeconds(3);
             if (notification.GetType() == typeof(CustomNotification)) {
                 var customNotification = (CustomNotification)notification;
@@ -322,8 +319,7 @@ namespace NINA.Core.Utility.Notification {
         }
 
         public void CloseNotification(INotification notification) {
-            NotificationMetaData removedNotification;
-            _notifications.TryRemove(notification.Id, out removedNotification);
+            _notifications.TryRemove(notification.Id, out var removedNotification);
             RequestCloseNotification(new CloseNotificationEventArgs(removedNotification.Notification));
 
             if (_notificationsPending != null && _notificationsPending.Any()) {
@@ -332,11 +328,19 @@ namespace NINA.Core.Utility.Notification {
             }
         }
 
+        private bool _disposed = false;
         public void Dispose() {
-            _interval.Stop();
+            if (_disposed) { 
+                return;
+            }
+
+            _disposed = true;
+            _interval?.Stop();
             _interval = null;
             _notifications?.Clear();
             _notifications = null;
+            _notificationsPending?.Clear();
+            _notificationsPending = null;
         }
 
         public void UseDispatcher(Dispatcher dispatcher) {

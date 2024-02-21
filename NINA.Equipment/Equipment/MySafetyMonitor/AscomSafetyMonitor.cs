@@ -12,23 +12,29 @@
 
 #endregion "copyright"
 
+using ASCOM.Alpaca.Discovery;
 using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 
 namespace NINA.Equipment.Equipment.MySafetyMonitor {
 
-    internal class AscomSafetyMonitor : AscomDevice<SafetyMonitor>, ISafetyMonitor {
-
+    internal class AscomSafetyMonitor : AscomDevice<ASCOM.Common.DeviceInterfaces.ISafetyMonitor>, ISafetyMonitor {
         public AscomSafetyMonitor(string id, string name) : base(id, name) {
+        }
+        public AscomSafetyMonitor(AscomDevice deviceMeta) : base(deviceMeta) {
         }
 
         public bool IsSafe => GetProperty(nameof(SafetyMonitor.IsSafe), false);
 
         protected override string ConnectionLostMessage => Loc.Instance["LblSafetyMonitorConnectionLost"];
 
-        protected override SafetyMonitor GetInstance(string id) {
-            return new SafetyMonitor(id);
+        protected override ASCOM.Common.DeviceInterfaces.ISafetyMonitor GetInstance() {
+            if (deviceMeta == null) {
+                return new SafetyMonitor(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaSafetyMonitor(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Equipment.Interfaces {
@@ -25,6 +26,6 @@ namespace NINA.Equipment.Interfaces {
 
         Task<double> GetRotationAngle();
 
-        Task<Location> GetSite();
+        Task<Location> GetSite(CancellationToken token);
     }
 }

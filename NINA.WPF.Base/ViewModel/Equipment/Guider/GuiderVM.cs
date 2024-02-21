@@ -235,6 +235,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                         CanSetShiftRate = Guider.CanSetShiftRate,
                         CanGetLockPosition = Guider.CanGetLockPosition,
                         Name = Guider.Name,
+                        DisplayName = Guider.DisplayName,
                         Description = Guider.Description,
                         DriverInfo = Guider.DriverInfo,
                         DriverVersion = Guider.DriverVersion,

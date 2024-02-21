@@ -1114,10 +1114,10 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Declination guide rate in arcseconds per second</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct guider kon geen verbinding tot stand brengen met de telescoop</value>
+    <value>Direct Guider could not connect to Mount</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Uw telescoop is ontkoppeld. Direct guider zal de verbinding verbreken. Dithering is niet meer meer mogelijk!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>Mount has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Map voor opgeslagen afbeeldingen is niet gevonden!</value>
@@ -1168,7 +1168,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Unable to connect to ASCOM Dome driver:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Driver can follow</value>
+    <value>Dome can follow</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Shutter status</value>
@@ -1198,7 +1198,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>At home</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Driver following telescope</value>
+    <value>Dome following telescope</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Slewing</value>
@@ -2059,8 +2059,8 @@ berekende HFR: {2}
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>From N.I.N.A. to Telescope</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>From N.I.N.A. to Mount</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nee</value>
@@ -2117,10 +2117,10 @@ berekende HFR: {2}
     <value>Geen synchronisatie</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Geen telescoop</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>No Mount</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Meldingsfout</value>
@@ -2639,8 +2639,8 @@ Verbonden cliënten: {0}
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>Gelieve uw focuser opnieuw verbinden!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Gelieve uw telescoop opnieuw verbinden!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>Please reconnect mount!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Referentiedatum</value>
@@ -3080,25 +3080,13 @@ Voordat u doorgaat, bevestig dat uw systeem op dit moment goed of dichtbij de go
     <value>Sync</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Telescoop synchronisatie is mislukt</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>Gesynchroniseerde PHD2 (experimenteel)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-Dit profiel is al verbonden met de gesynchroniseerde PHD2-guider.
-U kunt hetzelfde profiel niet twee keer verbinden, kies een ander NINA profiel.
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Gesynchroniseerde PHD2 service gecrasht, start deze PHD2 guider opnieuw op als service</value>
+    <value>Mount sync failed</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Synchronize site settings</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>The telescope's site settings differ from NINA's.
+    <value>Mount's site settings differ from N.I.N.A.'s.
 
 Should the settings be synchronized?</value>
   </data>
@@ -3171,8 +3159,8 @@ Should the settings be synchronized?</value>
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Telescoop gesynchroniseerd naar coördinaten</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>From Telescope to N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>From Mount to N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>RA Guide Rate</value>
@@ -3363,7 +3351,7 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Kan camera belichting niet starten</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Kan niet synchroniseren. Telescoop is niet verbonden</value>
+    <value>Unable to sync. Mount is not connected</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Onverwachte fout opgetreden</value>
@@ -3528,9 +3516,6 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Waarschuwing</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Weer</value>
@@ -4027,8 +4012,8 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>Disconnect Rotator?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Disconnect Telescope?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>Disconnect Mount?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Telescope is parked. You may need to unpark your scope before slewing.</value>
@@ -6594,10 +6579,10 @@ This should only be disabled when having a good pointing model that must not be 
     <value>Auto Brightness Flat</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine exposure times similar to the flat wizard for sky flats.</value>
+    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Sky Flat</value>
+    <value>Twilight Sky Flats</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Closing Cover</value>
@@ -6871,5 +6856,90 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
     <value>Bad Pixel Correction Threshold</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Closing</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Opening</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>Telescope find home has timed out after {0} minutes</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>Telescope park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>Telescope unpark has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Time sync</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Coordinates sync</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Mount</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Mount name</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Discovery duration</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Discovery Port</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># of broadcasts</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolve DNS name</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Use HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Use IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Use IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
   </data>
 </root>

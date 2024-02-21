@@ -149,6 +149,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             DomeInfo = new DomeInfo {
                                 Connected = true,
                                 Name = Dome.Name,
+                                DisplayName = Dome.DisplayName,
                                 DeviceId = Dome.Id,
                                 Description = Dome.Description,
                                 DriverInfo = Dome.DriverInfo,
@@ -179,7 +180,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Dome. Id: {Dome.Id} Name: {Dome.Name} Driver Version: {Dome.DriverVersion}");
+                            Logger.Info($"Successfully connected Dome. Id: {Dome.Id} Name: {Dome.Name} DisplayName: {Dome.DisplayName} Driver Version: {Dome.DriverVersion}");
 
                             return true;
                         } else {

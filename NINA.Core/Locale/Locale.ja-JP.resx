@@ -1112,10 +1112,10 @@
     <value>Decガイドレート(秒角/秒)</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>ダイレクトガイドが赤道儀に繋がりません。</value>
+    <value>Direct Guiderは赤道儀に接続できませんでした</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>赤道儀との接続が解除されました。ダイレクトガイドは接続を解除します。デザリングは無効です。</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>赤道儀が切断されました。Direct Guiderは切断されます。ディザリングはもう有効ではありません！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>画像保存ディレクトリーが見つかりません。</value>
@@ -1166,7 +1166,7 @@
     <value>ASCOM ドームドライバに接続できません:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>ドライバーは追従可能です</value>
+    <value>Dome can follow</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>シャッターの状況</value>
@@ -1196,7 +1196,7 @@
     <value>ホームポジションです。</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>ドライバーは望遠鏡を追従しています</value>
+    <value>Dome following telescope</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>旋回中</value>
@@ -2054,8 +2054,8 @@
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>N.I.N.A.から望遠鏡へ</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>N.I.N.A.から赤道儀へ</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>いいえ</value>
@@ -2112,10 +2112,10 @@
     <value>同期なし</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>これをオンにすると、アプリケーションは同期コマンドを赤道儀へ送りません。確立されたポインティングモデルがあり、それに変更を加えてはならない場合にのみ使用して下さい。</value>
+    <value>有効にすると、アプリケーションは架台に同期コマンドを送信しません。 これを使うのは、どんな方法でも変更されることがない、良好なポインティングモデルがある場合に限られます。</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>赤道儀無し</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>架台なし</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>通知エラー</value>
@@ -2633,8 +2633,8 @@
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>フォーカサーを再度接続して下さい。</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>赤道儀を再度接続して下さい。</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>架台を再接続してください！</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>参照日</value>
@@ -3074,27 +3074,13 @@
     <value>同期</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>赤道儀の同期に失敗</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>同期PHD2(試験中)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-このプロファイルはすでに同期済PHD2ガイダーと接続されています。
-        同じプロファイルを２度接続することはできません。他のNINAプロファイルを選択して下さい。
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>同期していたPHD2サービスがクラッシュしました。サービスの一環として同期したPHD2ガイダーを再開します。</value>
+    <value>架台の同期に失敗しました</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>観測値の設定を同期</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>望遠鏡の観測値の設定は、NINAとは異なります。
-
-設定を同期しますか?</value>
+    <value>架台の観測地はN.I.N.A.の設定と異なります。同期する必要がありますか？</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>目標</value>
@@ -3165,8 +3151,8 @@
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>赤道儀が座標に同期済み</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>望遠鏡からN.I.N.A.へ</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>架台から N.I.N.A.へ</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>RAガイドレート</value>
@@ -3357,7 +3343,7 @@
     <value>カメラ露出を開始できません。</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>同期できません。赤道儀が接続されていません。</value>
+    <value>同期できません。架台が接続されていません</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
@@ -3523,9 +3509,6 @@
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>警告</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>望遠鏡はパーク位置にあり、ユーザーがシーケンスを開始すると自動的にパークは解除されます。</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>天気</value>
@@ -4018,8 +4001,8 @@
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>回転装置の接続を解除しますか？</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>望遠鏡の接続を解除しますか？</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>架台を切断しますか？</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>望遠鏡はパークされています。導入する前に、望遠鏡のパークを解除する必要があるかもしれません。</value>
@@ -6577,10 +6560,10 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>自動明度フラット</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>この命令は、スカイフラット用のフラットウィザードと同じように、露出時間を自動的に決定します。</value>
+    <value>この命令は、薄明時のスカイフラット撮影の露出時間を自動的に調整するもので、フラットウィザードツールと同様の機能です。 空の明るさの変化をリアルタイムに予測し、撮影が終わると露出時間をダイナミックに変化させます。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>スカイフラット</value>
+    <value>薄明スカイフラット</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>カバー閉鎖</value>
@@ -6851,5 +6834,90 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
     <value>不正なピクセル補正のしきい値</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Closing</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Opening</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>Telescope find home has timed out after {0} minutes</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>Telescope park has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>Telescope unpark has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Time sync</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Coordinates sync</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>架台</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>架台名</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>検出時間</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaのデバイス検出試行時間 (デフォルト: 1秒)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>検出ポート</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaの検出用IPポート番号 (デフォルト: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value>ブロードキャスト数</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaのデバイス検出用ブロードキャスト数 (デフォルト: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>DNS名の解決</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaデバイス用DNS名解決の試行 (デフォルト: オフ)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>HTTPSを使用</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaのデバイス検出でHTTPかHTTPSを使用するかを決定します (デフォルト: オフ)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>IPv4を使用</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaのデバイス検出に IPv4を使用 (デフォルト: オン)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>IPv6を使用</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpacaのデバイス検出にIPv6を使用 (デフォルト: オフ)</value>
   </data>
 </root>

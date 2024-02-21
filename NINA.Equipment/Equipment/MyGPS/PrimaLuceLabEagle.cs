@@ -34,12 +34,12 @@ namespace NINA.Equipment.Equipment.MyGPS {
 
         public string Name => "PrimaLuceLab Eagle";
 
-        public async Task<Location> GetLocation() {
+        public async Task<Location> GetLocation(CancellationToken token) {
             var http = new HttpGetRequest(eagleGpsUrl);
             var location = new Location();
 
             try {
-                var response = await http.Request(CancellationToken.None);
+                var response = await http.Request(token);
                 Logger.Debug(response);
 
                 var gps = JsonConvert.DeserializeObject<EagleGpsResponse>(response);
@@ -53,6 +53,8 @@ namespace NINA.Equipment.Equipment.MyGPS {
                 location.Elevation = double.Parse(CleanseValue(gps.Altitude), CultureInfo.InvariantCulture);
 
                 return location;
+            } catch(OperationCanceledException) {
+                throw;
             } catch (GnssNoFixException) {
                 throw;
             } catch (Exception ex) {

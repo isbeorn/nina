@@ -30,7 +30,7 @@
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
             <DataTemplate x:Key="DeviceItemTemplate">
-                <TextBlock Margin="10,0,0,0" Text="{Binding Name}" />
+                <TextBlock Margin="10,0,0,0" Text="{Binding DisplayName}" />
             </DataTemplate>
             <Style x:Key="ContainerStyle" TargetType="{x:Type GroupItem}">
                 <Setter Property="Template">
@@ -58,7 +58,7 @@
             </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
@@ -66,6 +66,7 @@
         </Grid.ColumnDefinitions>
         <ninactrl:LoadingControl
             Height="30"
+            Margin="0,0,5,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             LoadingImageBrush="{StaticResource PrimaryBrush}"

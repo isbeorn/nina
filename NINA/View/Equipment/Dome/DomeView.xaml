@@ -35,8 +35,8 @@
                 <GroupBox.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="Auto" MinWidth="140" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             VerticalAlignment="Center"
@@ -130,9 +130,7 @@
                                     Columns="2"
                                     Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
                                     <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        Text="{Binding DomeInfo.ShutterStatus}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>

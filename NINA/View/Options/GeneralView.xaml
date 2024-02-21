@@ -924,38 +924,26 @@
                                 </Binding>
                             </ninactrl:UnitTextBox.Text>
                         </ninactrl:UnitTextBox>
-                        <Button
+                        <ninactrl:CancellableButton
                             Width="40"
                             Height="21"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Right"
-                            Command="{Binding SiteFromGnssCommand}">
-                            <Button.ToolTip>
-                                <TextBlock Text="{ns:Loc LblGnssTooltip}" />
-                            </Button.ToolTip>
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource GPSSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform"
-                                UseLayoutRounding="True" />
-                        </Button>
-                        <Button
+                            ButtonImage="{StaticResource GPSSVG}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding SiteFromGnssCancelCommand}"
+                            Command="{Binding SiteFromGnssCommand}"
+                            ToolTip="{ns:Loc LblGnssTooltip}" />
+                        <ninactrl:CancellableButton
                             Width="40"
                             Height="21"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Right"
-                            Command="{Binding SiteFromPlanetariumCommand}">
-                            <Button.ToolTip>
-                                <TextBlock Text="{ns:Loc LblPlanetariumLocationTooltip}" />
-                            </Button.ToolTip>
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource GetCoordsSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform"
-                                UseLayoutRounding="True" />
-                        </Button>
+                            ButtonImage="{StaticResource GetCoordsSVG}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding SiteFromPlanetariumCancelCommand}"
+                            Command="{Binding SiteFromPlanetariumCommand}"
+                            ToolTip="{ns:Loc LblPlanetariumLocationTooltip}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock

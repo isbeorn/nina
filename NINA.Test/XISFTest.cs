@@ -761,6 +761,7 @@ namespace NINA.Test {
         public void XISFCameraMetaDataPopulated() {
             //Arrange
             var metaData = new ImageMetaData();
+            metaData.Camera.Id = "MyUniqueId1234";
             metaData.Camera.Name = "TEST";
             XNamespace ns = "http://www.pixinsight.com/xisf";
 
@@ -776,6 +777,7 @@ namespace NINA.Test {
 
             var expectedFITSKeywords = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("INSTRUME", metaData.Camera.Name, "Imaging instrument name"),
+                new FITSHeaderCard("CAMERAID", metaData.Camera.Id, "Imaging instrument identifier"),
                 new FITSHeaderCard("XBINNING", metaData.Camera.BinX, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING", metaData.Camera.BinY, "Y axis binning factor"),
                 new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain"),

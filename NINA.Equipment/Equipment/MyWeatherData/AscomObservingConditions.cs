@@ -17,12 +17,14 @@ using ASCOM.Com.DriverAccess;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using System;
+using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyWeatherData {
 
-    internal class AscomObservingConditions : AscomDevice<ObservingConditions>, IWeatherData, IDisposable {
-
+    internal class AscomObservingConditions : AscomDevice<IObservingConditions>, IWeatherData, IDisposable {
         public AscomObservingConditions(string weatherDataId, string weatherDataName) : base(weatherDataId, weatherDataName) {
+        }
+        public AscomObservingConditions(AscomDevice deviceMeta) : base(deviceMeta) {
         }
 
         public double AveragePeriod => GetProperty(nameof(ObservingConditions.AveragePeriod), double.NaN);
@@ -55,8 +57,12 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
         protected override string ConnectionLostMessage => Loc.Instance["LblWeatherConnectionLost"];
 
-        protected override ObservingConditions GetInstance(string id) {
-            return new ObservingConditions(id);
+        protected override IObservingConditions GetInstance() {
+            if (deviceMeta == null) {
+                return new ObservingConditions(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaObservingConditions(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

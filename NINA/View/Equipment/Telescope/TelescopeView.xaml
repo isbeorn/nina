@@ -38,13 +38,13 @@
                 <GroupBox.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="Auto" MinWidth="140" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="20"
-                            Text="{ns:Loc LblTelescope}" />
+                            Text="{ns:Loc LblMount}" />
                         <equip:Connector
                             Grid.Column="1"
                             CancelCommand="{Binding CancelConnectCommand}"

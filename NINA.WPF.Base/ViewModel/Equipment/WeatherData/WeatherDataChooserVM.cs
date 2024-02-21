@@ -35,7 +35,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblWeatherNoSource"]));
@@ -52,9 +51,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (IWeatherData obsdev in ascomInteraction.GetWeatherDataSources()) {
                         devices.Add(obsdev);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaObservingConditions = await alpacaInteraction.GetWeatherDataSources(default);
+                    foreach (IWeatherData w in alpacaObservingConditions) {
+                        devices.Add(w);
+                    }
+                    Logger.Info($"Found {alpacaObservingConditions?.Count} Alpaca Observing Conditions");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

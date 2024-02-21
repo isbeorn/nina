@@ -390,6 +390,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 CanGetGain = Cam.CanGetGain,
                                 LiveViewEnabled = Cam.LiveViewEnabled,
                                 Name = Cam.Name,
+                                DisplayName = Cam.DisplayName,
                                 DeviceId = Cam.Id,
                                 CanSetOffset = Cam.CanSetOffset,
                                 OffsetMin = Cam.OffsetMin,
@@ -438,7 +439,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             }
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} Driver Version: {Cam.DriverVersion}");
+                            Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} DisplayName: {Cam.DisplayName}Driver Version: {Cam.DriverVersion}");
 
                             return true;
                         } else {

@@ -256,6 +256,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             SwitchInfo = new SwitchInfo {
                                 Connected = true,
                                 Name = switchHub.Name,
+                                DisplayName = switchHub.DisplayName,
                                 Description = switchHub.Description,
                                 DriverInfo = switchHub.DriverInfo,
                                 DriverVersion = switchHub.DriverVersion,
@@ -269,7 +270,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             BroadcastSwitchInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} Driver Version: {switchHub.DriverVersion}");
+                            Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} DisplayName: {switchHub.DisplayName} Driver Version: {switchHub.DriverVersion}");
 
                             return true;
                         } else {

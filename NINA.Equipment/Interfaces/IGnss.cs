@@ -24,6 +24,6 @@ namespace NINA.Equipment.Interfaces {
     public interface IGnss {
         string Name { get; }
 
-        Task<Location> GetLocation();
+        Task<Location> GetLocation(CancellationToken token);
     }
 }

@@ -140,6 +140,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public string SensorName => this.Camera.SensorName;
 
+        public string DisplayName => this.Camera.DisplayName;
+
         public SensorType SensorType => this.Camera.SensorType;
 
         public short BayerOffsetX => this.Camera.BayerOffsetX;

@@ -61,6 +61,8 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 - Native autofocus will now properly show star detection result in the image statistics panel
 - The native autofocus mechanism has been upgraded to simultaneously process images while shifting to new focus points, which enhances the speed of the entire autofocus operation.
 - Offset is now displayed next to Gain in the Image Statistics window
+- Adjusted color picker style to follow along the customized theme colors of the application
+- "Telescope" in equipment area has been renamed to "Mount". Furthermore the equipment options have been separated by telescope and mount. The renaming is an ongoing effort, so some labels might still refer to "telescope" instead of "mount"
 
 ## Commandline Options
 - Multiple command line options have been added to be able to adjust some of the startup parameters for the application
@@ -93,11 +95,19 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 - Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time
 - Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.
 
+## Object Database Additions
+- 1538 LDN objects (Lynds' Catalogue of Dark Nebulae - Lynds 1962)
+- 180 Barnard objects (The Barnard Catalogue of Dark Markings in the Sky - Barnard,1927)
+- 66 StDr, StDrLu, StDrL, PaStDr, StDrLuLDu objects (25 confirmed planetary nebulae / 21 likely planetary nebulae / 20 possible planetary nebulae)
+- 131 vdB objects (Catalogue of Reflection Nebulae - Van den Bergh, 1966)
+- 235 Sharpless (Sh2) objects (Catalogue of HII Regions - Sharpless, 1959)
 
 ## File Formats
 
 ### FITS
 - Implemented functionality to read compressed data into Framing Assistant and Camera Simulator
+- Introduced a new FITS keyword "CAMERAID" to uniquely identify the camera used. 
+  - For the majority of native drivers, this field will be populated with the camera's serial number, assuming it is accessible.
 - Added a toggle to use CFITSIO to write FITS files. This enables the following features:
   - Introduced checksum support for enhanced data integrity.
   - Expanded storage options to include compressed formats, utilizing RICE, GZIP1, GZIP2, PLIO, and HCOMPRESS algorithms. Notably, RICE offers an optimal balance of speed and compression efficiency
@@ -106,6 +116,10 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 
 ### XISF
 - Added support for storing data in a 32-bit unsigned integer format
+
+## Alpaca
+- ASCOM Alpaca discovery is now available in N.I.N.A. and discovered devices are selectable in the equipment choosers to connect to
+  - Discovery settings can be adjusted in Options > Equipment > ASCOM Alpaca Discovery
 
 ## Bugfixes
 - Fixed SVBony Native driver, that was sometimes showing the exposure before the latest one after a cancelled exposure

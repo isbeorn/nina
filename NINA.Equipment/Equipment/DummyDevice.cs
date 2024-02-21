@@ -34,6 +34,7 @@ namespace NINA.Equipment.Equipment {
         public string Id => "No_Device";
 
         public string Name { get; private set; }
+        public string DisplayName => Name;
 
         public bool Connected => false;
 

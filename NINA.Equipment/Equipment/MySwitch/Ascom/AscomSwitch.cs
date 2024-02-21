@@ -23,7 +23,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
     internal class AscomSwitch : BaseINPC, ISwitch {
 
-        public AscomSwitch(Switch s, short id) {
+        public AscomSwitch(ISwitchV2 s, short id) {
             Id = id;
             ascomSwitchHub = s;
 

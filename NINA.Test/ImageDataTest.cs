@@ -45,6 +45,7 @@ namespace NINA.Test {
                     }
                 },
                 Camera = {
+                    Id = "MyUniqueId1234",
                     Name = "TestCamera",
                     BinX = 2,
                     BinY  = 3,

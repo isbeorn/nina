@@ -34,7 +34,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoRotator"]));
@@ -51,9 +50,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (IRotator rotator in ascomInteraction.GetRotators()) {
                         devices.Add(rotator);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaRotators = await alpacaInteraction.GetRotators(default);
+                    foreach (IRotator r in alpacaRotators) {
+                        devices.Add(r);
+                    }
+                    Logger.Info($"Found {alpacaRotators?.Count} Alpaca Rotators");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

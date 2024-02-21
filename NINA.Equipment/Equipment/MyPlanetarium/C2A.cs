@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System;
 using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
+using System.Threading;
 
 namespace NINA.Equipment.Equipment.MyPlanetarium {
 
@@ -69,12 +70,12 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
         /// Return the configured user location from C2A
         /// </summary>
         /// <returns></returns>
-        public async Task<Location> GetSite() {
+        public async Task<Location> GetSite(CancellationToken token) {
             try {
                 string command = "GetLatitude;GetLongitude;\r\n";
 
                 var query = new BasicQuery(address, port, command);
-                string response = await query.SendQuery();
+                string response = await query.SendQuery(token);
 
                 response = response.TrimEnd('\r', '\n');
 
@@ -89,6 +90,8 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
                 } else {
                     throw new PlanetariumFailedToGetCoordinates();
                 }
+            } catch(OperationCanceledException) {
+                throw;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw;

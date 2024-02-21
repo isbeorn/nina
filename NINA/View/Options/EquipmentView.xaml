@@ -33,10 +33,11 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <GroupBox DataContext="{Binding CameraSettings}">
                 <GroupBox.Header>
@@ -348,7 +349,7 @@
                 </StackPanel>
             </GroupBox>
             <GroupBox
-                Grid.RowSpan="2"
+                Grid.RowSpan="3"
                 Grid.Column="1"
                 DataContext="{Binding FilterWheelSettings}">
 
@@ -499,25 +500,6 @@
                                 MaxLength="48"
                                 Text="{Binding Name}" />
                         </UniformGrid>
-
-                        <UniformGrid
-                            Margin="10,5,0,0"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                MinWidth="200"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblAutomaticMountSync}">
-                                <TextBlock.ToolTip>
-                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding NoSync, Converter={StaticResource InverseBooleanConverter}}">
-                                <CheckBox.ToolTip>
-                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
-                                </CheckBox.ToolTip>
-                            </CheckBox>
-                        </UniformGrid>
                     </UniformGrid>
 
                     <UniformGrid Columns="2">
@@ -548,11 +530,8 @@
                                 </ninactrl:UnitTextBox.Text>
                             </ninactrl:UnitTextBox>
                         </UniformGrid>
-                    </UniformGrid>
-
-                    <UniformGrid Columns="2">
                         <UniformGrid
-                            Margin="0,5,0,0"
+                            Margin="10,5,0,0"
                             VerticalAlignment="Center"
                             Columns="2">
                             <TextBlock
@@ -575,6 +554,33 @@
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="2"
+                DataContext="{Binding TelescopeSettings}"
+                Header="{ns:Loc LblMount}">
+                <StackPanel Orientation="Vertical">
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMountName}" />
+                            <TextBox
+                                MinWidth="48"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                MaxLength="48"
+                                Text="{Binding MountName}" />
                         </UniformGrid>
                     </UniformGrid>
 
@@ -603,6 +609,25 @@
                                 </TextBox.Text>
                             </ninactrl:UnitTextBox>
                         </UniformGrid>
+
+                        <UniformGrid
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCoordinatesMountSync}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding NoSync, Converter={StaticResource InverseBooleanConverter}}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </UniformGrid>
                     </UniformGrid>
 
                     <UniformGrid Columns="2">
@@ -619,22 +644,36 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
 
-                            <ComboBox
-                                MinWidth="150"
-                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:TelescopeLocationSyncDirection}}}"
-                                SelectedItem="{Binding TelescopeLocationSyncDirection}">
+                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:TelescopeLocationSyncDirection}}}" SelectedItem="{Binding TelescopeLocationSyncDirection}">
 
                                 <ComboBox.ToolTip>
                                     <TextBlock Text="{ns:Loc Lbl_TelescopeLocationSyncDirection_Tooltip}" />
                                 </ComboBox.ToolTip>
                             </ComboBox>
                         </UniformGrid>
+                        <UniformGrid
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTimeSync}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblTimeSyncTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding TimeSync}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblTimeSyncTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>
-
             <GroupBox
-                Grid.Row="2"
+                Grid.Row="3"
                 DataContext="{Binding WeatherDataSettings}"
                 Header="{ns:Loc LblWeather}">
 
@@ -761,7 +800,7 @@
             </GroupBox>
 
             <GroupBox
-                Grid.Row="3"
+                Grid.Row="4"
                 DataContext="{Binding GnssSettings}"
                 Header="{ns:Loc LblGnss}">
                 <StackPanel Orientation="Vertical">
@@ -786,7 +825,7 @@
             </GroupBox>
 
             <GroupBox
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="1"
                 DataContext="{Binding PlanetariumSettings}"
                 Header="{ns:Loc LblPlanetarium}">
@@ -997,6 +1036,183 @@
                             </CheckBox.Style>
                         </CheckBox>
                     </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="4"
+                Grid.Column="1"
+                DataContext="{Binding AlpacaSettings}"
+                Header="ASCOM Alpaca Discovery">
+                <StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_DiscoveryPort}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryPort_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox Grid.Column="1" Margin="5,0,0,0">
+                            <TextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryPort_Tooltip}" />
+                            </TextBox.ToolTip>
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="DiscoveryPort">
+                                    <Binding.ValidationRules>
+                                        <rules:IsValidIpPortRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Unit="x">
+                            <ninactrl:UnitTextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts_Tooltip}" />
+                            </ninactrl:UnitTextBox.ToolTip>
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="NumberOfPolls">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Unit="s">
+                            <ninactrl:UnitTextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration_Tooltip}" />
+                            </ninactrl:UnitTextBox.ToolTip>
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="DiscoveryDuration">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_ResolveDnsName}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_ResolveDnsName_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding ResolveDnsName, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_ResolveDnsName_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseHTTPS}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseHTTPS_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseHttps, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseHTTPS_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseIPv4}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv4_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseIPv4, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv4_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseIPv6}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv6_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseIPv6, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv6_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                    </Grid>
+
                 </StackPanel>
             </GroupBox>
         </Grid>

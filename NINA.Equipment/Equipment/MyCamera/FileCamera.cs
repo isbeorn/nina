@@ -213,6 +213,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public string Id => "209D6981-1E09-438C-A1B6-7452F5C34A59";
 
         public string Name => "N.I.N.A. File Camera";
+        public string DisplayName => Name;
 
         public double Temperature => double.NaN;
 

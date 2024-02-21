@@ -143,6 +143,10 @@ namespace NINA.Image.FileFormat.FITS {
                 metaData.Camera.Name = card.OriginalValue;
             }
 
+            if (_headerCards.TryGetValue("CAMERAID", out card)) {
+                metaData.Camera.Id = card.OriginalValue;
+            }
+
             if (_headerCards.TryGetValue("SET-TEMP", out card)) {
                 metaData.Camera.SetPoint = ParseDouble(card.OriginalValue);
             }
@@ -538,6 +542,10 @@ namespace NINA.Image.FileFormat.FITS {
 
             if (!string.IsNullOrEmpty(metaData.Camera.Name)) {
                 Add("INSTRUME", metaData.Camera.Name, "Imaging instrument name");
+            }
+
+            if (!string.IsNullOrEmpty(metaData.Camera.Id)) {
+                Add("CAMERAID", metaData.Camera.Id, "Imaging instrument identifier");
             }
 
             if (!double.IsNaN(metaData.Camera.SetPoint)) {

@@ -35,12 +35,18 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using NINA.Equipment.Interfaces;
 using NINA.Core.Enum;
+using ASCOM.Common.Alpaca;
+using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class AscomCamera : AscomDevice<Camera>, ICamera, IDisposable {
+    public class AscomCamera : AscomDevice<ICameraV3>, ICamera, IDisposable {
 
         public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(cameraId, name) {
+            this.profileService = profileService;
+            this.exposureDataFactory = exposureDataFactory;
+        }
+        public AscomCamera(ASCOM.Alpaca.Discovery.AscomDevice deviceMeta, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(deviceMeta) {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
         }
@@ -136,10 +142,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool Create32BitData {
-            get => profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData;
+            get => false; //profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData;
             set {
-                profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData = value;
-                RaisePropertyChanged();
+                //profileService.ActiveProfile.CameraSettings.ASCOMCreate32BitData = value;
+                //RaisePropertyChanged();
             }
         }
 
@@ -821,8 +827,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
             return Task.CompletedTask;
         }
 
-        protected override Camera GetInstance(string id) {
-            return new Camera(id);
+        protected override ICameraV3 GetInstance() {
+            if(deviceMeta == null) {
+                return new Camera(this.Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
+            
         }
 
         public bool LiveViewEnabled { get => false; set => throw new System.NotImplementedException(); }

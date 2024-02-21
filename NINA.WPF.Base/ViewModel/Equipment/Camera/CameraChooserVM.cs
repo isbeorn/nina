@@ -58,7 +58,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
 
                 var devices = new List<IDevice>();
 
@@ -96,7 +95,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var atikDevices = AtikCameraDll.GetDevicesCount();
                     Logger.Info($"Found {atikDevices} Atik Cameras");
                     if (atikDevices > 0) {
-                        for (int i = 0; i < atikDevices; i++) {
+                        for (int i = 0; i < atikDevices; i++) {                            
                             var cam = new AtikCamera(i, profileService, exposureDataFactory);
                             devices.Add(cam);
                         }
@@ -271,11 +270,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* ASCOM */
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     var ascomCameras = ascomInteraction.GetCameras(exposureDataFactory);
                     foreach (ICamera cam in ascomCameras) {
                         devices.Add(cam);
                     }
                     Logger.Info($"Found {ascomCameras?.Count} ASCOM Cameras");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaCameras = await alpacaInteraction.GetCameras(exposureDataFactory, default);
+                    foreach (ICamera cam in alpacaCameras) {
+                        devices.Add(cam);
+                    }
+                    Logger.Info($"Found {alpacaCameras?.Count} Alpaca Cameras");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

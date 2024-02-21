@@ -72,8 +72,14 @@ namespace NINA.Core.Utility {
         public static string GetUniqueFilePath(string fullPath) {
             int count = 1;
 
-            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);            
             string extension = Path.GetExtension(fullPath);
+            if(extension.ToLower() == ".fz") {
+                // special handling for ".fits.fz" extension
+                extension = ".fits" + extension;
+                fileNameOnly = Path.GetFileNameWithoutExtension(fileNameOnly);
+            }
+            
             string path = Path.GetDirectoryName(fullPath);
             string newFullPath = fullPath;
 

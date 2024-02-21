@@ -36,14 +36,14 @@ namespace NINA.Equipment.Equipment.MyGPS.PegasusAstro {
 
         public string Name => "PegasusAstro Uranus Meteo";
 
-        public async Task<Location> GetLocation() {
+        public async Task<Location> GetLocation(CancellationToken token) {
             var location = new Location();
 
             try {
-                var uranus = await FindUranus();
+                var uranus = await FindUranus(token);
 
                 var http = new HttpGetRequest(pegasusUnityUrl + pegasusUnityUranusReport + $"?DriverUniqueKey={uranus.UniqueKey}");
-                var response = await http.Request(CancellationToken.None);
+                var response = await http.Request(token);
                 Logger.Debug(response);
 
                 var report = JsonConvert.DeserializeObject<DriverUranusReport.Report>(response);
@@ -70,10 +70,10 @@ namespace NINA.Equipment.Equipment.MyGPS.PegasusAstro {
 
         }
 
-        private static async Task<ServerConnectedDevices.Device> FindUranus() {
+        private static async Task<ServerConnectedDevices.Device> FindUranus(CancellationToken token) {
             var http = new HttpGetRequest(pegasusUnityUrl + pegasusUnityDevicesConnected);
 
-            var response = await http.Request(CancellationToken.None);
+            var response = await http.Request(token);
             Logger.Debug(response);
 
             var devices = JsonConvert.DeserializeObject<ServerConnectedDevices.Response>(response);

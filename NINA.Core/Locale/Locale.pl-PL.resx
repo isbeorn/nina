@@ -1116,10 +1116,10 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Szybkość prowadzenia deklinacji w sekundach kątowych na sekundę</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Sterownik guidera nie mógł połączyć się z teleskopem</value>
+    <value>Sterownik guidera nie mógł połączyć się z montażem</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Teleskop został odłączony. Guder został odłączony. Dithering nie działa!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>Montaż został odłączony. Guder został odłączony. Dithering nie działa!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Nie znaleziono katalogu do zapisywania obrazu!</value>
@@ -1170,7 +1170,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Nie można połączyć się ze sterownikiem ASCOM kopuły:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Sterownik może śledzić</value>
+    <value>Kopuła może podążać</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Status przesłony</value>
@@ -1200,7 +1200,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
     <value>Ustawiony w pozycji startowej</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Sterownik prowadzenia teleskopu</value>
+    <value>Kopuła śledzi teleskop</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Obracam się</value>
@@ -2060,8 +2060,8 @@ Obliczone HFR: {2}</value>
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>Z N.I.N.A. do Teleskopu</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>Od N.I.N.A. do montażu</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nie</value>
@@ -2118,10 +2118,10 @@ Obliczone HFR: {2}</value>
     <value>Brak synchronizacji</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>Gdy ta opcja jest włączona, aplikacja nie będzie wysyłać poleceń synchronizacji do teleskopu. Ta metoda powinna być stosowana tylko wtedy, gdy sam teleskop ma dobry model wskazujący (lub ma specjalną potrzebę nie używania poleceń synchronizacji) i nie musi być zmieniany przez oprogramowanie.</value>
+    <value>Gdy ta opcja jest włączona, aplikacja nie będzie wysyłać poleceń synchronizacji do montażu. Ta metoda powinna być stosowana tylko wtedy, gdy sam montaż ma dobry model wskazujący (lub ma potrzebę nie używania poleceń synchronizacji) i nie musi być zmieniany przez oprogramowanie.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Teleskop nie podłączony</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>Brak montażu</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Błąd powiadomienia</value>
@@ -2640,8 +2640,8 @@ Obliczone HFR: {2}</value>
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>Proszę ponownie podłączyć fokuser!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Proszę ponownie podłączyć teleskop!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>Proszę ponownie podłączyć montaż!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Data referencyjna</value>
@@ -3081,25 +3081,13 @@ Zanim przejdziesz dalej, upewnij się, że Twój fokuser znajduje się w najleps
     <value>Synchronizacja</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Synchronizacja teleskopu nie powiodła się</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>PHD2 zsynchronizowany (eksperymentalny)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        Ten profil jest już połączony z synchronizowanym PHD2.
-        Nie możesz połączyć tego samego profilu dwukrotnie, wybierz inny profil NINA.
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Zsynchronizowana usługa PHD2 uległa awarii, uruchom ponownie PHD2</value>
+    <value>Synchronizacja montażu nie powiodła się</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Ustawienia synchronizacji współrzędnych</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Ustawienia współrzędnych teleskopu różnią się od ustawień NINA.
+    <value>Ustawienia współrzędnych montażu różnią się od ustawień NINA.
 
 Czy ustawienia powinny być zsynchronizowane?</value>
   </data>
@@ -3172,8 +3160,8 @@ Czy ustawienia powinny być zsynchronizowane?</value>
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Teleskop zsynchronizowany ze współrzędnymi</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>Z teleskopu do N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>Z montażu do N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>Szybkość prowadzenia RA</value>
@@ -3364,7 +3352,7 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
     <value>Nie można rozpocząć ekspozycji kamery</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Nie można zsynchronizować. Teleskop nie jest połączony</value>
+    <value>Nie można zsynchronizować. Montaż nie jest połączony</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Wystąpił nieoczekiwany błąd</value>
@@ -3531,9 +3519,6 @@ Przeciągnij prostokąt nad częścią ramki, na której chcesz wykonać podpró
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Ostrzeżenie</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>Teleskop jest zaparkowany i zostanie automatycznie uruchomiony po rozpoczęciu sekwencji przez użytkownika</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Pogoda</value>
@@ -4030,8 +4015,8 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>Odłączyć Rotator?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Odłączyć teleskop?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>Rozłączyć montaż?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Teleskop jest zaparkowany. Teleskop musi zostać odparkowany, zanim będzie można go ponownie przesunąć.</value>
@@ -6595,10 +6580,10 @@ Opcję tę należy wyłączyć tylko wtedy, gdy dostępny jest dobry wzorzec map
     <value>Automatyczna jasność Flat</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>Ta funkcja automatycznie określi czasy ekspozycji podobne do kreatora Flat horyzontu.</value>
+    <value>Ta instrukcja automatycznie dostosowuje czasy ekspozycji, aby uchwycić flaty zmierzchowe, podobnie jak w przypadku narzędzia kreatora klatek flat. Dynamicznie modyfikuje czas ekspozycji po każdym zdjęciu, w oparciu o przewidywane w czasie rzeczywistym zmiany jasności nieba.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Flat horyzontu</value>
+    <value>Flaty zmierzchowe</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Zamknięcie pokrywy</value>
@@ -6872,5 +6857,90 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
     <value>Poziom korekty błędnych pikseli</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Zamknięte</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Zamykanie</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Otwórz</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Otwieranie</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>Upłynął limit czasu oczekiwania na znalezienie teleskopu po {0} minutach</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>Przekroczono limit czasu dla {0} minut.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>Upłynął limit czasu odparkowania teleskopu po {0} minutach.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Synchronizacja czasu</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>Jeśli ta funkcja jest włączona, aplikacja po podłączeniu zaktualizuje czas montażu tak, aby był zsynchronizowany z czasem systemowym.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Synchronizacja współrzędnych</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Montaż</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Nazwa montażu</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Discovery duration</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Discovery Port</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># of broadcasts</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolve DNS name</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Use HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Use IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Use IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
   </data>
 </root>

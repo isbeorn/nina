@@ -40,6 +40,11 @@ namespace NINA.Profile {
             } else {
                 filterWheelFilters = new ObserveAllCollection<FilterInfo>();
             }
+
+            var focusFilters = filterWheelFilters.Where(x => x.AutoFocusFilter == true).ToList();
+            if (focusFilters.Count > 1) {
+                focusFilters.Skip(1).ToList().ForEach(x => x.AutoFocusFilter = false);
+            }
         }
 
         protected override void SetDefaultValues() {

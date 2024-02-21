@@ -24,12 +24,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
-    internal class AscomFilterWheel : AscomDevice<FilterWheel>, IFilterWheel, IDisposable {
+    internal class AscomFilterWheel : AscomDevice<IFilterWheelV2>, IFilterWheel, IDisposable {
 
         public AscomFilterWheel(string filterWheelId, string name, IProfileService profileService) : base(filterWheelId, name) {
+            this.profileService = profileService;
+        }
+        public AscomFilterWheel(AscomDevice deviceMeta, IProfileService profileService) : base(deviceMeta) {
             this.profileService = profileService;
         }
 
@@ -98,8 +102,12 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             return Task.CompletedTask;
         }
 
-        protected override FilterWheel GetInstance(string id) {
-            return new FilterWheel(id);
+        protected override IFilterWheelV2 GetInstance() {
+            if (deviceMeta == null) {
+                return new FilterWheel(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaFilterWheel(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

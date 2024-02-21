@@ -12,8 +12,10 @@
 
 #endregion "copyright"
 
+using ASCOM.Alpaca.Discovery;
 using ASCOM.Com.DriverAccess;
 using ASCOM.Common;
+using ASCOM.Common.DeviceInterfaces;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Exceptions;
@@ -24,9 +26,11 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyFlatDevice {
 
-    public class AscomCoverCalibrator : AscomDevice<CoverCalibrator>, IFlatDevice, IDisposable {
+    public class AscomCoverCalibrator : AscomDevice<ICoverCalibratorV1>, IFlatDevice, IDisposable {
 
         public AscomCoverCalibrator(string id, string name) : base(id, name) {
+        }
+        public AscomCoverCalibrator(AscomDevice deviceMeta) : base(deviceMeta) {
         }
 
         private int lastBrightness = 0;
@@ -166,8 +170,12 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
             return Task.CompletedTask;
         }
 
-        protected override CoverCalibrator GetInstance(string id) {
-            return new CoverCalibrator(id);
+        protected override ICoverCalibratorV1 GetInstance() {
+            if (deviceMeta == null) {
+                return new CoverCalibrator(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaCoverCalibrator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

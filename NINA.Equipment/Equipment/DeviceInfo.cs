@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Core.Utility;
 using System;
 using System.Linq;
@@ -19,68 +20,27 @@ using System.Reflection;
 
 namespace NINA.Equipment.Equipment {
 
-    public class DeviceInfo : BaseINPC {
+    public partial class DeviceInfo : BaseINPC {
+        [ObservableProperty]
         private bool connected;
-        public bool Connected {
-            get => connected;
-            set {
-                if (connected != value) {
-                    connected = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string name;
-        public string Name { get => name; set { name = value; RaisePropertyChanged(); } }
 
+        [ObservableProperty]
+        private string displayName;
+
+        [ObservableProperty]
         private string description;
 
-        public string Description {
-            get => description;
-            set {
-                if (description != value) {
-                    description = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
+        [ObservableProperty]
         private string driverInfo;
 
-        public string DriverInfo {
-            get => driverInfo;
-            set {
-                if (driverInfo != value) {
-                    driverInfo = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
+        [ObservableProperty]
         private string driverVersion;
 
-        public string DriverVersion {
-            get => driverVersion;
-            set {
-                if (driverVersion != value) {
-                    driverVersion = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
+        [ObservableProperty]
         private string deviceId;
-
-        public string DeviceId {
-            get => deviceId;
-            set {
-                if (deviceId != value) {
-                    deviceId = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
 
         public static T CreateDefaultInstance<T>() where T : DeviceInfo, new() {
             return new T() {

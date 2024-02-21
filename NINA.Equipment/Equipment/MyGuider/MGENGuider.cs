@@ -135,6 +135,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public string Name { get; }
+        public string DisplayName => Name;
 
         public event EventHandler<IGuideStep> GuideEvent;
 

@@ -33,7 +33,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblDomeNoSource"]));
@@ -50,9 +49,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (IDome dome in ascomInteraction.GetDomes()) {
                         devices.Add(dome);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaDomes = await alpacaInteraction.GetDomes(default);
+                    foreach (IDome dome in alpacaDomes) {
+                        devices.Add(dome);
+                    }
+                    Logger.Info($"Found {alpacaDomes?.Count} Alpaca Domes");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

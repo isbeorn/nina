@@ -46,6 +46,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.exposureDataFactory = exposureDataFactory;
             _cameraId = id;
             Name = GetDeviceName(_cameraId);
+            Id = GetDeviceSerialNumber(_cameraId);
         }
 
         private readonly int _cameraId;
@@ -153,7 +154,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public string Description => CleanedUpString(Info.Manufacturer) + " " + Name + " (SerialNo: " + GetSerialNumber(_cameraP) + ")";
+        public string Description => CleanedUpString(Info.Manufacturer) + " " + Name + " (SerialNo: " + Id + ")";
 
         public string DriverInfo => DriverName;
 
@@ -539,9 +540,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool HasSetupDialog => false;
 
-        public string Id => Name;
+        public string Id { get; }
 
         public string Name { get; private set; }
+        public string DisplayName => $"{Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
 
         private static string CleanedUpString(char[] values) {
             return string.Join("", values.Take(Array.IndexOf(values, '\0')));

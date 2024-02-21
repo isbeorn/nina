@@ -11,7 +11,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
     public class SVBonyCamera : GenericCamera {
         private ISVBonySDK svBonySdk;
 
-        public SVBonyCamera(int id, string name, string driverVersion, ISVBonySDK sdk, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(id,name,category: "SVBony", driverVersion,supportBitScaling: true, sdk, profileService, exposureDataFactory) {
+        public SVBonyCamera(string id, string name, string driverVersion, ISVBonySDK sdk, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(id,name,category: "SVBony", driverVersion,supportBitScaling: true, sdk, profileService, exposureDataFactory) {
             this.svBonySdk = sdk;
         }
 

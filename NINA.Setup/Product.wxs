@@ -387,6 +387,12 @@
       <Component Id="ASCOM.Exceptions.dll" Guid="b128e165-154a-4ec0-a470-166334c8937a">
         <File Id="ASCOM.Exceptions.dll" Name="ASCOM.Exceptions.dll" Source="$(var.NINA_TargetDir)ASCOM.Exceptions.dll" />
       </Component>
+      <Component Id="ASCOM.Alpaca.Device.dll" Guid="91a1086c-6ed2-45af-a1b6-7a953786348c">
+        <File Id="ASCOM.Alpaca.Device.dll" Name="ASCOM.Alpaca.Device.dll" Source="$(var.NINA_TargetDir)ASCOM.Alpaca.Device.dll" />
+      </Component>
+      <Component Id="ASCOM.Alpaca.dll" Guid="1f88443b-e5bb-4951-a001-72d769aa686c">
+        <File Id="ASCOM.Alpaca.dll" Name="ASCOM.Alpaca.dll" Source="$(var.NINA_TargetDir)ASCOM.Alpaca.dll" />
+      </Component>
       <Component Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f" Bitness="$(var.Win64)">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
       </Component>
@@ -741,8 +747,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.23.53103.dll" Guid="bda04ff5-d6b8-46e2-8e1b-99868d2c3346">
-        <File Id="mscordaccore_amd64_amd64_8.0.23.53103.dll" Name="mscordaccore_amd64_amd64_8.0.23.53103.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.23.53103.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.123.58001.dll" Guid="1D9D1832-C048-44F1-9166-1BA1524F9191">
+        <File Id="mscordaccore_amd64_amd64_8.0.123.58001.dll" Name="mscordaccore_amd64_amd64_8.0.123.58001.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.123.58001.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1438,6 +1444,9 @@
       </Component>
       <Component Id="Database_Migration_11.sql" Guid="30063995-6A29-43DF-AF13-2B2CF01FD1E9">
         <File Id="Database_Migration_11.sql" Name="11.sql" Source="$(var.NINA_TargetDir)Database\Migration\11.sql" />
+      </Component>
+      <Component Id="Database_Migration_12.sql" Guid="BF5BE7CB-FEB5-4692-8B70-919E33AA9823">
+        <File Id="Database_Migration_12.sql" Name="12.sql" Source="$(var.NINA_TargetDir)Database\Migration\12.sql" />
       </Component>
     </ComponentGroup>
   </Fragment>

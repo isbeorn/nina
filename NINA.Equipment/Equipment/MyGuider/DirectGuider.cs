@@ -43,6 +43,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
         }
 
         public string Name => "Direct Guider";
+        public string DisplayName => Name;
 
         public string Id => "Direct_Guider";
 
@@ -51,7 +52,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
             if (Connected && !this.telescopeInfo.Connected) {
-                Notification.ShowWarning(Loc.Instance["LblDirectGuiderTelescopeDisconnect"]);
+                Notification.ShowWarning(Loc.Instance["LblDirectGuiderMountDisconnect"]);
                 Logger.Warning("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
                 Disconnect();
             } else {

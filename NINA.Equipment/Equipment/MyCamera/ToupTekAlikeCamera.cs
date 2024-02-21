@@ -54,7 +54,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
 
             this.Name = deviceInfo.displayname;
-            this.Description = deviceInfo.model.name;
+            this.Description = deviceInfo.id;
             this.MaxFanSpeed = (int)deviceInfo.model.maxfanspeed;
             this.PixelSizeX = Math.Round(deviceInfo.model.xpixsz, 2);
             this.PixelSizeY = Math.Round(deviceInfo.model.ypixsz, 2);
@@ -515,6 +515,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 RaisePropertyChanged();
             }
         }
+        public string DisplayName => $"{Name} ({(Id.Length > 8 ? Id[^8..] : Id)})";
 
         private bool _connected;
 

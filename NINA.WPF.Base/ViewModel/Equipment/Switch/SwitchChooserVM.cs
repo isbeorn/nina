@@ -36,7 +36,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoSwitch"]));
@@ -54,9 +53,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                 /* ASCOM */
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (ISwitchHub ascomSwitch in ascomInteraction.GetSwitches()) {
                         devices.Add(ascomSwitch);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaSwitches = await alpacaInteraction.GetSwitches(default);
+                    foreach (ISwitchHub s in alpacaSwitches) {
+                        devices.Add(s);
+                    }
+                    Logger.Info($"Found {alpacaSwitches?.Count} Alpaca Switch Hubs");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

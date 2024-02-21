@@ -361,6 +361,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                                 Connected = true,
                                 IsMoving = Rotator.IsMoving,
                                 Name = Rotator.Name,
+                                DisplayName = Rotator.DisplayName,
                                 Description = Rotator.Description,
                                 Position = Rotator.Position,
                                 StepSize = Rotator.StepSize,
@@ -382,7 +383,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             profileService.ActiveProfile.RotatorSettings.Reverse2 = this.Rotator.Reverse;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Rotator. Id: {Rotator.Id} Name: {Rotator.Name} Driver Version: {Rotator.DriverVersion}");
+                            Logger.Info($"Successfully connected Rotator. Id: {Rotator.Id} Name: {Rotator.Name} DisplayName: {Rotator.DisplayName} Driver Version: {Rotator.DriverVersion}");
 
                             return true;
                         } else {

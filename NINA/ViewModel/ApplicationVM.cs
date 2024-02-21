@@ -37,6 +37,8 @@ using System.Diagnostics;
 using NINA.Astrometry;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace NINA.ViewModel {
 
@@ -89,23 +91,23 @@ namespace NINA.ViewModel {
 
         [RelayCommand]
         private void CheckWindowsVersion() {
-            // Minimum support Windows version is (curently) Windows 10 1507
-            var minimumVersion = new Version(10, 0, 10240);
-            string friendlyName = "Windows";
+            try {
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) { 
+                    // Minimum support Windows version is (curently) Windows 10 1507
+                    var minimumVersion = new Version(10, 0, 10240);
 
-            if (Environment.OSVersion.Version < minimumVersion) {
-                try {
-                    var searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
-
-                    foreach (ManagementObject os in searcher.Get()) {
-                        friendlyName = os["Caption"].ToString().Trim();
-                        break;
+                    Regex versionRegex = new Regex(@"\d+(\.\d+)+");
+                    Match match = versionRegex.Match(RuntimeInformation.OSDescription);
+                    if (match.Success) {
+                        var osVersion = new Version(match.Value);
+                        if (osVersion < minimumVersion) {
+                            Logger.Error($"Windows version {RuntimeInformation.OSDescription} below supported version {minimumVersion}");
+                            Notification.ShowError(string.Format(Loc.Instance["LblYourWindowsIsTooOld"], RuntimeInformation.OSDescription));
+                        }
                     }
-                } catch (Exception ex) {
-                    Logger.Info($"Error getting Windows name: {ex.Message}");
-                } finally {
-                    Notification.ShowError(string.Format(Loc.Instance["LblYourWindowsIsTooOld"], friendlyName));
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 

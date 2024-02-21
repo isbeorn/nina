@@ -89,7 +89,7 @@
         <TextBlock
             Grid.Row="5"
             Grid.Column="0"
-            Text="{ns:Loc LblTelescope}" />
+            Text="{ns:Loc LblMount}" />
         <TextBlock
             Grid.Row="5"
             Grid.Column="1"

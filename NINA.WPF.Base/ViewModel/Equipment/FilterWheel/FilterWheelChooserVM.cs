@@ -45,7 +45,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoFilterwheel"]));
@@ -176,9 +175,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                  * ASCOM devices
                  */
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (IFilterWheel fw in ascomInteraction.GetFilterWheels()) {
                         devices.Add(fw);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaFilterWheels = await alpacaInteraction.GetFilterWheels(default);
+                    foreach (IFilterWheel fw in alpacaFilterWheels) {
+                        devices.Add(fw);
+                    }
+                    Logger.Info($"Found {alpacaFilterWheels?.Count} Alpaca Filter Wheels");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

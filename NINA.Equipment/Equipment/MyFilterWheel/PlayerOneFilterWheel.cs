@@ -47,6 +47,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public string Id => $"{Category}_{Name}_{id}";
 
         public string Name => $"{info.Name}";
+        public string DisplayName => Name;
 
         public string Category => "Player One";
 

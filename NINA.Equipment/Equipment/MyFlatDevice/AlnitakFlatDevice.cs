@@ -180,7 +180,8 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public string Id => "817b60ab-6775-41bd-97b5-3857cc676e51";
 
-        public string Name => $"{Loc.Instance["LblAlnitakFlatPanel"]}";
+        public string Name => $"Alnitak Flat Panel";
+        public string DisplayName => $"{Loc.Instance["LblAlnitakFlatPanel"]}";
 
         public string Category => "Alnitak Astrosystems";
 

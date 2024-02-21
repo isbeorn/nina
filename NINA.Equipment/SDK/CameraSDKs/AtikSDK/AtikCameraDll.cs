@@ -389,6 +389,12 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
             return cameraName.ToString();
         }
 
+        public static string GetDeviceSerialNumber(int cameraId) {
+            StringBuilder cameraSerial = new StringBuilder();
+            ArtemisDeviceSerial(cameraId, cameraSerial);
+            return cameraSerial.ToString();
+        }
+
         /// <summary>
         /// Returns the version of the API. This number comes from the services itself.
         /// </summary>
@@ -433,7 +439,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.AtikSDK {
         /// true if iDevice is found, false otherwise.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisDeviceSerial", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern bool ArtemisDeviceSerial(int iDevice, [MarshalAs(UnmanagedType.LPStr)] string pName);
+        private static extern bool ArtemisDeviceSerial(int iDevice, [MarshalAs(UnmanagedType.LPStr)] StringBuilder pName);
 
         /// <summary>
         /// Connects to the given camera. The ArtemisHandle is actually a 'void *' and will be needed

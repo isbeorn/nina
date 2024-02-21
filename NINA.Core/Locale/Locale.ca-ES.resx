@@ -1120,10 +1120,10 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Velocitat de Guiatge en Declinació en arcsegons per segons</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>El Guiatge Directe no s'ha pogut connectar al Telescopi</value>
+    <value>Direct Guider no s'ha pogut connectar a la muntura</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>El Telescopi s'ha desconnectat. El Guiatge Directe es desconnectarà. El Dithering ja no és efectiu!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>La muntura s'ha desconnectat. Direct Guider es desconnectarà. El dithering ja no és efectiu!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>No s'ha trobat el directori per desar la Imatge!</value>
@@ -1174,7 +1174,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Impossible connectar al controlador de la Cúpula (Dome) ASCOM:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>El controlador pot continuar</value>
+    <value>La cúpula pot seguir</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Estat de l'obturador</value>
@@ -1204,7 +1204,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>En la posició inicial (home)</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>El controlador segueix el telescopi</value>
+    <value>La cúpula segueix al Telescopi</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girant</value>
@@ -2064,8 +2064,8 @@ HFR calculat: {2}    </value>
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>Des de N.I.N.A. al Telescopi</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>Des de N.I.N.A. a la Muntura</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>No</value>
@@ -2122,10 +2122,10 @@ HFR calculat: {2}    </value>
     <value>Sense sincronització</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>Si està activada, l'aplicació mai no enviarà cap ordre de sincronització al telescopi. Això només s’ha d’utilitzar quan es tingui un bon model d'estrelles, pel que no s’ha d’alterar de cap manera.</value>
+    <value>Quan està habilitada, l'aplicació mai enviarà una ordre de sincronització a la muntura. Això només s'ha d'utilitzar quan es disposa d'un bon model de cel que no s'ha de modificar de cap manera.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Sense Telescopi</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>No hi ha Muntura</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Notificació d'Error</value>
@@ -2644,8 +2644,8 @@ HFR calculat: {2}    </value>
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>Si us plau torna a connectar l'enfocament automàtic!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Si us plau torna a connectar el telescopi!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>Torneu a connectar la muntura!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Data de Referència</value>
@@ -3085,24 +3085,15 @@ Abans de continuar, confirmeu que el vostre sistema està centrat o està a punt
     <value>Sinc</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Ha fallat la sincronització amb el Telescopi</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>PHD2 Sincronitzat (Experimental)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        Aquest perfil ja està connectat al Guiatge Sincronitzat de PHD2.
-        No podeu connectar el mateix perfil dues vegades, seleccioneu un perfil NINA diferent.    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>El servei PHD2 sincronitzat ha fallat i es torna a reiniciar aquest guiatge sincronitzat de PHD2 com a servei</value>
+    <value>La sincronització de la muntura ha fallat</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Sincronitza la configuració del lloc</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>La configuració del lloc del telescopi és diferent de la de NINA. Vol sincronitzar la configuració?</value>
+    <value>La configuració de la Muntura difereix de la de N.I.N.A.
+
+S'ha de sincronitzar la configuració?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>Objectiu</value>
@@ -3173,8 +3164,8 @@ Abans de continuar, confirmeu que el vostre sistema està centrat o està a punt
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Telescopi sincronitzat a les coordenades</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>Des del Telescopi a N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>Des de la Muntura cap a N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>Velocitat de Guiatge en AR</value>
@@ -3365,7 +3356,7 @@ Arrossegueu el rectangle sobre la part del marc que vulgueu fer SubMostra i acti
     <value>Impossible iniciar exposició de la càmera</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>No es pot sincronitzar. El telescopi no està connectat</value>
+    <value>No es pot sincronitzar. La muntura no està connectada</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>S'ha produït un error inesperat</value>
@@ -3531,9 +3522,6 @@ Quan estigui activat, els canals de color s’estiraran per separat, ajudant a a
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Advertència</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>El telescopi està estacionat (park) i es deixarà d'estacionar (unpark) automàticament si l'usuari continua amb l'inici de la seqüència</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Temps</value>
@@ -4028,8 +4016,8 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>Desconnectar el rotador?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Desconnectar el Telescopi?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>Desconnectar la muntura?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>El telescopi està aparcat (park). Hauràs de treure l'aparcament (unpark) del telescopi abans que pugui girar.</value>
@@ -6596,10 +6584,10 @@ Això només s'ha de desactivar quan es disposa d'un bon model del cel i no s'ha
     <value>Lluminositat automàtica de Flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>Aquesta instrucció determinarà automàticament els temps d'exposició similars a l'assistent de Flats per als Flats del cel.</value>
+    <value>Aquesta instrucció ajusta automàticament els temps d'exposició per capturar Flats del cel crepuscular, semblant a la funcionalitat de l'eina de l'assistent de flats. Modifica dinàmicament la durada de l'exposició després de cada presa, basant-se en prediccions en temps real dels canvis en la brillantor del cel.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Flats del cel</value>
+    <value>Flats de cel crepuscular</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Tancament de la Coberta</value>
@@ -6869,9 +6857,94 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>Quan està activada aquesta funció, els fitxers FITS es crearan mitjançant la biblioteca CFITSIO, que és una alternativa al mètode predeterminat del programa per escriure aquests fitxers. Aquest canvi permet funcionalitats addicionals, com ara la capacitat de comprimir fitxers FITS per reduir la mida del fitxer i l'opció d'emmagatzemar dades en un format de 32 bits per millorar la precisió de les dades.</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>Correcció de píxels dolents</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>Llindar de correcció de píxels incorrectes</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Tancat</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Tancant</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Obert</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Obrint</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>L'intent de trobar la posició HOME s'ha cancel·lat després de {0} minuts</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>El temps d'espera per aparcar el telescopi s'ha esgotat després de {0} minuts.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>El temps de treure aparcament del telescopi s'ha esgotat després de {0} minuts.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Sincronització del temps</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>Quan està habilitada, l'aplicació actualitzarà l'hora de la muntura perquè estigui sincronitzada amb l'hora del sistema en connectar.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Sincronització de coordenades</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Muntura</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Nom de la Muntura</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Discovery duration</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Discovery Port</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># of broadcasts</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolve DNS name</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Use HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Use IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Use IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
   </data>
 </root>

@@ -96,6 +96,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Native autofocus will now properly show star detection result in the image statistics panel</li>
 <li>The native autofocus mechanism has been upgraded to simultaneously process images while shifting to new focus points, which enhances the speed of the entire autofocus operation.</li>
 <li>Offset is now displayed next to Gain in the Image Statistics window</li>
+<li>Adjusted color picker style to follow along the customized theme colors of the application</li>
+<li>&quot;Telescope&quot; in equipment area has been renamed to &quot;Mount&quot;. Furthermore the equipment options have been separated by telescope and mount. The renaming is an ongoing effort, so some labels might still refer to &quot;telescope&quot; instead of &quot;mount&quot;</li>
 </ul>
 <h2 id="commandline-options">Commandline Options</h2>
 <ul>
@@ -131,10 +133,23 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time</li>
 <li>Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.</li>
 </ul>
+<h2 id="object-database-additions">Object Database Additions</h2>
+<ul>
+<li>1538 LDN objects (Lynds' Catalogue of Dark Nebulae - Lynds 1962)</li>
+<li>180 Barnard objects (The Barnard Catalogue of Dark Markings in the Sky - Barnard,1927)</li>
+<li>66 StDr, StDrLu, StDrL, PaStDr, StDrLuLDu objects (25 confirmed planetary nebulae / 21 likely planetary nebulae / 20 possible planetary nebulae)</li>
+<li>131 vdB objects (Catalogue of Reflection Nebulae - Van den Bergh, 1966)</li>
+<li>235 Sharpless (Sh2) objects (Catalogue of HII Regions - Sharpless, 1959)</li>
+</ul>
 <h2 id="file-formats">File Formats</h2>
 <h3 id="fits">FITS</h3>
 <ul>
 <li>Implemented functionality to read compressed data into Framing Assistant and Camera Simulator</li>
+<li>Introduced a new FITS keyword &quot;CAMERAID&quot; to uniquely identify the camera used.
+<ul>
+<li>For the majority of native drivers, this field will be populated with the camera's serial number, assuming it is accessible.</li>
+</ul>
+</li>
 <li>Added a toggle to use CFITSIO to write FITS files. This enables the following features:
 <ul>
 <li>Introduced checksum support for enhanced data integrity.</li>
@@ -147,6 +162,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <h3 id="xisf">XISF</h3>
 <ul>
 <li>Added support for storing data in a 32-bit unsigned integer format</li>
+</ul>
+<h2 id="alpaca">Alpaca</h2>
+<ul>
+<li>ASCOM Alpaca discovery is now available in N.I.N.A. and discovered devices are selectable in the equipment choosers to connect to
+<ul>
+<li>Discovery settings can be adjusted in Options &gt; Equipment &gt; ASCOM Alpaca Discovery</li>
+</ul>
+</li>
 </ul>
 <h2 id="bugfixes">Bugfixes</h2>
 <ul>

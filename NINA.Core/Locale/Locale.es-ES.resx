@@ -1115,10 +1115,10 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Velocidad de guiado en Declinación Recta en arcosegundos por segundo</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Guiado directo no puede conectarse con el telescopio</value>
+    <value>El Guiado directo no puede conectarse a la montura</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>El telescopio se ha desconectado. El Guiado directo se desconectará. ¡El dither ya no será efectivo!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>La montura se ha desconectado. El Guiado directo se desconectará. ¡El dither ya no será efectivo!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>¡No se ha econtrado el directorio para guardar la imagen!</value>
@@ -1169,7 +1169,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>No se puede conectar al controlador de cúpula ASCOM:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>El controlador puede seguir</value>
+    <value>La cúpula puede seguir</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Estado de la apertura del domo</value>
@@ -1199,7 +1199,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>En posición inicial (home)</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>El controlador sigue el telescopio</value>
+    <value>La cúpula sigue al telescopio</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girando</value>
@@ -2060,8 +2060,8 @@ HFR calculada: {2}
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>De N.I.N.A. a Telescopio</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>De N.I.N.A. a la montura</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>No</value>
@@ -2118,10 +2118,10 @@ HFR calculada: {2}
     <value>Sin sincronización</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>Cuando está habilitada, la aplicación nunca enviará un comando de sincronización al telescopio. Esto solo debería utilizarse cuando se tenga un buen modelo de estrellas, por lo que no debería ser alterado en modo alguno.</value>
+    <value>Cuando está habilitada, la aplicación nunca enviará un comando de sincronización a la montura. Esto solo debería utilizarse cuando se tenga un buen modelo de estrellas, que no debería ser alterado en modo alguno.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Sin Telescopio</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>No hay montura</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Notificación de Error</value>
@@ -2640,8 +2640,8 @@ HFR calculada: {2}
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>¡Por favor, reconecta el enfocador!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>¡Por favor, reconecta el telescopio!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>¡Por favor, reconecte la montura!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Fecha de Referencia</value>
@@ -3081,25 +3081,13 @@ Antes de continuar, por favor, confirme que su sistema está actualmente en o ce
     <value>Sinc</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Sincronización de Telescopio fallida</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>PHD2 Sincronizado (Experimental)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        Este perfil está actualmante conectado al Guiado Sincronizado de PHD2.
-        No se puede conectar el mismo perfil dos veces, por favor, elija un perfil de NINA diferente
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>El servicio de PHD2 Sincronizado ha fallado, reiniciando este servicio de guiado sincronizado de PHD2</value>
+    <value>Fallo en sincronización con la montura</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Sincronizar los parámetros del lugar</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>La configuración del lugar del telescopio difiere de la de NINA.
+    <value>La configuración de localización de la montura difiere de la de NINA.
 
 ¿Debe sincronizarse la configuración?</value>
   </data>
@@ -3172,8 +3160,8 @@ Antes de continuar, por favor, confirme que su sistema está actualmente en o ce
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Telescopio sincronizado con las coordenadas</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>De Telescopio a N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>De la montura a N.I.N.A.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>Velocidad de Guiado en AR</value>
@@ -3364,7 +3352,7 @@ Mueve el rectángulo sobre la parte del Encuadre que quieras hacer subsampling. 
     <value>Imposible iniciar exposición de cámara</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Imposible sincronizar. El Telescopio no está conectado</value>
+    <value>Imposible sincronizar. La montura no está conectada</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Ha ocurrido un Error Inesperado</value>
@@ -3529,9 +3517,6 @@ Cuando está habilitado, se estirarán los canales de color de forma independien
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Advertencia</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>El telescopio está aparcado, pero se desaparcará automáticamente si se continúa con el inicio de la secuencia</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Tiempo (meteorológico)</value>
@@ -4028,8 +4013,8 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>¿Desconectar rotador?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>¿Desconectar Telescopio?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>¿Desconectar la montura?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>El telescopio está aparcado. Nesitarás desaparcarlo antes de que pueda girar.</value>
@@ -6595,10 +6580,10 @@ Esto solo debería desactivarse si tienes un buen modelado de cielo que no debe 
     <value>Brillo automático de flat</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>Esta instrucción determinará automáticamente los tiempos de exposición de forma similar al asistente para flats hechos contra el cielo.</value>
+    <value>Esta instrucción ajusta automáticamente los tiempos de exposición para capturar flats de cielo crepuscular,, similar a la funcionalidad de la herramienta del asistente de flats. Modifica dinámicamente la duración de la exposición después de cada disparo, basándose en las predicciones en tiempo real de los cambios en el brillo del cielo.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Flats de cielo</value>
+    <value>Flats de cielo crepuscular</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Cerrando tapa</value>
@@ -6872,5 +6857,90 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
     <value>Umbral de corrección de píxeles erróneos</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Cerrada</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Cerrando</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Abriendo</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>El intento de la montura por encontrar la posición HOME se ha cancelado tras {0} minutos</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>El intento de la montura para alcanzar el modo de aparcado se ha cancelado tras {0} minutos.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>El intento de la montura por desaparcar ha finalizado tras {0} minutos.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Sincronización de la hora</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>Cuando está activado, la aplicación actualizará la hora de la montura para estar sincronizada con la hora del sistema en la conexión.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Sincronización coordenadas</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Montura</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Nombre de la montura</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Duración de proceso de descubrimiento de Alpaca</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>La duración de los intentos de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 1 segundo)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Puerto Ascom Alpaca para descubrimientos</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>Número de puerto IP de descubrimiento ASCOM Alpaca (por defecto: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value>Número de trasmisiones</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Número de transmisiones de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolver nombre DNS</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Intento de resolución de nombres DNS para dispositivos ASCOM Alpaca (Por defecto: apagado)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Usar HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determina si el descubrimiento de dispositivo ASCOM Alpaca debe usar HTTP o HTTPS (por defecto: apagado)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Usar IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Usar IPv4 para el descubrimiento de dispositivo ASCOM Alpaca (por defecto: encendido)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Usar IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Usar IPv6 para el descubrimiento de dispositivo ASCOM Alpaca (por defecto: apagado)</value>
   </data>
 </root>

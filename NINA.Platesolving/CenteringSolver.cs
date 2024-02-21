@@ -93,7 +93,6 @@ namespace NINA.PlateSolving {
                             offset = position - resultCoordinates;
 
                             Logger.Info($"Sync {(parameter.NoSync ? "disabled" : "failed")} - calculating offset instead to compensate.  Original: {positionWithOffset}; Original Offset {oldOffset}; Solved: {resultCoordinates}; New Offset: {offset}");
-                            progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveSyncViaTargetOffset"] });
                         } else {
                             var positionAfterSync = telescopeMediator.GetCurrentPosition();
 

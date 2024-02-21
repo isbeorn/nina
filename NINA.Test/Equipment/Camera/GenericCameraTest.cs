@@ -43,7 +43,7 @@ namespace NINA.Test.Equipment.Camera {
             var sdk = new Mock<IGenericCameraSDK>();
             var profile = new Mock<IProfileService>();
 
-            var id = 12345;
+            var id = "12345";
             var name = "SomeName";
 
             var sut = new GenericCamera(id, name, "Generic Camera", "Some SDK Version", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
@@ -51,8 +51,8 @@ namespace NINA.Test.Equipment.Camera {
             sut.Id.Should().Be("Generic Camera_" + id.ToString());
             sut.Name.Should().Be(name);
             sut.Category.Should().Be("Generic Camera");
-            sut.Description.Should().Be("Native driver implementation for Generic Camera Cameras");
-            sut.DriverInfo.Should().Be("Generic Camera native driver");
+            sut.Description.Should().Be(id);
+            sut.DriverInfo.Should().Be("Native driver implementation for Generic Camera Cameras");
             sut.DriverVersion.Should().Be("Some SDK Version");
         }
 
@@ -60,7 +60,7 @@ namespace NINA.Test.Equipment.Camera {
         public async Task Connect_Unsuccessfully_ReturnFalse() {
             var sdk = new Mock<IGenericCameraSDK>();
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -75,7 +75,7 @@ namespace NINA.Test.Equipment.Camera {
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.Setup(x => x.Connect()).Throws(new Exception());
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -90,7 +90,7 @@ namespace NINA.Test.Equipment.Camera {
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.SetupGet(x => x.Connected).Returns(true);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -107,7 +107,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.GetBinningInfo()).Returns(new int[] { });
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -126,7 +126,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.GetBinningInfo()).Returns(new int[] { 4, 2, 6, 1 });
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -151,7 +151,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.GetPixelSize()).Returns(sdkReturn);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -168,7 +168,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.GetDimensions()).Returns((1920, 1080));
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -188,7 +188,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.GetSensorInfo()).Returns(sensorType);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -202,7 +202,7 @@ namespace NINA.Test.Equipment.Camera {
         public void Disconnect_Successful() {
             var sdk = new Mock<IGenericCameraSDK>();
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -216,7 +216,7 @@ namespace NINA.Test.Equipment.Camera {
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.Setup(x => x.Disconnect()).Throws(new Exception());
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -235,7 +235,7 @@ namespace NINA.Test.Equipment.Camera {
         [TestCase(3, 2, 2)]
         public async Task SetBinning_Successful(short bin, short maxbin, short expectedbin) {
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.SetupGet(x => x.Connected).Returns(true);
 
@@ -258,7 +258,7 @@ namespace NINA.Test.Equipment.Camera {
         [TestCase(3)]
         public async Task StartExposure_NoSubSample_ROISetCorrectly(short binning) {
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
 
             int[] binnings = new int[binning];
@@ -295,7 +295,7 @@ namespace NINA.Test.Equipment.Camera {
         [TestCase(3)]
         public async Task StartExposure_WithSubSample_ROISetCorrectly(short binning) {
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
 
             int[] binnings = new int[binning];
@@ -329,7 +329,7 @@ namespace NINA.Test.Equipment.Camera {
         [Test]
         public async Task WaitForExposureTask_NoTaskAvailable_ReturnsImmediately() {
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
@@ -347,7 +347,7 @@ namespace NINA.Test.Equipment.Camera {
         public async Task DownloadExposure_WithSubSample_12bit_ImageArrayCorrect(short binning) {
             var profile = new Mock<IProfileService>();
             profile.SetupGet(x => x.ActiveProfile.CameraSettings.BitScaling).Returns(false);
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.Setup(x => x.GetBitDepth()).Returns(12);
 
@@ -390,7 +390,7 @@ namespace NINA.Test.Equipment.Camera {
         public async Task DownloadExposure_WithSubSample_12bit_WithBitScaling_ImageArrayCorrect(short binning) {
             var profile = new Mock<IProfileService>();
             profile.SetupGet(x => x.ActiveProfile.CameraSettings.BitScaling).Returns(true);
-            var deviceId = 12345;
+            var deviceId = "12345";
             var sdk = new Mock<IGenericCameraSDK>();
             sdk.Setup(x => x.GetBitDepth()).Returns(12);
 
@@ -432,7 +432,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.HasTemperatureControl()).Returns(false);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -448,7 +448,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.SetupGet(x => x.Connected).Returns(true);
             sdk.Setup(x => x.HasTemperatureControl()).Returns(true);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -470,7 +470,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.Setup(x => x.GetTemperature()).Returns(20);
             sdk.Setup(x => x.GetTargetTemperature()).Returns(10);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 
@@ -503,7 +503,7 @@ namespace NINA.Test.Equipment.Camera {
             sdk.Setup(x => x.GetTemperature()).Returns(20);
             sdk.Setup(x => x.GetTargetTemperature()).Returns(10);
             var profile = new Mock<IProfileService>();
-            var deviceId = 12345;
+            var deviceId = "12345";
 
             var sut = new GenericCamera(deviceId, "", "", "Generic Camera", true, sdk.Object, profile.Object, dataFactoryUtility.ExposureDataFactory);
 

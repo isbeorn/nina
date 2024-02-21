@@ -237,6 +237,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                                 Connected = true,
                                 IsMoving = false,
                                 Name = FW.Name,
+                                DisplayName = FW.DisplayName,
                                 Description = FW.Description,
                                 DriverInfo = FW.DriverInfo,
                                 DriverVersion = FW.DriverVersion,
@@ -263,7 +264,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                             BroadcastFilterWheelInfo();
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Filter Wheel. Id: {FW.Id} Name: {FW.Name} Driver Version: {FW.DriverVersion}");
+                            Logger.Info($"Successfully connected Filter Wheel. Id: {FW.Id} Name: {FW.Name} DisplayName: {FW.DisplayName} Driver Version: {FW.DriverVersion}");
 
                             return true;
                         } else {

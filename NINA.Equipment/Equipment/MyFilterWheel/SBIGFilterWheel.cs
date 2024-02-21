@@ -53,6 +53,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public string Id { get; private set; }
 
         public string Name { get; private set; }
+        public string DisplayName => Name;
 
         public string Category => "SBIG Legacy";
 

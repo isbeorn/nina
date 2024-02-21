@@ -23,6 +23,7 @@ using System.Text;
 using Serilog.Events;
 using System.Globalization;
 using System.Management;
+using System.Runtime.InteropServices;
 
 namespace NINA.Core.Utility {
 
@@ -64,32 +65,48 @@ namespace NINA.Core.Utility {
         private static string GenerateHeader() {
             /* Initial log of App Version, OS Info, Ascom Version, .NET Version */
             var sb = new StringBuilder();
-            var os = Environment.OSVersion;
             sb.AppendLine(PadBoth("", 70, '-'));
             sb.AppendLine(PadBoth(CoreUtil.Title, 70, '-'));
             sb.AppendLine(PadBoth(string.Format("Version {0}", CoreUtil.Version), 70, '-'));
             sb.AppendLine(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
-            sb.AppendLine(PadBoth("Is 64bit {0}", 70, '-', Environment.Is64BitProcess.ToString()));
             sb.AppendLine(PadBoth("", 70, '-'));
-            sb.AppendLine(PadBoth("{0}", 70, '-', os.VersionString));
-            sb.AppendLine(PadBoth("Platform {0:G}", 70, '-', os.Platform.ToString()));
-            sb.AppendLine(PadBoth("Major {0} Minor {1}", 70, '-', os.Version.Major.ToString(), os.Version.Minor.ToString()));
-            sb.AppendLine(PadBoth("Service Pack {0}", 70, '-', os.ServicePack));
-            sb.AppendLine(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
-            sb.AppendLine(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
-            sb.AppendLine(PadBoth("", 70, '-'));
-            sb.AppendLine(PadBoth("Processor Count {0}", 70, '-', Environment.ProcessorCount.ToString()));
-            sb.AppendLine(PadBoth("Total Physical Memory {0} GB", 70, '-', Math.Round(GetTotalPhysicalMemory() / 1024d / 1024d / 1024d, 2).ToString()));
-            foreach(var drive in DriveInfo.GetDrives()) {
-                if(drive.IsReady) {
-                    sb.AppendLine(PadBoth("Available Space on Drive {0}: {1} GB", 70, '-', drive.Name, Math.Round(drive.AvailableFreeSpace / (1024d * 1024d * 1024d), 2).ToString(CultureInfo.InvariantCulture)));
-                } else {
-                    sb.AppendLine(PadBoth("Drive {0} is not ready", 70, '-', drive.Name));
-                }
+            try {
+                sb.AppendLine(PadBoth("{0}", 70, '-', RuntimeInformation.OSDescription));
+                sb.AppendLine(PadBoth("OS Architecture {0}", 70, '-', RuntimeInformation.OSArchitecture.ToString()));
+                sb.AppendLine(PadBoth("Process Architecture {0}", 70, '-', RuntimeInformation.ProcessArchitecture.ToString()));
+                sb.AppendLine(PadBoth("{0}", 70, '-', RuntimeInformation.FrameworkDescription));
+                sb.AppendLine(PadBoth("", 70, '-'));
+                sb.AppendLine(PadBoth("Processor Count {0}", 70, '-', Environment.ProcessorCount.ToString()));
+            } catch { 
+                sb.AppendLine(PadBoth("Unable to determine OS information", 70, '-'));
             }
+            
+
+            try {
+                sb.AppendLine(PadBoth("Total Physical Memory {0} GB", 70, '-', Math.Round(GetTotalPhysicalMemory() / 1024d / 1024d / 1024d, 2).ToString()));
+            } catch {
+                sb.AppendLine(PadBoth("Unable to determine Physical Memory", 70, '-'));
+            }
+            
+            try {
+                foreach (var drive in DriveInfo.GetDrives()) {
+                    try {
+                        if (drive.IsReady) {
+                            sb.AppendLine(PadBoth("Available Space on Drive {0}: {1} GB", 70, '-', drive.Name, Math.Round(drive.AvailableFreeSpace / (1024d * 1024d * 1024d), 2).ToString(CultureInfo.InvariantCulture)));
+                        } else {
+                            sb.AppendLine(PadBoth("Drive {0} is not ready", 70, '-', drive.Name));
+                        }
+                    } catch {
+                        sb.AppendLine(PadBoth("Error occurred to retrieve drive info for {0}", 70, '-', drive.Name));
+                    }
+
+                }
+            } catch {
+                sb.AppendLine(PadBoth("Unable to retrieve drive info", 70, '-'));
+            }
+
             sb.AppendLine(PadBoth("", 70, '-'));
             sb.Append("DATE|LEVEL|SOURCE|MEMBER|LINE|MESSAGE");
-
             return sb.ToString();
         }
 

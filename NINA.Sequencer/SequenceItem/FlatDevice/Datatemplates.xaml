@@ -661,13 +661,13 @@
                             Text="|" />
                     </WrapPanel>
 
-                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[3]}" />
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding ImagingContainer}" />
 
 
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel DataContext="{Binding Items[3]}" Orientation="Horizontal">
+                <WrapPanel DataContext="{Binding ImagingContainer}" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"

@@ -54,7 +54,7 @@ namespace NINA.Equipment.SDK.CameraSDKs.SVBonySDK {
                     var info = sVBonyPInvoke.GetCameraInfo(i);
 
                     Logger.Debug($"Found SVBony camera - id: {info.CameraID}; name: {info.FriendlyName}");
-                    devices.Add(new SVBonyCamera((int)info.CameraID, info.FriendlyName, sVBonyPInvoke.GetSDKVersion(), new SVBonySDK((int)info.CameraID), profileService, exposureDataFactory));
+                    devices.Add(new SVBonyCamera(info.CameraSN, info.FriendlyName, sVBonyPInvoke.GetSDKVersion(), new SVBonySDK((int)info.CameraID), profileService, exposureDataFactory));
                 }
             }
             return devices;

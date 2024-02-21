@@ -13,7 +13,7 @@
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.Com.DriverAccess;
+using ASCOM.Common.DeviceInterfaces;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -33,24 +33,34 @@ namespace NINA.Equipment.Equipment {
     /// The unified class that handles the shared properties of all ASCOM devices like Connection, Generic Info and Setup
     /// </summary>
     public abstract class AscomDevice<DeviceT> : BaseINPC, IDevice
-        where DeviceT : ASCOMDevice {
-
+        where DeviceT : IAscomDevice {
+                                                                                                                                                                                                                                      
         public AscomDevice(string id, string name) {
             Id = id;
             Name = name;
+            DisplayName = name;
+            this.Category = "ASCOM";
         }
 
+        public AscomDevice(ASCOM.Alpaca.Discovery.AscomDevice deviceMeta) : this(deviceMeta.UniqueId, deviceMeta.AscomDeviceName) {
+            this.deviceMeta = deviceMeta;
+            DisplayName = $"{Name} @ {deviceMeta.HostName} #{deviceMeta.AlpacaDeviceNumber}";
+            this.Category = "ASCOM Alpaca";
+        }
+        protected readonly ASCOM.Alpaca.Discovery.AscomDevice deviceMeta;
+
         protected DeviceT device;
-        public string Category { get; } = "ASCOM";
+        public string Category { get; private set; }
         protected abstract string ConnectionLostMessage { get; }
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => true;
+        public bool HasSetupDialog => Category == "ASCOM";
 
         public string Id { get; }
 
         public string Name { get; }
+        public string DisplayName { get; }
 
         public string Description {
             get {
@@ -216,7 +226,7 @@ namespace NINA.Equipment.Equipment {
                     await PreConnect();
 
                     Logger.Trace($"{Name} - Creating instance for {Id}");
-                    var concreteDevice = GetInstance(Id);
+                    var concreteDevice = GetInstance();
                     device = concreteDevice;
 
                     Connected = true;
@@ -233,7 +243,7 @@ namespace NINA.Equipment.Equipment {
             });
         }
 
-        protected abstract DeviceT GetInstance(string id);
+        protected abstract DeviceT GetInstance();
 
         public void SetupDialog() {
             if (HasSetupDialog) {
@@ -241,15 +251,17 @@ namespace NINA.Equipment.Equipment {
                     bool dispose = false;
                     if (device == null) {
                         Logger.Trace($"{Name} - Creating instance for {Id}");
-                        var concreteDevice = GetInstance(Id);
+                        var concreteDevice = GetInstance();
                         device = concreteDevice;
                         dispose = true;
                     }
                     Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
-                    device.SetupDialog();
+                    var t = device.GetType();
+                    var method = t.GetMethod("SetupDialog");
+                    method.Invoke(device, null);
                     if (dispose) {
                         device.Dispose();
-                        device = null;
+                        device = default;
                     }
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -279,7 +291,7 @@ namespace NINA.Equipment.Equipment {
         public void Dispose() {
             Logger.Trace($"{Name} - Disposing device");
             device?.Dispose();
-            device = null;
+            device = default;
         }
 
         protected Dictionary<string, PropertyMemory> propertyGETMemory = new Dictionary<string, PropertyMemory>();
@@ -293,7 +305,7 @@ namespace NINA.Equipment.Equipment {
         /// <param name="propertyName">Property Name of the AscomDevice property</param>
         /// <param name="defaultValue">The default value to be returned when not connected or not implemented</param>
         /// <returns></returns>
-        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue) {
+        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null) {            
             if (device != null) {
                 var retries = 3;
 
@@ -301,7 +313,8 @@ namespace NINA.Equipment.Equipment {
                 var type = device.GetType();
 
                 if (!propertyGETMemory.TryGetValue(propertyName, out var memory)) {
-                    memory = new PropertyMemory(type.GetProperty(propertyName));
+                    if (cacheInterval == null) { cacheInterval = TimeSpan.FromMilliseconds(100); }
+                    memory = new PropertyMemory(type.GetProperty(propertyName), cacheInterval.Value);
                     lock (propertyGETMemory) {
                         propertyGETMemory[propertyName] = memory;
                     }
@@ -357,12 +370,13 @@ namespace NINA.Equipment.Equipment {
         /// <param name="propertyName">Property Name of the AscomDevice property</param>
         /// <param name="value">The value to be set for the given property</param>
         /// <returns></returns>
-        protected bool SetProperty<PropT>(string propertyName, PropT value, [CallerMemberName] string originalPropertyName = null) {
+        protected bool SetProperty<PropT>(string propertyName, PropT value, TimeSpan? cacheInterval = null, [CallerMemberName] string originalPropertyName = null) {
             if (device != null) {
                 var type = device.GetType();
 
                 if (!propertySETMemory.TryGetValue(propertyName, out var memory)) {
-                    memory = new PropertyMemory(type.GetProperty(propertyName));
+                    if (cacheInterval == null) { cacheInterval = TimeSpan.FromMilliseconds(100); }
+                    memory = new PropertyMemory(type.GetProperty(propertyName), cacheInterval.Value);
                     lock (propertySETMemory) {
                         propertySETMemory[propertyName] = memory;
                     }
@@ -411,30 +425,45 @@ namespace NINA.Equipment.Equipment {
 
         protected class PropertyMemory {
 
-            public PropertyMemory(PropertyInfo p) {
+            public PropertyMemory(PropertyInfo p, TimeSpan cacheInterval) {
                 info = p;
+                this.cacheInterval = cacheInterval;
                 IsImplemented = true;
 
                 LastValue = null;
                 if (p.PropertyType.IsValueType) {
                     LastValue = Activator.CreateInstance(p.PropertyType);
                 }
+                LastValueUpdate = DateTimeOffset.MinValue;
             }
 
+            private object lockObj = new object();
             private PropertyInfo info;
+            private readonly TimeSpan cacheInterval;
+
             public bool IsImplemented { get; set; }
             public object LastValue { get; set; }
+            public DateTimeOffset LastValueUpdate { get; set; }
 
             public object GetValue(DeviceT device) {
-                var value = info.GetValue(device);
+                lock (lockObj) {
+                    if (DateTimeOffset.UtcNow - LastValueUpdate < cacheInterval) {
+                        return LastValue;
+                    }
 
-                LastValue = value;
+                    var value = info.GetValue(device);
 
-                return value;
+                    LastValue = value;
+                    LastValueUpdate = DateTimeOffset.UtcNow;
+
+                    return value;
+                }
             }
 
             public void SetValue(DeviceT device, object value) {
-                info.SetValue(device, value);
+                lock (lockObj) { 
+                    info.SetValue(device, value);
+                }
             }
         }
     }

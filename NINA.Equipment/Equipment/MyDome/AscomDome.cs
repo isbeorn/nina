@@ -12,12 +12,15 @@
 
 #endregion "copyright"
 
+using ASCOM.Alpaca.Discovery;
 using ASCOM.Com.DriverAccess;
 using ASCOM.Common;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Equipment.Interfaces;
+using NINA.Image.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,9 +82,11 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
     }
 
-    internal class AscomDome : AscomDevice<Dome>, IDome, IDisposable {
+    internal class AscomDome : AscomDevice<ASCOM.Common.DeviceInterfaces.IDomeV2>, IDome, IDisposable {
 
         public AscomDome(string domeId, string domeName) : base(domeId, domeName) {
+        }
+        public AscomDome(AscomDevice deviceMeta) : base(deviceMeta) {
         }
 
         public bool DriverCanFollow => GetProperty(nameof(Dome.CanSlave), false);
@@ -262,13 +267,13 @@ namespace NINA.Equipment.Equipment.MyDome {
         public async Task FindHome(CancellationToken ct) {
             if (Connected) {
                 if (CanFindHome) {
-                    if (device?.AtHome == true) {
+                    if (AtHome == true) {
                         Logger.Info("Dome already AtHome. Not submitting a FindHome request");
                         return;
                     }
 
                     // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure FindHome works
-                    if (device?.Slewing == true) {
+                    if (Slewing == true) {
                         await (device?.AbortSlewAsync(ct) ?? Task.CompletedTask);
                         await Task.Delay(1000, ct);
                     }
@@ -281,7 +286,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         await Task.Delay(TimeSpan.FromSeconds(3), ct);
                         ct.ThrowIfCancellationRequested();
 
-                        while (device != null && device.Slewing && !ct.IsCancellationRequested) {
+                        while (Slewing && !ct.IsCancellationRequested) {
                             await Task.Delay(TimeSpan.FromSeconds(1), ct);
                         }
                         ct.ThrowIfCancellationRequested();
@@ -303,7 +308,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             if (Connected) {
                 if (CanPark) {
                     // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure Park works
-                    if (device?.Slewing == true) {
+                    if (Slewing == true) {
                         Logger.Info("Dome shutter or rotator slewing when a park was requested. Aborting all movement");
 
                         await device?.AbortSlewAsync(ct);
@@ -328,7 +333,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                             }
                         }
                         await Task.Delay(TimeSpan.FromSeconds(3), ct);
-                        while (device != null && device.Slewing && !ct.IsCancellationRequested) {
+                        while (Slewing && !ct.IsCancellationRequested) {
                             await Task.Delay(TimeSpan.FromSeconds(1), ct);
                         }
                         ct.ThrowIfCancellationRequested();
@@ -376,8 +381,12 @@ namespace NINA.Equipment.Equipment.MyDome {
             return Task.CompletedTask;
         }
 
-        protected override Dome GetInstance(string id) {
-            return new Dome(id);
+        protected override ASCOM.Common.DeviceInterfaces.IDomeV2 GetInstance() {
+            if (deviceMeta == null) {
+                return new Dome(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaDome(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

@@ -132,6 +132,10 @@ namespace NINA.Image.FileFormat.FITS {
                 AddHeader("INSTRUME", metaData.Camera.Name, "Imaging instrument name");
             }
 
+            if (!string.IsNullOrEmpty(metaData.Camera.Id)) {
+                AddHeader("CAMERAID", metaData.Camera.Id, "Imaging instrument identifier");
+            }
+
             if (!double.IsNaN(metaData.Camera.SetPoint)) {
                 AddHeader("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint");
             }

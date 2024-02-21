@@ -33,6 +33,7 @@ namespace NINA.Equipment.Utility {
 
         public static void FromCamera(this ImageMetaData data, ICamera info) {
             if (info.Connected) {
+                data.Camera.Id = info.Id;
                 data.Camera.Name = info.Name;
                 try { data.Camera.Temperature = info.Temperature; } catch { data.Camera.Temperature = double.NaN; }
                 data.Camera.Gain = -1;
@@ -72,6 +73,7 @@ namespace NINA.Equipment.Utility {
 
         public static void FromCameraInfo(this ImageMetaData data, CameraInfo info) {
             if (info.Connected) {
+                data.Camera.Id = info.DeviceId;
                 data.Camera.Name = info.Name;
                 data.Camera.Temperature = info.Temperature;
                 data.Camera.Gain = info.Gain;

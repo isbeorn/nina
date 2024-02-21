@@ -139,6 +139,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
         public string Id => "bc0c02ef-83f7-67f7-f05e-fd97a80f1b3e";
 
         public string Name => "Artesky Flat Box";
+        public string DisplayName => Name;
 
         public string Category => "Artesky";
 

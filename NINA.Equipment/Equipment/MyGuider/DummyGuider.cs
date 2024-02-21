@@ -36,7 +36,8 @@ namespace NINA.Equipment.Equipment.MyGuider {
             this.profileService = profileService;
         }
 
-        public string Name => Loc.Instance["LblNoGuider"];
+        public string Name => "No_Guider";
+        public string DisplayName => Loc.Instance["LblNoGuider"];
 
         public string Id => "No_Guider";
 

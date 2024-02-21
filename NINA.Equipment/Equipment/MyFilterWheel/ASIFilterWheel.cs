@@ -99,6 +99,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public string Id => string.IsNullOrEmpty(FilterWheelAlias) ? $"{Name} #{id}" : Name;
 
         public string Name { get; private set; }
+        public string DisplayName => Name;
 
         public string Category => "ZWOptical";
 

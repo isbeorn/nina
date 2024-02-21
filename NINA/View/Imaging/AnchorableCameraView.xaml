@@ -110,7 +110,17 @@
                                     HorizontalAlignment="Left"
                                     Command="{Binding ToggleDewHeaterOnCommand}"
                                     CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                    IsChecked="{Binding CameraInfo.DewHeaterOn}" />
+                                    IsChecked="{Binding CameraInfo.DewHeaterOn}"
+                                    Visibility="{Binding ActiveProfile.DockPanelSettings.CameraInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                <CheckBox
+                                    Height="20"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding CameraInfo.DewHeaterOn}"
+                                    IsEnabled="false"
+                                    Style="{StaticResource CheckmarkCheckbox}"
+                                    Visibility="{Binding ActiveProfile.DockPanelSettings.CameraInfoOnly, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </UniformGrid>
                         </Border>
                         <Border

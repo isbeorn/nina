@@ -110,6 +110,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             WeatherDataInfo = new WeatherDataInfo {
                                 Connected = true,
                                 Name = WeatherData.Name,
+                                DisplayName = WeatherData.DisplayName,
                                 AveragePeriod = WeatherData.AveragePeriod,
                                 CloudCover = WeatherData.CloudCover,
                                 DewPoint = WeatherData.DewPoint,
@@ -138,7 +139,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} Driver Version: {weatherdev.DriverVersion}");
+                            Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} DisplayName: {weatherdev.DisplayName} Driver Version: {weatherdev.DriverVersion}");
 
                             return true;
                         } else {

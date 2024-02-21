@@ -139,6 +139,7 @@ namespace NINA.Image.ImageData {
     }
 
     public class CameraParameter {
+        public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Binning => $"{BinX}x{BinY}";
         public int BinX { get; set; } = 1;

@@ -18,6 +18,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface ITelescopeSettings : ISettings {
         string Name { get; set; }
+        string MountName { get; set; }
         double FocalLength { get; set; }
         double FocalRatio { get; set; }
         string Id { get; set; }
@@ -25,6 +26,7 @@ namespace NINA.Profile.Interfaces {
         string SnapPortStart { get; set; }
         string SnapPortStop { get; set; }
         bool NoSync { get; set; }
+        bool TimeSync { get; set; }
         bool PrimaryReversed { get; set; }
         bool SecondaryReversed { get; set; }
 

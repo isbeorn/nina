@@ -39,7 +39,7 @@ namespace NINA.Plugin {
                 List<PluginManifest> plugins = new List<PluginManifest>();
                 var compatibilityMap = new PluginCompatibilityMap();
                 try {
-                    var req = new HttpGetRequest(repositoryURL + "/plugins/manifest", true);
+                    var req = new HttpGetRequest(repositoryURL + "/plugins/manifests", true);
                     Logger.Info($"Fetching plugin manifests from {req.Url}");
                     var res = await req.Request(ct);
                     if (!string.IsNullOrEmpty(res)) {

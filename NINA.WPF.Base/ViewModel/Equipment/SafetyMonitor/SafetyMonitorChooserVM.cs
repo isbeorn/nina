@@ -37,7 +37,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
         public override async Task GetEquipment() {
             await lockObj.WaitAsync();
             try {
-                var ascomInteraction = new ASCOMInteraction(profileService);
                 var devices = new List<IDevice>();
 
                 devices.Add(new DummyDevice(Loc.Instance["LblNoSafetyMonitor"]));
@@ -54,9 +53,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                 }
 
                 try {
+                    var ascomInteraction = new ASCOMInteraction(profileService);
                     foreach (ISafetyMonitor safetyMonitor in ascomInteraction.GetSafetyMonitors()) {
                         devices.Add(safetyMonitor);
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
+                /* Alpaca */
+                try {
+                    var alpacaInteraction = new AlpacaInteraction(profileService);
+                    var alpacaSafetyMonitors = await alpacaInteraction.GetSafetyMonitors(default);
+                    foreach (ISafetyMonitor safetyMonitor in alpacaSafetyMonitors) {
+                        devices.Add(safetyMonitor);
+                    }
+                    Logger.Info($"Found {alpacaSafetyMonitors?.Count} Alpaca Safety Monitors");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 }

@@ -60,6 +60,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         private PhdEventVersion _version;
 
         public string Name => "PHD2";
+        public string DisplayName => Name;
 
         public string Id => "PHD2_Single";
 

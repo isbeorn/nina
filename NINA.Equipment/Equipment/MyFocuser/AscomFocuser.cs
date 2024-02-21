@@ -22,15 +22,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ASCOM.Common;
+using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyFocuser {
 
-    internal class AscomFocuser : AscomDevice<Focuser>, IFocuser, IDisposable {
+    internal class AscomFocuser : AscomDevice<IFocuserV3>, IFocuser, IDisposable {
 
         public AscomFocuser(string focuser, string name) : base(focuser, name) {
         }
-
-        public Focuser Device => device;
+        public AscomFocuser(AscomDevice deviceMeta) : base(deviceMeta) {
+        }
 
         public bool IsMoving => GetProperty(nameof(Focuser.IsMoving), false);
 
@@ -94,10 +95,10 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 var lastPosition = int.MinValue;
                 int samePositionCount = 0;
                 var lastMovementTime = DateTime.Now;
-                while (position != device.Position && !ct.IsCancellationRequested) {
+                while (position != Position && !ct.IsCancellationRequested) {
                     await device.MoveAsync(position, ct);
                     
-                    if (lastPosition == device.Position) {
+                    if (lastPosition == Position) {
                         ++samePositionCount;
                         var samePositionTime = DateTime.Now - lastMovementTime;
                         if (samePositionTime >= SameFocuserPositionTimeout) {
@@ -174,8 +175,12 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             return Task.CompletedTask;
         }
 
-        protected override Focuser GetInstance(string id) {
-            return new Focuser(id);
+        protected override IFocuserV3 GetInstance() {
+            if (deviceMeta == null) {
+                return new Focuser(Id);
+            } else {
+                return new ASCOM.Alpaca.Clients.AlpacaFocuser(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
+            }
         }
     }
 }

@@ -41,12 +41,12 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
 
         public bool CanGetRotationAngle => true;
 
-        public async Task<Location> GetSite() {
+        public async Task<Location> GetSite(CancellationToken token) {
             string route = "/api/main/status";
 
             try {
                 var request = new HttpGetRequest(this.baseUrl + route, rethrowOnError: true);
-                var response = await request.Request(new CancellationToken());
+                var response = await request.Request(token);
 
                 if (string.IsNullOrEmpty(response)) throw new PlanetariumFailedToConnect();
 

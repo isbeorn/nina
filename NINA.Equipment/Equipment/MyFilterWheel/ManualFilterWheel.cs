@@ -87,7 +87,8 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
         public string Id => "Manual Filter Wheel";
 
-        public string Name => Loc.Instance["LblManualFilterWheel"];
+        public string Name => "Manual Filter Wheel";
+        public string DisplayName => Loc.Instance["LblManualFilterWheel"];
 
         public Task<bool> Connect(CancellationToken token) {
             Connected = true;

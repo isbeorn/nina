@@ -36,8 +36,8 @@
             <GroupBox.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="Auto" MinWidth="140" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
                         VerticalAlignment="Center"
@@ -159,9 +159,7 @@
                                     MinWidth="100"
                                     VerticalAlignment="Center"
                                     Text="{ns:Loc LblUnidirectional}" />
-                                <CheckBox
-                                    HorizontalAlignment="Right"
-                                    IsChecked="{Binding Unidirectional}" />
+                                <CheckBox HorizontalAlignment="Right" IsChecked="{Binding Unidirectional}" />
                             </DockPanel>
                             <DockPanel Margin="0,0,0,6" Visibility="{Binding CanGetSetAlias, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                                 <TextBlock
@@ -170,8 +168,8 @@
                                     Text="{ns:Loc LblZwoDeviceId}" />
                                 <TextBox
                                     Width="75"
-                                    MaxLength="8"
                                     HorizontalAlignment="Right"
+                                    MaxLength="8"
                                     Text="{Binding FilterWheelAlias}">
                                     <TextBox.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -196,8 +194,8 @@
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
-                        Zwo="{StaticResource Zwo}"
-                        Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}" />
+                        Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
+                        Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
                 <ContentControl
                     Content="{Binding}"

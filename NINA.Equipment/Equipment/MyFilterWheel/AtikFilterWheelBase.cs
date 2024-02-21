@@ -72,6 +72,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         public abstract string Id { get; }
 
         public abstract string Name { get; }
+        public string DisplayName => Name;
 
         public string Category => "Atik";
 

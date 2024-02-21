@@ -95,6 +95,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         public string Name => Info.Model;
+        public string DisplayName => Name;
         public string Description => string.Format($"{Info.Model} ({Info.Id}) HWRev: {Info.HWrev} FWRev: {Info.FWrev}");
 
         private string driverInfo = string.Empty;

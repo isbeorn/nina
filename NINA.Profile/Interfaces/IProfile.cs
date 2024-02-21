@@ -49,6 +49,7 @@ namespace NINA.Profile.Interfaces {
         ISafetyMonitorSettings SafetyMonitorSettings { get; set; }
         IPluginSettings PluginSettings { get; set; }
         IGnssSettings GnssSettings { get; set; }
+        IAlpacaSettings AlpacaSettings { get; set; }
 
         void Save();
     }

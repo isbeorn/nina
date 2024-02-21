@@ -959,7 +959,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Mot klokka</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Dekk til teleskopet og klikk OK for å ta mørkbildene.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Dekk til teleskopet nå</value>
@@ -986,7 +986,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Cygwin-mappe</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>Antall mørkbilder</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. drift-poljustering</value>
@@ -1118,10 +1118,10 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Deklinasjon guiderate i buesekund per sekund</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider kunne ikke koble til teleskop</value>
+    <value>Direct Guider kunne ikke koble til montering</value>
   </data>
-  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Teleskopet har blitt koblet fra. Direct Guider kobles fra. Dithering vil ikke fungere!</value>
+  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
+    <value>Monteringen har blitt koblet fra. Direct Guider kobles fra. Dithering vil ikke fungere!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Mappe for lagring av bilde ble ikke funnet!</value>
@@ -1172,7 +1172,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>Kan ikke koble til ASCOM kuppel-driver:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Driver støtter følging</value>
+    <value>Kuppel kan følge</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Status</value>
@@ -1202,7 +1202,7 @@ I tilfelle lengre varighet trengs, kan NINA senke temperaturen gradvis med angit
     <value>I hjemposisjon</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Driver følger teleskop</value>
+    <value>Kuppel følger teleskop</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Svinger</value>
@@ -1477,7 +1477,7 @@ Når Bulb-funksjonen deaktiveres vil programmet ikke starte noen eksponering, og
     <value>Åpne</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>Åpne deksel for mørkbilder</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Sett</value>
@@ -2062,8 +2062,8 @@ Forventet HFR: {2}</value>
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
   </data>
-  <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>Fra N.I.N.A. til teleskop</value>
+  <data name="LblNINAToMount" xml:space="preserve">
+    <value>Fra NINA til montering</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nei</value>
@@ -2120,10 +2120,10 @@ Forventet HFR: {2}</value>
     <value>Ikke synkroniser</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>Når aktivert vil programmet aldri sende en synkroniseringskommando til teleskopet. Dette bør bare brukes med en god pekemodell som ikke skal endres på noen måte.</value>
+    <value>Når aktivert vil programmet aldri sende en synkroniseringskommando til monteringen. Dette bør bare brukes med en god pekemodell som ikke skal endres på noen måte.</value>
   </data>
-  <data name="LblNoTelescope" xml:space="preserve">
-    <value>Ingen teleskop</value>
+  <data name="LblNoMount" xml:space="preserve">
+    <value>Ingen montering</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Feilvarsel</value>
@@ -2538,7 +2538,7 @@ Forventet HFR: {2}</value>
     <value>Forbereder bilde</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>Forbereder sekvens for mørkbilder</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flatbilder for filter: {0}</value>
@@ -2610,7 +2610,7 @@ Forventet HFR: {2}</value>
     <value>Utlesingsmodus for sekvenser</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>Denne utlesingsmodusen blir brukt til LIGHT, BIAS, DARK, og FLAT-bilder i sekvenser.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Utlesingsmodus for enkeltbilder</value>
@@ -2642,8 +2642,8 @@ Forventet HFR: {2}</value>
   <data name="LblReconnectFocuser" xml:space="preserve">
     <value>Vennligst koble til fokusmotor!</value>
   </data>
-  <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Vennligst koble til teleskop!</value>
+  <data name="LblReconnectMount" xml:space="preserve">
+    <value>Vennligst koble til montering!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Referansedato</value>
@@ -3083,25 +3083,15 @@ Før du fortsetter, bekreft at systemet er i eller nær god fokus</value>
     <value>Synkroniser teleskop</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Teleskop-synkronisering feilet</value>
-  </data>
-  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>Synkronisert PHD2 (eksperimentell)</value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        Denne profilen er allerede koblet til en synkronisert PHD2-guider.
-        Du kan ikke koble til den samme profilen to ganger, vennligst velg en annen NINA profil.
-    </value>
-  </data>
-  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Synkronisert PHD2-tjeneste krasjet. Tjenesten startes på nytt</value>
+    <value>Synkronisering av montering feilet</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Synkroniser observatorieinnstillinger</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Teleskopet og NINA har ulike innstillinger. Skal innstillingene synkroniseres?</value>
+    <value>Monteringen og NINA har ulike innstillinger for lokasjon.
+
+Skal innstillingene synkroniseres?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>Mål</value>
@@ -3172,8 +3162,8 @@ Før du fortsetter, bekreft at systemet er i eller nær god fokus</value>
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Teleskop synkronisert med koordinater</value>
   </data>
-  <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>Fra teleskop til N.I.N.A.</value>
+  <data name="LblMountToNINA" xml:space="preserve">
+    <value>Fra montering til NINA</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>RA guiderate</value>
@@ -3364,7 +3354,7 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
     <value>Kan ikke starte eksponering</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Kan ikke synkronisere. Teleskop er ikke tilkoblet</value>
+    <value>Kan ikke synkronisere. Montering er ikke tilkoblet</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>En uventet feil oppstod</value>
@@ -3527,9 +3517,6 @@ Dra rektangelet der du vil ta et utsnitt, og slå på Utsnitt i Foto-panelet. Ka
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Advarsel</value>
-  </data>
-  <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>Teleskopet er parkert og vil avparkeres automatisk hvis sekvensen startes</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Vær</value>
@@ -4025,8 +4012,8 @@ I tilfelle lengre varighet trengs, kan NINA øke temperature gradvis med angitt 
   <data name="LblDisconnectRotator" xml:space="preserve">
     <value>Koble fra dreiemotor?</value>
   </data>
-  <data name="LblDisconnectTelescope" xml:space="preserve">
-    <value>Koble fra teleskop?</value>
+  <data name="LblDisconnectMount" xml:space="preserve">
+    <value>Koble fra montering?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Teleskopet er parkert. Du må avparkere teleskopet før det kan svinges.</value>
@@ -5274,10 +5261,10 @@ Et mindre antall gjør triggeren raskere til å reagere når fokusavstand faktis
     <value>Dreier til posisjon {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>Finn innlært eksponeringstid basert på angitte parametre, og ta mørkbilder</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>Innlært mørkbilde</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Venstre side</value>
@@ -6586,10 +6573,10 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
     <value>Flatbilde med automatisk lysstyrke</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>Denne instruksjonen vil automatisk velge riktig eksponeringstid for flatpanelet.</value>
+    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Himmel-flatbilde</value>
+    <value>Twilight Sky Flats</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Lukker deksel</value>
@@ -6858,9 +6845,94 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Når denne funksjonen er aktivert, vil FITS-filer bli skrevet ved hjelp av CFITSIO-biblioteket, som et alternativ til NINAs innebygde metoder. CFITSIO har mer funksjonalitet, som komprimering for å redusere filstørrelse og muligheten til å lagre data i 32-bits format for bedre presisjon.</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>Korriger pikselfeil</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>Terskelverdi for pikselfeil</value>
+  </data>
+  <data name="LblClosed" xml:space="preserve">
+    <value>Lukket</value>
+  </data>
+  <data name="LblClosing" xml:space="preserve">
+    <value>Lukker</value>
+  </data>
+  <data name="LblOpen" xml:space="preserve">
+    <value>Åpen</value>
+  </data>
+  <data name="LblOpening" xml:space="preserve">
+    <value>Åpner</value>
+  </data>
+  <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
+    <value>Gå til hjemposisjon fikk tidsavbrudd etter {0} minutter</value>
+  </data>
+  <data name="LblTelescopeParkTimeout" xml:space="preserve">
+    <value>Parkering fikk tidsavbrudd etter {0} minutter.</value>
+  </data>
+  <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
+    <value>Avparkering fikk tidsavbrudd etter {0} minutter.</value>
+  </data>
+  <data name="LblTimeSync" xml:space="preserve">
+    <value>Synkroniser tid</value>
+  </data>
+  <data name="LblTimeSyncTooltip" xml:space="preserve">
+    <value>Når aktivert vil programmet oppdatere monteringen sin klokke til å bli synkron med systemklokka ved tilkobling.</value>
+  </data>
+  <data name="LblCoordinatesMountSync" xml:space="preserve">
+    <value>Synkroniser pekeretning</value>
+  </data>
+  <data name="LblMount" xml:space="preserve">
+    <value>Montering</value>
+  </data>
+  <data name="LblMountName" xml:space="preserve">
+    <value>Monteringens navn</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
+    <value>Discovery duration</value>
+    <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
+    <value>Discovery Port</value>
+    <comment>The ASCOM Alpaca Port to discover devices</comment>
+  </data>
+  <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
+    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
+    <value># of broadcasts</value>
+    <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
+  </data>
+  <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
+    <value>Resolve DNS name</value>
+    <comment>ASCOM Alpaca DNS name resolution</comment>
+  </data>
+  <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
+    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
+    <value>Use HTTPS</value>
+    <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
+    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
+    <value>Use IPv4</value>
+    <comment>If ASCOM Alpaca should use IPv4</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
+    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
+    <value>Use IPv6</value>
+    <comment>If ASCOM Alpaca should use IPv6</comment>
+  </data>
+  <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
+    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
   </data>
 </root>

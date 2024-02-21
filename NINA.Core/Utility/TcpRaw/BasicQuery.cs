@@ -15,6 +15,7 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Core.Utility.TcpRaw {
@@ -34,49 +35,58 @@ namespace NINA.Core.Utility.TcpRaw {
             Command = command;
             WaitFor = waitFor;
         }
+        public Task<string> SendQuery() {
+            return SendQuery(CancellationToken.None);
+        }
 
-        public async Task<string> SendQuery() {
+        public async Task<string> SendQuery(CancellationToken token) {
             using (var client = new TcpClient()) {
                 try {
                     Logger.Trace($"TcpRaw: Connecting to {Address}:{Port}");
-                    await client.ConnectAsync(Address, Port);
+                    await client.ConnectAsync(Address, Port, token);
+                } catch(OperationCanceledException) {
+                    throw;
                 } catch (Exception ex) {
                     Logger.Error($"TcpRaw: Error connecting to {Address}:{Port}: {ex}");
                     throw;
                 }
 
                 var stream = client.GetStream();
-                var buffer = new byte[2048];
-                int length;
-                string response = string.Empty;
+                try {
 
-                if (!string.IsNullOrEmpty(WaitFor) && stream.CanRead) {
-                    bool waitDone = false;
+                    var buffer = new byte[2048];
+                    int length;
+                    string response = string.Empty;
 
-                    while (!waitDone) {
-                        length = stream.Read(buffer, 0, buffer.Length);
-                        response = Encoding.ASCII.GetString(buffer, 0, length);
-                        Logger.Trace($"TcpRaw: Received message: {ToLiteral(response)}");
+                    if (!string.IsNullOrEmpty(WaitFor) && stream.CanRead) {
+                        bool waitDone = false;
 
-                        if (response.Equals(WaitFor)) { waitDone = true; }
+                        while (!waitDone) {
+                            length = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+                            response = Encoding.ASCII.GetString(buffer, 0, length);
+                            Logger.Trace($"TcpRaw: Received message: {ToLiteral(response)}");
+
+                            if (response.Equals(WaitFor)) { waitDone = true; }
+                        }
                     }
+
+                    // Send command
+                    Logger.Trace($"TcpRaw: Sending command: {ToLiteral(Command)}");
+                    var data = Encoding.ASCII.GetBytes($"{Command}");
+                    await stream.WriteAsync(data, 0, data.Length, token);
+
+                    // Read response
+                    length = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+                    response = Encoding.ASCII.GetString(buffer, 0, length);
+
+
+                    Logger.Trace($"TcpRaw: Received message: {ToLiteral(response)}");
+
+                    return response;
+                } finally {
+                    stream.Close();
+                    client.Close();
                 }
-
-                // Send command
-                Logger.Trace($"TcpRaw: Sending command: {ToLiteral(Command)}");
-                var data = Encoding.ASCII.GetBytes($"{Command}");
-                stream.Write(data, 0, data.Length);
-
-                // Read response
-                length = stream.Read(buffer, 0, buffer.Length);
-                response = Encoding.ASCII.GetString(buffer, 0, length);
-
-                stream.Close();
-                client.Close();
-
-                Logger.Trace($"TcpRaw: Received message: {ToLiteral(response)}");
-
-                return response;
             }
         }
 

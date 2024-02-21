@@ -13,6 +13,63 @@
     <Style TargetType="{x:Type xceed:ColorPicker}">
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="TabForeground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="HeaderBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="HeaderForeground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="DropDownBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="TabBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="ButtonStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource ButtonBackgroundBrush}" />
+                    <Setter Property="FontSize" Value="15" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Border
+                                    x:Name="border"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="1">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <Grid>
+                                            <ContentPresenter
+                                                x:Name="MyContentPresenter"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Content="{TemplateBinding Content}" />
+                                        </Grid>
+                                    </Border>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.4" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
     </Style>
+
+
 </ResourceDictionary>

@@ -39,8 +39,8 @@
                 <GroupBox.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="Auto" MinWidth="140" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             VerticalAlignment="Center"
@@ -600,7 +600,7 @@
                                 </DataTemplate>
 
                                 <DataTemplate x:Key="ASCOM">
-                                    <DockPanel Margin="0,5,0,0">
+                                    <!--<DockPanel Margin="0,5,0,0">
                                         <TextBlock
                                             MinWidth="100"
                                             VerticalAlignment="Center"
@@ -618,7 +618,7 @@
                                                 </ToolTip>
                                             </CheckBox.ToolTip>
                                         </CheckBox>
-                                    </DockPanel>
+                                    </DockPanel>-->
                                 </DataTemplate>
 
                                 <DataTemplate x:Key="Canon">

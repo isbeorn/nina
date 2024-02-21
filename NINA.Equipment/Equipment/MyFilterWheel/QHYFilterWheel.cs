@@ -93,6 +93,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
         public string Id => Info.Id.ToString();
         public string Name => Info.Name;
+        public string DisplayName => Name;
         public string Category => "QHYCCD";
         public string Description => string.Format($"Integrated or 4-pin Filter Wheel on {Info.Id}");
         public string DriverInfo => "Native driver for QHY integrated or 4-pin filter wheels";

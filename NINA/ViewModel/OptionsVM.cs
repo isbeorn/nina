@@ -12,6 +12,8 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using NINA.Astrometry;
 using NINA.Core.Enum;
@@ -42,6 +44,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -50,7 +53,7 @@ using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
-    internal class OptionsVM : DockableVM, IOptionsVM {
+    internal partial class OptionsVM : DockableVM, IOptionsVM {
 
         public OptionsVM(IProfileService profileService,
                          IAllDeviceConsumer deviceConsumer,
@@ -79,42 +82,9 @@ namespace NINA.ViewModel {
                 // We enforce that the main plugin repository is always present
                 PluginRepositories.Insert(0, Constants.MainPluginRepository);
             }
+            CopyToCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
+            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
 
-            RemovePluginRepositoryCommand = new RelayCommand(RemovePluginRepository);
-            AddPluginRepositoryCommand = new RelayCommand(AddPluginRepository);
-            OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
-            OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
-            OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
-            OpenStartupSequenceTemplateDiagCommand = new RelayCommand(OpenStartupSequenceTemplateDiag);
-            OpenTargetsFolderDiagCommand = new RelayCommand(OpenTargetsFolderDiag);
-            OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
-            OpenSequenceTemplateFolderDiagCommand = new RelayCommand(OpenSequenceTemplateFolderDiag);
-            OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
-            OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
-            OpenPS3FileDiagCommand = new RelayCommand(OpenPS3FileDiag);
-            OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
-            OpenASTAPFileDiagCommand = new RelayCommand(OpenASTAPFileDiag);
-            OpenPinPointCatalogDiagCommand = new RelayCommand(OpenPinPointCatalogDiag);
-            OpenHorizonFilePathDiagCommand = new RelayCommand(OpenHorizonFilePathDiag);
-            OpenLogFolderCommand = new RelayCommand(OpenLogFolder);
-            ToggleColorsCommand = new RelayCommand(ToggleColors);
-            DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
-            OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
-            OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
-            AddFilterCommand = new RelayCommand(AddFilter);
-            SetAutoFocusFilterCommand = new RelayCommand(SetAutoFocusFilter);
-            RemoveFilterCommand = new RelayCommand(RemoveFilter);
-            AddProfileCommand = new RelayCommand(AddProfile);
-            CloneProfileCommand = new RelayCommand(CloneProfile, (object o) => { return SelectedProfile != null; });
-            RemoveProfileCommand = new RelayCommand(RemoveProfile, (object o) => { return SelectedProfile != null && SelectedProfile.Id != profileService.ActiveProfile.Id; });
-            SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
-                return SelectedProfile != null && SelectedProfile.Id != profileService.ActiveProfile.Id;
-            });
-
-            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
-            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
-            SiteFromGnssCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGnss));
-            SiteFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromPlanetarium));
             RecreatePatterns();
 
             ScanForIndexFiles();
@@ -152,6 +122,10 @@ namespace NINA.ViewModel {
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
         }
+
+        private bool CanCloneProfile => SelectedProfile != null;
+        private bool CanRemoveProfile => SelectedProfile != null && SelectedProfile.Id != profileService.ActiveProfile.Id;
+        private bool CanSelectProfile => SelectedProfile != null && SelectedProfile.Id != profileService.ActiveProfile.Id;
 
         public bool IsX64 => !DllLoader.IsX86();
 
@@ -207,15 +181,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        [ObservableProperty]
         private bool filePatternsExpanded;
-
-        public bool FilePatternsExpanded {
-            get => filePatternsExpanded;
-            set {
-                filePatternsExpanded = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public string FilePatternPreview => ImagePatterns.GetImageFileString(FilePattern).Replace("\\", " › ");
 
@@ -227,6 +194,7 @@ namespace NINA.ViewModel {
 
         private List<ImagePattern> customPatterns;
 
+        [RelayCommand]
         private void OpenHorizonFilePathDiag(object obj) {
             var dialog = GetFilteredFileDialog(string.Empty, string.Empty, "Horizon File|*.hrz;*.hzn;*.txt|MountWizzard4 Horizon File|*.hpts");
             if (dialog.ShowDialog() == true) {
@@ -243,6 +211,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        [RelayCommand]
         private void OpenStartupSequenceTemplateDiag(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Loc.Instance["LblSequenceTemplate"];
@@ -257,87 +226,94 @@ namespace NINA.ViewModel {
 
         public IAllDeviceConsumer DeviceConsumer { get; }
 
+        [RelayCommand]
         private void OpenLogFolder(object obj) {
             var path = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\NINA\Logs");
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
         }
 
+        [RelayCommand]
         private void OpenWebRequest(object obj) {
             var url = new Uri(obj.ToString());
             Process.Start(new ProcessStartInfo(url.AbsoluteUri) { UseShellExecute = true });
         }
 
-        private async Task<bool> SiteFromGnss() {
-            IGnss gnss = gnssFactory.GetGnssSource();
-            Location loc = null;
+        [RelayCommand(IncludeCancelCommand = true)]
+        private Task<bool> SiteFromGnss(CancellationToken token) {
+            return Task.Run(async () => {
+                IGnss gnss = gnssFactory.GetGnssSource();
+                Location loc = null;
 
-            try {
-                loc = await gnss.GetLocation();
+                try {
+                    loc = await gnss.GetLocation(token);
 
-                if (loc != null) {
-                    Latitude = loc.Latitude;
-                    Longitude = loc.Longitude;
-                    Elevation = loc.Elevation;
+                    if (loc != null) {
+                        Latitude = loc.Latitude;
+                        Longitude = loc.Longitude;
+                        Elevation = loc.Elevation;
 
-                    Logger.Info($"Location information from {gnss.Name}: Latitude: {loc.Latitude}, Longitude: {loc.Longitude}, Elevation: {loc.Elevation}");
-                    Notification.ShowSuccess(string.Format(Loc.Instance["LblGnssLocationSet"], gnss.Name));
+                        Logger.Info($"Location information from {gnss.Name}: Latitude: {loc.Latitude}, Longitude: {loc.Longitude}, Elevation: {loc.Elevation}");
+                        Notification.ShowSuccess(string.Format(Loc.Instance["LblGnssLocationSet"], gnss.Name));
+                    }
+                } catch (GnssNoFixException ex) {
+                    string message;
+
+                    if (!string.IsNullOrEmpty(ex.Message)) {
+                        message = ex.Message;
+                    } else {
+                        message = string.Format(Loc.Instance["LblGnssNoFix"], gnss.Name);
+                    }
+
+                    Logger.Error(message);
+                    Notification.ShowExternalError(message, Loc.Instance["LblGnss"]);
+                } catch(OperationCanceledException) {
+                } catch (GnssNotFoundException ex) {
+                    Logger.Error(ex.Message);
+                    Notification.ShowError(string.Format(Loc.Instance["LblGnssNotFound"], gnss.Name));
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(string.Format(Loc.Instance["LblGnssConnectFail"], gnss.Name));
                 }
-            } catch (GnssNoFixException ex) {
-                string message;
 
-                if (!string.IsNullOrEmpty(ex.Message)) {
-                    message = ex.Message;
-                } else {
-                    message = string.Format(Loc.Instance["LblGnssNoFix"], gnss.Name);
-                }
-
-                Logger.Error(message);
-                Notification.ShowExternalError(message, Loc.Instance["LblGnss"]);
-            } catch (GnssNotFoundException ex) {
-                Logger.Error(ex.Message);
-                Notification.ShowError(string.Format(Loc.Instance["LblGnssNotFound"], gnss.Name));
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(string.Format(Loc.Instance["LblGnssConnectFail"], gnss.Name));
-            }
-
-            return (loc != null);
+                return (loc != null);
+            });
         }
+        [RelayCommand(IncludeCancelCommand = true)]
+        private Task<bool> SiteFromPlanetarium(CancellationToken token) {
+            return Task.Run(async () => {
+                IPlanetarium s = planetariumFactory.GetPlanetarium();
+                Location loc = null;
 
-        private async Task<bool> SiteFromPlanetarium() {
-            IPlanetarium s = planetariumFactory.GetPlanetarium();
-            Location loc = null;
+                try {
+                    loc = await s.GetSite(token);
 
-            try {
-                loc = await s.GetSite();
-
-                if (loc != null) {
-                    Latitude = loc.Latitude;
-                    Longitude = loc.Longitude;
-                    Elevation = loc.Elevation;
-                    Notification.ShowSuccess(string.Format(Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                    if (loc != null) {
+                        Latitude = loc.Latitude;
+                        Longitude = loc.Longitude;
+                        Elevation = loc.Elevation;
+                        Notification.ShowSuccess(string.Format(Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                    }
+                } catch(OperationCanceledException) { 
+                } catch (PlanetariumFailedToConnect ex) {
+                    Logger.Error($"Unable to connect to {s.Name}", ex);
+                    Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+                } catch (Exception ex) {
+                    Logger.Error($"Failed to get coordinates from {s.Name}", ex);
+                    Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumCoordsError"], s.Name));
                 }
-            } catch (PlanetariumFailedToConnect ex) {
-                Logger.Error($"Unable to connect to {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
-            } catch (Exception ex) {
-                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumCoordsError"], s.Name));
-            }
 
-            return (loc != null);
+                return (loc != null);
+            });
         }
 
         public string Version => projectVersion.ToString();
-
         private void CopyToCustomSchema(object obj) {
             ActiveProfile.ColorSchemaSettings.CopyToCustom();
         }
-
         private void CopyToAlternativeCustomSchema(object obj) {
             ActiveProfile.ColorSchemaSettings.CopyToAltCustom();
         }
-
+        [RelayCommand(CanExecute = nameof(CanCloneProfile))]
         private void CloneProfile(object obj) {
             if (!profileService.Clone(SelectedProfile)) {
                 Notification.ShowWarning(Loc.Instance["LblLoadProfileInUseWarning"]);
@@ -358,7 +334,7 @@ namespace NINA.ViewModel {
                 }
             }
         }
-
+        [RelayCommand(CanExecute = nameof(CanRemoveProfile))]
         private void RemoveProfile(object obj) {
             if (MyMessageBox.Show(string.Format(Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                 if (!profileService.RemoveProfile(SelectedProfile)) {
@@ -377,18 +353,18 @@ namespace NINA.ViewModel {
                 }
             }
         }
-
+        [RelayCommand(CanExecute = nameof(CanSelectProfile))]
         private void SelectProfile(object obj) {
             if (!profileService.SelectProfile(SelectedProfile)) {
                 Notification.ShowWarning(Loc.Instance["LblLoadProfileInUseWarning"]);
                 ProfileService.ActivateInstanceOfNinaReferencingProfile(SelectedProfile.Id.ToString());
             }
         }
-
+        [RelayCommand]
         private void AddProfile(object obj) {
             profileService.Add();
         }
-
+        [RelayCommand]
         private void RemoveFilter(object obj) {
             if (obj is FilterInfo filter) {
                 var filters = ActiveProfile.FilterWheelSettings.FilterWheelFilters;
@@ -398,14 +374,14 @@ namespace NINA.ViewModel {
                 }
             }
         }
-
+        [RelayCommand]
         private void AddFilter(object obj) {
             var pos = ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count;
             var filter = new FilterInfo(Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos, -1, new BinningMode(1, 1), -1, -1);
             ActiveProfile.FilterWheelSettings.FilterWheelFilters.Add(filter);
             SelectedFilter = filter;
         }
-
+        [RelayCommand]
         private void SetAutoFocusFilter(object obj) {
             if (SelectedFilter != null) {
                 foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
@@ -417,7 +393,7 @@ namespace NINA.ViewModel {
                 }
             }
         }
-
+        [RelayCommand]
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             var dialog = new OpenFolderDialog();
             dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
@@ -426,7 +402,7 @@ namespace NINA.ViewModel {
                 ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.FolderName;
             }
         }
-
+        [RelayCommand]
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
             var dialog = new OpenFolderDialog();
             dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
@@ -436,12 +412,13 @@ namespace NINA.ViewModel {
             }
 
         }
-
+        [RelayCommand]
         private void DownloadIndexes(object obj) {
             AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(ActiveProfile.PlateSolveSettings.CygwinLocation);
             ScanForIndexFiles();
         }
 
+        [RelayCommand]
         private void OpenImageFileDiag(object o) {
             var diag = new OpenFolderDialog();
             diag.FolderName = ActiveProfile.ImageFileSettings.FilePath;
@@ -449,7 +426,7 @@ namespace NINA.ViewModel {
                 ActiveProfile.ImageFileSettings.FilePath = diag.FolderName + "\\";
             }
         }
-
+        [RelayCommand]
         private void OpenSequenceTemplateDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Loc.Instance["LblSequenceTemplate"];
@@ -462,6 +439,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        [RelayCommand]
         private void OpenSequenceFolderDiag(object o) {
             var diag = new OpenFolderDialog();
             diag.InitialDirectory = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
@@ -470,7 +448,7 @@ namespace NINA.ViewModel {
             }
 
         }
-
+        [RelayCommand]
         private void OpenTargetsFolderDiag(object o) {
             var diag = new OpenFolderDialog();
             diag.InitialDirectory = ActiveProfile.SequenceSettings.SequencerTargetsFolder;
@@ -479,7 +457,7 @@ namespace NINA.ViewModel {
             }
 
         }
-
+        [RelayCommand]
         private void OpenSequenceTemplateFolderDiag(object o) {
             var diag = new OpenFolderDialog();
             diag.InitialDirectory = ActiveProfile.SequenceSettings.SequencerTemplatesFolder;
@@ -488,7 +466,7 @@ namespace NINA.ViewModel {
 
             }
         }
-
+        [RelayCommand]
         private void OpenCygwinFileDiag(object o) {
             var dialog = new OpenFolderDialog();
             dialog.InitialDirectory = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
@@ -498,35 +476,35 @@ namespace NINA.ViewModel {
             }
 
         }
-
+        [RelayCommand]
         private void OpenPS2FileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.PlateSolveSettings.PS2Location = dialog.FileName;
             }
         }
-
+        [RelayCommand]
         private void OpenPS3FileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS3Location, "PlateSolve3.exe", "PlateSolve3|PlateSolve3*.exe");
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.PlateSolveSettings.PS3Location = dialog.FileName;
             }
         }
-
+        [RelayCommand]
         private void OpenASPSFileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.PlateSolveSettings.AspsLocation = dialog.FileName;
             }
         }
-
+        [RelayCommand]
         private void OpenASTAPFileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation, "astap.exe", "ASTAP|astap.exe");
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.PlateSolveSettings.ASTAPLocation = dialog.FileName;
             }
         }
-
+        [RelayCommand]
         private void OpenPinPointCatalogDiag(object o) {
             var dialog = new OpenFolderDialog();
 
@@ -560,21 +538,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<string> _indexfiles;
+        [ObservableProperty]
+        private ObservableCollection<string> _indexFiles = new ObservableCollection<string>();
 
-        public ObservableCollection<string> IndexFiles {
-            get {
-                if (_indexfiles == null) {
-                    _indexfiles = new ObservableCollection<string>();
-                }
-                return _indexfiles;
-            }
-            set {
-                _indexfiles = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        [RelayCommand]
         private void AddPluginRepository(object obj) {
             var box = new InputBox(Loc.Instance["LblPluginRepositoryEnterUrl"], "https://<repository url>");
             box.Owner = System.Windows.Application.Current.MainWindow;
@@ -604,6 +571,7 @@ namespace NINA.ViewModel {
             };
         }
 
+        [RelayCommand]
         private void RemovePluginRepository(object obj) {
             if (obj is string url) {
                 try {
@@ -621,58 +589,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ICommand DownloadIndexesCommand { get; private set; }
-
-        public ICommand OpenCygwinFileDiagCommand { get; private set; }
-
-        public ICommand OpenPS2FileDiagCommand { get; private set; }
-
-        public ICommand OpenPS3FileDiagCommand { get; private set; }
-
-        public ICommand OpenASPSFileDiagCommand { get; private set; }
-
-        public ICommand OpenHorizonFilePathDiagCommand { get; private set; }
-
-        public ICommand OpenASTAPFileDiagCommand { get; private set; }
-
-        public ICommand OpenPinPointCatalogDiagCommand { get; private set; }
-
-        public ICommand OpenImageFileDiagCommand { get; private set; }
-        public ICommand SensorAnalysisFolderChangedCommand { get; private set; }
-
-        public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
-        public ICommand OpenStartupSequenceTemplateDiagCommand { get; private set; }
-        public ICommand OpenTargetsFolderDiagCommand { get; private set; }
-
-        public ICommand OpenSequenceFolderDiagCommand { get; private set; }
-        public ICommand OpenSequenceTemplateFolderDiagCommand { get; private set; }
-
-        public ICommand OpenWebRequestCommand { get; private set; }
-
-        public ICommand ToggleColorsCommand { get; private set; }
-
-        public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
-        public ICommand OpenSkySurveyCacheDirectoryDiagCommand { get; private set; }
-
-        public ICommand AddFilterCommand { get; private set; }
-        public ICommand SetAutoFocusFilterCommand { get; private set; }
-
-        public ICommand RemoveFilterCommand { get; private set; }
-
-        public ICommand AddProfileCommand { get; private set; }
-        public ICommand CloneProfileCommand { get; private set; }
-        public ICommand RemoveProfileCommand { get; private set; }
-        public ICommand OpenLogFolderCommand { get; private set; }
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
-        public ICommand SiteFromGnssCommand { get; private set; }
-        public ICommand SiteFromPlanetariumCommand { get; private set; }
 
-        public ICommand SelectProfileCommand { get; private set; }
-
-        public ICommand RemovePluginRepositoryCommand { get; }
-        public ICommand AddPluginRepositoryCommand { get; }
-
+        [ObservableProperty]
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
@@ -696,14 +616,6 @@ namespace NINA.ViewModel {
             new CultureInfo("nb-NO"),
             new CultureInfo("ko-KR")
         };
-
-        public ObservableCollection<CultureInfo> AvailableLanguages {
-            get => _availableLanguages;
-            set {
-                _availableLanguages = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public CultureInfo Language {
             get => profileService.ActiveProfile.ApplicationSettings.Language;
@@ -778,7 +690,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
+        [RelayCommand]
         private void ToggleColors(object o) {
             ActiveProfile.ColorSchemaSettings.ToggleSchema();
         }
@@ -822,15 +734,8 @@ namespace NINA.ViewModel {
                    .Cast<FITSCompressionTypeEnum>()
                    .ToArray();
 
+        [ObservableProperty]
         private ImagePatterns _imagePatterns;
-
-        public ImagePatterns ImagePatterns {
-            get => _imagePatterns;
-            set {
-                _imagePatterns = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public double Latitude {
             get => profileService.ActiveProfile.AstrometrySettings.Latitude;
@@ -899,14 +804,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool RequiresRestart {
-            get => requiresRestart;
-            set {
-                requiresRestart = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public LogLevelEnum LogLevel {
             get => profileService.ActiveProfile.ApplicationSettings.LogLevel;
             set {
@@ -916,30 +813,22 @@ namespace NINA.ViewModel {
             }
         }
 
+        [ObservableProperty]
         private FilterInfo _selectedFilter;
 
-        public FilterInfo SelectedFilter {
-            get => _selectedFilter;
-            set {
-                _selectedFilter = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ProfileMeta _selectedProfile;
+        [ObservableProperty]
         private bool requiresRestart = false;
         private readonly IVersionCheckVM versionCheckVM;
         private readonly ProjectVersion projectVersion;
         private readonly IPlanetariumFactory planetariumFactory;
         private readonly IGnssFactory gnssFactory;
 
-        public ProfileMeta SelectedProfile {
-            get => _selectedProfile;
-            set {
-                _selectedProfile = value;
-                RaisePropertyChanged();
-            }
-        }
+        [NotifyCanExecuteChangedFor(nameof(CloneProfileCommand))]
+        [NotifyCanExecuteChangedFor(nameof(RemoveProfileCommand))]
+        [NotifyCanExecuteChangedFor(nameof(SelectProfileCommand))]
+        [ObservableProperty]
+        private ProfileMeta selectedProfile;
+
 
         public ICollectionView Profiles { get; }
 

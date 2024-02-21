@@ -79,6 +79,7 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
         /// Property indicating the name of the SkyGuard software
         /// </summary>
         public string Name => "SkyGuard";
+        public string DisplayName => Name;
 
         /// <summary>
         /// Property indicating the id of the SkyGuard software

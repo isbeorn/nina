@@ -294,6 +294,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                             Connected = true,
                             IsMoving = Focuser.IsMoving,
                             Name = Focuser.Name,
+                            DisplayName = Focuser.DisplayName,
                             Position = Position,
                             StepSize = Focuser.StepSize,
                             TempCompAvailable = Focuser.TempCompAvailable,
@@ -315,7 +316,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
 
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                        Logger.Info($"Successfully connected Focuser. Id: {Focuser.Id} Name: {Focuser.Name} Driver Version: {Focuser.DriverVersion}");
+                        Logger.Info($"Successfully connected Focuser. Id: {Focuser.Id} Name: {Focuser.Name} DisplayName: {Focuser.DisplayName} Driver Version: {Focuser.DriverVersion}");
 
                         return true;
                     } else {

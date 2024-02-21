@@ -141,6 +141,7 @@ namespace NINA.Test {
         public void FITSCameraMetaDataPopulated() {
             var now = DateTime.Now;
             var metaData = new ImageMetaData();
+            metaData.Camera.Id = "MyUniqueId1234";
             metaData.Camera.Name = "TEST";
             metaData.Camera.BinX = 2;
             metaData.Camera.BinY = 3;
@@ -154,6 +155,7 @@ namespace NINA.Test {
 
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("INSTRUME", metaData.Camera.Name, "Imaging instrument name"),
+                new FITSHeaderCard("CAMERAID", metaData.Camera.Id, "Imaging instrument identifier"),
                 new FITSHeaderCard("XBINNING", metaData.Camera.BinX, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING", metaData.Camera.BinY, "Y axis binning factor"),
                 new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain"),
