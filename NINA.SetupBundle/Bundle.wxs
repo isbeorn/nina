@@ -28,7 +28,7 @@
 		<util:DirectorySearch Path="[PreviousInstallFolder]" Variable="InstallFolder" After="PreviousInstallFolderSearch" Condition="PreviousInstallFolder" />
 		<Variable Name="LaunchTarget" Value="[InstallFolder]\NINA.exe" Type="formatted" />
     
-		<Chain>
+		<Chain DisableSystemRestore="yes">
 			<MsiPackage Id="NINASetup" Name="$(var.SetupMsiName)" SourceFile="$(var.SetupSource)" bal:DisplayInternalUICondition="1">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
 			</MsiPackage>
