@@ -48,10 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <Target Name="SignBundleEngine">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
   </Target>
   <Target Name="SignBundle">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
   </Target>
   <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>

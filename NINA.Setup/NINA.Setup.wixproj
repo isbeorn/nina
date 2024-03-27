@@ -169,10 +169,10 @@
     <Folder Include="Images" />
   </ItemGroup>
   <Target Name="SignCabs">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;%(SignCabs.FullPath)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;%(SignCabs.FullPath)&quot;" />
   </Target>
   <Target Name="SignMsi">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;%(SignMsi.FullPath)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;%(SignMsi.FullPath)&quot;" />
   </Target>
   <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>

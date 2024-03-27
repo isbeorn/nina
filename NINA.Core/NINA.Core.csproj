@@ -106,6 +106,6 @@
     <Folder Include="Interfaces\Utility\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>
