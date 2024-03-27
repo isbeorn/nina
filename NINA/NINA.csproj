@@ -420,6 +420,6 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /v /a /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetDir)NINA.exe" />
   </Target>
 </Project>
