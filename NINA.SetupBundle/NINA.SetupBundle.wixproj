@@ -78,8 +78,8 @@ copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Im
 echo "Copy NINA.MGEN.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
 
-echo "Copy NINA.Platesolving.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.Platesolving.pdb" /Y
+echo "Copy NINA.PlateSolving.pdb to setup output"
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.PlateSolving.pdb" /Y
 
 echo "Copy NINA.Profile.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y
