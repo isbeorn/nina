@@ -40,10 +40,11 @@ using Nito.AsyncEx;
 using NINA.Core.Enum;
 using NINA.Equipment.Exceptions;
 using NINA.Core.Utility.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
-    public class CameraVM : DockableVM, ICameraVM {
+    public partial class CameraVM : DockableVM, ICameraVM {
 
         public CameraVM(IProfileService profileService,
                         ICameraMediator cameraMediator,
@@ -78,6 +79,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
             TempChangeRunning = false;
             CoolerHistory = new AsyncObservableLimitedSizedStack<CameraCoolingStep>(100);
+            CoolerHistoryMax = 40;
+            coolerHistoryMin = -20;
             ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
@@ -349,6 +352,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             CoolerHistory.Clear();
+                            CoolerHistoryMax = 40;
+                            coolerHistoryMin = -20;
                             this.Cam = cam;
 
                             if (DefaultGain == -1) {
@@ -567,6 +572,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
             CoolerHistory.Add(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            CoolerHistoryMax = Math.Max(CameraInfo.Temperature, CoolerHistoryMax);
+            CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
             BroadcastCameraInfo();
         }
@@ -971,6 +978,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public AsyncObservableLimitedSizedStack<CameraCoolingStep> CoolerHistory { get; private set; }
+
+        [ObservableProperty]
+        private double coolerHistoryMax;
+        [ObservableProperty]
+        private double coolerHistoryMin;
+
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }
         public ICommand ToggleDewHeaterOnCommand { get; private set; }

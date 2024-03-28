@@ -220,7 +220,7 @@
                                             MinWidth="120"
                                             IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                             MaxValue="50"
-                                            MinValue="-50"
+                                            MinValue="-200"
                                             StepSize="1"
                                             Value="{Binding TargetTemp, Mode=TwoWay}">
 

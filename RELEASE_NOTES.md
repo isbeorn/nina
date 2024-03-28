@@ -7,7 +7,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ### <span style="color:orange;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
 # Version 3.1 NIGHTLY
-
+- Allow camera cooling values down to -200°C instead of restricting it to -50°C
 
 # Version 3.0
 
