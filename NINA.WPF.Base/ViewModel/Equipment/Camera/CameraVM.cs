@@ -79,7 +79,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
             TempChangeRunning = false;
             CoolerHistory = new AsyncObservableLimitedSizedStack<CameraCoolingStep>(100);
-            CoolerHistoryMax = 40;
+            CoolerHistoryMax = 20;
             coolerHistoryMin = -20;
             ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
@@ -352,7 +352,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             CoolerHistory.Clear();
-                            CoolerHistoryMax = 40;
+                            CoolerHistoryMax = 20;
                             coolerHistoryMin = -20;
                             this.Cam = cam;
 
