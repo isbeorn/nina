@@ -8,6 +8,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.1 NIGHTLY
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
+- Fix Center instruction to consider plate solver gain
 
 # Version 3.0
 

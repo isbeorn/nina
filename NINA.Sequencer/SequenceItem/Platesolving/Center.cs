@@ -170,6 +170,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 new BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
                 1
             );
+            seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
             return await solver.Center(seq, parameter, PlateSolveStatusVM.Progress, progress, token);
         }
 
