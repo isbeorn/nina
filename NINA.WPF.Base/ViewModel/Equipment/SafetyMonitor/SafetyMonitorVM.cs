@@ -55,7 +55,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             this.applicationStatusMediator = applicationStatusMediator;
             this.DeviceChooserVM = deviceChooserVM;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
             CancelConnectCommand = new RelayCommand(CancelConnect);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !SafetyMonitorInfo.Connected);

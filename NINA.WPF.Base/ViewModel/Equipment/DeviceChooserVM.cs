@@ -22,6 +22,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using System.Threading.Tasks;
 using System.Threading;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment {
 
@@ -66,19 +67,30 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             }
         }
 
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SetupDialogCommand))]
+        [NotifyPropertyChangedFor(nameof(SetupDialogNotOpen))]
+        private bool setupDialogOpen;
         
-        [RelayCommand]
+        public bool SetupDialogNotOpen => !SetupDialogOpen;
+
+        [RelayCommand(CanExecute = nameof(SetupDialogNotOpen))]
         private async Task SetupDialog() {
             if (SelectedDevice?.HasSetupDialog == true) {
-                await Task.Run(() => {
-                    Thread thread = new Thread(() => {
-                        SelectedDevice.SetupDialog();
-                    });
+                SetupDialogOpen = true;
+                try {
+                    await Task.Run(() => {
+                        Thread thread = new Thread(() => {
+                            SelectedDevice.SetupDialog();
+                        });
 
-                    thread.SetApartmentState(ApartmentState.STA);
-                    thread.Start();
-                    thread.Join();
-                });
+                        thread.SetApartmentState(ApartmentState.STA);
+                        thread.Start();
+                        thread.Join();
+                    });
+                } finally {
+                    SetupDialogOpen = false;
+                }                
             }
         }
 

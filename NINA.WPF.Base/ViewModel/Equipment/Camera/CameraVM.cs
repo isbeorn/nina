@@ -60,7 +60,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             this.cameraMediator.RegisterHandler(this);
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
             CancelConnectCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             CoolCamCommand = new AsyncCommand<bool>(() => {

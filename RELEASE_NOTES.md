@@ -10,8 +10,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
 - Fix Center instruction to consider plate solver gain
 - Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app
-- Disallow opening the ASCOM setup screen when a device is connected
-- Run setup screens in separate non-blocking STA Threads
+- Disallow opening the ASCOM setup screens when a device is connected
+- The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads 
+  - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
+  - However, please note that you must close the setup screen for the specific device before being able to connect to it.
 
 # Version 3.0
 

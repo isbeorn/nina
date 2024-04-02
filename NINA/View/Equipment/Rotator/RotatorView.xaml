@@ -45,7 +45,8 @@
                         HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
                         RefreshCommand="{Binding RescanDevicesCommand}"
                         SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
-                        SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}" />
+                        SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
+                        SetupDialogOpen="{Binding DeviceChooserVM.SetupDialogOpen}" />
                 </Grid>
             </GroupBox.Header>
 

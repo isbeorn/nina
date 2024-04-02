@@ -57,7 +57,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
 
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
             CancelConnectCommand = new RelayCommand(CancelConnectGuider);
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !GuiderInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);

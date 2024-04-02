@@ -64,7 +64,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
             InputCoordinatesAltAz = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseTelescope), (object o) => DeviceChooserVM.SelectedDevice != null);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseTelescope), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
             CancelConnectCommand = new Core.Utility.RelayCommand(CancelChooseTelescope);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectTelescope));
             ParkCommand = new AsyncCommand<bool>(() => Task.Run(() => {
