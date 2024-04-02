@@ -28,9 +28,9 @@
     <SignOutput>True</SignOutput>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.4" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.4" />
-    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.4" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NINASetupBundle.wax" />

@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>NINA.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>
-    <Version>3.5.1</Version>
+    <Version>3.5.2</Version>
     <Description></Description>
     <PackageProjectUrl>https://github.com/accord-net/framework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/accord-net/framework</RepositoryUrl>
@@ -25,7 +25,7 @@
     <PackageReference Include="Accord" Version="3.8.2-alpha" />
     <PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
     <PackageReference Include="Accord.Statistics" Version="3.8.2-alpha" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
   </ItemGroup>
 
 
