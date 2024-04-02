@@ -10,6 +10,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
 - Fix Center instruction to consider plate solver gain
 - Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app
+- Disallow opening the ASCOM setup screen when a device is connected
 
 # Version 3.0
 

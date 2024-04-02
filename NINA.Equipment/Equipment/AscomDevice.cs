@@ -55,7 +55,7 @@ namespace NINA.Equipment.Equipment {
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => Category == "ASCOM";
+        public bool HasSetupDialog => Category == "ASCOM" && !Connected;
 
         public string Id { get; }
 
@@ -145,6 +145,7 @@ namespace NINA.Equipment.Equipment {
                         if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
                             getmemory.InvalidateCache();
                         }
+                        RaisePropertyChanged(nameof(HasSetupDialog));
                     }
                 }
             }
@@ -250,7 +251,7 @@ namespace NINA.Equipment.Equipment {
 
         protected abstract DeviceT GetInstance();
 
-        public void SetupDialog() {
+        public void SetupDialog() {            
             if (HasSetupDialog) {
                 try {
                     bool dispose = false;
