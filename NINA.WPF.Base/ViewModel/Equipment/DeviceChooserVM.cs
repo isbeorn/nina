@@ -21,10 +21,11 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using System.Threading.Tasks;
 using System.Threading;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.WPF.Base.ViewModel.Equipment {
 
-    public abstract class DeviceChooserVM<T> : BaseVM, IDeviceChooserVM where T : IDevice {
+    public abstract partial class DeviceChooserVM<T> : BaseVM, IDeviceChooserVM where T : IDevice {
 
         public DeviceChooserVM(
                 IProfileService profileService,
@@ -32,7 +33,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             this.profileService = profileService;
             this.equipmentProviders = equipmentProviders;
             this.Devices = new List<IDevice>();
-            SetupDialogCommand = new RelayCommand(OpenSetupDialog);
         }
 
         protected SemaphoreSlim lockObj = new SemaphoreSlim(1,1);
@@ -66,11 +66,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             }
         }
 
-        public ICommand SetupDialogCommand { get; private set; }
-
-        private void OpenSetupDialog(object o) {
+        
+        [RelayCommand]
+        private async Task SetupDialog() {
             if (SelectedDevice?.HasSetupDialog == true) {
-                SelectedDevice.SetupDialog();
+                await Task.Run(() => {
+                    Thread thread = new Thread(() => {
+                        SelectedDevice.SetupDialog();
+                    });
+
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
+                    thread.Join();
+                });
             }
         }
 

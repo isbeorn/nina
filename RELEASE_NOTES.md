@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fix Center instruction to consider plate solver gain
 - Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app
 - Disallow opening the ASCOM setup screen when a device is connected
+- Run setup screens in separate non-blocking STA Threads
 
 # Version 3.0
 
