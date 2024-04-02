@@ -68,7 +68,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
             var progress = new Progress<ApplicationStatus>(x => { x.Source = this.Title; applicationStatusMediator.StatusUpdate(x); });
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectFlatDeviceDialog));
             OpenCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => OpenCover(progress, CancellationToken.None)));
             CloseCoverCommand = new AsyncCommand<bool>(() => Task.Run(() => CloseCover(progress, CancellationToken.None)));

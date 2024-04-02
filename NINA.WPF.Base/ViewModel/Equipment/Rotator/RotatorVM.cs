@@ -52,7 +52,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             this.applicationStatusMediator = applicationStatusMediator;
             DeviceChooserVM = rotatorChooserVM;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(Connect), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new RelayCommand(CancelConnectRotator);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !RotatorInfo.Connected);

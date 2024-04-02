@@ -55,7 +55,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             this.guiderMediator = guiderMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseFW), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseFW), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new RelayCommand(CancelChooseFW);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectFW));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !FilterWheelInfo.Connected);

@@ -70,7 +70,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 this.applicationStatusMediator.StatusUpdate(p);
             });
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseDome), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseDome), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new RelayCommand(CancelChooseDome);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !DomeInfo.Connected);

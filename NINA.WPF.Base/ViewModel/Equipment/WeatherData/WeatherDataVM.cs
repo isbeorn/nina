@@ -49,7 +49,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
             this.applicationStatusMediator = applicationStatusMediator;
             this.DeviceChooserVM = deviceChooserVM;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseWeatherData), (object o) => DeviceChooserVM.SelectedDevice != null && !DeviceChooserVM.SetupDialogOpen);
+            ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseWeatherData), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new RelayCommand(CancelChooseWeatherData);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !WeatherDataInfo.Connected);
