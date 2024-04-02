@@ -706,8 +706,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateRightAscensionArcsecPerSec), _telescope?.GuideRateRightAscensionArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), _telescope?.GuideRateDeclinationArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.AlignmentMode), _telescope?.AlignmentMode ?? null);
-            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanSetPierSide ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.CanSlew ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanPulseGuide ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.IsPulseGuiding ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.CanSetPierSide), _telescope?.CanSetPierSide ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.CanSlew), _telescope?.CanSlew ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.UTCDate), _telescope?.UTCDate ?? null);

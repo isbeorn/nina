@@ -14,6 +14,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads 
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
+- Fixed that an incorrect flag was evaluated for the mount capability of PulseGuiding
 
 # Version 3.0
 
