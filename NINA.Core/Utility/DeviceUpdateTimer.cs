@@ -41,9 +41,10 @@ namespace NINA.Core.Utility {
         double Interval { get; set; }
 
         Task Stop();
-
         Task Run();
         Task WaitForNextUpdate(CancellationToken ct);
+        [Obsolete("Superseded by \"Run\"")]
+        void Start();
     }
 
     public class DeviceUpdateTimer : IDeviceUpdateTimer {
@@ -71,9 +72,14 @@ namespace NINA.Core.Utility {
         public async Task WaitForNextUpdate(CancellationToken ct) {
             var now = DateTimeOffset.UtcNow;
             var destination = now + TimeSpan.FromSeconds(Interval);
-            while(!ct.IsCancellationRequested && !task?.IsCompleted == true && LastUpdate < destination) {
+            while (!ct.IsCancellationRequested && !task?.IsCompleted == true && LastUpdate < destination) {
                 await Task.Delay(50, ct);
             }
+        }
+
+        [Obsolete("Superseded by \"Run\"")]
+        public void Start() {
+            _ = Run();
         }
 
         public async Task Run() {
@@ -86,7 +92,7 @@ namespace NINA.Core.Utility {
 
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 try {
-                    while(await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
+                    while (await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
                         values = GetValuesFunc();
 
                         Progress.Report(values);
