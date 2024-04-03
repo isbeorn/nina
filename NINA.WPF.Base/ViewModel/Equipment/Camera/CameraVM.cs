@@ -428,7 +428,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             Notification.ShowSuccess(Loc.Instance["LblCameraConnected"]);
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
                             if (Cam.PixelSizeX > 0) {

@@ -42,7 +42,7 @@ namespace NINA.Core.Utility {
 
         Task Stop();
 
-        void Start();
+        Task Run();
         Task WaitForNextUpdate(CancellationToken ct);
     }
 
@@ -58,7 +58,7 @@ namespace NINA.Core.Utility {
         private Task task;
         public Func<Dictionary<string, object>> GetValuesFunc { get; private set; }
         public IProgress<Dictionary<string, object>> Progress { get; private set; }
-        public DateTime LastUpdate { get; private set; } = DateTime.MinValue;
+        public DateTimeOffset LastUpdate { get; private set; } = DateTimeOffset.MinValue;
         public double Interval { get; set; }
 
         public async Task Stop() {
@@ -69,35 +69,30 @@ namespace NINA.Core.Utility {
         }
 
         public async Task WaitForNextUpdate(CancellationToken ct) {
-            var now = DateTime.UtcNow;
+            var now = DateTimeOffset.UtcNow;
             var destination = now + TimeSpan.FromSeconds(Interval);
             while(!ct.IsCancellationRequested && !task?.IsCompleted == true && LastUpdate < destination) {
                 await Task.Delay(50, ct);
             }
         }
 
-        public async void Start() {
+        public async Task Run() {
             task = Task.Run(async () => {
-                cts?.Dispose();
+                try { cts?.Dispose(); } catch { }
                 cts = new CancellationTokenSource();
+                var token = cts.Token;
+
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(Interval));
+
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 try {
-                    do {
-                        cts.Token.ThrowIfCancellationRequested();
-                        var sw = Stopwatch.StartNew();
-
+                    while(await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
                         values = GetValuesFunc();
 
                         Progress.Report(values);
 
-                        LastUpdate = DateTime.UtcNow;
-
-                        await CoreUtil.Delay(
-                            TimeSpan.FromSeconds(
-                                Math.Max(1, Interval - sw.Elapsed.TotalSeconds)
-                            ), cts.Token
-                        );
-                    } while (true);
+                        LastUpdate = DateTimeOffset.UtcNow;
+                    }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);

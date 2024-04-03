@@ -501,7 +501,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             BroadcastTelescopeInfo();
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;

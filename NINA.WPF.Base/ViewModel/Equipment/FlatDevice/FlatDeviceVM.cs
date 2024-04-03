@@ -216,7 +216,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         if (updateTimer != null) {
                             updateTimer.Interval =
                                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
                         }
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;

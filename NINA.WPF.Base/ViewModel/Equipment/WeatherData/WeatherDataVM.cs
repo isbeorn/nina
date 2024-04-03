@@ -134,7 +134,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
                             Notification.ShowSuccess(Loc.Instance["LblWeatherConnected"]);
 
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
 

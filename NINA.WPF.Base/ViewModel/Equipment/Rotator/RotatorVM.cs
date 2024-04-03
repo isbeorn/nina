@@ -376,7 +376,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             Notification.ShowSuccess(Loc.Instance["LblRotatorConnected"]);
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             TargetPosition = Rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = Rotator.Id;
