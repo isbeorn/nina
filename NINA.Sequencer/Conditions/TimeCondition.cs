@@ -234,11 +234,6 @@ namespace NINA.Sequencer.Conditions {
                 if(nextItem != null) {
                     Logger.Info($"No more time remaining. Remaining: {remainingTime - DateTime.Now}, Next Item {nextItem.Name ?? ""}, Next Item Estimated Duration {nextItemDuration}, Next Item Attempts: {nextItem.Attempts}");
                 }
-                
-                // There is no time remaining due to the next instruction taking longer - cut off any remaining time
-                Hours = DateTime.Now.Hour;
-                Minutes = DateTime.Now.Minute;
-                Seconds = DateTime.Now.Second;
             }
             if (!hasTimeRemaining && IsActive()) {
                 Logger.Info($"{nameof(TimeCondition)} finished.");

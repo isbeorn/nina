@@ -15,6 +15,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
 - Fixed that an incorrect flag was evaluated for the mount capability of PulseGuiding
+- Fixed an issue in TimeCondition where the time would be overridden to current time
 
 # Version 3.0
 
