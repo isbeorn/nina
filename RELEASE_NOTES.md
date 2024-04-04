@@ -7,13 +7,20 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ### <span style="color:orange;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
 # Version 3.1 NIGHTLY
+
+## Behavioral Changes
+- Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
+
+## Improvements
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
-- Fix Center instruction to consider plate solver gain
-- Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app
 - Disallow opening the ASCOM setup screens when a device is connected
 - The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads 
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
+
+## Bugfixes
+- Fix Center instruction to consider plate solver gain
+- Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app
 - Fixed that an incorrect flag was evaluated for the mount capability of PulseGuiding
 - Fixed an issue in TimeCondition where the time would be overridden to current time
 - When polling the SafetyMontior for "IsSafe" and an error occurs it will now always assume unsafe conditions instead of using the last known value

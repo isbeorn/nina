@@ -113,7 +113,23 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var valid = sut.Validate();
 
-            valid.Should().BeFalse();
+            valid.Should().BeTrue();
+            sut.IsSafe.Should().BeFalse();
+            sut.Issues.Count.Should().Be(1);
+        }
+
+        [Test]
+        public void Validate_MonitorLostConnection_OneIssue_AndUnsafe() {
+            var sut = new SafetyMonitorCondition(monitorMock.Object);
+            monitorMock.SetupSequence(x => x.GetInfo())
+                .Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true })
+                .Returns(new SafetyMonitorInfo() { Connected = false, IsSafe = true }); ;
+
+            var valid = sut.Validate();
+            valid = sut.Validate();
+
+            valid.Should().BeTrue();
+            sut.IsSafe.Should().BeFalse();
             sut.Issues.Count.Should().Be(1);
         }
 
@@ -237,7 +253,23 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var valid = sut.Validate();
 
-            valid.Should().BeFalse();
+            valid.Should().BeTrue();
+            sut.IsSafe.Should().BeFalse();
+            sut.Issues.Count.Should().Be(1);
+        }
+
+        [Test]
+        public void Validate_MonitorLostConnection_OneIssue_AndUnsafe() {
+            var sut = new SafetyMonitorCondition(monitorMock.Object);
+            monitorMock.SetupSequence(x => x.GetInfo())
+                .Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true })
+                .Returns(new SafetyMonitorInfo() { Connected = false, IsSafe = true }); ;
+
+            var valid = sut.Validate();
+            valid = sut.Validate();
+
+            valid.Should().BeTrue();
+            sut.IsSafe.Should().BeFalse();
             sut.Issues.Count.Should().Be(1);
         }
 
