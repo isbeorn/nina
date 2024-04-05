@@ -25,6 +25,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed an issue in TimeCondition where the time would be overridden to current time
 - When polling the SafetyMontior for "IsSafe" and an error occurs it will now always assume unsafe conditions instead of using the last known value
 - When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area
+- Alpaca devices that are no longer responding are now properly recognized and disconnected
 
 # Version 3.0
 
