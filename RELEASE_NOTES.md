@@ -24,6 +24,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed that an incorrect flag was evaluated for the mount capability of PulseGuiding
 - Fixed an issue in TimeCondition where the time would be overridden to current time
 - When polling the SafetyMontior for "IsSafe" and an error occurs it will now always assume unsafe conditions instead of using the last known value
+- When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area
 
 # Version 3.0
 
