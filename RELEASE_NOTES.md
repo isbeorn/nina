@@ -10,6 +10,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Behavioral Changes
 - Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
+- Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance
 
 ## Improvements
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
