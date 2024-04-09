@@ -1118,14 +1118,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     }
                     break;
                 case ToupTekActions.LEDLights:
-                    var flag = StringToBoolean(actionParameters);
-                    if (flag.HasValue) {
-                        Logger.Info($"Device Action {actionName}: {flag.Value}");
-                        LEDLights = flag.Value;
-                        return "1";
-                    } else {
-                        Logger.Error($"Unrecognized parameter [{actionParameters}] for action [{actionName}].");
-                        return "0";
+                    if(CanSetLEDLights) {
+                        var flag = StringToBoolean(actionParameters);
+                        if (flag.HasValue) {
+                            Logger.Info($"Device Action {actionName}: {flag.Value}");
+                            LEDLights = flag.Value;
+                            return "1";
+                        } else {
+                            Logger.Error($"Unrecognized parameter [{actionParameters}] for action [{actionName}].");
+                            return "0";
+                        }
                     }
                     break;
             }
