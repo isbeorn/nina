@@ -538,6 +538,7 @@ namespace NINA.Image.ImageData {
 
                     case ".fit":
                     case ".fits":
+                    case ".fts":
                     case ".fz":
                         return await FITS.Load(new Uri(path), isBayered, imageDataFactory, ct);
 
