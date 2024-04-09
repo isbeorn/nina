@@ -68,6 +68,7 @@ namespace NINA.Profile {
             touptekAlikeUltraMode = true;
             touptekAlikeHighFullwell = false;
             touptekAlikeDewHeaterStrength = -1;
+            touptekAlikeLEDLights = true;
 
             genericCameraDewHeaterStrength = 10;
             genericCameraFanSpeed = 70;
@@ -778,6 +779,17 @@ namespace NINA.Profile {
             set {
                 if (touptekAlikeDewHeaterStrength != value) {
                     touptekAlikeDewHeaterStrength = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private bool touptekAlikeLEDLights;
+        [DataMember]
+        public bool TouptekAlikeLEDLights {
+            get => touptekAlikeLEDLights;
+            set {
+                if (touptekAlikeLEDLights != value) {
+                    touptekAlikeLEDLights = value;
                     RaisePropertyChanged();
                 }
             }

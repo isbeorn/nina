@@ -345,7 +345,63 @@ namespace Altair {
             OPTION_AUTOEXP_EXPOTIME_STEP = 0x60,        /* Auto exposure: time step (thousandths) */
             OPTION_AUTOEXP_GAIN_STEP = 0x61,        /* Auto exposure: gain step (thousandths) */
             OPTION_MOTOR_NUMBER = 0x62,        /* range: [1, 20] */
-            OPTION_MOTOR_POS = 0x10000000   /* range: [1, 702] */
+            OPTION_MOTOR_POS = 0x10000000,   /* range: [1, 702] */
+            /* Pseudo: start color, BGR format */
+            OPTION_PSEUDO_COLOR_START = 0x63,
+            /* Pseudo: end color, BGR format */
+            OPTION_PSEUDO_COLOR_END = 0x64,
+            /*  Pseudo: 
+                -1 => custom: use startcolor & endcolor to generate the colormap
+                0 => disable
+                1 => spot
+                2 => spring
+                3 => summer
+                4 => autumn
+                5 => winter
+                6 => bone
+                7 => jet
+                8 => rainbow
+                9 => deepgreen
+                10 => ocean
+                11 => cool
+                12 => hsv
+                13 => pink
+                14 => hot
+                15 => parula
+                16 => magma
+                17 => inferno
+                18 => plasma
+                19 => viridis
+                20 => cividis
+                21 => twilight
+                22 => twilight_shifted
+                23 => turbo
+            */
+            OPTION_PSEUDO_COLOR_ENABLE = 0x65,
+            /* Low Power Consumption: 0 => disable, 1 => enable */
+            OPTION_LOW_POWERCONSUMPTION = 0x66,
+            /*  Fix Pattern Noise Correction
+                    set:
+                        0: disable
+                        1: enable
+                        -1: reset
+                        (0xff000000 | n): set the average number to n, [1~255]
+                    get:
+                        (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                        ((val & 0xff00) >> 8): sequence
+                        ((val & 0xff0000) >> 16): average number
+            */
+            OPTION_FPNC = 0x67,
+            /* Auto exposure over exposure policy: when overexposed,
+                    0 => directly reduce the exposure time/gain to the minimum value; or
+                    1 => reduce exposure time/gain in proportion to current and target brightness.
+                The advantage of policy 0 is that the convergence speed is faster, but there is black screen.
+                Policy 1 avoids the black screen, but the convergence speed is slower.
+                Default: 0
+            */
+            OPTION_OVEREXP_POLICY = 0x68,
+            /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read) */
+            OPTION_READOUT_MODE = 0x69
         };
 
         /* HRESULT: error code */
