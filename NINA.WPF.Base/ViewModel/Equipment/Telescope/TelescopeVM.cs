@@ -149,7 +149,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                     } else { // Telescope is incapable of parking. Slew safely to the celestial pole and stop tracking instead
                         Coordinates targetCoords = GetHomeCoordinates(telescopeInfo.Coordinates);
-                        Logger.Trace($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
+                        Logger.Info($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
                         await SlewToCoordinatesAsync(targetCoords, timeoutCts.Token);
 
                         Logger.Trace("Telescope will stop tracking");
@@ -909,7 +909,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     );
 
                     var position = GetCurrentPosition();
-                    Logger.Info($"Slewing from {position} to {coords}");
+                    Logger.Info($"Slewing from {position} to {coords} - {coords.Transform(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation)}");
 
                     var domeSyncTask = Task.CompletedTask;
                     var domeInfo = this.domeMediator.GetInfo();
