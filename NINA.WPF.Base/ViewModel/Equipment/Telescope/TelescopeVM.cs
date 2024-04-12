@@ -1015,24 +1015,38 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 Telescope.TrackingEnabled = tracking;
                 return Telescope.TrackingEnabled;
             } else {
+                Logger.Warning("Cannot enable tracking as the mount is not connected");
                 return false;
             }
         }
 
         public bool SetTrackingMode(TrackingMode trackingMode) {
-            if (Telescope?.Connected == true && !Telescope.AtPark && trackingMode != TrackingMode.Custom) {
-                Telescope.TrackingMode = trackingMode;
-                if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
-                    try {
-                        Telescope.SetCustomTrackingRate(0.0d, 0.0d);
-                    } catch (Exception ex) {
-                        Logger.Debug(ex.Message);
-                    }
-                }
-
-                return Telescope.TrackingMode == trackingMode;
+            if(Telescope?.Connected != true) {
+                Logger.Warning("Cannot set tracking mode as the mount is not connected");
+                return false;
             }
-            return false;
+
+            if(Telescope.AtPark) {
+                Logger.Warning("Cannot set tracking mode as the mount is parked");
+                return false;
+            }
+
+            if(trackingMode == TrackingMode.Custom) {
+                Logger.Warning("Cannot set tracking mode as the tracking rate is custom");
+                return false;
+            }
+
+            
+            Telescope.TrackingMode = trackingMode;
+            if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
+                try {
+                    Telescope.SetCustomTrackingRate(0.0d, 0.0d);
+                } catch (Exception ex) {
+                    Logger.Debug(ex.Message);
+                }
+            }
+
+            return Telescope.TrackingMode == trackingMode;
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
@@ -1046,6 +1060,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                 return true;
             }
+            Logger.Warning("Cannot set custom tracking rate as the mount is not connected");
             return false;
         }
 
