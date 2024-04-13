@@ -780,8 +780,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool CanSetLEDLights {
-            // Currently only OGMA SDK has support for this
-            get => this.sdk is OgmaSDKWrapper;
+            // Disabled due to SDK issue
+            get => false;
         }
 
         public bool LEDLights {
