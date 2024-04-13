@@ -27,6 +27,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When polling the SafetyMontior for "IsSafe" and an error occurs it will now always assume unsafe conditions instead of using the last known value
 - When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area
 - Alpaca devices that are no longer responding are now properly recognized and disconnected
+- Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.
 
 # Version 3.0
 
