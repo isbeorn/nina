@@ -15,12 +15,14 @@
 using NINA.Core.Utility;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace NINA.Plugin {
 
     public static class Constants {
-        public static readonly Version ApplicationVersion = new Version(CoreUtil.Version);
-        public static readonly string ApplicationVersionWithoutRevision = $"{ApplicationVersion.Major}.{ApplicationVersion.Minor}.{ApplicationVersion.Build}";
+        internal static readonly Version ApplicationVersion = new Version(CoreUtil.Version);
+        internal static readonly string ApplicationVersionWithoutRevision = GetPluginMinimumApplicationVersionWithoutRevision();
         public static readonly string UserExtensionsFolder = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "Plugins", ApplicationVersionWithoutRevision);
         public static readonly string StagingFolder = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "PluginStaging", ApplicationVersionWithoutRevision);
         public static readonly string DeletionFolder = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "PluginDeletion", ApplicationVersionWithoutRevision);
@@ -29,5 +31,12 @@ namespace NINA.Plugin {
         public static readonly string BaseDeletionFolder = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "PluginDeletion");
 
         public static readonly string MainPluginRepository = "https://nighttime-imaging.eu/wp-json/nina/v1";
+
+        private static string GetPluginMinimumApplicationVersionWithoutRevision() {
+            var assembly = typeof(PluginCompatibilityMap).Assembly;
+            var attribute = assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(x => x.Key == "PluginMinimumApplicationVersion");
+            var version = new Version(attribute?.Value ?? "3.0.0");
+            return $"{version.Major}.{version.Minor}.{version.Build}";
+        }
     }
 }
