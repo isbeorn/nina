@@ -254,8 +254,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double CoolerPower {
             get {
-                double rv = double.NaN;
+                if (internalReconnect) { return tempCoolerPower; }
 
+                double rv = double.NaN;                
                 if (Connected && CanSetTemperature) {
                     if ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CURPWM)) != QhySdk.QHYCCD_ERROR) {
                         /*
@@ -284,8 +285,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public IList<string> SupportedActions => new List<string>();
 
-        public double ElectronsPerADU => double.NaN;
-        private bool internalReconnect = false;
+        public double ElectronsPerADU => double.NaN;        
 
         /// <summary>
         // We store the camera's exposure times in microseconds
@@ -295,9 +295,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Gain {
             get {
+                if(internalReconnect) { return tempGain; }
+
                 if (Connected && CanGetGain) {
                     double rv;
-
                     if (Info.HasUnreliableGain) {
                         rv = Info.CurGain;
                     } else {
@@ -355,9 +356,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int Offset {
             get {
+                if (internalReconnect) { return tempOffset; }
+
                 if (Connected) {
                     double rv;
-
                     if ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_OFFSET)) != QhySdk.QHYCCD_ERROR) {
                         if (Info.InflatedOff != 0) {
                             return unchecked((int)(rv - Info.InflatedOff));
@@ -505,8 +507,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double Temperature {
             get {
-                double rv = double.NaN;
+                if (internalReconnect) { return tempTemperature; }
 
+                double rv = double.NaN;                
                 if (Connected && Info.HasChipTemp) {
                     if ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_CURTEMP)) != QhySdk.QHYCCD_ERROR)
                         return rv;
@@ -566,8 +569,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int USBLimit {
             get {
-                double rv;
+                if (internalReconnect) { return tempUSBLimit; }
 
+                double rv;
                 if (Connected && ((rv = Sdk.GetControlValue(QhySdk.CONTROL_ID.CONTROL_USBTRAFFIC)) != QhySdk.QHYCCD_ERROR))
                     return unchecked((int)rv);
 
@@ -1300,6 +1304,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
             // OpenQHYCCD
             // SetLiveStreamMode
             // It appears that ReleaseQHYCCDResource and ScanQHYCCD can be skipped in newer drivers?
+            tempGain = Gain;
+            tempOffset = Offset;
+            tempUSBLimit = USBLimit;
+            tempCoolerPower = CoolerPower;
+            tempTemperature = Temperature;
             internalReconnect = true;
             Disconnect();
             ConnectSync();
@@ -1931,5 +1940,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
             _ = Sdk.SetControlValue(QhySdk.CONTROL_ID.CONTROL_USBTRAFFIC, saveUSB);
             return false;
         }
+
+        /// <summary>
+        /// This flag is used for switching between single mode and video mode 
+        /// During this time the CoolerPower, Temperature, Gain, Offset and USBLimit values are returned from temporary stored values
+        /// </summary>
+        private bool internalReconnect = false;
+        private int tempGain;
+        private int tempOffset;
+        private int tempUSBLimit;
+        private double tempCoolerPower;
+        private double tempTemperature;
     }
 }
