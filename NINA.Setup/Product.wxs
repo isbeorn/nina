@@ -91,7 +91,8 @@
       <ComponentGroupRef Id="External_x64_Nikon_Type0027_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0028_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0029_files" />
-      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />      
+      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0031_files" />
       <ComponentGroupRef Id="External_x64_Altair_files" />
       <ComponentGroupRef Id="External_x64_ToupTek_files" />
       <ComponentGroupRef Id="External_x64_Omegon_files" />
@@ -219,6 +220,7 @@
                 <Directory Id="External_x64_Nikon_Type0028" Name="Type0028" />
                 <Directory Id="External_x64_Nikon_Type0029" Name="Type0029" />
                 <Directory Id="External_x64_Nikon_Type0030" Name="Type0030" />
+                <Directory Id="External_x64_Nikon_Type0031" Name="Type0031" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
@@ -2086,6 +2088,23 @@
       </Component>
       <Component Id="External_x64_Nikon_Type0030_Type0030.md3" Guid="24695B36-B6EE-4DE6-BCBE-F5A6E05AF813" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0030_Type0030.md3" Name="Type0030.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\Type0030.md3" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x64_Nikon_Type0031_files" Directory="External_x64_Nikon_Type0031">
+      <Component Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Guid="7D77D79F-8C10-43A1-9C4B-3E97EB579EA2" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkRoyalmile.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_dnssd.dll" Guid="2EAA12DF-234B-4865-97F9-72967E5F7815" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\dnssd.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_NkdPTP.dll" Guid="0C3BECFD-7900-4383-9BE4-678C1BCECDF0" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkdPTP.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_Type0031.md3" Guid="FC96A307-8EFB-4A89-8A7B-ABE35A1B7554" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_Type0031.md3" Name="Type0031.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\Type0031.md3" />
       </Component>
     </ComponentGroup>
   </Fragment>
