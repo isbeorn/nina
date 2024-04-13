@@ -22,6 +22,7 @@ using NINA.Core.Enum;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.ViewModel.Equipment.Dome;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Dome {
 
@@ -118,7 +119,7 @@ namespace NINA.Test.Dome {
             await sut.TriggerTelescopeSync();
             await sut.WaitForDomeSynchronization(CancellationToken.None);
             mockDomeMediator.Verify();
-            Assert.AreEqual(domeAzimuth, domeTargetAzimuth.Degree);
+            ClassicAssert.AreEqual(domeAzimuth, domeTargetAzimuth.Degree);
         }
     }
 }

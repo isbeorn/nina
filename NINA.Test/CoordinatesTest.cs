@@ -12,6 +12,7 @@
 using FluentAssertions;
 using NINA.Astrometry;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -33,10 +34,10 @@ namespace NINA.Test {
             var epoch = Epoch.J2000;
             var coordinates = new Coordinates(ra, dec, epoch, Coordinates.RAType.Degrees);
 
-            Assert.AreEqual(AstroUtil.DegreesToHours(ra), coordinates.RA, 0.0001);
-            Assert.AreEqual(ra, coordinates.RADegrees, 0.0001);
-            Assert.AreEqual(dec, coordinates.Dec, 0.0001);
-            Assert.AreEqual(epoch, coordinates.Epoch);
+            ClassicAssert.AreEqual(AstroUtil.DegreesToHours(ra), coordinates.RA, 0.0001);
+            ClassicAssert.AreEqual(ra, coordinates.RADegrees, 0.0001);
+            ClassicAssert.AreEqual(dec, coordinates.Dec, 0.0001);
+            ClassicAssert.AreEqual(epoch, coordinates.Epoch);
         }
 
         [Test]
@@ -49,10 +50,10 @@ namespace NINA.Test {
             var epoch = Epoch.JNOW;
             var coordinates = new Coordinates(ra, dec, epoch, Coordinates.RAType.Hours);
 
-            Assert.AreEqual(ra, coordinates.RA, 0.0001);
-            Assert.AreEqual(AstroUtil.HoursToDegrees(ra), coordinates.RADegrees, 0.0001);
-            Assert.AreEqual(dec, coordinates.Dec, 0.0001);
-            Assert.AreEqual(epoch, coordinates.Epoch);
+            ClassicAssert.AreEqual(ra, coordinates.RA, 0.0001);
+            ClassicAssert.AreEqual(AstroUtil.HoursToDegrees(ra), coordinates.RADegrees, 0.0001);
+            ClassicAssert.AreEqual(dec, coordinates.Dec, 0.0001);
+            ClassicAssert.AreEqual(epoch, coordinates.Epoch);
         }
 
         [Test]
@@ -72,8 +73,8 @@ namespace NINA.Test {
             transform.SetJ2000(ra, dec);
 
             //Check with ascom transformation that the transformation logic matches
-            Assert.AreEqual(transform.RAApparent, coordinates.RA, 0.0001);
-            Assert.AreEqual(transform.DECApparent, coordinates.Dec, 0.0001);
+            ClassicAssert.AreEqual(transform.RAApparent, coordinates.RA, 0.0001);
+            ClassicAssert.AreEqual(transform.DECApparent, coordinates.Dec, 0.0001);
         }
 
         [Test]
@@ -94,8 +95,8 @@ namespace NINA.Test {
 
             //Assert
             //Check with ascom transformation that the transformation logic matches
-            Assert.AreEqual(transform.RAJ2000, coordinates.RA, 0.0001);
-            Assert.AreEqual(transform.DecJ2000, coordinates.Dec, 0.0001);
+            ClassicAssert.AreEqual(transform.RAJ2000, coordinates.RA, 0.0001);
+            ClassicAssert.AreEqual(transform.DecJ2000, coordinates.Dec, 0.0001);
         }
 
         [Test]
@@ -179,8 +180,8 @@ namespace NINA.Test {
 
             var shifted = coordinates.Shift(deltaX, deltaY, rotation, Coordinates.ProjectionType.Gnomonic);
 
-            Assert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
-            Assert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
         }
 
         [Test]
@@ -226,8 +227,8 @@ namespace NINA.Test {
 
             var expectedPoint = new Point(expectedX, expectedY);
 
-            Assert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
-            Assert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
         }
 
         [Test]
@@ -301,8 +302,8 @@ namespace NINA.Test {
 
             var shifted = coordinates.Shift(deltaX, deltaY, rotation, Coordinates.ProjectionType.Stereographic);
 
-            Assert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
-            Assert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
         }
 
         [Test]
@@ -345,8 +346,8 @@ namespace NINA.Test {
 
             var expectedPoint = new Point(expectedX, expectedY);
 
-            Assert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
-            Assert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
+            ClassicAssert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
         }
 
         [Test]

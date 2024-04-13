@@ -9,9 +9,10 @@ using System.Collections.Generic;
 using System.Threading;
 using NINA.Core.Utility;
 using System.IO;
+using System.Runtime.ConstrainedExecution;
 
 /*
-    Version: 54.23312.20230910
+    Version: 55.25159.20240404
 
     For Microsoft dotNET Framework & dotNet Core
 
@@ -27,343 +28,600 @@ public class Ogmacam : IDisposable {
     }
     private const string DLLNAME = "ogmacam.dll";
     [Flags]
-    public enum eFLAG : ulong 
-    {
-        FLAG_CMOS = 0x00000001,   /* cmos sensor */
-        FLAG_CCD_PROGRESSIVE = 0x00000002,   /* progressive ccd sensor */
-        FLAG_CCD_INTERLACED = 0x00000004,   /* interlaced ccd sensor */
-        FLAG_ROI_HARDWARE = 0x00000008,   /* support hardware ROI */
-        FLAG_MONO = 0x00000010,   /* monochromatic */
-        FLAG_BINSKIP_SUPPORTED = 0x00000020,   /* support bin/skip mode */
-        FLAG_USB30 = 0x00000040,   /* usb3.0 */
-        FLAG_TEC = 0x00000080,   /* Thermoelectric Cooler */
-        FLAG_USB30_OVER_USB20 = 0x00000100,   /* usb3.0 camera connected to usb2.0 port */
-        FLAG_ST4 = 0x00000200,   /* ST4 */
-        FLAG_GETTEMPERATURE = 0x00000400,   /* support to get the temperature of the sensor */
-        FLAG_HIGH_FULLWELL = 0x00000800,   /* high fullwell capacity */
-        FLAG_RAW10 = 0x00001000,   /* pixel format, RAW 10bits */
-        FLAG_RAW12 = 0x00002000,   /* pixel format, RAW 12bits */
-        FLAG_RAW14 = 0x00004000,   /* pixel format, RAW 14bits */
-        FLAG_RAW16 = 0x00008000,   /* pixel format, RAW 16bits */
-        FLAG_FAN = 0x00010000,   /* cooling fan */
-        FLAG_TEC_ONOFF = 0x00020000,   /* Thermoelectric Cooler can be turn on or off, support to set the target temperature of TEC */
-        FLAG_ISP = 0x00040000,   /* ISP (Image Signal Processing) chip */
-        FLAG_TRIGGER_SOFTWARE = 0x00080000,   /* support software trigger */
-        FLAG_TRIGGER_EXTERNAL = 0x00100000,   /* support external trigger */
-        FLAG_TRIGGER_SINGLE = 0x00200000,   /* only support trigger single: one trigger, one image */
-        FLAG_BLACKLEVEL = 0x00400000,   /* support set and get the black level */
-        FLAG_AUTO_FOCUS = 0x00800000,   /* support auto focus */
-        FLAG_BUFFER = 0x01000000,   /* frame buffer */
-        FLAG_DDR = 0x02000000,   /* use very large capacity DDR (Double Data Rate SDRAM) for frame buffer. The capacity is not less than one full frame */
-        FLAG_CG = 0x04000000,   /* support Conversion Gain mode: HCG, LCG */
-        FLAG_YUV411 = 0x08000000,   /* pixel format, yuv411 */
-        FLAG_VUYY = 0x10000000,   /* pixel format, yuv422, VUYY */
-        FLAG_YUV444 = 0x20000000,   /* pixel format, yuv444 */
-        FLAG_RGB888 = 0x40000000,   /* pixel format, RGB888 */
+    public enum eFLAG : ulong {
+        /* cmos sensor */
+        FLAG_CMOS = 0x00000001,
+        /* progressive ccd sensor */
+        FLAG_CCD_PROGRESSIVE = 0x00000002,
+        /* interlaced ccd sensor */
+        FLAG_CCD_INTERLACED = 0x00000004,
+        /* support hardware ROI */
+        FLAG_ROI_HARDWARE = 0x00000008,
+        /* monochromatic */
+        FLAG_MONO = 0x00000010,
+        /* support bin/skip mode */
+        FLAG_BINSKIP_SUPPORTED = 0x00000020,
+        /* usb3.0 */
+        FLAG_USB30 = 0x00000040,
+        /* Thermoelectric Cooler */
+        FLAG_TEC = 0x00000080,
+        /* usb3.0 camera connected to usb2.0 port */
+        FLAG_USB30_OVER_USB20 = 0x00000100,
+        /* ST4 */
+        FLAG_ST4 = 0x00000200,
+        /* support to get the temperature of the sensor */
+        FLAG_GETTEMPERATURE = 0x00000400,
+        /* high fullwell capacity */
+        FLAG_HIGH_FULLWELL = 0x00000800,
+        /* pixel format, RAW 10bits */
+        FLAG_RAW10 = 0x00001000,
+        /* pixel format, RAW 12bits */
+        FLAG_RAW12 = 0x00002000,
+        /* pixel format, RAW 14bits */
+        FLAG_RAW14 = 0x00004000,
+        /* pixel format, RAW 16bits */
+        FLAG_RAW16 = 0x00008000,
+        /* cooling fan */
+        FLAG_FAN = 0x00010000,
+        /* Thermoelectric Cooler can be turn on or off, support to set the target temperature of TEC */
+        FLAG_TEC_ONOFF = 0x00020000,
+        /* ISP (Image Signal Processing) chip */
+        FLAG_ISP = 0x00040000,
+        /* support software trigger */
+        FLAG_TRIGGER_SOFTWARE = 0x00080000,
+        /* support external trigger */
+        FLAG_TRIGGER_EXTERNAL = 0x00100000,
+        /* only support trigger single: one trigger, one image */
+        FLAG_TRIGGER_SINGLE = 0x00200000,
+        /* support set and get the black level */
+        FLAG_BLACKLEVEL = 0x00400000,
+        /* support auto focus */
+        FLAG_AUTO_FOCUS = 0x00800000,
+        /* frame buffer */
+        FLAG_BUFFER = 0x01000000,
+        /* use very large capacity DDR (Double Data Rate SDRAM) for frame buffer. The capacity is not less than one full frame */
+        FLAG_DDR = 0x02000000,
+        /* support Conversion Gain mode: HCG, LCG */
+        FLAG_CG = 0x04000000,
+        /* pixel format, yuv411 */
+        FLAG_YUV411 = 0x08000000,
+        /* pixel format, yuv422, VUYY */
+        FLAG_VUYY = 0x10000000,
+        /* pixel format, yuv444 */
+        FLAG_YUV444 = 0x20000000,
+        /* pixel format, RGB888 */
+        FLAG_RGB888 = 0x40000000,
+        /* obsolete, same as FLAG_RAW10 */
         [Obsolete("Use FLAG_RAW10")]
-        FLAG_BITDEPTH10 = FLAG_RAW10,   /* obsolete, same as FLAG_RAW10 */
+        FLAG_BITDEPTH10 = FLAG_RAW10,
+        /* obsolete, same as FLAG_RAW12 */
         [Obsolete("Use FLAG_RAW12")]
-        FLAG_BITDEPTH12 = FLAG_RAW12,   /* obsolete, same as FLAG_RAW12 */
+        FLAG_BITDEPTH12 = FLAG_RAW12,
+        /* obsolete, same as FLAG_RAW14 */
         [Obsolete("Use FLAG_RAW14")]
-        FLAG_BITDEPTH14 = FLAG_RAW14,   /* obsolete, same as FLAG_RAW14 */
+        FLAG_BITDEPTH14 = FLAG_RAW14,
+        /* obsolete, same as FLAG_RAW16 */
         [Obsolete("Use FLAG_RAW16")]
-        FLAG_BITDEPTH16 = FLAG_RAW16,   /* obsolete, same as FLAG_RAW16 */
-        FLAG_RAW8 = 0x80000000,   /* pixel format, RAW 8 bits */
-        FLAG_GMCY8 = 0x0000000100000000,  /* pixel format, GMCY, 8 bits */
-        FLAG_GMCY12 = 0x0000000200000000,  /* pixel format, GMCY, 12 bits */
-        FLAG_UYVY = 0x0000000400000000,  /* pixel format, yuv422, UYVY */
-        FLAG_CGHDR = 0x0000000800000000,  /* Conversion Gain: HCG, LCG, HDR */
-        FLAG_GLOBALSHUTTER = 0x0000001000000000,  /* global shutter */
-        FLAG_FOCUSMOTOR = 0x0000002000000000,  /* support focus motor */
-        FLAG_PRECISE_FRAMERATE = 0x0000004000000000,  /* support precise framerate & bandwidth, see OPTION_PRECISE_FRAMERATE & OPTION_BANDWIDTH */
-        FLAG_HEAT = 0x0000008000000000,  /* support heat to prevent fogging up */
-        FLAG_LOW_NOISE = 0x0000010000000000,  /* support low noise mode (Higher signal noise ratio, lower frame rate) */
-        FLAG_LEVELRANGE_HARDWARE = 0x0000020000000000,  /* hardware level range, put(get)_LevelRangeV2 */
-        FLAG_EVENT_HARDWARE = 0x0000040000000000,  /* hardware event, such as exposure start & stop */
-        FLAG_LIGHTSOURCE = 0x0000080000000000,  /* embedded light source */
-        FLAG_FILTERWHEEL = 0x0000100000000000,  /* astro filter wheel */
-        FLAG_GIGE = 0x0000200000000000,  /* 1 Gigabit GigE */
-        FLAG_10GIGE = 0x0000400000000000,  /* 10 Gigabit GigE */
-        FLAG_5GIGE = 0x0000800000000000,  /* 5 Gigabit GigE */
-        FLAG_25GIGE = 0x0001000000000000,  /* 2.5 Gigabit GigE */
-        FLAG_AUTOFOCUSER = 0x0002000000000000,  /* astro auto focuser */
-        FLAG_LIGHT_SOURCE = 0x0004000000000000,  /* stand alone light source */
-        FLAG_CAMERALINK = 0x0008000000000000,  /* camera link */
-        FLAG_CXP = 0x0010000000000000   /* CXP: CoaXPress */
+        FLAG_BITDEPTH16 = FLAG_RAW16,
+        /* pixel format, RAW 8 bits */
+        FLAG_RAW8 = 0x80000000,
+        /* pixel format, GMCY, 8 bits */
+        FLAG_GMCY8 = 0x0000000100000000,
+        /* pixel format, GMCY, 12 bits */
+        FLAG_GMCY12 = 0x0000000200000000,
+        /* pixel format, yuv422, UYVY */
+        FLAG_UYVY = 0x0000000400000000,
+        /* Conversion Gain: HCG, LCG, HDR */
+        FLAG_CGHDR = 0x0000000800000000,
+        /* global shutter */
+        FLAG_GLOBALSHUTTER = 0x0000001000000000,
+        /* support focus motor */
+        FLAG_FOCUSMOTOR = 0x0000002000000000,
+        /* support precise framerate & bandwidth, see OPTION_PRECISE_FRAMERATE & OPTION_BANDWIDTH */
+        FLAG_PRECISE_FRAMERATE = 0x0000004000000000,
+        /* support heat to prevent fogging up */
+        FLAG_HEAT = 0x0000008000000000,
+        /* support low noise mode (Higher signal noise ratio, lower frame rate) */
+        FLAG_LOW_NOISE = 0x0000010000000000,
+        /* hardware level range, put(get)_LevelRangeV2 */
+        FLAG_LEVELRANGE_HARDWARE = 0x0000020000000000,
+        /* hardware event, such as exposure start & stop */
+        FLAG_EVENT_HARDWARE = 0x0000040000000000,
+        /* embedded light source */
+        FLAG_LIGHTSOURCE = 0x0000080000000000,
+        /* astro filter wheel */
+        FLAG_FILTERWHEEL = 0x0000100000000000,
+        /* 1 Gigabit GigE */
+        FLAG_GIGE = 0x0000200000000000,
+        /* 10 Gigabit GigE */
+        FLAG_10GIGE = 0x0000400000000000,
+        /* 5 Gigabit GigE */
+        FLAG_5GIGE = 0x0000800000000000,
+        /* 2.5 Gigabit GigE */
+        FLAG_25GIGE = 0x0001000000000000,
+        /* astro auto focuser */
+        FLAG_AUTOFOCUSER = 0x0002000000000000,
+        /* stand alone light source */
+        FLAG_LIGHT_SOURCE = 0x0004000000000000,
+        /* camera link */
+        FLAG_CAMERALINK = 0x0008000000000000,
+        /* CXP: CoaXPress */
+        FLAG_CXP = 0x0010000000000000,
+        /* pixel format, RAW 12bits packed */
+        FLAG_RAW12PACK = 0x0020000000000000,
+        /* self trigger */
+        FLAG_SELFTRIGGER = 0x0040000000000000,
+        /* pixel format, RAW 11bits */
+        FLAG_RAW11 = 0x0080000000000000,
+        /* ghopto sensor */
+        FLAG_GHOPTO = 0x0100000000000000
     };
 
     public enum eEVENT : uint {
-        EVENT_EXPOSURE = 0x0001, /* exposure time or gain changed */
-        EVENT_TEMPTINT = 0x0002, /* white balance changed, Temp/Tint mode */
-        EVENT_CHROME = 0x0003, /* reversed, do not use it */
-        EVENT_IMAGE = 0x0004, /* live image arrived, use PullImage to get this image */
-        EVENT_STILLIMAGE = 0x0005, /* snap (still) frame arrived, use PullStillImage to get this frame */
-        EVENT_WBGAIN = 0x0006, /* white balance changed, RGB Gain mode */
-        EVENT_TRIGGERFAIL = 0x0007, /* trigger failed */
-        EVENT_BLACK = 0x0008, /* black balance changed */
-        EVENT_FFC = 0x0009, /* flat field correction status changed */
-        EVENT_DFC = 0x000a, /* dark field correction status changed */
-        EVENT_ROI = 0x000b, /* roi changed */
-        EVENT_LEVELRANGE = 0x000c, /* level range changed */
-        EVENT_AUTOEXPO_CONV = 0x000d, /* auto exposure convergence */
-        EVENT_AUTOEXPO_CONVFAIL = 0x000e, /* auto exposure once mode convergence failed */
-        EVENT_ERROR = 0x0080, /* generic error */
-        EVENT_DISCONNECTED = 0x0081, /* camera disconnected */
-        EVENT_NOFRAMETIMEOUT = 0x0082, /* no frame timeout error */
-        EVENT_AFFEEDBACK = 0x0083, /* auto focus feedback information */
-        EVENT_FOCUSPOS = 0x0084, /* focus positon */
-        EVENT_NOPACKETTIMEOUT = 0x0085, /* no packet timeout */
-        EVENT_EXPO_START = 0x4000, /* hardware event: exposure start */
-        EVENT_EXPO_STOP = 0x4001, /* hardware event: exposure stop */
-        EVENT_TRIGGER_ALLOW = 0x4002, /* hardware event: next trigger allow */
-        EVENT_HEARTBEAT = 0x4003, /* hardware event: heartbeat, can be used to monitor whether the camera is alive */
-        EVENT_TRIGGER_IN = 0x4004, /* hardware event: trigger in */
-        EVENT_FACTORY = 0x8001  /* restore factory settings */
+        /* exposure time or gain changed */
+        EVENT_EXPOSURE = 0x0001,
+        /* white balance changed, Temp/Tint mode */
+        EVENT_TEMPTINT = 0x0002,
+        /* reversed, do not use it */
+        EVENT_CHROME = 0x0003,
+        /* live image arrived, use PullImage to get this image */
+        EVENT_IMAGE = 0x0004,
+        /* snap (still) frame arrived, use PullStillImage to get this frame */
+        EVENT_STILLIMAGE = 0x0005,
+        /* white balance changed, RGB Gain mode */
+        EVENT_WBGAIN = 0x0006,
+        /* trigger failed */
+        EVENT_TRIGGERFAIL = 0x0007,
+        /* black balance changed */
+        EVENT_BLACK = 0x0008,
+        /* flat field correction status changed */
+        EVENT_FFC = 0x0009,
+        /* dark field correction status changed */
+        EVENT_DFC = 0x000a,
+        /* roi changed */
+        EVENT_ROI = 0x000b,
+        /* level range changed */
+        EVENT_LEVELRANGE = 0x000c,
+        /* auto exposure convergence */
+        EVENT_AUTOEXPO_CONV = 0x000d,
+        /* auto exposure once mode convergence failed */
+        EVENT_AUTOEXPO_CONVFAIL = 0x000e,
+        /* fix pattern noise correction status changed */
+        EVENT_FPNC = 0x000f,
+        /* generic error */
+        EVENT_ERROR = 0x0080,
+        /* camera disconnected */
+        EVENT_DISCONNECTED = 0x0081,
+        /* no frame timeout error */
+        EVENT_NOFRAMETIMEOUT = 0x0082,
+        /* focus positon */
+        EVENT_FOCUSPOS = 0x0084,
+        /* no packet timeout */
+        EVENT_NOPACKETTIMEOUT = 0x0085,
+        /* hardware event: exposure start */
+        EVENT_EXPO_START = 0x4000,
+        /* hardware event: exposure stop */
+        EVENT_EXPO_STOP = 0x4001,
+        /* hardware event: next trigger allow */
+        EVENT_TRIGGER_ALLOW = 0x4002,
+        /* hardware event: heartbeat, can be used to monitor whether the camera is alive */
+        EVENT_HEARTBEAT = 0x4003,
+        /* hardware event: trigger in */
+        EVENT_TRIGGER_IN = 0x4004,
+        /* restore factory settings */
+        EVENT_FACTORY = 0x8001
     };
 
     public enum eOPTION : uint {
-        OPTION_NOFRAME_TIMEOUT = 0x01,       /* no frame timeout: 0 => disable, positive value (>= NOFRAME_TIMEOUT_MIN) => timeout milliseconds. default: disable */
-        OPTION_THREAD_PRIORITY = 0x02,       /* set the priority of the internal thread which grab data from the usb device.
-                                                         Win: iValue: 0 => THREAD_PRIORITY_NORMAL; 1 => THREAD_PRIORITY_ABOVE_NORMAL; 2 => THREAD_PRIORITY_HIGHEST; 3 => THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
-                                                         Linux & macOS: The high 16 bits for the scheduling policy, and the low 16 bits for the priority; see: https://linux.die.net/man/3/pthread_setschedparam
-                                                    */
-        OPTION_RAW = 0x04,       /* raw data mode, read the sensor "raw" data. This can be set only while camea is NOT running. 0 = rgb, 1 = raw, default value: 0 */
-        OPTION_HISTOGRAM = 0x05,       /* 0 = only one, 1 = continue mode */
-        OPTION_BITDEPTH = 0x06,       /* 0 = 8 bits mode, 1 = 16 bits mode */
-        OPTION_FAN = 0x07,       /* 0 = turn off the cooling fan, [1, max] = fan speed */
-        OPTION_TEC = 0x08,       /* 0 = turn off the thermoelectric cooler, 1 = turn on the thermoelectric cooler */
-        OPTION_LINEAR = 0x09,       /* 0 = turn off the builtin linear tone mapping, 1 = turn on the builtin linear tone mapping, default value: 1 */
-        OPTION_CURVE = 0x0a,       /* 0 = turn off the builtin curve tone mapping, 1 = turn on the builtin polynomial curve tone mapping, 2 = logarithmic curve tone mapping, default value: 2 */
-        OPTION_TRIGGER = 0x0b,       /* 0 = video mode, 1 = software or simulated trigger mode, 2 = external trigger mode, 3 = external + software trigger, default value = 0 */
-        OPTION_RGB = 0x0c,       /* 0 => RGB24; 1 => enable RGB48 format when bitdepth > 8; 2 => RGB32; 3 => 8 Bits Grey (only for mono camera); 4 => 16 Bits Grey (only for mono camera when bitdepth > 8); 5 => RGB64 */
-        OPTION_COLORMATIX = 0x0d,       /* enable or disable the builtin color matrix, default value: 1 */
-        OPTION_WBGAIN = 0x0e,       /* enable or disable the builtin white balance gain, default value: 1 */
-        OPTION_TECTARGET = 0x0f,       /* get or set the target temperature of the thermoelectric cooler, in 0.1 degree Celsius. For example, 125 means 12.5 degree Celsius, -35 means -3.5 degree Celsius */
-        OPTION_AUTOEXP_POLICY = 0x10,       /* auto exposure policy:
-                                                            0: Exposure Only
-                                                            1: Exposure Preferred
-                                                            2: Gain Only
-                                                            3: Gain Preferred
-                                                         default value: 1
-                                                    */
-        OPTION_FRAMERATE = 0x11,       /* limit the frame rate, range=[0, 63], the default value 0 means no limit */
-        OPTION_DEMOSAIC = 0x12,       /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing, default value: 0 */
-        OPTION_DEMOSAIC_VIDEO = 0x13,       /* demosaic method for video */
-        OPTION_DEMOSAIC_STILL = 0x14,       /* demosaic method for still image */
-        OPTION_BLACKLEVEL = 0x15,       /* black level */
-        OPTION_MULTITHREAD = 0x16,       /* multithread image processing */
-        OPTION_BINNING = 0x17,       /* binning
-                                                           0x01: (no binning)
-                                                           n: (saturating add, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
-                                                           0x40 | n: (unsaturated add, n*n, works only in RAW mode), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
-                                                           0x80 | n: (average, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
-                                                       The final image size is rounded down to an even number, such as 640/3 to get 212
-                                                    */
-        OPTION_ROTATE = 0x18,       /* rotate clockwise: 0, 90, 180, 270 */
-        OPTION_CG = 0x19,       /* Conversion Gain mode: 0 = LCG, 1 = HCG, 2 = HDR */
-        OPTION_PIXEL_FORMAT = 0x1a,       /* pixel format */
-        OPTION_FFC = 0x1b,       /* flat field correction
-                                                        set:
-                                                            0: disable
-                                                            1: enable
-                                                            -1: reset
-                                                            (0xff000000 | n): set the average number to n, [1~255]
-                                                        get:
-                                                            (val & 0xff): 0 => disable, 1 => enable, 2 => inited
-                                                            ((val & 0xff00) >> 8): sequence
-                                                            ((val & 0xff0000) >> 16): average number
-                                                    */
-        OPTION_DDR_DEPTH = 0x1c,       /* the number of the frames that DDR can cache
-                                                        1: DDR cache only one frame
-                                                        0: Auto:
-                                                            => one for video mode when auto exposure is enabled
-                                                            => full capacity for others
-                                                        1: DDR can cache frames to full capacity
-                                                    */
-        OPTION_DFC = 0x1d,       /* dark field correction
-                                                        set:
-                                                            0: disable
-                                                            1: enable
-                                                            -1: reset
-                                                            (0xff000000 | n): set the average number to n, [1~255]
-                                                        get:
-                                                            (val & 0xff): 0 => disable, 1 => enable, 2 => inited
-                                                            ((val & 0xff00) >> 8): sequence
-                                                            ((val & 0xff0000) >> 16): average number
-                                                    */
-        OPTION_SHARPENING = 0x1e,       /* Sharpening: (threshold << 24) | (radius << 16) | strength)
-                                                        strength: [0, 500], default: 0 (disable)
-                                                        radius: [1, 10]
-                                                        threshold: [0, 255]
-                                                    */
-        OPTION_FACTORY = 0x1f,       /* restore the factory settings */
-        OPTION_TEC_VOLTAGE = 0x20,       /* get the current TEC voltage in 0.1V, 59 mean 5.9V; readonly */
-        OPTION_TEC_VOLTAGE_MAX = 0x21,       /* TEC maximum voltage in 0.1V */
-        OPTION_DEVICE_RESET = 0x22,       /* reset usb device, simulate a replug */
-        OPTION_UPSIDE_DOWN = 0x23,       /* upsize down:
-                                                        1: yes
-                                                        0: no
-                                                        default: 1 (win), 0 (linux/macos)
-                                                    */
-        OPTION_FOCUSPOS = 0x24,       /* focus positon */
-        OPTION_AFMODE = 0x25,       /* auto focus mode (0:manul focus; 1:auto focus; 2:once focus; 3:conjugate calibration) */
-        OPTION_AFZONE = 0x26,       /* auto focus zone */
-        OPTION_AFFEEDBACK = 0x27,       /* auto focus information feedback; 0:unknown; 1:focused; 2:focusing; 3:defocus; 4:up; 5:down */
-        OPTION_TESTPATTERN = 0x28,       /* test pattern:
-                                                        0: off
-                                                        3: monochrome diagonal stripes
-                                                        5: monochrome vertical stripes
-                                                        7: monochrome horizontal stripes
-                                                        9: chromatic diagonal stripes
-                                                    */
-        OPTION_AUTOEXP_THRESHOLD = 0x29,       /* threshold of auto exposure, default value: 5, range = [2, 15] */
-        OPTION_BYTEORDER = 0x2a,       /* Byte order, BGR or RGB: 0 => RGB, 1 => BGR, default value: 1(Win), 0(macOS, Linux, Android) */
-        OPTION_NOPACKET_TIMEOUT = 0x2b,       /* no packet timeout: 0 => disable, positive value (>= NOPACKET_TIMEOUT_MIN) => timeout milliseconds. default: disable */
-        OPTION_MAX_PRECISE_FRAMERATE = 0x2c,       /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
-        OPTION_PRECISE_FRAMERATE = 0x2d,       /* precise frame rate current value in 0.1 fps, range:[1~maximum] */
-        OPTION_BANDWIDTH = 0x2e,       /* bandwidth, [1-100]% */
-        OPTION_RELOAD = 0x2f,       /* reload the last frame in trigger mode */
-        OPTION_CALLBACK_THREAD = 0x30,       /* dedicated thread for callback */
-        OPTION_FRONTEND_DEQUE_LENGTH = 0x31,       /* frontend (raw) frame buffer deque length, range: [2, 1024], default: 4
-                                                        All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
-                                                    */
-        OPTION_FRAME_DEQUE_LENGTH = 0x31,       /* alias of TOUPCAM_OPTION_FRONTEND_DEQUE_LENGTH */
-        OPTION_MIN_PRECISE_FRAMERATE = 0x32,       /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
-        OPTION_SEQUENCER_ONOFF = 0x33,       /* sequencer trigger: on/off */
-        OPTION_SEQUENCER_NUMBER = 0x34,       /* sequencer trigger: number, range = [1, 255] */
-        OPTION_SEQUENCER_EXPOTIME = 0x01000000, /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
-                                                        For example, to set the exposure time of the third group to 50ms, call:
-                                                           Toupcam_put_Option(TOUPCAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
-                                                    */
-        OPTION_SEQUENCER_EXPOGAIN = 0x02000000, /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
-        OPTION_DENOISE = 0x35,       /* denoise, strength range: [0, 100], 0 means disable */
-        OPTION_HEAT_MAX = 0x36,       /* get maximum level: heat to prevent fogging up */
-        OPTION_HEAT = 0x37,       /* heat to prevent fogging up */
-        OPTION_LOW_NOISE = 0x38,       /* low noise mode (Higher signal noise ratio, lower frame rate): 1 => enable */
-        OPTION_POWER = 0x39,       /* get power consumption, unit: milliwatt */
-        OPTION_GLOBAL_RESET_MODE = 0x3a,       /* global reset mode */
-        OPTION_OPEN_ERRORCODE = 0x3b,       /* get the open camera error code */
-        OPTION_FLUSH = 0x3d,        /* 1 = hard flush, discard frames cached by camera DDR (if any)
-                                                        2 = soft flush, discard frames cached by toupcam.dll (if any)
-                                                        3 = both flush
-                                                        Toupcam_Flush means 'both flush'
-                                                        return the number of soft flushed frames if successful, HRESULT if failed
-                                                     */
-        OPTION_NUMBER_DROP_FRAME = 0x3e,        /* get the number of frames that have been grabbed from the USB but dropped by the software */
-        OPTION_DUMP_CFG = 0x3f,        /* 0 = when camera is stopped, do not dump configuration automatically
-                                                        1 = when camera is stopped, dump configuration automatically
-                                                        -1 = explicitly dump configuration once
-                                                        default: 1
-                                                     */
-        OPTION_DEFECT_PIXEL = 0x40,        /* Defect Pixel Correction: 0 => disable, 1 => enable; default: 1 */
-        OPTION_BACKEND_DEQUE_LENGTH = 0x41,        /* backend (pipelined) frame buffer deque length (Only available in pull mode), range: [2, 1024], default: 3
-                                                        All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
-                                                     */
-        OPTION_LIGHTSOURCE_MAX = 0x42,        /* get the light source range, [0 ~ max] */
-        OPTION_LIGHTSOURCE = 0x43,        /* light source */
-        OPTION_HEARTBEAT = 0x44,        /* Heartbeat interval in millisecond, range = [HEARTBEAT_MIN, HEARTBEAT_MAX], 0 = disable, default: disable */
-        OPTION_FRONTEND_DEQUE_CURRENT = 0x45,        /* get the current number in frontend deque */
-        OPTION_BACKEND_DEQUE_CURRENT = 0x46,        /* get the current number in backend deque */
-        OPTION_EVENT_HARDWARE = 0x04000000,  /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
-                                                            (1) iOption = TOUPCAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
-                                                            (2) iOption = TOUPCAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
-                                                        Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
-                                                     */
-        OPTION_PACKET_NUMBER = 0x47,        /* get the received packet number */
-        OPTION_FILTERWHEEL_SLOT = 0x48,        /* filter wheel slot number */
-        OPTION_FILTERWHEEL_POSITION = 0x49,        /* filter wheel position:
-                                                             set:
-                                                                 -1: calibrate
-                                                                 val & 0xff: position between 0 and N-1, where N is the number of filter slots
-                                                                 (val >> 8) & 0x1: direction, 0 => clockwise spinning, 1 => auto direction spinning
-                                                             get:
-                                                                -1: in motion
-                                                                val: position arrived
-                                                     */
-        OPTION_AUTOEXPOSURE_PERCENT = 0x4a,        /* auto exposure percent to average:
-                                                             1~99: peak percent average
-                                                             0 or 100: full roi average
-                                                     */
-        OPTION_ANTI_SHUTTER_EFFECT = 0x4b,        /* anti shutter effect: 1 => disable, 0 => disable; default: 1 */
-        OPTION_CHAMBER_HT = 0x4c,        /* get chamber humidity & temperature:
-                                                             high 16 bits: humidity, in 0.1%, such as: 325 means humidity is 32.5%
-                                                             low 16 bits: temperature, in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius
-                                                     */
-        OPTION_ENV_HT = 0x4d,        /* get environment humidity & temperature */
-        OPTION_EXPOSURE_PRE_DELAY = 0x4e,        /* exposure signal pre-delay, microsecond */
-        OPTION_EXPOSURE_POST_DELAY = 0x4f,        /* exposure signal post-delay, microsecond */
-        OPTION_AUTOEXPO_CONV = 0x50,        /* get auto exposure convergence status: 1(YES) or 0(NO), -1(NA) */
-        OPTION_AUTOEXPO_TRIGGER = 0x51,        /* auto exposure on trigger mode: 0 => disable, 1 => enable; default: 0 */
-        OPTION_LINE_PRE_DELAY = 0x52,        /* specified line signal pre-delay, microsecond */
-        OPTION_LINE_POST_DELAY = 0x53,        /* specified line signal post-delay, microsecond */
-        OPTION_TEC_VOLTAGE_MAX_RANGE = 0x54,        /* get the tec maximum voltage range:
-                                                             high 16 bits: max
-                                                             low 16 bits: min
-                                                     */
-        OPTION_HIGH_FULLWELL = 0x55,        /* high fullwell capacity: 0 => disable, 1 => enable */
-        OPTION_DYNAMIC_DEFECT = 0x56,        /* dynamic defect pixel correction:
-                                                             threshold, t1: (high 16 bits): [10, 100], means: [1.0, 10.0]
-                                                             value, t2: (low 16 bits): [0, 100], means: [0.00, 1.00]
-                                                     */
-        OPTION_HDR_KB = 0x57,        /* HDR synthesize
-                                                             K (high 16 bits): [1, 25500]
-                                                             B (low 16 bits): [0, 65535]
-                                                             0xffffffff => set to default
-                                                     */
-        OPTION_HDR_THRESHOLD = 0x58,        /* HDR synthesize
-                                                             threshold: [1, 4094]
-                                                             0xffffffff => set to default
-                                                     */
-        OPTION_GIGETIMEOUT = 0x5a,        /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
-                                                        If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
-                                                        When the application is stopped by the debugger, the application cannot create the heartbeat signals
-                                                             0 => auto: when the camera is opened, disable if debugger is present or enable if no debugger is present
-                                                             1 => enable
-                                                             2 => disable
-                                                             default: auto
-                                                     */
-        OPTION_EEPROM_SIZE = 0x5b,        /* get EEPROM size */
-        OPTION_OVERCLOCK_MAX = 0x5c,        /* get overclock range: [0, max] */
-        OPTION_OVERCLOCK = 0x5d,        /* overclock, default: 0 */
-        OPTION_RESET_SENSOR = 0x5e,        /* reset sensor */
-        OPTION_ADC = 0x08000000,  /* Analog-Digital Conversion:
-                                                            get:
-                                                                (option | 'C'): get the current value
-                                                                (option | 'N'): get the supported ADC number
-                                                                (option | n): get the nth supported ADC value, such as 11bits, 12bits, etc; the first value is the default
-                                                            set: val = ADC value, such as 11bits, 12bits, etc
-                                                     */
-        OPTION_ISP = 0x5f,        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
-        OPTION_AUTOEXP_EXPOTIME_STEP = 0x60,        /* Auto exposure: time step (thousandths) */
-        OPTION_AUTOEXP_GAIN_STEP = 0x61,        /* Auto exposure: gain step (thousandths) */
-        OPTION_MOTOR_NUMBER = 0x62,        /* range: [1, 20] */
-        OPTION_MOTOR_POS = 0x10000000   /* range: [1, 702] */
+        /* no frame timeout: 0 => disable, positive value (>= NOFRAME_TIMEOUT_MIN) => timeout milliseconds. default: disable */
+        OPTION_NOFRAME_TIMEOUT = 0x01,
+        /* set the priority of the internal thread which grab data from the usb device.
+            Win: iValue: 0 => THREAD_PRIORITY_NORMAL; 1 => THREAD_PRIORITY_ABOVE_NORMAL; 2 => THREAD_PRIORITY_HIGHEST; 3 => THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
+            Linux & macOS: The high 16 bits for the scheduling policy, and the low 16 bits for the priority; see: https://linux.die.net/man/3/pthread_setschedparam
+        */
+        OPTION_THREAD_PRIORITY = 0x02,
+        /* raw data mode, read the sensor "raw" data. This can be set only while camea is NOT running. 0 = rgb, 1 = raw, default value: 0 */
+        OPTION_RAW = 0x04,
+        /* 0 = only one, 1 = continue mode */
+        OPTION_HISTOGRAM = 0x05,
+        /* 0 = 8 bits mode, 1 = 16 bits mode */
+        OPTION_BITDEPTH = 0x06,
+        /* 0 = turn off the cooling fan, [1, max] = fan speed, set to "-1" means to use default fan speed */
+        OPTION_FAN = 0x07,
+        /* 0 = turn off the thermoelectric cooler, 1 = turn on the thermoelectric cooler */
+        OPTION_TEC = 0x08,
+        /* 0 = turn off the builtin linear tone mapping, 1 = turn on the builtin linear tone mapping, default value: 1 */
+        OPTION_LINEAR = 0x09,
+        /* 0 = turn off the builtin curve tone mapping, 1 = turn on the builtin polynomial curve tone mapping, 2 = logarithmic curve tone mapping, default value: 2 */
+        OPTION_CURVE = 0x0a,
+        /* 0 = video mode, 1 = software or simulated trigger mode, 2 = external trigger mode, 3 = external + software trigger, default value = 0 */
+        OPTION_TRIGGER = 0x0b,
+        /* 0 => RGB24; 1 => enable RGB48 format when bitdepth > 8; 2 => RGB32; 3 => 8 Bits Grey (only for mono camera); 4 => 16 Bits Grey (only for mono camera when bitdepth > 8); 5 => RGB64 */
+        OPTION_RGB = 0x0c,
+        /* enable or disable the builtin color matrix, default value: 1 */
+        OPTION_COLORMATIX = 0x0d,
+        /* enable or disable the builtin white balance gain, default value: 1 */
+        OPTION_WBGAIN = 0x0e,
+        OPTION_TECTARGET = 0x0f,
+        /* auto exposure policy:
+                0: Exposure Only
+                1: Exposure Preferred
+                2: Gain Only
+                3: Gain Preferred
+                default value: 1
+        */
+        OPTION_AUTOEXP_POLICY = 0x10,
+        /* limit the frame rate, range=[0, 63], the default value 0 means no limit */
+        OPTION_FRAMERATE = 0x11,
+        /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing, default value: 0 */
+        OPTION_DEMOSAIC = 0x12,
+        /* demosaic method for video */
+        OPTION_DEMOSAIC_VIDEO = 0x13,
+        /* demosaic method for still image */
+        OPTION_DEMOSAIC_STILL = 0x14,
+        /* black level */
+        OPTION_BLACKLEVEL = 0x15,
+        /* multithread image processing */
+        OPTION_MULTITHREAD = 0x16,
+        /* binning
+                0x01: (no binning)
+                n: (saturating add, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
+                0x40 | n: (unsaturated add, n*n, works only in RAW mode), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
+                0x80 | n: (average, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
+            The final image size is rounded down to an even number, such as 640/3 to get 212
+        */
+        OPTION_BINNING = 0x17,
+        /* rotate clockwise: 0, 90, 180, 270 */
+        OPTION_ROTATE = 0x18,
+        /* Conversion Gain:
+                0 = LCG
+                1 = HCG
+                2 = HDR (for camera with flag OGMACAM_FLAG_CGHDR)
+                2 = MCG (for camera with flag OGMACAM_FLAG_GHOPTO)
+        */
+        OPTION_CG = 0x19,
+        /* pixel format */
+        OPTION_PIXEL_FORMAT = 0x1a,
+        /* flat field correction
+            set:
+                0: disable
+                1: enable
+                -1: reset
+                (0xff000000 | n): set the average number to n, [1~255]
+            get:
+                (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                ((val & 0xff00) >> 8): sequence
+                ((val & 0xff0000) >> 16): average number
+        */
+        OPTION_FFC = 0x1b,
+        /* the number of the frames that DDR can cache
+                1: DDR cache only one frame
+                0: Auto:
+                    => one for video mode when auto exposure is enabled
+                    => full capacity for others
+                1: DDR can cache frames to full capacity
+        */
+        OPTION_DDR_DEPTH = 0x1c,
+        /* dark field correction
+            set:
+                0: disable
+                1: enable
+                -1: reset
+                (0xff000000 | n): set the average number to n, [1~255]
+            get:
+                (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                ((val & 0xff00) >> 8): sequence
+                ((val & 0xff0000) >> 16): average number
+        */
+        OPTION_DFC = 0x1d,
+        /* Sharpening: (threshold << 24) | (radius << 16) | strength)
+                strength: [0, 500], default: 0 (disable)
+                radius: [1, 10]
+                threshold: [0, 255]
+        */
+        OPTION_SHARPENING = 0x1e,
+        /* restore the factory settings */
+        OPTION_FACTORY = 0x1f,
+        /* get the current TEC voltage in 0.1V, 59 mean 5.9V; readonly */
+        OPTION_TEC_VOLTAGE = 0x20,
+        /* TEC maximum voltage in 0.1V */
+        OPTION_TEC_VOLTAGE_MAX = 0x21,
+        /* reset usb device, simulate a replug */
+        OPTION_DEVICE_RESET = 0x22,
+        /* upsize down:
+            1: yes
+            0: no
+            default: 1 (win), 0 (linux/macos)
+        */
+        OPTION_UPSIDE_DOWN = 0x23,
+        /* focus positon */
+        OPTION_FOCUSPOS = 0x24,
+        /* auto focus mode, see AFMode */
+        OPTION_AFMODE = 0x25,
+        /* auto focus status, see AFStaus */
+        OPTION_AFSTATUS = 0x27,
+        /* test pattern:
+            0: off
+            3: monochrome diagonal stripes
+            5: monochrome vertical stripes
+            7: monochrome horizontal stripes
+            9: chromatic diagonal stripes
+        */
+        OPTION_TESTPATTERN = 0x28,
+        /* threshold of auto exposure, default value: 5, range = [2, 15] */
+        OPTION_AUTOEXP_THRESHOLD = 0x29,
+        /* Byte order, BGR or RGB: 0 => RGB, 1 => BGR, default value: 1(Win), 0(macOS, Linux, Android) */
+        OPTION_BYTEORDER = 0x2a,
+        /* no packet timeout: 0 => disable, positive value (>= NOPACKET_TIMEOUT_MIN) => timeout milliseconds. default: disable */
+        OPTION_NOPACKET_TIMEOUT = 0x2b,
+        /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
+        OPTION_MAX_PRECISE_FRAMERATE = 0x2c,
+        /* precise frame rate current value in 0.1 fps, range:[1~maximum] */
+        OPTION_PRECISE_FRAMERATE = 0x2d,
+        /* bandwidth, [1-100]% */
+        OPTION_BANDWIDTH = 0x2e,
+        /* reload the last frame in trigger mode */
+        OPTION_RELOAD = 0x2f,
+        /* dedicated thread for callback: 0 => disable, 1 => enable, default: 0 */
+        OPTION_CALLBACK_THREAD = 0x30,
+        /* frontend (raw) frame buffer deque length, range: [2, 1024], default: 4
+            All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
+        */
+        OPTION_FRONTEND_DEQUE_LENGTH = 0x31,
+        /* alias of OGMACAM_OPTION_FRONTEND_DEQUE_LENGTH */
+        OPTION_FRAME_DEQUE_LENGTH = 0x31,
+        /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
+        OPTION_MIN_PRECISE_FRAMERATE = 0x32,
+        /* sequencer trigger: on/off */
+        OPTION_SEQUENCER_ONOFF = 0x33,
+        /* sequencer trigger: number, range = [1, 255] */
+        OPTION_SEQUENCER_NUMBER = 0x34,
+        /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
+            For example, to set the exposure time of the third group to 50ms, call:
+            Ogmacam_put_Option(OGMACAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
+        */
+        OPTION_SEQUENCER_EXPOTIME = 0x01000000,
+        /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
+        OPTION_SEQUENCER_EXPOGAIN = 0x02000000,
+        /* denoise, strength range: [0, 100], 0 means disable */
+        OPTION_DENOISE = 0x35,
+        /* get maximum level: heat to prevent fogging up */
+        OPTION_HEAT_MAX = 0x36,
+        /* heat to prevent fogging up */
+        OPTION_HEAT = 0x37,
+        /* low noise mode (Higher signal noise ratio, lower frame rate): 1 => enable */
+        OPTION_LOW_NOISE = 0x38,
+        /* get power consumption, unit: milliwatt */
+        OPTION_POWER = 0x39,
+        /* global reset mode */
+        OPTION_GLOBAL_RESET_MODE = 0x3a,
+        /* get the open camera error code */
+        OPTION_OPEN_ERRORCODE = 0x3b,
+        /*  1 = hard flush, discard frames cached by camera DDR (if any)
+            2 = soft flush, discard frames cached by ogmacam.dll (if any)
+            3 = both flush
+            Ogmacam_Flush means 'both flush'
+            return the number of soft flushed frames if successful, HRESULT if failed
+        */
+        OPTION_FLUSH = 0x3d,
+        /* get the number of frames that have been grabbed from the USB but dropped by the software */
+        OPTION_NUMBER_DROP_FRAME = 0x3e,
+        /*  0 = when camera is stopped, do not dump configuration automatically
+            1 = when camera is stopped, dump configuration automatically
+            -1 = explicitly dump configuration once
+            default: 1
+        */
+        OPTION_DUMP_CFG = 0x3f,
+        /* Defect Pixel Correction: 0 => disable, 1 => enable; default: 1 */
+        OPTION_DEFECT_PIXEL = 0x40,
+        /* backend (pipelined) frame buffer deque length (Only available in pull mode), range: [2, 1024], default: 3
+            All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
+        */
+        OPTION_BACKEND_DEQUE_LENGTH = 0x41,
+        /* get the light source range, [0 ~ max] */
+        OPTION_LIGHTSOURCE_MAX = 0x42,
+        /* light source */
+        OPTION_LIGHTSOURCE = 0x43,
+        /* Heartbeat interval in millisecond, range = [HEARTBEAT_MIN, HEARTBEAT_MAX], 0 = disable, default: disable */
+        OPTION_HEARTBEAT = 0x44,
+        /* get the current number in frontend deque */
+        OPTION_FRONTEND_DEQUE_CURRENT = 0x45,
+        /* get the current number in backend deque */
+        OPTION_BACKEND_DEQUE_CURRENT = 0x46,
+        /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
+                (1) iOption = OGMACAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
+                (2) iOption = OGMACAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
+            Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
+        */
+        OPTION_EVENT_HARDWARE = 0x04000000,
+        /* get the received packet number */
+        OPTION_PACKET_NUMBER = 0x47,
+        /* filter wheel slot number */
+        OPTION_FILTERWHEEL_SLOT = 0x48,
+        /* filter wheel position:
+            set:
+                -1: calibrate
+                val & 0xff: position between 0 and N-1, where N is the number of filter slots
+                (val >> 8) & 0x1: direction, 0 => clockwise spinning, 1 => auto direction spinning
+            get:
+                -1: in motion
+                val: position arrived
+        */
+        OPTION_FILTERWHEEL_POSITION = 0x49,
+        /* auto exposure percent to average:
+            1~99: peak percent average
+            0 or 100: full roi average, means "disabled"
+        */
+        OPTION_AUTOEXPOSURE_PERCENT = 0x4a,
+        /* anti shutter effect: 1 => disable, 0 => disable; default: 0 */
+        OPTION_ANTI_SHUTTER_EFFECT = 0x4b,
+        /* get chamber humidity & temperature:
+            high 16 bits: humidity, in 0.1%, such as: 325 means humidity is 32.5%
+            low 16 bits: temperature, in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius
+        */
+        OPTION_CHAMBER_HT = 0x4c,
+        /* get environment humidity & temperature */
+        OPTION_ENV_HT = 0x4d,
+        /* exposure signal pre-delay, microsecond */
+        OPTION_EXPOSURE_PRE_DELAY = 0x4e,
+        /* exposure signal post-delay, microsecond */
+        OPTION_EXPOSURE_POST_DELAY = 0x4f,
+        /* get auto exposure convergence status: 1(YES) or 0(NO), -1(NA) */
+        OPTION_AUTOEXPO_CONV = 0x50,
+        /* auto exposure on trigger mode: 0 => disable, 1 => enable; default: 0 */
+        OPTION_AUTOEXPO_TRIGGER = 0x51,
+        /* specified line signal pre-delay, microsecond */
+        OPTION_LINE_PRE_DELAY = 0x52,
+        /* specified line signal post-delay, microsecond */
+        OPTION_LINE_POST_DELAY = 0x53,
+        /* get the tec maximum voltage range:
+            high 16 bits: max
+            low 16 bits: min
+        */
+        OPTION_TEC_VOLTAGE_MAX_RANGE = 0x54,
+        /* high fullwell capacity: 0 => disable, 1 => enable */
+        OPTION_HIGH_FULLWELL = 0x55,
+        /* dynamic defect pixel correction:
+            threshold, t1: (high 16 bits): [10, 100], means: [1.0, 10.0]
+            value, t2: (low 16 bits): [0, 100], means: [0.00, 1.00]
+        */
+        OPTION_DYNAMIC_DEFECT = 0x56,
+        /* HDR synthesize
+            K (high 16 bits): [1, 25500]
+            B (low 16 bits): [0, 65535]
+            0xffffffff => set to default
+        */
+        OPTION_HDR_KB = 0x57,
+        /* HDR synthesize
+            threshold: [1, 4094]
+            0xffffffff => set to default
+        */
+        OPTION_HDR_THRESHOLD = 0x58,
+        /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
+            If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
+            When the application is stopped by the debugger, the application cannot create the heartbeat signals
+                0 => auto: when the camera is opened, disable if debugger is present or enable if no debugger is present
+                1 => enable
+                2 => disable
+                default: auto
+        */
+        OPTION_GIGETIMEOUT = 0x5a,
+        /* get EEPROM size */
+        OPTION_EEPROM_SIZE = 0x5b,
+        /* get overclock range: [0, max] */
+        OPTION_OVERCLOCK_MAX = 0x5c,
+        /* overclock, default: 0 */
+        OPTION_OVERCLOCK = 0x5d,
+        /* reset sensor */
+        OPTION_RESET_SENSOR = 0x5e,
+        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
+        OPTION_ISP = 0x5f,
+        /* Auto exposure damp: time (thousandths) */
+        OPTION_AUTOEXP_EXPOTIME_DAMP = 0x60,
+        /* Auto exposure damp: gain (thousandths) */
+        OPTION_AUTOEXP_GAIN_DAMP = 0x61,
+        /* range: [1, 20] */
+        OPTION_MOTOR_NUMBER = 0x62,
+        /* range: [1, 702] */
+        OPTION_MOTOR_POS = 0x10000000,
+        /* Pseudo: start color, BGR format */
+        OPTION_PSEUDO_COLOR_START = 0x63,
+        /* Pseudo: end color, BGR format */
+        OPTION_PSEUDO_COLOR_END = 0x64,
+        /*  Pseudo: 
+            -1 => custom: use startcolor & endcolor to generate the colormap
+            0 => disable
+            1 => spot
+            2 => spring
+            3 => summer
+            4 => autumn
+            5 => winter
+            6 => bone
+            7 => jet
+            8 => rainbow
+            9 => deepgreen
+            10 => ocean
+            11 => cool
+            12 => hsv
+            13 => pink
+            14 => hot
+            15 => parula
+            16 => magma
+            17 => inferno
+            18 => plasma
+            19 => viridis
+            20 => cividis
+            21 => twilight
+            22 => twilight_shifted
+            23 => turbo
+        */
+        OPTION_PSEUDO_COLOR_ENABLE = 0x65,
+        /* Low Power Consumption: 0 => disable, 1 => enable */
+        OPTION_LOW_POWERCONSUMPTION = 0x66,
+        /*  Fix Pattern Noise Correction
+                set:
+                    0: disable
+                    1: enable
+                    -1: reset
+                    (0xff000000 | n): set the average number to n, [1~255]
+                get:
+                    (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                    ((val & 0xff00) >> 8): sequence
+                    ((val & 0xff0000) >> 16): average number
+        */
+        OPTION_FPNC = 0x67,
+        /* Auto exposure over exposure policy: when overexposed,
+                0 => directly reduce the exposure time/gain to the minimum value; or
+                1 => reduce exposure time/gain in proportion to current and target brightness.
+            The advantage of policy 0 is that the convergence speed is faster, but there is black screen.
+            Policy 1 avoids the black screen, but the convergence speed is slower.
+            Default: 0
+        */
+        OPTION_OVEREXP_POLICY = 0x68,
+        /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read) */
+        OPTION_READOUT_MODE = 0x69,
+        /* Turn on/off tail Led light: 0 => off, 1 => on; default: on */
+        OPTION_TAILLIGHT = 0x6a
     };
 
     /* HRESULT: error code */
-    public const int S_OK = 0x00000000;                             /* Success */
-    public const int S_FALSE = 0x00000001;                          /* Success with noop */
-    public const int E_UNEXPECTED = unchecked((int)0x8000ffff);     /* Catastrophic failure */
-    public const int E_NOTIMPL = unchecked((int)0x80004001);        /* Not supported or not implemented */
+    /* Success */
+    public const int S_OK = 0x00000000;
+    /* Yet another success */
+    public const int S_FALSE = 0x00000001;
+    /* Catastrophic failure */
+    public const int E_UNEXPECTED = unchecked((int)0x8000ffff);
+    /* Not supported or not implemented */
+    public const int E_NOTIMPL = unchecked((int)0x80004001);
     public const int E_NOINTERFACE = unchecked((int)0x80004002);
-    public const int E_ACCESSDENIED = unchecked((int)0x80070005);   /* Permission denied */
-    public const int E_OUTOFMEMORY = unchecked((int)0x8007000e);    /* Out of memory */
-    public const int E_INVALIDARG = unchecked((int)0x80070057);     /* One or more arguments are not valid */
-    public const int E_POINTER = unchecked((int)0x80004003);        /* Pointer that is not valid */
-    public const int E_FAIL = unchecked((int)0x80004005);           /* Generic failure */
-    public const int E_WRONG_THREAD = unchecked((int)0x8001010e);   /* Call function in the wrong thread */
-    public const int E_GEN_FAILURE = unchecked((int)0x8007001f);    /* Device not functioning */
-    public const int E_BUSY = unchecked((int)0x800700aa);           /* The requested resource is in use */
-    public const int E_PENDING = unchecked((int)0x8000000a);        /* The data necessary to complete this operation is not yet available */
-    public const int E_TIMEOUT = unchecked((int)0x8001011f);        /* This operation returned because the timeout period expired */
+    /* Permission denied */
+    public const int E_ACCESSDENIED = unchecked((int)0x80070005);
+    /* Out of memory */
+    public const int E_OUTOFMEMORY = unchecked((int)0x8007000e);
+    /* One or more arguments are not valid */
+    public const int E_INVALIDARG = unchecked((int)0x80070057);
+    /* Pointer that is not valid */
+    public const int E_POINTER = unchecked((int)0x80004003);
+    /* Generic failure */
+    public const int E_FAIL = unchecked((int)0x80004005);
+    /* Call function in the wrong thread */
+    public const int E_WRONG_THREAD = unchecked((int)0x8001010e);
+    /* Device not functioning */
+    public const int E_GEN_FAILURE = unchecked((int)0x8007001f);
+    /* The requested resource is in use */
+    public const int E_BUSY = unchecked((int)0x800700aa);
+    /* The data necessary to complete this operation is not yet available */
+    public const int E_PENDING = unchecked((int)0x8000000a);
+    /* This operation returned because the timeout period expired */
+    public const int E_TIMEOUT = unchecked((int)0x8001011f);
 
     public const int EXPOGAIN_DEF = 100;      /* exposure gain, default value */
     public const int EXPOGAIN_MIN = 100;      /* exposure gain, minimum value */
     public const int TEMP_DEF = 6503;     /* color temperature, default value */
-    public const int TEMP_MIN = 2000;     /* color temperature, minimum value */
-    public const int TEMP_MAX = 15000;    /* color temperature, maximum value */
+    public const int TEMP_MIN = 1000;     /* color temperature, minimum value */
+    public const int TEMP_MAX = 25000;    /* color temperature, maximum value */
     public const int TINT_DEF = 1000;     /* tint */
-    public const int TINT_MIN = 200;      /* tint */
+    public const int TINT_MIN = 100;      /* tint */
     public const int TINT_MAX = 2500;     /* tint */
     public const int HUE_DEF = 0;        /* hue */
     public const int HUE_MIN = -180;     /* hue */
@@ -372,11 +630,11 @@ public class Ogmacam : IDisposable {
     public const int SATURATION_MIN = 0;        /* saturation */
     public const int SATURATION_MAX = 255;      /* saturation */
     public const int BRIGHTNESS_DEF = 0;        /* brightness */
-    public const int BRIGHTNESS_MIN = -64;      /* brightness */
-    public const int BRIGHTNESS_MAX = 64;       /* brightness */
+    public const int BRIGHTNESS_MIN = -128;     /* brightness */
+    public const int BRIGHTNESS_MAX = 128;      /* brightness */
     public const int CONTRAST_DEF = 0;        /* contrast */
-    public const int CONTRAST_MIN = -100;     /* contrast */
-    public const int CONTRAST_MAX = 100;      /* contrast */
+    public const int CONTRAST_MIN = -150;     /* contrast */
+    public const int CONTRAST_MAX = 150;      /* contrast */
     public const int GAMMA_DEF = 100;      /* gamma */
     public const int GAMMA_MIN = 20;       /* gamma */
     public const int GAMMA_MAX = 180;      /* gamma */
@@ -389,6 +647,7 @@ public class Ogmacam : IDisposable {
     public const int BLACKLEVEL_MIN = 0;        /* minimum black level */
     public const int BLACKLEVEL8_MAX = 31;       /* maximum black level for bitdepth = 8 */
     public const int BLACKLEVEL10_MAX = 31 * 4;   /* maximum black level for bitdepth = 10 */
+    public const int BLACKLEVEL11_MAX = 31 * 8;   /* maximum black level for bitdepth = 11 */
     public const int BLACKLEVEL12_MAX = 31 * 16;  /* maximum black level for bitdepth = 12 */
     public const int BLACKLEVEL14_MAX = 31 * 64;  /* maximum black level for bitdepth = 14 */
     public const int BLACKLEVEL16_MAX = 31 * 256; /* maximum black level for bitdepth = 16 */
@@ -404,9 +663,9 @@ public class Ogmacam : IDisposable {
     public const int AUTOEXPO_THRESHOLD_DEF = 5;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MIN = 2;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MAX = 15;       /* auto exposure threshold */
-    public const int AUTOEXPO_STEP_DEF = 1000;     /* auto exposure step: thousandths */
-    public const int AUTOEXPO_STEP_MIN = 1;        /* auto exposure step: thousandths */
-    public const int AUTOEXPO_STEP_MAX = 1000;     /* auto exposure step: thousandths */
+    public const int AUTOEXPO_DAMP_DEF = 0;        /* auto exposure damp: thousandths */
+    public const int AUTOEXPO_DAMP_MIN = 0;        /* auto exposure damp: thousandths */
+    public const int AUTOEXPO_DAMP_MAX = 1000;     /* auto exposure damp: thousandths */
     public const int BANDWIDTH_DEF = 100;      /* bandwidth */
     public const int BANDWIDTH_MIN = 1;        /* bandwidth */
     public const int BANDWIDTH_MAX = 100;      /* bandwidth */
@@ -414,15 +673,15 @@ public class Ogmacam : IDisposable {
     public const int DENOISE_MIN = 0;        /* denoise */
     public const int DENOISE_MAX = 100;      /* denoise */
     public const int TEC_TARGET_MIN = -500;     /* TEC target: -50.0 degrees Celsius */
-    public const int TEC_TARGET_DEF = 100;      /* TEC target: 0.0 degrees Celsius */
+    public const int TEC_TARGET_DEF = 100;      /* TEC target: 10.0 degrees Celsius */
     public const int TEC_TARGET_MAX = 400;      /* TEC target: 40.0 degrees Celsius */
     public const int HEARTBEAT_MIN = 100;      /* millisecond */
     public const int HEARTBEAT_MAX = 10000;    /* millisecond */
-    public const int AE_PERCENT_MIN = 0;        /* auto exposure percent, 0 => full roi average */
+    public const int AE_PERCENT_MIN = 0;        /* auto exposure percent; 0 or 100 => full roi average, means "disabled" */
     public const int AE_PERCENT_MAX = 100;
-    public const int AE_PERCENT_DEF = 10;
+    public const int AE_PERCENT_DEF = 10;       /* auto exposure percent: enabled, percentage = 10% */
     public const int NOPACKET_TIMEOUT_MIN = 500;      /* no packet timeout minimum: 500ms */
-    public const int NOFRAME_TIMEOUT_MIN = 500;      /* no frame timeout minimum: 500ms */
+    public const int NOFRAME_TIMEOUT_MIN = 500;       /* no frame timeout minimum: 500ms */
     public const int DYNAMIC_DEFECT_T1_MIN = 10;       /* dynamic defect pixel correction, threshold, means: 1.0 */
     public const int DYNAMIC_DEFECT_T1_MAX = 100;      /* means: 10.0 */
     public const int DYNAMIC_DEFECT_T1_DEF = 13;       /* means: 1.3 */
@@ -446,113 +705,160 @@ public class Ogmacam : IDisposable {
         PIXELFORMAT_VUYY = 0x06,
         PIXELFORMAT_YUV444 = 0x07,
         PIXELFORMAT_RGB888 = 0x08,
+        /* map to RGGB 8 bits */
         PIXELFORMAT_GMCY8 = 0x09,
+        /* map to RGGB 12 bits */
         PIXELFORMAT_GMCY12 = 0x0a,
-        PIXELFORMAT_UYVY = 0x0b
+        PIXELFORMAT_UYVY = 0x0b,
+        PIXELFORMAT_RAW12PACK = 0x0c,
+        PIXELFORMAT_RAW11 = 0x0d,
+        /* HDR, Bitdepth: 8, Conversion Gain: High + Low */
+        PIXELFORMAT_HDR8HL = 0x0e,
+        /* HDR, Bitdepth: 10, Conversion Gain: High + Low */
+        PIXELFORMAT_HDR10HL = 0x0f,
+        /* HDR, Bitdepth: 11, Conversion Gain: High + Low */
+        PIXELFORMAT_HDR11HL = 0x10,
+        /* HDR, Bitdepth: 12, Conversion Gain: High + Low */
+        PIXELFORMAT_HDR12HL = 0x11,
+        /* HDR, Bitdepth: 14, Conversion Gain: High + Low */
+        PIXELFORMAT_HDR14HL = 0x12
     };
 
     public enum eFRAMEINFO_FLAG : uint {
-        FRAMEINFO_FLAG_SEQ = 0x0001, /* frame sequence number */
-        FRAMEINFO_FLAG_TIMESTAMP = 0x0002, /* timestamp */
-        FRAMEINFO_FLAG_EXPOTIME = 0x0004, /* exposure time */
-        FRAMEINFO_FLAG_EXPOGAIN = 0x0008, /* exposure gain */
-        FRAMEINFO_FLAG_BLACKLEVEL = 0x0010, /* black level */
-        FRAMEINFO_FLAG_SHUTTERSEQ = 0x0020, /* sequence shutter counter */
-        FRAMEINFO_FLAG_STILL = 0x8000  /* still image */
+        /* frame sequence number */
+        FRAMEINFO_FLAG_SEQ = 0x00000001,
+        /* timestamp */
+        FRAMEINFO_FLAG_TIMESTAMP = 0x00000002,
+        /* exposure time */
+        FRAMEINFO_FLAG_EXPOTIME = 0x00000004,
+        /* exposure gain */
+        FRAMEINFO_FLAG_EXPOGAIN = 0x00000008,
+        /* black level */
+        FRAMEINFO_FLAG_BLACKLEVEL = 0x00000010,
+        /* sequence shutter counter */
+        FRAMEINFO_FLAG_SHUTTERSEQ = 0x00000020,
+        /* still image */
+        FRAMEINFO_FLAG_STILL = 0x00008000
     };
 
     public enum eIoControType : uint {
-        IOCONTROLTYPE_GET_SUPPORTEDMODE = 0x01, /* 0x01 => Input, 0x02 => Output, (0x01 | 0x02) => support both Input and Output */
-        IOCONTROLTYPE_GET_GPIODIR = 0x03, /* 0x00 => Input, 0x01 => Output */
+        /* 0x01 => Input, 0x02 => Output, (0x01 | 0x02) => support both Input and Output */
+        IOCONTROLTYPE_GET_SUPPORTEDMODE = 0x01,
+        /* 0x00 => Input, 0x01 => Output */
+        IOCONTROLTYPE_GET_GPIODIR = 0x03,
         IOCONTROLTYPE_SET_GPIODIR = 0x04,
-        IOCONTROLTYPE_GET_FORMAT = 0x05, /*
-                                                           0x00 => not connected
-                                                           0x01 => Tri-state: Tri-state mode (Not driven)
-                                                           0x02 => TTL: TTL level signals
-                                                           0x03 => LVDS: LVDS level signals
-                                                           0x04 => RS422: RS422 level signals
-                                                           0x05 => Opto-coupled
-                                                        */
+        /*  0x00 => not connected
+            0x01 => Tri-state: Tri-state mode (Not driven)
+            0x02 => TTL: TTL level signals
+            0x03 => LVDS: LVDS level signals
+            0x04 => RS422: RS422 level signals
+            0x05 => Opto-coupled
+        */
+        IOCONTROLTYPE_GET_FORMAT = 0x05,
         IOCONTROLTYPE_SET_FORMAT = 0x06,
-        IOCONTROLTYPE_GET_OUTPUTINVERTER = 0x07, /* boolean, only support output signal */
+        /* boolean, only support output signal */
+        IOCONTROLTYPE_GET_OUTPUTINVERTER = 0x07,
         IOCONTROLTYPE_SET_OUTPUTINVERTER = 0x08,
-        IOCONTROLTYPE_GET_INPUTACTIVATION = 0x09, /* 0x00 => Rising edge, 0x01 => Falling edge, 0x02 => Level high, 0x03 => Level low */
+        /* 0x00 => Rising edge, 0x01 => Falling edge, 0x02 => Level high, 0x03 => Level low */
+        IOCONTROLTYPE_GET_INPUTACTIVATION = 0x09,
         IOCONTROLTYPE_SET_INPUTACTIVATION = 0x0a,
-        IOCONTROLTYPE_GET_DEBOUNCERTIME = 0x0b, /* debouncer time in microseconds, range: [0, 20000] */
+        /* debouncer time in microseconds, range: [0, 20000] */
+        IOCONTROLTYPE_GET_DEBOUNCERTIME = 0x0b,
         IOCONTROLTYPE_SET_DEBOUNCERTIME = 0x0c,
-        IOCONTROLTYPE_GET_TRIGGERSOURCE = 0x0d, /*
-                                                           0x00 => Opto-isolated input
-                                                           0x01 => GPIO0
-                                                           0x02 => GPIO1
-                                                           0x03 => Counter
-                                                           0x04 => PWM
-                                                           0x05 => Software
-                                                        */
+        /*  0x00 => Opto-isolated input
+            0x01 => GPIO0
+            0x02 => GPIO1
+            0x03 => Counter
+            0x04 => PWM
+            0x05 => Software
+        */
+        IOCONTROLTYPE_GET_TRIGGERSOURCE = 0x0d,
         IOCONTROLTYPE_SET_TRIGGERSOURCE = 0x0e,
-        IOCONTROLTYPE_GET_TRIGGERDELAY = 0x0f, /* Trigger delay time in microseconds, range: [0, 5000000] */
+        /* Trigger delay time in microseconds, range: [0, 5000000] */
+        IOCONTROLTYPE_GET_TRIGGERDELAY = 0x0f,
         IOCONTROLTYPE_SET_TRIGGERDELAY = 0x10,
-        IOCONTROLTYPE_GET_BURSTCOUNTER = 0x11, /* Burst Counter, range: [1 ~ 65535] */
+        /* Burst Counter, range: [1 ~ 65535] */
+        IOCONTROLTYPE_GET_BURSTCOUNTER = 0x11,
         IOCONTROLTYPE_SET_BURSTCOUNTER = 0x12,
-        IOCONTROLTYPE_GET_COUNTERSOURCE = 0x13, /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02=> GPIO1 */
+        /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02=> GPIO1 */
+        IOCONTROLTYPE_GET_COUNTERSOURCE = 0x13,
         IOCONTROLTYPE_SET_COUNTERSOURCE = 0x14,
-        IOCONTROLTYPE_GET_COUNTERVALUE = 0x15, /* Counter Value, range: [1 ~ 65535] */
+        /* Counter Value, range: [1 ~ 65535] */
+        IOCONTROLTYPE_GET_COUNTERVALUE = 0x15,
         IOCONTROLTYPE_SET_COUNTERVALUE = 0x16,
         IOCONTROLTYPE_SET_RESETCOUNTER = 0x18,
         IOCONTROLTYPE_GET_PWM_FREQ = 0x19,
         IOCONTROLTYPE_SET_PWM_FREQ = 0x1a,
         IOCONTROLTYPE_GET_PWM_DUTYRATIO = 0x1b,
         IOCONTROLTYPE_SET_PWM_DUTYRATIO = 0x1c,
-        IOCONTROLTYPE_GET_PWMSOURCE = 0x1d, /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
+        /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
+        IOCONTROLTYPE_GET_PWMSOURCE = 0x1d,
         IOCONTROLTYPE_SET_PWMSOURCE = 0x1e,
-        IOCONTROLTYPE_GET_OUTPUTMODE = 0x1f, /*
-                                                           0x00 => Frame Trigger Wait
-                                                           0x01 => Exposure Active
-                                                           0x02 => Strobe
-                                                           0x03 => User output
-                                                           0x04 => Counter Output
-                                                           0x05 => Timer Output                                                        
-                                                        */
+        /*  0x00 => Frame Trigger Wait
+            0x01 => Exposure Active
+            0x02 => Strobe
+            0x03 => User output
+            0x04 => Counter Output
+            0x05 => Timer Output
+        */
+        IOCONTROLTYPE_GET_OUTPUTMODE = 0x1f,
         IOCONTROLTYPE_SET_OUTPUTMODE = 0x20,
-        IOCONTROLTYPE_GET_STROBEDELAYMODE = 0x21, /* boolean, 1 => delay, 0 => pre-delay; compared to exposure active signal */
+        /* boolean, 1 => delay, 0 => pre-delay; compared to exposure active signal */
+        IOCONTROLTYPE_GET_STROBEDELAYMODE = 0x21,
         IOCONTROLTYPE_SET_STROBEDELAYMODE = 0x22,
-        IOCONTROLTYPE_GET_STROBEDELAYTIME = 0x23, /* Strobe delay or pre-delay time in microseconds, range: [0, 5000000] */
+        /* Strobe delay or pre-delay time in microseconds, range: [0, 5000000] */
+        IOCONTROLTYPE_GET_STROBEDELAYTIME = 0x23,
         IOCONTROLTYPE_SET_STROBEDELAYTIME = 0x24,
-        IOCONTROLTYPE_GET_STROBEDURATION = 0x25, /* Strobe duration time in microseconds, range: [0, 5000000] */
+        /* Strobe duration time in microseconds, range: [0, 5000000] */
+        IOCONTROLTYPE_GET_STROBEDURATION = 0x25,
         IOCONTROLTYPE_SET_STROBEDURATION = 0x26,
-        IOCONTROLTYPE_GET_USERVALUE = 0x27, /*
-                                                           bit0 => Opto-isolated output
-                                                           bit1 => GPIO0 output
-                                                           bit2 => GPIO1 output
-                                                        */
+        /*  bit0 => Opto-isolated output
+            bit1 => GPIO0 output
+            bit2 => GPIO1 output
+        */
+        IOCONTROLTYPE_GET_USERVALUE = 0x27,
         IOCONTROLTYPE_SET_USERVALUE = 0x28,
-        IOCONTROLTYPE_GET_UART_ENABLE = 0x29, /* enable: 1 => on; 0 => off */
+        /* enable: 1 => on; 0 => off */
+        IOCONTROLTYPE_GET_UART_ENABLE = 0x29,
         IOCONTROLTYPE_SET_UART_ENABLE = 0x2a,
-        IOCONTROLTYPE_GET_UART_BAUDRATE = 0x2b, /* baud rate: 0 => 9600; 1 => 19200; 2 => 38400; 3 => 57600; 4 => 115200 */
+        /* baud rate: 0 => 9600; 1 => 19200; 2 => 38400; 3 => 57600; 4 => 115200 */
+        IOCONTROLTYPE_GET_UART_BAUDRATE = 0x2b,
         IOCONTROLTYPE_SET_UART_BAUDRATE = 0x2c,
-        IOCONTROLTYPE_GET_UART_LINEMODE = 0x2d, /* line mode: 0 => TX(GPIO_0)/RX(GPIO_1); 1 => TX(GPIO_1)/RX(GPIO_0) */
+        /* line mode: 0 => TX(GPIO_0)/RX(GPIO_1); 1 => TX(GPIO_1)/RX(GPIO_0) */
+        IOCONTROLTYPE_GET_UART_LINEMODE = 0x2d,
         IOCONTROLTYPE_SET_UART_LINEMODE = 0x2e,
-        IOCONTROLTYPE_GET_EXPO_ACTIVE_MODE = 0x2f, /* exposure time signal: 0 => specified line, 1 => common exposure time */
+        /* exposure time signal: 0 => specified line, 1 => common exposure time */
+        IOCONTROLTYPE_GET_EXPO_ACTIVE_MODE = 0x2f,
         IOCONTROLTYPE_SET_EXPO_ACTIVE_MODE = 0x30,
-        IOCONTROLTYPE_GET_EXPO_START_LINE = 0x31, /* exposure start line, default: 0 */
+        /* exposure start line, default: 0 */
+        IOCONTROLTYPE_GET_EXPO_START_LINE = 0x31,
         IOCONTROLTYPE_SET_EXPO_START_LINE = 0x32,
-        IOCONTROLTYPE_GET_EXPO_END_LINE = 0x33, /* exposure end line, default: 0
-                                                           end line must be no less than start line
-                                                        */
+        /*  exposure end line, default: 0
+            end line must be no less than start line
+        */
+        IOCONTROLTYPE_GET_EXPO_END_LINE = 0x33,
         IOCONTROLTYPE_SET_EXPO_END_LINE = 0x34,
-        IOCONTROLTYPE_GET_EXEVT_ACTIVE_MODE = 0x35, /* exposure event: 0 => specified line, 1 => common exposure time */
+        /* exposure event: 0 => specified line, 1 => common exposure time */
+        IOCONTROLTYPE_GET_EXEVT_ACTIVE_MODE = 0x35,
         IOCONTROLTYPE_SET_EXEVT_ACTIVE_MODE = 0x36,
-        IOCONTROLTYPE_GET_OUTPUTCOUNTERVALUE = 0x37, /* Output Counter Value, range: [0 ~ 65535] */
+        /* Output Counter Value, range: [0 ~ 65535] */
+        IOCONTROLTYPE_GET_OUTPUTCOUNTERVALUE = 0x37,
         IOCONTROLTYPE_SET_OUTPUTCOUNTERVALUE = 0x38,
-        IOCONTROLTYPE_SET_OUTPUT_PAUSE = 0x3a  /* Output pause: 1 => puase, 0 => unpause */
+        /* Output pause: 1 => puase, 0 => unpause */
+        IOCONTROLTYPE_SET_OUTPUT_PAUSE = 0x3a,
+        /* Input state: 0 (low level) or 1 (high level) */
+        IOCONTROLTYPE_GET_INPUT_STATE = 0x3c
     };
+
+    public const int IOCONTROL_DELAYTIME_MAX = 5 * 1000 * 1000;
 
     /* AAF: Astro Auto Focuser */
     public enum eAAF : int {
         AAF_SETPOSITION = 0x01,
         AAF_GETPOSITION = 0x02,
         AAF_SETZERO = 0x03,
-        AAF_GETZERO = 0x04,
         AAF_SETDIRECTION = 0x05,
+        AAF_GETDIRECTION = 0x06,
         AAF_SETMAXINCREMENT = 0x07,
         AAF_GETMAXINCREMENT = 0x08,
         AAF_SETFINE = 0x09,
@@ -564,22 +870,31 @@ public class Ogmacam : IDisposable {
         AAF_SETBACKLASH = 0x0f,
         AAF_GETBACKLASH = 0x10,
         AAF_GETAMBIENTTEMP = 0x12,
+        /* in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius */
         AAF_GETTEMP = 0x14,
         AAF_ISMOVING = 0x16,
         AAF_HALT = 0x17,
         AAF_SETMAXSTEP = 0x1b,
         AAF_GETMAXSTEP = 0x1c,
-        AAF_RANGEMIN = 0xfd,  /* Range: min value */
-        AAF_RANGEMAX = 0xfe,  /* Range: max value */
-        AAF_RANGEDEF = 0xff   /* Range: default value */
+        AAF_GETSTEPSIZE = 0x1e,
+        /* Range: min value */
+        AAF_RANGEMIN = 0xfd,
+        /* Range: max value */
+        AAF_RANGEMAX = 0xfe,
+        /* Range: default value */
+        AAF_RANGEDEF = 0xff
     };
 
     /* hardware level range mode */
     public enum eLevelRange : ushort {
-        LEVELRANGE_MANUAL = 0x0000,    /* manual */
-        LEVELRANGE_ONCE = 0x0001,    /* once */
-        LEVELRANGE_CONTINUE = 0x0002,    /* continue */
-        LEVELRANGE_ROI = 0xffff     /* update roi rect only */
+        /* manual */
+        LEVELRANGE_MANUAL = 0x0000,
+        /* once */
+        LEVELRANGE_ONCE = 0x0001,
+        /* continue */
+        LEVELRANGE_CONTINUE = 0x0002,
+        /* update roi rect only */
+        LEVELRANGE_ROI = 0xffff
     };
 
     public struct Resolution {
@@ -624,7 +939,67 @@ public class Ogmacam : IDisposable {
         public ulong timestamp;    /* microsecond */
     };
     [StructLayout(LayoutKind.Sequential)]
-    public struct AfParam {
+    public struct SelfTrigger {
+        public uint sensingLeft, sensingTop, sensingWidth, sensingHeight; /* Sensing Area */
+        public uint hThreshold, lThreshold; /* threshold High side, threshold Low side */
+        public uint expoTime;   /* Exposure Time */
+        public ushort expoGain; /* Exposure Gain */
+        public ushort hCount, lCount; /* Count threshold High side, Count threshold Low side, thousandths of Sensing Area */
+        public ushort reserved;
+    };
+    public struct LensInfo {
+        public ushort lensID;
+        public byte lensType;
+        public byte statusAfmf;      /* LENS_AF = 0x00,  LENS_MF = 0x80 */
+
+        public ushort maxFocalLength;
+        public ushort curFocalLength;
+        public ushort minFocalLength;
+
+        public short farFM;           /* focus motor, absolute value */
+        public short curFM;           /* current focus motor */
+        public short nearFM;
+
+        public ushort maxFocusDistance;
+        public ushort minFocusDistance;
+
+        public sbyte curAM;
+        public byte maxAM;           /* maximum Aperture, mimimum F# */
+        public byte minAM;           /* mimimum Aperture, maximum F# */
+        public byte posAM;           /* used for set aperture motor to posAM, it is an index */
+        public int posFM;            /* used for set focus motor to posFM */
+
+        public string[] arrayFN;
+    };
+    public enum eAFMode : uint {
+        AFMode_CALIBRATE = 0x0, /* lens calibration mode */
+        AFMode_MANUAL = 0x1,    /* manual focus mode */
+        AFMode_ONCE = 0x2,      /* onepush focus mode */
+        AFMode_AUTO = 0x3,      /* autofocus mode */
+        AFMode_NONE = 0x4,      /* no active selection of focus mode */
+        AFMode_IDLE = 0x5
+    };
+    public enum eAFStatus : uint {
+        AFStatus_PEAKPOINT = 0x1,    /* Focus completed, find the focus position */
+        AFStatus_DEFOCUS = 0x2,      /* End of focus, defocus */
+        AFStatus_NEAR = 0x3,         /* Focusing ended, object too close */
+        AFStatus_FAR = 0x4,          /* Focusing ended, object too far */
+        AFStatus_ROICHANGED = 0x5,   /* Focusing ends, roi changes */
+        AFStatus_SCENECHANGED = 0x6, /* Focusing ends, scene changes */
+        AFStatus_MODECHANGED = 0x7,  /* The end of focusing and the change in focusing mode is usually determined by the user moderator */
+        AFStatus_UNFINISH = 0x8      /* The focus is not complete. At the beginning of focusing, it will be set as incomplete */
+    };
+    [StructLayout(LayoutKind.Sequential)]
+    public struct AFState {
+        public eAFMode AF_Mode;
+        public eAFStatus AF_Status;
+        public byte AF_LensAP_Update_Flag;  /* mark for whether the lens aperture is calibrated */
+        public byte AF_LensManual_Flag;     /* if true, allows manual operation */
+        public byte Reserved0;
+        public byte Reserved1;
+    };
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FocusMotor {
         public int imax;           /* maximum auto focus sensor board positon */
         public int imin;           /* minimum auto focus sensor board positon */
         public int idef;           /* conjugate calibration positon */
@@ -677,7 +1052,7 @@ public class Ogmacam : IDisposable {
         GC.SuppressFinalize(this);
     }
 
-    /* get the version of this dll/so, which is: 54.23312.20230910 */
+    /* get the version of this dll/so, which is: 55.25159.20240404 */
     public static string Version() {
         return Marshal.PtrToStringUni(Ogmacam_Version());
     }
@@ -963,9 +1338,8 @@ public class Ogmacam : IDisposable {
         }
     }
 
-#if !(NETFX_CORE || NETCOREAPP || WINDOWS_UWP)
-    public bool StartPullModeWithWndMsg(IntPtr hWnd, uint nMsg)
-    {
+#if !(WINDOWS_UWP)
+    public bool StartPullModeWithWndMsg(IntPtr hWnd, uint nMsg) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         return CheckHResult(Ogmacam_StartPullModeWithWndMsg(handle_, hWnd, nMsg));
@@ -1360,32 +1734,32 @@ public class Ogmacam : IDisposable {
 
     /*
         trigger synchronously
-        nTimeout:   0:              by default, exposure * 102% + 4000 milliseconds
+        nWaitMS:    0:              by default, exposure * 102% + 4000 milliseconds
                     0xffffffff:     wait infinite
                     other:          milliseconds to wait
     */
-    public bool TriggerSync(uint nTimeout, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
-    public bool TriggerSync(uint nTimeout, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
-    public bool TriggerSync(uint nTimeout, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool put_Size(int nWidth, int nHeight) {
@@ -1573,6 +1947,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_put_AutoExpoTarget(handle_, Target));
     }
 
+    /* set the maximum/minimal auto exposure time and agin. The default maximum auto exposure time is 350ms */
     public bool put_AutoExpoRange(uint maxTime, uint minTime, ushort maxGain, ushort minGain) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
@@ -2208,6 +2583,32 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_get_Option(handle_, iOption, out iValue));
     }
 
+    /*
+    * cmd: input
+    *   -1:         query the number
+    *   0~number:   query the nth pixel format
+    * iValue: output, OGMACAM_PIXELFORMAT_xxxx
+    */
+    public bool get_PixelFormatSupport(sbyte cmd, out int iValue) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            iValue = 0;
+            return false;
+        }
+        return CheckHResult(Ogmacam_get_PixelFormatSupport(handle_, cmd, out iValue));
+    }
+
+    public bool put_SelfTrigger(ref SelfTrigger pSt) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_SelfTrigger(handle_, ref pSt));
+    }
+
+    public bool get_SelfTrigger(ref SelfTrigger pSt) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_get_SelfTrigger(handle_, ref pSt));
+    }
+
     public bool put_Linear(byte[] v8, ushort[] v16) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
@@ -2245,7 +2646,9 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_get_Temperature(handle_, out pTemperature));
     }
 
-    /* set the target temperature of the sensor or TEC, in 0.1 degrees Celsius (32 means 3.2 degrees Celsius, -35 means -3.5 degree Celsius) */
+    /* set the target temperature of the sensor or TEC, in 0.1 degrees Celsius (32 means 3.2 degrees Celsius, -35 means -3.5 degree Celsius)
+        set "-2730" or below means using the default value of this model
+    */
     public bool put_Temperature(short nTemperature) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
@@ -2264,6 +2667,19 @@ public class Ogmacam : IDisposable {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         return CheckHResult(Ogmacam_get_Roi(handle_, out pxOffset, out pyOffset, out pxWidth, out pyHeight));
+    }
+
+    /* multiple Roi */
+    public bool put_RoiN(uint[] xOffset, uint[] yOffset, uint[] xWidth, uint[] yHeight) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_RoiN(handle_, xOffset, yOffset, xWidth, yHeight, (uint)(xOffset.Length)));
+    }
+
+    public bool put_XY(int x, int y) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_XY(handle_, x, y));
     }
 
     /*
@@ -2335,28 +2751,46 @@ public class Ogmacam : IDisposable {
         return DfcOnce();
     }
 
-    public bool FfcExport(string filepath) {
+    public bool FpncOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FfcExport(handle_, filepath));
+        return CheckHResult(Ogmacam_FpncOnce(handle_));
     }
 
-    public bool FfcImport(string filepath) {
+    public bool FfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FfcImport(handle_, filepath));
+        return CheckHResult(Ogmacam_FfcExport(handle_, filePath));
     }
 
-    public bool DfcExport(string filepath) {
+    public bool FfcImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_DfcExport(handle_, filepath));
+        return CheckHResult(Ogmacam_FfcImport(handle_, filePath));
     }
 
-    public bool DfcImport(string filepath) {
+    public bool DfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_DfcImport(handle_, filepath));
+        return CheckHResult(Ogmacam_DfcExport(handle_, filePath));
+    }
+
+    public bool DfcImport(string filePath) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_DfcImport(handle_, filePath));
+    }
+
+    public bool FpncExport(string filePath) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_FpncExport(handle_, filePath));
+    }
+
+    public bool FpncImport(string filePath) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_FpncImport(handle_, filePath));
     }
 
     public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal, out int inVal) {
@@ -2388,11 +2822,109 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_AAF(handle_, action, outVal, out inVal));
     }
 
-    public bool get_AfParam(out AfParam pAfParam) {
-        pAfParam.idef = pAfParam.imax = pAfParam.imin = pAfParam.imaxabs = pAfParam.iminabs = pAfParam.zoneh = pAfParam.zonev = 0;
+    static private bool Ptr2LensInfo(ref LensInfo pInfo, IntPtr p) {
+        IntPtr saveptr = p;
+
+        pInfo.lensID = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.lensType = Marshal.ReadByte(p);
+        IncIntPtr(p, sizeof(byte));
+        pInfo.statusAfmf = Marshal.ReadByte(p);      /* LENS_AF = 0x00,  LENS_MF = 0x80 */
+        IncIntPtr(p, sizeof(byte));
+
+        pInfo.maxFocalLength = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.curFocalLength = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.minFocalLength = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+
+        pInfo.farFM = Marshal.ReadInt16(p);           /* focus motor, absolute value */
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.curFM = Marshal.ReadInt16(p);           /* current focus motor */
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.nearFM = Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+
+        pInfo.maxFocusDistance = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+        pInfo.minFocusDistance = (ushort)Marshal.ReadInt16(p);
+        IncIntPtr(p, sizeof(ushort));
+
+        pInfo.curAM = (sbyte)Marshal.ReadByte(p);
+        IncIntPtr(p, sizeof(sbyte));
+        pInfo.maxAM = Marshal.ReadByte(p);           /* maximum Aperture, mimimum F# */
+        IncIntPtr(p, sizeof(byte));
+        pInfo.minAM = Marshal.ReadByte(p);           /* mimimum Aperture, maximum F# */
+        IncIntPtr(p, sizeof(byte));
+        pInfo.posAM = Marshal.ReadByte(p);           /* used for set aperture motor to posAM, it is an index */
+        IncIntPtr(p, sizeof(byte));
+        pInfo.posFM = Marshal.ReadInt32(p);
+        IncIntPtr(p, sizeof(int));
+
+        int sizeFN = Marshal.ReadInt32(p);
+        IncIntPtr(p, sizeof(int));
+        if (sizeFN >= 0) {
+            IntPtr sp = Marshal.ReadIntPtr(p);
+            if (sp != IntPtr.Zero) {
+                pInfo.arrayFN = new string[sizeFN];
+                for (int i = 0; i < sizeFN; ++i) {
+                    pInfo.arrayFN[i] = Marshal.PtrToStringAnsi(sp);
+                    IncIntPtr(sp, IntPtr.Size);
+                }
+            }
+        }
+
+        Marshal.FreeHGlobal(saveptr);
+        return true;
+    }
+
+    public bool get_LensInfo(ref LensInfo pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_get_AfParam(handle_, out pAfParam));
+        IntPtr p = Marshal.AllocHGlobal(128);
+        if (!CheckHResult(Ogmacam_get_LensInfo(handle_, p))) {
+            Marshal.FreeHGlobal(p);
+            return false;
+        }
+        return Ptr2LensInfo(ref pInfo, p);
+    }
+
+    public bool get_AFState(ref AFState pState) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_get_AFState(handle_, ref pState));
+    }
+
+    public bool put_AFMode(eAFMode mode) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_AFMode(handle_, mode));
+    }
+
+    public bool put_AFRoi(uint xOffset, uint yOffset, uint xWidth, uint yHeight) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_AFRoi(handle_, xOffset, yOffset, xWidth, yHeight));
+    }
+
+    public bool put_AFAperture(int iAperture) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_AFAperture(handle_, iAperture));
+    }
+
+    public bool put_AFFMPos(int iFMPos) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_AFFMPos(handle_, iFMPos));
+    }
+
+    public bool get_FocusMotor(out FocusMotor pFocusMotor) {
+        pFocusMotor.idef = pFocusMotor.imax = pFocusMotor.imin = pFocusMotor.imaxabs = pFocusMotor.iminabs = pFocusMotor.zoneh = pFocusMotor.zonev = 0;
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_get_FocusMotor(handle_, out pFocusMotor));
     }
 
     public bool GetHistogram(DelegateHistogramCallback funHistogram) {
@@ -2456,9 +2988,11 @@ public class Ogmacam : IDisposable {
     public static double calcClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight) {
         return Ogmacam_calc_ClarityFactor(pImageData, bits, nImgWidth, nImgHeight);
     }
+
     public static double calcClarityFactorV2(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight, uint xOffset, uint yOffset, uint xWidth, uint yHeight) {
         return Ogmacam_calc_ClarityFactorV2(pImageData, bits, nImgWidth, nImgHeight, xOffset, yOffset, xWidth, yHeight);
     }
+
     /*
         nBitCount: output bitmap bit count
         when nBitDepth == 8:
@@ -2573,6 +3107,13 @@ public class Ogmacam : IDisposable {
             p = IncIntPtr(p, IntPtr.Size);
         } while (true);
         return a.ToArray();
+    }
+
+    public static string PixelFormatName(ePIXELFORMAT val) {
+        IntPtr ptr = Ogmacam_get_PixelFormatName(val);
+        if (IntPtr.Zero == ptr)
+            return null;
+        return Marshal.PtrToStringAnsi(ptr);
     }
 
     public static string HResult2String(int hResult) {
@@ -2724,40 +3265,41 @@ public class Ogmacam : IDisposable {
 #endif
     }
 
-#if !(NETFX_CORE || NETCOREAPP || WINDOWS_UWP)
-    public class SafeCamHandle : SafeHandleZeroOrMinusOneIsInvalid
-    {
+#if !(WINDOWS_UWP)
+    public class SafeCamHandle : SafeHandleZeroOrMinusOneIsInvalid {
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern void Ogmacam_Close(IntPtr h);
-        
+
         public SafeCamHandle()
-            : base(true)
-        {
+            : base(true) {
         }
-        
+
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        override protected bool ReleaseHandle()
-        {
+        override protected bool ReleaseHandle() {
             // Here, we must obey all rules for constrained execution regions.
             Ogmacam_Close(handle);
             return true;
         }
     };
 #else
-    public class SafeCamHandle : SafeHandle {
+    public class SafeCamHandle : SafeHandle
+    {
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern void Ogmacam_Close(IntPtr h);
-
+        
         public SafeCamHandle()
-            : base(IntPtr.Zero, true) {
+            : base(IntPtr.Zero, true)
+        {
         }
-
-        override protected bool ReleaseHandle() {
+        
+        override protected bool ReleaseHandle()
+        {
             Ogmacam_Close(handle);
             return true;
         }
-
-        public override bool IsInvalid {
+        
+        public override bool IsInvalid
+        {
             get { return base.handle == IntPtr.Zero || base.handle == (IntPtr)(-1); }
         }
     };
@@ -2813,7 +3355,7 @@ public class Ogmacam : IDisposable {
     private static extern SafeCamHandle Ogmacam_Open([MarshalAs(ut)] string camId);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern SafeCamHandle Ogmacam_OpenByIndex(uint index);
-#if !(NETFX_CORE || NETCOREAPP || WINDOWS_UWP)
+#if !(WINDOWS_UWP)
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_StartPullModeWithWndMsg(SafeCamHandle h, IntPtr hWnd, uint nMsg);
 #endif
@@ -2899,11 +3441,11 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_Trigger(SafeCamHandle h, ushort nNumber);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_Size(SafeCamHandle h, int nWidth, int nHeight);
@@ -2943,6 +3485,10 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_get_Roi(SafeCamHandle h, out uint pxOffset, out uint pyOffset, out uint pxWidth, out uint pyHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_Roi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_RoiN(SafeCamHandle h, uint[] xoffset, uint[] yoffset, uint[] xWidth, uint[] yHeight, uint Num);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_XY(SafeCamHandle h, int x, int y);
 
     /*
         ------------------------------------------------------------------|
@@ -2950,13 +3496,13 @@ public class Ogmacam : IDisposable {
         |-----------------------------------------------------------------|
         | Auto Exposure Target    |   16~235      |   120                 |
         | Exposure Gain           |   100~        |   100                 |
-        | Temp                    |   2000~15000  |   6503                |
-        | Tint                    |   200~2500    |   1000                |
+        | Temp                    |   1000~25000  |   6503                |
+        | Tint                    |   100~2500    |   1000                |
         | LevelRange              |   0~255       |   Low = 0, High = 255 |
-        | Contrast                |   -100~100    |   0                   |
+        | Contrast                |   -150~150    |   0                   |
         | Hue                     |   -180~180    |   0                   |
         | Saturation              |   0~255       |   128                 |
-        | Brightness              |   -64~64      |   0                   |
+        | Brightness              |   -128~128    |   0                   |
         | Gamma                   |   20~180      |   100                 |
         | WBGain                  |   -127~127    |   0                   |
         ------------------------------------------------------------------|
@@ -3188,6 +3734,15 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_put_Option(SafeCamHandle h, eOPTION iOption, int iValue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_get_Option(SafeCamHandle h, eOPTION iOption, out int iValue);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_PixelFormatSupport(SafeCamHandle h, sbyte cmd, out int iValue);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern IntPtr Ogmacam_get_PixelFormatName(ePIXELFORMAT val);
+
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_Linear(SafeCamHandle h, byte[] v8, ushort[] v16);
@@ -3206,13 +3761,19 @@ public class Ogmacam : IDisposable {
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_DfcOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FpncOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_FpncExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_IoControl(SafeCamHandle h, uint ioLineNumber, eIoControType eType, int outVal, out int inVal);
@@ -3220,7 +3781,20 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_AAF(SafeCamHandle h, eAAF action, int outVal, out int inVal);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_get_AfParam(SafeCamHandle h, out AfParam pAfParam);
+    private static extern int Ogmacam_get_LensInfo(SafeCamHandle h, IntPtr pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_AFState(SafeCamHandle h, ref AFState pState);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_AFMode(SafeCamHandle h, eAFMode mode);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_AFRoi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_AFAperture(SafeCamHandle h, int iAperture);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_AFFMPos(SafeCamHandle h, int iFMPos);
+
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_FocusMotor(SafeCamHandle h, out FocusMotor pFocusMotor);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern double Ogmacam_calc_ClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight);

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using System.Threading;
+using System.Globalization;
 
 namespace NINA.Equipment.Equipment.MyPlanetarium {
 
@@ -165,7 +166,7 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
                 string[] response = reply.Split('|');
 
                 if (response[1].Equals("No error. Error = 0.")) {
-                    if (double.TryParse(response[0], out rotationAngle)) {
+                    if (double.TryParse(response[0], CultureInfo.InvariantCulture, out rotationAngle)) {
                     }
                 }
 

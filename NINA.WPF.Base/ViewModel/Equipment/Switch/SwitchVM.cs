@@ -238,7 +238,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
 

@@ -23,6 +23,7 @@ using NINA.Image.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -197,7 +198,7 @@ namespace NINA.PlateSolving.Solvers {
                     throw new InvalidDataException("No response received.");
                 }
 
-                double.TryParse(model, out var result);
+                double.TryParse(model, CultureInfo.InvariantCulture, out var result);
                 return result;
             }
             set {

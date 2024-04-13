@@ -474,6 +474,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                                 }
                                 Logger.Info($"Moving {translatedAxis} Telescope Axis using rate {actualRate}.");
                                 device.MoveAxis(translatedAxis, actualRate);
+                                InvalidatePropertyCache();
                             }
                         } catch (ASCOM.InvalidValueException e) {
                             Logger.Error(e);
@@ -502,6 +503,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     if (!AtPark) {
                         try {
                             device.PulseGuide((ASCOM.Common.DeviceInterfaces.GuideDirection)direction, duration);
+                            InvalidatePropertyCache();
                         } catch (Exception e) {
                             Logger.Error(e);
                             Notification.ShowExternalError(e.Message, Loc.Instance["LblASCOMDriverError"]);
@@ -521,6 +523,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             if (CanPark) {
                 try {
                     await device.ParkAsync(token);
+                    InvalidatePropertyCache();
                 } catch (OperationCanceledException) {
                     throw;
                 } catch (Exception e) {
@@ -562,8 +565,10 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
                     if (CanSlewAsync) {
                         await device.SlewToCoordinatesTaskAsync(TargetCoordinates.RA, TargetCoordinates.Dec, token);
+                        InvalidatePropertyCache();
                     } else {
                         device.SlewToCoordinates(TargetCoordinates.RA, TargetCoordinates.Dec);
+                        await Task.Delay(200, token);
                         while (Slewing) {
                             await CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval), token);
                         }
@@ -595,6 +600,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     try {
                         coordinates = coordinates.Transform(EquatorialSystem);
                         device.SyncToCoordinates(coordinates.RA, coordinates.Dec);
+                        InvalidatePropertyCache();
                         success = true;
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -612,6 +618,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             if (CanFindHome) {
                 try {
                     await device.FindHomeAsync(token);
+                    InvalidatePropertyCache();
                 } catch(OperationCanceledException) {
                     throw;
                 } catch (Exception e) {
@@ -625,6 +632,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             if (CanUnpark) {
                 try {
                     await device.UnparkAsync(token);
+                    InvalidatePropertyCache();
                 } catch(OperationCanceledException) {
                     throw;
                 } catch (Exception e) {

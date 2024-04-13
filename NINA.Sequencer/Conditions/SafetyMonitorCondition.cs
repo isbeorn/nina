@@ -78,12 +78,15 @@ namespace NINA.Sequencer.Conditions {
 
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblSafetyMonitorNotConnected"]);
+                IsSafe = false;
             } else {
                 IsSafe = info.IsSafe;
             }
 
             Issues = i;
-            return i.Count == 0;
+
+            // Return true even when disconnected so that the loop is evaluated and the unsafe loop can also run
+            return true;
         }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {

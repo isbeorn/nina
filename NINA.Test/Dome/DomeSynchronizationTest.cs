@@ -22,6 +22,7 @@ using NINA.Profile.Interfaces;
 using NINA.Core.Enum;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Interfaces;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Dome {
 
@@ -85,12 +86,12 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(Math.Abs(siteLatitude) + 10.0, 0);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
 
             // The dome azimuth should be approximately the same as the scope Altitude since it is pointed almost completely straight
-            Assert.IsTrue(eastResult.Altitude.Equals(Angle.ByDegree(Math.Abs(siteLatitude) + 10.0), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Altitude.Equals(Angle.ByDegree(Math.Abs(siteLatitude) + 10.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Altitude.Equals(Angle.ByDegree(Math.Abs(siteLatitude) + 10.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Altitude.Equals(Angle.ByDegree(Math.Abs(siteLatitude) + 10.0), DEGREES_EPSILON));
         }
 
         [Test]
@@ -100,8 +101,8 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(Math.Abs(siteLatitude) + 10.0, 180.0);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(180.0), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(180.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(180.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(180.0), DEGREES_EPSILON));
         }
 
         [Test]
@@ -114,8 +115,8 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(Math.Abs(siteLatitude) + 10.0, 0);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(-1.0 * westResult.Azimuth, DEGREES_EPSILON));
-            Assert.IsTrue(eastResult.Azimuth.Degree >= 0 && eastResult.Azimuth.Degree <= 90);
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(-1.0 * westResult.Azimuth, DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Degree >= 0 && eastResult.Azimuth.Degree <= 90);
         }
 
         [Test]
@@ -128,8 +129,8 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(Math.Abs(siteLatitude) + 10.0, 180);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(-1.0 * westResult.Azimuth, DEGREES_EPSILON));
-            Assert.IsTrue(eastResult.Azimuth.Degree >= 90 && eastResult.Azimuth.Degree <= 180);
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(-1.0 * westResult.Azimuth, DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Degree >= 90 && eastResult.Azimuth.Degree <= 180);
         }
 
         [Test]
@@ -146,8 +147,8 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(0, azimuth);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
         }
 
         [Test]
@@ -164,8 +165,8 @@ namespace NINA.Test.Dome {
             var coordinates = GetCoordinatesFromAltAz(0, azimuth);
             var eastResult = CalculateCoordinates(sut, coordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, coordinates, PierSide.pierWest);
-            Assert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Azimuth.Equals(Angle.ByDegree(azimuth), DEGREES_EPSILON));
         }
 
         [Test]
@@ -174,12 +175,12 @@ namespace NINA.Test.Dome {
 
             // When pointed to the east or west along the celestial equator, we expect the dome azimuth to be +/- 60 degrees, since the mount offset is half of the dome radius
             var eastCoordinates = GetCoordinatesFromAltAz(0, 90);
-            Assert.IsTrue(CalculateCoordinates(sut, eastCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(60.0), DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, eastCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(60.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, eastCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(60.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, eastCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(60.0), DEGREES_EPSILON));
 
             var westCoordinates = GetCoordinatesFromAltAz(0, -90);
-            Assert.IsTrue(CalculateCoordinates(sut, westCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(-60.0), DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, westCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(-60.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, westCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(-60.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, westCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(-60.0), DEGREES_EPSILON));
         }
 
         [Test]
@@ -197,11 +198,11 @@ namespace NINA.Test.Dome {
             var eastResult = CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast);
             var westResult = CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest);
 
-            Assert.IsTrue(eastResult.Azimuth.Equals(Angle.ByRadians(expectedAzimuth), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Azimuth.Equals(Angle.ByRadians(-expectedAzimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Azimuth.Equals(Angle.ByRadians(expectedAzimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Azimuth.Equals(Angle.ByRadians(-expectedAzimuth), DEGREES_EPSILON));
 
-            Assert.IsTrue(eastResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON));
-            Assert.IsTrue(westResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(eastResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(westResult.Altitude.Equals(Angle.ByDegree(this.siteLatitude), DEGREES_EPSILON));
         }
 
         [Test]
@@ -217,8 +218,8 @@ namespace NINA.Test.Dome {
             var southProjectionDistanceToDomeIntersection = distanceFromScopeOrigin * Math.Cos(Angle.ByDegree(this.siteLatitude).Radians);
             var expectedAzimuth = Math.Atan(lateralAxisLength / southProjectionDistanceToDomeIntersection);
 
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByRadians(Math.PI + expectedAzimuth), DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByRadians(Math.PI - expectedAzimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByRadians(Math.PI + expectedAzimuth), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByRadians(Math.PI - expectedAzimuth), DEGREES_EPSILON));
         }
 
         [Test]
@@ -230,8 +231,8 @@ namespace NINA.Test.Dome {
 
             // When pointed at the celestial pole, an AltAz should still have an azimuth of 0 as long as the E/W mount offset is 0, regardless of gem length
             var poleCoordinates = GetCoordinatesFromAltAz(Math.Abs(this.siteLatitude), 0);
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
         }
 
         [Test]
@@ -239,8 +240,8 @@ namespace NINA.Test.Dome {
             var sut = Initialize(mountType: MountTypeEnum.FORK_ON_WEDGE, domeRadius: 1000);
 
             var poleCoordinates = GetCoordinatesFromAltAz(Math.Abs(siteLatitude), 0);
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(Angle.ByDegree(0.0), DEGREES_EPSILON));
         }
 
         [Test]
@@ -260,8 +261,8 @@ namespace NINA.Test.Dome {
             var otaToDomeDistance = Math.Sqrt(domeRadius * domeRadius - horizontalOffset * horizontalOffset);
             var northSouthDistanceProjected = Math.Cos(Angle.ByDegree(siteLatitude).Radians) * otaToDomeDistance;
             var expectedAzimuth = Angle.ByRadians(Math.Atan(horizontalOffset / northSouthDistanceProjected));
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(expectedAzimuth, DEGREES_EPSILON));
-            Assert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(expectedAzimuth, DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierEast).Azimuth.Equals(expectedAzimuth, DEGREES_EPSILON));
+            ClassicAssert.IsTrue(CalculateCoordinates(sut, poleCoordinates, PierSide.pierWest).Azimuth.Equals(expectedAzimuth, DEGREES_EPSILON));
         }
 
         [Test]

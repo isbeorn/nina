@@ -1705,7 +1705,7 @@ Forventet HFR: {2}</value>
     <value>Kvadratisk gjennomsnitt av guideavvik under eksponering, målt i piksler</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
-    <value>Maksimalt følgeavvik i RA under eksponering, i buesekunder</value>
+    <value>Maksimalt guideavvik i RA under eksponering, i buesekunder</value>
   </data>
   <data name="LblGuidingPeakRADescription" xml:space="preserve">
     <value>Maksimalt følgeavvik i RA under eksponering, i piksler</value>
@@ -1921,7 +1921,7 @@ Forventet HFR: {2}</value>
     <value>Manuell styring</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manuelle koordinater (J2000)</value>
+    <value>Manuelle koordinater</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Manuelt filterhjul</value>
@@ -4903,7 +4903,7 @@ Hvis blokken over er kollapset, blir gjeldende instruksjon flyttet over denne.</
     <value>Sikkerhetsovervåking har mistet tilkoblingen!</value>
   </data>
   <data name="LblSafetyMonitor" xml:space="preserve">
-    <value>Sikkerhetsovervåker</value>
+    <value>Sikkerhetsmonitor</value>
   </data>
   <data name="LblDisconnectSafetyMonitor" xml:space="preserve">
     <value>Koble fra sikkerhetsovervåker</value>
@@ -5735,7 +5735,7 @@ Vanlig oppførsel er å fortsette ved feil, men for noen instruksjoner er ikke d
     <value>Start på mekanisk dreieområde</value>
   </data>
   <data name="LblRotatorRangeFull" xml:space="preserve">
-    <value>Full</value>
+    <value>Fullt</value>
   </data>
   <data name="LblRotatorRangeFullTooltip" xml:space="preserve">
     <value>Ubegrenset mekanisk bevegelse</value>
@@ -6573,10 +6573,10 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
     <value>Flatbilde med automatisk lysstyrke</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
+    <value>Denne instruksjonen justerer automatisk eksponeringstider for å ta flatbilder i tussmørke, på lignende måte som flatbildehjelperen. Eksponeringstiden for hvert bilde tilpasses i sanntid til den forventede lysstyrken på himmelen.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Twilight Sky Flats</value>
+    <value>Tussmørke-flatbilder</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>Lukker deksel</value>
@@ -6887,52 +6887,64 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Monteringens navn</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>Varighet</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+    <value>Varigheten til forsøk på å oppdage ASCOM Alpaca enheter (standard: 2 sekunder)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>Port for å oppdage enheter</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>Port for ASCOM Alpaca oppdagelse (Standard: 32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value>Antall forsøk</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+    <value>Antall kringkastinger brukt for å oppdage ASCOM Alpaca enheter (standard: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>Slå opp i navnetjener</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>Forsøk å finn ASCOM Alpaca-enhetens navn ved å bruke navnetjener (standard: av)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>Bruk HTTPS</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>Bestemmer om ASCOM Alpaca enheter skal oppdages med HTTP eller HTTPS (standard: av)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
+    <value>Bruk IPv4</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>Bruk IPv4 for å oppdage ASCOM Alpaca enheter (Standard: på)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
+    <value>Bruk IPv6</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>Bruk IPv6 for å oppdage ASCOM Alpaca enheter (Standard: av)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Toggle Catalogue Display</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>Target Alt</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Target Az</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Geoptik Flat Field Controller</value>
   </data>
 </root>

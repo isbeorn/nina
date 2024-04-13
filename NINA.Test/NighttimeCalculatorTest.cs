@@ -11,6 +11,7 @@
 #endregion "copyright"
 using NINA.Astrometry;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace NINA.Test {
             var date = new DateTime(2020, 5, 4, 14, 0, 0);
             var referenceDate = NighttimeCalculator.GetReferenceDate(date);
             var expectedDate = new DateTime(date.Year, date.Month, date.Day, 12, 0, 0);
-            Assert.AreEqual(expectedDate, referenceDate);
+            ClassicAssert.AreEqual(expectedDate, referenceDate);
         }
 
         [Test]
@@ -36,7 +37,7 @@ namespace NINA.Test {
             var referenceDate = NighttimeCalculator.GetReferenceDate(date);
             var dayBefore = date.AddDays(-1);
             var expectedDate = new DateTime(dayBefore.Year, dayBefore.Month, dayBefore.Day, 12, 0, 0);
-            Assert.AreEqual(expectedDate, referenceDate);
+            ClassicAssert.AreEqual(expectedDate, referenceDate);
         }
 
         [Test]
@@ -45,7 +46,7 @@ namespace NINA.Test {
             var referenceDate = NighttimeCalculator.GetReferenceDate(date);
             var dayBefore = date.AddDays(-1);
             var expectedDate = new DateTime(dayBefore.Year, dayBefore.Month, dayBefore.Day, 12, 0, 0);
-            Assert.AreEqual(expectedDate, referenceDate);
+            ClassicAssert.AreEqual(expectedDate, referenceDate);
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace NINA.Test {
             var referenceDate = NighttimeCalculator.GetReferenceDate(date);
             var dayBefore = date.AddDays(-1);
             var expectedDate = new DateTime(date.Year, date.Month, date.Day, 12, 0, 0);
-            Assert.AreEqual(expectedDate, referenceDate);
+            ClassicAssert.AreEqual(expectedDate, referenceDate);
         }
 
         [Test]
@@ -62,7 +63,7 @@ namespace NINA.Test {
             var date = new DateTime(2020, 5, 4, 12, 1, 0);
             var referenceDate = NighttimeCalculator.GetReferenceDate(date);
             var expectedDate = new DateTime(date.Year, date.Month, date.Day, 12, 0, 0);
-            Assert.AreEqual(expectedDate, referenceDate);
+            ClassicAssert.AreEqual(expectedDate, referenceDate);
         }
     }
 }

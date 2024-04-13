@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <PropertyGroup>
-    <Version>3.0.0.2017-beta</Version>
+    <Version>3.1.0.1001</Version>
     <Title>N.I.N.A. Custom Control Library</Title>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
@@ -51,6 +51,6 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

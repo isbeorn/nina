@@ -191,7 +191,10 @@
                     </Border>
 
                     <TabControl x:Name="SettingsHost">
-                        <TabItem Header="Single Mode">
+                        <TabItem>
+                            <TabItem.Header>
+                                <TextBlock Style="{StaticResource TabItemTextBox}" Text="Single Mode" />
+                            </TabItem.Header>
                             <StackPanel Orientation="Vertical">
                                 <Border
                                     Margin="0,5,0,5"
@@ -250,7 +253,10 @@
                                 </Grid>
                             </StackPanel>
                         </TabItem>
-                        <TabItem Header="Multi Mode" Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                        <TabItem Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            <TabItem.Header>
+                                <TextBlock Style="{StaticResource TabItemTextBox}" Text="Multi Mode" />
+                            </TabItem.Header>
                             <StackPanel Orientation="Vertical">
                                 <ListView ItemsSource="{Binding Filters}">
                                     <ListView.Template>

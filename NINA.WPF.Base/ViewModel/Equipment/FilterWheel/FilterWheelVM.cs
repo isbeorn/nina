@@ -168,7 +168,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                     await Disconnect();
                 }
             } catch(OperationCanceledException) {
-                if(!timeoutCts?.IsCancellationRequested == true) {
+                if(token.IsCancellationRequested == true) {
                     throw;
                 } else {
                     Logger.Error("Switching filter timed out after 5 Minutes");

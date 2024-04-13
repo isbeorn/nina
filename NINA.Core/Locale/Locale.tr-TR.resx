@@ -1920,7 +1920,7 @@ Hesaplanan HFR: {2}
     <value>Elle kontrol</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manuel koordinatlar (J2000)</value>
+    <value>Manual Coordinates</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Manuel filtre çarkı</value>
@@ -6899,7 +6899,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
     <value>Discovery Port</value>
@@ -6913,7 +6913,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
     <value>Resolve DNS name</value>
@@ -6942,5 +6942,17 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Toggle Catalogue Display</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>Target Alt</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Target Az</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Geoptik Flat Field Controller</value>
   </data>
 </root>

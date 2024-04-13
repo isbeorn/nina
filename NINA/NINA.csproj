@@ -373,8 +373,8 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.72.1" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.106" />
-    <PackageReference Include="MdXaml" Version="1.21.0" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.115" />
+    <PackageReference Include="MdXaml" Version="1.27.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
@@ -401,6 +401,12 @@
     <None Update="Database\Migration\12.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Database\Migration\13.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Database\Migration\14.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -414,6 +420,6 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /v /a /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetDir)NINA.exe" />
   </Target>
 </Project>

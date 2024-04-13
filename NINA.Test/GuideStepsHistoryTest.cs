@@ -22,6 +22,7 @@ using NINA.Core.Interfaces;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 using FluentAssertions;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test {
 
@@ -33,14 +34,14 @@ namespace NINA.Test {
             var historySize = 100;
             GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
-            Assert.AreEqual(historySize, gsh.HistorySize);
-            Assert.AreEqual(1, gsh.PixelScale);
-            Assert.AreEqual(GuiderScaleEnum.PIXELS, gsh.Scale);
-            Assert.AreEqual(0, gsh.GuideSteps.Count);
-            Assert.AreEqual(1, gsh.RMS.Scale);
-            Assert.AreEqual(0, gsh.RMS.RA);
-            Assert.AreEqual(0, gsh.RMS.Dec);
-            Assert.AreEqual(0, gsh.RMS.Total);
+            ClassicAssert.AreEqual(historySize, gsh.HistorySize);
+            ClassicAssert.AreEqual(1, gsh.PixelScale);
+            ClassicAssert.AreEqual(GuiderScaleEnum.PIXELS, gsh.Scale);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(1, gsh.RMS.Scale);
+            ClassicAssert.AreEqual(0, gsh.RMS.RA);
+            ClassicAssert.AreEqual(0, gsh.RMS.Dec);
+            ClassicAssert.AreEqual(0, gsh.RMS.Total);
         }
 
         [Test]
@@ -73,10 +74,10 @@ namespace NINA.Test {
             gsh.AddGuideStep(step3);
             gsh.AddGuideStep(step4);
 
-            Assert.AreEqual(300, gsh.RMS.RA);
-            Assert.AreEqual(630, gsh.RMS.Dec);
+            ClassicAssert.AreEqual(300, gsh.RMS.RA);
+            ClassicAssert.AreEqual(630, gsh.RMS.Dec);
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            Assert.AreEqual(total, gsh.RMS.Total);
+            ClassicAssert.AreEqual(total, gsh.RMS.Total);
         }
 
         [Test]
@@ -112,10 +113,10 @@ namespace NINA.Test {
             gsh.AddGuideStep(step3);
             gsh.AddGuideStep(step4);
 
-            Assert.AreEqual(300, gsh.RMS.RA);
-            Assert.AreEqual(630, gsh.RMS.Dec);
+            ClassicAssert.AreEqual(300, gsh.RMS.RA);
+            ClassicAssert.AreEqual(630, gsh.RMS.Dec);
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            Assert.AreEqual(total, gsh.RMS.Total);
+            ClassicAssert.AreEqual(total, gsh.RMS.Total);
         }
 
         [Test]
@@ -153,10 +154,10 @@ namespace NINA.Test {
 
             gsh.Clear();
 
-            Assert.AreEqual(0, gsh.GuideSteps.Count);
-            Assert.AreEqual(0, gsh.RMS.RA);
-            Assert.AreEqual(0, gsh.RMS.Dec);
-            Assert.AreEqual(0, gsh.RMS.Total);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(0, gsh.RMS.RA);
+            ClassicAssert.AreEqual(0, gsh.RMS.Dec);
+            ClassicAssert.AreEqual(0, gsh.RMS.Total);
         }
 
         public static List<IGuideStep> steps = new List<IGuideStep>();
@@ -203,16 +204,16 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            Assert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
-            Assert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
-            Assert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
-            Assert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
-            Assert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
-            Assert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
-            Assert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
-            Assert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
-            Assert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
-            Assert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
+            ClassicAssert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
+            ClassicAssert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
+            ClassicAssert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
+            ClassicAssert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
+            ClassicAssert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
+            ClassicAssert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
+            ClassicAssert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
+            ClassicAssert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
+            ClassicAssert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
+            ClassicAssert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
         }
 
         [Test]
@@ -259,18 +260,18 @@ namespace NINA.Test {
 
             gsh.HistorySize = 10;
 
-            Assert.AreEqual(step1.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
-            Assert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
-            Assert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
-            Assert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
-            Assert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
-            Assert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(5).RADistanceRaw);
-            Assert.AreEqual(step1.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
-            Assert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
-            Assert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
-            Assert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
-            Assert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
-            Assert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(5).DECDistanceRaw);
+            ClassicAssert.AreEqual(step1.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
+            ClassicAssert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
+            ClassicAssert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
+            ClassicAssert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
+            ClassicAssert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
+            ClassicAssert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(5).RADistanceRaw);
+            ClassicAssert.AreEqual(step1.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
+            ClassicAssert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
+            ClassicAssert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
+            ClassicAssert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
+            ClassicAssert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
+            ClassicAssert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(5).DECDistanceRaw);
         }
 
         [Test]
@@ -315,8 +316,8 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            Assert.AreEqual(6, gsh.MaxDurationY);
-            Assert.AreEqual(-6, gsh.MinDurationY);
+            ClassicAssert.AreEqual(6, gsh.MaxDurationY);
+            ClassicAssert.AreEqual(-6, gsh.MinDurationY);
         }
 
         [Test]
@@ -361,8 +362,8 @@ namespace NINA.Test {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            Assert.AreEqual(6, gsh.MaxDurationY);
-            Assert.AreEqual(-6, gsh.MinDurationY);
+            ClassicAssert.AreEqual(6, gsh.MaxDurationY);
+            ClassicAssert.AreEqual(-6, gsh.MinDurationY);
         }
 
         [Test]
@@ -409,8 +410,8 @@ namespace NINA.Test {
 
             gsh.HistorySize = 100;
 
-            Assert.AreEqual(100, gsh.MaxDurationY);
-            Assert.AreEqual(-100, gsh.MinDurationY);
+            ClassicAssert.AreEqual(100, gsh.MaxDurationY);
+            ClassicAssert.AreEqual(-100, gsh.MinDurationY);
         }
 
         [Test]

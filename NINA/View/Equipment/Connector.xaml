@@ -21,7 +21,8 @@
     <Grid
         x:Name="LayoutRoot"
         Grid.Column="1"
-        Margin="5">
+        Margin="5"
+        IsEnabled="{Binding SetupDialogOpen, Converter={StaticResource InverseBooleanConverter}}">
 
         <Grid.Resources>
             <CollectionViewSource x:Key="GroupedDevices" Source="{Binding Devices}">

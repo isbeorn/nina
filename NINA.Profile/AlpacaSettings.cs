@@ -19,7 +19,7 @@ namespace NINA.Profile {
             numberOfPolls = 1;
             pollInterval = 100; 
             discoveryPort = 32227;
-            discoveryDuration = 1d;
+            discoveryDuration = 2d;
             resolveDnsName = false;
             useIPv4 = true;
             useIPv6 = false;

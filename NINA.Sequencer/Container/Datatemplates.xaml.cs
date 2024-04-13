@@ -18,6 +18,7 @@ using NINA.View.Sequencer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -42,7 +43,7 @@ namespace NINA.Sequencer.Container {
                     e.CancelCommand();
                     return;
                 }
-                if (double.TryParse(input, out _)) {
+                if (double.TryParse(input, CultureInfo.InvariantCulture, out _)) {
                     return;
                 }
 

@@ -1923,7 +1923,7 @@ HFR calculat: {2}    </value>
     <value>Control Manual</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Coordenades Manuals (J2000)</value>
+    <value>Coordenades manuals</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Roda de Filtre Manual</value>
@@ -6899,52 +6899,64 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>Nom de la Muntura</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>Durada del procediment de recerca</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 1 second)</value>
+    <value>La durada dels intents de descoberta del dispositiu ASCOM Alpaca (per defecte: 2 segons)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>Port de Recerca</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>Número de port IP de recerca d'ASCOM Alpaca (per defecte: 32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value>Nombre de transmissions</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 2)</value>
+    <value>Nombre d'intents de descobriment de dispositius ASCOM Alpaca (per defecte: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>Resoldre Nom DNS</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>Intent de resolució de noms DNS per als dispositius ASCOM Alpaca (per defecte: desactivat)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>Utilitzar HTTPS</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>Determina si la recerca de dispositius ASCOM Alpaca hauria d'utilitzar HTTP o HTTPS (per defecte: desactivat)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
+    <value>Utilitzar IPv4</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>Utilitzar IPv4 per a la recerca de dispositius ASCOM Alpaca (per defecte: activat)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
+    <value>Utilitzar IPv6</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>Utilitzeu IPv6 per a la recerca del dispositiu ASCOM Alpaca (per defecte: desactivat)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Alternar visualització del catàleg</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>Alt de l'Objectiu</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Az de l'Objectiu</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Controlador de Camp Pla Geoptik</value>
   </data>
 </root>

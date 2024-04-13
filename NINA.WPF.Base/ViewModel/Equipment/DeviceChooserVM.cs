@@ -21,10 +21,12 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using System.Threading.Tasks;
 using System.Threading;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment {
 
-    public abstract class DeviceChooserVM<T> : BaseVM, IDeviceChooserVM where T : IDevice {
+    public abstract partial class DeviceChooserVM<T> : BaseVM, IDeviceChooserVM where T : IDevice {
 
         public DeviceChooserVM(
                 IProfileService profileService,
@@ -32,7 +34,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             this.profileService = profileService;
             this.equipmentProviders = equipmentProviders;
             this.Devices = new List<IDevice>();
-            SetupDialogCommand = new RelayCommand(OpenSetupDialog);
         }
 
         protected SemaphoreSlim lockObj = new SemaphoreSlim(1,1);
@@ -66,11 +67,30 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             }
         }
 
-        public ICommand SetupDialogCommand { get; private set; }
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SetupDialogCommand))]
+        [NotifyPropertyChangedFor(nameof(SetupDialogNotOpen))]
+        private bool setupDialogOpen;
+        
+        public bool SetupDialogNotOpen => !SetupDialogOpen;
 
-        private void OpenSetupDialog(object o) {
+        [RelayCommand(CanExecute = nameof(SetupDialogNotOpen))]
+        private async Task SetupDialog() {
             if (SelectedDevice?.HasSetupDialog == true) {
-                SelectedDevice.SetupDialog();
+                SetupDialogOpen = true;
+                try {
+                    await Task.Run(() => {
+                        Thread thread = new Thread(() => {
+                            SelectedDevice.SetupDialog();
+                        });
+
+                        thread.SetApartmentState(ApartmentState.STA);
+                        thread.Start();
+                        thread.Join();
+                    });
+                } finally {
+                    SetupDialogOpen = false;
+                }                
             }
         }
 

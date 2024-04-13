@@ -139,7 +139,7 @@ This database will be automatically created by the EntityFramework based on the 
 
 ## Setting up the developer environment
 
-* Install Visual Studio Community 2022
+* Install [Visual Studio Community 2022](https://visualstudio.microsoft.com/vs/community/)
 * Install [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 * Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
 * Recommended Visual Studio Extensions:
@@ -147,13 +147,13 @@ This database will be automatically created by the EntityFramework based on the 
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
     * [License Header Manager](https://github.com/rubicon-oss/LicenseHeaderManager) for automatic insertion of the license into new files
+    * [Fine Code Coverage](https://github.com/FortuneN/FineCodeCoverage) To show code coverage
 * Static external dependencies are hosted in a separate git repository and pulled as a submodule, so they need to be checked out separately
     * `git submodule update --init --recursive` on the first checkout
     * `git submodule update --recursive` to update the submodule to the latest version
     * Having submodules for these files has the advantage that the fork doesn't have to host the files again and run into available LFS space limits
 
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
-	* Altair SDK: Join the altair development group at https://groups.google.com/forum/#!forum/altair-development-group
     * Due to not being publicly available, they must not be put into a public repository
 * Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and the [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=FireGiant.FireGiantHeatWaveDev17)

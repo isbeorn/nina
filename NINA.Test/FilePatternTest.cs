@@ -16,6 +16,7 @@ using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test {
 
@@ -59,7 +60,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            Assert.AreEqual(expectedResult, parsedPattern);
+            ClassicAssert.AreEqual(expectedResult, parsedPattern);
         }
 
         [Test]
@@ -74,7 +75,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            Assert.AreEqual(expectedResult, parsedPattern);
+            ClassicAssert.AreEqual(expectedResult, parsedPattern);
         }
 
         [Test]
@@ -89,7 +90,7 @@ namespace NINA.Test {
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
 
             //Assert
-            Assert.AreEqual(expectedResult, parsedPattern);
+            ClassicAssert.AreEqual(expectedResult, parsedPattern);
         }
     }
 }

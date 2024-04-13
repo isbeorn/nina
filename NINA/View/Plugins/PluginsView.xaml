@@ -153,6 +153,7 @@
                                                                     Margin="0,2.5,0,2.5"
                                                                     Padding="2,0,2,0"
                                                                     HorizontalAlignment="Stretch"
+                                                                    Background="{StaticResource BackgroundBrush}"
                                                                     BorderBrush="{StaticResource BorderBrush}"
                                                                     BorderThickness="0,0,0,1"
                                                                     UseLayoutRounding="True">

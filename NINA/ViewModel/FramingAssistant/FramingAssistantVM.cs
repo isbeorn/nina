@@ -861,7 +861,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MaxOverlapValue));
                 RaisePropertyChanged(nameof(OverlapValueStepSize));
-                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
+                _ = Task.Run(() => CalculateRectangle(SkyMapAnnotator.ViewportFoV));
             }
         }
 
@@ -872,7 +872,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MaxOverlapValue));
                 RaisePropertyChanged(nameof(OverlapValueStepSize));
-                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
+                _ = Task.Run(() => CalculateRectangle(SkyMapAnnotator.ViewportFoV));
             }
         }
 
@@ -897,7 +897,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 _cameraPixelSize = value;
                 RaisePropertyChanged();
-                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
+                _ = Task.Run(() => CalculateRectangle(SkyMapAnnotator.ViewportFoV));
             }
         }
 

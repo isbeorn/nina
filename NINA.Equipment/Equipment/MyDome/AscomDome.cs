@@ -135,7 +135,8 @@ namespace NINA.Equipment.Equipment.MyDome {
             if (Connected) {
                 if (CanSetAzimuth) {
                     using (ct.Register(async () => await StopSlewing())) {
-                        await (device?.SlewToAzimuthAsync(azimuth, ct) ?? Task.CompletedTask);                        
+                        await (device?.SlewToAzimuthAsync(azimuth, ct) ?? Task.CompletedTask);
+                        InvalidatePropertyCache();
                     }
                 } else {
                     Logger.Warning("Dome cannot slew");
@@ -158,7 +159,8 @@ namespace NINA.Equipment.Equipment.MyDome {
                         await (device?.CloseShutterAsync() ?? Task.CompletedTask);
                     } else if (priorShutterStatus == ShutterState.ShutterOpening) {
                         await (device?.OpenShutterAsync() ?? Task.CompletedTask);
-            }
+                    }
+                    InvalidatePropertyCache();
                 });
             } else {
                 Logger.Warning("Dome is not connected");
@@ -194,6 +196,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         if (ShutterStatus == ShutterState.ShutterError) {
                             // If shutter is in the error state, you must close it before re-opening
                             await CloseShutter(ct);
+                            InvalidatePropertyCache();
                         }
 
                         if (ShutterStatus == ShutterState.ShutterOpening) {
@@ -201,6 +204,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         } else {
                             Logger.Info($"Sending an OpenShutter request, since it is currently {ShutterStatus}");
                             await (device?.OpenShutterAsync(ct) ?? Task.CompletedTask);
+                            InvalidatePropertyCache();
                             ct.ThrowIfCancellationRequested();
                         }
 
@@ -239,6 +243,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         } else {
                             Logger.Info($"Sending a CloseShutter request, since it is currently {ShutterStatus}");
                             await (device?.CloseShutterAsync(ct) ?? Task.CompletedTask);
+                            InvalidatePropertyCache();
                             ct.ThrowIfCancellationRequested();
                         }
 
@@ -275,11 +280,13 @@ namespace NINA.Equipment.Equipment.MyDome {
                     // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure FindHome works
                     if (Slewing == true) {
                         await (device?.AbortSlewAsync(ct) ?? Task.CompletedTask);
+                        InvalidatePropertyCache();
                         await Task.Delay(1000, ct);
                     }
 
                     using (ct.Register(() => device?.AbortSlew())) {
                         await (device?.FindHomeAsync(ct) ?? Task.CompletedTask);
+                        InvalidatePropertyCache();
                         ct.ThrowIfCancellationRequested();
 
                         // Introduce an initial delay to give the dome a change to start slewing before we wait for it to complete
@@ -312,6 +319,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                         Logger.Info("Dome shutter or rotator slewing when a park was requested. Aborting all movement");
 
                         await device?.AbortSlewAsync(ct);
+                        InvalidatePropertyCache();
                         await Task.Delay(TimeSpan.FromSeconds(1), ct);
                     }
 
@@ -321,6 +329,7 @@ namespace NINA.Equipment.Equipment.MyDome {
                             Logger.Info("Dome already AtPark. Not sending a Park command");
                         } else {
                             await (device?.ParkAsync(ct) ?? Task.CompletedTask);
+                            InvalidatePropertyCache();
                         }
 
                         if (CanSetShutter) {

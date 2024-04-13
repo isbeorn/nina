@@ -18,6 +18,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test {
 
@@ -31,9 +32,9 @@ namespace NINA.Test {
             //Act
 
             //Assert
-            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
-            Assert.AreEqual(0, l.Count);
-            Assert.AreEqual(0, l.Delay);
+            ClassicAssert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            ClassicAssert.AreEqual(0, l.Count);
+            ClassicAssert.AreEqual(0, l.Delay);
         }
 
         [Test]
@@ -44,9 +45,9 @@ namespace NINA.Test {
             //Act
 
             //Assert
-            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
-            Assert.AreEqual(1, l.Count);
-            Assert.AreEqual(0, l.Delay);
+            ClassicAssert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            ClassicAssert.AreEqual(1, l.Count);
+            ClassicAssert.AreEqual(0, l.Delay);
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace NINA.Test {
             l.TargetName = target;
 
             //Assert
-            Assert.AreEqual(target, l.TargetName);
+            ClassicAssert.AreEqual(target, l.TargetName);
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace NINA.Test {
             l.Delay = delay;
 
             //Assert
-            Assert.AreEqual(delay, l.Delay);
+            ClassicAssert.AreEqual(delay, l.Delay);
         }
 
         [Test]
@@ -80,8 +81,8 @@ namespace NINA.Test {
 
             l.Coordinates = coordinates.Transform(Epoch.J2000);
 
-            Assert.AreEqual(coordinates.RA, l.RAHours + l.RAMinutes + l.RASeconds);
-            Assert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
+            ClassicAssert.AreEqual(coordinates.RA, l.RAHours + l.RAMinutes + l.RASeconds);
+            ClassicAssert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
         }
 
         [TestCase(5, 10, 15, 5.17083333333333)]
@@ -100,10 +101,10 @@ namespace NINA.Test {
             l.RAMinutes = raMinutes;
             l.RASeconds = raSeconds;
 
-            Assert.AreEqual(expected, l.Coordinates.RA, 0.000001, "Coordinates failed");
-            Assert.AreEqual(raHours, l.RAHours, 0.000001, "Hours failed");
-            Assert.AreEqual(raMinutes, l.RAMinutes, 0.000001, "Minutes failed");
-            Assert.AreEqual(raSeconds, l.RASeconds, 0.000001, "Seconds failed");
+            ClassicAssert.AreEqual(expected, l.Coordinates.RA, 0.000001, "Coordinates failed");
+            ClassicAssert.AreEqual(raHours, l.RAHours, 0.000001, "Hours failed");
+            ClassicAssert.AreEqual(raMinutes, l.RAMinutes, 0.000001, "Minutes failed");
+            ClassicAssert.AreEqual(raSeconds, l.RASeconds, 0.000001, "Seconds failed");
         }
 
         [TestCase(5, 10, 15, 5.17083333333333)]
@@ -126,10 +127,10 @@ namespace NINA.Test {
             l.DecMinutes = decMinutes;
             l.DecSeconds = decSeconds;
 
-            Assert.AreEqual(expected, l.Coordinates.Dec, 0.000001, "Coordinates failed");
-            Assert.AreEqual(decDegrees, l.DecDegrees, 0.000001, "Degrees failed");
-            Assert.AreEqual(Math.Abs(decMinutes), l.DecMinutes, 0.000001, "Minutes failed");
-            Assert.AreEqual(Math.Abs(decSeconds), l.DecSeconds, 0.000001, "Seconds failed");
+            ClassicAssert.AreEqual(expected, l.Coordinates.Dec, 0.000001, "Coordinates failed");
+            ClassicAssert.AreEqual(decDegrees, l.DecDegrees, 0.000001, "Degrees failed");
+            ClassicAssert.AreEqual(Math.Abs(decMinutes), l.DecMinutes, 0.000001, "Minutes failed");
+            ClassicAssert.AreEqual(Math.Abs(decSeconds), l.DecSeconds, 0.000001, "Seconds failed");
         }
     }
 
@@ -144,17 +145,17 @@ namespace NINA.Test {
             var seq = new CaptureSequence();
 
             //Assert
-            Assert.AreEqual(1, seq.Binning.X, "Binning X value not as expected");
-            Assert.AreEqual(1, seq.Binning.Y, "Binning X value not as expected");
-            Assert.AreEqual(false, seq.Dither, "Dither value not as expected");
-            Assert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
-            Assert.AreEqual(1, seq.ExposureTime, "ExposureTime value not as expected");
-            Assert.AreEqual(null, seq.FilterType, "FilterType value not as expected");
-            Assert.AreEqual(-1, seq.Gain, "Gain value not as expected");
-            Assert.AreEqual(CaptureSequence.ImageTypes.LIGHT, seq.ImageType, "ImageType value not as expected");
-            Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
-            Assert.AreEqual(1, seq.TotalExposureCount, "TotalExposureCount value not as expected");
-            Assert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
+            ClassicAssert.AreEqual(1, seq.Binning.X, "Binning X value not as expected");
+            ClassicAssert.AreEqual(1, seq.Binning.Y, "Binning X value not as expected");
+            ClassicAssert.AreEqual(false, seq.Dither, "Dither value not as expected");
+            ClassicAssert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
+            ClassicAssert.AreEqual(1, seq.ExposureTime, "ExposureTime value not as expected");
+            ClassicAssert.AreEqual(null, seq.FilterType, "FilterType value not as expected");
+            ClassicAssert.AreEqual(-1, seq.Gain, "Gain value not as expected");
+            ClassicAssert.AreEqual(CaptureSequence.ImageTypes.LIGHT, seq.ImageType, "ImageType value not as expected");
+            ClassicAssert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
+            ClassicAssert.AreEqual(1, seq.TotalExposureCount, "TotalExposureCount value not as expected");
+            ClassicAssert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
         }
 
         [Test]
@@ -170,17 +171,17 @@ namespace NINA.Test {
             var seq = new CaptureSequence(exposureTime, imageType, filter, binning, exposureCount);
 
             //Assert
-            Assert.AreEqual(binning.X, seq.Binning.X, "Binning X value not as expected");
-            Assert.AreEqual(binning.Y, seq.Binning.Y, "Binning X value not as expected");
-            Assert.AreEqual(false, seq.Dither, "Dither value not as expected");
-            Assert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
-            Assert.AreEqual(exposureTime, seq.ExposureTime, "ExposureTime value not as expected");
-            Assert.AreEqual(filter, seq.FilterType, "FilterType value not as expected");
-            Assert.AreEqual(-1, seq.Gain, "Gain value not as expected");
-            Assert.AreEqual(imageType, seq.ImageType, "ImageType value not as expected");
-            Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
-            Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
-            Assert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
+            ClassicAssert.AreEqual(binning.X, seq.Binning.X, "Binning X value not as expected");
+            ClassicAssert.AreEqual(binning.Y, seq.Binning.Y, "Binning X value not as expected");
+            ClassicAssert.AreEqual(false, seq.Dither, "Dither value not as expected");
+            ClassicAssert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
+            ClassicAssert.AreEqual(exposureTime, seq.ExposureTime, "ExposureTime value not as expected");
+            ClassicAssert.AreEqual(filter, seq.FilterType, "FilterType value not as expected");
+            ClassicAssert.AreEqual(-1, seq.Gain, "Gain value not as expected");
+            ClassicAssert.AreEqual(imageType, seq.ImageType, "ImageType value not as expected");
+            ClassicAssert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
+            ClassicAssert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
+            ClassicAssert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
         }
 
         [Test]
@@ -201,8 +202,8 @@ namespace NINA.Test {
             }
 
             //Assert
-            Assert.AreEqual(exposuresTaken, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
-            Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
+            ClassicAssert.AreEqual(exposuresTaken, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
+            ClassicAssert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
         }
     }
 }

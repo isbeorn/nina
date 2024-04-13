@@ -42,9 +42,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
         [Test]
         [TestCase(0, 0)]
+        [TestCase(0.5, 0.5)]
         [TestCase(5, 5)]
         [TestCase(100, 100)]
-        public void WaitForTimeSpan_GetEstimatedDuration_Test(int time, int expectedTime) {
+        public void WaitForTimeSpan_GetEstimatedDuration_Test(double time, double expectedTime) {
             var sut = new WaitForTimeSpan();
             sut.Time = time;
 

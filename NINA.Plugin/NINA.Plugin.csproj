@@ -39,13 +39,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NJsonSchema" Version="10.9.0" />
+    <PackageReference Include="NJsonSchema" Version="11.0.0" />
     <PackageReference Include="Trinet.Core.IO.Ntfs" Version="4.1.1" />
   </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.0.0.2017-beta</Version>
+    <Version>3.1.0.1001</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
@@ -56,6 +56,6 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

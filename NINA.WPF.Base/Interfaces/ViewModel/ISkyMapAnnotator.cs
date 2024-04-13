@@ -22,6 +22,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using NINA.WPF.Base.Model.FramingAssistant;
 using NINA.WPF.Base.SkySurvey;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Core.Utility;
 
 namespace NINA.WPF.Base.Interfaces.ViewModel {
 
@@ -31,6 +33,7 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         bool AnnotateDSO { get; set; }
         bool AnnotateGrid { get; set; }
         bool UseCachedImages { get; set; }
+        IList<ActiveCatalogue> ActiveCatalogues { get; set; }
         List<FramingConstellationBoundary> ConstellationBoundariesInViewPort { get; }
         List<FramingConstellation> ConstellationsInViewport { get; }
         ICommand DragCommand { get; }
@@ -60,5 +63,17 @@ namespace NINA.WPF.Base.Interfaces.ViewModel {
         void UpdateDeviceInfo(TelescopeInfo deviceInfo);
 
         void UpdateSkyMap();
+    }
+
+    public partial class ActiveCatalogue : BaseINPC {
+        [ObservableProperty]
+        private string name;
+        [ObservableProperty]
+        private bool active;
+
+        public ActiveCatalogue(string name, bool active) {
+            Name = name;
+            Active = active;
+        }
     }
 }

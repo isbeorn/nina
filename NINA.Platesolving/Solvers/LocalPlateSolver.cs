@@ -95,14 +95,14 @@ namespace NINA.PlateSolving.Solvers {
                         && wcsinfo.ContainsKey("cd12")
                         && wcsinfo.ContainsKey("cd21")
                         && wcsinfo.ContainsKey("cd22")) {
-                        var crval1 = double.Parse(wcsinfo["crval0"]);
-                        var crval2 = double.Parse(wcsinfo["crval1"]);
-                        var crpix1 = double.Parse(wcsinfo["crpix0"]);
-                        var crpix2 = double.Parse(wcsinfo["crpix1"]);
-                        var cd11 = double.Parse(wcsinfo["cd11"]);
-                        var cd12 = double.Parse(wcsinfo["cd12"]);
-                        var cd21 = double.Parse(wcsinfo["cd21"]);
-                        var cd22 = double.Parse(wcsinfo["cd22"]);
+                        var crval1 = double.Parse(wcsinfo["crval0"], CultureInfo.InvariantCulture);
+                        var crval2 = double.Parse(wcsinfo["crval1"], CultureInfo.InvariantCulture);
+                        var crpix1 = double.Parse(wcsinfo["crpix0"], CultureInfo.InvariantCulture);
+                        var crpix2 = double.Parse(wcsinfo["crpix1"], CultureInfo.InvariantCulture);
+                        var cd11 = double.Parse(wcsinfo["cd11"], CultureInfo.InvariantCulture);
+                        var cd12 = double.Parse(wcsinfo["cd12"], CultureInfo.InvariantCulture);
+                        var cd21 = double.Parse(wcsinfo["cd21"], CultureInfo.InvariantCulture);
+                        var cd22 = double.Parse(wcsinfo["cd22"], CultureInfo.InvariantCulture);
 
                         var wcs = new WorldCoordinateSystem(
                             crval1,

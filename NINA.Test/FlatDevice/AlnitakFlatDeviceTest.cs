@@ -48,7 +48,7 @@ namespace NINA.Test.FlatDevice {
                 .Returns(Task.FromResult(new StateResponse { DeviceResponse = "*S99000" }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
                 .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "*V99124" }));
-            _sut = new AlnitakFlatDevice(_mockProfileService.Object) { Sdk = _mockSdk.Object };
+            _sut = new AlnitakFlatDevice("TestDevice", "TestCategory", "TestName", "TestDisplayName", _mockProfileService.Object) { Sdk = _mockSdk.Object };
         }
 
         [Test]
@@ -139,12 +139,12 @@ namespace NINA.Test.FlatDevice {
         }
 
         [Test]
-        [TestCase(0, null)]
-        [TestCase(255, null)]
-        [TestCase(99, null)]
-        [TestCase(50, null)]
-        [TestCase(-1, null)]
-        [TestCase(256, null)]
+        [TestCase(0, null!)]
+        [TestCase(255, null!)]
+        [TestCase(99, null!)]
+        [TestCase(50, null!)]
+        [TestCase(-1, null!)]
+        [TestCase(256, null!)]
         public void TestSetBrightnessDisconnected(int brightness, string command) {
             string actual = null;
             _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))

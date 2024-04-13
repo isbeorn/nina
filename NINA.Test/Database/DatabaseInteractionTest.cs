@@ -32,7 +32,7 @@ namespace NINA.Test.Database {
         [TestCase("IC 443", "43", "IC 443", "LBN 844", "SH2-248")]    // Levenshtein
         [TestCase("SHEADHEIGHT", "ZHEAD", "SHEADHEIGHT", "ZHADHEIGHT")]    // Levenshtein + Length priority
         [TestCase("ZHADHEIGHT", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "SHEADHEIGHT", "ZHADHEIGHT")]    // Doesn't blow up on bad input
-        public void testGetDisplayAliasSuccesses(string expected, string searchString, params string[] aliases) {
+        public void testGetDisplayAliasSuccesses(string expected, string? searchString, params string[] aliases) {
             // Given a DatabaseInteraction Object
             DatabaseInteraction databaseInteraction = new DatabaseInteraction();
             // And a search term

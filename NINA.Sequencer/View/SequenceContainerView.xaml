@@ -647,6 +647,19 @@
                                                                         <Setter Property="ContextMenu">
                                                                             <Setter.Value>
                                                                                 <ContextMenu ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.TriggersView}">
+                                                                                    <ContextMenu.Template>
+                                                                                        <ControlTemplate>
+                                                                                            <Border Background="{StaticResource BackgroundBrush}">
+                                                                                                <ScrollViewer
+                                                                                                    CanContentScroll="True"
+                                                                                                    HorizontalScrollBarVisibility="Disabled"
+                                                                                                    Style="{StaticResource MenuScrollViewer}"
+                                                                                                    VerticalScrollBarVisibility="Auto">
+                                                                                                    <ItemsPresenter />
+                                                                                                </ScrollViewer>
+                                                                                            </Border>
+                                                                                        </ControlTemplate>
+                                                                                    </ContextMenu.Template>
                                                                                     <ContextMenu.ItemContainerStyle>
                                                                                         <Style TargetType="MenuItem">
                                                                                             <Setter Property="Header" Value="{StaticResource EntityMenuHeader}" />
@@ -745,6 +758,19 @@
                                                                         <Setter Property="ContextMenu">
                                                                             <Setter.Value>
                                                                                 <ContextMenu ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.ConditionsView}">
+                                                                                    <ContextMenu.Template>
+                                                                                        <ControlTemplate>
+                                                                                            <Border Background="{StaticResource BackgroundBrush}">
+                                                                                                <ScrollViewer
+                                                                                                    CanContentScroll="True"
+                                                                                                    HorizontalScrollBarVisibility="Disabled"
+                                                                                                    Style="{StaticResource MenuScrollViewer}"
+                                                                                                    VerticalScrollBarVisibility="Auto">
+                                                                                                    <ItemsPresenter />
+                                                                                                </ScrollViewer>
+                                                                                            </Border>
+                                                                                        </ControlTemplate>
+                                                                                    </ContextMenu.Template>
                                                                                     <ContextMenu.ItemContainerStyle>
                                                                                         <Style TargetType="MenuItem">
                                                                                             <Setter Property="Header" Value="{StaticResource EntityMenuHeader}" />

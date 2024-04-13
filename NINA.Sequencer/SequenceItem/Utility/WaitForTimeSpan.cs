@@ -46,10 +46,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             };
         }
 
-        private int time;
+        private double time;
 
         [JsonProperty]
-        public int Time {
+        public double Time {
             get => time;
             set {
                 time = value;

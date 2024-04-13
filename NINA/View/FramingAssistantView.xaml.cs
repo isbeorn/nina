@@ -20,6 +20,7 @@ using NINA.Profile;
 using NINA.ViewModel.FramingAssistant;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
@@ -62,7 +63,7 @@ namespace NINA.View {
                     e.CancelCommand();
                     return;
                 }
-                if(double.TryParse(input, out _)) {
+                if(double.TryParse(input, CultureInfo.InvariantCulture, out _)) {
                     return;
                 }
 

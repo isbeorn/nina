@@ -28,7 +28,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyFlatDevice {
-
+    /// <summary>
+    /// Serial Driver based on Alnitak Generic Commands Rev 44 6/12/2017.
+    /// </summary>
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
         private IAlnitakDevice _sdk;
@@ -38,9 +40,13 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
             set => _sdk = value;
         }
 
-        public AlnitakFlatDevice(IProfileService profileService) {
+        public AlnitakFlatDevice(string id, string category, string name, string displayName, IProfileService profileService) {
             _profileService = profileService;
             PortName = profileService.ActiveProfile.FlatDeviceSettings.PortName;
+            this.Id = id;
+            this.Category = category;
+            this.Name = name;
+            this.DisplayName = displayName;
         }
 
         private static void LogAndNotify(ISerialCommand command, InvalidDeviceResponseException ex) {
@@ -178,12 +184,12 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public bool HasSetupDialog => !Connected;
 
-        public string Id => "817b60ab-6775-41bd-97b5-3857cc676e51";
+        public string Id { get; }
 
-        public string Name => $"Alnitak Flat Panel";
-        public string DisplayName => $"{Loc.Instance["LblAlnitakFlatPanel"]}";
+        public string Name { get; }
+        public string DisplayName { get; }
 
-        public string Category => "Alnitak Astrosystems";
+        public string Category { get; }
 
         private bool _connected;
 
@@ -206,7 +212,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
             }
         }
 
-        public string DriverInfo => "Serial Driver based on Alnitak Generic Commands Rev 44 6/12/2017.";
+        public string DriverInfo => "Native Serial Driver";
 
         public string DriverVersion => "1.1";
 
@@ -292,7 +298,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
         }
 
         public void SetupDialog() {
-            WindowService.ShowDialog(this, "Alnitak Flat Panel Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
+            WindowService.ShowDialog(this, "Flat Panel Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
         public IList<string> SupportedActions => new List<string>();

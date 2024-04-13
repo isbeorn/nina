@@ -152,7 +152,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                             Notification.ShowSuccess(Loc.Instance["LblSafetyMonitorConnected"]);
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
 

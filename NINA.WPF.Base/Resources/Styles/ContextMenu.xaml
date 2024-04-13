@@ -34,6 +34,7 @@
                         <RepeatButton
                             Grid.Row="0"
                             Grid.Column="0"
+                            MinHeight="15"
                             Command="{x:Static ScrollBar.LineUpCommand}"
                             CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                             Focusable="False">
@@ -48,11 +49,15 @@
                                     <Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Data="{StaticResource ArrowUpSVG}" UseLayoutRounding="True" />
+                            <Path
+                                Data="{StaticResource ArrowUpSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                UseLayoutRounding="True" />
                         </RepeatButton>
                         <RepeatButton
                             Grid.Row="2"
                             Grid.Column="0"
+                            MinHeight="15"
                             Command="{x:Static ScrollBar.LineDownCommand}"
                             CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                             Focusable="False">
@@ -67,7 +72,10 @@
                                     <Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Data="{StaticResource ArrowDownSVG}" UseLayoutRounding="True" />
+                            <Path
+                                Data="{StaticResource ArrowDownSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                UseLayoutRounding="True" />
                         </RepeatButton>
                     </Grid>
                 </ControlTemplate>

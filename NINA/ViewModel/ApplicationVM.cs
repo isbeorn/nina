@@ -39,6 +39,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace NINA.ViewModel {
 
@@ -149,8 +150,8 @@ namespace NINA.ViewModel {
         private void ChangeResolution(string resolution) {
             var split = resolution.Split("x");
             if (split.Length == 2) {
-                var width = double.Parse(split[0]);
-                var height = double.Parse(split[1]);
+                var width = double.Parse(split[0], CultureInfo.InvariantCulture);
+                var height = double.Parse(split[1], CultureInfo.InvariantCulture);
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
                 Application.Current.MainWindow.Width = width;
                 Application.Current.MainWindow.Height = height;

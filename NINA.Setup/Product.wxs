@@ -91,7 +91,8 @@
       <ComponentGroupRef Id="External_x64_Nikon_Type0027_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0028_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0029_files" />
-      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />      
+      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0031_files" />
       <ComponentGroupRef Id="External_x64_Altair_files" />
       <ComponentGroupRef Id="External_x64_ToupTek_files" />
       <ComponentGroupRef Id="External_x64_Omegon_files" />
@@ -219,6 +220,7 @@
                 <Directory Id="External_x64_Nikon_Type0028" Name="Type0028" />
                 <Directory Id="External_x64_Nikon_Type0029" Name="Type0029" />
                 <Directory Id="External_x64_Nikon_Type0030" Name="Type0030" />
+                <Directory Id="External_x64_Nikon_Type0031" Name="Type0031" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
@@ -296,7 +298,7 @@
             </Directory>
             <Directory Id="runtimes_win" Name="win">
               <Directory Id="runtimes_win_lib" Name="lib">
-                <Directory Id="runtimes_win_lib_net7.0" Name="net7.0" />
+                <Directory Id="runtimes_win_lib_net8.0" Name="net8.0" />
                 <Directory Id="runtimes_win_lib_netcoreapp2.1" Name="netcoreapp2.1" />
               </Directory>
             </Directory>
@@ -591,6 +593,9 @@
       <Component Id="NJsonSchema.dll" Guid="9bb5bcda-30df-4aec-b520-efb9fa96ca2d" Bitness="$(var.Win64)">
         <File Id="NJsonSchema.dll" Name="NJsonSchema.dll" Source="$(var.NINA_TargetDir)NJsonSchema.dll" />
       </Component>
+      <Component Id="NJsonSchema.Annotations.dll" Guid="c88f0c04-257d-42d8-8110-4cf178ceced5">
+        <File Id="NJsonSchema.Annotations.dll" Name="NJsonSchema.Annotations.dll" Source="$(var.NINA_TargetDir)NJsonSchema.Annotations.dll" />
+      </Component>
       <Component Id="NmeaParser.dll" Guid="e45c807d-d193-4e13-825b-2f5b9ea92b63" Bitness="$(var.Win64)">
         <File Id="NmeaParser.dll" Name="NmeaParser.dll" Source="$(var.NINA_TargetDir)NmeaParser.dll" />
       </Component>
@@ -747,8 +752,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.123.58001.dll" Guid="1D9D1832-C048-44F1-9166-1BA1524F9191">
-        <File Id="mscordaccore_amd64_amd64_8.0.123.58001.dll" Name="mscordaccore_amd64_amd64_8.0.123.58001.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.123.58001.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.424.16909.dll" Guid="a51aa255-31e4-4061-86a0-bd1d50c87eb8">
+        <File Id="mscordaccore_amd64_amd64_8.0.424.16909.dll" Name="mscordaccore_amd64_amd64_8.0.424.16909.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.424.16909.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1448,6 +1453,12 @@
       <Component Id="Database_Migration_12.sql" Guid="BF5BE7CB-FEB5-4692-8B70-919E33AA9823">
         <File Id="Database_Migration_12.sql" Name="12.sql" Source="$(var.NINA_TargetDir)Database\Migration\12.sql" />
       </Component>
+      <Component Id="Database_Migration_13.sql" Guid="FB05C048-601D-41C5-8ECB-C42A3C672732">
+        <File Id="Database_Migration_13.sql" Name="13.sql" Source="$(var.NINA_TargetDir)Database\Migration\13.sql" />
+      </Component>
+      <Component Id="Database_Migration_14.sql" Guid="872DFD14-7FFD-4043-B1CD-52190C05FE62">
+        <File Id="Database_Migration_14.sql" Name="14.sql" Source="$(var.NINA_TargetDir)Database\Migration\14.sql" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
@@ -2077,6 +2088,23 @@
       </Component>
       <Component Id="External_x64_Nikon_Type0030_Type0030.md3" Guid="24695B36-B6EE-4DE6-BCBE-F5A6E05AF813" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0030_Type0030.md3" Name="Type0030.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\Type0030.md3" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x64_Nikon_Type0031_files" Directory="External_x64_Nikon_Type0031">
+      <Component Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Guid="7D77D79F-8C10-43A1-9C4B-3E97EB579EA2" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkRoyalmile.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_dnssd.dll" Guid="2EAA12DF-234B-4865-97F9-72967E5F7815" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\dnssd.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_NkdPTP.dll" Guid="0C3BECFD-7900-4383-9BE4-678C1BCECDF0" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkdPTP.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_Type0031.md3" Guid="FC96A307-8EFB-4A89-8A7B-ABE35A1B7554" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_Type0031.md3" Name="Type0031.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\Type0031.md3" />
       </Component>
     </ComponentGroup>
   </Fragment>

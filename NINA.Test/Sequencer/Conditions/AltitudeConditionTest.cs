@@ -20,6 +20,7 @@ using NINA.Astrometry;
 using NUnit.Framework;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Container;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Sequencer.Conditions {
 
@@ -57,7 +58,7 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
 
-            Assert.IsTrue(
+            ClassicAssert.IsTrue(
                 sut.Check(null, null));
         }
 
@@ -76,7 +77,7 @@ namespace NINA.Test.Sequencer.Conditions {
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
 
-            Assert.IsTrue(
+            ClassicAssert.IsTrue(
                 sut.Check(null, null));
         }
 
@@ -91,7 +92,7 @@ namespace NINA.Test.Sequencer.Conditions {
             var sut = new AltitudeCondition(profileServiceMock.Object);
             sut.Data.Coordinates.Coordinates = coords;
             sut.Data.Offset = targetAltitude;
-            Assert.IsFalse(
+            ClassicAssert.IsFalse(
                 sut.Check(null, null));
         }
 

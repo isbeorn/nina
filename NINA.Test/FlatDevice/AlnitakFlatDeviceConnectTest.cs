@@ -32,7 +32,7 @@ namespace NINA.Test.FlatDevice {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "COM3");
             _mockSdk = new Mock<IAlnitakDevice>();
-            _sut = new AlnitakFlatDevice(_mockProfileService.Object) { Sdk = _mockSdk.Object };
+            _sut = new AlnitakFlatDevice("TestDevice", "TestCategory", "TestName", "TestDisplayName", _mockProfileService.Object) { Sdk = _mockSdk.Object };
         }
 
         [TearDown]
@@ -85,8 +85,11 @@ namespace NINA.Test.FlatDevice {
         public void TestConstructor() {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
-            Assert.That(_sut.Id, Is.EqualTo("817b60ab-6775-41bd-97b5-3857cc676e51"));
+            _sut = new AlnitakFlatDevice("TestDevice", "TestCategory", "TestName", "TestDisplayName", _mockProfileService.Object);
+            Assert.That(_sut.Id, Is.EqualTo("TestDevice"));
+            Assert.That(_sut.Category, Is.EqualTo("TestCategory"));
+            Assert.That(_sut.Name, Is.EqualTo("TestName"));
+            Assert.That(_sut.DisplayName, Is.EqualTo("TestDisplayName"));
         }
 
         [Test]

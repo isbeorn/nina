@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -140,6 +141,8 @@ namespace NINA {
 
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             var userSettingsException = InitializeUserSettings();
 
             _profileService =
@@ -181,7 +184,11 @@ namespace NINA {
                 var profileSelection = new ProfileSelectVM(_profileService);
                 var profileSelectionWindow = new ProfileSelectView();
                 profileSelectionWindow.DataContext = profileSelection;
-                profileSelectionWindow.ShowDialog();
+                var result = profileSelectionWindow.ShowDialog() ?? false;
+                if(!result) {
+                    Shutdown();
+                    return;
+                }
             }
 
             _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);

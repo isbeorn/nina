@@ -568,7 +568,7 @@ namespace NINA.ViewModel.FlatWizard {
                         if(string.IsNullOrEmpty(filterSettings.Filter?.Name)) {
                             Notification.ShowError(string.Format(Loc.Instance["LblFlatWizardFailed"], ex.Message));
                         } else {
-                            Notification.ShowError(string.Format(Loc.Instance["LblFlatWizardFailed"], filterSettings.Filter?.Name, ex.Message));
+                            Notification.ShowError(string.Format(Loc.Instance["LblFlatWizardFailedForFilter"], filterSettings.Filter?.Name, ex.Message));
                         }
                     }
 

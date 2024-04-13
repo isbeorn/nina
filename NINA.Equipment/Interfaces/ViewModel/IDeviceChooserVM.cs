@@ -20,6 +20,8 @@ namespace NINA.Equipment.Interfaces.ViewModel {
     public interface IDeviceChooserVM {
         IDevice SelectedDevice { get; set; }
 
+        bool SetupDialogOpen { get; }
+
         Task GetEquipment();
 
         IList<IDevice> Devices { get; }

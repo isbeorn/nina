@@ -175,7 +175,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                             Notification.ShowSuccess(Loc.Instance["LblDomeConnected"]);
 
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
 

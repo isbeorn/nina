@@ -31,6 +31,8 @@ using System.Drawing;
 using System.Collections;
 using System.Linq;
 using NINA.Equipment.Utility;
+using System.Diagnostics.Eventing.Reader;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -641,6 +643,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         HasHighFullwell = false;
                     }
 
+                    if(CanSetLEDLights) {
+                        SupportedActions.Add(ToupTekActions.LEDLights);
+                        LEDLights = profile.TouptekAlikeLEDLights;
+                    }                    
+
                     ReadoutModes = new List<string> { "Low Conversion Gain" };
 
                     if ((this.flags & ToupTekAlikeFlag.FLAG_CG) != 0) {
@@ -768,6 +775,28 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         profileService.ActiveProfile.CameraSettings.TouptekAlikeHighFullwell = value;
                         RaisePropertyChanged();
                     }
+                }
+            }
+        }
+
+        public bool CanSetLEDLights {
+            // Disabled due to SDK issue
+            get => false;
+        }
+
+        public bool LEDLights {
+            get {
+                sdk.get_Option(ToupTekAlikeOption.OPTION_TAILLIGHT, out var value);
+                Logger.Trace($"{Category} - LED Lights option is set to {value}");
+                return value == 1 ? true : false;
+            }
+            set {
+                Logger.Trace($"{Category} - Set LED Lights option to {value}");
+                if (!sdk.put_Option(ToupTekAlikeOption.OPTION_TAILLIGHT, value ? 1 : 0)) {
+                    Logger.Error($"{Category} - Could not set LED Lights option to {value}");
+                } else {
+                    profileService.ActiveProfile.CameraSettings.TouptekAlikeLEDLights = value;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -1038,7 +1067,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         }
                     }
                     break;
-                case ToupTekActions.HighFullwellMode:
+                case ToupTekActions.HighFullwellMode: 
                     if (HasHighFullwell) {
                         var flag = StringToBoolean(actionParameters);
                         if (flag.HasValue) {
@@ -1088,6 +1117,19 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         }
                     }
                     break;
+                case ToupTekActions.LEDLights:
+                    if(CanSetLEDLights) {
+                        var flag = StringToBoolean(actionParameters);
+                        if (flag.HasValue) {
+                            Logger.Info($"Device Action {actionName}: {flag.Value}");
+                            LEDLights = flag.Value;
+                            return "1";
+                        } else {
+                            Logger.Error($"Unrecognized parameter [{actionParameters}] for action [{actionName}].");
+                            return "0";
+                        }
+                    }
+                    break;
             }
 
             Logger.Error($"Unsupported action [{actionName}]");
@@ -1128,6 +1170,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             public const string BinAverage = "Bin Average";
             public const string DewHeaterStrength = "Dew Heater Strength";
             public const string FanSpeed = "Fan Speed";
+            public const string LEDLights = "LED Lights";
         }
     }
 }

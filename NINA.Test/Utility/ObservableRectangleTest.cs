@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Core.Utility;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Utility {
 
@@ -31,8 +32,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -45,8 +46,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -60,8 +61,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation + initialRotation, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation + initialRotation, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -75,8 +76,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation + initialRotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation + initialRotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -89,8 +90,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation - 360, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation - 360, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -104,8 +105,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation + 360, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(rotation + initialRotation + 360, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation + 360, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation + initialRotation + 360, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -119,8 +120,8 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
-            Assert.AreEqual(10, rectangle.TotalRotation, "Invalid total rotation value");
+            ClassicAssert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(10, rectangle.TotalRotation, "Invalid total rotation value");
         }
 
         [Test]
@@ -133,7 +134,7 @@ namespace NINA.Test.Utility {
             rectangle.TotalRotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation, rectangle.Rotation, "Invalid rotation value");
         }
 
         [Test]
@@ -147,7 +148,7 @@ namespace NINA.Test.Utility {
             rectangle.TotalRotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation - initialOffset, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation - initialOffset, rectangle.Rotation, "Invalid rotation value");
         }
 
         [Test]
@@ -162,7 +163,7 @@ namespace NINA.Test.Utility {
             rectangle.TotalRotation = rotation;
 
             //Assert
-            Assert.AreEqual(rotation - initialOffset, rectangle.Rotation, "Invalid rotation value");
+            ClassicAssert.AreEqual(rotation - initialOffset, rectangle.Rotation, "Invalid rotation value");
         }
 
         [Test]
@@ -179,7 +180,7 @@ namespace NINA.Test.Utility {
             rectangle.Rotation = 15;
 
             //Assert
-            Assert.AreEqual(true, propertyChangedFired, "PropertyChangedEventNotFired");
+            ClassicAssert.AreEqual(true, propertyChangedFired, "PropertyChangedEventNotFired");
         }
 
         [Test]
@@ -196,7 +197,7 @@ namespace NINA.Test.Utility {
             rectangle.TotalRotation = 15;
 
             //Assert
-            Assert.AreEqual(true, propertyChangedFired, "PropertyChangedEventNotFired");
+            ClassicAssert.AreEqual(true, propertyChangedFired, "PropertyChangedEventNotFired");
         }
     }
 }

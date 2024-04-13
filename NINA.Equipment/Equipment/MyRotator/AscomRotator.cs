@@ -95,6 +95,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
 
                 Logger.Debug($"ASCOM - Move relative by {angle}° - Mechanical Position reported by rotator {MechanicalPosition}° and offset {offset}");
                 await device.MoveAsync(angle, ct);
+                InvalidatePropertyCache();
 
                 return true;
             }

@@ -1922,7 +1922,7 @@ Přeskočit.</value>
     <value>Ruční Ovládání</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Ruční souřadnice (J2000)</value>
+    <value>Ruční Nastavení Souřadnic</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Ruční Filtrové kolo</value>
@@ -6904,7 +6904,7 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>Délka hledání zařízení ASCOM Alpaca (výchozí: 1 sekunda)</value>
+    <value>Délka trvání pokusů o vyhledání zařízení ASCOM Alpaca (výchozí: 2 sekundy)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
     <value>Port Hledání</value>
@@ -6918,7 +6918,7 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Počet vysílání detekce zařízení ASCOM Alpaca (výchozí: 2)</value>
+    <value>Počet detekcí vyhledávání zařízení ASCOM Alpaca (výchozí: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
     <value>Vyřešit název DNS</value>
@@ -6947,5 +6947,17 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Použít IPv6 pro detekci zařízení ASCOM Alpaca (Výchozí: zapnuto)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Přepnout Katalog Zobrazení</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>Cílová Alt</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Cílová Az</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Geoptik Flat Field Regulátor</value>
   </data>
 </root>

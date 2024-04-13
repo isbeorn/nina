@@ -479,7 +479,7 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public void ResetAll() {
+        public virtual void ResetAll() {
             lock (lockObj) {
                 ResetTriggers();
                 ResetConditions();

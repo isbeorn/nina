@@ -56,7 +56,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase("AUTO", true)]
         [TestCase("COM3", true)]
         [TestCase("", false)]
-        [TestCase(null, false)]
+        [TestCase(null!, false)]
         public void TestInitializeSerialPort(string portName, bool expected) {
             _mockSerialPortProvider
                 .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))

@@ -92,12 +92,12 @@ namespace FTD2XX_NET {
                     byte[] descriptionBytes = new byte[64];
                     status = FT_GetDeviceInfoDetail(i, out var flags, out var device, out var id, out var locationId, serialNoBytes, descriptionBytes, out var handle);
                     var serialNo = Encoding.ASCII.GetString(serialNoBytes);
-                    var nullIdx = serialNo.IndexOf("\0");
+                    var nullIdx = serialNo.IndexOf('\0');
                     if (nullIdx > -1) {
                         serialNo = serialNo.Substring(0, nullIdx);
                     }
                     var description = Encoding.ASCII.GetString(descriptionBytes);
-                    nullIdx = description.IndexOf("\0");
+                    nullIdx = description.IndexOf('\0');
                     if (nullIdx > -1) {
                         description = description.Substring(0, nullIdx);
                     }

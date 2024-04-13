@@ -1913,7 +1913,7 @@
     <value>手動制御</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>手入力座標(J2000)</value>
+    <value>手動座標</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>手動フィルターホイール</value>
@@ -6876,7 +6876,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpacaのデバイス検出試行時間 (デフォルト: 1秒)</value>
+    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
     <value>検出ポート</value>
@@ -6890,7 +6890,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpacaのデバイス検出用ブロードキャスト数 (デフォルト: 2)</value>
+    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
     <value>DNS名の解決</value>
@@ -6919,5 +6919,17 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>ASCOM Alpacaのデバイス検出にIPv6を使用 (デフォルト: オフ)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Toggle Catalogue Display</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>目標高度</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Target Az</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Geoptik Flat Field Controller</value>
   </data>
 </root>

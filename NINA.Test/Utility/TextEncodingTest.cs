@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NINA.Core.Utility;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Utility {
 
@@ -35,7 +36,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            Assert.AreEqual(ascii, result);
+            ClassicAssert.AreEqual(ascii, result);
         }
 
         [Test]
@@ -48,7 +49,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            Assert.AreEqual(ascii, result);
+            ClassicAssert.AreEqual(ascii, result);
         }
 
         [Test]
@@ -61,7 +62,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.UnicodeToAscii(unicode);
 
             // Assert
-            Assert.AreEqual(ascii, result);
+            ClassicAssert.AreEqual(ascii, result);
         }
 
         [Test]
@@ -74,7 +75,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            Assert.AreEqual(inLatin, result);
+            ClassicAssert.AreEqual(inLatin, result);
         }
 
         [Test]
@@ -87,7 +88,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            Assert.AreEqual(inLatin, result);
+            ClassicAssert.AreEqual(inLatin, result);
         }
 
         [Test]
@@ -100,7 +101,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasGreek);
 
             // Assert
-            Assert.AreEqual(inLatin, result);
+            ClassicAssert.AreEqual(inLatin, result);
         }
 
         [Test]
@@ -113,7 +114,7 @@ namespace NINA.Test.Utility {
             string result = TextEncoding.GreekToLatinAbbreviation(hasOnylLatin);
 
             // Assert
-            Assert.AreEqual(inLatin, result);
+            ClassicAssert.AreEqual(inLatin, result);
         }
     }
 }

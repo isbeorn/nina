@@ -230,7 +230,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         BroadcastFocuserInfo();
                     }
                 } catch (OperationCanceledException) {
-                    if (!timeoutCts?.IsCancellationRequested == true) {
+                    if (ct.IsCancellationRequested == true) {
                         Logger.Info("Focuser move cancelled");
                         throw;
                     }
@@ -310,7 +310,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         Notification.ShowSuccess(Loc.Instance["LblFocuserConnected"]);
 
                         updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                        updateTimer.Start();
+                        _ = updateTimer.Run();
 
                         TargetPosition = Position;
                         profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;

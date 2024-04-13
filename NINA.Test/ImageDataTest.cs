@@ -23,6 +23,7 @@ using NINA.Image.Interfaces;
 using NINA.Image.FileFormat;
 using NINA.Core.Model;
 using Moq;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test {
 
@@ -110,8 +111,8 @@ namespace NINA.Test {
             IImageData result = await dataFactoryUtility.ExposureDataFactory.CreateFlipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
 
             //Assert
-            Assert.AreEqual(expX, result.Properties.Width);
-            Assert.AreEqual(expY, result.Properties.Height);
+            ClassicAssert.AreEqual(expX, result.Properties.Width);
+            ClassicAssert.AreEqual(expY, result.Properties.Height);
             CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
@@ -130,8 +131,8 @@ namespace NINA.Test {
             BaseImageData result = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(arr, width, height, 16, false, new ImageMetaData());
 
             //Assert
-            Assert.AreEqual(expX, result.Properties.Width);
-            Assert.AreEqual(expY, result.Properties.Height);
+            ClassicAssert.AreEqual(expX, result.Properties.Width);
+            ClassicAssert.AreEqual(expY, result.Properties.Height);
             CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
@@ -180,8 +181,8 @@ namespace NINA.Test {
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, resultStatistics.StDev);
-            Assert.AreEqual(mean, resultStatistics.Mean);
+            ClassicAssert.AreEqual(stdev, resultStatistics.StDev);
+            ClassicAssert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -218,8 +219,8 @@ namespace NINA.Test {
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, resultStatistics.StDev);
-            Assert.AreEqual(mean, resultStatistics.Mean);
+            ClassicAssert.AreEqual(stdev, resultStatistics.StDev);
+            ClassicAssert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -240,8 +241,8 @@ namespace NINA.Test {
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, resultStatistics.StDev, 0.000001);
-            Assert.AreEqual(mean, resultStatistics.Mean);
+            ClassicAssert.AreEqual(stdev, resultStatistics.StDev, 0.000001);
+            ClassicAssert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -259,10 +260,10 @@ namespace NINA.Test {
             var imgData = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureData(arr, width, height, bitDepth, isBayered, new ImageMetaData()).ToImageData();
 
             //Assert
-            Assert.AreEqual(width, imgData.Properties.Width);
-            Assert.AreEqual(height, imgData.Properties.Height);
-            Assert.AreEqual(bitDepth, imgData.Properties.BitDepth);
-            Assert.AreEqual(isBayered, imgData.Properties.IsBayered);
+            ClassicAssert.AreEqual(width, imgData.Properties.Width);
+            ClassicAssert.AreEqual(height, imgData.Properties.Height);
+            ClassicAssert.AreEqual(bitDepth, imgData.Properties.BitDepth);
+            ClassicAssert.AreEqual(isBayered, imgData.Properties.IsBayered);
         }
 
         [Test]
@@ -282,10 +283,10 @@ namespace NINA.Test {
             var imgData = await dataFactoryUtility.ExposureDataFactory.CreateFlipped2DExposureData(arr, bitDepth, isBayered, new ImageMetaData()).ToImageData();
 
             //Assert
-            Assert.AreEqual(width, imgData.Properties.Width);
-            Assert.AreEqual(height, imgData.Properties.Height);
-            Assert.AreEqual(bitDepth, imgData.Properties.BitDepth);
-            Assert.AreEqual(isBayered, imgData.Properties.IsBayered);
+            ClassicAssert.AreEqual(width, imgData.Properties.Width);
+            ClassicAssert.AreEqual(height, imgData.Properties.Height);
+            ClassicAssert.AreEqual(bitDepth, imgData.Properties.BitDepth);
+            ClassicAssert.AreEqual(isBayered, imgData.Properties.IsBayered);
         }
 
         [Test]
@@ -319,10 +320,10 @@ namespace NINA.Test {
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(5, resultStatistics.Min);
-            Assert.AreEqual(2, resultStatistics.MinOccurrences);
-            Assert.AreEqual(80, resultStatistics.Max);
-            Assert.AreEqual(3, resultStatistics.MaxOccurrences);
+            ClassicAssert.AreEqual(5, resultStatistics.Min);
+            ClassicAssert.AreEqual(2, resultStatistics.MinOccurrences);
+            ClassicAssert.AreEqual(80, resultStatistics.Max);
+            ClassicAssert.AreEqual(3, resultStatistics.MaxOccurrences);
         }
 
         [Test]
@@ -336,8 +337,8 @@ namespace NINA.Test {
             var result = await dataFactoryUtility.ExposureDataFactory.CreateImageArrayExposureData(arr, arr.Length / 2, 2, bitDepth, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
-            Assert.AreEqual(expectedMedian, resultStatistics.Median);
-            Assert.AreEqual(expectedMAD, resultStatistics.MedianAbsoluteDeviation);
+            ClassicAssert.AreEqual(expectedMedian, resultStatistics.Median);
+            ClassicAssert.AreEqual(expectedMAD, resultStatistics.MedianAbsoluteDeviation);
         }
 
         [Test]

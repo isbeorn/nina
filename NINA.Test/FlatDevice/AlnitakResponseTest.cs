@@ -40,19 +40,19 @@ namespace NINA.Test.FlatDevice {
         [TestCase("Ping", "P99OOO")]
         [TestCase("Ping", "*P33OOO")]
         [TestCase("Ping", "*PXXOOO")]
-        [TestCase("Ping", null)]
+        [TestCase("Ping", null!)]
         [TestCase("Ping", "")]
         [TestCase("Open", "*O99000")]
-        [TestCase("Open", null)]
+        [TestCase("Open", null!)]
         [TestCase("Open", "")]
         [TestCase("Close", "*C99000")]
-        [TestCase("Close", null)]
+        [TestCase("Close", null!)]
         [TestCase("Close", "")]
         [TestCase("LightOn", "*L99000")]
-        [TestCase("LightOn", null)]
+        [TestCase("LightOn", null!)]
         [TestCase("LightOn", "")]
         [TestCase("LightOff", "*D99000")]
-        [TestCase("LightOff", null)]
+        [TestCase("LightOff", null!)]
         [TestCase("LightOff", "")]
         public void TestIsInvalidResponse(string responseName, string response) {
             var sut = (AlnitakResponse)Activator.CreateInstance("NINA.Equipment",
@@ -74,7 +74,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase("*B99-10")]
         [TestCase("*B99999")]
         [TestCase("*B99XXX")]
-        [TestCase(null)]
+        [TestCase(null!)]
         [TestCase("")]
         public void TestInvalidSetBrightnessResponse(string response) {
             Action act = () => _ = new SetBrightnessResponse { DeviceResponse = response };
@@ -95,7 +95,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase("*J99999")]
         [TestCase("*J99XXX")]
         [TestCase("*B99100")]
-        [TestCase(null)]
+        [TestCase(null!)]
         [TestCase("")]
         public void TestInvalidGetBrightnessResponse(string response) {
             Action act = () => _ = new GetBrightnessResponse { DeviceResponse = response };
@@ -120,7 +120,7 @@ namespace NINA.Test.FlatDevice {
         [TestCase("*S99004")]
         [TestCase("*S99020")]
         [TestCase("*S99200")]
-        [TestCase(null)]
+        [TestCase(null!)]
         [TestCase("")]
         public void TestInvalidStateResponse(string response) {
             Action act = () => _ = new StateResponse { DeviceResponse = response };

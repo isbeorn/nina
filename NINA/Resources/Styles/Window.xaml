@@ -91,6 +91,14 @@
                                     Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsBetaBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                     ! BETA PREVIEW VERSION !
                                 </TextBlock>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Foreground="Green"
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsRCBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    RELEASE CANDIDATE
+                                </TextBlock>
 
                                 <StackPanel
                                     Margin="0,0,2.5,0"

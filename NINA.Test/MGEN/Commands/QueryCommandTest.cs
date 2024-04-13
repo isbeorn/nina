@@ -45,14 +45,14 @@ namespace NINA.Test.MGEN.Commands {
         }
 
         [Test]
-        [TestCase(QueryCommand.QueryCommandFlag.None, null, null, false, 0, 0, 0, 0, 0)]
-        [TestCase(QueryCommand.QueryCommandFlag.AutoguidingState, new byte[] { 0x00 }, null, false, 0, 0, 0, 0, 0)]
-        [TestCase(QueryCommand.QueryCommandFlag.AutoguidingState, new byte[] { 0x01 }, null, true, 0, 0, 0, 0, 0)]
-        [TestCase(QueryCommand.QueryCommandFlag.FrameInfo, null, new byte[] { 0x12, 0x34, 0xff, 0xff, 0x9a, 0xbc, 0xde, 0xf0, 0xff, 0x34, 0x56, 0x78 }, false, 18, -204, -2179942, -16, 22068)]
+        [TestCase(QueryCommand.QueryCommandFlag.None, null!, null!, false, 0, 0, 0, 0, 0)]
+        [TestCase(QueryCommand.QueryCommandFlag.AutoguidingState, new byte[] { 0x00 }, null!, false, 0, 0, 0, 0, 0)]
+        [TestCase(QueryCommand.QueryCommandFlag.AutoguidingState, new byte[] { 0x01 }, null!, true, 0, 0, 0, 0, 0)]
+        [TestCase(QueryCommand.QueryCommandFlag.FrameInfo, null!, new byte[] { 0x12, 0x34, 0xff, 0xff, 0x9a, 0xbc, 0xde, 0xf0, 0xff, 0x34, 0x56, 0x78 }, false, 18, -204, -2179942, -16, 22068)]
         [TestCase(QueryCommand.QueryCommandFlag.FrameInfo | QueryCommand.QueryCommandFlag.AutoguidingState, new byte[] { 0x01 }, new byte[] { 0x12, 0x34, 0xff, 0xff, 0x9a, 0xbc, 0xde, 0xf0, 0xff, 0x34, 0x56, 0x78 }, true, 18, -204, -2179942, -16, 22068)]
         [TestCase(QueryCommand.QueryCommandFlag.All | QueryCommand.QueryCommandFlag.None, new byte[] { 0x01 }, new byte[] { 0x12, 0x34, 0xff, 0xff, 0x9a, 0xbc, 0xde, 0xf0, 0xff, 0x34, 0x56, 0x78 }, true, 18, -204, -2179942, -16, 22068)]
         [TestCase(QueryCommand.QueryCommandFlag.All, new byte[] { 0x01 }, new byte[] { 0x12, 0x34, 0xff, 0xff, 0x9a, 0xbc, 0xde, 0xf0, 0xff, 0x34, 0x56, 0x78 }, true, 18, -204, -2179942, -16, 22068)]
-        public void Successful_Scenario_Test(QueryCommand.QueryCommandFlag flag, byte[] guidingValues, byte[] frameInfoValues, bool expectedAutoGuiderActive, byte frameIndex, int positionX, int positionY, short distanceRA, short distanceDec) {
+        public void Successful_Scenario_Test(QueryCommand.QueryCommandFlag flag, byte[]? guidingValues, byte[]? frameInfoValues, bool expectedAutoGuiderActive, byte frameIndex, int positionX, int positionY, short distanceRA, short distanceDec) {
             var expectedFrameInfo = frameIndex != 0 ? new FrameInfo(frameIndex, positionX, positionY, distanceRA, distanceDec) : null;
 
             SetupWrite(ftdiMock, new byte[] { 0xca }, new byte[] { 0x10 }, new byte[] { (byte)flag });

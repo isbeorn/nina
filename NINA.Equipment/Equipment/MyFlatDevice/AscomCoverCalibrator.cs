@@ -139,6 +139,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                 }
 
                 await device.OpenCoverAsync(ct);
+                InvalidatePropertyCache();
                 if (CoverState == CoverState.Error) {
                     throw new FlatDeviceCoverErrorException();
                 }
@@ -153,6 +154,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
                 }
 
                 await device.CloseCoverAsync(ct);
+                InvalidatePropertyCache();
                 if (CoverState == CoverState.Error) {
                     throw new FlatDeviceCoverErrorException();
                 }

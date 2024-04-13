@@ -40,10 +40,14 @@
             <util:BindingProxy x:Key="Context" Data="{Binding}" />
             <util:BindingProxy x:Key="nighttimeProxy" Data="{Binding NighttimeData}" />
         </Grid.Resources>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer
+            Grid.IsSharedSizeScope="True"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
             <Grid Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
@@ -1131,6 +1135,50 @@
                         DataContext="{Binding DSO}"
                         NighttimeData="{Binding Source={StaticResource nighttimeProxy}, Path=Data}" />
                 </Grid>
+
+                <Grid Grid.Row="2" VerticalAlignment="Bottom">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.SKYATLAS}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Expander
+                        Margin="5"
+                        Header="{ns:Loc LblToggleCatalogueDisplay}"
+                        Visibility="{Binding SkyMapAnnotator.Initialized, Converter={StaticResource VisibilityConverter}}">
+                        <ItemsControl Margin="15,5,5,5" ItemsSource="{Binding SkyMapAnnotator.ActiveCatalogues}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Catalogue" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="0,0,5,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding Active, Mode=TwoWay}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </Expander>
+                </Grid>
+
+
             </Grid>
         </ScrollViewer>
         <GridSplitter

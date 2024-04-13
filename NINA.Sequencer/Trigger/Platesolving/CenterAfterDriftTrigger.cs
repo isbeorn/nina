@@ -41,6 +41,7 @@ using NINA.PlateSolving;
 using NINA.Core.Utility.WindowService;
 using NINA.Image.Interfaces;
 using NINA.Equipment.Interfaces;
+using NINA.Sequencer.Interfaces;
 
 namespace NINA.Sequencer.Trigger.Platesolving {
 
@@ -204,8 +205,11 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (nextItem == null) { return false; }
             RaisePropertyChanged(nameof(ProgressExposures));
+            if (nextItem == null) { return false; }
+            if (!(nextItem is IExposureItem exposureItem)) { return false; }
+            if (exposureItem.ImageType != "LIGHT") { return false; }
+
             if (LastDistanceArcMinutes >= DistanceArcMinutes) {
                 Logger.Info($"Drift exceeded threshold: {LastDistanceArcMinutes} / {DistanceArcMinutes} arc minutes");
                 if (ItemUtility.IsTooCloseToMeridianFlip(Parent, TimeSpan.FromMinutes(1) + nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero)) {

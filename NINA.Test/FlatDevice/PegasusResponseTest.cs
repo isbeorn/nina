@@ -31,13 +31,13 @@ namespace NINA.Test.FlatDevice {
 
         [Test]
         [TestCase("Status", "ERR")]
-        [TestCase("Status", null)]
+        [TestCase("Status", null!)]
         [TestCase("Status", "")]
         [TestCase("OnOff", "ERR")]
-        [TestCase("OnOff", null)]
+        [TestCase("OnOff", null!)]
         [TestCase("OnOff", "")]
         [TestCase("SetBrightness", "ERR")]
-        [TestCase("SetBrightness", null)]
+        [TestCase("SetBrightness", null!)]
         [TestCase("SetBrightness", "")]
         public void TestInvalidResponse(string responseName, string response) {
             var sut = (Response)Activator.CreateInstance("NINA.Equipment",
@@ -52,7 +52,7 @@ namespace NINA.Test.FlatDevice {
         }
 
         [TestCase("V:XXX")]
-        [TestCase(null)]
+        [TestCase(null!)]
         [TestCase("")]
         public void TestInvalidFirmwareVersionResponse(string response) {
             Assert.That(() => new FirmwareVersionResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());

@@ -67,7 +67,7 @@ namespace NINA.Test.SerialCommunication {
         [Test]
         [TestCase("1.0", true, 1d)]
         [TestCase("", false, 0d)]
-        [TestCase(null, false, 0d)]
+        [TestCase(null!, false, 0d)]
         public void TestDoubleParsing(string response, bool valid, double expectedResult) {
             Assert.That(_sut.GetDoubleFromResponse(response, out var result), Is.EqualTo(valid));
             Assert.That(result, Is.EqualTo(expectedResult));
@@ -76,7 +76,7 @@ namespace NINA.Test.SerialCommunication {
         [Test]
         [TestCase("1", true, 1)]
         [TestCase("", false, 0)]
-        [TestCase(null, false, 0)]
+        [TestCase(null!, false, 0)]
         public void TestShortParsing(string response, bool valid, short expectedResult) {
             Assert.That(_sut.GetShortFromResponse(response, out var result), Is.EqualTo(valid));
             Assert.That(result, Is.EqualTo(expectedResult));
@@ -85,7 +85,7 @@ namespace NINA.Test.SerialCommunication {
         [Test]
         [TestCase("1", true, 1)]
         [TestCase("", false, 0)]
-        [TestCase(null, false, 0)]
+        [TestCase(null!, false, 0)]
         public void TestIntegerParsing(string response, bool valid, int expectedResult) {
             Assert.That(_sut.GetIntegerFromResponse(response, out var result), Is.EqualTo(valid));
             Assert.That(result, Is.EqualTo(expectedResult));
@@ -94,7 +94,7 @@ namespace NINA.Test.SerialCommunication {
         [Test]
         [TestCase("1", true, 1)]
         [TestCase("", false, 0)]
-        [TestCase(null, false, 0)]
+        [TestCase(null!, false, 0)]
         public void TestLongParsing(string response, bool valid, long expectedResult) {
             Assert.That(_sut.GetLongFromResponse(response, out var result), Is.EqualTo(valid));
             Assert.That(result, Is.EqualTo(expectedResult));

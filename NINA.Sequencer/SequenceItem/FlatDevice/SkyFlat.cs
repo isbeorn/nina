@@ -210,7 +210,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 todayTwilight = twilightCalculator.GetTwilightDuration(DateTime.Now, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude).TotalMilliseconds;
 
                 Logger.Info($"Determining Sky Flat Exposure Time. Min {MinExposure}, Max {MaxExposure}, Target {HistogramTargetPercentage * 100}%, Tolerance {HistogramTolerancePercentage * 100}%");
-                var exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, MinExposure, MaxExposure, 0, progress, token);
+                var exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, progress, token);
 
                 if (exposureDetermination is null) {
                     throw new SequenceEntityFailedException("Failed to determine exposure time for sky flats");
@@ -226,64 +226,68 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private async Task<SkyFlatExposureDetermination> DetermineExposureTime(double initialMin, double initialMax, double currentMin, double currentMax, int iterations, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+        private async Task<SkyFlatExposureDetermination> DetermineExposureTime(double initialMin, double initialMax, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             const double TOLERANCE = 0.00001;
-            if (iterations >= 20) {
-                if (Math.Abs(initialMax - currentMin) < TOLERANCE) {
-                    throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim"]);
-                } else {
-                    throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright"]);
+
+            var currentMin = initialMin;
+            var currentMax = initialMax;
+            for (var iterations = 0; iterations <= 20; iterations++) {
+                var exposureTime = Math.Round((currentMax + currentMin) / 2d, 5);
+
+                if (Math.Abs(exposureTime - initialMin) < TOLERANCE || Math.Abs(exposureTime - initialMax) < TOLERANCE) {
+                    // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
+                    iterations = 20;
+                }
+
+                progress?.Report(new ApplicationStatus() {
+                    Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime"], exposureTime, iterations, 20),
+                    Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Name"]
+                });
+
+                var sequence = new CaptureSequence(exposureTime, CaptureSequence.ImageTypes.FLAT, GetSwitchFilterItem().Filter, GetExposureItem().Binning, 1) { Gain = GetExposureItem().Gain, Offset = GetExposureItem().Offset };
+
+                var timer = Stopwatch.StartNew();
+                var image = await imagingMediator.CaptureImage(sequence, ct, progress);
+
+                var imageData = await image.ToImageData(progress, ct);
+                var prepTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
+                await prepTask;
+                var statistics = await imageData.Statistics;
+
+                var mean = statistics.Mean;
+
+                var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
+
+                DeterminedHistogramADU = mean;
+                this.GetExposureItem().ExposureTime = exposureTime;
+
+                switch (check) {
+                    case HistogramMath.ExposureAduState.ExposureWithinBounds:
+
+                        // Go ahead and save the exposure, as it already fits the parameters
+                        FillTargetMetaData(image.MetaData);
+                        await imageSaveMediator.Enqueue(imageData, prepTask, progress, ct);
+
+                        Logger.Info($"Found exposure time at {exposureTime}s with histogram ADU {mean}");
+                        progress?.Report(new ApplicationStatus() {
+                            Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime"], exposureTime),
+                            Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Name"]
+                        });
+                        return new SkyFlatExposureDetermination(timer, exposureTime, springTwilight, todayTwilight);
+                    case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
+                        Logger.Info($"Exposure too dim at {exposureTime}s. Retrying with higher exposure time");
+                        currentMin = exposureTime;
+                        break;
+                    case HistogramMath.ExposureAduState:
+                        Logger.Info($"Exposure too bright at {exposureTime}s. Retrying with lower exposure time");
+                        currentMax = exposureTime;
+                        break;
                 }
             }
-
-            var exposureTime = Math.Round((currentMax + currentMin) / 2d, 5);
-
-            if (Math.Abs(exposureTime - initialMin) < TOLERANCE || Math.Abs(exposureTime - initialMax) < TOLERANCE) {
-                // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
-                iterations = 20;
-            }
-
-            progress?.Report(new ApplicationStatus() {
-                Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime"], exposureTime, iterations, 20),
-                Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Name"]
-            });
-
-            var sequence = new CaptureSequence(exposureTime, CaptureSequence.ImageTypes.FLAT, GetSwitchFilterItem().Filter, GetExposureItem().Binning, 1) { Gain = GetExposureItem().Gain, Offset = GetExposureItem().Offset };
-
-            var timer = Stopwatch.StartNew();
-            var image = await imagingMediator.CaptureImage(sequence, ct, progress);
-
-            var imageData = await image.ToImageData(progress, ct);
-            var prepTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
-            await prepTask;
-            var statistics = await imageData.Statistics;
-
-            var mean = statistics.Mean;
-
-            var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
-
-            DeterminedHistogramADU = mean;
-            this.GetExposureItem().ExposureTime = exposureTime;
-
-            switch (check) {
-                case HistogramMath.ExposureAduState.ExposureWithinBounds:
-
-                    // Go ahead and save the exposure, as it already fits the parameters
-                    FillTargetMetaData(image.MetaData);
-                    await imageSaveMediator.Enqueue(imageData, prepTask, progress, ct);
-
-                    Logger.Info($"Found exposure time at {exposureTime}s with histogram ADU {mean}");
-                    progress?.Report(new ApplicationStatus() {
-                        Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime"], exposureTime),
-                        Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Name"]
-                    });
-                    return new SkyFlatExposureDetermination(timer, exposureTime, springTwilight, todayTwilight);
-                case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
-                    Logger.Info($"Exposure too dim at {exposureTime}s. Retrying with higher exposure time");
-                    return await DetermineExposureTime(initialMin, initialMax, exposureTime, currentMax, ++iterations, progress, ct);
-                case HistogramMath.ExposureAduState:
-                    Logger.Info($"Exposure too bright at {exposureTime}s. Retrying with lower exposure time");
-                    return await DetermineExposureTime(initialMin, initialMax, currentMin, exposureTime, ++iterations, progress, ct);
+            if (Math.Abs(initialMax - currentMin) < TOLERANCE) {
+                throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim"]);
+            } else {
+                throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright"]);
             }
         }
 
@@ -495,7 +499,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                                      $"mean adu: {imageStatistics.Mean:#.##}." + Environment.NewLine +
                                      $"The sky flat exposure time will be determined again and the exposure will be repeated.");
 
-                        exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, MinExposure, MaxExposure, 0, progress, token);
+                        exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, progress, token);
                         continue;
                 }
 

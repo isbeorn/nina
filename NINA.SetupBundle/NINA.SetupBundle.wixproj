@@ -28,9 +28,9 @@
     <SignOutput>True</SignOutput>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.3" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.3" />
-    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.3" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NINASetupBundle.wax" />
@@ -48,10 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <Target Name="SignBundleEngine">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
   </Target>
   <Target Name="SignBundle">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
   </Target>
   <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>
@@ -61,39 +61,39 @@
     <PostBuildEvent>del $(SolutionDir)RELEASE_NOTES.rtf
 
 echo "Copy NINA.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.pdb" "$(TargetDir)NINA.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.pdb" "$(TargetDir)NINA.pdb" /Y
 
 echo "Copy NINA.Astrometry.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Astrometry.pdb" "$(TargetDir)NINA.Astrometry.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Astrometry.pdb" "$(TargetDir)NINA.Astrometry.pdb" /Y
 
 echo "Copy NINA.Core.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Core.pdb" "$(TargetDir)NINA.Core.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Core.pdb" "$(TargetDir)NINA.Core.pdb" /Y
 
 echo "Copy NINA.Equipment.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Equipment.pdb" "$(TargetDir)NINA.Equipment.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Equipment.pdb" "$(TargetDir)NINA.Equipment.pdb" /Y
 
 echo "Copy NINA.Image.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Image.pdb" "$(TargetDir)NINA.Image.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Image.pdb" "$(TargetDir)NINA.Image.pdb" /Y
 
 echo "Copy NINA.MGEN.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
 
-echo "Copy NINA.Platesolving.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.Platesolving.pdb" /Y
+echo "Copy NINA.PlateSolving.pdb to setup output"
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.PlateSolving.pdb" /Y
 
 echo "Copy NINA.Profile.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y
 
 echo "Copy NINA.Sequencer.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Sequencer.pdb" "$(TargetDir)NINA.Sequencer.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Sequencer.pdb" "$(TargetDir)NINA.Sequencer.pdb" /Y
 
 echo "Copy NINA.WPF.Base.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.WPF.Base.pdb" "$(TargetDir)NINA.WPF.Base.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.WPF.Base.pdb" "$(TargetDir)NINA.WPF.Base.pdb" /Y
 
 echo "Copy NINACustomControlLibrary.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.CustomControlLibrary.pdb" "$(TargetDir)NINA.CustomControlLibrary.pdb" /Y
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.CustomControlLibrary.pdb" "$(TargetDir)NINA.CustomControlLibrary.pdb" /Y
 
 echo "Copy NINA.Plugin.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net7.0-windows\win-x64\NINA.Plugin.pdb" "$(TargetDir)NINA.Plugin.pdb" /Y</PostBuildEvent>
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Plugin.pdb" "$(TargetDir)NINA.Plugin.pdb" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

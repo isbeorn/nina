@@ -31,6 +31,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.WPF.Base.ViewModel.Equipment.Rotator;
 using NINA.Core.Enum;
+using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Rotator {
 
@@ -99,7 +100,7 @@ namespace NINA.Test.Rotator {
             mockRotatorDeviceChooserVM.SetupGet(x => x.SelectedDevice).Returns(mockRotator.Object);
 
             var connectionResult = await rotatorVM.Connect();
-            Assert.IsTrue(connectionResult);
+            ClassicAssert.IsTrue(connectionResult);
             return rotatorVM;
         }
 
@@ -131,7 +132,7 @@ namespace NINA.Test.Rotator {
 
             var cts = new CancellationTokenSource();
             var result = await sut.MoveMechanical(requestedPosition, TimeSpan.Zero, cts.Token);
-            Assert.AreEqual(expectedPosition, result);
+            ClassicAssert.AreEqual(expectedPosition, result);
             mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -149,7 +150,7 @@ namespace NINA.Test.Rotator {
 
             var cts = new CancellationTokenSource();
             var result = await sut.MoveRelative(requestedAmount, TimeSpan.Zero, cts.Token);
-            Assert.AreEqual(expectedPosition, result);
+            ClassicAssert.AreEqual(expectedPosition, result);
             mockRotator.Verify(x => x.MoveAbsoluteMechanical(expectedPosition, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -187,7 +188,7 @@ namespace NINA.Test.Rotator {
             offset = 5.0f;
 
             var result = sut.GetTargetPosition(requestedPosition);
-            Assert.AreEqual(expectedPosition, result, 0.1);
+            ClassicAssert.AreEqual(expectedPosition, result, 0.1);
         }
 
         [Test]
@@ -223,7 +224,7 @@ namespace NINA.Test.Rotator {
             offset = 5.0f;
 
             var result = sut.GetTargetMechanicalPosition(requestedPosition);
-            Assert.AreEqual(expectedPosition, result, 0.1);
+            ClassicAssert.AreEqual(expectedPosition, result, 0.1);
         }
     }
 }

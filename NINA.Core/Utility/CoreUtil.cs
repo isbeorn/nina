@@ -42,7 +42,8 @@ namespace NINA.Core.Utility {
         }
 
         public static bool IsReleaseBuild => new Version(Version).Revision >= 9000;
-        public static bool IsBetaBuild => new Version(Version).Revision >= 2000 && new Version(Version).Revision < 9000;
+        public static bool IsBetaBuild => new Version(Version).Revision >= 2000 && new Version(Version).Revision < 3000;
+        public static bool IsRCBuild => new Version(Version).Revision >= 3000 && new Version(Version).Revision < 9000;
         public static bool IsNightlyBuild => new Version(Version).Revision < 2000;
 
         public static string DocumentationPage {

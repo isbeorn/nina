@@ -83,6 +83,10 @@ namespace NINA.Test.FlatDevice {
                 mockApplicationStatusMediator.Object, mockCameraMediator.Object, mockFlatDeviceChooserVM.Object, mockImageGeometryProvider.Object);
         }
 
+        [TearDown] public void TearDown() {
+            sut.Dispose();
+        }
+
         [Test]
         public async Task TestOpenCoverNullFlatDevice() {
             mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);

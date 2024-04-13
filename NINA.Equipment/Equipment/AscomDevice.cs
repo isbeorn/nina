@@ -55,7 +55,7 @@ namespace NINA.Equipment.Equipment {
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => Category == "ASCOM";
+        public bool HasSetupDialog => Category == "ASCOM" && !Connected;
 
         public string Id { get; }
 
@@ -105,15 +105,17 @@ namespace NINA.Equipment.Equipment {
                 lock (lockObj) {
                     if (connected && device != null) {
                         bool val = false;
-
                         try {
                             bool expected;
-                            val = device?.Connected ?? false;
+                            val = GetProperty(nameof(Connected), defaultValue: false, cacheInterval: TimeSpan.FromSeconds(1), rethrow: true);
                             expected = connected;
                             if (expected != val) {
                                 Logger.Error($"{Name} should be connected but reports to be disconnected. Trying to reconnect...");
                                 try {
                                     Connected = true;
+                                    if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
+                                        getmemory.InvalidateCache();
+                                    }
                                     if (!device.Connected) {
                                         throw new NotConnectedException();
                                     }
@@ -125,7 +127,7 @@ namespace NINA.Equipment.Equipment {
                                 }
                             }
                         } catch (Exception ex) {
-                            Logger.Error(ex);
+                            Logger.Error(ex.InnerException ?? ex);
                             DisconnectOnConnectionError();
                         }
                         return val;
@@ -140,6 +142,10 @@ namespace NINA.Equipment.Equipment {
                         Logger.Debug($"SET {Name} Connected to {value}");
                         device.Connected = value;
                         connected = value;
+                        if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
+                            getmemory.InvalidateCache();
+                        }
+                        RaisePropertyChanged(nameof(HasSetupDialog));
                     }
                 }
             }
@@ -245,7 +251,7 @@ namespace NINA.Equipment.Equipment {
 
         protected abstract DeviceT GetInstance();
 
-        public void SetupDialog() {
+        public void SetupDialog() {            
             if (HasSetupDialog) {
                 try {
                     bool dispose = false;
@@ -304,12 +310,13 @@ namespace NINA.Equipment.Equipment {
         /// <typeparam name="PropT"></typeparam>
         /// <param name="propertyName">Property Name of the AscomDevice property</param>
         /// <param name="defaultValue">The default value to be returned when not connected or not implemented</param>
+        /// <param name="cacheInterval">The minimum interval between actual polls to the device</param>
+        /// <param name="rethrow">When set - any error will be rethrown and not handled internally</param>
+        /// <param name="useLastKnownValueOnError">When rethrow is false and this is set, the last known value will be used as a fallback. Otherwise the errorValue parameter will be used</param>
+        /// <param name="errorValue">The value to be returned when rethrow and useLastKnownValueOnError are both set to false and an error occurs during reading of the property</param>
         /// <returns></returns>
-        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null) {            
+        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null, bool rethrow = false, bool useLastKnownValueOnError = true, PropT errorValue = default) {            
             if (device != null) {
-                var retries = 3;
-
-                var interval = TimeSpan.FromMilliseconds(100);
                 var type = device.GetType();
 
                 if (!propertyGETMemory.TryGetValue(propertyName, out var memory)) {
@@ -320,6 +327,10 @@ namespace NINA.Equipment.Equipment {
                     }
                 }
 
+                // Retry three times in normal conditions - disable retry when consecutive errors exceed threshold as it will not likely succeed on a retry anyways
+                var retries = memory.ConsecutiveErrors >= memory.ConsecutiveErrorThreshold ? 1 : 3;
+                var interval = TimeSpan.FromMilliseconds(200);
+
                 for (int i = 0; i < retries; i++) {
                     try {
                         if (i > 0) {
@@ -327,16 +338,23 @@ namespace NINA.Equipment.Equipment {
                             Logger.Info($"Retrying to GET {type.Name}.{propertyName} - Attempt {i + 1} / {retries}");
                         }
 
-                        if (memory.IsImplemented && Connected) {
+                        if (memory.IsImplemented) {
                             PropT value = (PropT)memory.GetValue(device);
 
                             Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
-
+                            memory.ConsecutiveErrors = 0;
                             return (PropT)memory.LastValue;
                         } else {
                             return defaultValue;
                         }
                     } catch (Exception ex) {
+                        if(rethrow) { throw; }
+
+                        memory.ConsecutiveErrors++;
+                        if (memory.ConsecutiveErrors == memory.ConsecutiveErrorThreshold) {
+                            Logger.Warning($"GET of {type.Name}.{propertyName} encountered {memory.ConsecutiveErrorThreshold} consecutive errors. Further logs for this property access are logged on TRACE level until the property access is successful again");
+                        }
+
                         if (ex is PropertyNotImplementedException || ex.InnerException is PropertyNotImplementedException
                             || ex is ASCOM.NotImplementedException || ex.InnerException is ASCOM.NotImplementedException
                             || ex is System.NotImplementedException || ex.InnerException is System.NotImplementedException) {
@@ -346,20 +364,42 @@ namespace NINA.Equipment.Equipment {
                             return defaultValue;
                         }
 
+                        var logEx = ex.InnerException ?? ex;
+
                         if (ex is NotConnectedException || ex.InnerException is NotConnectedException) {
-                            Logger.Error($"{Name} is not connected ", ex.InnerException ?? ex);
+                            if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                                Logger.Trace($"{Name} is not connected {logEx}");
+                            } else {
+                                Logger.Error($"{Name} is not connected ", logEx);
+                            }
                         }
 
-                        var logEx = ex.InnerException ?? ex;
-                        Logger.Error($"An unexpected exception occurred during GET of {type.Name}.{propertyName}: ", logEx);
+                        if(memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                            Logger.Trace($"An unexpected exception occurred during GET of {type.Name}.{propertyName} - Consecutive Errors: {memory.ConsecutiveErrors} - Error: {logEx.Message} {logEx.StackTrace}");
+                        } else {
+                            Logger.Error($"An unexpected exception occurred during GET of {type.Name}.{propertyName}: ", logEx);
+                        }
                     }
                 }
 
-                var val = (PropT)memory.LastValue;
-                Logger.Info($"GET {type.Name}.{propertyName} failed - Returning last known value {val}");
+                // Polling the property failed for all retries
+                var val = useLastKnownValueOnError ? (PropT)memory.LastValue : errorValue;
+                if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                    Logger.Trace($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
+                } else {
+                    Logger.Info($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
+                }   
                 return val;
             }
             return defaultValue;
+        }
+
+        protected void InvalidatePropertyCache() {
+            if(propertyGETMemory?.Values?.Count > 0) {
+                foreach (var property in propertyGETMemory.Values) {
+                    property.InvalidateCache();
+                }
+            }
         }
 
         /// <summary>
@@ -432,6 +472,8 @@ namespace NINA.Equipment.Equipment {
                 info = p;
                 this.cacheInterval = cacheInterval;
                 IsImplemented = true;
+                ConsecutiveErrors = 0;
+                ConsecutiveErrorThreshold = 9;
 
                 LastValue = null;
                 if (p.PropertyType.IsValueType) {
@@ -448,13 +490,17 @@ namespace NINA.Equipment.Equipment {
             public object LastValue { get; set; }
             public DateTimeOffset LastValueUpdate { get; set; }
 
+            public int ConsecutiveErrors { get; set; }
+
+            public int ConsecutiveErrorThreshold;
+
             public void InvalidateCache() {
                 LastValueUpdate = DateTimeOffset.MinValue;
             }
 
             public object GetValue(DeviceT device) {
                 lock (lockObj) {
-                    if (DateTimeOffset.UtcNow - LastValueUpdate < cacheInterval) {
+                    if ((DateTimeOffset.UtcNow - LastValueUpdate) < cacheInterval) {
                         return LastValue;
                     }
 

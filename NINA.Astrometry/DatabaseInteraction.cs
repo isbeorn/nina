@@ -233,6 +233,29 @@ namespace NINA.Astrometry {
             return constellationBoundaries;
         }
 
+        public async Task<List<string>> GetCatalogues(int minCount, CancellationToken token) {
+            using var sw = MyStopWatch.Measure();
+
+            try {
+                using var context = new NINADbContext(connectionString);
+
+                var query = from catalogeNrs in context.CatalogueNrSet
+                            where catalogeNrs.catalogue != "NAME"
+                            group catalogeNrs by catalogeNrs.catalogue into groupedCatalogueNrs
+                            where groupedCatalogueNrs.Count() >= minCount
+                            orderby groupedCatalogueNrs.Count() descending
+                            select groupedCatalogueNrs.Key;
+
+                return await query.ToListAsync();
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
+                }
+            }
+            return null;
+        }
+
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
             string imageRepository,
             CustomHorizon horizon,

@@ -107,6 +107,7 @@ namespace NINA.Astrometry {
             webClient.Headers.Add("Host", "datacenter.iers.org");
             webClient.Headers.Add("accept-encoding", "gzip,deflate");
 
+            // https://datacenter.iers.org/versionMetadata.php?filename=latestVersionMeta/10_FINALS.DATA_IAU2000_V2013_0110.txt
             return webClient.DownloadString("https://datacenter.iers.org/data/csv/finals2000A.daily.csv");
         }
 

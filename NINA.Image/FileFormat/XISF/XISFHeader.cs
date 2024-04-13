@@ -387,7 +387,7 @@ namespace NINA.Image.FileFormat.XISF {
                 } else if (value == "T" || value == "F") {
                     var boolean = value.Trim() == "T" ? true : false;
                     l.Add(new BoolMetaDataHeader(key, boolean, comment));
-                } else if (value.Contains(".") && double.TryParse(value, out var number)) {
+                } else if (value.Contains(".") && double.TryParse(value, CultureInfo.InvariantCulture, out var number)) {
                     l.Add(new DoubleMetaDataHeader(key, number, comment));
                 } else if (int.TryParse(value, out var integer)) {
                     l.Add(new IntMetaDataHeader(key, integer, comment));

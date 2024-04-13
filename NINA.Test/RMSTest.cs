@@ -14,6 +14,7 @@
 
 using NINA.Core.Model;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +30,10 @@ namespace NINA.Test {
         public void RMS_DefaultConstructorTest() {
             RMS rms = new RMS();
 
-            Assert.AreEqual(1, rms.Scale);
-            Assert.AreEqual(0, rms.RA);
-            Assert.AreEqual(0, rms.Dec);
-            Assert.AreEqual(0, rms.Total);
+            ClassicAssert.AreEqual(1, rms.Scale);
+            ClassicAssert.AreEqual(0, rms.RA);
+            ClassicAssert.AreEqual(0, rms.Dec);
+            ClassicAssert.AreEqual(0, rms.Total);
         }
 
         [Test]
@@ -41,9 +42,9 @@ namespace NINA.Test {
 
             rms.AddDataPoint(10, 10);
 
-            Assert.AreEqual(0, rms.RA);
-            Assert.AreEqual(0, rms.Dec);
-            Assert.AreEqual(0, rms.Total);
+            ClassicAssert.AreEqual(0, rms.RA);
+            ClassicAssert.AreEqual(0, rms.Dec);
+            ClassicAssert.AreEqual(0, rms.Total);
         }
 
         [Test]
@@ -55,10 +56,10 @@ namespace NINA.Test {
             rms.AddDataPoint(25, 1296);
             rms.AddDataPoint(625, 36);
 
-            Assert.AreEqual(300, rms.RA);
-            Assert.AreEqual(630, rms.Dec);
+            ClassicAssert.AreEqual(300, rms.RA);
+            ClassicAssert.AreEqual(630, rms.Dec);
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            Assert.AreEqual(total, rms.Total);
+            ClassicAssert.AreEqual(total, rms.Total);
         }
 
         [Test]
@@ -70,10 +71,10 @@ namespace NINA.Test {
             rms.AddDataPoint(-25, -36);
             rms.AddDataPoint(-625, -1296);
 
-            Assert.AreEqual(300, rms.RA);
-            Assert.AreEqual(630, rms.Dec);
+            ClassicAssert.AreEqual(300, rms.RA);
+            ClassicAssert.AreEqual(630, rms.Dec);
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            Assert.AreEqual(total, rms.Total);
+            ClassicAssert.AreEqual(total, rms.Total);
         }
 
         [Test]
@@ -88,10 +89,10 @@ namespace NINA.Test {
             var scale = 1.59;
             rms.SetScale(scale);
 
-            Assert.AreEqual(300, rms.RA);
-            Assert.AreEqual(630, rms.Dec);
+            ClassicAssert.AreEqual(300, rms.RA);
+            ClassicAssert.AreEqual(630, rms.Dec);
             var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
-            Assert.AreEqual(total, rms.Total);
+            ClassicAssert.AreEqual(total, rms.Total);
         }
 
         [Test]
@@ -108,10 +109,10 @@ namespace NINA.Test {
 
             rms.Clear();
 
-            Assert.AreEqual(scale, rms.Scale);
-            Assert.AreEqual(0, rms.RA);
-            Assert.AreEqual(0, rms.Dec);
-            Assert.AreEqual(0, rms.Total);
+            ClassicAssert.AreEqual(scale, rms.Scale);
+            ClassicAssert.AreEqual(0, rms.RA);
+            ClassicAssert.AreEqual(0, rms.Dec);
+            ClassicAssert.AreEqual(0, rms.Total);
         }
 
         [Test]
@@ -129,10 +130,10 @@ namespace NINA.Test {
             rms.Clear();
             rms.AddDataPoint(-25, -36);
 
-            Assert.AreEqual(scale, rms.Scale);
-            Assert.AreEqual(0, rms.RA);
-            Assert.AreEqual(0, rms.Dec);
-            Assert.AreEqual(0, rms.Total);
+            ClassicAssert.AreEqual(scale, rms.Scale);
+            ClassicAssert.AreEqual(0, rms.RA);
+            ClassicAssert.AreEqual(0, rms.Dec);
+            ClassicAssert.AreEqual(0, rms.Total);
         }
     }
 }

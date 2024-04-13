@@ -1919,7 +1919,7 @@ HFR calculada: {2}
     <value>Control Manual</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Coordenadas Manuales (J2000)</value>
+    <value>Coordenadas manuales</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Rueda de Filtro Manual</value>
@@ -6899,7 +6899,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>La duración de los intentos de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 1 segundo)</value>
+    <value>La duración de los intentos de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 2 segundos)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
     <value>Puerto Ascom Alpaca para descubrimientos</value>
@@ -6913,7 +6913,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Número de transmisiones de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 2)</value>
+    <value>Número de transmisiones de descubrimiento de dispositivos ASCOM Alpaca (por defecto: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
     <value>Resolver nombre DNS</value>
@@ -6942,5 +6942,17 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
     <value>Usar IPv6 para el descubrimiento de dispositivo ASCOM Alpaca (por defecto: apagado)</value>
+  </data>
+  <data name="LblToggleCatalogueDisplay" xml:space="preserve">
+    <value>Alternar visualización del catálogo</value>
+  </data>
+  <data name="LblTargetAlt" xml:space="preserve">
+    <value>Alt del objetivo</value>
+  </data>
+  <data name="LblTargetAz" xml:space="preserve">
+    <value>Az del objetivo</value>
+  </data>
+  <data name="LblGeoptikFlatFieldController" xml:space="preserve">
+    <value>Controlador del generador de flats Geoptik</value>
   </data>
 </root>

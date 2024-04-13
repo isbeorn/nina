@@ -21,6 +21,7 @@ using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -257,7 +258,7 @@ namespace NINA.Equipment.Equipment.MyPlanetarium {
         }
 
         public double ParseRotationAngle(JObject jObject) {
-            if (double.TryParse((string)jObject["Oculars.selectedCCDRotationAngle"]["value"], out double angle)) {
+            if (double.TryParse((string)jObject["Oculars.selectedCCDRotationAngle"]["value"], CultureInfo.InvariantCulture, out double angle)) {
                 // Stellatium ocular rotation is clockwise, so it needs to be reversed
                 return AstroUtil.EuclidianModulus(360 - angle, 360);
             } else {

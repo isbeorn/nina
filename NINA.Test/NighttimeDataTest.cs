@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Astrometry.RiseAndSet;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
@@ -90,13 +91,13 @@ namespace NINA.Test {
         [Test]
         public void AllSetTest() {
             var data = GetData();
-            Assert.AreEqual(moonPhase, data.MoonPhase);
-            Assert.AreEqual(illumination, data.Illumination);
-            Assert.AreEqual(date, data.Date);
-            Assert.AreEqual(referenceDate, data.ReferenceDate);
-            Assert.AreEqual(twilightRiseAndSet, data.TwilightRiseAndSet);
-            Assert.AreEqual(moonRiseAndSet, data.MoonRiseAndSet);
-            Assert.AreEqual(sunRiseAndSet, data.SunRiseAndSet);
+            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
+            ClassicAssert.AreEqual(illumination, data.Illumination);
+            ClassicAssert.AreEqual(date, data.Date);
+            ClassicAssert.AreEqual(referenceDate, data.ReferenceDate);
+            ClassicAssert.AreEqual(twilightRiseAndSet, data.TwilightRiseAndSet);
+            ClassicAssert.AreEqual(moonRiseAndSet, data.MoonRiseAndSet);
+            ClassicAssert.AreEqual(sunRiseAndSet, data.SunRiseAndSet);
             CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
             CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
         }
@@ -105,14 +106,14 @@ namespace NINA.Test {
         public void MoonPhaseChangedTest() {
             moonPhase = MoonPhase.LastQuarter;
             var data = GetData();
-            Assert.AreEqual(moonPhase, data.MoonPhase);
+            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
         }
 
         [Test]
         public void IlluminationChangedTest() {
             illumination = null;
             var data = GetData();
-            Assert.IsFalse(data.Illumination.HasValue);
+            ClassicAssert.IsFalse(data.Illumination.HasValue);
         }
 
         [Test]

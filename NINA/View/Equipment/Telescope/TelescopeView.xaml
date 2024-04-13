@@ -55,7 +55,8 @@
                             HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
                             RefreshCommand="{Binding RescanDevicesCommand}"
                             SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
-                            SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}" />
+                            SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
+                            SetupDialogOpen="{Binding DeviceChooserVM.SetupDialogOpen}" />
                     </Grid>
                 </GroupBox.Header>
                 <Grid>
@@ -259,16 +260,21 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
-                <Grid IsEnabled="{Binding TelescopeInfo.Connected}">
-                    <GroupBox>
-                        <GroupBox.Header>
-                            <Grid Height="40" Margin="5">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="20"
-                                    Text="{ns:Loc LblManualCoordinates}" />
-                            </Grid>
-                        </GroupBox.Header>
+                <GroupBox IsEnabled="{Binding TelescopeInfo.Connected}">
+                    <GroupBox.Header>
+                        <Grid Height="40" Margin="5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                Text="{ns:Loc LblManualCoordinates}" />
+                        </Grid>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -283,7 +289,7 @@
                                 BorderThickness="0"
                                 DataContext="{Binding InputCoordinates}">
                                 <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
-                                    <TextBlock Width="60" Text="{ns:Loc LblTargetRA}" />
+                                    <TextBlock MinWidth="60" Text="{ns:Loc LblTargetRA}" />
                                     <TextBox
                                         Width="40"
                                         Margin="5,0,0,0"
@@ -337,7 +343,7 @@
                                 BorderThickness="0"
                                 DataContext="{Binding InputCoordinates}">
                                 <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
-                                    <TextBlock Width="60" Text="{ns:Loc LblTargetDec}" />
+                                    <TextBlock MinWidth="60" Text="{ns:Loc LblTargetDec}" />
                                     <TextBox
                                         Width="40"
                                         Margin="5,0,0,0"
@@ -405,11 +411,152 @@
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
                             </Button>
                         </Grid>
-                    </GroupBox>
-                </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,5,0,5"
+                            HorizontalAlignment="Stretch"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,1,0,0" />
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                DataContext="{Binding InputCoordinatesAltAz}">
+                                <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="60"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblTargetAlt}" />
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
+                                                <Binding Path="NegativeAlt" />
+                                                <Binding Path="AltDegrees">
+                                                    <Binding.ValidationRules>
+                                                        <rules:DegreesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </MultiBinding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center">d</TextBlock>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="AltMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="AltSeconds" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock Margin="0,0,5,0" VerticalAlignment="Center">s</TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <Border
+                                Grid.Row="1"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                DataContext="{Binding InputCoordinatesAltAz}">
+                                <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="60"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblTargetAz}" />
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="AzDegrees" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:IntRangeRule>
+                                                        <rules:IntRangeRule.ValidRange>
+                                                            <rules:IntRangeChecker Maximum="359" Minimum="0" />
+                                                        </rules:IntRangeRule.ValidRange>
+                                                    </rules:IntRangeRule>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center">d</TextBlock>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="AzMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="AzSeconds" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <Button
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                Width="50"
+                                Height="50"
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                Command="{Binding SlewToCoordinatesAltAzCommand}">
+                                <Button.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource InverseMultiBooleanORConverter}">
+                                        <Binding Path="IsParkingOrHoming" />
+                                        <Binding Path="TelescopeInfo.AtPark" />
+                                    </MultiBinding>
+                                </Button.IsEnabled>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
             </Grid>
             <Grid
                 Grid.Row="1"
+                Margin="0,-15,0,0"
                 VerticalAlignment="Bottom"
                 IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
                 <Grid IsEnabled="{Binding TelescopeInfo.Connected}">
@@ -434,7 +581,7 @@
                                 <RowDefinition Height="100" />
                                 <RowDefinition Height="100" />
                                 <RowDefinition Height="100" />
-                                <RowDefinition Height="100" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel
                                 Grid.Row="0"
@@ -469,11 +616,13 @@
                             </StackPanel>
                             <StackPanel
                                 Grid.Row="0"
-                                Grid.Column="3"
+                                Grid.Column="2"
+                                Grid.ColumnSpan="2"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding Telescope.CanMovePrimaryAxis}"
-                                Orientation="Horizontal">
+                                Orientation="Horizontal"
+                                Visibility="{Binding Telescope.CanMovePrimaryAxis, Converter={StaticResource VisibilityConverter}}">
                                 <TextBlock
                                     Margin="0,0,5,0"
                                     VerticalAlignment="Center"
@@ -488,11 +637,13 @@
                             </StackPanel>
                             <StackPanel
                                 Grid.Row="1"
-                                Grid.Column="3"
+                                Grid.Column="2"
+                                Grid.ColumnSpan="2"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
+                                VerticalAlignment="Top"
                                 IsEnabled="{Binding Telescope.CanMoveSecondaryAxis}"
-                                Orientation="Horizontal">
+                                Orientation="Horizontal"
+                                Visibility="{Binding Telescope.CanMoveSecondaryAxis, Converter={StaticResource VisibilityConverter}}">
                                 <TextBlock
                                     Margin="0,0,5,0"
                                     VerticalAlignment="Center"
@@ -657,7 +808,7 @@
                             </Button>
 
                             <Button
-                                Grid.Row="3"
+                                Grid.Row="2"
                                 Grid.Column="3"
                                 Width="80"
                                 Height="80"
@@ -667,7 +818,7 @@
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblPark}" />
                             </Button>
                             <Grid
-                                Grid.Row="3"
+                                Grid.Row="2"
                                 Grid.Column="3"
                                 Width="80"
                                 Height="80"
@@ -679,7 +830,7 @@
                             </Grid>
 
                             <Button
-                                Grid.Row="4"
+                                Grid.Row="3"
                                 Grid.Column="3"
                                 Width="80"
                                 Height="40"
@@ -703,7 +854,7 @@
                             </Button>
 
                             <Button
-                                Grid.Row="4"
+                                Grid.Row="3"
                                 Grid.Column="3"
                                 Width="80"
                                 Height="40"
@@ -732,37 +883,44 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Orientation="Vertical">
-                                <UniformGrid Columns="2" IsEnabled="{Binding Telescope.CanMovePrimaryAxis}">
-                                    <TextBlock
-                                        Margin="0,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblPrimaryReversed}">
+                                VerticalAlignment="Bottom"
+                                Orientation="Horizontal">
+                                <Grid IsEnabled="{Binding Telescope.CanMovePrimaryAxis}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPrimaryReversed}">
                                         <TextBlock.ToolTip>
                                             <ToolTip ToolTipService.ShowOnDisabled="True">
                                                 <TextBlock Text="{ns:Loc LblPrimaryReversedToolTip}" />
                                             </ToolTip>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
-                                    <CheckBox IsChecked="{Binding Path=ActiveProfile.TelescopeSettings.PrimaryReversed, Source={StaticResource ProfileService}, Mode=TwoWay}" ToolTip="{ns:Loc LblSecondaryReversedToolTip}" />
-                                </UniformGrid>
-                                <UniformGrid
-                                    Margin="0,5,0,0"
-                                    Columns="2"
-                                    IsEnabled="{Binding Telescope.CanMoveSecondaryAxis}">
-                                    <TextBlock
-                                        Margin="0,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblSecondaryReversed}">
+                                    <CheckBox
+                                        Grid.Column="1"
+                                        Margin="5,0,0,0"
+                                        IsChecked="{Binding Path=ActiveProfile.TelescopeSettings.PrimaryReversed, Source={StaticResource ProfileService}, Mode=TwoWay}"
+                                        ToolTip="{ns:Loc LblSecondaryReversedToolTip}" />
+                                </Grid>
+                                <Grid Margin="10,0,0,0" IsEnabled="{Binding Telescope.CanMoveSecondaryAxis}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSecondaryReversed}">
                                         <TextBlock.ToolTip>
                                             <ToolTip ToolTipService.ShowOnDisabled="True">
                                                 <TextBlock Text="{ns:Loc LblSecondaryReversedToolTip}" />
                                             </ToolTip>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
-                                    <CheckBox IsChecked="{Binding Path=ActiveProfile.TelescopeSettings.SecondaryReversed, Source={StaticResource ProfileService}, Mode=TwoWay}" ToolTip="{ns:Loc LblSecondaryReversedToolTip}" />
-                                </UniformGrid>
+                                    <CheckBox
+                                        Grid.Column="1"
+                                        Margin="5,0,0,0"
+                                        IsChecked="{Binding Path=ActiveProfile.TelescopeSettings.SecondaryReversed, Source={StaticResource ProfileService}, Mode=TwoWay}"
+                                        ToolTip="{ns:Loc LblSecondaryReversedToolTip}" />
+                                </Grid>
                             </StackPanel>
                         </Grid>
                     </GroupBox>
