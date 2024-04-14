@@ -230,10 +230,6 @@ namespace NINA.Astrometry {
             }
         }
 
-        //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
-
-        private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
-
         private BitmapSource _image;
         protected CustomHorizon customHorizon;
 
@@ -249,49 +245,9 @@ namespace NINA.Astrometry {
                             RaisePropertyChanged(nameof(Image));
                         });
                     }
-                    /*var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
-                    if (size > 25) { size = 25; }
-                    size = Math.Max(15,size);
-                    var path = string.Format(
-                        "{0}?r={1}&d={2}&e=J2000&h={3}&w={4}&v=1&format=GIF",
-                        DSS_URL,
-                        this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
-                        this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
-                        (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
-                        size.ToString(CultureInfo.InvariantCulture));*/
-                    //var file = Path.Combine(imageRepository, this.Id + ".gif");
-                    //if (File.Exists(file)) {
-                    //    _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    //        //var img = new BitmapImage(new Uri(file));
-                    //        _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };
-                    //        _image.Freeze();
-                    //        RaisePropertyChanged(nameof(Image));
-                    //    }));
-                    //}
                 }
                 return _image;
             }
         }
-
-        /*private Brush _imageBrush;
-        public Brush ImageBrush {
-            get {
-                if(_imageBrush == null) {
-                    _imageBrush = new ImageBrush(Image);
-                }
-                return _imageBrush;
-            }
-        }*/
-
-        /*private void Img_DownloadCompleted(object sender,EventArgs e) {
-            var path = "D:\\img\\";
-            using (FileStream fs = new FileStream(path + this.Name + ".gif",FileMode.Create)) {
-                var encoder = new GifBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(Image));
-                encoder.Save(fs);
-            }
-
-            RaisePropertyChanged(nameof(Image));
-        }*/
     }
 }
