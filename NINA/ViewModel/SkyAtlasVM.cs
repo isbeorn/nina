@@ -9,10 +9,8 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
-using NINA.Utility;
 using NINA.Astrometry;
 using NINA.Profile.Interfaces;
-using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
@@ -22,11 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using NINA.ViewModel.Interfaces;
-using NINA.ViewModel.FramingAssistant;
-using NINA.ViewModel.Sequencer;
 using NINA.Sequencer.Container;
-using NINA.Core.Database;
 using NINA.Core.Enum;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
@@ -37,6 +31,7 @@ using NINA.Core.Model;
 using NINA.Astrometry.Interfaces;
 using NINA.WPF.Base.ViewModel;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.SkySurvey;
 
 namespace NINA.ViewModel {
 
@@ -350,8 +345,16 @@ namespace NINA.ViewModel {
                     searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
                     searchParams.SearchOrder.Direction = OrderByDirection.ToString();
 
+                    var cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);                    
+                    var imageFactory = async (SkyObjectBase obj) => {
+                        var cacheSkySurveyImageFactory = new CacheSkySurveyImageFactory(400, 190, cache);
+                        var image = cacheSkySurveyImageFactory.Render(obj.Coordinates, AstroUtil.ArcsecToDegree(Math.Max((obj.Size ?? 0), 60)), 0);
+                        GC.Collect();
+                        return image;
+                    };
+                    
                     IEnumerable<DeepSkyObject> result = await db.GetDeepSkyObjects(
-                        profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository,
+                        imageFactory,
                         profileService.ActiveProfile.AstrometrySettings.Horizon,
                         searchParams,
                         _searchTokenSource.Token
@@ -367,7 +370,7 @@ namespace NINA.ViewModel {
                         var cloneDate = d;
                         obj.SetDateAndPosition(cloneDate, latitude, longitude);
                         _searchTokenSource.Token.ThrowIfCancellationRequested();
-                    });       
+                    });
                     
                     if(SelectedMinimumAltitudeDegrees > 0 && SelectedAltitudeDuration > 0) {
                         Func<DeepSkyObject, bool> filterFunction;
@@ -424,7 +427,7 @@ namespace NINA.ViewModel {
                         result = result.Where(x => x.Altitudes.Count > 0 && x.Moon.Separation > SelectedMinimumMoonDistanceDegrees);
                     }
 
-                    SearchResult = new PagedList<DeepSkyObject>(PageSize, result);
+                    SearchResult = new PagedList<DeepSkyObject>(PageSize, result);                    
                 } catch (OperationCanceledException) {
                 }
                 return true;

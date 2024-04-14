@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Behavioral Changes
 - Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
 - Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance
+- Sky Atlas Images are now generated from the Offline Sky Map Cache. The "Sky Atlas Image Repository" option has been removed as it is now fully superseded by the Offline Sky Map Cache.
 
 ## Improvements
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
@@ -18,6 +19,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads 
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
+- Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
@@ -28,6 +30,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area
 - Alpaca devices that are no longer responding are now properly recognized and disconnected
 - Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.
+- Offline Sky Cache will now always find the relevant tiles for small field of views.
 
 # Version 3.0
 

@@ -19,8 +19,10 @@ using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Astrometry {
 
@@ -93,14 +95,20 @@ namespace NINA.Astrometry {
     }
 
     public class DeepSkyObject : SkyObjectBase {
+        public DeepSkyObject(string id, Coordinates coords,CustomHorizon customHorizon)
+            : this(id, coords, null as Func<SkyObjectBase, Task<BitmapSource>>, customHorizon) {
+        }
         public DeepSkyObject(string id, Coordinates coords, string imageRepository, CustomHorizon customHorizon)
-            : base(id, imageRepository, customHorizon) {
+            : this(id, coords, null as Func<SkyObjectBase, Task<BitmapSource>>, customHorizon) {
+        }
+
+        public DeepSkyObject(string id, Coordinates coords, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, CustomHorizon customHorizon)
+            : base(id, imageFactory, customHorizon) {
             _coordinates = coords;
             Moon = new MoonInfo(_coordinates);
-
-
             DeepSkyObjectDailyRefresher.Instance.Register(this);
         }
+
         public DateTime ReferenceDate { get => _referenceDate; set => _referenceDate = value; }
 
         public MoonInfo Moon { get; private set; }

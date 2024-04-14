@@ -199,7 +199,7 @@ namespace NINA.Sequencer.Container {
 
         private async Task<bool> CoordsToFraming() {
             if (Target.DeepSkyObject?.Coordinates != null) {
-                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
                 dso.RotationPositionAngle = Target.PositionAngle;
                 applicationMediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
                 return await framingAssistantVM.SetCoordinates(dso);

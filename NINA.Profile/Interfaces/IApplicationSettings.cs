@@ -14,6 +14,7 @@
 
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -24,6 +25,7 @@ namespace NINA.Profile.Interfaces {
         double DevicePollingInterval { get; set; }
         CultureInfo Language { get; set; }
         LogLevelEnum LogLevel { get; set; }
+        [Obsolete]
         string SkyAtlasImageRepository { get; set; }
         string SkySurveyCacheDirectory { get; set; }
         AsyncObservableCollection<KeyValuePair<string, string>> SelectedPluggableBehaviors { get; set; }
