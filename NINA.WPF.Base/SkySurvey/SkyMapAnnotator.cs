@@ -20,7 +20,6 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageAnalysis;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Model.FramingAssistant;
-using NINA.WPF.Base.SkySurvey;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -38,7 +37,7 @@ using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
-namespace NINA.ViewModel.FramingAssistant {
+namespace NINA.WPF.Base.SkySurvey {
 
     public partial class SkyMapAnnotator : BaseINPC, ITelescopeConsumer, ISkyMapAnnotator {
         private readonly DatabaseInteraction dbInstance;
