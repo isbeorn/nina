@@ -6955,4 +6955,10 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik, kontroler klatek Flat</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>Dioda LED</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Włącz lub wyłącz diodę LED w aparacie</value>
+  </data>
 </root>

@@ -6966,4 +6966,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED Lights</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Turn the LED lights on the camera on or off</value>
+  </data>
 </root>

@@ -6959,4 +6959,10 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Controlador de Camp Pla Geoptik</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>Llums LED</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Encén o apaga els llums LED de la Càmera</value>
+  </data>
 </root>

@@ -6932,4 +6932,10 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LEDライト</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>カメラのLEDライトをオンまたはオフにする</value>
+  </data>
 </root>

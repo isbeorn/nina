@@ -6960,4 +6960,10 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Regulátor</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED Lights</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Turn the LED lights on the camera on or off</value>
+  </data>
 </root>

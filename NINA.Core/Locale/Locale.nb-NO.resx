@@ -6947,4 +6947,10 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED Lights</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Turn the LED lights on the camera on or off</value>
+  </data>
 </root>

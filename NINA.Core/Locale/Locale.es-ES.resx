@@ -6955,4 +6955,10 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Controlador del generador de flats Geoptik</value>
   </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>Luces LED</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Enciende o apaga las luces LED de la cámara</value>
+  </data>
 </root>
