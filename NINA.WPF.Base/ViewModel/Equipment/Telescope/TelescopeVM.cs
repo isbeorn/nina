@@ -174,11 +174,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     IsParkingOrHoming = false;
                     progress?.Report(new ApplicationStatus { Status = string.Empty });
                 }
-
-                if (result) {
-                    Logger.Trace("Telescope has parked");
-                }
             });
+
+            if (result) {
+                Logger.Info("Telescope has parked");
+            } else {
+                Logger.Error("Telescope failed to park");
+            }
 
             return result;
         }
@@ -264,7 +266,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     success = true;
                 }
             });
-
+            if (success) {
+                Logger.Info("Telescope has unparked");
+            } else {
+                Logger.Error("Telescope failed to unpark");
+            }
             return success;
         }
 
@@ -324,13 +330,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         reason = "it is not capable of doing so";
                     }
                 }
-
-                if (success) {
-                    Logger.Trace("Telescope has located its home position");
-                } else {
-                    Logger.Error($"Telescope cannot locate home because {reason}");
-                }
             });
+
+            if (success) {
+                Logger.Info("Telescope has located its home position");
+            } else {
+                Logger.Error($"Telescope cannot locate home because {reason}");
+            }
 
             return success;
         }
