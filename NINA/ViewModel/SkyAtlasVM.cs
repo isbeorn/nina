@@ -348,7 +348,7 @@ namespace NINA.ViewModel {
                     var cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);                    
                     var imageFactory = async (SkyObjectBase obj) => {
                         var cacheSkySurveyImageFactory = new CacheSkySurveyImageFactory(400, 190, cache);
-                        var image = cacheSkySurveyImageFactory.Render(obj.Coordinates, AstroUtil.ArcsecToDegree(Math.Max((obj.Size ?? 0), 60)), 0);
+                        var image = cacheSkySurveyImageFactory.Render(obj.Coordinates, AstroUtil.ArcsecToDegree(Math.Max((obj.Size ?? 0), 600)), 0);
                         GC.Collect();
                         return image;
                     };
