@@ -277,9 +277,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         public async Task<bool> FindHome(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool success = false;
             Logger.Info("Telescope ordered to locate home position");
+            string reason = string.Empty;
 
             await Task.Run(async () => {
-                string reason = string.Empty;
                 IsParkingOrHoming = true;
 
                 if (Telescope.Connected) {
