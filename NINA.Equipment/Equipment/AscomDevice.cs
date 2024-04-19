@@ -21,6 +21,7 @@ using NINA.Equipment.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -55,7 +56,7 @@ namespace NINA.Equipment.Equipment {
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => Category == "ASCOM" && !Connected;
+        public bool HasSetupDialog => !Connected;
 
         public string Id { get; }
 
@@ -253,25 +254,42 @@ namespace NINA.Equipment.Equipment {
 
         public void SetupDialog() {            
             if (HasSetupDialog) {
-                try {
-                    bool dispose = false;
-                    if (device == null) {
-                        Logger.Trace($"{Name} - Creating instance for {Id}");
-                        var concreteDevice = GetInstance();
-                        device = concreteDevice;
-                        dispose = true;
+                if(deviceMeta is null) {
+                    // ASCOM
+                    try {
+                        bool dispose = false;
+                        if (device == null) {
+                            Logger.Trace($"{Name} - Creating instance for {Id}");
+                            var concreteDevice = GetInstance();
+                            device = concreteDevice;
+                            dispose = true;
+                        }
+                        Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
+                        var t = device.GetType();
+                        var method = t.GetMethod("SetupDialog");
+                        method.Invoke(device, null);
+                        if (dispose) {
+                            device.Dispose();
+                            device = default;
+                        }
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowExternalError(ex.Message, Loc.Instance["LblASCOMDriverError"]);
                     }
-                    Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
-                    var t = device.GetType();
-                    var method = t.GetMethod("SetupDialog");
-                    method.Invoke(device, null);
-                    if (dispose) {
-                        device.Dispose();
-                        device = default;
+                } else {
+                    // Alpaca
+                    var protocol = deviceMeta.ServiceType == ASCOM.Common.Alpaca.ServiceType.Http ? "http" : "https";
+                    var ipAddress = deviceMeta.IpAddress;
+                    var port = deviceMeta.IpPort;
+                    var deviceType = deviceMeta.AscomDeviceType.ToString().ToLower();
+                    var deviceNumber = deviceMeta.AlpacaDeviceNumber;
+                    var url = $"{protocol}://{ipAddress}:{port}/setup/v1/{deviceType}/{deviceNumber}/setup";
+                    try { 
+                        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowError(ex.Message);
                     }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowExternalError(ex.Message, Loc.Instance["LblASCOMDriverError"]);
                 }
             }
         }
