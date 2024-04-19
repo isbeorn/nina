@@ -20,6 +20,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
 - Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale
+- Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
