@@ -31,6 +31,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Alpaca devices that are no longer responding are now properly recognized and disconnected
 - Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.
 - Offline Sky Cache will now always find the relevant tiles for small field of views.
+- Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
 
 # Version 3.0
 

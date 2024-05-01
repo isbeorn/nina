@@ -325,9 +325,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         public double MinExposure {
             get => minExposure;
             set {
-                if (value >= MaxExposure) {
-                    value = MaxExposure;
-                }
                 minExposure = value;
                 RaisePropertyChanged();
             }
@@ -339,9 +336,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         public double MaxExposure {
             get => maxExposure;
             set {
-                if (value <= MinExposure) {
-                    value = MinExposure;
-                }
                 maxExposure = value;
                 RaisePropertyChanged();
             }
@@ -405,14 +399,19 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             if(ShouldDither) {
                 var info = telescopeMediator.GetInfo();
                 if (!info.Connected) {
-                    issues.Add("Dither between sky flat exposures enabled but telescope is not connected");
+                    issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected"]);
+                } else {
+                    if (!info.CanPulseGuide) {
+                        issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide"]);
+                    }
+                    if (info.AtPark) {
+                        issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked"]);
+                    }
                 }
-                if (!info.CanPulseGuide) {
-                    issues.Add("Dither between sky flat exposures enabled but telescope is not capable of pulse guiding");
-                }
-                if (info.AtPark) {
-                    issues.Add("Dither between sky flat exposures enabled but telescope is parked");
-                }
+            }
+
+            if (MinExposure > MaxExposure) {
+                issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid"]);
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Distinct().ToList();

@@ -413,30 +413,24 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private int minExposure;
+        private int minBrightness;
 
         [JsonProperty]
         public int MinBrightness {
-            get => minExposure;
+            get => minBrightness;
             set {
-                if (value >= MaxBrightness) {
-                    value = MaxBrightness;
-                }
-                minExposure = value;
+                minBrightness = value;
                 RaisePropertyChanged();
             }
         }
 
-        private int maxExposure;
+        private int maxBrightness;
 
         [JsonProperty]
         public int MaxBrightness {
-            get => maxExposure;
+            get => maxBrightness;
             set {
-                if (value <= MinBrightness) {
-                    value = MinBrightness;
-                }
-                maxExposure = value;
+                maxBrightness = value;
                 RaisePropertyChanged();
             }
         }
@@ -485,6 +479,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var valid = takeExposure.Validate() && switchFilter.Validate() && setBrightness.Validate();
 
             var issues = new ObservableCollection<string>();
+
+            if (MinBrightness > MaxBrightness) {
+                issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid"]);
+            }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
