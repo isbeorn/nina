@@ -54,6 +54,7 @@ namespace NINA.Profile {
     [KnownType(typeof(GnssSettings))]
     [KnownType(typeof(DockPanelSettings))]
     [KnownType(typeof(AlpacaSettings))]
+    [KnownType(typeof(ImageHistorySettings))]
     public class Profile : SerializableINPC, IProfile {
 
         /// <summary>
@@ -112,6 +113,7 @@ namespace NINA.Profile {
             GnssSettings = new GnssSettings();
             DockPanelSettings = new DockPanelSettings();
             AlpacaSettings = new AlpacaSettings();
+            ImageHistorySettings = new ImageHistorySettings();
         }
 
         /// <summary>
@@ -145,6 +147,7 @@ namespace NINA.Profile {
             GnssSettings.PropertyChanged += SettingsChanged;
             DockPanelSettings.PropertyChanged += SettingsChanged;
             AlpacaSettings.PropertyChanged += SettingsChanged;
+            ImageHistorySettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -296,6 +299,9 @@ namespace NINA.Profile {
 
         [DataMember]
         public IAlpacaSettings AlpacaSettings { get; set; }
+
+        [DataMember]
+        public IImageHistorySettings ImageHistorySettings { get; set; }
 
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name
