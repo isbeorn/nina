@@ -3,8 +3,7 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-### <span style="color:orange;">Nightly Status: ALPHA - USE WITH CAUTION, NOT RECOMMENDED FOR PRODUCTION!</span>
-### <span style="color:orange;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
+### <span style="color:yellow;">Beta builds are preview builds that contain the full development effort for the next release. These builds contain the full set of features for the next version and are under evaluation to find and fix potential bugs. No major changes will occur in these builds and the focus is on bug fixing only - major changes may only occur if a critical issue is identified and a major change is necessary to fix it. Thus these builds should already be quite stable to use.</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
 # Version 3.1 NIGHTLY
 
@@ -21,6 +20,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
 - Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale
 - Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser
+- Image History axis selection now persists across sessions
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
@@ -33,6 +33,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.
 - Offline Sky Cache will now always find the relevant tiles for small field of views.
 - Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
+- An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
 
 # Version 3.0
 
