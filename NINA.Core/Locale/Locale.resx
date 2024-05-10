@@ -6990,4 +6990,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
     <value>The minimum exposure time is higher than the maximum exposure time!</value>
   </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Waiting for instruction to acknowledge cancellation</value>
+  </data>
 </root>

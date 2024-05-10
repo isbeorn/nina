@@ -47,6 +47,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale</li>
 <li>Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser</li>
 <li>Image History axis selection now persists across sessions</li>
+<li>Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes</li>
 </ul>
 <h2 id="bugfixes">Bugfixes</h2>
 <ul>
@@ -154,7 +155,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <ul>
 <li>The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.</li>
 <li>Additionally it is now possible to specify a camera offset</li>
-<li>A step size is no longer required. The algorithm will now initiate at (Min+Max/2) and continually halve to determine the optimal exposure time.</li>
+<li>A step size is no longer required. The algorithm will now initiate at ((Min+Max)/2) and continually halve to determine the optimal exposure time.</li>
 <li>The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, darks become redundant.</li>
 <li>Internally the flat wizard will now use the new advanced sequencer instructions</li>
 <li>The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time</li>

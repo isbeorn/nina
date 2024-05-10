@@ -21,6 +21,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale
 - Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser
 - Image History axis selection now persists across sessions
+- Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
@@ -113,7 +114,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 ### Flat Wizard screen
 - The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.
 - Additionally it is now possible to specify a camera offset
-- A step size is no longer required. The algorithm will now initiate at (Min+Max/2) and continually halve to determine the optimal exposure time.
+- A step size is no longer required. The algorithm will now initiate at ((Min+Max)/2) and continually halve to determine the optimal exposure time.
 - The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, darks become redundant.
 - Internally the flat wizard will now use the new advanced sequencer instructions
 - The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time

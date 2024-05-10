@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using NINA.Sequencer.Utility;
+using NINA.Core.Locale;
+using NINA.Core.Utility.Notification;
 
 namespace NINA.Sequencer.SequenceItem {
 
@@ -218,8 +220,27 @@ namespace NINA.Sequencer.SequenceItem {
 
                         var success = false;
                         for (int i = 0; i < Attempts; i++) {
+                            using var checkTokenSource = new CancellationTokenSource();
+                            var checkTimeout = TimeSpan.FromMinutes(2);
                             try {
-                                await this.Execute(progress, localCts.Token);
+                                var localToken = localCts.Token;
+                                var checkToken = checkTokenSource.Token;
+                                var checkTask = Task.Run(async () => {
+                                    try {
+                                        while (!localToken.IsCancellationRequested) {
+                                            await Task.Delay(TimeSpan.FromSeconds(1), checkToken);
+                                        }
+                                        await Task.Delay(10, checkToken);
+                                        await CoreUtil.Wait(checkTimeout, checkToken, progress, Loc.Instance["Lbl_SequenceItem_WaitingForCancellation"]);
+                                    } catch { }
+                                    
+                                });
+                                var executionTask = this.Execute(progress, localToken);
+                                var completedTask = await Task.WhenAny(checkTask, executionTask);
+                                if (completedTask == checkTask) {
+                                    Logger.Error($"Execution for {this} did not finish after being cancelled for over {checkTimeout.Minutes} minutes! Continuing...");
+                                    Notification.ShowError(string.Format(Loc.Instance["Lbl_SequenceItem_SkippingAfterFailedCancellation"], this, checkTimeout.Minutes));
+                                }
 
                                 Logger.Info($"Finishing {this}");
                                 Status = SequenceEntityStatus.FINISHED;
@@ -233,6 +254,10 @@ namespace NINA.Sequencer.SequenceItem {
                                 Logger.Error($"{this} - ", ex);
                                 success = false;
                                 root?.RaiseFailureEvent(this, ex);
+                            } finally { 
+                                try {
+                                    checkTokenSource.Cancel();
+                                } catch { }
                             }
                         }
 
