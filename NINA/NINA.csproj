@@ -412,6 +412,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="true" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
