@@ -808,7 +808,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 case ToupTekAlikeEvent.EVENT_IMAGE:
                     var id = imageReadyTCS?.Task?.Id ?? -1;
                     if (id != -1) {
-                        Logger.Trace("{Category} - Setting DownloadExposure Result on Task {id}");
+                        Logger.Trace($"{Category} - Setting DownloadExposure Result on Task {id}");
                         var success = imageReadyTCS?.TrySetResult(true);
                         Logger.Trace($"{Category} - DownloadExposure Result on Task {id} set successfully: {success}");
                     } else {
