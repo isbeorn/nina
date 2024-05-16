@@ -10,12 +10,15 @@
 */
 #endregion "copyright"
 using Microsoft.Win32;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
 using SaveWindowState;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 
@@ -98,5 +101,18 @@ namespace NINA {
         private const int SwShowminimized = 2;
 
         #endregion
+    }
+
+    public class TraceLogToVisibilityConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if(value is LogLevelEnum e) {
+                return e == LogLevelEnum.TRACE ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
     }
 }

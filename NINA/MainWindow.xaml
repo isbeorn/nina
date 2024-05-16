@@ -35,6 +35,9 @@
     FontWeight="{Binding FontWeight, Source={x:Static settings:Settings.Default}}"
     Icon="/NINA;component/Resources/Logo_Nina.ico"
     Style="{StaticResource MainWindow}">
+    <Window.Resources>
+        <local:TraceLogToVisibilityConverter x:Key="TraceLogToVisibilityConverter" />
+    </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="F5" Command="{Binding ApplicationDeviceConnectionVM.ConnectAllDevicesCommand}" />
         <KeyBinding Key="F9" Command="{Binding ApplicationDeviceConnectionVM.DisconnectAllDevicesCommand}" />
@@ -94,6 +97,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid Grid.ColumnSpan="3">
@@ -642,208 +646,221 @@
             <Border
                 Grid.Row="1"
                 Grid.Column="1"
+                Grid.ColumnSpan="3"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,1,0,0">
-
-                <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding Path=ApplicationStatusVM.ApplicationStatus}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border
-                                Margin="5,0,5,0"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,1,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Source}" />
-                                    <TextBlock
-                                        Margin="5,0,5,0"
+                BorderThickness="0,1,0,0" />
+            <ItemsControl
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding Path=ApplicationStatusVM.ApplicationStatus}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="5,0,5,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,0,1,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{Binding Source}" />
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text=":" />
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Status}" />
+                                <Grid
+                                    Height="25"
+                                    MinWidth="100"
+                                    Margin="5,0,5,0">
+                                    <ProgressBar
+                                        x:Name="pbProgress"
+                                        Height="20"
                                         VerticalAlignment="Center"
-                                        Text=":" />
-                                    <TextBlock
-                                        Margin="5,0,5,0"
+                                        Maximum="{Binding MaxProgress}"
+                                        Minimum="0"
+                                        Value="{Binding Progress}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Status}" />
-                                    <Grid
-                                        Height="25"
-                                        MinWidth="100"
-                                        Margin="5,0,5,0">
-                                        <ProgressBar
-                                            x:Name="pbProgress"
-                                            Height="20"
-                                            VerticalAlignment="Center"
-                                            Maximum="{Binding MaxProgress}"
-                                            Minimum="0"
-                                            Value="{Binding Progress}" />
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#%\}}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType}" Value="1">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#\}}" />
-                                            <TextBlock VerticalAlignment="Center" Text=" / " />
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Maximum}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType}" Value="0">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <Grid.Style>
-                                            <Style TargetType="Grid">
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#%\}}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Progress}" Value="-1">
+                                                    <DataTrigger Binding="{Binding ProgressType}" Value="1">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Grid.Style>
-                                    </Grid>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Status2}" />
-                                    <Grid
-                                        Height="25"
-                                        MinWidth="100"
-                                        Margin="5,0,5,0">
-                                        <ProgressBar
-                                            x:Name="pbProgress2"
-                                            Height="20"
-                                            VerticalAlignment="Center"
-                                            Maximum="{Binding MaxProgress2}"
-                                            Minimum="0"
-                                            Value="{Binding Progress2}" />
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Value, StringFormat=\{0:#%\}}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType2}" Value="1">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Value, StringFormat=\{0:#\}}" />
-                                            <TextBlock VerticalAlignment="Center" Text=" / " />
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Maximum}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType2}" Value="0">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <Grid.Style>
-                                            <Style TargetType="Grid">
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#\}}" />
+                                        <TextBlock VerticalAlignment="Center" Text=" / " />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Maximum}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Progress2}" Value="-1">
+                                                    <DataTrigger Binding="{Binding ProgressType}" Value="0">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Grid.Style>
-                                    </Grid>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Progress}" Value="-1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                </Grid>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Status2}" />
+                                <Grid
+                                    Height="25"
+                                    MinWidth="100"
+                                    Margin="5,0,5,0">
+                                    <ProgressBar
+                                        x:Name="pbProgress2"
+                                        Height="20"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Status3}" />
-                                    <Grid
-                                        Height="25"
-                                        MinWidth="100"
-                                        Margin="5,0,5,0">
-                                        <ProgressBar
-                                            x:Name="pbProgress3"
-                                            Height="20"
-                                            VerticalAlignment="Center"
-                                            Maximum="{Binding MaxProgress3}"
-                                            Minimum="0"
-                                            Value="{Binding Progress3}" />
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Value, StringFormat=\{0:#%\}}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType3}" Value="1">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <StackPanel
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Value, StringFormat=\{0:#\}}" />
-                                            <TextBlock VerticalAlignment="Center" Text=" / " />
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Maximum}" />
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ProgressType3}" Value="0">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                        </StackPanel>
-                                        <Grid.Style>
-                                            <Style TargetType="Grid">
+                                        Maximum="{Binding MaxProgress2}"
+                                        Minimum="0"
+                                        Value="{Binding Progress2}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Value, StringFormat=\{0:#%\}}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Progress3}" Value="-1">
+                                                    <DataTrigger Binding="{Binding ProgressType2}" Value="1">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Grid.Style>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Value, StringFormat=\{0:#\}}" />
+                                        <TextBlock VerticalAlignment="Center" Text=" / " />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress2, Path=Maximum}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProgressType2}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Progress2}" Value="-1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                </Grid>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Status3}" />
+                                <Grid
+                                    Height="25"
+                                    MinWidth="100"
+                                    Margin="5,0,5,0">
+                                    <ProgressBar
+                                        x:Name="pbProgress3"
+                                        Height="20"
+                                        VerticalAlignment="Center"
+                                        Maximum="{Binding MaxProgress3}"
+                                        Minimum="0"
+                                        Value="{Binding Progress3}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Value, StringFormat=\{0:#%\}}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProgressType3}" Value="1">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Value, StringFormat=\{0:#\}}" />
+                                        <TextBlock VerticalAlignment="Center" Text=" / " />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress3, Path=Maximum}" />
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProgressType3}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Progress3}" Value="-1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="5,0,5,0"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Foreground="{StaticResource WarningColorBrush}"
+                Text="TRACE LOGGING ENABLED"
+                Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ApplicationSettings.LogLevel, Converter={StaticResource TraceLogToVisibilityConverter}}" />
             <ComboBox
                 x:Name="DebugResolutionCombobox"
                 Grid.Row="1"
-                Grid.Column="2"
+                Grid.Column="3"
+                Margin="5,0,0,0"
                 Visibility="{Binding Source={x:Static coreutil:CoreUtil.DebugMode}, Converter={StaticResource VisibilityConverter}}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
