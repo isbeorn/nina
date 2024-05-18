@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using NINA.Core.Utility.Extensions;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
@@ -99,7 +100,11 @@ namespace NINA.WPF.Base.Mediator {
             }
             
             foreach (TConsumer c in receivers) {
-                c.UpdateDeviceInfo(deviceInfo);
+                try {
+                    c.UpdateDeviceInfo(deviceInfo);
+                } catch (Exception e) {
+                    Logger.Error(e);
+                }
             }
         }
 
