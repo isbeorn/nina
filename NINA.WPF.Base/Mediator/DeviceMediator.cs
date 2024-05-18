@@ -93,10 +93,13 @@ namespace NINA.WPF.Base.Mediator {
         /// </summary>
         /// <param name="deviceInfo"></param>
         public void Broadcast(TInfo deviceInfo) {
+            List<TConsumer> receivers;
             lock (consumers) {
-                foreach (TConsumer c in consumers) {
-                    c.UpdateDeviceInfo(deviceInfo);
-                }
+                receivers = new List<TConsumer>(consumers);
+            }
+            
+            foreach (TConsumer c in receivers) {
+                c.UpdateDeviceInfo(deviceInfo);
             }
         }
 
