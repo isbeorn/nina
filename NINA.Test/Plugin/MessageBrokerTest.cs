@@ -195,6 +195,7 @@ namespace NINA.Test.Plugin {
             public DateTimeOffset? Expiration { get; }
             public Guid? CorrelationId { get; }
             public IDictionary<string, object> CustomHeaders { get; }
+            public int Version => 1;
         }
     }
 }

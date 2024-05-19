@@ -36,6 +36,11 @@ namespace NINA.Plugin.Interfaces {
         Guid? CorrelationId { get; }
 
         /// <summary>
+        /// The version number of the message
+        /// </summary>
+        int Version { get; }
+
+        /// <summary>
         /// Custom headers or metadata for additional information
         /// </summary>
         IDictionary<string, object> CustomHeaders { get; }
