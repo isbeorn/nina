@@ -38,6 +38,7 @@ using NINA.PlateSolving;
 using NINA.PlateSolving.Interfaces;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
+using NINA.Plugin.Messaging;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
@@ -93,6 +94,8 @@ namespace NINA.Utility {
                 services.AddSingleton<IApplicationVM, ApplicationVM>();
 
                 services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
+
+                services.AddSingleton<IMessageBroker, MessageBroker>();
 
                 // Equipment Providers
                 services.AddScoped<IEquipmentProviders<ICamera>, PluginEquipmentProviders<ICamera>>();

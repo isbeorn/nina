@@ -37,6 +37,28 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
 - An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
 
+## Plugin Development
+### New Feature: `IMessageBroker` Interface
+#### Introduction of `IMessageBroker` Interface:
+  - A new `IMessageBroker` interface has been added to facilitate inter-plugin communication.
+  - This interface allows plugins to publish and subscribe to messages of type `NINA.Plugin.Interfaces.IMessage`.
+  - Promotes loose coupling between plugins by allowing them to communicate without direct references to each other.
+
+#### Publishing Messages:
+- Plugins can now inject the IMessageBroker interface to publish messages.
+- Messages can carry various metadata, including:
+  - SenderId: The unique identifier of the sender plugin.
+  - Sender: The name of the sender plugin.
+  - SentAt: The UTC timestamp when the message was sent.
+  - MessageId: A unique identifier for each message.
+  - Topic: The topic or intent of the message.
+  - Content: The generic body of the message.
+  - Additional metadata such as Priority, Expiration, CorrelationId, and custom headers.
+
+#### Subscribing to Messages:
+- Plugins can subscribe to specific message topics via the `IMessageBroker`.
+- When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.
+
 # Version 3.0
 
 ## Important Changes
