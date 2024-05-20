@@ -100,7 +100,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.ColumnSpan="3">
+            <Grid Grid.ColumnSpan="4">
                 <TabControl
                     x:Name="MainTabControl"
                     MinWidth="40"
