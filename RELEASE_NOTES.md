@@ -23,6 +23,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Image History axis selection now persists across sessions
 - Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes
 - A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.
+- USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
