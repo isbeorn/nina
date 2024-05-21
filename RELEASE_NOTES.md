@@ -60,8 +60,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Plugins can subscribe to specific message topics via the `IMessageBroker`.
 - When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.
 
-## Event Additions
-Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)
+### Event Additions
+- Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)
+
+### Platesolve Measurements
+- The CenteringSolver's substeps, which were previously opaque, are now measured individually.
+- Results of these measurements are provided via `Measurement` data structure alongside the plate solve result.
 
 # Version 3.0
 

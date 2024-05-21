@@ -93,8 +93,15 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Plugins can subscribe to specific message topics via the <code>IMessageBroker</code>.</li>
 <li>When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.</li>
 </ul>
-<h2 id="event-additions">Event Additions</h2>
-<p>Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)</p>
+<h3 id="event-additions">Event Additions</h3>
+<ul>
+<li>Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)</li>
+</ul>
+<h3 id="platesolve-measurements">Platesolve Measurements</h3>
+<ul>
+<li>The CenteringSolver's substeps, which were previously opaque, are now measured individually.</li>
+<li>Results of these measurements are provided via <code>Measurement</code> data structure alongside the plate solve result.</li>
+</ul>
 <h1 id="version-3.0">Version 3.0</h1>
 <h2 id="important-changes">Important Changes</h2>
 <p>Rotation values in N.I.N.A. have been updated to use the counter-clockwise notation, aligning with the common &quot;East of North of North Celestial Pole&quot; standard used in most astronomical applications. Existing templates, targets, and other saved items from previous versions will be automatically migrated to reflect this change.</p>
