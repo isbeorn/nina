@@ -97,6 +97,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             };
         }
 
+        public event EventHandler<EventArgs> Synced;
+        public event Func<object, EventArgs, Task> Opened;
+        public event Func<object, EventArgs, Task> Closed;
+        public event Func<object, EventArgs, Task> Parked;
+        public event Func<object, EventArgs, Task> Homed;
+        public event Func<object, DomeEventArgs, Task> Slewed;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -403,6 +410,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, cancellationToken, progress, Loc.Instance["LblSettle"]); 
                         await waitForUpdate;
                         Logger.Info($"Opened dome shutter. Shutter state after opening {DomeInfo.ShutterStatus}");
+                        await (Opened?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         return true;
                     } finally {
                         progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -481,6 +489,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, cancellationToken, progress, Loc.Instance["LblSettle"]);
                         await waitForUpdate;
                         Logger.Info($"Closed dome shutter. Shutter state after closing {DomeInfo.ShutterStatus}");
+                        await (Closed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         return true;
                     } finally {
                         progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -511,6 +520,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 await Dome.Park(cancellationToken);
                 await updateTimer.WaitForNextUpdate(cancellationToken);
                 Logger.Info("Park complete");
+                await (Parked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 return true;
             } else {
                 Logger.Error("Cannot park shutter. Dome does not support it.");
@@ -576,12 +586,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         public async Task<bool> SlewToAzimuth(double degrees, CancellationToken token) {
             if (Dome?.Connected == true) {
                 try {
+                    var from = DomeInfo.Azimuth;
                     Logger.Info($"Slewing dome to azimuth {degrees}°");
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
                     await Dome?.SlewToAzimuth(degrees, token); 
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                     await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, token, progress, Loc.Instance["LblSettle"]);
                     await waitForUpdate;
+                    await (Slewed?.InvokeAsync(this, new DomeEventArgs(from: from, to: degrees)) ?? Task.CompletedTask);
                     return true;
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -625,6 +637,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             ct.ThrowIfCancellationRequested();
 
             Logger.Info("Dome home find complete");
+            await (Homed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             return true;
         }
 
@@ -633,6 +646,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 var calculatedTargetCoordinates = this.domeFollower.GetSynchronizedDomeCoordinates(TelescopeInfo);
                 if(calculatedTargetCoordinates != null) { 
                     Dome.SyncToAzimuth(calculatedTargetCoordinates.Azimuth.Degree);
+                    try { Synced?.Invoke(this, new EventArgs()); } catch(Exception ex) {  Logger.Error(ex); }
                 }
             }
         }

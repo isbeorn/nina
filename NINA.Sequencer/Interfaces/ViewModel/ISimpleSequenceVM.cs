@@ -50,5 +50,7 @@ namespace NINA.ViewModel.Interfaces {
         void AddDownloadTime(TimeSpan t);
 
         void AddTarget(IDeepSkyObject deepSkyObject);
+        event Func<object, EventArgs, Task> SequenceStarting;
+        event Func<object, EventArgs, Task> SequenceFinished;
     }
 }

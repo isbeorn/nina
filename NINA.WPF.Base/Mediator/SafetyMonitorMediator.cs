@@ -12,12 +12,18 @@
 
 #endregion "copyright"
 
+using NINA.Core.Interfaces;
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 
 namespace NINA.WPF.Base.Mediator {
 
     public class SafetyMonitorMediator : DeviceMediator<ISafetyMonitorVM, ISafetyMonitorConsumer, SafetyMonitorInfo>, ISafetyMonitorMediator {
+        public event EventHandler<IsSafeEventArgs> IsSafeChanged {
+            add { this.handler.IsSafeChanged += value; }
+            remove { this.handler.IsSafeChanged -= value; }
+        }
     }
 }

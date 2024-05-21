@@ -14,6 +14,7 @@
 
 using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,5 +33,21 @@ namespace NINA.Equipment.Interfaces.Mediator {
         float GetTargetPosition(float position);
 
         float GetTargetMechanicalPosition(float position);
+
+        event EventHandler<RotatorEventArgs> Synced;
+
+        event Func<object, RotatorEventArgs, Task> Moved;
+
+        event Func<object, RotatorEventArgs, Task> MovedMechanical;
+    }
+
+    public class RotatorEventArgs : EventArgs {
+        public RotatorEventArgs(float from, float to) {
+            From = from;
+            To = to;
+        }
+
+        public float From { get; }
+        public float To { get; }
     }
 }

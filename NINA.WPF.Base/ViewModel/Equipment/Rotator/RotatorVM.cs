@@ -73,6 +73,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             };
         }
 
+        public event EventHandler<RotatorEventArgs> Synced;
+        public event Func<object, RotatorEventArgs, Task> Moved;
+        public event Func<object, RotatorEventArgs, Task> MovedMechanical;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -107,9 +111,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             try {
                 if (RotatorInfo.Connected) {
                     Logger.Info($"Syncing Rotator to Sky Angle {skyAngle}°");
+                    var from = Rotator.Position;
                     Rotator.Sync(skyAngle);
                     RotatorInfo.Position = Rotator.Position;
                     RotatorInfo.Synced = true;
+
+                    try { Synced?.Invoke(this, new RotatorEventArgs(from, RotatorInfo.Position)); } catch (Exception ex) { Logger.Error(ex); }                    
                     BroadcastRotatorInfo();
                 }
             } catch (Exception ex) {
@@ -123,6 +130,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             float pos = float.NaN;
             await Task.Run(async () => {
                 try {
+                    var from = RotatorInfo.Position;
                     RotatorInfo.IsMoving = true;
 
                     var adjustedTargetPosition = GetTargetPosition(requestedPosition);
@@ -152,6 +160,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     pos = adjustedTargetPosition;
                     await updateTimer.WaitForNextUpdate(ct);
                     BroadcastRotatorInfo();
+                    await (Moved?.InvokeAsync(this, new RotatorEventArgs(from: from, to: RotatorInfo.Position)) ?? Task.CompletedTask);
                 } catch (OperationCanceledException) {
                 } finally {
                     applicationStatusMediator.StatusUpdate(
@@ -175,6 +184,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             float pos = float.NaN;
             await Task.Run(async () => {
                 try {
+                    var from = RotatorInfo.MechanicalPosition;
                     RotatorInfo.IsMoving = true;
 
                     var adjustedTargetPosition = GetTargetMechanicalPosition(requestedPosition);
@@ -204,6 +214,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     pos = adjustedTargetPosition;
                     await updateTimer.WaitForNextUpdate(ct);
                     BroadcastRotatorInfo();
+                    await (Moved?.InvokeAsync(this, new RotatorEventArgs(from: from, to: RotatorInfo.MechanicalPosition)) ?? Task.CompletedTask);
                 } catch (OperationCanceledException) {
                 } finally {
                     applicationStatusMediator.StatusUpdate(

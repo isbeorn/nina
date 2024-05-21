@@ -11,15 +11,38 @@
 #endregion "copyright"
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Core.Utility.Extensions {
     public static class DelegateExtension {
-        public static Task InvokeAsync<TArgs>(this Func<object, TArgs, Task> func, object sender, TArgs e) {
-            return func == null ? Task.CompletedTask
-                : Task.WhenAll(func.GetInvocationList().Cast<Func<object, TArgs, Task>>().Select(f => f(sender, e)));
+        public static async Task InvokeAsync<TArgs>(this Func<object, TArgs, Task> func, object sender, TArgs e) {
+            if (func == null) {
+                return;
+            }
+
+            var invocationList = func.GetInvocationList().Cast<Func<object, TArgs, Task>>();
+            var tasks = invocationList.Select(async f =>
+            {
+                var stopwatch = Stopwatch.StartNew();
+                try {
+                    await f(sender, e);
+                } catch(Exception ex) {
+                    Logger.Error(ex);
+                }                
+                stopwatch.Stop();
+
+                if (stopwatch.ElapsedMilliseconds > 1000) {
+                    MethodInfo methodInfo = f.GetMethodInfo();
+                    string fullMethodName = $"{methodInfo.DeclaringType.FullName}.{methodInfo.Name}";
+                    Logger.Warning($"Eventhandler {fullMethodName} took {stopwatch.ElapsedMilliseconds} ms to execute.");
+                }
+            });
+
+            await Task.WhenAll(tasks);
         }
     }
 }

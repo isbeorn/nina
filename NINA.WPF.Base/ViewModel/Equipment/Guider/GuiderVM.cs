@@ -362,6 +362,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 try {
                     progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblStartGuiding"] });
                     var guiding = await Guider.StartGuiding(forceCalibration, prog, token);
+                    if(guiding) {
+                        await (GuidingStarted?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                    }
                     return guiding;
                 } catch (OperationCanceledException) {
                     throw;
@@ -378,7 +381,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
-                return await Guider.StopGuiding(token);
+                var stopped = await Guider.StopGuiding(token);
+                if (stopped) {
+                    await (GuidingStopped?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                }
+                return stopped;
             } else {
                 return false;
             }
@@ -549,6 +556,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
         public event Func<object, EventArgs, Task> Disconnected;
         public event Func<object, EventArgs, Task> AfterDither;
         public event EventHandler<IGuideStep> GuideEvent;
+        public event Func<object, EventArgs, Task> GuidingStarted;
+        public event Func<object, EventArgs, Task> GuidingStopped;
 
         public IAsyncCommand ConnectCommand { get; private set; }
         public IAsyncCommand RescanDevicesCommand { get; private set; }

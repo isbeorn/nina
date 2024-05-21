@@ -19,6 +19,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Model;
+using NINA.Equipment.Interfaces.Mediator;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
@@ -57,5 +58,9 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         void StopSlew();
 
         PierSide DestinationSideOfPier(Coordinates coordinates);
+        event Func<object, EventArgs, Task> Parked;
+        event Func<object, EventArgs, Task> Unparked;
+        event Func<object, EventArgs, Task> Homed;
+        event Func<object, MountSlewedEventArgs, Task> Slewed;
     }
 }

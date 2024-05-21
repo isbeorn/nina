@@ -51,5 +51,7 @@ namespace NINA.Equipment.Interfaces.Mediator {
         event Func<object, EventArgs, Task> AfterDither;
 
         event EventHandler<IGuideStep> GuideEvent;
+        event Func<object, EventArgs, Task> GuidingStarted;
+        event Func<object, EventArgs, Task> GuidingStopped;
     }
 }

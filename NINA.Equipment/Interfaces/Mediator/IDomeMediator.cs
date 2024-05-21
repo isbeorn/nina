@@ -16,6 +16,7 @@ using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,5 +42,22 @@ namespace NINA.Equipment.Interfaces.Mediator {
         Task<bool> FindHome(CancellationToken cancellationToken);
 
         Task<bool> SlewToAzimuth(double degrees, CancellationToken cancellationToken);
+        event EventHandler<EventArgs> Synced;
+        event Func<object, EventArgs, Task> Opened;
+        event Func<object, EventArgs, Task> Closed;
+        event Func<object, EventArgs, Task> Parked;
+        event Func<object, EventArgs, Task> Homed;
+        event Func<object, DomeEventArgs, Task> Slewed;
+    }
+
+
+    public class DomeEventArgs : EventArgs {
+        public DomeEventArgs(double from, double to) {
+            From = from;
+            To = to;
+        }
+
+        public double From { get; }
+        public double To { get; }
     }
 }

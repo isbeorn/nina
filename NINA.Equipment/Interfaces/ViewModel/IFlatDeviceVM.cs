@@ -17,6 +17,7 @@ using NINA.Equipment.Equipment.MyFlatDevice;
 using System.Threading.Tasks;
 using NINA.Core.Model;
 using System;
+using NINA.Equipment.Interfaces.Mediator;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
@@ -33,5 +34,9 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         Task<bool> ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token);
 
         Task<bool> SetBrightness(int value, IProgress<ApplicationStatus> progress, CancellationToken token);
+        event Func<object, EventArgs, Task> Opened;
+        event Func<object, EventArgs, Task> Closed;
+        event Func<object, FlatDeviceBrightnessChangedEventArgs, Task> BrightnessChanged;
+        event Func<object, EventArgs, Task> LightToggled;
     }
 }

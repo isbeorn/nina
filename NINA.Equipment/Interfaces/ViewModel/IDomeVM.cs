@@ -15,6 +15,8 @@
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Equipment.Equipment.MyDome;
+using NINA.Equipment.Interfaces.Mediator;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,5 +44,11 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         Task<bool> DisableFollowing(CancellationToken cancellationToken);
 
         Task<bool> SyncToScopeCoordinates(Coordinates coordinates, PierSide sideOfPier, CancellationToken cancellationToken);
+        event EventHandler<EventArgs> Synced;
+        event Func<object, EventArgs, Task> Opened;
+        event Func<object, EventArgs, Task> Closed;
+        event Func<object, EventArgs, Task> Parked;
+        event Func<object, EventArgs, Task> Homed;
+        event Func<object, DomeEventArgs, Task> Slewed;
     }
 }

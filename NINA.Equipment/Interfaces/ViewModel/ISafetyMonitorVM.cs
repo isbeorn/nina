@@ -13,9 +13,19 @@
 #endregion "copyright"
 
 using NINA.Equipment.Equipment.MySafetyMonitor;
+using System;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
     public interface ISafetyMonitorVM : IDeviceVM<SafetyMonitorInfo>, IDockableVM {
+        event EventHandler<IsSafeEventArgs> IsSafeChanged;
+    }
+
+    public class IsSafeEventArgs : EventArgs {
+        public IsSafeEventArgs(bool isSafe) {
+            IsSafe = isSafe;
+        }
+
+        public bool IsSafe { get; }
     }
 }

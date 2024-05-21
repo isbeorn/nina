@@ -60,6 +60,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Plugins can subscribe to specific message topics via the `IMessageBroker`.
 - When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.
 
+## Event Additions
+Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)
+
 # Version 3.0
 
 ## Important Changes

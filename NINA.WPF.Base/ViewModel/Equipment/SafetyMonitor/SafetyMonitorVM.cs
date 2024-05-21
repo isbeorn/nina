@@ -72,6 +72,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             };
         }
 
+        public event EventHandler<IsSafeEventArgs> IsSafeChanged;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -90,6 +92,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             SafetyMonitorInfo.IsSafe = (bool)(o ?? false);
             if (SafetyMonitorInfo.IsSafe != isSafe) {
                 Logger.Info("SafetyMonitorInfo state changed to " + (isSafe ? "Unsafe" : "Safe"));
+                try {
+                    IsSafeChanged?.Invoke(this, new IsSafeEventArgs(SafetyMonitorInfo.IsSafe));
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }                    
             }
 
             BroadcastMonitorInfo();

@@ -49,5 +49,7 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         event Func<object, EventArgs, Task> AfterDither;
 
         event EventHandler<IGuideStep> GuideEvent;
+        event Func<object, EventArgs, Task> GuidingStarted;
+        event Func<object, EventArgs, Task> GuidingStopped;
     }
 }
