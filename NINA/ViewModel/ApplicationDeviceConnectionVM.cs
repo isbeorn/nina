@@ -69,12 +69,12 @@ namespace NINA.ViewModel {
             this.safetyMonitorMediator = safetyMonitorMediator;
 
             this.usbDeviceWatcher = usbDeviceWatcher;
-            this.usbDeviceWatcher.Start();
-            this.usbDeviceWatcher.DeviceInserted += UsbDeviceWatcher_DeviceInserted;
-            this.usbDeviceWatcher.DeviceRemoved += UsbDeviceWatcher_DeviceRemoved;
-
+            
             _ = Task.Run(async () => {
                 await pluginLoader.Load();
+                this.usbDeviceWatcher.Start();
+                this.usbDeviceWatcher.DeviceInserted += UsbDeviceWatcher_DeviceInserted;
+                this.usbDeviceWatcher.DeviceRemoved += UsbDeviceWatcher_DeviceRemoved;
                 Initialized = true;
             });
 

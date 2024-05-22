@@ -14,11 +14,11 @@ namespace NINA.Equipment.Utility {
         public event EventHandler<UsbDeviceEventArgs> DeviceRemoved;
 
         public UsbDeviceWatcher() {
-            _currentDevices = GetUsbDevices();
         }
 
         public void Start() {
             try {
+                _currentDevices = GetUsbDevices();
                 var insertQuery = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 2");
                 _insertWatcher = new ManagementEventWatcher(insertQuery);
                 _insertWatcher.EventArrived += (s, e) => HandleDeviceInserted();
