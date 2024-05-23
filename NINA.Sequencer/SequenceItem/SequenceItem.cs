@@ -237,11 +237,11 @@ namespace NINA.Sequencer.SequenceItem {
                                 });
                                 var executionTask = this.Execute(progress, localToken);
                                 var completedTask = await Task.WhenAny(checkTask, executionTask);
-                                localToken.ThrowIfCancellationRequested();
                                 if (completedTask == checkTask) {
                                     Logger.Error($"Execution for {this} did not finish after being cancelled for over {checkTimeout.Minutes} minutes! Continuing...");
                                     Notification.ShowError(string.Format(Loc.Instance["Lbl_SequenceItem_SkippingAfterFailedCancellation"], this, checkTimeout.Minutes));
                                 }
+                                localToken.ThrowIfCancellationRequested();
 
                                 Logger.Info($"Finishing {this}");
                                 Status = SequenceEntityStatus.FINISHED;
