@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -354,8 +354,26 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (DomeInfo.Connected) {
                 if (Dome.CanSetShutter) {
 
-                    // 1. Check if the shutter/roof is already open or is in the process of becoming so
-                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen || DomeInfo.ShutterStatus == ShutterState.ShutterOpening) {
+                    // 0. Check if the shutter/roof is moving toward the open state, and wait.
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpening) {
+                        Logger.Info("Dome shutter already opening - waiting for it to complete.");
+                        while (DomeInfo.ShutterStatus == ShutterState.ShutterOpening && !cancellationToken.IsCancellationRequested) {
+                            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                        }
+                        Logger.Debug($"Dome shutter no longer opening, shutter state is now {DomeInfo.ShutterStatus}");
+
+                        // Since the shutter was in motion before calling this function, do not continue to send another movement command should movement stop
+                        // but the shutter not be fully Open.  It could be under external control and stopped for a reason.
+                        if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen) {
+                            return true;
+                        } else {
+                            Logger.Error($"Dome shutter stopped opening, but is not open.  Shutter state is now {DomeInfo.ShutterStatus}");
+                            return false;
+                        }
+                    }
+
+                    // 1. Check if the shutter/roof is already open
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen) {
                         return true;
                     }
 
@@ -434,8 +452,25 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (DomeInfo.Connected) {
                 if (Dome.CanSetShutter) {
 
-                    // 1. Check if the shutter/roof is already closed or is in the process of becoming so
-                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed || DomeInfo.ShutterStatus == ShutterState.ShutterClosing) {
+                    // 0. Check if the shutter/roof is moving toward the closed state, and wait.
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosing) {
+                        Logger.Info("Dome shutter already closing - waiting for it to complete.");
+                        while (DomeInfo.ShutterStatus == ShutterState.ShutterClosing && !cancellationToken.IsCancellationRequested) {
+                            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                        }
+                        Logger.Debug($"Dome shutter no longer closing, shutter state is now {DomeInfo.ShutterStatus}");
+
+                        // Since the shutter was in motion before calling this function, do not continue to send another movement command should movement stop
+                        // but the shutter not be fully Closed.  It could be under external control and stopped for a reason.
+                        if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed) {
+                            return true;
+                        } else {
+                            Logger.Error($"Dome shutter stopped closing, but is not closed.  Shutter state is now {DomeInfo.ShutterStatus}");
+                            return false;
+                        }
+                    }
+                    // 1. Check if the shutter/roof is already closed
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed) {
                         return true;
                     }
 
@@ -587,7 +622,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (Dome?.Connected == true) {
                 try {
                     var from = DomeInfo.Azimuth;
-                    Logger.Info($"Slewing dome to azimuth {degrees}°");
+                    Logger.Info($"Slewing dome to azimuth {degrees}Â°");
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
                     await Dome?.SlewToAzimuth(degrees, token); 
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
@@ -605,7 +640,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         private async Task<bool> ManualSlew(double degrees) {
             if (Dome.CanSetAzimuth) {
                 this.FollowEnabled = false;
-                Logger.Info($"Manually slewing dome to azimuth {degrees}°");
+                Logger.Info($"Manually slewing dome to azimuth {degrees}Â°");
                 return await SlewToAzimuth(degrees, CancellationToken.None);
             } else {
                 return false;
@@ -616,7 +651,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (Dome.CanSetAzimuth) {
                 this.FollowEnabled = false;
                 var targetAzimuth = AstroUtil.EuclidianModulus(this.Dome.Azimuth + degrees, 360.0);
-                Logger.Info($"Rotating dome relatively by {degrees}°");
+                Logger.Info($"Rotating dome relatively by {degrees}Â°");
                 return await SlewToAzimuth(targetAzimuth, CancellationToken.None);
             } else {
                 return false;
