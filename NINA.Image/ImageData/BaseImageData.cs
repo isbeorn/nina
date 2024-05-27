@@ -89,6 +89,7 @@ namespace NINA.Image.ImageData {
 
         #region "Save"
 
+        [Obsolete]
         /// <summary>
         ///  Saves file to application temp path
         /// </summary>
@@ -102,7 +103,7 @@ namespace NINA.Image.ImageData {
                     // Reference: https://devblogs.microsoft.com/premier-developer/the-danger-of-taskcompletionsourcet-class/
                     var cancelTaskSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
                     using (cancelToken.Register(() => cancelTaskSource.SetCanceled())) {
-                        var saveTask = SaveToDiskAsync(fileSaveInfo, cancelToken, false);
+                        var saveTask = SaveToDiskAsync(fileSaveInfo, Guid.NewGuid().ToString(), cancelToken, false);
                         await Task.WhenAny(cancelTaskSource.Task, saveTask);
                         cancelToken.ThrowIfCancellationRequested();
                         actualPath = saveTask.Result;
@@ -123,13 +124,14 @@ namespace NINA.Image.ImageData {
             return actualPath;
         }
 
+        [Obsolete]
         /// <summary>
         /// Renames and moves file to destination according to pattern
         /// </summary>
         /// <param name="file"></param>
         /// <param name="pattern"></param>
         /// <param name="customPatterns"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
         public string FinalizeSave(string file, string pattern, IList<ImagePattern> customPatterns) {
             try {
                 if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(MetaData.Camera.Temperature) && !string.IsNullOrEmpty(Data.RAWType)) {
@@ -316,27 +318,70 @@ namespace NINA.Image.ImageData {
             return p;
         }
 
-        public async Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken token, bool forceFileType = false) {
+        
+        public async Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken token, bool forceFileType, IList<ImagePattern> customPatterns) {
+            if(customPatterns == null) { customPatterns = new List<ImagePattern>(); }
+            var pattern = fileSaveInfo.FilePattern;
             string actualPath = string.Empty;
             try {
-                using (MyStopWatch.Measure()) {
-                    string tempPath = await SaveToDiskAsync(fileSaveInfo, token, forceFileType);
-                    actualPath = FinalizeSave(tempPath, fileSaveInfo.FilePattern, new List<ImagePattern>());
+                if (pattern.Contains(ImagePatternKeys.SensorTemp) && double.IsNaN(MetaData.Camera.Temperature) && !string.IsNullOrEmpty(Data.RAWType)) {
+                    // For DSLRs we need to retrieve the temperature after the file is written. Hence we replace the pattern with this special placeholder
+                    pattern = pattern.Replace(ImagePatternKeys.SensorTemp, "$$DSLR_SENSORTEMP$$");
                 }
+
+                var imagePatterns = GetImagePatterns();
+                foreach (var cp in customPatterns) {
+                    imagePatterns.Add(cp);
+                }
+                var fileName = imagePatterns.GetImageFileString(pattern);
+
+                actualPath = await SaveToDiskAsync(fileSaveInfo, fileName, token, forceFileType);
+
+                if (pattern.Contains("$$DSLR_SENSORTEMP$$") && double.IsNaN(MetaData.Camera.Temperature) && !string.IsNullOrEmpty(Data.RAWType)) {
+                    // Extract the temperature from the EXIF info for DSLRs
+                    actualPath = ExtractDSLRTemperatureAndMoveFile(actualPath);
+                }
+                Logger.Info($"Saved image to {actualPath}");
             } catch (OperationCanceledException) {
                 throw;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw;
-            } finally {
+            } 
+            return actualPath;
+        }
+        
+        private string ExtractDSLRTemperatureAndMoveFile(string actualPath) {
+            var oldPath = actualPath;
+            try {
+                string sensorTemp = GetSensorTempFromExifTool(actualPath);
+                actualPath = actualPath.Replace("$$DSLR_SENSORTEMP$$", sensorTemp.ToString(CultureInfo.InvariantCulture));
+
+                // Create a folder in case this pattern was set up to be a folder
+                var fi = new FileInfo(actualPath);
+                if (!fi.Directory.Exists) {
+                    fi.Directory.Create();
+                }
+
+                File.Move(oldPath, actualPath);
+            } catch (Exception ex) {
+                // In case of any error point to the original file
+                actualPath = oldPath;
+                Logger.Error(ex);
+
             }
             return actualPath;
         }
+        
+        
+        public Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken token, bool forceFileType = false) {
+            return SaveToDisk(fileSaveInfo, token, forceFileType, new List<ImagePattern>());
+        }
 
-        private Task<string> SaveToDiskAsync(FileSaveInfo fileSaveInfo, CancellationToken cancelToken, bool forceFileType = false) {
+        private Task<string> SaveToDiskAsync(FileSaveInfo fileSaveInfo, string fileName, CancellationToken cancelToken, bool forceFileType = false) {
             return Task.Run(() => {
                 string path = string.Empty;
-                fileSaveInfo.FilePath = Path.Combine(fileSaveInfo.FilePath, Guid.NewGuid().ToString());
+                fileSaveInfo.FilePath = Path.Combine(fileSaveInfo.FilePath, fileName);
 
                 if (!forceFileType && Data.RAWData != null) {
                     fileSaveInfo.FileType = FileTypeEnum.RAW;

@@ -11,6 +11,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
 - Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance
 - Sky Atlas Images are now generated from the Offline Sky Map Cache. The "Sky Atlas Image Repository" option has been removed as it is now fully superseded by the Offline Sky Map Cache.
+- The image saving method has been updated from a two-step process (writing a temporary file and then moving it to the destination) to a single write process. Now, the image is processed first and then written directly to the destination.
+  - This change addresses issues on some systems where cloud sync file listeners, antivirus software, and similar processes block file access.
+  - For exposures lasting multiple seconds, there will be no noticeable performance loss.
+  - For short burst exposures, to achieve similar performance as before, adjust the file save queue size. Go to Options > General > Advanced > Image Save Queue Size and set the queue size to greater than one. Note that this setting will require more application memory.
 
 ## Improvements
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
