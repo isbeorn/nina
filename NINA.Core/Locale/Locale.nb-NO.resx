@@ -6936,21 +6936,45 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Bruk IPv6 for å oppdage ASCOM Alpaca enheter (Standard: av)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>Objektkataloger</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>Mål Alt</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>Mål Az</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptik flatbildekontroller</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
-    <value>LED Lights</value>
+    <value>LED-lys</value>
   </data>
   <data name="LblLEDLightsTooltop" xml:space="preserve">
-    <value>Turn the LED lights on the camera on or off</value>
+    <value>Slå LED-lysene på kameraet på eller av</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum brightness is higher than the maximum brightness!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Waiting for instruction to acknowledge cancellation</value>
   </data>
 </root>

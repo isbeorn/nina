@@ -6938,4 +6938,28 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblLEDLightsTooltop" xml:space="preserve">
     <value>カメラのLEDライトをオンまたはオフにする</value>
   </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小輝度が最大輝度よりも大きくなっています!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小露出時間が最大露出時間より長くなっています！</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、望遠鏡にはパルスガイドの機能がありません</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、架台が接続されていません</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、望遠鏡はパークされています</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小露出時間が最大露出時間より長くなっています！</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>命令"{0}"は{1}分経過しても、中止の要求に応答しませんでした。シーケンスは続行され、応答しないタスクは無視されます。</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>中止要求を確認する命令を待っています。</value>
+  </data>
 </root>

@@ -6968,4 +6968,28 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblLEDLightsTooltop" xml:space="preserve">
     <value>Turn the LED lights on the camera on or off</value>
   </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum brightness is higher than the maximum brightness!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Waiting for instruction to acknowledge cancellation</value>
+  </data>
 </root>

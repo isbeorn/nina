@@ -6965,4 +6965,28 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblLEDLightsTooltop" xml:space="preserve">
     <value>Encén o apaga els llums LED de la Càmera</value>
   </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>La brillantor mínima és superior a la màxima!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>El temps d'exposició mínim és superior al temps d'exposició màxim!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>S'ha activat el dither entre els flats del cel però el telescopi no és capaç de guiar per polsos</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>El dither entre flats del cel està activat però la muntura no està connectada</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>El dither entre flats del cel està activat però el telescopi està aparcat</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>El temps mínim d'exposició és superior al temps màxim d'exposició!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>La instrucció "{0}" no ha respost a la sol·licitud de cancel·lació després de {1} minuts. La seqüència continuarà i la tasca que no respon s'ignorarà.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Esperant instruccions per reconèixer la cancel·lació</value>
+  </data>
 </root>
