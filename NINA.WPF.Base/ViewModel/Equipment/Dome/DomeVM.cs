@@ -382,7 +382,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     if (SafetyMonitorInfo.Connected) {
                         if (!SafetyMonitorInfo.IsSafe) {
                             Logger.Error("Cannot open dome shutter due to unsafe conditions");
-                            Notification.ShowError(Loc.Instance["LblDomeCloseOnUnsafeWarning"]);
+                            Notification.ShowError(Loc.Instance["LblDomeRefuseOpeningWhenUnsafeWarning"]);
                             return false;
                         }
                     } else {
