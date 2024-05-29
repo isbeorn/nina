@@ -16,6 +16,12 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+    <Page Remove="publish\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
