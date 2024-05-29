@@ -6962,4 +6962,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
     <value>中止要求を確認する命令を待っています。</value>
   </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
 </root>
