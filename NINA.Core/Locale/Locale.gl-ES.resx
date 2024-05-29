@@ -6998,4 +6998,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
     <value>Waiting for instruction to acknowledge cancellation</value>
   </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
 </root>

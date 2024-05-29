@@ -6985,4 +6985,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
     <value>Esperando la instrucción para reconocer la cancelación</value>
   </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
 </root>

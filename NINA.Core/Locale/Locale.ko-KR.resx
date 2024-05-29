@@ -7012,4 +7012,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
     <value>Waiting for instruction to acknowledge cancellation</value>
   </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
 </root>
