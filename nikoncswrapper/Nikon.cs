@@ -658,6 +658,7 @@ namespace Nikon {
     public class NikonManager : NikonBase {
         private Dictionary<uint, NikonDevice> _devices;
         private const string _defaultMd3EntryPoint = "MAIDEntryPoint";
+        private ILogger _logger;
 
         private event DeviceAddedDelegate _deviceAdded;
 
@@ -681,7 +682,7 @@ namespace Nikon {
 
         public NikonManager(string md3File, ILogger logger)
             : this(md3File, _defaultMd3EntryPoint, SynchronizationContext.Current, new DummyLogger()) {
-            Logger = logger;
+            _logger = logger;
         }
 
         public NikonManager(string md3File, string md3EntryPoint)
@@ -697,7 +698,7 @@ namespace Nikon {
             _devices = new Dictionary<uint, NikonDevice>();
 
             Scheduler.Invoke(() => {
-                InitializeObject(new NikonObject(Md3, null, 0));
+                InitializeObject(new NikonObject(Md3, null, 0, logger));
 
                 string[] moduleName = Object.GetString(eNkMAIDCapability.kNkMAIDCapability_Name).Split(' ');
 
@@ -707,7 +708,7 @@ namespace Nikon {
                 } else {
                     ModuleType = NikonModuleType.Unknown;
                 }
-                Logger?.Debug($"Initializing ModuleType {ModuleType}");
+                _logger?.Debug($"Initializing ModuleType {ModuleType}");
 
                 double asyncRate = (double)Object.GetUnsigned(eNkMAIDCapability.kNkMAIDCapability_AsyncRate);
 
@@ -746,8 +747,8 @@ namespace Nikon {
         private void HandleAddChild(IntPtr data) {
             uint id = (uint)data.ToInt32();
 
-            Logger?.Debug($"Handling Nikon Device Addition for {id}");
-            NikonDevice device = new NikonDevice(Md3, Scheduler, Object, ModuleType, id, Logger);
+            _logger?.Debug($"Handling Nikon Device Addition for {id}");
+            NikonDevice device = new NikonDevice(Md3, Scheduler, Object, ModuleType, id, _logger);
 
             lock (_devices) {
                 Debug.Assert(!_devices.ContainsKey(id));
@@ -760,7 +761,7 @@ namespace Nikon {
         private void HandleRemoveChild(IntPtr data) {
             uint id = (uint)data.ToInt32();
 
-            Logger?.Debug($"Handling Nikon Device Removal for {id}");
+            _logger?.Debug($"Handling Nikon Device Removal for {id}");
             NikonDevice device = null;
 
             lock (_devices) {
@@ -796,7 +797,6 @@ namespace Nikon {
             }
         }
 
-        public ILogger Logger { get; }
 
         public NikonDevice GetDeviceByIndex(uint index) {
             NikonDevice device = null;
@@ -853,6 +853,7 @@ namespace Nikon {
         private NikonImage _currentImage;
         private uint _currentItemId;
         private int _bulbCaptureShutterSpeedBackup;
+        private readonly ILogger _logger;
 
         private event PreviewReadyDelegate _previewReady;
 
@@ -928,11 +929,12 @@ namespace Nikon {
 
         internal NikonDevice(NikonMd3 md3, NikonScheduler scheduler, NikonObject parent, NikonModuleType moduleType, uint deviceId, ILogger logger)
             : base(md3, scheduler, logger) {
+            _logger = logger;
             Debug.Assert(Scheduler.WorkerThreadId == Thread.CurrentThread.ManagedThreadId);
 
             ModuleType = moduleType;
 
-            NikonObject source = new NikonObject(md3, parent, deviceId);
+            NikonObject source = new NikonObject(md3, parent, deviceId, logger);
             InitializeObject(source);
         }
 
@@ -1088,7 +1090,7 @@ namespace Nikon {
         }
 
         private void HandleAddChild(IntPtr id) {
-            NikonObject item = new NikonObject(Md3, Object, (uint)id.ToInt32());
+            NikonObject item = new NikonObject(Md3, Object, (uint)id.ToInt32(), _logger);
 
             List<uint> dataIds = new List<uint>();
 
@@ -1106,7 +1108,7 @@ namespace Nikon {
             foreach (var dataId in dataIds) {
                 eNkMAIDDataObjType dataObjectType = (eNkMAIDDataObjType)dataId;
 
-                NikonObject data = new NikonObject(Md3, item, dataId);
+                NikonObject data = new NikonObject(Md3, item, dataId, _logger);
 
                 data.Open();
 

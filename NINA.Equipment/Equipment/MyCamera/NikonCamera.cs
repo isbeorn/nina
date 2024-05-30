@@ -864,7 +864,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
     internal class NikonLogger : Nikon.ILogger {
         public void Debug(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Debug(message, memberName, sourceFilePath, lineNumber);
+            Logger.Debug("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
 
         public void Error(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
@@ -872,23 +872,23 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void Error(string customMsg, Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Error(customMsg, ex, memberName, sourceFilePath, lineNumber);
+            Logger.Error("Nikon SDK - " + customMsg, ex, memberName, sourceFilePath, lineNumber);
         }
 
         public void Error(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Error(message, memberName, sourceFilePath, lineNumber);
+            Logger.Error("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
 
         public void Info(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Info(message, memberName, sourceFilePath, lineNumber);
+            Logger.Info("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
 
         public void Trace(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Trace(message, memberName, sourceFilePath, lineNumber);
+            Logger.Trace("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
 
         public void Warning(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
-            Logger.Warning(message, memberName, sourceFilePath, lineNumber);
+            Logger.Warning("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
     }
 }
