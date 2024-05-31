@@ -2790,24 +2790,6 @@ Klient odpojen od synchronizované služby PHD2.
   <data name="LblSequence" xml:space="preserve">
     <value>Sekvence</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Příkaz ukončení sekvence '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Příkaz ukončení sekvence</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' dokončeno.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Po dokončení sekvence provést příkaz</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Výběr příkazu, který se má provést po dokončení sekvence.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Příkaz ukončení sekvence nenalezen '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Odložený start</value>
   </data>
@@ -6992,5 +6974,14 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

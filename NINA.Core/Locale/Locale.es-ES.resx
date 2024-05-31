@@ -2787,24 +2787,6 @@ HFR calculada: {2}
   <data name="LblSequence" xml:space="preserve">
     <value>Secuencia</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Comando final de secuencia '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Comando final de secuencia</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completado.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Ejecutar comando cuando se complete la secuencia</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Selecciona el comando a ejecutar cuando se complete la secuencia.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Comando final de secuencia no encontrado '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Retraso en el inicio</value>
   </data>
@@ -6986,6 +6968,15 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Esperando la instrucción para reconocer la cancelación</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Se ordenó abrir la ventana de la cúpula o el techo, pero el dispositivo de monitoreo de seguridad informa de condiciones inseguras. Se ha interrumpido la apertura.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

@@ -2791,24 +2791,6 @@
   <data name="LblSequence" xml:space="preserve">
     <value>序列</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>序列结束命令'{0}'。</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>序列结束命令</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' 已完成。</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>序列完成后运行命令</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>选择在序列完成后运行的命令</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>序列结束命令 '{0}' 未找到</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>延迟开始</value>
   </data>
@@ -6991,5 +6973,14 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

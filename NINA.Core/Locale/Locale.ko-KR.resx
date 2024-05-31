@@ -2784,24 +2784,6 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   <data name="LblSequence" xml:space="preserve">
     <value>시퀀스</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>시퀀스 종료 명령어 '{0}'</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>시퀀스 종료 명령어</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' 완료됨</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>시퀀스가 완료되었을 때 실행 명령어</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>시퀀스가 완료되었을 때 실행할 명령어 선택</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>시퀀스 종료 명령어 '{0}'을 찾을 수 없음</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>지연 시작</value>
   </data>
@@ -7014,5 +6996,14 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

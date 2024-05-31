@@ -2780,24 +2780,6 @@
   <data name="LblSequence" xml:space="preserve">
     <value>シーケンス</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>シーケンス終了コマンド '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>シーケンス終了コマンド</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' 完了しました。</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>シーケンス完了時にコマンドを実行</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>シーケンス完了時に実行するコマンドを選択</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>シーケンス終了コマンドが見つかりません '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>遅延スタート</value>
   </data>
@@ -6963,6 +6945,15 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>中止要求を確認する命令を待っています。</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>シャッターまたは屋根を開くように命令されましたが、安全な状態ではないとセーフティモニター装置が報告しています。開放は中止されました。</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

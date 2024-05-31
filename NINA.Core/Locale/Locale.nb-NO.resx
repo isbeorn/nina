@@ -2789,24 +2789,6 @@ Forventet HFR: {2}</value>
   <data name="LblSequence" xml:space="preserve">
     <value>Sekvens</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Kommando ved sekvensslutt '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Kommando ved sekvensslutt</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' er fullført.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Kjør kommando når sekvens er ferdig</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Velg kommando som skal kjøres når sekvens er ferdig.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Kommando for sekvensslutt ble ikke funnet '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Utsett start</value>
   </data>
@@ -6979,5 +6961,14 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
     <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>
