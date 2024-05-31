@@ -5,7 +5,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ### <span style="color:yellow;">Beta builds are preview builds that contain the full development effort for the next release. These builds contain the full set of features for the next version and are under evaluation to find and fix potential bugs. No major changes will occur in these builds and the focus is on bug fixing only - major changes may only occur if a critical issue is identified and a major change is necessary to fix it. Thus these builds should already be quite stable to use.</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
-# Version 3.1 NIGHTLY
+# Version 3.1
 
 ## Behavioral Changes
 - Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
@@ -41,6 +41,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Offline Sky Cache will now always find the relevant tiles for small field of views.
 - Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
 - An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
+- Removed an unnecessary 5 seconds delay after executing an external script
 
 ## Plugin Development
 ### New Feature: `IMessageBroker` Interface
