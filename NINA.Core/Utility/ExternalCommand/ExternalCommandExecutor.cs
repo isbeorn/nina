@@ -40,7 +40,6 @@ namespace NINA.Core.Utility.ExternalCommand {
                 sequenceCompleteCommand = sequenceCompleteCommand.Trim();
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
-                Logger.Info($"Running - {executableLocation}");
 
                 Process process = new Process();
                 process.StartInfo.FileName = executableLocation;
@@ -60,10 +59,11 @@ namespace NINA.Core.Utility.ExternalCommand {
                         Logger.Error($"STDERR: {e.Data}");
                     }
                 };
-                if (args != null)
+                if (!string.IsNullOrWhiteSpace(args)) {
                     process.StartInfo.Arguments = args;
+                }                    
 
-                Logger.Debug($"Starting process '{executableLocation}' with args '{args}'");
+                Logger.Info($"Running - '{executableLocation}' with args '{args}'");
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
