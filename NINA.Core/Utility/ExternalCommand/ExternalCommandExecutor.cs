@@ -71,7 +71,7 @@ namespace NINA.Core.Utility.ExternalCommand {
 
                 return process.ExitCode == 0;
             } catch (Exception e) {
-                Logger.Error($"Error running command {sequenceCompleteCommand}: {e.Message}", e);
+                Logger.Error($"Error running command {sequenceCompleteCommand}:", e);
             } finally {
                 StatusUpdate(src, "");
             }
