@@ -120,8 +120,6 @@ namespace NINA.Image.ImageAnalysis {
             return state;
         }
 
-        private BlobCounter _blobCounter;
-
         public class Star {
             public double radius;
             public double HFR;
@@ -223,16 +221,16 @@ namespace NINA.Image.ImageAnalysis {
                     _bitmapToAnalyze = DetectionUtility.ResizeForDetection(_bitmapToAnalyze, _maxWidth, state._resizefactor);
 
                     /* prepare image for structure detection */
-                    PrepareForStructureDetection(_bitmapToAnalyze, p, state, token);
+                    PrepareForStructureDetection(_bitmapToAnalyze, p, token);
 
                     progress?.Report(new ApplicationStatus() { Status = "Detecting structures" });
 
                     /* get structure info */
-                    _blobCounter = DetectStructures(_bitmapToAnalyze, token);
+                    var blobCounter = DetectStructures(_bitmapToAnalyze, token);
 
                     progress?.Report(new ApplicationStatus() { Status = "Analyzing stars" });
 
-                    result.StarList = IdentifyStars(p, state, _bitmapToAnalyze, result, token, out var detectedStars);
+                    result.StarList = IdentifyStars(p, state, blobCounter, _bitmapToAnalyze, result, token, out var detectedStars);
 
                     token.ThrowIfCancellationRequested();
 
@@ -249,8 +247,6 @@ namespace NINA.Image.ImageAnalysis {
                         result.HFRStdDev = stdDev;
                         result.DetectedStars = detectedStars;
                     }
-
-                    _blobCounter = null;
                 }
             } catch (OperationCanceledException) {
             } finally {
@@ -268,10 +264,10 @@ namespace NINA.Image.ImageAnalysis {
                 innerCropRatio: p.InnerCropRatio);
         }
 
-        private List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, Bitmap _bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
+        private List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, BlobCounter blobCounter, Bitmap _bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
             using (MyStopWatch.Measure()) {
                 detectedStars = 0;
-                Blob[] blobs = _blobCounter.GetObjectsInformation();
+                Blob[] blobs = blobCounter.GetObjectsInformation();
                 SimpleShapeChecker checker = new SimpleShapeChecker();
                 List<Star> starlist = new List<Star>();
                 double sumRadius = 0;
@@ -291,7 +287,7 @@ namespace NINA.Image.ImageAnalysis {
                         continue;
                     }
 
-                    var points = _blobCounter.GetBlobsEdgePoints(blob);
+                    var points = blobCounter.GetBlobsEdgePoints(blob);
                     Accord.Point centerpoint;
                     float radius;
                     var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * state._inverseResizefactor), (int)Math.Floor(blob.Rectangle.Y * state._inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Width * state._inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Height * state._inverseResizefactor));
@@ -420,7 +416,7 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        private void PrepareForStructureDetection(Bitmap bmp, StarDetectionParams p, State state, CancellationToken token) {
+        private void PrepareForStructureDetection(Bitmap bmp, StarDetectionParams p, CancellationToken token) {
             using (MyStopWatch.Measure()) {
                 using (MyStopWatch.Measure("PrepareForStructureDetection - CannyEdge")) {
                     if (p.NoiseReduction == NoiseReductionEnum.None || p.NoiseReduction == NoiseReductionEnum.Median) {
