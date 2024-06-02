@@ -153,6 +153,7 @@
       <ComponentGroupRef Id="uk_UA_files" />
       <ComponentGroupRef Id="hu_HU_files" />
       <ComponentGroupRef Id="eu_ES_files" />
+      <ComponentGroupRef Id="DocumentationComponent" />
     </Feature>
     <InstallExecuteSequence>
       <Custom Action="API_Firewall_listen_ipv4" Before="InstallFinalize" Condition="NOT Installed" />
@@ -305,6 +306,7 @@
           </Directory>
           <Directory Id="hu_HU" Name="hu-HU" />
           <Directory Id="uk_UA" Name="uk-UA" />
+          <Directory Id="DocumentationDirectory" Name="docs" />
         </Directory>
       </Directory>
       <StandardDirectory Id="ProgramMenuFolder">
@@ -736,6 +738,15 @@
       </Component>
       <Component Id="Microsoft.VisualBasic.Forms.dll" Guid="01e52a73-a49e-41b3-9af3-f686c406bb32">
         <File Id="Microsoft.VisualBasic.Forms.dll" Name="Microsoft.VisualBasic.Forms.dll" Source="$(var.NINA_TargetDir)Microsoft.VisualBasic.Forms.dll" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.Core.dll" Guid="5b3a0ef9-39e7-4d40-af5b-16aed8d52fa3">
+        <File Id="Microsoft.Web.WebView2.Core.dll" Name="Microsoft.Web.WebView2.Core.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.Core.dll" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.WinForms.dll" Guid="92b060e0-6093-44ae-afb1-81d076b327be">
+        <File Id="Microsoft.Web.WebView2.WinForms.dll" Name="Microsoft.Web.WebView2.WinForms.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.WinForms.dll" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.Wpf.dll" Guid="3841a8b1-cf19-49a9-972a-645f0b6da182">
+        <File Id="Microsoft.Web.WebView2.Wpf.dll" Name="Microsoft.Web.WebView2.Wpf.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.Wpf.dll" />
       </Component>
       <Component Id="Microsoft.Win32.Primitives.dll" Guid="5fef9b07-885d-41d5-9b5c-40d54d15ad72">
         <File Id="Microsoft.Win32.Primitives.dll" Name="Microsoft.Win32.Primitives.dll" Source="$(var.NINA_TargetDir)Microsoft.Win32.Primitives.dll" />
@@ -1396,6 +1407,9 @@
       </Component>
       <Component Id="vcruntime140_cor3.dll" Guid="594ba71e-c9c4-4b16-8b73-3ce80919432c">
         <File Id="vcruntime140_cor3.dll" Name="vcruntime140_cor3.dll" Source="$(var.NINA_TargetDir)vcruntime140_cor3.dll" />
+      </Component>
+      <Component Id="WebView2Loader.dll" Guid="df87fae8-e404-423d-9794-45eb26719eb6">
+        <File Id="WebView2Loader.dll" Name="WebView2Loader.dll" Source="$(var.NINA_TargetDir)WebView2Loader.dll" />
       </Component>
       <Component Id="WindowsBase.dll" Guid="575c8b74-b0ed-4f5f-865f-74e51fcd3468">
         <File Id="WindowsBase.dll" Name="WindowsBase.dll" Source="$(var.NINA_TargetDir)WindowsBase.dll" />

@@ -273,6 +273,19 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
+                    <TextBlock Text="Microsoft.Web.WebView2         " />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://learn.microsoft.com/en-us/microsoft-edge/webview2       " RequestNavigate="Hyperlink_RequestNavigate">https://learn.microsoft.com/en-us/microsoft-edge/webview2</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.2535.41/License" RequestNavigate="Hyperlink_RequestNavigate">Copyright (C) Microsoft Corporation. All rights reserved.</Hyperlink></TextBlock>
+                </Grid>
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Newtonsoft.Json        " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.newtonsoft.com/json        " RequestNavigate="Hyperlink_RequestNavigate">https://www.newtonsoft.com/json</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MIT" RequestNavigate="Hyperlink_RequestNavigate">The MIT License</Hyperlink></TextBlock>
@@ -469,7 +482,7 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="VVVV.FreeImage         " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="http://freeimage.sourceforge.net/       " RequestNavigate="Hyperlink_RequestNavigate">http://freeimage.sourceforge.net/</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="http://freeimage.sourceforge.net       " RequestNavigate="Hyperlink_RequestNavigate">http://freeimage.sourceforge.net</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="http://freeimage.sourceforge.net/freeimage-license.txt" RequestNavigate="Hyperlink_RequestNavigate">FreeImage Public License - Version 1.0</Hyperlink></TextBlock>
                 </Grid>
                 <Grid Margin="5,5,5,0">

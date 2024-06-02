@@ -156,6 +156,7 @@ This database will be automatically created by the EntityFramework based on the 
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
     * Due to not being publicly available, they must not be put into a public repository
 * Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
+* (Optional) The NINA project has a post install action to build the offline documentation via mkdocs from the docs submodule. Follow the steps to be able to build the documentation in the [contributing guide of the docs repository](https://bitbucket.org/Isbeorn/nina.docs/src/master/CONTRIBUTING.md)
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and the [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=FireGiant.FireGiantHeatWaveDev17)
 
 ## Automated Unit Tests (AUT)

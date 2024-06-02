@@ -57,6 +57,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes</li>
 <li>A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.</li>
 <li>USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status</li>
+<li>The documentation is now included as an offline page with the installer.
+<ul>
+<li>Additionally, the documentation is now integrated directly into the application. You can access it by clicking the question mark icon in the lower-left corner, instead of opening it in a browser window.</li>
+</ul>
+</li>
 </ul>
 <h2 id="bugfixes">Bugfixes</h2>
 <ul>
@@ -109,6 +114,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <ul>
 <li>The CenteringSolver's substeps, which were previously opaque, are now measured individually.</li>
 <li>Results of these measurements are provided via <code>Measurement</code> data structure alongside the plate solve result.</li>
+</ul>
+<h3 id="new-control-browser">New Control &quot;Browser&quot;</h3>
+<ul>
+<li>NINA.WPF.Base now includes the dependencies to <a href="https://learn.microsoft.com/en-us/microsoft-edge/webview2/">WebView2</a></li>
+<li>Using this dependency you can embed a browser into the application</li>
 </ul>
 <h1 id="version-3.0">Version 3.0</h1>
 <h2 id="important-changes">Important Changes</h2>

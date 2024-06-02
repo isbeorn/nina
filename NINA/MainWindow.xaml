@@ -614,7 +614,7 @@
                     </Button.ToolTip>
                     <Path
                         Margin="2"
-                        Data="{StaticResource QuestionSVG}"
+                        Data="{StaticResource BookSVG}"
                         Stretch="Uniform"
                         Style="{StaticResource WindowButtonPath}"
                         UseLayoutRounding="True" />
