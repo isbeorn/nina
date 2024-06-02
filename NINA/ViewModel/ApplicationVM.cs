@@ -41,8 +41,6 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using NINA.WPF.Base.View;
-using System.ComponentModel.DataAnnotations;
-using CsvHelper;
 
 namespace NINA.ViewModel {
 
