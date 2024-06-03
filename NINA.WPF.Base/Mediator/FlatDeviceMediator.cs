@@ -39,5 +39,21 @@ namespace NINA.WPF.Base.Mediator {
         public Task OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
             return handler.OpenCover(progress, token);
         }
+        public event Func<object, EventArgs, Task> Opened {
+            add { this.handler.Opened += value; }
+            remove { this.handler.Opened -= value; }
+        }
+        public event Func<object, EventArgs, Task> Closed {
+            add { this.handler.Closed += value; }
+            remove { this.handler.Closed -= value; }
+        }
+        public event Func<object, FlatDeviceBrightnessChangedEventArgs, Task> BrightnessChanged {
+            add { this.handler.BrightnessChanged += value; }
+            remove { this.handler.BrightnessChanged -= value; }
+        }
+        public event Func<object, EventArgs, Task> LightToggled {
+            add { this.handler.LightToggled += value; }
+            remove { this.handler.LightToggled -= value; }
+        }
     }
 }

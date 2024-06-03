@@ -418,9 +418,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         public double MinExposure {
             get => minExposure;
             set {
-                if (value >= MaxExposure) {
-                    value = MaxExposure;
-                }
                 minExposure = value;
                 RaisePropertyChanged();
             }
@@ -432,9 +429,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         public double MaxExposure {
             get => maxExposure;
             set {
-                if (value <= MinExposure) {
-                    value = MinExposure;
-                }
                 maxExposure = value;
                 RaisePropertyChanged();
             }
@@ -480,7 +474,12 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             var valid = takeExposure.Validate() && switchFilter.Validate();
 
+
             var issues = new ObservableCollection<string>();
+
+            if (MinExposure > MaxExposure) {
+                issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid"]);
+            }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));

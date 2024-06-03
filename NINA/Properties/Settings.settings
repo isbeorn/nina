@@ -30,7 +30,7 @@
       <Value Profile="(Default)">Normal</Value>
     </Setting>
     <Setting Name="SaveQueueSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="SingleDockLayout" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

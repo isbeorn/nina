@@ -33,6 +33,9 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.ViewModel;
 using NINA.WPF.Base.Utility.AutoFocus;
 using Microsoft.Win32;
+using NINA.Equipment.Model;
+using NINA.Profile;
+using static NINA.Equipment.Equipment.MyGPS.PegasusAstro.UnityApi.DriverUranusReport;
 
 namespace NINA.ViewModel.ImageHistory {
 
@@ -54,8 +57,9 @@ namespace NINA.ViewModel.ImageHistory {
             AutoFocusPoints = new AsyncObservableCollection<ImageHistoryPoint>();
             AutoFocusPointsView = new AsyncObservableCollection<ImageHistoryPoint>();
 
-            ImageHistoryLeftSelected = ImageHistoryEnum.HFR;
-            ImageHistoryRightSelected = ImageHistoryEnum.Stars;
+            ImageHistoryLeftSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected;
+            ImageHistoryRightSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected;
+            profileService.ProfileChanged += ProfileChanged;
 
             FilterList = new AsyncObservableCollection<string>();
             AllFilters = Loc.Instance["LblHFRHistoryAllFilters"];
@@ -104,7 +108,7 @@ namespace NINA.ViewModel.ImageHistory {
             ObservableImageHistoryView.Clear();
             index = 1;
             foreach (ImageHistoryPoint imageHistoryPoint in ObservableImageHistory) {
-                if ((this.SelectedFilter.Equals(AllFilters) || imageHistoryPoint.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || imageHistoryPoint.Type == "LIGHT")) {
+                if ((this.SelectedFilter.Equals(AllFilters) || imageHistoryPoint.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || imageHistoryPoint.Type == CaptureSequence.ImageTypes.LIGHT)) {
                     imageHistoryPoint.Index = index++;
                     ObservableImageHistoryView.Add(imageHistoryPoint);
                 }
@@ -166,12 +170,20 @@ namespace NINA.ViewModel.ImageHistory {
             }
         }
 
+        private void ProfileChanged(object sender, EventArgs e) {
+            _imageHistoryLeftSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected;
+            RaisePropertyChanged(nameof(ImageHistoryLeftSelected));
+            _imageHistoryRightSelected = profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected;
+            RaisePropertyChanged(nameof(ImageHistoryRightSelected));
+        }
+
         private ImageHistoryEnum _imageHistoryLeftSelected;
 
         public ImageHistoryEnum ImageHistoryLeftSelected {
             get => _imageHistoryLeftSelected;
             set {
                 _imageHistoryLeftSelected = value;
+                profileService.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected = value;
                 ImageHistoryLeftSelectedKey = value.ToString();
                 RaisePropertyChanged();
             }
@@ -183,6 +195,7 @@ namespace NINA.ViewModel.ImageHistory {
             get => _imageHistoryRightSelected;
             set {
                 _imageHistoryRightSelected = value;
+                profileService.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected = value;
                 ImageHistoryRightSelectedKey = value.ToString();
                 RaisePropertyChanged();
             }
@@ -266,7 +279,7 @@ namespace NINA.ViewModel.ImageHistory {
                     if (!FilterList.Contains(imageSavedEventArgs.Filter))
                         FilterList.Add(imageSavedEventArgs.Filter);
                     // Add to view if it's not filtered
-                    if ((this.SelectedFilter.Equals(AllFilters) || imageHistoryItem.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || imageHistoryItem.Type == "LIGHT")) {
+                    if ((this.SelectedFilter.Equals(AllFilters) || imageHistoryItem.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || imageHistoryItem.Type == CaptureSequence.ImageTypes.LIGHT)) {
                         imageHistoryItem.Index = index++;
                         ObservableImageHistoryView.Add(imageHistoryItem);
                     }
@@ -281,12 +294,13 @@ namespace NINA.ViewModel.ImageHistory {
                     last = ImageHistory.LastOrDefault();
                 }
 
-                if (last != null) {
-                    last.PopulateAFPoint(report);
-                    AutoFocusPoints.Add(last);
-                    if ((this.SelectedFilter.Equals(AllFilters) || last.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || last.Type == "LIGHT")) {
-                        AutoFocusPointsView.Add(last);
-                    }
+                if (last == null) {
+                    last = new ImageHistoryPoint(GetNextImageId(), "NONE");
+                }
+                last.PopulateAFPoint(report);
+                AutoFocusPoints.Add(last);
+                if ((this.SelectedFilter.Equals(AllFilters) || last.Filter.Equals(this.SelectedFilter)) && (ShowSnapshots || last.Type == CaptureSequence.ImageTypes.LIGHT)) {
+                    AutoFocusPointsView.Add(last);
                 }
             }
         }

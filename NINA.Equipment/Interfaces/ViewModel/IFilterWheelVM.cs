@@ -15,6 +15,7 @@
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -26,6 +27,8 @@ namespace NINA.Equipment.Interfaces.ViewModel {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
 
-        ICollection<FilterInfo> GetAllFilters();
+        ICollection<FilterInfo> GetAllFilters(); 
+
+        event Func<object, FilterChangedEventArgs, Task> FilterChanged;
     }
 }

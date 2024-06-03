@@ -30,7 +30,7 @@ namespace NINA.WPF.Base.Mediator {
         }
 
         public void StatusUpdate(ApplicationStatus status) {
-            handler.StatusUpdate(status);
+            handler?.StatusUpdate(status);
         }
     }
 }

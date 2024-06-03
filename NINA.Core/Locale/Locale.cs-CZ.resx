@@ -2790,24 +2790,6 @@ Klient odpojen od synchronizované služby PHD2.
   <data name="LblSequence" xml:space="preserve">
     <value>Sekvence</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Příkaz ukončení sekvence '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Příkaz ukončení sekvence</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' dokončeno.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Po dokončení sekvence provést příkaz</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Výběr příkazu, který se má provést po dokončení sekvence.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Příkaz ukončení sekvence nenalezen '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Odložený start</value>
   </data>
@@ -6959,5 +6941,47 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Regulátor</value>
+  </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED Kontrolky</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Zapnout nebo vypnout LED kontrolky na kameře</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>Minimální jas je vyšší než maximální jas!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>Minimální čas expozice je vyšší než maximální čas expozice!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Dither mezi flat expozicemi z oblohy je povolen, ale dalekohled není schopen pulzního vedení</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>Dither mezi flat expozicemi z oblohy je povolen, ale montáž není připojena</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>Dither mezi flat expozicemi z oblohy je povolen, ale dalekohled je zaparkovaný</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>Minimální čas expozice je vyšší než maximální čas expozice!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Pokyn "{0}" neodpověděl na žádost o zrušení po {1} minutách. Sekvence bude pokračovat a nereagující úloha bude ignorována.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Čeká se na pokyn k potvrzení zrušení</value>
+  </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

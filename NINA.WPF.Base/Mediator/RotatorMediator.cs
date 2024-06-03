@@ -15,6 +15,7 @@
 using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +45,21 @@ namespace NINA.WPF.Base.Mediator {
 
         public float GetTargetMechanicalPosition(float position) {
             return handler.GetTargetMechanicalPosition(position);
+        }
+
+        public event EventHandler<RotatorEventArgs> Synced {
+            add { this.handler.Synced += value; }
+            remove { this.handler.Synced -= value; }
+        }
+
+        public event Func<object, RotatorEventArgs, Task> Moved {
+            add { this.handler.Moved += value; }
+            remove { this.handler.Moved -= value; }
+        }
+
+        public event Func<object, RotatorEventArgs, Task> MovedMechanical {
+            add { this.handler.MovedMechanical += value; }
+            remove { this.handler.MovedMechanical -= value; }
         }
     }
 }

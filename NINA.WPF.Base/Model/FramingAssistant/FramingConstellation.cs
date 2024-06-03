@@ -69,7 +69,7 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
             Stars = new HashSet<Star>();
 
             foreach (var star in constellation.Stars) {
-                star.Radius = (-3.375f * star.Mag + 23.25f) / (float)(viewport.VFoVDeg / 8f);
+                star.Radius = (-3.375f * star.Mag + 23.25f) / (float)(viewport.VFoV / 8f);
             }
         }
 
@@ -80,7 +80,7 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
             foreach (var star in constellation.Stars) {
                 var starPosition = star.Coords.XYProjection(reference);
                 star.Position = new PointF((float)starPosition.X, (float)starPosition.Y);
-                var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
+                var isInBounds = reference.ContainsCoordinates(star.Coords);
                 var contains = Stars.Contains(star);
                 if (isInBounds && !contains) {
                     Stars.Add(star);
@@ -92,8 +92,8 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
             if (calculateConnections) {
                 // now we check what lines are visible in the fov and only add those connections as well
                 foreach (var starConnection in constellation.StarConnections) {
-                    var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
-                                       reference.IsOutOfViewportBounds(starConnection.Item2.Position));
+                    var isInBounds = reference.ContainsCoordinates(starConnection.Item1.Coords) ||
+                                       reference.ContainsCoordinates(starConnection.Item2.Coords);
                     var contains = Points.Contains(starConnection);
                     if (isInBounds && !contains) {
                         Points.Add(starConnection);

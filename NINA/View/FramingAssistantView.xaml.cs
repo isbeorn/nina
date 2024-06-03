@@ -23,8 +23,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
 namespace NINA.View {
@@ -105,7 +107,7 @@ namespace NINA.View {
 
                 var coordinates = new Coordinates(Angle.ByDegree(raDeg), Angle.ByDegree(decDeg), Epoch.J2000);
                 
-                var dso = new DeepSkyObject(viewModel.DSO?.Name ?? "", coordinates, default, default);
+                var dso = new DeepSkyObject(viewModel.DSO?.Name ?? "", coordinates, null as Func<SkyObjectBase, Task<BitmapSource>>, default);
                 dso.RotationPositionAngle = 360 - viewModel.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
                 _ = viewModel.SetCoordinates(dso);
                                 

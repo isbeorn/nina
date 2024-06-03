@@ -26,5 +26,16 @@ namespace NINA.Equipment.Interfaces.Mediator {
     public interface IFilterWheelMediator : IDeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo> {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
+        event Func<object, FilterChangedEventArgs, Task> FilterChanged;
+    }
+
+    public class FilterChangedEventArgs : EventArgs {
+        public FilterChangedEventArgs(FilterInfo from, FilterInfo to) {
+            From = from;
+            To = to;
+        }
+
+        public FilterInfo From { get; }
+        public FilterInfo To { get; }
     }
 }

@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>NINA.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>
-    <Version>3.1.0.1001</Version>
+    <Version>3.1.0.3001-rc</Version>
     <Description>A patched version for N.I.N.A. of the original module</Description>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
   </PropertyGroup>
@@ -29,6 +29,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />

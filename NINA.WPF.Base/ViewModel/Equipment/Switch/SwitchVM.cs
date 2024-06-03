@@ -34,10 +34,11 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Core.Utility.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
-    public class SwitchVM : DockableVM, ISwitchVM {
+    public partial class SwitchVM : DockableVM, ISwitchVM {
 
         public SwitchVM(IProfileService profileService,
                         IApplicationStatusMediator applicationStatusMediator,
@@ -47,6 +48,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SwitchesSVG"];
             HasSettings = true;
             DeviceChooserVM = deviceChooserVM;
+            writableSwitches = new AsyncObservableCollection<IWritableSwitch>();
+            readonlySwitches = new AsyncObservableCollection<ISwitch>();
+            switchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
 
             this.applicationStatusMediator = applicationStatusMediator;
             this.switchMediator = switchMediator;
@@ -127,28 +131,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         public IAsyncCommand SetSwitchValueCommand { get; private set; }
         public IAsyncCommand ToggleBooleanSwitchValueCommand { get; private set; }
 
+        [ObservableProperty]
         private ISwitchHub switchHub;
 
-        public ISwitchHub SwitchHub {
-            get => switchHub;
-            set {
-                switchHub = value;
-                RaisePropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        private IList<IWritableSwitch> writableSwitches;
 
-        public IList<IWritableSwitch> WritableSwitches { get; private set; } = new AsyncObservableCollection<IWritableSwitch>();
-        public IList<ISwitch> ReadonlySwitches { get; private set; } = new AsyncObservableCollection<ISwitch>();
+        [ObservableProperty]
+        private IList<ISwitch> readonlySwitches;
 
+        [ObservableProperty]
         private IWritableSwitch selectedWritableSwitch;
 
-        public IWritableSwitch SelectedWritableSwitch {
-            get => selectedWritableSwitch;
-            set {
-                selectedWritableSwitch = value;
-                RaisePropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        private SwitchInfo switchInfo;
 
         private Dictionary<string, object> GetSwitchValues() {
             Dictionary<string, object> switchValues = new Dictionary<string, object>();
@@ -172,22 +168,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
         private void BroadcastSwitchInfo() {
             switchMediator.Broadcast(GetDeviceInfo());
-        }
-
-        private SwitchInfo switchInfo;
-
-        public SwitchInfo SwitchInfo {
-            get {
-                if (switchInfo == null) {
-                    switchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
-                }
-                return switchInfo;
-            }
-            set {
-                switchInfo = value;
-                RaisePropertyChanged();
-            }
-        }
+        }       
 
         private void CancelConnect() {
             try { connectSwitchCts?.Cancel(); } catch { }
@@ -226,31 +207,27 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                 );
 
                 var switchHub = (ISwitchHub)DeviceChooserVM.SelectedDevice;
-                connectSwitchCts?.Dispose();
+                try { connectSwitchCts?.Dispose(); } catch { }
                 connectSwitchCts = new CancellationTokenSource();
                 if (switchHub != null) {
                     try {
-                        var connected = await switchHub?.Connect(connectSwitchCts.Token);
-                        connectSwitchCts.Token.ThrowIfCancellationRequested();
+                        var token = connectSwitchCts.Token;
+                        var connected = await switchHub?.Connect(token);
+                        token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.SwitchHub = switchHub;
 
-                            Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
-
-                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            _ = updateTimer.Run();
-
-                            profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
-
-                            WritableSwitches.Clear();
-                            ReadonlySwitches.Clear();
+                            WritableSwitches = new AsyncObservableCollection<IWritableSwitch>();
+                            ReadonlySwitches = new AsyncObservableCollection<ISwitch>();
                             foreach (var s in SwitchHub.Switches) {
+                                token.ThrowIfCancellationRequested();
                                 if (s is IWritableSwitch ws) {
                                     WritableSwitches.Add(ws);
                                 } else {
                                     ReadonlySwitches.Add(s);
                                 }
                             }
+                            token.ThrowIfCancellationRequested();
                             SelectedWritableSwitch = WritableSwitches.FirstOrDefault();
 
                             SwitchInfo = new SwitchInfo {
@@ -265,9 +242,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                                 DeviceId = switchHub.Id,
                                 SupportedActions = switchHub.SupportedActions,
                             };
+                            token.ThrowIfCancellationRequested();
 
                             RaisePropertyChanged(nameof(WritableSwitches));
+                            token.ThrowIfCancellationRequested();
                             BroadcastSwitchInfo();
+                            token.ThrowIfCancellationRequested();
+
+                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            _ = updateTimer.Run();
+
+                            profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
+                            Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} DisplayName: {switchHub.DisplayName} Driver Version: {switchHub.DriverVersion}");
@@ -280,7 +266,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (SwitchInfo.Connected) { await Disconnect(); }
+                        await Disconnect();
                         return false;
                     }
                 } else {
@@ -303,10 +289,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     await updateTimer.Stop();
                 }
                 SwitchHub?.Disconnect();
-                WritableSwitches.Clear();
-                ReadonlySwitches.Clear();
-                SwitchHub = null;
-                SwitchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
+            }
+            WritableSwitches = new AsyncObservableCollection<IWritableSwitch>();
+            ReadonlySwitches = new AsyncObservableCollection<ISwitch>();
+            SwitchHub = null;
+            SwitchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
+            if (SwitchInfo.Connected) {
                 BroadcastSwitchInfo();
                 await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Switch");

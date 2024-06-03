@@ -9,11 +9,75 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
 namespace Nikon {
+
+    public interface ILogger {
+        void Error(
+               Exception ex,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Error(
+               string customMsg,
+               Exception ex,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Error(string message,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Warning(string message,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Info(string message,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Debug(string message,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+
+        void Trace(string message,
+               [CallerMemberName] string memberName = "",
+               [CallerFilePath] string sourceFilePath = "",
+               [CallerLineNumber] int lineNumber = 0);
+    }
+
+    public class DummyLogger : ILogger {
+        public void Debug(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Error(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Error(string customMsg, Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Error(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Info(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Trace(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+
+        public void Warning(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+        }
+    }
 
     #region Public Delegates
 
@@ -120,6 +184,21 @@ namespace Nikon {
         Type0014,
         Type0015,
         Type0016,
+        Type0017,
+        Type0018,
+        Type0019,
+        Type0020,
+        Type0021,
+        Type0022,
+        Type0023,
+        Type0024,
+        Type0025,
+        Type0026,
+        Type0027,
+        Type0028,
+        Type0029,
+        Type0030,
+        Type0031,
     }
 
     #endregion
@@ -129,13 +208,15 @@ namespace Nikon {
     abstract public class NikonBase {
         private NikonMd3 _md3;
         private NikonScheduler _scheduler;
+        private readonly ILogger _logger;
         private NikonObject _object;
         private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> _caps;
         private NikonModuleType _moduleType;
 
-        internal NikonBase(NikonMd3 md3, NikonScheduler scheduler) {
+        internal NikonBase(NikonMd3 md3, NikonScheduler scheduler, ILogger logger) {
             _md3 = md3;
             _scheduler = scheduler;
+            _logger = logger;
             _moduleType = NikonModuleType.Unknown;
             _caps = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
         }
@@ -166,6 +247,7 @@ namespace Nikon {
         }
 
         private void _object_Event(NikonObject sender, IntPtr refClient, eNkMAIDEvent ulEvent, IntPtr data) {
+            _logger?.Debug($"Received Nikon Object event {ulEvent}");
             switch (ulEvent) {
                 case eNkMAIDEvent.kNkMAIDEvent_CapChange:
                     RefreshCaps();
@@ -576,6 +658,7 @@ namespace Nikon {
     public class NikonManager : NikonBase {
         private Dictionary<uint, NikonDevice> _devices;
         private const string _defaultMd3EntryPoint = "MAIDEntryPoint";
+        private ILogger _logger;
 
         private event DeviceAddedDelegate _deviceAdded;
 
@@ -594,23 +677,28 @@ namespace Nikon {
         }
 
         public NikonManager(string md3File)
-            : this(md3File, _defaultMd3EntryPoint, SynchronizationContext.Current) {
+            : this(md3File, _defaultMd3EntryPoint, SynchronizationContext.Current, new DummyLogger()) {
+        }
+
+        public NikonManager(string md3File, ILogger logger)
+            : this(md3File, _defaultMd3EntryPoint, SynchronizationContext.Current, new DummyLogger()) {
+            _logger = logger;
         }
 
         public NikonManager(string md3File, string md3EntryPoint)
-            : this(md3File, md3EntryPoint, SynchronizationContext.Current) {
+            : this(md3File, md3EntryPoint, SynchronizationContext.Current, new DummyLogger()) {
         }
 
         public NikonManager(string md3File, SynchronizationContext context)
-            : this(md3File, _defaultMd3EntryPoint, context) {
+            : this(md3File, _defaultMd3EntryPoint, context, new DummyLogger()) {
         }
 
-        public NikonManager(string md3File, string md3EntryPoint, SynchronizationContext context)
-            : base(new NikonMd3(md3File, md3EntryPoint), new NikonScheduler(context)) {
+        public NikonManager(string md3File, string md3EntryPoint, SynchronizationContext context, ILogger logger)
+            : base(new NikonMd3(md3File, md3EntryPoint), new NikonScheduler(context), logger) {
             _devices = new Dictionary<uint, NikonDevice>();
 
             Scheduler.Invoke(() => {
-                InitializeObject(new NikonObject(Md3, null, 0));
+                InitializeObject(new NikonObject(Md3, null, 0, logger));
 
                 string[] moduleName = Object.GetString(eNkMAIDCapability.kNkMAIDCapability_Name).Split(' ');
 
@@ -620,6 +708,7 @@ namespace Nikon {
                 } else {
                     ModuleType = NikonModuleType.Unknown;
                 }
+                _logger?.Debug($"Initializing ModuleType {ModuleType}");
 
                 double asyncRate = (double)Object.GetUnsigned(eNkMAIDCapability.kNkMAIDCapability_AsyncRate);
 
@@ -658,7 +747,8 @@ namespace Nikon {
         private void HandleAddChild(IntPtr data) {
             uint id = (uint)data.ToInt32();
 
-            NikonDevice device = new NikonDevice(Md3, Scheduler, Object, ModuleType, id);
+            _logger?.Debug($"Handling Nikon Device Addition for {id}");
+            NikonDevice device = new NikonDevice(Md3, Scheduler, Object, ModuleType, id, _logger);
 
             lock (_devices) {
                 Debug.Assert(!_devices.ContainsKey(id));
@@ -671,6 +761,7 @@ namespace Nikon {
         private void HandleRemoveChild(IntPtr data) {
             uint id = (uint)data.ToInt32();
 
+            _logger?.Debug($"Handling Nikon Device Removal for {id}");
             NikonDevice device = null;
 
             lock (_devices) {
@@ -705,6 +796,7 @@ namespace Nikon {
                 return count;
             }
         }
+
 
         public NikonDevice GetDeviceByIndex(uint index) {
             NikonDevice device = null;
@@ -761,6 +853,7 @@ namespace Nikon {
         private NikonImage _currentImage;
         private uint _currentItemId;
         private int _bulbCaptureShutterSpeedBackup;
+        private readonly ILogger _logger;
 
         private event PreviewReadyDelegate _previewReady;
 
@@ -834,13 +927,14 @@ namespace Nikon {
             remove { Scheduler.AddOrRemoveEvent(() => { _progress -= value; }); }
         }
 
-        internal NikonDevice(NikonMd3 md3, NikonScheduler scheduler, NikonObject parent, NikonModuleType moduleType, uint deviceId)
-            : base(md3, scheduler) {
+        internal NikonDevice(NikonMd3 md3, NikonScheduler scheduler, NikonObject parent, NikonModuleType moduleType, uint deviceId, ILogger logger)
+            : base(md3, scheduler, logger) {
+            _logger = logger;
             Debug.Assert(Scheduler.WorkerThreadId == Thread.CurrentThread.ManagedThreadId);
 
             ModuleType = moduleType;
 
-            NikonObject source = new NikonObject(md3, parent, deviceId);
+            NikonObject source = new NikonObject(md3, parent, deviceId, logger);
             InitializeObject(source);
         }
 
@@ -996,7 +1090,7 @@ namespace Nikon {
         }
 
         private void HandleAddChild(IntPtr id) {
-            NikonObject item = new NikonObject(Md3, Object, (uint)id.ToInt32());
+            NikonObject item = new NikonObject(Md3, Object, (uint)id.ToInt32(), _logger);
 
             List<uint> dataIds = new List<uint>();
 
@@ -1014,7 +1108,7 @@ namespace Nikon {
             foreach (var dataId in dataIds) {
                 eNkMAIDDataObjType dataObjectType = (eNkMAIDDataObjType)dataId;
 
-                NikonObject data = new NikonObject(Md3, item, dataId);
+                NikonObject data = new NikonObject(Md3, item, dataId, _logger);
 
                 data.Open();
 

@@ -64,6 +64,11 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         event Func<object, AfterMeridianFlipEventArgs, Task> AfterMeridianFlip;
         Task RaiseAfterMeridianFlip(AfterMeridianFlipEventArgs e);
+
+        event Func<object, EventArgs, Task> Parked;
+        event Func<object, EventArgs, Task> Homed;
+        event Func<object, EventArgs, Task> Unparked;
+        event Func<object, MountSlewedEventArgs, Task> Slewed;
     }
 
     public class BeforeMeridianFlipEventArgs : EventArgs {
@@ -81,5 +86,15 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         public bool Success { get; }
         public Coordinates Target { get; }
+    }
+
+    public class MountSlewedEventArgs : EventArgs {
+        public MountSlewedEventArgs(Coordinates from, Coordinates to) {
+            From = from;
+            To = to;
+        }
+
+        public Coordinates From { get; }
+        public Coordinates To { get; }
     }
 }

@@ -97,7 +97,8 @@ namespace NINA.Plugin {
                               ISequenceMediator sequenceMediator,
                               IOptionsVM optionsVM,
                               IExposureDataFactory exposureDataFactory,
-                              ITwilightCalculator twilightCalculator) {
+                              ITwilightCalculator twilightCalculator,
+                              IMessageBroker messageBroker) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.telescopeMediator = telescopeMediator;
@@ -135,7 +136,7 @@ namespace NINA.Plugin {
             this.optionsVM = optionsVM;
             this.exposureDataFactory = exposureDataFactory;
             this.twilightCalculator = twilightCalculator;
-
+            this.messageBroker = messageBroker;
             DateTimeProviders = new List<IDateTimeProvider>() {
                 new Sequencer.Utility.DateTimeProvider.TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
@@ -536,6 +537,7 @@ namespace NINA.Plugin {
             container.ComposeExportedValue(optionsVM);
             container.ComposeExportedValue(exposureDataFactory);
             container.ComposeExportedValue(twilightCalculator);
+            container.ComposeExportedValue(messageBroker);
 
             return container;
         }
@@ -590,6 +592,7 @@ namespace NINA.Plugin {
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
+        private readonly IMessageBroker messageBroker;
         private readonly Dictionary<string, string> assemblyReferencePathMap;
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {

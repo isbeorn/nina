@@ -394,15 +394,6 @@ namespace NINA.ViewModel {
             }
         }
         [RelayCommand]
-        private void OpenSkyAtlasImageRepositoryDiag(object obj) {
-            var dialog = new OpenFolderDialog();
-            dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
-
-            if (dialog.ShowDialog() == true) {
-                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.FolderName;
-            }
-        }
-        [RelayCommand]
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
             var dialog = new OpenFolderDialog();
             dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;

@@ -56,6 +56,8 @@ namespace NINA.Core.Utility {
             }
         }
 
+        public static string DocumentationLocalPage => Path.Combine(APPLICATIONDIRECTORY, "docs", "index.html");
+
         public static string ChangelogPage {
             get {
                 if (IsReleaseBuild) {

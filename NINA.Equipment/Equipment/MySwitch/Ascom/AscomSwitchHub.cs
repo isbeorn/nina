@@ -21,16 +21,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ASCOM.Alpaca.Discovery;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
-    internal class AscomSwitchHub : AscomDevice<ISwitchV2>, ISwitchHub, IDisposable {
+    public partial class AscomSwitchHub : AscomDevice<ISwitchV2>, ISwitchHub, IDisposable {
         public AscomSwitchHub(string id, string name) : base(id, name) {
+            switches = new AsyncObservableCollection<ISwitch>();
         }
         public AscomSwitchHub(AscomDevice deviceMeta) : base(deviceMeta) {
+            switches = new AsyncObservableCollection<ISwitch>();
         }
 
-        public ICollection<ISwitch> Switches { get; private set; } = new AsyncObservableCollection<ISwitch>();
+        [ObservableProperty]
+        private ICollection<ISwitch> switches;
 
         protected override string ConnectionLostMessage => Loc.Instance["LblSwitchConnectionLost"];
 
@@ -73,7 +77,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
         }
 
         protected override void PostDisconnect() {
-            Switches.Clear();
+            Switches = new AsyncObservableCollection<ISwitch>();
         }
 
         protected override ISwitchV2 GetInstance() {

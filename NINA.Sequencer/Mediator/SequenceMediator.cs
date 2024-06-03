@@ -122,5 +122,27 @@ namespace NINA.Sequencer.Mediator {
             }
             return sequenceNavigation.Sequence2VM.IsRunning;
         }
+
+        public event Func<object, EventArgs, Task> SequenceStarting {
+            add { 
+                this.sequenceNavigation.Sequence2VM.SequenceStarting += value;
+                this.sequenceNavigation.SimpleSequenceVM.SequenceStarting += value;
+            }
+            remove { 
+                this.sequenceNavigation.Sequence2VM.SequenceStarting -= value;
+                this.sequenceNavigation.SimpleSequenceVM.SequenceStarting -= value;
+            }
+        }
+
+        public event Func<object, EventArgs, Task> SequenceFinished {
+            add {
+                this.sequenceNavigation.Sequence2VM.SequenceFinished += value;
+                this.sequenceNavigation.SimpleSequenceVM.SequenceFinished += value;
+            }
+            remove {
+                this.sequenceNavigation.Sequence2VM.SequenceFinished -= value;
+                this.sequenceNavigation.SimpleSequenceVM.SequenceFinished -= value;
+            }
+        }
     }
 }

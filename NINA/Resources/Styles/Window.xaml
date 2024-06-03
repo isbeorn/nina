@@ -29,9 +29,8 @@
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=ThisWindow, Path=WindowState}" Value="Maximized">
-                                            <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />-->
-                                            <Setter Property="Padding" Value="8" />
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -208,62 +207,69 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        BorderBrush="Transparent"
-                        BorderThickness="0">
-                        <Grid Background="{StaticResource SecondaryBackgroundBrush}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <StackPanel
-                                Margin="2.5,0,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                                <Image
-                                    Width="25"
-                                    Height="20"
-                                    Margin="5,0,0,0"
+                    <AdornerDecorator>
+                        <Border BorderBrush="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <StackPanel
+                                    Margin="2.5,0,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Source="/NINA;component/Resources/Logo_Nina.png" />
-                                <TextBlock
-                                    Margin="4,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
-                            </StackPanel>
+                                    Orientation="Horizontal">
+                                    <Image
+                                        Width="25"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Source="/NINA;component/Resources/Logo_Nina.png" />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
+                                </StackPanel>
 
-                            <StackPanel
-                                Margin="0,0,2.5,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                                <Button
-                                    Name="PART_CloseButton"
-                                    Width="45"
-                                    Margin="5,0,0,0"
+                                <StackPanel
+                                    Margin="0,0,2.5,0"
                                     HorizontalAlignment="Right"
-                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CloseCommand}"
-                                    Style="{StaticResource CloseWindowButton}"
-                                    WindowChrome.IsHitTestVisibleInChrome="True">
-                                    <Path
-                                        Margin="10"
-                                        Data="{StaticResource CancelSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource WindowCloseButtonPath}"
-                                        UseLayoutRounding="True" />
-                                </Button>
-                            </StackPanel>
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Name="PART_CloseButton"
+                                        Width="45"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CloseCommand}"
+                                        Style="{StaticResource CloseWindowButton}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <Path
+                                            Margin="10"
+                                            Data="{StaticResource CancelSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowCloseButtonPath}"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                </StackPanel>
 
-                            <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
-                                <ContentPresenter Content="{TemplateBinding Content}" />
-                            </Border>
-                        </Grid>
-                    </Border>
+                                <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </AdornerDecorator>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

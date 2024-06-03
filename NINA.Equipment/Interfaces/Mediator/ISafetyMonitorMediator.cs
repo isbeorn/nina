@@ -14,9 +14,11 @@
 
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 
 namespace NINA.Equipment.Interfaces.Mediator {
 
     public interface ISafetyMonitorMediator : IDeviceMediator<ISafetyMonitorVM, ISafetyMonitorConsumer, SafetyMonitorInfo> {
+        event EventHandler<IsSafeEventArgs> IsSafeChanged;
     }
 }

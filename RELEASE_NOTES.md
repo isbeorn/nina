@@ -3,14 +3,18 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-### <span style="color:orange;">Nightly Status: ALPHA - USE WITH CAUTION, NOT RECOMMENDED FOR PRODUCTION!</span>
-### <span style="color:orange;">Nightly builds are preview builds and contain the ongoing development effort for new features. These builds progress quickly, can be unstable (especially in early stages) and running on outdated nightly builds is strongly discouraged!</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
+### <span style="color:yellow;">Beta builds are preview builds that contain the full development effort for the next release. These builds contain the full set of features for the next version and are under evaluation to find and fix potential bugs. No major changes will occur in these builds and the focus is on bug fixing only - major changes may only occur if a critical issue is identified and a major change is necessary to fix it. Thus these builds should already be quite stable to use.</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
 
-# Version 3.1 NIGHTLY
+# Version 3.1
 
 ## Behavioral Changes
 - Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run
 - Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance
+- Sky Atlas Images are now generated from the Offline Sky Map Cache. The "Sky Atlas Image Repository" option has been removed as it is now fully superseded by the Offline Sky Map Cache.
+- The image saving method has been updated from a two-step process (writing a temporary file and then moving it to the destination) to a single write process. Now, the image is processed first and then written directly to the destination.
+  - This change addresses issues on some systems where cloud sync file listeners, antivirus software, and similar processes block file access.
+  - For exposures lasting multiple seconds, there will be no noticeable performance loss.
+  - For short burst exposures, to achieve similar performance as before, adjust the file save queue size. Go to Options > General > Advanced > Image Save Queue Size and set the queue size to greater than one. Note that this setting will require more application memory.
 
 ## Improvements
 - Allow camera cooling values down to -200°C instead of restricting it to -50°C
@@ -18,6 +22,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads 
   - As a result, you can open ASCOM setup screens without compromising the main application's responsiveness.
   - However, please note that you must close the setup screen for the specific device before being able to connect to it.
+- Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale
+- Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser
+- Image History axis selection now persists across sessions
+- Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes
+- A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.
+- USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status
+- The documentation is now included as an offline page with the installer.
+  - Additionally, the documentation is now integrated directly into the application. You can access it by clicking the question mark icon in the lower-left corner, instead of opening it in a browser window.
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
@@ -28,6 +40,43 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area
 - Alpaca devices that are no longer responding are now properly recognized and disconnected
 - Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.
+- Offline Sky Cache will now always find the relevant tiles for small field of views.
+- Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
+- An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
+- Removed an unnecessary 5 seconds delay after executing an external script
+
+## Plugin Development
+### New Feature: `IMessageBroker` Interface
+#### Introduction of `IMessageBroker` Interface:
+  - A new `IMessageBroker` interface has been added to facilitate inter-plugin communication.
+  - This interface allows plugins to publish and subscribe to messages of type `NINA.Plugin.Interfaces.IMessage`.
+  - Promotes loose coupling between plugins by allowing them to communicate without direct references to each other.
+
+#### Publishing Messages:
+- Plugins can now inject the IMessageBroker interface to publish messages.
+- Messages can carry various metadata, including:
+  - SenderId: The unique identifier of the sender plugin.
+  - Sender: The name of the sender plugin.
+  - SentAt: The UTC timestamp when the message was sent.
+  - MessageId: A unique identifier for each message.
+  - Topic: The topic or intent of the message.
+  - Content: The generic body of the message.
+  - Additional metadata such as Priority, Expiration, CorrelationId, and custom headers.
+
+#### Subscribing to Messages:
+- Plugins can subscribe to specific message topics via the `IMessageBroker`.
+- When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.
+
+### Event Additions
+- Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)
+
+### Platesolve Measurements
+- The CenteringSolver's substeps, which were previously opaque, are now measured individually.
+- Results of these measurements are provided via `Measurement` data structure alongside the plate solve result.
+
+### New Control "Browser"
+- NINA.WPF.Base now includes the dependencies to [WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
+- Using this dependency you can embed a browser into the application
 
 # Version 3.0
 
@@ -107,7 +156,7 @@ Rotation values in N.I.N.A. have been updated to use the counter-clockwise notat
 ### Flat Wizard screen
 - The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.
 - Additionally it is now possible to specify a camera offset
-- A step size is no longer required. The algorithm will now initiate at (Min+Max/2) and continually halve to determine the optimal exposure time.
+- A step size is no longer required. The algorithm will now initiate at ((Min+Max)/2) and continually halve to determine the optimal exposure time.
 - The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, darks become redundant.
 - Internally the flat wizard will now use the new advanced sequencer instructions
 - The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time

@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace NINA.WPF.Base.Model.FramingAssistant {
 
-    public class FrameLineMatrix2 {
+    public class FrameLineMatrix2 : IDisposable {
         private const double MAXDEC = 89.999;
         private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
         private static Font gridAnnotationFont = new Font("Segoe UI", 7, System.Drawing.FontStyle.Italic);
@@ -32,7 +32,8 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
         private object lockObj = new object();
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private double resolution;
-        private List<double> STEPSIZES = new List<double>() { 1, 2, 4, 12, 20 };
+        private List<double> RA_STEPSIZES = new List<double>() { 1.25, 2.5, 3.75, 7.5, 15 };
+        private List<double> DEC_STEPSIZES = new List<double>() { 0.5, 1, 2, 4, 12, 20 };
 
         public FrameLineMatrix2() {
             RAPoints = new List<FrameLine>();
@@ -50,41 +51,19 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
                 RAPoints.Clear();
                 DecPoints.Clear();
 
-                var raMin = nfmod(viewport.CalcRAMin - viewport.CalcRAMin % currentRAStep - currentRAStep, 360);
-                var raMax = nfmod(viewport.CalcRAMax - viewport.CalcRAMax % currentRAStep + currentRAStep, 360);
-                if (viewport.HFoVDeg == 360) {
-                    raMin = 0;
-                    raMax = 360 - currentRAStep;
+                for(double ra = 0; ra < 360; ra += currentRAStep) {
+                    if(currentViewport.ContainsCoordinates(ra, currentViewport.CenterCoordinates.Dec)) {
+                        CalculateRAPoints(ra);
+                    }                    
                 }
-
-                if (raMin > raMax) {
-                    for (double ra = 0; ra <= raMax; ra += currentRAStep) {
-                        CalculateRAPoints(ra);
-                    }
-                    for (double ra = raMin; ra < 360; ra += currentRAStep) {
-                        CalculateRAPoints(ra);
-                    }
-                } else {
-                    for (double ra = raMin; ra <= raMax; ra += currentRAStep) {
-                        CalculateRAPoints(ra);
-                    }
-                }
-
-                var currentMinDec = Math.Max(-MAXDEC, Math.Min(viewport.CalcTopDec, viewport.CalcBottomDec));
-                var currentMaxDec = Math.Min(MAXDEC, Math.Max(viewport.CalcTopDec, viewport.CalcBottomDec));
-
-                if (currentMaxDec > 0) {
-                    var start = Math.Max(0, Math.Max(0, currentMinDec) % currentDecStep - currentDecStep);
-                    for (double dec = start; dec <= currentMaxDec; dec += currentDecStep) {
+                for (double dec = 0; dec < MAXDEC; dec += currentDecStep) {
+                    if (currentViewport.ContainsCoordinates(currentViewport.CenterCoordinates.RADegrees, dec)) {
                         CalculateDecPoints(dec);
                     }
-                }
-
-                if (currentMinDec < 0) {
-                    var start = Math.Min(0, Math.Min(0, currentMinDec) % currentDecStep + currentDecStep);
-                    for (double dec = start; dec >= currentMinDec; dec -= currentDecStep) {
-                        CalculateDecPoints(dec);
+                    if (currentViewport.ContainsCoordinates(currentViewport.CenterCoordinates.RADegrees, -dec)) {
+                        CalculateDecPoints(-dec);
                     }
+                        
                 }
             }
         }
@@ -226,13 +205,28 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
         }
 
         private void DetermineStepSizes() {
-            var decStep = currentViewport.VFoVDeg / 4d;
-            decStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
+            var decStep = currentViewport.VFoV / 4d;
+            decStep = DEC_STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
 
-            var raStep = currentViewport.HFoVDeg / 4d;
-            raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
 
-            resolution = Math.Min(raStep, decStep) / 4;
+            // The higher the absolute declination, the less RA steps are required
+            double originalMin = 0d;
+            double originalMax = 90d;
+            double targetMin = 1d;
+            double targetMax = 15d;
+            double ratio = (Math.Abs(currentViewport.CenterCoordinates.Dec) - originalMin) / (originalMax - originalMin);
+            double adjustedRatio = Math.Pow(ratio, 4);
+            double decFactor = Math.Round(adjustedRatio * (targetMax - targetMin) + targetMin);
+
+            var raStep = currentViewport.HFoV / 4d * Math.Round(decFactor);
+            raStep = RA_STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
+
+            // Limit the raStep when the pole is in view
+            if (currentViewport.ContainsCoordinates(new Coordinates(Angle.ByDegree(0), Angle.ByDegree(MAXDEC), Epoch.J2000)) || currentViewport.ContainsCoordinates(new Coordinates(Angle.ByDegree(0), Angle.ByDegree(-MAXDEC), Epoch.J2000))) {
+                raStep = 15d;
+            }
+
+            resolution = Math.Min(raStep, decStep) / 4d;
 
             if (currentRAStep != raStep) {
                 currentRAStep = raStep;
@@ -329,6 +323,12 @@ namespace NINA.WPF.Base.Model.FramingAssistant {
         private PointF Project(Coordinates coordinates) {
             var p = coordinates.XYProjection(currentViewport);
             return new PointF((float)p.X, (float)p.Y);
+        }
+
+        public void Dispose() {
+            gridAnnotationBrush.Dispose();
+            gridAnnotationFont.Dispose();
+            gridPen.Dispose();
         }
     }
 }

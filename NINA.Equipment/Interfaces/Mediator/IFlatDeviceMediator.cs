@@ -30,5 +30,20 @@ namespace NINA.Equipment.Interfaces.Mediator {
         Task ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token);
 
         Task OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token);
+
+        event Func<object, EventArgs, Task> Opened;
+        event Func<object, EventArgs, Task> Closed;
+        event Func<object, FlatDeviceBrightnessChangedEventArgs, Task> BrightnessChanged;
+        event Func<object, EventArgs, Task> LightToggled;
+    }
+
+    public class FlatDeviceBrightnessChangedEventArgs : EventArgs {
+        public FlatDeviceBrightnessChangedEventArgs(int from, int to) {
+            From = from;
+            To = to;
+        }
+
+        public int From { get; }
+        public int To { get; }
     }
 }

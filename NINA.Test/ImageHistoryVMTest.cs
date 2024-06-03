@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Utility.AutoFocus;
+using NINA.Core.Enum;
 
 namespace NINA.Test {
 
@@ -35,6 +36,9 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_ConcurrentId_Order_Test() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
+
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
             for (int i = 1; i < 101; i++) {
@@ -48,6 +52,8 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_Value_Test() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
             var hfr = 10.1234;
             var stars = 12323;
@@ -67,6 +73,8 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_LimitedStack_FullConcurrency_Test() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
             for (int i = 0; i < 300; i++) {
@@ -82,6 +90,8 @@ namespace NINA.Test {
 
         [Test]
         public void ImageHistory_ClearPlot_Test() {
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryLeftSelected).Returns(ImageHistoryEnum.HFR);
+            profileServiceMock.SetupGet(x => x.ActiveProfile.ImageHistorySettings.ImageHistoryRightSelected).Returns(ImageHistoryEnum.Stars);
             var sut = new ImageHistoryVM(profileServiceMock.Object, imageSaveMediatorMock.Object);
 
             for (int i = 0; i < 100; i++) {

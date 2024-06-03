@@ -174,11 +174,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     IsParkingOrHoming = false;
                     progress?.Report(new ApplicationStatus { Status = string.Empty });
                 }
-
-                if (result) {
-                    Logger.Trace("Telescope has parked");
-                }
             });
+
+            if (result) {
+                Logger.Info("Telescope has parked");
+                await (Parked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error("Telescope failed to park");
+            }
 
             return result;
         }
@@ -264,16 +267,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     success = true;
                 }
             });
-
+            if (success) {
+                Logger.Info("Telescope has unparked");
+                await (Unparked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error("Telescope failed to unpark");
+            }
             return success;
         }
 
         public async Task<bool> FindHome(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool success = false;
             Logger.Info("Telescope ordered to locate home position");
+            string reason = string.Empty;
 
             await Task.Run(async () => {
-                string reason = string.Empty;
                 IsParkingOrHoming = true;
 
                 if (Telescope.Connected) {
@@ -324,13 +332,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         reason = "it is not capable of doing so";
                     }
                 }
-
-                if (success) {
-                    Logger.Trace("Telescope has located its home position");
-                } else {
-                    Logger.Error($"Telescope cannot locate home because {reason}");
-                }
             });
+
+            if (success) {
+                Logger.Info("Telescope has located its home position");
+                await (Homed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error($"Telescope cannot locate home because {reason}");
+            }
 
             return success;
         }
@@ -934,6 +943,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         domeSyncTask,
                         waitForUpdate);
                     BroadcastTelescopeInfo();
+                    await (Slewed?.InvokeAsync(this, new MountSlewedEventArgs(from: position, to: coords)) ?? Task.CompletedTask);
                     return true;
                 } else {
                     Logger.Warning("Telescope is not connected to slew");
@@ -1068,6 +1078,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public event Func<object, EventArgs, Task> Connected;
         public event Func<object, EventArgs, Task> Disconnected;
+        public event Func<object, EventArgs, Task> Parked;
+        public event Func<object, EventArgs, Task> Unparked;
+        public event Func<object, EventArgs, Task> Homed;
+        public event Func<object, MountSlewedEventArgs, Task> Slewed;
 
         public AsyncObservableCollection<TrackingMode> SupportedTrackingModes {
             get => supportedTrackingModes;

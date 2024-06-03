@@ -40,6 +40,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using NINA.WPF.Base.View;
 
 namespace NINA.ViewModel {
 
@@ -134,7 +135,17 @@ namespace NINA.ViewModel {
 
         [RelayCommand]
         private void OpenManual() {
-            System.Diagnostics.Process.Start(new ProcessStartInfo(CoreUtil.DocumentationPage) { UseShellExecute = true });
+            Browser browser = new Browser();
+            browser.MinWidth = 1280;
+            browser.MinHeight = 720;
+            if(File.Exists(CoreUtil.DocumentationLocalPage)) {
+                browser.Source = new Uri(CoreUtil.DocumentationLocalPage);
+            } else {
+                browser.Source = new Uri(CoreUtil.DocumentationPage);
+            }
+            browser.Margin = new Thickness(2,0,2,2);
+            var service = new WindowServiceFactory().Create();
+            service.Show(browser, Title + " - " + Loc.Instance["LblDocumentation"], ResizeMode.CanResize, WindowStyle.ToolWindow);
         }
 
         [RelayCommand]

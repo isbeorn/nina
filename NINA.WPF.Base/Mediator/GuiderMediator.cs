@@ -84,5 +84,15 @@ namespace NINA.WPF.Base.Mediator {
             add { this.handler.AfterDither += value; }
             remove { this.handler.AfterDither -= value; }
         }
+
+        public event Func<object, EventArgs, Task> GuidingStarted {
+            add { this.handler.GuidingStarted += value; }
+            remove { this.handler.GuidingStarted -= value; }
+        }
+
+        public event Func<object, EventArgs, Task> GuidingStopped {
+            add { this.handler.GuidingStopped += value; }
+            remove { this.handler.GuidingStopped -= value; }
+        }
     }
 }
