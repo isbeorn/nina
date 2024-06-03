@@ -28,6 +28,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes
 - A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.
 - USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status
+- On Camera Download Failed the gain and filter is now displayed properly when using default gain values and current filter input
 - The documentation is now included as an offline page with the installer.
   - Additionally, the documentation is now integrated directly into the application. You can access it by clicking the question mark icon in the lower-left corner, instead of opening it in a browser window.
 
