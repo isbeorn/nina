@@ -226,6 +226,23 @@ namespace NINA.Core.Utility.ColorSchema {
                 NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFA9AAAC"),
             });
             schemas.Items.Add(new ColorSchema() {
+                Name = "Slate",
+                PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFB0B3B9"),
+                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF32555E"),
+                BorderColor = (Color)ColorConverter.ConvertFromString("#FF3F4141"),
+                BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF1E2129"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF14151A"),
+                TertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF2C2F38"),
+                ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF163647"),
+                ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF32555E"),
+                ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
+            });
+            schemas.Items.Add(new ColorSchema() {
                 Name = "Wisteria",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF6644AD"),
