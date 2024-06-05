@@ -97,6 +97,44 @@
         </Setter>
     </Style>
 
+    <Style x:Key="BackgroundToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border
+                        x:Name="border"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="1">
+                            <Grid>
+                                <ContentPresenter
+                                    x:Name="MyContentPresenter"
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{TemplateBinding Content}" />
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="AvalonSideBarToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
