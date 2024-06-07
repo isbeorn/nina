@@ -56,12 +56,12 @@
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"
                                         Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
+                                        Text="{Binding Source={x:Static coreutil:CoreUtil.Title}}" />
                                     <TextBlock
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"
                                         Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.AppVM.Version}" />
+                                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}}" />
                                     <TextBlock
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"

@@ -32,6 +32,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The documentation is now included as an offline page with the installer.
   - Additionally, the documentation is now integrated directly into the application. You can access it by clicking the book icon in the lower-left corner, instead of opening it in a browser window.
   - Furthermore some sections of the application now offer a direct popup to their respective section in the manual by clicking the book icon
+- The application version number is now shown in the title bar of a notification. Furthermore the notification window size is slightly increased in width.
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
