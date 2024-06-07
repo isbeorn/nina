@@ -381,7 +381,7 @@ namespace NINA.ViewModel.Imaging {
                     seq.ProgressExposureCount = count;
                     seq.TotalExposureCount = count + 1;
 
-                    var exposureData = await imagingMediator.CaptureImage(seq, _captureImageToken.Token, progress, snapTargetName);
+                    var exposureData = await imagingMediator.CaptureImage(seq, _captureImageToken.Token, progress, SnapTargetName);
                     count++;
 
                     if (exposureData == null) {

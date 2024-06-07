@@ -353,7 +353,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         if (connected) {
                             CoolerHistory.Clear();
                             CoolerHistoryMax = 20;
-                            coolerHistoryMin = -20;
+                            CoolerHistoryMin = -20;
                             this.Cam = cam;
 
                             if (DefaultGain == -1) {
