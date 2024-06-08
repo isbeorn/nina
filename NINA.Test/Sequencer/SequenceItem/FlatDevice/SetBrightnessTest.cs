@@ -95,6 +95,35 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
         }
 
         [Test]
+        public async Task Execute_BrightnessUnderMinimum() {
+            fdMediatorMock.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo() { Connected = true, SupportsOpenClose = false, MinBrightness = 10, MaxBrightness = 100, Brightness = 10 }); 
+   
+            // set brightness to 5 and verify no exception is thrown
+            var sut = new SetBrightness(fdMediatorMock.Object);
+            sut.Brightness = 5;
+            // this execution should not throw an exception
+            await sut.Execute(default, default);
+
+            fdMediatorMock.Verify(x => x.SetBrightness(It.Is<int>(b => b == sut.Brightness), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Execute_BrightnessOverMaximum() {
+            fdMediatorMock.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo() { Connected = true, SupportsOpenClose = false, MinBrightness = 10, MaxBrightness = 100, Brightness = 100 });
+
+            // set brightness to 5 and verify no exception is thrown
+            var sut = new SetBrightness(fdMediatorMock.Object);
+            sut.Brightness = 105;
+            // this execution should not throw an exception
+            await sut.Execute(default, default);
+
+            fdMediatorMock.Verify(x => x.SetBrightness(It.Is<int>(b => b == sut.Brightness), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
+
+        }
+
+
+        [Test]
         [TestCase(false, false)]
         [TestCase(false, true)]
         [TestCase(true, false)]

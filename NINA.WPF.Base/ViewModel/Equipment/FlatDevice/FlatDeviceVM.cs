@@ -139,7 +139,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             return Task.Run(async () => {
                 try {
                     var from = FlatDeviceInfo.Brightness;
-                    if (value < FlatDevice.MinBrightness) {
+                    /* a value of 0 now indicates turning the device off */
+                    if (value > 0 && value < FlatDevice.MinBrightness) {
                         value = FlatDevice.MinBrightness;
                     }
                     if (value > FlatDevice.MaxBrightness) {
