@@ -47,6 +47,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
 - An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
 - Removed an unnecessary 5 seconds delay after executing an external script
+- Autofocus runs with current Profile-ID are now shown after changing the profile
 
 ## Plugin Development
 ### New Feature: `IMessageBroker` Interface
