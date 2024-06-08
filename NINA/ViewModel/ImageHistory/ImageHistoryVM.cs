@@ -313,6 +313,7 @@ namespace NINA.ViewModel.ImageHistory {
             ImageHistory.Clear();
             index = 0;
             _exposureId = 0;
+            Logger.Info("Image history has been cleared");
         }
 
         public void PlotSave() {
@@ -328,6 +329,7 @@ namespace NINA.ViewModel.ImageHistory {
                         csv.WriteRecords(ObservableImageHistory);
                     }
                 }
+                Logger.Info($"Image history has been saved to {sfd.FileName}");
             }
         }
 
