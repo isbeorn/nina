@@ -6971,12 +6971,12 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Zostało wydane polecenie otwarcia przesłony lub dachu, ale urządzenie monitorujące bezpieczeństwo zostało odłączone. Otwieranie zostało przerwane.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Polecenie zewnętrzne</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>Polecenie zewnętrzne nie mogło zostać pomyślnie uruchomione</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>Zewnętrzne polecenie nie zostało znalezione w '{0}'</value>
   </data>
 </root>

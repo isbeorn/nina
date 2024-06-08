@@ -6948,12 +6948,12 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>シャッターまたは屋根を開くように命令されましたが、安全な状態ではないとセーフティモニター装置が報告しています。開放は中止されました。</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>外部コマンド</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>外部コマンドは正常に実行できませんでした</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>外部コマンドが'{0}'で見つかりませんでした</value>
   </data>
 </root>
