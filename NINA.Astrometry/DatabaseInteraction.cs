@@ -26,6 +26,7 @@ using NINA.Core.Utility.Extensions;
 using System.Text.RegularExpressions;
 using NINA.Core.Model;
 using NINA.Core.Database;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Astrometry {
 
@@ -256,8 +257,16 @@ namespace NINA.Astrometry {
             return null;
         }
 
-        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
+        public Task<List<DeepSkyObject>> GetDeepSkyObjects(
             string imageRepository,
+            CustomHorizon horizon,
+            DeepSkyObjectSearchParams searchParams,
+            CancellationToken token) {
+            return GetDeepSkyObjects(null as Func<SkyObjectBase, Task<BitmapSource>>, horizon, searchParams, token);
+        }
+
+        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
+            Func<SkyObjectBase, Task<BitmapSource>> imageFactory,
             CustomHorizon horizon,
             DeepSkyObjectSearchParams searchParams,
             CancellationToken token) {
@@ -366,7 +375,7 @@ namespace NINA.Astrometry {
                         foreach (var row in dsoResult) {
                             var id = row.id;
                             var coords = new Coordinates(row.ra, row.dec, Epoch.J2000, Coordinates.RAType.Degrees);
-                            var dso = new DeepSkyObject(row.id, coords, imageRepository, horizon);
+                            var dso = new DeepSkyObject(row.id, coords, imageFactory, horizon);
 
                             dso.DSOType = row.dsotype;
 

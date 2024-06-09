@@ -16,6 +16,7 @@ using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.ViewModel.Sequencer;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -47,5 +48,8 @@ namespace NINA.Sequencer.Interfaces.Mediator {
         Task StartAdvancedSequence(bool skipValidation);
         void CancelAdvancedSequence();
         bool IsAdvancedSequenceRunning();
+
+        event Func<object, EventArgs, Task> SequenceStarting;
+        event Func<object, EventArgs, Task> SequenceFinished;
     }
 }

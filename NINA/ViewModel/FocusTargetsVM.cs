@@ -84,7 +84,7 @@ namespace NINA.ViewModel {
         }
 
         private void CalculateVisibleStars() {
-            var selectedBrightStarName = selectedFocusTarget?.Name;
+            var selectedBrightStarName = SelectedFocusTarget?.Name;
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             foreach (var target in allFocusTargets) {

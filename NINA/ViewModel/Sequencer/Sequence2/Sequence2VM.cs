@@ -54,6 +54,7 @@ using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Trigger.Autofocus;
 using NINA.Equipment.Equipment.MyCamera;
 using System.ComponentModel;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -98,6 +99,9 @@ namespace NINA.ViewModel.Sequencer {
             SkipCurrentItemCommand = new AsyncCommand<bool>(SkipCurrentItem);
             SkipToEndOfSequenceCommand = new AsyncCommand<bool>(SkipToEndOfSequence);
         }
+
+        public event Func<object, EventArgs, Task> SequenceStarting;
+        public event Func<object, EventArgs, Task> SequenceFinished;
 
         private string savePath = string.Empty;
         public string SavePath {
@@ -466,6 +470,7 @@ namespace NINA.ViewModel.Sequencer {
             }
             cts?.Dispose();
             cts = new CancellationTokenSource();
+            var token = cts.Token;
             IsRunning = true;
             TaskBarProgressState = TaskbarItemProgressState.Normal;
             try {
@@ -477,15 +482,17 @@ namespace NINA.ViewModel.Sequencer {
                 Sequencer.MainContainer.Items[1].Status = SequenceEntityStatus.CREATED;
                 Sequencer.MainContainer.Items[2].Status = SequenceEntityStatus.CREATED;
 
-                Logger.Info("Advanced Sequence started");
-                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), cts.Token, skipValidationPrompt);
+                Logger.Info("Advanced Sequence starting");
+                await (SequenceStarting?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), token, skipValidationPrompt);
                 return true;
             } finally {
                 Logger.Info("Advanced Sequence finished");
                 cameraMediator.ReleaseCaptureBlock(this);
                 TaskBarProgressState = TaskbarItemProgressState.None;
                 IsRunning = false;
-                if(commandLineOptions.ExitAfterSequence) {
+                await (SequenceFinished?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                if (commandLineOptions.ExitAfterSequence) {
                     Logger.Info("Quitting application after sequence is finished");
                     Application.Current.Shutdown();
                 }

@@ -42,9 +42,6 @@ namespace NINA.Profile {
             if (!Directory.Exists(SkySurveyCacheDirectory)) {
                 SkySurveyCacheDirectory = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "FramingAssistantCache");
             }
-            if (!Directory.Exists(SkyAtlasImageRepository)) {
-                SkyAtlasImageRepository = string.Empty;
-            }
             if (SelectedPluggableBehaviors == null) {
                 SelectedPluggableBehaviors = new AsyncObservableCollection<KeyValuePair<string, string>>();
             }
@@ -111,6 +108,7 @@ namespace NINA.Profile {
 
         private string skyAtlasImageRepository;
 
+        [Obsolete]
         [DataMember]
         public string SkyAtlasImageRepository {
             get => skyAtlasImageRepository;

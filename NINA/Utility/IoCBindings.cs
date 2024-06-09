@@ -29,6 +29,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
+using NINA.Equipment.Utility;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
@@ -38,6 +39,7 @@ using NINA.PlateSolving;
 using NINA.PlateSolving.Interfaces;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
+using NINA.Plugin.Messaging;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
@@ -93,6 +95,10 @@ namespace NINA.Utility {
                 services.AddSingleton<IApplicationVM, ApplicationVM>();
 
                 services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
+
+                services.AddSingleton<IMessageBroker, MessageBroker>();
+
+                services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 
                 // Equipment Providers
                 services.AddScoped<IEquipmentProviders<ICamera>, PluginEquipmentProviders<ICamera>>();

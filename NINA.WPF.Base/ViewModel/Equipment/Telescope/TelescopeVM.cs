@@ -149,7 +149,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                     } else { // Telescope is incapable of parking. Slew safely to the celestial pole and stop tracking instead
                         Coordinates targetCoords = GetHomeCoordinates(telescopeInfo.Coordinates);
-                        Logger.Trace($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
+                        Logger.Info($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
                         await SlewToCoordinatesAsync(targetCoords, timeoutCts.Token);
 
                         Logger.Trace("Telescope will stop tracking");
@@ -174,11 +174,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     IsParkingOrHoming = false;
                     progress?.Report(new ApplicationStatus { Status = string.Empty });
                 }
-
-                if (result) {
-                    Logger.Trace("Telescope has parked");
-                }
             });
+
+            if (result) {
+                Logger.Info("Telescope has parked");
+                await (Parked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error("Telescope failed to park");
+            }
 
             return result;
         }
@@ -264,16 +267,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     success = true;
                 }
             });
-
+            if (success) {
+                Logger.Info("Telescope has unparked");
+                await (Unparked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error("Telescope failed to unpark");
+            }
             return success;
         }
 
         public async Task<bool> FindHome(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool success = false;
             Logger.Info("Telescope ordered to locate home position");
+            string reason = string.Empty;
 
             await Task.Run(async () => {
-                string reason = string.Empty;
                 IsParkingOrHoming = true;
 
                 if (Telescope.Connected) {
@@ -324,13 +332,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         reason = "it is not capable of doing so";
                     }
                 }
-
-                if (success) {
-                    Logger.Trace("Telescope has located its home position");
-                } else {
-                    Logger.Error($"Telescope cannot locate home because {reason}");
-                }
             });
+
+            if (success) {
+                Logger.Info("Telescope has located its home position");
+                await (Homed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+            } else {
+                Logger.Error($"Telescope cannot locate home because {reason}");
+            }
 
             return success;
         }
@@ -501,7 +510,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             BroadcastTelescopeInfo();
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
@@ -706,8 +715,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateRightAscensionArcsecPerSec), _telescope?.GuideRateRightAscensionArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), _telescope?.GuideRateDeclinationArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.AlignmentMode), _telescope?.AlignmentMode ?? null);
-            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanSetPierSide ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.CanSlew ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanPulseGuide ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.IsPulseGuiding ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.CanSetPierSide), _telescope?.CanSetPierSide ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.CanSlew), _telescope?.CanSlew ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.UTCDate), _telescope?.UTCDate ?? null);
@@ -909,7 +918,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     );
 
                     var position = GetCurrentPosition();
-                    Logger.Info($"Slewing from {position} to {coords}");
+                    Logger.Info($"Slewing from {position} to {coords} - {coords.Transform(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation)}");
 
                     var domeSyncTask = Task.CompletedTask;
                     var domeInfo = this.domeMediator.GetInfo();
@@ -934,6 +943,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         domeSyncTask,
                         waitForUpdate);
                     BroadcastTelescopeInfo();
+                    await (Slewed?.InvokeAsync(this, new MountSlewedEventArgs(from: position, to: coords)) ?? Task.CompletedTask);
                     return true;
                 } else {
                     Logger.Warning("Telescope is not connected to slew");
@@ -1015,24 +1025,38 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 Telescope.TrackingEnabled = tracking;
                 return Telescope.TrackingEnabled;
             } else {
+                Logger.Warning("Cannot enable tracking as the mount is not connected");
                 return false;
             }
         }
 
         public bool SetTrackingMode(TrackingMode trackingMode) {
-            if (Telescope?.Connected == true && !Telescope.AtPark && trackingMode != TrackingMode.Custom) {
-                Telescope.TrackingMode = trackingMode;
-                if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
-                    try {
-                        Telescope.SetCustomTrackingRate(0.0d, 0.0d);
-                    } catch (Exception ex) {
-                        Logger.Debug(ex.Message);
-                    }
-                }
-
-                return Telescope.TrackingMode == trackingMode;
+            if(Telescope?.Connected != true) {
+                Logger.Warning("Cannot set tracking mode as the mount is not connected");
+                return false;
             }
-            return false;
+
+            if(Telescope.AtPark) {
+                Logger.Warning("Cannot set tracking mode as the mount is parked");
+                return false;
+            }
+
+            if(trackingMode == TrackingMode.Custom) {
+                Logger.Warning("Cannot set tracking mode as the tracking rate is custom");
+                return false;
+            }
+
+            
+            Telescope.TrackingMode = trackingMode;
+            if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
+                try {
+                    Telescope.SetCustomTrackingRate(0.0d, 0.0d);
+                } catch (Exception ex) {
+                    Logger.Debug(ex.Message);
+                }
+            }
+
+            return Telescope.TrackingMode == trackingMode;
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
@@ -1046,6 +1070,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                 return true;
             }
+            Logger.Warning("Cannot set custom tracking rate as the mount is not connected");
             return false;
         }
 
@@ -1053,6 +1078,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public event Func<object, EventArgs, Task> Connected;
         public event Func<object, EventArgs, Task> Disconnected;
+        public event Func<object, EventArgs, Task> Parked;
+        public event Func<object, EventArgs, Task> Unparked;
+        public event Func<object, EventArgs, Task> Homed;
+        public event Func<object, MountSlewedEventArgs, Task> Slewed;
 
         public AsyncObservableCollection<TrackingMode> SupportedTrackingModes {
             get => supportedTrackingModes;

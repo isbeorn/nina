@@ -107,5 +107,21 @@ namespace NINA.WPF.Base.Mediator {
         public async Task RaiseAfterMeridianFlip(AfterMeridianFlipEventArgs e) {
             await (AfterMeridianFlip?.InvokeAsync(this, e) ?? Task.CompletedTask);
         }
+        public event Func<object, EventArgs, Task> Parked {
+            add { this.handler.Parked += value; }
+            remove { this.handler.Parked -= value; }
+        }
+        public event Func<object, EventArgs, Task> Unparked {
+            add { this.handler.Unparked += value; }
+            remove { this.handler.Unparked -= value; }
+        }
+        public event Func<object, EventArgs, Task> Homed {
+            add { this.handler.Homed += value; }
+            remove { this.handler.Homed -= value; }
+        }
+        public event Func<object, MountSlewedEventArgs, Task> Slewed {
+            add { this.handler.Slewed += value; }
+            remove { this.handler.Slewed -= value; }
+        }
     }
 }

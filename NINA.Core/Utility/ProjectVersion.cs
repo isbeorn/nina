@@ -11,7 +11,7 @@
 #endregion "copyright"
 using System;
 
-namespace NINA.Utility {
+namespace NINA.Core.Utility {
 
     public class ProjectVersion {
         private Version version;

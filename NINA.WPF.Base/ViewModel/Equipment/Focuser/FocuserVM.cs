@@ -310,7 +310,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         Notification.ShowSuccess(Loc.Instance["LblFocuserConnected"]);
 
                         updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                        updateTimer.Start();
+                        _ = updateTimer.Run();
 
                         TargetPosition = Position;
                         profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;

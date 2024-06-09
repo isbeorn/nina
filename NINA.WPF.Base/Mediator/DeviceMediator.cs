@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using NINA.Core.Utility.Extensions;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
@@ -93,9 +94,16 @@ namespace NINA.WPF.Base.Mediator {
         /// </summary>
         /// <param name="deviceInfo"></param>
         public void Broadcast(TInfo deviceInfo) {
+            List<TConsumer> receivers;
             lock (consumers) {
-                foreach (TConsumer c in consumers) {
+                receivers = new List<TConsumer>(consumers);
+            }
+            
+            foreach (TConsumer c in receivers) {
+                try {
                     c.UpdateDeviceInfo(deviceInfo);
+                } catch (Exception e) {
+                    Logger.Error(e);
                 }
             }
         }

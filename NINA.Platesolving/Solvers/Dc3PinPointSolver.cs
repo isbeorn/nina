@@ -135,7 +135,7 @@ namespace NINA.PlateSolving.Solvers {
                     plateSolveResult.Success = true;
                     plateSolveResult.Coordinates = new Coordinates(pinPoint.RightAscension, pinPoint.Declination, Epoch.J2000, Coordinates.RAType.Hours);
                     plateSolveResult.PositionAngle = pinPoint.PositionAngle;
-                    plateSolveResult.Pixscale = Math.Sqrt(Math.Pow(pinPoint.ArcsecPerPixelHoriz, 2) + Math.Pow(pinPoint.ArcsecPerPixelVert, 2));
+                    plateSolveResult.Pixscale = Math.Abs(pinPoint.ArcsecPerPixelHoriz);
 
                     if (!double.IsNaN(plateSolveResult.Pixscale)) {
                         plateSolveResult.Radius = AstroUtil.ArcsecToDegree(Math.Sqrt(Math.Pow(imageProperties.ImageWidth * plateSolveResult.Pixscale, 2) + Math.Pow(imageProperties.ImageHeight * plateSolveResult.Pixscale, 2)) / 2d);
@@ -145,6 +145,7 @@ namespace NINA.PlateSolving.Solvers {
                 return plateSolveResult;
             } catch (Exception ex) {
                 Notification.ShowExternalError(ex.Message, Loc.Instance["LblPinPointErrorMessage"]);
+                Logger.Error($"PinPoint failed to solve: {ex.GetType().Name}: {ex.Message}");
                 return plateSolveResult;
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

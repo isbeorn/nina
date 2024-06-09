@@ -56,7 +56,8 @@
                             HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
                             RefreshCommand="{Binding RescanDevicesCommand}"
                             SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
-                            SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}" />
+                            SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
+                            SetupDialogOpen="{Binding DeviceChooserVM.SetupDialogOpen}" />
                     </Grid>
                 </GroupBox.Header>
                 <Grid>
@@ -576,6 +577,22 @@
                                                 MinValue="0"
                                                 StepSize="1"
                                                 Value="{Binding FanSpeed, Mode=TwoWay}" />
+                                        </DockPanel>
+                                        <DockPanel Margin="0,0,0,6" Visibility="{Binding CanSetLEDLights, Converter={StaticResource VisibilityConverter}}">
+                                            <TextBlock
+                                                MinWidth="100"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblLEDLights}" />
+                                            <CheckBox
+                                                Width="200"
+                                                HorizontalAlignment="Right"
+                                                IsChecked="{Binding LEDLights}">
+                                                <CheckBox.ToolTip>
+                                                    <ToolTip>
+                                                        <TextBlock Text="{ns:Loc LblLEDLightsTooltop}" />
+                                                    </ToolTip>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
                                         </DockPanel>
                                     </StackPanel>
                                 </DataTemplate>
@@ -1106,7 +1123,7 @@
                                         MinWidth="120"
                                         IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         MaxValue="50"
-                                        MinValue="-50"
+                                        MinValue="-200"
                                         StepSize="1"
                                         Value="{Binding TargetTemp, Mode=TwoWay}">
                                         <ninactrl:StepperControl.InnerContent>

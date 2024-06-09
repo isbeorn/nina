@@ -25,6 +25,7 @@ using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Model.Equipment;
+using System.Collections.Generic;
 
 namespace NINA.PlateSolving {
 
@@ -50,10 +51,15 @@ namespace NINA.PlateSolving {
 
         public ICaptureSolver CaptureSolver { get; set; }
 
+        public async Task<CenteringSolveResult> CenterWithMeasurements(CaptureSequence seq, CenterSolveParameter parameter, IProgress<PlateSolveProgress> solveProgress, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return await Center(seq, parameter, solveProgress, progress, ct) as CenteringSolveResult;
+        }
+
         public async Task<PlateSolveResult> Center(CaptureSequence seq, CenterSolveParameter parameter, IProgress<PlateSolveProgress> solveProgress, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             if (parameter?.Coordinates == null) { throw new ArgumentException(nameof(CenterSolveParameter.Coordinates)); }
             if (parameter?.Threshold <= 0) { throw new ArgumentException(nameof(CenterSolveParameter.Threshold)); }
 
+            var startTime = DateTimeOffset.UtcNow;
             FilterInfo oldFilter = null;
             if (seq.FilterType != null) {
                 oldFilter = filterWheelMediator.GetInfo()?.SelectedFilter;
@@ -61,16 +67,24 @@ namespace NINA.PlateSolving {
             }
 
             try {
+                List<CenteringMeasurement> centeringAttempts = new List<CenteringMeasurement>();
                 var centered = false;
                 var maxSlewAttempts = 10;
                 PlateSolveResult result;
                 Separation offset = new Separation();
                 do {
+                    var centeringAttempt = new CenteringMeasurement();
+                    centeringAttempts.Add(centeringAttempt);
+
                     maxSlewAttempts--;
-                                        
+
+                    var solveMeasurement = new Measurement("CaptureAndSolve").Start();
                     result = await CaptureSolver.Solve(seq, parameter, solveProgress, progress, ct);
+                    centeringAttempt.AddSolveResult(result);
+                    centeringAttempt.AddSubMeasurement(solveMeasurement.Stop());
 
                     if (result.Success == false) {
+                        centeringAttempt.Stop();
                         //Solving failed. Give up.
                         break;
                     }
@@ -87,6 +101,8 @@ namespace NINA.PlateSolving {
                     solveProgress?.Report(new PlateSolveProgress() { PlateSolveResult = result });
 
                     if (Math.Abs(result.Separation.Distance.ArcMinutes) > parameter.Threshold) {
+                        var syncMeasurement = new Measurement("Sync").Start();
+
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceSyncing"] });
                         if (parameter.NoSync || !await telescopeMediator.Sync(resultCoordinates)) {
                             var oldOffset = offset;
@@ -96,45 +112,54 @@ namespace NINA.PlateSolving {
                         } else {
                             var positionAfterSync = telescopeMediator.GetCurrentPosition();
 
-                        // If Sync affects the scope position by at least 1 arcsecond, then continue iterating without
-                        // using an offset
-                        var syncEffect = positionAfterSync - position;
-                        if (Math.Abs(syncEffect.Distance.ArcSeconds) < 1.0d) {
-                            var syncDistance = positionAfterSync - resultCoordinates;
-                            offset = syncDistance;
-                            Logger.Warning($"Sync failed silently - calculating offset instead to compensate.  Position after sync: {positionAfterSync}; Solved: {resultCoordinates}; New Offset: {offset}");
-                        } else {
-                            // Sync worked - reset offset
-                            Logger.Debug($"Synced sucessfully. Position after sync: {positionAfterSync}");
-                            offset = new Separation();
+                            // If Sync affects the scope position by at least 1 arcsecond, then continue iterating without
+                            // using an offset
+                            var syncEffect = positionAfterSync - position;
+                            if (Math.Abs(syncEffect.Distance.ArcSeconds) < 1.0d) {
+                                var syncDistance = positionAfterSync - resultCoordinates;
+                                offset = syncDistance;
+                                Logger.Warning($"Sync failed silently - calculating offset instead to compensate.  Position after sync: {positionAfterSync}; Solved: {resultCoordinates}; New Offset: {offset}");
+                            } else {
+                                // Sync worked - reset offset
+                                Logger.Debug($"Synced sucessfully. Position after sync: {positionAfterSync}");
+                                offset = new Separation();
+                            }
+
+                            centeringAttempt.AddSubMeasurement(syncMeasurement.Stop());
                         }
-                    }
 
                         var scopePosition = telescopeMediator.GetCurrentPosition();
                         Logger.Info($"Slewing to target after sync. Current Position: {scopePosition}; Target coordinates: {parameterCoordinates}; Offset {offset}");
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceReslew"] });
 
+                        var slewMeasurement = new Measurement("Reslew").Start();
                         await telescopeMediator.SlewToCoordinatesAsync(parameterCoordinates + offset, ct);
+                        slewMeasurement.Stop();
+                        centeringAttempt.AddSubMeasurement(slewMeasurement);
+
                         var domeInfo = domeMediator.GetInfo();
                         if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {
+                            var domeSyncMeasurement = new Measurement("DomeSync").Start();
                             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSynchronizingDome"] });
                             Logger.Info($"Centering Solver - Synchronize dome to scope since dome following is not enabled");
                             if (!await domeFollower.TriggerTelescopeSync()) {
                                 Notification.ShowWarning(Loc.Instance["LblDomeSyncFailureDuringCentering"]);
                                 Logger.Warning("Centering Solver - Synchronize dome operation didn't complete successfully. Moving on");
                             }
+                            centeringAttempt.AddSubMeasurement(domeSyncMeasurement.Stop());
                         }
 
                         progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPlateSolveNotInsideToleranceRepeating"] });
                     } else {
                         centered = true;
                     }
+                    centeringAttempt.Stop();
                 } while (!centered && maxSlewAttempts > 0);
                 if (!centered && maxSlewAttempts <= 0) {
                     result.Success = false;
                     Logger.Error("Cancelling centering after 10 unsuccessful slew attempts");
                 }
-                return result;
+                return new CenteringSolveResult(result, seq, startTime, DateTimeOffset.UtcNow, centeringAttempts);
             } finally {
                 if (oldFilter != null) {
                     Logger.Info($"Restoring filter to {oldFilter} after centering");
@@ -145,6 +170,41 @@ namespace NINA.PlateSolving {
                     await filterWheelMediator.ChangeFilter(oldFilter, timeoutCts.Token, progress);
                 }
             }
+        }
+    }
+
+    public class CenteringSolveResult : PlateSolveResult {
+        private List<CenteringMeasurement> attempts;
+        public CenteringSolveResult(PlateSolveResult result, CaptureSequence captureSequence, DateTimeOffset startTime, DateTimeOffset endTime, List<CenteringMeasurement> attempts) : base(result.SolveTime) {
+            this.Coordinates = result.Coordinates;
+            this.Flipped = result.Flipped;
+            this.Pixscale = result.Pixscale;
+            this.PositionAngle = result.PositionAngle;
+            this.Radius = result.Radius;
+            this.Separation = result.Separation;
+            this.Success = result.Success;
+
+            this.StartTime = startTime;
+            this.EndTime = endTime;
+            this.CaptureSequence = captureSequence;
+            this.attempts = attempts;
+        }
+
+        public IReadOnlyCollection<CenteringMeasurement> Attempts { get => attempts.AsReadOnly(); }
+        public CaptureSequence CaptureSequence { get; set; }
+        public DateTimeOffset StartTime { get; }
+        public DateTimeOffset EndTime { get; set; }
+        public TimeSpan Duration => EndTime - StartTime;
+    }
+
+    public class CenteringMeasurement : Measurement {
+        public CenteringMeasurement() : base("Centering") {
+        }
+
+        public PlateSolveResult PlateSolveResult { get; private set; }
+
+        public void AddSolveResult(PlateSolveResult result) {
+            PlateSolveResult = result;
         }
     }
 }

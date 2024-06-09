@@ -249,7 +249,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 GetIterations().ResetProgress();
 
                 Logger.Info($"Determining Dynamic Exposure Time. Min {MinBrightness}, Max {MaxBrightness}, Exposure {GetExposureItem().ExposureTime}, Target {HistogramTargetPercentage * 100}%, Tolerance {HistogramTolerancePercentage * 100}%");
-                var brightness = await DetermineBrightness(MinBrightness, MaxBrightness, MinBrightness, MaxBrightness, 0, localProgress, token);
+                var brightness = await DetermineBrightness(MinBrightness, MaxBrightness, localProgress, token);
 
                 if (brightness < 0) {
                     throw new SequenceEntityFailedException("Failed to determine brightness for flats");
@@ -294,65 +294,71 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private async Task<int> DetermineBrightness(int initialMin, int initialMax, int currentMin, int currentMax, int iterations, IProgress<ApplicationStatus> progress, CancellationToken ct) {            
-            if (iterations >= 20) {
-                if (Math.Abs(initialMax - currentMin) <= 0) {
-                    throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim"]);
-                } else {
-                    throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright"]);
+        private async Task<int> DetermineBrightness(int initialMin, int initialMax, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            var currentMin = initialMin;
+            var currentMax = initialMax;
+            for (var iterations = 0; iterations <= 20; iterations++) {
+                var brightness = (int)Math.Round((currentMax + currentMin) / 2d);
+
+                if (Math.Abs(brightness - initialMin) <= 0 || Math.Abs(brightness - initialMax) <= 0) {
+                    // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
+                    iterations = 20;
+                }
+
+                progress?.Report(new ApplicationStatus() {
+                    Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness"], brightness, iterations, 20),
+                    Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name"]
+                });
+
+                var setBrightnes = GetSetBrightnessItem();
+                setBrightnes.ResetProgress();
+                setBrightnes.Brightness = brightness;
+                await setBrightnes.Run(progress, ct);
+
+                var sequence = new CaptureSequence(GetExposureItem().ExposureTime, CaptureSequence.ImageTypes.FLAT, GetSwitchFilterItem().Filter, GetExposureItem().Binning, 1) { Gain = GetExposureItem().Gain, Offset = GetExposureItem().Offset };
+
+                var image = await imagingMediator.CaptureImage(sequence, ct, progress);
+
+                var imageData = await image.ToImageData(progress, ct);
+                var prepTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
+                await prepTask;
+                var statistics = await imageData.Statistics;
+
+                var mean = statistics.Mean;
+
+                var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
+
+                DeterminedHistogramADU = mean;
+
+                switch (check) {
+                    case HistogramMath.ExposureAduState.ExposureWithinBounds:
+                        // Go ahead and save the exposure, as it already fits the parameters
+                        FillTargetMetaData(imageData.MetaData);
+                        await imageSaveMediator.Enqueue(imageData, prepTask, progress, ct);
+
+                        Logger.Info($"Found brightness at panel brightness {brightness} with histogram ADU {mean}");
+                        progress?.Report(new ApplicationStatus() {
+                            Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness"], brightness),
+                        });
+                        return brightness;
+                    case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
+                        Logger.Info($"Exposure too dim at panel brightness {brightness}. Retrying with higher exposure time");
+                        currentMin = brightness;
+                        break;
+                    case HistogramMath.ExposureAduState:
+                        Logger.Info($"Exposure too bright at panel brightness {brightness}s. Retrying with lower exposure time");
+                        currentMax = brightness;
+                        break;
                 }
             }
 
-            var brightness = (int)Math.Round((currentMax + currentMin) / 2d);
-
-            if (Math.Abs(brightness - initialMin) <= 0 || Math.Abs(brightness - initialMax) <= 0) {
-                // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
-                iterations = 20;
+            if (Math.Abs(initialMax - currentMin) <= 0) {
+                throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim"]);
+            } else {
+                throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright"]);
             }
 
-            progress?.Report(new ApplicationStatus() {
-                Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness"], brightness, iterations, 20),
-                Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name"]
-            });
-
-            var setBrightnes = GetSetBrightnessItem();
-            setBrightnes.ResetProgress();
-            setBrightnes.Brightness = brightness;
-            await setBrightnes.Run(progress, ct);
-
-            var sequence = new CaptureSequence(GetExposureItem().ExposureTime, CaptureSequence.ImageTypes.FLAT, GetSwitchFilterItem().Filter, GetExposureItem().Binning, 1) { Gain = GetExposureItem().Gain, Offset = GetExposureItem().Offset };
-
-            var image = await imagingMediator.CaptureImage(sequence, ct, progress);
-
-            var imageData = await image.ToImageData(progress, ct);
-            var prepTask = imagingMediator.PrepareImage(imageData, new PrepareImageParameters(true, false), ct);
-            await prepTask;
-            var statistics = await imageData.Statistics;
-
-            var mean = statistics.Mean;
-
-            var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
-
-            DeterminedHistogramADU = mean;
-
-            switch (check) {
-                case HistogramMath.ExposureAduState.ExposureWithinBounds:
-                    // Go ahead and save the exposure, as it already fits the parameters
-                    FillTargetMetaData(imageData.MetaData);
-                    await imageSaveMediator.Enqueue(imageData, prepTask, progress, ct);
-
-                    Logger.Info($"Found brightness at panel brightness {brightness} with histogram ADU {mean}");
-                    progress?.Report(new ApplicationStatus() {
-                        Status = string.Format(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness"], brightness),
-                    });
-                    return brightness;
-                case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
-                    Logger.Info($"Exposure too dim at panel brightness {brightness}. Retrying with higher exposure time");
-                    return await DetermineBrightness(initialMin, initialMax, brightness, currentMax, ++iterations, progress, ct);
-                case HistogramMath.ExposureAduState:
-                    Logger.Info($"Exposure too bright at panel brightness {brightness}s. Retrying with lower exposure time");
-                    return await DetermineBrightness(initialMin, initialMax, currentMin, brightness, ++iterations, progress, ct);
-            }
+            
         }
         private void FillTargetMetaData(ImageMetaData metaData) {
             var dsoContainer = RetrieveTarget(this.Parent);
@@ -407,30 +413,24 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private int minExposure;
+        private int minBrightness;
 
         [JsonProperty]
         public int MinBrightness {
-            get => minExposure;
+            get => minBrightness;
             set {
-                if (value >= MaxBrightness) {
-                    value = MaxBrightness;
-                }
-                minExposure = value;
+                minBrightness = value;
                 RaisePropertyChanged();
             }
         }
 
-        private int maxExposure;
+        private int maxBrightness;
 
         [JsonProperty]
         public int MaxBrightness {
-            get => maxExposure;
+            get => maxBrightness;
             set {
-                if (value <= MinBrightness) {
-                    value = MinBrightness;
-                }
-                maxExposure = value;
+                maxBrightness = value;
                 RaisePropertyChanged();
             }
         }
@@ -479,6 +479,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var valid = takeExposure.Validate() && switchFilter.Validate() && setBrightness.Validate();
 
             var issues = new ObservableCollection<string>();
+
+            if (MinBrightness > MaxBrightness) {
+                issues.Add(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid"]);
+            }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));

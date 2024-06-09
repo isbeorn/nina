@@ -13,6 +13,12 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+    <Page Remove="publish\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
@@ -41,8 +47,9 @@
   <ItemGroup>
     <PackageReference Include="AsyncEnumerator" Version="4.0.2" />
     <PackageReference Include="CsvHelper" Version="31.0.2" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.113" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.115" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2535.41" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     <PackageReference Include="Nito.Mvvm.Async" Version="1.0.0-pre-04" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
@@ -53,7 +60,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.0.0.9001</Version>
+    <Version>3.1.0.9001</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the basic WPF components of N.I.N.A.</Description>
@@ -65,6 +72,6 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="  if exist &quot;$(SolutionDir)Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; echo F | xcopy &quot;$(SolutionDir)Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; &quot;$(ProjectDir)bin\SignedRelease\Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; /h/i/c/k/e/r/y   &#xD;&#xA;  if exist &quot;$(SolutionDir)OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; echo F | xcopy &quot;$(SolutionDir)OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; &quot;$(ProjectDir)bin\SignedRelease\OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; /h/i/c/k/e/r/y &#xD;&#xA;&#xD;&#xA;  if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /a /v /fd SHA256 $(TargetPath)" />
+    <Exec IgnoreExitCode="true" Command="  if exist &quot;$(SolutionDir)Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; echo F | xcopy &quot;$(SolutionDir)Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; &quot;$(ProjectDir)bin\SignedRelease\Accord.Imaging\bin\SignedRelease\netstandard2.0\Accord.Imaging.dll&quot; /h/i/c/k/e/r/y   &#xD;&#xA;  if exist &quot;$(SolutionDir)OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; echo F | xcopy &quot;$(SolutionDir)OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; &quot;$(ProjectDir)bin\SignedRelease\OxyPlot.Contrib.Wpf\bin\SignedRelease\netcoreapp3.1\OxyPlot.Contrib.Wpf.dll&quot; /h/i/c/k/e/r/y &#xD;&#xA;&#xD;&#xA;  if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
   </Target>
 </Project>

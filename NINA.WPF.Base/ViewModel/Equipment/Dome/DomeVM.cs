@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -97,6 +97,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             };
         }
 
+        public event EventHandler<EventArgs> Synced;
+        public event Func<object, EventArgs, Task> Opened;
+        public event Func<object, EventArgs, Task> Closed;
+        public event Func<object, EventArgs, Task> Parked;
+        public event Func<object, EventArgs, Task> Homed;
+        public event Func<object, DomeEventArgs, Task> Slewed;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -175,7 +182,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                             Notification.ShowSuccess(Loc.Instance["LblDomeConnected"]);
 
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
 
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
 
@@ -347,8 +354,26 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (DomeInfo.Connected) {
                 if (Dome.CanSetShutter) {
 
-                    // 1. Check if the shutter/roof is already open or is in the process of becoming so
-                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen || DomeInfo.ShutterStatus == ShutterState.ShutterOpening) {
+                    // 0. Check if the shutter/roof is moving toward the open state, and wait.
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpening) {
+                        Logger.Info("Dome shutter already opening - waiting for it to complete.");
+                        while (DomeInfo.ShutterStatus == ShutterState.ShutterOpening && !cancellationToken.IsCancellationRequested) {
+                            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                        }
+                        Logger.Debug($"Dome shutter no longer opening, shutter state is now {DomeInfo.ShutterStatus}");
+
+                        // Since the shutter was in motion before calling this function, do not continue to send another movement command should movement stop
+                        // but the shutter not be fully Open.  It could be under external control and stopped for a reason.
+                        if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen) {
+                            return true;
+                        } else {
+                            Logger.Error($"Dome shutter stopped opening, but is not open.  Shutter state is now {DomeInfo.ShutterStatus}");
+                            return false;
+                        }
+                    }
+
+                    // 1. Check if the shutter/roof is already open
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterOpen) {
                         return true;
                     }
 
@@ -357,7 +382,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     if (SafetyMonitorInfo.Connected) {
                         if (!SafetyMonitorInfo.IsSafe) {
                             Logger.Error("Cannot open dome shutter due to unsafe conditions");
-                            Notification.ShowError(Loc.Instance["LblDomeCloseOnUnsafeWarning"]);
+                            Notification.ShowError(Loc.Instance["LblDomeRefuseOpeningWhenUnsafeWarning"]);
                             return false;
                         }
                     } else {
@@ -403,6 +428,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, cancellationToken, progress, Loc.Instance["LblSettle"]); 
                         await waitForUpdate;
                         Logger.Info($"Opened dome shutter. Shutter state after opening {DomeInfo.ShutterStatus}");
+                        await (Opened?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         return true;
                     } finally {
                         progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -426,8 +452,25 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (DomeInfo.Connected) {
                 if (Dome.CanSetShutter) {
 
-                    // 1. Check if the shutter/roof is already closed or is in the process of becoming so
-                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed || DomeInfo.ShutterStatus == ShutterState.ShutterClosing) {
+                    // 0. Check if the shutter/roof is moving toward the closed state, and wait.
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosing) {
+                        Logger.Info("Dome shutter already closing - waiting for it to complete.");
+                        while (DomeInfo.ShutterStatus == ShutterState.ShutterClosing && !cancellationToken.IsCancellationRequested) {
+                            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                        }
+                        Logger.Debug($"Dome shutter no longer closing, shutter state is now {DomeInfo.ShutterStatus}");
+
+                        // Since the shutter was in motion before calling this function, do not continue to send another movement command should movement stop
+                        // but the shutter not be fully Closed.  It could be under external control and stopped for a reason.
+                        if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed) {
+                            return true;
+                        } else {
+                            Logger.Error($"Dome shutter stopped closing, but is not closed.  Shutter state is now {DomeInfo.ShutterStatus}");
+                            return false;
+                        }
+                    }
+                    // 1. Check if the shutter/roof is already closed
+                    if (DomeInfo.ShutterStatus == ShutterState.ShutterClosed) {
                         return true;
                     }
 
@@ -481,6 +524,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, cancellationToken, progress, Loc.Instance["LblSettle"]);
                         await waitForUpdate;
                         Logger.Info($"Closed dome shutter. Shutter state after closing {DomeInfo.ShutterStatus}");
+                        await (Closed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         return true;
                     } finally {
                         progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -511,6 +555,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 await Dome.Park(cancellationToken);
                 await updateTimer.WaitForNextUpdate(cancellationToken);
                 Logger.Info("Park complete");
+                await (Parked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 return true;
             } else {
                 Logger.Error("Cannot park shutter. Dome does not support it.");
@@ -576,12 +621,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         public async Task<bool> SlewToAzimuth(double degrees, CancellationToken token) {
             if (Dome?.Connected == true) {
                 try {
-                    Logger.Info($"Slewing dome to azimuth {degrees}°");
+                    var from = DomeInfo.Azimuth;
+                    Logger.Info($"Slewing dome to azimuth {degrees}Â°");
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
                     await Dome?.SlewToAzimuth(degrees, token); 
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                     await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, token, progress, Loc.Instance["LblSettle"]);
                     await waitForUpdate;
+                    await (Slewed?.InvokeAsync(this, new DomeEventArgs(from: from, to: degrees)) ?? Task.CompletedTask);
                     return true;
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -593,7 +640,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         private async Task<bool> ManualSlew(double degrees) {
             if (Dome.CanSetAzimuth) {
                 this.FollowEnabled = false;
-                Logger.Info($"Manually slewing dome to azimuth {degrees}°");
+                Logger.Info($"Manually slewing dome to azimuth {degrees}Â°");
                 return await SlewToAzimuth(degrees, CancellationToken.None);
             } else {
                 return false;
@@ -604,7 +651,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (Dome.CanSetAzimuth) {
                 this.FollowEnabled = false;
                 var targetAzimuth = AstroUtil.EuclidianModulus(this.Dome.Azimuth + degrees, 360.0);
-                Logger.Info($"Rotating dome relatively by {degrees}°");
+                Logger.Info($"Rotating dome relatively by {degrees}Â°");
                 return await SlewToAzimuth(targetAzimuth, CancellationToken.None);
             } else {
                 return false;
@@ -625,6 +672,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             ct.ThrowIfCancellationRequested();
 
             Logger.Info("Dome home find complete");
+            await (Homed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             return true;
         }
 
@@ -633,6 +681,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 var calculatedTargetCoordinates = this.domeFollower.GetSynchronizedDomeCoordinates(TelescopeInfo);
                 if(calculatedTargetCoordinates != null) { 
                     Dome.SyncToAzimuth(calculatedTargetCoordinates.Azimuth.Degree);
+                    try { Synced?.Invoke(this, new EventArgs()); } catch(Exception ex) {  Logger.Error(ex); }
                 }
             }
         }

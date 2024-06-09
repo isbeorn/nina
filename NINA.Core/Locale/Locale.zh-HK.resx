@@ -2796,24 +2796,6 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
   <data name="LblSequence" xml:space="preserve">
     <value>序列</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Delay start</value>
   </data>
@@ -6965,5 +6947,47 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
+  </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED Lights</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Turn the LED lights on the camera on or off</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum brightness is higher than the maximum brightness!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Waiting for instruction to acknowledge cancellation</value>
+  </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

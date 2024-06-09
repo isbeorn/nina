@@ -94,7 +94,7 @@ namespace NINA.ViewModel.FramingAssistant {
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator);
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-            DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+            DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
 
             FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
 
@@ -135,7 +135,7 @@ namespace NINA.ViewModel.FramingAssistant {
             resizeTimer.Tick += ResizeTimer_Tick;
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
-                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
             };
 
             profileService.HorizonChanged += (object sender, EventArgs e) => {
@@ -230,7 +230,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 var deepSkyObjects = new List<DeepSkyObject>();
                 foreach (var rect in CameraRectangles) {
                     var name = GetRectangleName(rect);
-                    var dso = new DeepSkyObject(name ?? rect.Name, rect.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                    var dso = new DeepSkyObject(name ?? rect.Name, rect.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
 
                     dso.RotationPositionAngle = AstroUtil.EuclidianModulus(rect.DSOPositionAngle, 360);
 
@@ -485,7 +485,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private void DeepSkyObjectSearchVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.Coordinates) && DeepSkyObjectSearchVM.Coordinates != null) {
-                DSO = new DeepSkyObject(DeepSkyObjectSearchVM.TargetName, DeepSkyObjectSearchVM.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                DSO = new DeepSkyObject(DeepSkyObjectSearchVM.TargetName, DeepSkyObjectSearchVM.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
                 RaiseCoordinatesChanged();
             } else if (e.PropertyName == nameof(DeepSkyObjectSearchVM.TargetName) && DSO != null) {
                 DSO.Name = DeepSkyObjectSearchVM.TargetName;
@@ -643,7 +643,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             DeepSkyObjectSearchVM.SetTargetNameWithoutSearch(dso.Name);
-            this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+            this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
             FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
             if (FramingAssistantSource == SkySurveySource.CACHE || FramingAssistantSource == SkySurveySource.FILE) {
                 FramingAssistantSource = SkySurveySource.HIPS2FITS;
@@ -1257,7 +1257,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     var name = _selectedImageCacheInfo.Attribute("Name").Value;
                     var coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
                     FieldOfView = AstroUtil.ArcminToDegree(double.Parse(_selectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture));
-                    DSO = new DeepSkyObject(name, coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                    DSO = new DeepSkyObject(name, coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
                     DeepSkyObjectSearchVM.SetTargetNameWithoutSearch(name);
                     RaiseCoordinatesChanged();
                 }
@@ -1276,16 +1276,16 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 var centerCoordinates = parameter.CenterCoordinates;
 
-                var imageArcsecWidth = AstroUtil.DegreeToArcsec(parameter.OriginalHFoV) / parameter.OriginalWidth;
-                var imageArcsecHeight = AstroUtil.DegreeToArcsec(parameter.OriginalVFoV) / parameter.OriginalHeight;
+                var imageArcsecWidth = AstroUtil.DegreeToArcsec(parameter.HFoV) / parameter.Width;
+                var imageArcsecHeight = AstroUtil.DegreeToArcsec(parameter.VFoV) / parameter.Height;
 
                 var arcsecPerPix = AstroUtil.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var conversion = arcsecPerPix / imageArcsecWidth;
 
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                var x = parameter.OriginalWidth / 2d - width / 2d;
-                var y = parameter.OriginalHeight / 2d - height / 2d;
+                var x = parameter.Width / 2d - width / 2d;
+                var y = parameter.Height / 2d - height / 2d;
 
                 if (HorizontalPanels == 1 && VerticalPanels == 1) {
                     var rect = new FramingRectangle(parameter.Rotation, 0, 0, width, height) {
@@ -1314,8 +1314,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
                     width = HorizontalPanels * panelWidth - (HorizontalPanels - 1) * panelOverlapWidth;
                     height = VerticalPanels * panelHeight - (VerticalPanels - 1) * panelOverlapHeight;
-                    x = parameter.OriginalWidth / 2d - width / 2d;
-                    y = parameter.OriginalHeight / 2d - height / 2d;
+                    x = parameter.Width / 2d - width / 2d;
+                    y = parameter.Height / 2d - height / 2d;
                     var center = new Point(x + width / 2d, y + height / 2d);
 
                     var id = 1;

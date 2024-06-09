@@ -2789,24 +2789,6 @@ Forventet HFR: {2}</value>
   <data name="LblSequence" xml:space="preserve">
     <value>Sekvens</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Kommando ved sekvensslutt '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Kommando ved sekvensslutt</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' er fullført.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Kjør kommando når sekvens er ferdig</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Velg kommando som skal kjøres når sekvens er ferdig.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Kommando for sekvensslutt ble ikke funnet '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Utsett start</value>
   </data>
@@ -6936,15 +6918,57 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Bruk IPv6 for å oppdage ASCOM Alpaca enheter (Standard: av)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>Objektkataloger</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>Mål Alt</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>Mål Az</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptik flatbildekontroller</value>
+  </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LED-lys</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Slå LED-lysene på kameraet på eller av</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum brightness is higher than the maximum brightness!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Waiting for instruction to acknowledge cancellation</value>
+  </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>External Command</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>External command was unable to run successfully</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>External command was not found at '{0}'</value>
   </data>
 </root>

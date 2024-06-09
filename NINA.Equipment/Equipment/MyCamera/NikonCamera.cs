@@ -33,6 +33,7 @@ using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Utility;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -62,6 +63,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private void Mgr_DeviceAdded(NikonManager sender, NikonDevice device) {
             var connected = false;
             try {
+                Logger.Debug($"Received Device Added event for Nikon camera {device.Name} ({device.Id})");
                 _activeNikonManager = sender;
                 _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
 
@@ -805,7 +807,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public async Task<bool> Connect(CancellationToken token) {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
                 var connected = false;
                 try {
                     serialPortInteraction = null;
@@ -819,19 +821,18 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     var md3Folder = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", architecture, "Nikon");
 
                     foreach (string file in Directory.GetFiles(md3Folder, "*.md3", SearchOption.AllDirectories)) {
-                        NikonManager mgr = new NikonManager(file);
+                        Logger.Debug($"Starting nikon manager for nikon md3 at {file}");
+                        NikonManager mgr = new NikonManager(file, new NikonLogger());
                         mgr.DeviceAdded += Mgr_DeviceAdded;
                         _nikonManagers.Add(mgr);
                     }
 
                     _cameraConnected = new TaskCompletionSource<bool>();
-                    var d = DateTime.Now;
+                    using (token.Register(() => _cameraConnected.TrySetCanceled())) {
+                        await _cameraConnected.Task;
+                    }
 
-                    do {
-                        token.ThrowIfCancellationRequested();
-                        Thread.Sleep(500);
-                    } while (!_cameraConnected.Task.IsCompleted);
-
+                    Logger.Debug($"Camera connection task returned successfully with result {_cameraConnected.Task.Result}");
                     connected = _cameraConnected.Task.Result;
                 } catch (OperationCanceledException) {
                     _activeNikonManager = null;
@@ -858,6 +859,36 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
+        }
+    }
+
+    internal class NikonLogger : Nikon.ILogger {
+        public void Debug(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Debug("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Error(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Error(ex, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Error(string customMsg, Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Error("Nikon SDK - " + customMsg, ex, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Error(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Error("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Info(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Info("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Trace(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Trace("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
+        }
+
+        public void Warning(string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = 0) {
+            Logger.Warning("Nikon SDK - " + message, memberName, sourceFilePath, lineNumber);
         }
     }
 }

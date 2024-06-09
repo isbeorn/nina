@@ -13,6 +13,7 @@
     xmlns:alt="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
     xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
     xmlns:behaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -51,7 +52,20 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
-                    <GroupBox Header="{ns:Loc LblImageSource}">
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontSize="20" Text="{ns:Loc LblImageSource}" />
+                                <wpfbase:BrowserPopupButton
+                                    Grid.Column="1"
+                                    Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Framing_General}}"
+                                    WindowWidthFraction="2" />
+                            </Grid>
+                        </GroupBox.Header>
                         <StackPanel Orientation="Vertical">
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <Grid Margin="0,0,0,6" VerticalAlignment="Center">

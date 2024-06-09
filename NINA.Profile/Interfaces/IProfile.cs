@@ -50,6 +50,7 @@ namespace NINA.Profile.Interfaces {
         IPluginSettings PluginSettings { get; set; }
         IGnssSettings GnssSettings { get; set; }
         IAlpacaSettings AlpacaSettings { get; set; }
+        IImageHistorySettings ImageHistorySettings { get; set; }
 
         void Save();
     }

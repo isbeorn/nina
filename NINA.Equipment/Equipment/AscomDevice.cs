@@ -21,6 +21,7 @@ using NINA.Equipment.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -55,7 +56,7 @@ namespace NINA.Equipment.Equipment {
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => Category == "ASCOM";
+        public bool HasSetupDialog => !Connected;
 
         public string Id { get; }
 
@@ -145,6 +146,7 @@ namespace NINA.Equipment.Equipment {
                         if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
                             getmemory.InvalidateCache();
                         }
+                        RaisePropertyChanged(nameof(HasSetupDialog));
                     }
                 }
             }
@@ -250,27 +252,44 @@ namespace NINA.Equipment.Equipment {
 
         protected abstract DeviceT GetInstance();
 
-        public void SetupDialog() {
+        public void SetupDialog() {            
             if (HasSetupDialog) {
-                try {
-                    bool dispose = false;
-                    if (device == null) {
-                        Logger.Trace($"{Name} - Creating instance for {Id}");
-                        var concreteDevice = GetInstance();
-                        device = concreteDevice;
-                        dispose = true;
+                if(deviceMeta is null) {
+                    // ASCOM
+                    try {
+                        bool dispose = false;
+                        if (device == null) {
+                            Logger.Trace($"{Name} - Creating instance for {Id}");
+                            var concreteDevice = GetInstance();
+                            device = concreteDevice;
+                            dispose = true;
+                        }
+                        Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
+                        var t = device.GetType();
+                        var method = t.GetMethod("SetupDialog");
+                        method.Invoke(device, null);
+                        if (dispose) {
+                            device.Dispose();
+                            device = default;
+                        }
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowExternalError(ex.Message, Loc.Instance["LblASCOMDriverError"]);
                     }
-                    Logger.Trace($"{Name} - Creating Setup Dialog for {Id}");
-                    var t = device.GetType();
-                    var method = t.GetMethod("SetupDialog");
-                    method.Invoke(device, null);
-                    if (dispose) {
-                        device.Dispose();
-                        device = default;
+                } else {
+                    // Alpaca
+                    var protocol = deviceMeta.ServiceType == ASCOM.Common.Alpaca.ServiceType.Http ? "http" : "https";
+                    var ipAddress = deviceMeta.IpAddress;
+                    var port = deviceMeta.IpPort;
+                    var deviceType = deviceMeta.AscomDeviceType.ToString().ToLower();
+                    var deviceNumber = deviceMeta.AlpacaDeviceNumber;
+                    var url = $"{protocol}://{ipAddress}:{port}/setup/v1/{deviceType}/{deviceNumber}/setup";
+                    try { 
+                        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowError(ex.Message);
                     }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowExternalError(ex.Message, Loc.Instance["LblASCOMDriverError"]);
                 }
             }
         }
@@ -309,8 +328,12 @@ namespace NINA.Equipment.Equipment {
         /// <typeparam name="PropT"></typeparam>
         /// <param name="propertyName">Property Name of the AscomDevice property</param>
         /// <param name="defaultValue">The default value to be returned when not connected or not implemented</param>
+        /// <param name="cacheInterval">The minimum interval between actual polls to the device</param>
+        /// <param name="rethrow">When set - any error will be rethrown and not handled internally</param>
+        /// <param name="useLastKnownValueOnError">When rethrow is false and this is set, the last known value will be used as a fallback. Otherwise the errorValue parameter will be used</param>
+        /// <param name="errorValue">The value to be returned when rethrow and useLastKnownValueOnError are both set to false and an error occurs during reading of the property</param>
         /// <returns></returns>
-        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null, bool rethrow = false) {            
+        protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null, bool rethrow = false, bool useLastKnownValueOnError = true, PropT errorValue = default) {            
             if (device != null) {
                 var type = device.GetType();
 
@@ -377,11 +400,12 @@ namespace NINA.Equipment.Equipment {
                     }
                 }
 
-                var val = (PropT)memory.LastValue;
+                // Polling the property failed for all retries
+                var val = useLastKnownValueOnError ? (PropT)memory.LastValue : errorValue;
                 if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
-                    Logger.Trace($"GET {type.Name}.{propertyName} failed - Returning last known value {val}");
+                    Logger.Trace($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
                 } else {
-                    Logger.Info($"GET {type.Name}.{propertyName} failed - Returning last known value {val}");
+                    Logger.Info($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
                 }   
                 return val;
             }

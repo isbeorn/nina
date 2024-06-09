@@ -89,7 +89,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
             var success = await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
             if (!success) {
-                throw new SequenceEntityFailedException("External script was unable to run successfully");
+                throw new SequenceEntityFailedException(Loc.Instance["LblExternalCommandFailed"]);
             }
         }
 
@@ -97,7 +97,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             var i = new List<string>();
             var sequenceCompleteCommand = Script;
             if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
-                i.Add(string.Format(Loc.Instance["LblSequenceCommandAtCompletionNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
+                i.Add(string.Format(Loc.Instance["LblExternalCommandNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
             }
             Issues = i;
             return i.Count == 0;

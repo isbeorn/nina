@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using NINA.Equipment.Interfaces.Mediator;
+using System;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -36,5 +37,7 @@ namespace NINA.ViewModel.Sequencer {
         void AddTarget(IDeepSkyObjectContainer container);
 
         void AddTargetToTargetList(IDeepSkyObjectContainer container);
+        event Func<object, EventArgs, Task> SequenceStarting;
+        event Func<object, EventArgs, Task> SequenceFinished;
     }
 }

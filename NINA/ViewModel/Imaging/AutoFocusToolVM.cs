@@ -117,6 +117,14 @@ namespace NINA.Imaging.ViewModel.Imaging {
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
             SelectionChangedCommand = new AsyncCommand<bool>(LoadChart);
+
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            _ = Task.Run(() => {
+                InitializeChartList();
+            });
         }
 
         private void AutoFocusVMFactorySelector_SelectedBehaviorChanged(object sender, EventArgs e) {
@@ -129,7 +137,7 @@ namespace NINA.Imaging.ViewModel.Imaging {
 
         private void InitializeAutoFocusVM() {
             this.AutoFocusVM = autoFocusVMFactorySelector.SelectedBehavior.Create();
-            Task.Run(() => {
+            _= Task.Run(() => {
                 InitializeChartList();
             });
         }
@@ -219,20 +227,24 @@ namespace NINA.Imaging.ViewModel.Imaging {
         }
 
         private void InitializeChartList() {
-            var files = Directory.GetFiles(Path.Combine(WPF.Base.ViewModel.AutoFocus.AutoFocusVM.ReportDirectory));
-            var l = new SortedSet<Chart>(new ChartComparer());
+            try {
+                var files = Directory.GetFiles(Path.Combine(WPF.Base.ViewModel.AutoFocus.AutoFocusVM.ReportDirectory));
+                var l = new SortedSet<Chart>(new ChartComparer());
 
-            foreach (string file in files) {
-                if(IsAutofocusForCurrentProfile(file)) {
-                    var item = new Chart(Path.GetFileName(file), file);
-                    l.Add(item);
-                }                
+                foreach (string file in files) {
+                    if (IsAutofocusForCurrentProfile(file)) {
+                        var item = new Chart(Path.GetFileName(file), file);
+                        l.Add(item);
+                    }
+                }
+                lock (lockobj) {
+                    ChartList = new AsyncObservableCollection<Chart>(l);
+                    SelectedChart = ChartList.FirstOrDefault();
+                }
+                _ = LoadChart();
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            lock (lockobj) {
-                ChartList = new AsyncObservableCollection<Chart>(l);
-                SelectedChart = ChartList.FirstOrDefault();
-            }
-            _ = LoadChart();
         }
 
         private void ReportFileWatcher_Created(object sender, FileSystemEventArgs e) {

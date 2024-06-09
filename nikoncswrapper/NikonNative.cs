@@ -322,6 +322,7 @@ namespace Nikon {
         private static uint _uniqueValue = 100;
 
         private uint _id;
+        private readonly ILogger _logger;
         private NikonMd3 _md3;
         private NikonObject _parent;
         private NkMAIDObject _object;
@@ -345,11 +346,11 @@ namespace Nikon {
         internal event InternalUIRequestDelegate UIRequest;
 
         // Constructor
-        internal NikonObject(NikonMd3 md3, NikonObject parent, uint id) {
+        internal NikonObject(NikonMd3 md3, NikonObject parent, uint id, ILogger logger) {
             _md3 = md3;
             _parent = parent;
             _id = id;
-
+            _logger = logger;
             _object = new NkMAIDObject();
             _object.refClient = new IntPtr(_uniqueValue);
             _uniqueValue++;
@@ -358,7 +359,7 @@ namespace Nikon {
             _eventProc = new MAIDEventProcDelegate(EventProc);
             _progressProc = new MAIDProgressProcDelegate(ProgressProc);
             _dataProc = new MAIDDataProcDelegate(DataProc);
-            _uiRequestProc = new MAIDUIRequestProcDelegate(UIRequestProc);
+            _uiRequestProc = new MAIDUIRequestProcDelegate(UIRequestProc);            
         }
 
         // Id
@@ -379,6 +380,7 @@ namespace Nikon {
 
             // Open MAID object
             fixed (NkMAIDObject* p = &_object) {
+                _logger?.Trace("Calling Nikon MAID entry point");
                 CallEntryPoint(
                     parentPointer,
                     eNkMAIDCommand.kNkMAIDCommand_Open,
@@ -396,9 +398,12 @@ namespace Nikon {
         // Set Callbacks
         private void SetSupportedCallbacks() {
             // Get supported caps and add them to a dictionary
+            _logger?.Trace("Retrieving supported cap info");
             Dictionary<eNkMAIDCapability, NkMAIDCapInfo> caps = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
             NkMAIDCapInfo[] capsArray = GetCapInfo();
+
             foreach (NkMAIDCapInfo c in capsArray) {
+                _logger?.Trace($"Adding cap info {c.GetDescription()}");
                 caps.Add(c.ulID, c);
             }
 
@@ -428,6 +433,7 @@ namespace Nikon {
 
                 if (caps.ContainsKey(cap) &&
                     caps[cap].CanSet()) {
+                    _logger?.Trace($"Setting supported callback {cap}");
                     NkMAIDCallback callback = new NkMAIDCallback();
                     callback.pProc = Marshal.GetFunctionPointerForDelegate(procDelegates[i]);
 
@@ -663,7 +669,7 @@ namespace Nikon {
             for (int i = 0; i < e.nativeEnum.ulElements; i++) {
                 uint childId = BitConverter.ToUInt32(e.buffer, i * 4);
 
-                NikonObject child = new NikonObject(_md3, this, childId);
+                NikonObject child = new NikonObject(_md3, this, childId, _logger);
 
                 children.Add(child);
             }

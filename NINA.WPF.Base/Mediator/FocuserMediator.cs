@@ -17,6 +17,7 @@ using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,20 +44,24 @@ namespace NINA.WPF.Base.Mediator {
         public void BroadcastSuccessfulAutoFocusRun(AutoFocusInfo info) {
             Logger.Info($"Autofocus notification received - Temperature {info.Temperature}");
             handler.SetFocusedTemperature(info.Temperature);
+            List<IFocuserConsumer> receivers;
             lock (consumers) {
-                foreach (IFocuserConsumer c in consumers) {
-                    c.UpdateEndAutoFocusRun(info);
-                }
+                receivers = new List<IFocuserConsumer>(consumers);
+            }
+            foreach (IFocuserConsumer c in receivers) {
+                c.UpdateEndAutoFocusRun(info);
             }
         }
 
         public void BroadcastUserFocused(FocuserInfo info) {
             Logger.Info($"User Focused notification received - Temperature {info.Temperature}");
             handler.SetFocusedTemperature(info.Temperature);
+            List<IFocuserConsumer> receivers;
             lock (consumers) {
-                foreach (IFocuserConsumer c in consumers) {
-                    c.UpdateUserFocused(info);
-                }
+                receivers = new List<IFocuserConsumer>(consumers);
+            }
+            foreach (IFocuserConsumer c in receivers) {
+                c.UpdateUserFocused(info);
             }
         }
     }

@@ -12,7 +12,7 @@ using System.IO;
 using System.Runtime.ConstrainedExecution;
 
 /*
-    Version: 55.24647.20240218
+    Version: 55.25159.20240404
 
     For Microsoft dotNET Framework & dotNet Core
 
@@ -579,7 +579,9 @@ public class Ogmacam : IDisposable {
         */
         OPTION_OVEREXP_POLICY = 0x68,
         /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read) */
-        OPTION_READOUT_MODE = 0x69
+        OPTION_READOUT_MODE = 0x69,
+        /* Turn on/off tail Led light: 0 => off, 1 => on; default: on */
+        OPTION_TAILLIGHT = 0x6a
     };
 
     /* HRESULT: error code */
@@ -616,10 +618,10 @@ public class Ogmacam : IDisposable {
     public const int EXPOGAIN_DEF = 100;      /* exposure gain, default value */
     public const int EXPOGAIN_MIN = 100;      /* exposure gain, minimum value */
     public const int TEMP_DEF = 6503;     /* color temperature, default value */
-    public const int TEMP_MIN = 2000;     /* color temperature, minimum value */
-    public const int TEMP_MAX = 15000;    /* color temperature, maximum value */
+    public const int TEMP_MIN = 1000;     /* color temperature, minimum value */
+    public const int TEMP_MAX = 25000;    /* color temperature, maximum value */
     public const int TINT_DEF = 1000;     /* tint */
-    public const int TINT_MIN = 200;      /* tint */
+    public const int TINT_MIN = 100;      /* tint */
     public const int TINT_MAX = 2500;     /* tint */
     public const int HUE_DEF = 0;        /* hue */
     public const int HUE_MIN = -180;     /* hue */
@@ -628,11 +630,11 @@ public class Ogmacam : IDisposable {
     public const int SATURATION_MIN = 0;        /* saturation */
     public const int SATURATION_MAX = 255;      /* saturation */
     public const int BRIGHTNESS_DEF = 0;        /* brightness */
-    public const int BRIGHTNESS_MIN = -64;      /* brightness */
-    public const int BRIGHTNESS_MAX = 64;       /* brightness */
+    public const int BRIGHTNESS_MIN = -128;     /* brightness */
+    public const int BRIGHTNESS_MAX = 128;      /* brightness */
     public const int CONTRAST_DEF = 0;        /* contrast */
-    public const int CONTRAST_MIN = -100;     /* contrast */
-    public const int CONTRAST_MAX = 100;      /* contrast */
+    public const int CONTRAST_MIN = -150;     /* contrast */
+    public const int CONTRAST_MAX = 150;      /* contrast */
     public const int GAMMA_DEF = 100;      /* gamma */
     public const int GAMMA_MIN = 20;       /* gamma */
     public const int GAMMA_MAX = 180;      /* gamma */
@@ -843,7 +845,9 @@ public class Ogmacam : IDisposable {
         IOCONTROLTYPE_GET_OUTPUTCOUNTERVALUE = 0x37,
         IOCONTROLTYPE_SET_OUTPUTCOUNTERVALUE = 0x38,
         /* Output pause: 1 => puase, 0 => unpause */
-        IOCONTROLTYPE_SET_OUTPUT_PAUSE = 0x3a
+        IOCONTROLTYPE_SET_OUTPUT_PAUSE = 0x3a,
+        /* Input state: 0 (low level) or 1 (high level) */
+        IOCONTROLTYPE_GET_INPUT_STATE = 0x3c
     };
 
     public const int IOCONTROL_DELAYTIME_MAX = 5 * 1000 * 1000;
@@ -853,8 +857,8 @@ public class Ogmacam : IDisposable {
         AAF_SETPOSITION = 0x01,
         AAF_GETPOSITION = 0x02,
         AAF_SETZERO = 0x03,
-        AAF_GETZERO = 0x04,
         AAF_SETDIRECTION = 0x05,
+        AAF_GETDIRECTION = 0x06,
         AAF_SETMAXINCREMENT = 0x07,
         AAF_GETMAXINCREMENT = 0x08,
         AAF_SETFINE = 0x09,
@@ -1048,7 +1052,7 @@ public class Ogmacam : IDisposable {
         GC.SuppressFinalize(this);
     }
 
-    /* get the version of this dll/so, which is: 55.24647.20240218 */
+    /* get the version of this dll/so, which is: 55.25159.20240404 */
     public static string Version() {
         return Marshal.PtrToStringUni(Ogmacam_Version());
     }
@@ -1730,32 +1734,32 @@ public class Ogmacam : IDisposable {
 
     /*
         trigger synchronously
-        nTimeout:   0:              by default, exposure * 102% + 4000 milliseconds
+        nWaitMS:    0:              by default, exposure * 102% + 4000 milliseconds
                     0xffffffff:     wait infinite
                     other:          milliseconds to wait
     */
-    public bool TriggerSync(uint nTimeout, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
-    public bool TriggerSync(uint nTimeout, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
-    public bool TriggerSync(uint nTimeout, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
+    public bool TriggerSync(uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             zeroInfo(out pInfo);
             return false;
         }
-        return CheckHResult(Ogmacam_TriggerSync(handle_, nTimeout, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool put_Size(int nWidth, int nHeight) {
@@ -2665,6 +2669,13 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_get_Roi(handle_, out pxOffset, out pyOffset, out pxWidth, out pyHeight));
     }
 
+    /* multiple Roi */
+    public bool put_RoiN(uint[] xOffset, uint[] yOffset, uint[] xWidth, uint[] yHeight) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_RoiN(handle_, xOffset, yOffset, xWidth, yHeight, (uint)(xOffset.Length)));
+    }
+
     public bool put_XY(int x, int y) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
@@ -2746,40 +2757,40 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_FpncOnce(handle_));
     }
 
-    public bool FfcExport(string filepath) {
+    public bool FfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FfcExport(handle_, filepath));
+        return CheckHResult(Ogmacam_FfcExport(handle_, filePath));
     }
 
-    public bool FfcImport(string filepath) {
+    public bool FfcImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FfcImport(handle_, filepath));
+        return CheckHResult(Ogmacam_FfcImport(handle_, filePath));
     }
 
-    public bool DfcExport(string filepath) {
+    public bool DfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_DfcExport(handle_, filepath));
+        return CheckHResult(Ogmacam_DfcExport(handle_, filePath));
     }
 
-    public bool DfcImport(string filepath) {
+    public bool DfcImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_DfcImport(handle_, filepath));
+        return CheckHResult(Ogmacam_DfcImport(handle_, filePath));
     }
 
-    public bool FpncExport(string filepath) {
+    public bool FpncExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FpncExport(handle_, filepath));
+        return CheckHResult(Ogmacam_FpncExport(handle_, filePath));
     }
 
-    public bool FpncImport(string filepath) {
+    public bool FpncImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_FpncImport(handle_, filepath));
+        return CheckHResult(Ogmacam_FpncImport(handle_, filePath));
     }
 
     public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal, out int inVal) {
@@ -3430,11 +3441,11 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_Trigger(SafeCamHandle h, ushort nNumber);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nTimeout, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_Size(SafeCamHandle h, int nWidth, int nHeight);
@@ -3475,6 +3486,8 @@ public class Ogmacam : IDisposable {
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_Roi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_RoiN(SafeCamHandle h, uint[] xoffset, uint[] yoffset, uint[] xWidth, uint[] yHeight, uint Num);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_XY(SafeCamHandle h, int x, int y);
 
     /*
@@ -3483,13 +3496,13 @@ public class Ogmacam : IDisposable {
         |-----------------------------------------------------------------|
         | Auto Exposure Target    |   16~235      |   120                 |
         | Exposure Gain           |   100~        |   100                 |
-        | Temp                    |   2000~15000  |   6503                |
-        | Tint                    |   200~2500    |   1000                |
+        | Temp                    |   1000~25000  |   6503                |
+        | Tint                    |   100~2500    |   1000                |
         | LevelRange              |   0~255       |   Low = 0, High = 255 |
-        | Contrast                |   -100~100    |   0                   |
+        | Contrast                |   -150~150    |   0                   |
         | Hue                     |   -180~180    |   0                   |
         | Saturation              |   0~255       |   128                 |
-        | Brightness              |   -64~64      |   0                   |
+        | Brightness              |   -128~128    |   0                   |
         | Gamma                   |   20~180      |   100                 |
         | WBGain                  |   -127~127    |   0                   |
         ------------------------------------------------------------------|
@@ -3750,17 +3763,17 @@ public class Ogmacam : IDisposable {
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_FpncOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FpncExport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FpncExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filepath);
+    private static extern int Ogmacam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_IoControl(SafeCamHandle h, uint ioLineNumber, eIoControType eType, int outVal, out int inVal);

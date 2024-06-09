@@ -17,6 +17,7 @@ using NINA.Core.Enum;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,6 +60,30 @@ namespace NINA.WPF.Base.Mediator {
 
         public Task<bool> SyncToScopeCoordinates(Coordinates coordinates, PierSide sideOfPier, CancellationToken cancellationToken) {
             return handler.SyncToScopeCoordinates(coordinates, sideOfPier, cancellationToken);
+        }
+        public event EventHandler<EventArgs> Synced {
+            add { this.handler.Synced += value; }
+            remove { this.handler.Synced -= value; }
+        }
+        public event Func<object, EventArgs, Task> Opened {
+            add { this.handler.Opened += value; }
+            remove { this.handler.Opened -= value; }
+        }
+        public event Func<object, EventArgs, Task> Closed {
+            add { this.handler.Closed += value; }
+            remove { this.handler.Closed -= value; }
+        }
+        public event Func<object, EventArgs, Task> Parked {
+            add { this.handler.Parked += value; }
+            remove { this.handler.Parked -= value; }
+        }
+        public event Func<object, EventArgs, Task> Homed {
+            add { this.handler.Homed += value; }
+            remove { this.handler.Homed -= value; }
+        }
+        public event Func<object, DomeEventArgs, Task> Slewed {
+            add { this.handler.Slewed += value; }
+            remove { this.handler.Slewed -= value; }
         }
     }
 }

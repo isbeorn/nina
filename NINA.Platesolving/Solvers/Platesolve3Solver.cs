@@ -110,10 +110,10 @@ namespace NINA.PlateSolving.Solvers {
                                 }
                                 result.PositionAngle = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
                             }
-                        }
+                        }   
                         if (linenr == 4) {
                             if (resultArr.Length >= 2) {
-                                result.Flipped = double.Parse(resultArr[0], CultureInfo.InvariantCulture) >= 0;
+                                //result.Flipped = double.Parse(resultArr[0], CultureInfo.InvariantCulture) >= 0;
                             }
                         }
                         linenr++;

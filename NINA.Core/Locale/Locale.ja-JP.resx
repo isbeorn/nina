@@ -2780,24 +2780,6 @@
   <data name="LblSequence" xml:space="preserve">
     <value>シーケンス</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>シーケンス終了コマンド '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>シーケンス終了コマンド</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' 完了しました。</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>シーケンス完了時にコマンドを実行</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>シーケンス完了時に実行するコマンドを選択</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>シーケンス終了コマンドが見つかりません '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>遅延スタート</value>
   </data>
@@ -6931,5 +6913,47 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Geoptik Flat Field Controller</value>
+  </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>LEDライト</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>カメラのLEDライトをオンまたはオフにする</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小輝度が最大輝度よりも大きくなっています!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小露出時間が最大露出時間より長くなっています！</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、望遠鏡にはパルスガイドの機能がありません</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、架台が接続されていません</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>スカイフラット撮影間のディザリングが有効になっていますが、望遠鏡はパークされています</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>最小露出時間が最大露出時間より長くなっています！</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>命令"{0}"は{1}分経過しても、中止の要求に応答しませんでした。シーケンスは続行され、応答しないタスクは無視されます。</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>中止要求を確認する命令を待っています。</value>
+  </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>シャッターまたは屋根を開くように命令されましたが、安全な状態ではないとセーフティモニター装置が報告しています。開放は中止されました。</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>外部コマンド</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>外部コマンドは正常に実行できませんでした</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>外部コマンドが'{0}'で見つかりませんでした</value>
   </data>
 </root>

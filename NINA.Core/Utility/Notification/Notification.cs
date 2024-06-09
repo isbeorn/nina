@@ -54,7 +54,7 @@ namespace NINA.Core.Utility.Notification {
                     corner: Corner.BottomRight,
                     offsetX: 10,
                     offsetY: 0);*/
-                cfg.DisplayOptions.Width = 360;
+                cfg.DisplayOptions.Width = 400;
                 cfg.PositionProvider = new PrimaryScreenPositionProvider(
                     corner: Corner.BottomRight,
                     offsetX: 15,

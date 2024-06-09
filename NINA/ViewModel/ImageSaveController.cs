@@ -76,11 +76,7 @@ namespace NINA.ViewModel {
                     await (BeforeImageSaved?.InvokeAsync(this, new BeforeImageSavedEventArgs(item.Data, item.PrepareTask)) ?? Task.CompletedTask);
 
                     var beforeSaveTime = sw.Elapsed;
-                    sw = Stopwatch.StartNew();
-
-                    var path = await Retry.Do(() => item.Data.PrepareSave(new FileSaveInfo(profileService), writeTimeoutCts.Token), TimeSpan.FromSeconds(1), 3);
-
-                    var prepareSaveTime = sw.Elapsed;
+                    
                     sw = Stopwatch.StartNew();
 
                     writeTimeoutCts.Token.ThrowIfCancellationRequested();
@@ -94,11 +90,11 @@ namespace NINA.ViewModel {
                     var customPatterns = beforeFinalizeArgs.Patterns;
                     var patternTemplate = profileService.ActiveProfile.ImageFileSettings.GetFilePattern(item.Data.MetaData.Image.ImageType);
 
-                    path = await Retry.Do<string>(() => item.Data.FinalizeSave(path, patternTemplate, customPatterns), TimeSpan.FromSeconds(1), 3);
+                    string path = await Retry.Do(() => item.Data.SaveToDisk(new FileSaveInfo(profileService) { FilePattern = patternTemplate }, writeTimeoutCts.Token, false, customPatterns), TimeSpan.FromSeconds(1), 3);
 
                     var finalizeSaveTime = sw.Elapsed;
                     swTotal.Stop();
-                    Logger.Info($"Successfully saved file at {path}. Duration Total: {swTotal.Elapsed}; BeforeSave: {beforeSaveTime}; Prepare: {prepareSaveTime}; BeforeFinalizeImageSaved: {beforeFinalizeImageSaveTime}; FinalizeSaveTime: {finalizeSaveTime}");
+                    Logger.Info($"Successfully saved file at {path}. Duration Total: {swTotal.Elapsed}; BeforeSave: {beforeSaveTime}; BeforeFinalizeImageSaved: {beforeFinalizeImageSaveTime}; FinalizeSaveTime: {finalizeSaveTime}");
 
 
                     // Run this in a separate task to limit risk of deadlocks

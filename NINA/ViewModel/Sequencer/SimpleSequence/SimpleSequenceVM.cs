@@ -63,6 +63,7 @@ using NINA.WPF.Base.ViewModel;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using CsvHelper.Configuration;
 using NINA.Sequencer.Trigger;
+using NINA.Core.Utility.Extensions;
 
 namespace NINA.ViewModel {
 
@@ -115,7 +116,7 @@ namespace NINA.ViewModel {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 foreach (var item in this.Targets.Items) {
                     var target = item as SimpleDSOContainer;
-                    var dso = new DeepSkyObject(target.Target.DeepSkyObject.Name, target.Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, profileService.ActiveProfile.AstrometrySettings.Horizon);
+                    var dso = new DeepSkyObject(target.Target.DeepSkyObject.Name, target.Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
                     dso.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                     target.Target.DeepSkyObject = dso;
                 }
@@ -125,6 +126,9 @@ namespace NINA.ViewModel {
 
             nighttimeCalculator.OnReferenceDayChanged += NighttimeCalculator_OnReferenceDayChanged;
         }
+
+        public event Func<object, EventArgs, Task> SequenceStarting;
+        public event Func<object, EventArgs, Task> SequenceFinished;
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
             DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
@@ -257,6 +261,7 @@ namespace NINA.ViewModel {
         public async Task<bool> StartSequence(object arg) {
             cts?.Dispose();
             cts = new CancellationTokenSource();
+            var token = cts.Token;
             IsRunning = true;
             TaskBarProgressState = TaskbarItemProgressState.Normal;
             try {
@@ -281,13 +286,16 @@ namespace NINA.ViewModel {
                 // Ensure the trigger is set from the profile
                 DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
 
-                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), cts.Token);
+                await (SequenceStarting?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+
+                await Sequencer.Start(new Progress<ApplicationStatus>(p => Status = p), token);
                 return true;
             } finally {
                 Logger.Info("Simple Sequence finished");
                 cameraMediator.ReleaseCaptureBlock(this);
                 TaskBarProgressState = TaskbarItemProgressState.None;
                 IsRunning = false;
+                await (SequenceFinished?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             }
         }
 

@@ -10,6 +10,7 @@
     x:Class="NINA.View.Options.ImagingView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,6 +19,7 @@
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
     Name="UC"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -26,7 +28,17 @@
         <util:BindingProxy x:Key="OptionsProxy" Data="{Binding}" />
     </UserControl.Resources>
     <UniformGrid Columns="2" DataContext="{Binding ActiveProfile}">
-        <GroupBox DataContext="{Binding ImageFileSettings}" Header="{ns:Loc LblFileSettings}">
+        <GroupBox DataContext="{Binding ImageFileSettings}">
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="20" Text="{ns:Loc LblFileSettings}" />
+                    <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_FileSettings}}" />
+                </Grid>
+            </GroupBox.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120" />
@@ -507,7 +519,17 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
-                <GroupBox DataContext="{Binding MeridianFlipSettings}" Header="{ns:Loc LblAutoMeridianFlip}">
+                <GroupBox DataContext="{Binding MeridianFlipSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblAutoMeridianFlip}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_MeridianFlip}}" />
+                        </Grid>
+                    </GroupBox.Header>
                     <StackPanel Orientation="Vertical">
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -652,7 +674,17 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox DataContext="{Binding ImageSettings}" Header="{ns:Loc LblImageOptions}">
+                <GroupBox DataContext="{Binding ImageSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblImageOptions}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_ImageOptions}}" />
+                        </Grid>
+                    </GroupBox.Header>
                     <StackPanel Orientation="Vertical">
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -905,7 +937,17 @@
                         </Border>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox DataContext="{Binding SequenceSettings}" Header="{ns:Loc LblSequence}">
+                <GroupBox DataContext="{Binding SequenceSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblSequence}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_Sequence}}" />
+                        </Grid>
+                    </GroupBox.Header>
                     <StackPanel Orientation="Vertical">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -1104,7 +1146,17 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblLayout}">
+                <GroupBox>
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblLayout}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_Layout}}" />
+                        </Grid>
+                    </GroupBox.Header>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

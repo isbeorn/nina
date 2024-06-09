@@ -28,9 +28,9 @@
     <SignOutput>True</SignOutput>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.4" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.4" />
-    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.4" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NINASetupBundle.wax" />
@@ -48,10 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <Target Name="SignBundleEngine">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
   </Target>
   <Target Name="SignBundle">
-    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
   </Target>
   <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
   <PropertyGroup>
@@ -78,8 +78,8 @@ copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Im
 echo "Copy NINA.MGEN.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y
 
-echo "Copy NINA.Platesolving.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.Platesolving.pdb" /Y
+echo "Copy NINA.PlateSolving.pdb to setup output"
+copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb" "$(TargetDir)NINA.PlateSolving.pdb" /Y
 
 echo "Copy NINA.Profile.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Profile.pdb" "$(TargetDir)NINA.Profile.pdb" /Y

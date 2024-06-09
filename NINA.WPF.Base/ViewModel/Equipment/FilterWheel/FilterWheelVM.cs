@@ -73,6 +73,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
             };
         }
 
+        public event Func<object, FilterChangedEventArgs, Task> FilterChanged;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -164,6 +166,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                         }
                     }
                     FilterWheelInfo.SelectedFilter = filter;
+                    await (FilterChanged?.InvokeAsync(this, new FilterChangedEventArgs(from: prevFilter, to: filter)) ?? Task.CompletedTask);
                 } else {
                     await Disconnect();
                 }

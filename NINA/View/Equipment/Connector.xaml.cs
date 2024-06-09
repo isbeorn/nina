@@ -112,5 +112,13 @@ namespace NINA.View.Equipment {
             get => (ICommand)GetValue(RefreshCommandProperty);
             set => SetValue(RefreshCommandProperty, value);
         }
+
+        public static readonly DependencyProperty SetupDialogOpenProperty =
+            DependencyProperty.Register(nameof(SetupDialogOpen), typeof(bool), typeof(Connector), new UIPropertyMetadata(false));
+
+        public bool SetupDialogOpen {
+            get => (bool)GetValue(SetupDialogOpenProperty);
+            set => SetValue(SetupDialogOpenProperty, value);
+        }
     }
 }

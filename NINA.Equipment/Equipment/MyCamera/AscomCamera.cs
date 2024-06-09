@@ -439,11 +439,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double HeatSinkTemperature => GetProperty(nameof(Camera.HeatSinkTemperature), double.NaN);
 
-        public object ImageArray => GetProperty<object>(nameof(Camera.ImageArray), null);
+        public object ImageArray => GetProperty<object>(nameof(Camera.ImageArray), null, cacheInterval: TimeSpan.Zero);
 
-        public object ImageArrayVariant => GetProperty<object>(nameof(Camera.ImageArrayVariant), null);
+        public object ImageArrayVariant => GetProperty<object>(nameof(Camera.ImageArrayVariant), null, cacheInterval: TimeSpan.Zero);
 
-        public bool ImageReady => GetProperty(nameof(Camera.ImageReady), false);
+        public bool ImageReady => GetProperty(nameof(Camera.ImageReady), false, cacheInterval: TimeSpan.Zero);
 
         public short InterfaceVersion => GetProperty<short>(nameof(Camera.InterfaceVersion), -1);
 
@@ -512,7 +512,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public short PercentCompleted => GetProperty<short>(nameof(Camera.PercentCompleted), -1);
+        public short PercentCompleted => GetProperty<short>(nameof(Camera.PercentCompleted), -1, cacheInterval: TimeSpan.Zero);
 
         public double PixelSizeX => GetProperty<double>(nameof(Camera.PixelSizeX), -1d);
 

@@ -325,7 +325,7 @@
                         Key="Left"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         EndPosition="1"
-                        IsPanEnabled="True"
+                        IsPanEnabled="False"
                         IsZoomEnabled="False"
                         MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
                         MajorGridlineStyle="LongDash"
@@ -339,7 +339,7 @@
                         Key="Right"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         EndPosition="1"
-                        IsPanEnabled="True"
+                        IsPanEnabled="False"
                         IsZoomEnabled="False"
                         MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
                         MajorGridlineStyle="LongDash"
@@ -353,7 +353,7 @@
                         Key="LeftAutofocus"
                         AxislineColor="Transparent"
                         EndPosition="1"
-                        IsPanEnabled="True"
+                        IsPanEnabled="False"
                         IsZoomEnabled="False"
                         MajorGridlineColor="Transparent"
                         Maximum="1"
@@ -373,7 +373,8 @@
                         MinimumPadding="0.1"
                         Position="Bottom"
                         StartPosition="0"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
                     <oxy:LineSeries

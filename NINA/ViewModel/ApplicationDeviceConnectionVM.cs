@@ -12,7 +12,9 @@
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Utility;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.ViewModel.Interfaces;
@@ -38,6 +40,7 @@ namespace NINA.ViewModel {
         private readonly IWeatherDataMediator weatherDataMediator;
         private readonly ISwitchMediator switchMediator;
         private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly IUsbDeviceWatcher usbDeviceWatcher;
 
         public ApplicationDeviceConnectionVM(IProfileService profileService,
                                              ICameraMediator camMediator,
@@ -51,7 +54,8 @@ namespace NINA.ViewModel {
                                              IWeatherDataMediator weatherMediator,
                                              IDomeMediator domMediator,
                                              ISafetyMonitorMediator safetyMonitorMediator,
-                                             IPluginLoader pluginLoader) : base(profileService) {
+                                             IPluginLoader pluginLoader,
+                                             IUsbDeviceWatcher usbDeviceWatcher) : base(profileService) {
             cameraMediator = camMediator;
             telescopeMediator = teleMediator;
             focuserMediator = focMediator;
@@ -64,8 +68,13 @@ namespace NINA.ViewModel {
             weatherDataMediator = weatherMediator;
             this.safetyMonitorMediator = safetyMonitorMediator;
 
+            this.usbDeviceWatcher = usbDeviceWatcher;
+            
             _ = Task.Run(async () => {
                 await pluginLoader.Load();
+                this.usbDeviceWatcher.Start();
+                this.usbDeviceWatcher.DeviceInserted += UsbDeviceWatcher_DeviceInserted;
+                this.usbDeviceWatcher.DeviceRemoved += UsbDeviceWatcher_DeviceRemoved;
                 Initialized = true;
             });
 
@@ -159,6 +168,16 @@ namespace NINA.ViewModel {
             }, (object o) => Initialized);
         }
 
+        private void UsbDeviceWatcher_DeviceInserted(object sender, UsbDeviceEventArgs e) {
+            if (e?.DeviceInfo == null) return;
+            Logger.Info($"New USB device detected {e.DeviceInfo}");
+        }
+
+        private void UsbDeviceWatcher_DeviceRemoved(object sender, UsbDeviceEventArgs e) {
+            if (e?.DeviceInfo == null) return;
+            Logger.Info($"USB Device disconnected {e.DeviceInfo}");
+        }
+
         private object lockObj = new object();
         private bool initialized;
         public bool Initialized {
@@ -186,6 +205,9 @@ namespace NINA.ViewModel {
         }
 
         public void Shutdown() {
+            this.usbDeviceWatcher.DeviceInserted -= UsbDeviceWatcher_DeviceInserted;
+            this.usbDeviceWatcher.DeviceRemoved -= UsbDeviceWatcher_DeviceRemoved;
+            usbDeviceWatcher.Stop();
             AsyncContext.Run(DisconnectEquipment);
             try {
                 NINA.Equipment.SDK.CameraSDKs.AtikSDK.AtikCameraDll.Shutdown();

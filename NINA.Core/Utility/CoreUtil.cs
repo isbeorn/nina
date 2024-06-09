@@ -41,6 +41,7 @@ namespace NINA.Core.Utility {
             }
         }
 
+        public static string VersionFriendlyName => new ProjectVersion(Version).ToString();
         public static bool IsReleaseBuild => new Version(Version).Revision >= 9000;
         public static bool IsBetaBuild => new Version(Version).Revision >= 2000 && new Version(Version).Revision < 3000;
         public static bool IsRCBuild => new Version(Version).Revision >= 3000 && new Version(Version).Revision < 9000;
@@ -55,6 +56,8 @@ namespace NINA.Core.Utility {
                 }
             }
         }
+
+        public static string DocumentationLocalPage => Path.Combine(APPLICATIONDIRECTORY, "docs", "index.html");
 
         public static string ChangelogPage {
             get {

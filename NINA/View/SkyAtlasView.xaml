@@ -29,8 +29,9 @@
             <util:BindingProxy x:Key="Context" Data="{Binding}" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
@@ -517,8 +518,12 @@
             </Border>
         </Grid>
 
-        <ninactrl:LoadingControl
+        <GridSplitter
             Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+        <ninactrl:LoadingControl
+            Grid.Column="2"
             MaxWidth="100"
             MaxHeight="100"
             HorizontalAlignment="Center"
@@ -527,7 +532,7 @@
             Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
 
         <Path
-            Grid.Column="1"
+            Grid.Column="2"
             Width="100"
             Height="100"
             Margin="5"
@@ -541,7 +546,7 @@
             Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
 
         <!--  Search result area  -->
-        <Grid Grid.Column="1" DataContext="{Binding SearchResult}">
+        <Grid Grid.Column="2" DataContext="{Binding SearchResult}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="Auto" />

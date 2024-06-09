@@ -2787,24 +2787,6 @@ HFR calculada: {2}
   <data name="LblSequence" xml:space="preserve">
     <value>Secuencia</value>
   </data>
-  <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Comando final de secuencia '{0}'.</value>
-  </data>
-  <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Comando final de secuencia</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completado.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Ejecutar comando cuando se complete la secuencia</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Selecciona el comando a ejecutar cuando se complete la secuencia.</value>
-  </data>
-  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Comando final de secuencia no encontrado '{0}'</value>
-  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Retraso en el inicio</value>
   </data>
@@ -6954,5 +6936,47 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
     <value>Controlador del generador de flats Geoptik</value>
+  </data>
+  <data name="LblLEDLights" xml:space="preserve">
+    <value>Luces LED</value>
+  </data>
+  <data name="LblLEDLightsTooltop" xml:space="preserve">
+    <value>Enciende o apaga las luces LED de la cámara</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>¡El brillo mínimo es mayor que el brillo máximo!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>¡El tiempo mínimo de exposición es superior al tiempo máximo de exposición!</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
+    <value>Está habilitado el dither entre los flats del cielo pero el telescopio no es capaz de guiar por pulsos</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
+    <value>El dither entre flats del cielo está habilitado pero la montura no está conectada</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
+    <value>El dither entre flats del cielo está habilitado pero el telescopio está aparcado</value>
+  </data>
+  <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
+    <value>¡El tiempo mínimo de exposición es superior al tiempo máximo de exposición!</value>
+  </data>
+  <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
+    <value>La instrucción "{0}" no ha respondido a la solicitud de cancelación después de {1} minutos. La secuencia continuará y la tarea que no responde será ignorada.</value>
+  </data>
+  <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
+    <value>Esperando la instrucción para reconocer la cancelación</value>
+  </data>
+  <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
+    <value>Se ordenó abrir la ventana de la cúpula o el techo, pero el dispositivo de monitoreo de seguridad informa de condiciones inseguras. Se ha interrumpido la apertura.</value>
+  </data>
+  <data name="LblExternalCommand" xml:space="preserve">
+    <value>Comando externo</value>
+  </data>
+  <data name="LblExternalCommandFailed" xml:space="preserve">
+    <value>El comando externo no se pudo ejecutar correctamente</value>
+  </data>
+  <data name="LblExternalCommandNotFound" xml:space="preserve">
+    <value>Comando externo no encontrado en '{0}'</value>
   </data>
 </root>

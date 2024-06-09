@@ -35,13 +35,11 @@ namespace NINA.Core.Utility.ExternalCommand {
                 Logger.Error($"Command not found: {sequenceCompleteCommand}");
                 return false;
             }
+            string src = Locale.Loc.Instance["LblExternalCommand"];
             try {
                 sequenceCompleteCommand = sequenceCompleteCommand.Trim();
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
-                string src = Locale.Loc.Instance["LblSequenceCommandSource"];
-                string completeMsg = string.Format(Locale.Loc.Instance["LblSequenceCommandAtCompletion"], executableLocation);
-                Logger.Info($"Running - {executableLocation}");
 
                 Process process = new Process();
                 process.StartInfo.FileName = executableLocation;
@@ -61,25 +59,21 @@ namespace NINA.Core.Utility.ExternalCommand {
                         Logger.Error($"STDERR: {e.Data}");
                     }
                 };
-                if (args != null)
+                if (!string.IsNullOrWhiteSpace(args)) {
                     process.StartInfo.Arguments = args;
+                }                    
 
-                Logger.Debug($"Starting process '{executableLocation}' with args '{args}'");
+                Logger.Info($"Running - '{executableLocation}' with args '{args}'");
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
 
-                //there is currently no automatism to clear a message other than
-                //sending a status update with an empty status for the same source.
-                StatusUpdate(src, completeMsg);
-                await Task.Run(async () => {
-                    await Task.Delay(5000);
-                    StatusUpdate(src, "");
-                });
                 return process.ExitCode == 0;
             } catch (Exception e) {
-                Logger.Error($"Error running command {sequenceCompleteCommand}: {e.Message}", e);
+                Logger.Error($"Error running command {sequenceCompleteCommand}:", e);
+            } finally {
+                StatusUpdate(src, "");
             }
             return false;
         }

@@ -313,7 +313,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public ICollection<FileExtension> FileExtensions { get; } = new List<FileExtension>() {
-            new FileExtension ("ALL", @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.cr3|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.pef|\.dng|\.arw|\.orf"),
+            new FileExtension ("ALL", @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.cr3|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.fts|\.pef|\.dng|\.arw|\.orf"),
             new FileExtension ("Canon", @"\.cr2|\.cr3"),
             new FileExtension ("NEF", @"\.nef"),
             new FileExtension ("RAW", @"\.raw"),
@@ -327,7 +327,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             new FileExtension ("JPG", @"\.jpg|\.jpeg"),
             new FileExtension ("GIF", @"\.gif"),
             new FileExtension ("XISF", @"\.xisf"),
-            new FileExtension ("FITS", @"\.fit|\.fits"),
+            new FileExtension ("FITS", @"\.fit|\.fits|\.fts"),
         };
 
         public void Disconnect() {

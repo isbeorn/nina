@@ -30,7 +30,6 @@ using NINA.Image.ImageAnalysis;
 using NINA.Plugin;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
-using NINA.Utility;
 using NINA.WPF.Base.InputBox;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Utility;
@@ -391,15 +390,6 @@ namespace NINA.ViewModel {
                         SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
                     }
                 }
-            }
-        }
-        [RelayCommand]
-        private void OpenSkyAtlasImageRepositoryDiag(object obj) {
-            var dialog = new OpenFolderDialog();
-            dialog.InitialDirectory = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
-
-            if (dialog.ShowDialog() == true) {
-                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.FolderName;
             }
         }
         [RelayCommand]

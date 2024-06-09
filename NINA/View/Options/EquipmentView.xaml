@@ -42,7 +42,6 @@
             <GroupBox DataContext="{Binding CameraSettings}">
                 <GroupBox.Header>
                     <TextBlock
-                        Margin="0,10,0,0"
                         VerticalAlignment="Center"
                         FontSize="20"
                         Text="{ns:Loc LblCamera}" />
@@ -360,19 +359,17 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
-                            Margin="0,10,0,0"
                             VerticalAlignment="Center"
                             FontSize="20"
                             Text="{ns:Loc LblFilterWheel}" />
                         <Button
                             Grid.Column="1"
-                            Width="35"
-                            Height="35"
+                            Width="20"
+                            Height="20"
                             Margin="5,0,5,0"
                             Command="{Binding Data.AddFilterCommand, Source={StaticResource proxy}}"
                             Style="{StaticResource BackgroundButton}">
                             <Path
-                                Margin="5"
                                 Data="{StaticResource AddSVG}"
                                 Fill="{StaticResource PrimaryBrush}"
                                 Stretch="Uniform"

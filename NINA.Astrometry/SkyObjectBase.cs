@@ -16,11 +16,15 @@ using System.Windows.Threading;
 
 namespace NINA.Astrometry {
     public abstract class SkyObjectBase : BaseINPC, IDeepSkyObject {
-        protected SkyObjectBase(string id, string imageRepository, CustomHorizon customHorizon) {
+        [Obsolete]
+        protected SkyObjectBase(string id, string imageRepository, CustomHorizon customHorizon) : this(id, null as Func<SkyObjectBase, Task<BitmapSource>>, customHorizon) {
+        }
+
+        protected SkyObjectBase(string id, Func<SkyObjectBase, Task<BitmapSource>> imageFactory, CustomHorizon customHorizon) {
             Id = id;
             Name = id;
-            this.imageRepository = imageRepository;
             this.customHorizon = customHorizon;
+            this.imageFactory = imageFactory;
         }
 
         private string id;
@@ -226,60 +230,24 @@ namespace NINA.Astrometry {
             }
         }
 
-        //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
-
-        private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
-
         private BitmapSource _image;
-        private string imageRepository;
         protected CustomHorizon customHorizon;
+
+        private Func<SkyObjectBase, Task<BitmapSource>> imageFactory;
 
         public BitmapSource Image {
             get {
                 if (_image == null) {
-                    /*var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
-                    if (size > 25) { size = 25; }
-                    size = Math.Max(15,size);
-                    var path = string.Format(
-                        "{0}?r={1}&d={2}&e=J2000&h={3}&w={4}&v=1&format=GIF",
-                        DSS_URL,
-                        this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
-                        this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
-                        (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
-                        size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(imageRepository, this.Id + ".gif");
-                    if (File.Exists(file)) {
-                        _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                            //var img = new BitmapImage(new Uri(file));
-                            _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };
+                    if(imageFactory != null) {
+                        _ = Task.Run(async () => {
+                            _image = await Task.Run(() => imageFactory(this));
                             _image.Freeze();
                             RaisePropertyChanged(nameof(Image));
-                        }));
+                        });
                     }
                 }
                 return _image;
             }
         }
-
-        /*private Brush _imageBrush;
-        public Brush ImageBrush {
-            get {
-                if(_imageBrush == null) {
-                    _imageBrush = new ImageBrush(Image);
-                }
-                return _imageBrush;
-            }
-        }*/
-
-        /*private void Img_DownloadCompleted(object sender,EventArgs e) {
-            var path = "D:\\img\\";
-            using (FileStream fs = new FileStream(path + this.Name + ".gif",FileMode.Create)) {
-                var encoder = new GifBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(Image));
-                encoder.Save(fs);
-            }
-
-            RaisePropertyChanged(nameof(Image));
-        }*/
     }
 }

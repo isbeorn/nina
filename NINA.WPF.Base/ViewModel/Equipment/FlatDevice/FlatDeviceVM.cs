@@ -90,6 +90,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += FilterWheelSettingsChanged;
         }
 
+        public event Func<object, EventArgs, Task> Opened;
+        public event Func<object, EventArgs, Task> Closed;
+        public event Func<object, FlatDeviceBrightnessChangedEventArgs, Task> BrightnessChanged;
+        public event Func<object, EventArgs, Task> LightToggled;
+
         public async Task<IList<string>> Rescan() {
             return await Task.Run(async () => {
                 await DeviceChooserVM.GetEquipment();
@@ -133,7 +138,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             if (FlatDevice == null || !FlatDevice.Connected) return Task.FromResult(false);
             return Task.Run(async () => {
                 try {
-                    if (value < FlatDevice.MinBrightness) {
+                    var from = FlatDeviceInfo.Brightness;
+                    /* a value of 0 now indicates turning the device off */
+                    if (value > 0 && value < FlatDevice.MinBrightness) {
                         value = FlatDevice.MinBrightness;
                     }
                     if (value > FlatDevice.MaxBrightness) {
@@ -148,6 +155,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                     await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                     await waitForUpdate;
+                    await (BrightnessChanged?.InvokeAsync(this, new FlatDeviceBrightnessChangedEventArgs(from: from, to: FlatDeviceInfo.Brightness)) ?? Task.CompletedTask);
                     return true;
                 } finally {
                     progress?.Report(new ApplicationStatus());
@@ -216,7 +224,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         if (updateTimer != null) {
                             updateTimer.Interval =
                                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();
+                            _ = updateTimer.Run();
                         }
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;
@@ -293,6 +301,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                 await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                 await waitForUpdate;
+                await (Opened?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 return result;
             } catch (FlatDeviceCoverErrorException) {
                 Logger.Error("Flat device reports the cover is in an Error state");
@@ -321,6 +330,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                 await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                 await waitForUpdate;
+                await (Closed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 return result;
             } catch (FlatDeviceCoverErrorException) {
                 Logger.Error("Flat device reports the cover is in an Error state");
@@ -401,6 +411,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                     await CoreUtil.Delay(profileService.ActiveProfile.FlatDeviceSettings.SettleTime, token);
                     await waitForUpdate;
+                    await (LightToggled?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                     return true;
                 } finally {
                     progress?.Report(new ApplicationStatus());

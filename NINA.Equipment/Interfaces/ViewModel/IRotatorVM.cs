@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,5 +37,11 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         float GetTargetPosition(float position);
 
         float GetTargetMechanicalPosition(float position);
+
+        event EventHandler<RotatorEventArgs> Synced;
+
+        event Func<object, RotatorEventArgs, Task> Moved;
+
+        event Func<object, RotatorEventArgs, Task> MovedMechanical;
     }
 }

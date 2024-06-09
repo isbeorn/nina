@@ -91,7 +91,8 @@
       <ComponentGroupRef Id="External_x64_Nikon_Type0027_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0028_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0029_files" />
-      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />      
+      <ComponentGroupRef Id="External_x64_Nikon_Type0030_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0031_files" />
       <ComponentGroupRef Id="External_x64_Altair_files" />
       <ComponentGroupRef Id="External_x64_ToupTek_files" />
       <ComponentGroupRef Id="External_x64_Omegon_files" />
@@ -152,6 +153,7 @@
       <ComponentGroupRef Id="uk_UA_files" />
       <ComponentGroupRef Id="hu_HU_files" />
       <ComponentGroupRef Id="eu_ES_files" />
+      <ComponentGroupRef Id="DocumentationComponent" />
     </Feature>
     <InstallExecuteSequence>
       <Custom Action="API_Firewall_listen_ipv4" Before="InstallFinalize" Condition="NOT Installed" />
@@ -219,6 +221,7 @@
                 <Directory Id="External_x64_Nikon_Type0028" Name="Type0028" />
                 <Directory Id="External_x64_Nikon_Type0029" Name="Type0029" />
                 <Directory Id="External_x64_Nikon_Type0030" Name="Type0030" />
+                <Directory Id="External_x64_Nikon_Type0031" Name="Type0031" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
@@ -303,6 +306,7 @@
           </Directory>
           <Directory Id="hu_HU" Name="hu-HU" />
           <Directory Id="uk_UA" Name="uk-UA" />
+          <Directory Id="DocumentationDirectory" Name="docs" />
         </Directory>
       </Directory>
       <StandardDirectory Id="ProgramMenuFolder">
@@ -735,6 +739,15 @@
       <Component Id="Microsoft.VisualBasic.Forms.dll" Guid="01e52a73-a49e-41b3-9af3-f686c406bb32">
         <File Id="Microsoft.VisualBasic.Forms.dll" Name="Microsoft.VisualBasic.Forms.dll" Source="$(var.NINA_TargetDir)Microsoft.VisualBasic.Forms.dll" />
       </Component>
+      <Component Id="Microsoft.Web.WebView2.Core.dll" Guid="5b3a0ef9-39e7-4d40-af5b-16aed8d52fa3">
+        <File Id="Microsoft.Web.WebView2.Core.dll" Name="Microsoft.Web.WebView2.Core.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.Core.dll" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.WinForms.dll" Guid="92b060e0-6093-44ae-afb1-81d076b327be">
+        <File Id="Microsoft.Web.WebView2.WinForms.dll" Name="Microsoft.Web.WebView2.WinForms.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.WinForms.dll" />
+      </Component>
+      <Component Id="Microsoft.Web.WebView2.Wpf.dll" Guid="3841a8b1-cf19-49a9-972a-645f0b6da182">
+        <File Id="Microsoft.Web.WebView2.Wpf.dll" Name="Microsoft.Web.WebView2.Wpf.dll" Source="$(var.NINA_TargetDir)Microsoft.Web.WebView2.Wpf.dll" />
+      </Component>
       <Component Id="Microsoft.Win32.Primitives.dll" Guid="5fef9b07-885d-41d5-9b5c-40d54d15ad72">
         <File Id="Microsoft.Win32.Primitives.dll" Name="Microsoft.Win32.Primitives.dll" Source="$(var.NINA_TargetDir)Microsoft.Win32.Primitives.dll" />
       </Component>
@@ -750,8 +763,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.324.11423.dll" Guid="316ada04-3e77-4fc4-aef8-c8d0227c2d13">
-        <File Id="mscordaccore_amd64_amd64_8.0.324.11423.dll" Name="mscordaccore_amd64_amd64_8.0.324.11423.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.324.11423.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.624.26715.dll" Guid="4a7dbb1d-8ac4-4936-9b77-edeae70c24fa">
+        <File Id="mscordaccore_amd64_amd64_8.0.624.26715.dll" Name="mscordaccore_amd64_amd64_8.0.624.26715.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.624.26715.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1394,6 +1407,9 @@
       </Component>
       <Component Id="vcruntime140_cor3.dll" Guid="594ba71e-c9c4-4b16-8b73-3ce80919432c">
         <File Id="vcruntime140_cor3.dll" Name="vcruntime140_cor3.dll" Source="$(var.NINA_TargetDir)vcruntime140_cor3.dll" />
+      </Component>
+      <Component Id="WebView2Loader.dll" Guid="df87fae8-e404-423d-9794-45eb26719eb6">
+        <File Id="WebView2Loader.dll" Name="WebView2Loader.dll" Source="$(var.NINA_TargetDir)WebView2Loader.dll" />
       </Component>
       <Component Id="WindowsBase.dll" Guid="575c8b74-b0ed-4f5f-865f-74e51fcd3468">
         <File Id="WindowsBase.dll" Name="WindowsBase.dll" Source="$(var.NINA_TargetDir)WindowsBase.dll" />
@@ -2081,11 +2097,34 @@
 
   <Fragment>
     <ComponentGroup Id="External_x64_Nikon_Type0030_files" Directory="External_x64_Nikon_Type0030">
+      <Component Id="External_x64_Nikon_Type0030_NkRoyalmile.dll" Guid="CD39EC25-C232-412D-9B71-4B24D01B6A48" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0030_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\NkRoyalmile.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0030_dnssd.dll" Guid="F7B651C9-6D55-4C94-8CF5-4AC3B97F6902" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0030_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\dnssd.dll" />
+      </Component>
       <Component Id="External_x64_Nikon_Type0030_NkdPTP.dll" Guid="BF6F1E20-83D2-4812-8486-E41AC306A059" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0030_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\NkdPTP.dll" />
       </Component>
       <Component Id="External_x64_Nikon_Type0030_Type0030.md3" Guid="24695B36-B6EE-4DE6-BCBE-F5A6E05AF813" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0030_Type0030.md3" Name="Type0030.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\Type0030.md3" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x64_Nikon_Type0031_files" Directory="External_x64_Nikon_Type0031">
+      <Component Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Guid="7D77D79F-8C10-43A1-9C4B-3E97EB579EA2" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkRoyalmile.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_dnssd.dll" Guid="2EAA12DF-234B-4865-97F9-72967E5F7815" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\dnssd.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_NkdPTP.dll" Guid="0C3BECFD-7900-4383-9BE4-678C1BCECDF0" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkdPTP.dll" />
+      </Component>
+      <Component Id="External_x64_Nikon_Type0031_Type0031.md3" Guid="FC96A307-8EFB-4A89-8A7B-ABE35A1B7554" Bitness="$(var.Win64)">
+        <File Id="External_x64_Nikon_Type0031_Type0031.md3" Name="Type0031.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\Type0031.md3" />
       </Component>
     </ComponentGroup>
   </Fragment>
