@@ -3,8 +3,6 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-### <span style="color:yellow;">Beta builds are preview builds that contain the full development effort for the next release. These builds contain the full set of features for the next version and are under evaluation to find and fix potential bugs. No major changes will occur in these builds and the focus is on bug fixing only - major changes may only occur if a critical issue is identified and a major change is necessary to fix it. Thus these builds should already be quite stable to use.</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
-
 # Version 3.1
 
 ## Behavioral Changes
