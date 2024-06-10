@@ -266,6 +266,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             return false;
                         }
                     } catch (OperationCanceledException) {
+                        try { switchHub?.Disconnect(); } catch { }
                         await Disconnect();
                         return false;
                     }
