@@ -345,16 +345,17 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 var cam = new PersistSettingsCameraDecorator(this.profileService, (ICamera)DeviceChooserVM.SelectedDevice);
                 _cancelConnectCameraSource?.Dispose();
                 _cancelConnectCameraSource = new CancellationTokenSource();
+                var token = _cancelConnectCameraSource.Token;
                 if (cam != null) {
                     try {
                         var connected = await cam.Connect(_cancelConnectCameraSource.Token);
 
-                        _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             CoolerHistory.Clear();
                             CoolerHistoryMax = 20;
                             CoolerHistoryMin = -20;
                             this.Cam = cam;
+                            token.ThrowIfCancellationRequested();
 
                             if (DefaultGain == -1) {
                                 DefaultGain = Cam.Gain;
@@ -453,7 +454,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (CameraInfo.Connected) { await Disconnect(); }
+                        if (cam?.Connected == true) { await Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
                     } catch (Exception ex) {
@@ -630,17 +631,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public async Task Disconnect() {
-            if (Cam != null) { Logger.Info("Disconnected Camera"); }
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                try { _cancelChangeTemperatureCts?.Cancel(); } catch { }
+                TempChangeRunning = false;
+                Cam?.Disconnect();
+                Cam = null;
+                CameraInfo.Reset();
+                BroadcastCameraInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Camera");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            try { _cancelChangeTemperatureCts?.Cancel(); } catch { }
-            TempChangeRunning = false;
-            Cam?.Disconnect();
-            Cam = null;
-            CameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
-            BroadcastCameraInfo();
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+
         }
 
         public IAsyncEnumerable<IExposureData> LiveView(CaptureSequence sequence, CancellationToken ct) {

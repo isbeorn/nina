@@ -146,12 +146,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 var dome = (IDome)DeviceChooserVM.SelectedDevice;
                 cancelChooseDomeSource?.Dispose();
                 cancelChooseDomeSource = new CancellationTokenSource();
+                var token = cancelChooseDomeSource.Token;
                 if (dome != null) {
                     try {
                         var connected = await dome?.Connect(cancelChooseDomeSource.Token);
-                        cancelChooseDomeSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             Dome = dome;
+                            token.ThrowIfCancellationRequested();
 
                             DomeInfo = new DomeInfo {
                                 Connected = true,
@@ -196,7 +197,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (DomeInfo.Connected) { await Disconnect(); }
+                        if (dome?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -322,16 +323,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         }
 
         public async Task Disconnect() {
-            if (Dome != null) { Logger.Info("Disconnected Dome Device"); }
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                Dome?.Disconnect();
+                Dome = null;
+                DomeInfo.Reset();
+                BroadcastDomeInfo();
+                RaiseAllPropertiesChanged();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Dome Device");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            Dome?.Disconnect();
-            Dome = null;
-            DomeInfo = DeviceInfo.CreateDefaultInstance<DomeInfo>();
-            BroadcastDomeInfo();
-            RaiseAllPropertiesChanged();
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         private IDome dome;

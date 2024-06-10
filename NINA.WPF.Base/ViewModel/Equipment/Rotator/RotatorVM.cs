@@ -357,12 +357,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                 var rotator = (IRotator)DeviceChooserVM.SelectedDevice;
                 _connectRotatorCts?.Dispose();
                 _connectRotatorCts = new CancellationTokenSource();
+                var token = _connectRotatorCts.Token;
                 if (rotator != null) {
                     try {
                         var connected = await rotator?.Connect(_connectRotatorCts.Token);
-                        _connectRotatorCts.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.Rotator = rotator;
+                            token.ThrowIfCancellationRequested();
 
                             if (this.Rotator.CanReverse) {
                                 this.Rotator.Reverse = profileService.ActiveProfile.RotatorSettings.Reverse2;
@@ -403,7 +404,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (RotatorInfo.Connected) { await Disconnect(); }
+                        if (rotator?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -426,17 +427,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
         public async Task Disconnect() {
             try {
-                if (RotatorInfo.Connected) {
-                    if (updateTimer != null) {
-                        await updateTimer.Stop();
-                    }
-                    Rotator?.Disconnect();
-                    Rotator = null;
-                    RotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
-                    BroadcastRotatorInfo();
-                    await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                    Logger.Info("Disconnected Rotator");
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
                 }
+                Rotator?.Disconnect();
+                Rotator = null;
+                RotatorInfo.Reset();
+                BroadcastRotatorInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Rotator");
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

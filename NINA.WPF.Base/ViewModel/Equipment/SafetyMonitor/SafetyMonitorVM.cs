@@ -137,12 +137,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                 var sm = (ISafetyMonitor)DeviceChooserVM.SelectedDevice;
                 connectCts?.Dispose();
                 connectCts = new CancellationTokenSource();
+                var token = connectCts.Token;
                 if (sm != null) {
                     try {
                         var connected = await sm?.Connect(connectCts.Token);
-                        connectCts.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.SafetyMonitor = sm;
+                            token.ThrowIfCancellationRequested();
 
                             SafetyMonitorInfo = new SafetyMonitorInfo {
                                 Connected = true,
@@ -173,7 +174,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (SafetyMonitorInfo.Connected) { await Disconnect(); }
+                        if (sm?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -195,16 +196,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
         }
 
         public async Task Disconnect() {
-            if (SafetyMonitorInfo.Connected) {
+            try {
                 if (updateTimer != null) {
                     await updateTimer.Stop();
                 }
                 SafetyMonitor?.Disconnect();
                 SafetyMonitor = null;
-                SafetyMonitorInfo = DeviceInfo.CreateDefaultInstance<SafetyMonitorInfo>();
+                SafetyMonitorInfo.Reset();
                 BroadcastMonitorInfo();
                 await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Safety Monitor");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 
