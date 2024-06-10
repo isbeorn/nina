@@ -3,6 +3,11 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.x
+
+## Bugfixes
+- Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
+
 # Version 3.1
 
 ## Behavioral Changes
