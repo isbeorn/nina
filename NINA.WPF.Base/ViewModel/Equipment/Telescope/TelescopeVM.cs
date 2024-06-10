@@ -760,7 +760,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 TelescopeInfo.Reset();
                 BroadcastTelescopeInfo();
                 await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                Logger.Info("Disconnected Mount")
+                Logger.Info("Disconnected Mount");
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
