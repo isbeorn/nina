@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 - Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
 - Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
+- Native autofocus: When only one star is detected, the routinge will no longer fail with the error that there is not enough HFR spread
 
 # Version 3.1
 
