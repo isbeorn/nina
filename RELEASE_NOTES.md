@@ -7,6 +7,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Improvements
 - On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.
+- The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected
 
 ## Bugfixes
 - Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
