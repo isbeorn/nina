@@ -5,6 +5,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.x
 
+## Improvements
+- On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.
+
 ## Bugfixes
 - Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
 - Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
