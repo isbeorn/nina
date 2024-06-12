@@ -413,8 +413,8 @@
                 <StackPanel Margin="5,0,0,0">
                     <Grid Margin="0,5,0,0">
                         <Path
-                            Width="49"
-                            Height="49"
+                            Width="46"
+                            Height="46"
                             Data="{StaticResource NewMoonSVG}"
                             Fill="Yellow"
                             Stretch="Uniform"
