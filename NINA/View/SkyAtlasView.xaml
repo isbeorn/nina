@@ -409,7 +409,7 @@
 
             <Border
                 Grid.Row="1"
-                Margin="0,5,0,0"
+                Margin="5,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,1,0,1">
                 <StackPanel>
@@ -503,7 +503,7 @@
             </Border>
             <Border
                 Grid.Row="2"
-                Margin="0,5,0,0"
+                Margin="5,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,1,0,0">
 
