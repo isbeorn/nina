@@ -13,6 +13,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
 - Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
 - Native autofocus: When only one star is detected, the routine will no longer fail with the error that there is not enough HFR spread
+- Prevent an edge case where the time condition did not cancel the remaining instructions following an instruction that did not fit into the remaining time, even though those subsequent instructions would fit within the available time
 
 # Version 3.1
 
