@@ -100,12 +100,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 var weatherdev = (IWeatherData)DeviceChooserVM.SelectedDevice;
                 _cancelChooseWeatherDataSource?.Dispose();
                 _cancelChooseWeatherDataSource = new CancellationTokenSource();
+                var token = _cancelChooseWeatherDataSource.Token;
                 if (weatherdev != null) {
                     try {
-                        var connected = await weatherdev?.Connect(_cancelChooseWeatherDataSource.Token);
-                        _cancelChooseWeatherDataSource.Token.ThrowIfCancellationRequested();
+                        var connected = await weatherdev?.Connect(_cancelChooseWeatherDataSource.Token);                        
                         if (connected) {
                             WeatherData = weatherdev;
+                            token.ThrowIfCancellationRequested();
 
                             WeatherDataInfo = new WeatherDataInfo {
                                 Connected = true,
@@ -148,7 +149,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (WeatherDataInfo.Connected) { await Disconnect(); }
+                        if (weatherdev?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -278,16 +279,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
         }
 
         public async Task Disconnect() {
-            if (WeatherData != null) { Logger.Info("Disconnected Weather Device"); }
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                WeatherData?.Disconnect();
+                WeatherData = null;
+                WeatherDataInfo.Reset();
+                BroadcastWeatherDataInfo();
+                RaisePropertyChanged(nameof(WeatherData));
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Weather Device");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            WeatherData?.Disconnect();
-            WeatherData = null;
-            WeatherDataInfo = DeviceInfo.CreateDefaultInstance<WeatherDataInfo>();
-            BroadcastWeatherDataInfo();
-            RaisePropertyChanged(nameof(WeatherData));
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public string Action(string actionName, string actionParameters = "") {

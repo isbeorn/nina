@@ -19,6 +19,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyGuider;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
@@ -167,7 +168,11 @@ namespace NINA.WPF.Base.ViewModel {
 
                 Steps = new AutomatedWorkflow();
 
-                Steps.Add(new WorkflowStep("StopAutoguider", Loc.Instance["LblStopAutoguider"], () => StopAutoguider(cancellationToken, _progress)));
+                var guiderInfo = guiderMediator.GetInfo();
+                var guiderRelevant = guiderInfo.Connected && !(guiderMediator.GetDevice() is DirectGuider);
+                if (guiderRelevant) { 
+                    Steps.Add(new WorkflowStep("StopAutoguider", Loc.Instance["LblStopAutoguider"], () => StopAutoguider(cancellationToken, _progress)));
+                }
 
                 Steps.Add(new WorkflowStep("PassMeridian", Loc.Instance["LblPassMeridian"], () => PassMeridian(cancellationToken, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Loc.Instance["LblFlip"], () => DoFlip(cancellationToken, _progress)));
@@ -178,8 +183,10 @@ namespace NINA.WPF.Base.ViewModel {
                     Steps.Add(new WorkflowStep("Recenter", Loc.Instance["LblRecenter"], () => Recenter(cancellationToken, _progress)));
                 }
 
-                Steps.Add(new WorkflowStep("SelectNewGuideStar", Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(cancellationToken, _progress)));
-                Steps.Add(new WorkflowStep("ResumeAutoguider", Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(cancellationToken, _progress)));
+                if(guiderRelevant) {
+                    Steps.Add(new WorkflowStep("SelectNewGuideStar", Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(cancellationToken, _progress)));
+                    Steps.Add(new WorkflowStep("ResumeAutoguider", Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(cancellationToken, _progress)));
+                }
 
                 Steps.Add(new WorkflowStep("Settle", Loc.Instance["LblSettle"], () => Settle(cancellationToken, _progress)));
 

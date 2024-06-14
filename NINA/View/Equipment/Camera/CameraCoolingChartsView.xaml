@@ -46,6 +46,7 @@
             <oxy:Plot.Axes>
                 <oxy:LinearAxis
                     Key="Temperature"
+                    Title="{ns:Loc LblChipTemp}"
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IsPanEnabled="False"
                     IsZoomEnabled="False"
@@ -56,11 +57,14 @@
                     MaximumDataMargin="5"
                     Minimum="{Binding CoolerHistoryMin}"
                     MinimumDataMargin="5"
-                    Position="Left"
+                    Position="Right"
+                    StringFormat="0 &#176;C"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
                 <oxy:LinearAxis
                     Key="CoolingPower"
+                    Title="{ns:Loc LblCoolerPower}"
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IsPanEnabled="False"
                     IsZoomEnabled="False"
@@ -68,16 +72,20 @@
                     MaximumDataMargin="5"
                     Minimum="0"
                     MinimumDataMargin="5"
-                    Position="Right"
+                    Position="Left"
+                    StringFormat="0 '%'"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}" />
                 <oxy:DateTimeAxis
+                    Title="{ns:Loc LblTime}"
                     IsPanEnabled="False"
                     IsZoomEnabled="False"
                     Position="Bottom"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries

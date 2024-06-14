@@ -384,14 +384,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 var telescope = (ITelescope)DeviceChooserVM.SelectedDevice;
                 _cancelChooseTelescopeSource?.Dispose();
                 _cancelChooseTelescopeSource = new CancellationTokenSource();
+                var token = _cancelChooseTelescopeSource.Token;
                 if (telescope != null) {
                     try {
-                        var currentThread = System.Threading.Thread.CurrentThread;
-
                         var connected = await telescope?.Connect(_cancelChooseTelescopeSource.Token);
-                        _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             Telescope = telescope;
+                            token.ThrowIfCancellationRequested();
 
                             if (Telescope.EquatorialSystem == Epoch.B1950 || Telescope.EquatorialSystem == Epoch.J2050) {
                                 Logger.Error($"Mount uses an unsupported equatorial system: {Telescope.EquatorialSystem}");
@@ -524,7 +523,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             return false;
                         }
                     } catch (OperationCanceledException ex) {
-                        if (telescope?.Connected == true) { await Disconnect(); }
+                        if (telescope?.Connected == true) {
+                            await Disconnect(); 
+                        }
                         Notification.ShowError(ex.Message);
                         return false;
                     }
@@ -750,15 +751,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task Disconnect() {
-            if (Telescope != null) { Logger.Info("Disconnected Mount"); }
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                Telescope?.Disconnect();
+                Telescope = null;
+                TelescopeInfo.Reset();
+                BroadcastTelescopeInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Mount");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            Telescope?.Disconnect();
-            Telescope = null;
-            TelescopeInfo.Reset();
-            BroadcastTelescopeInfo();
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public void MoveAxis(TelescopeAxes axis, double rate) {

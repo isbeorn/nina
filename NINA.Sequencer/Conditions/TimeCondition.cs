@@ -118,6 +118,8 @@ namespace NINA.Sequencer.Conditions {
 
         public bool HasFixedTimeProvider => selectedProvider != null && !(selectedProvider is Utility.DateTimeProvider.TimeProvider);
 
+        private DateTime lastCutOffTime;
+
         [JsonProperty]
         public int Hours {
             get => hours;
@@ -229,10 +231,17 @@ namespace NINA.Sequencer.Conditions {
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             var nextItemDuration = nextItem?.GetEstimatedDuration() ?? TimeSpan.Zero;
             var remainingTime = CalculateRemainingTime();
+
             var hasTimeRemaining = DateTime.Now + nextItemDuration <= remainingTime;
+            if (lastCutOffTime >= remainingTime) {
+                hasTimeRemaining = false;
+            }
+            
             if (!hasTimeRemaining && nextItemDuration > TimeSpan.Zero) {
                 if(nextItem != null) {
                     Logger.Info($"No more time remaining. Remaining: {remainingTime - DateTime.Now}, Next Item {nextItem.Name ?? ""}, Next Item Estimated Duration {nextItemDuration}, Next Item Attempts: {nextItem.Attempts}");
+                    // There is no time remaining due to the next instruction taking longer - mark the stop time so that all following checks are marked as finished until we exceed the set time
+                    lastCutOffTime = (new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Hours, Minutes, Seconds)).AddSeconds(10);
                 }
             }
             if (!hasTimeRemaining && IsActive()) {
@@ -243,6 +252,11 @@ namespace NINA.Sequencer.Conditions {
 
         public override string ToString() {
             return $"Condition: {nameof(TimeCondition)}, Time: {Hours}:{Minutes}:{Seconds}h";
+        }
+
+        public override void ResetProgress() {
+            lastCutOffTime = System.DateTime.MinValue;
+            base.ResetProgress();
         }
     }
 }

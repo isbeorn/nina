@@ -195,11 +195,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 var newDevice = (IFlatDevice)device;
                 connectFlatDeviceCts?.Dispose();
                 connectFlatDeviceCts = new CancellationTokenSource();
+                var token = connectFlatDeviceCts.Token;
                 try {
                     var connected = await newDevice.Connect(connectFlatDeviceCts.Token);
-                    connectFlatDeviceCts.Token.ThrowIfCancellationRequested();
                     if (connected) {
                         this.FlatDevice = newDevice;
+                        token.ThrowIfCancellationRequested();
                         FlatDeviceInfo = new FlatDeviceInfo {
                             MinBrightness = newDevice.MinBrightness,
                             MaxBrightness = newDevice.MaxBrightness,
@@ -240,7 +241,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         return false;
                     }
                 } catch (OperationCanceledException) {
-                    if (FlatDeviceInfo.Connected) {
+                    if (flatDevice?.Connected == true) {
                         await Disconnect();
                     }
 
@@ -266,16 +267,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         }
 
         public async Task Disconnect() {
-            if (!FlatDeviceInfo.Connected) return;
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                FlatDevice?.Disconnect();
+                FlatDevice = null;
+                FlatDeviceInfo.Reset();
+                BroadcastFlatDeviceInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected Flat Device");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            FlatDevice?.Disconnect();
-            FlatDevice = null;
-            FlatDeviceInfo = DeviceInfo.CreateDefaultInstance<FlatDeviceInfo>();
-            BroadcastFlatDeviceInfo();
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-            Logger.Info("Disconnected Flat Device");
         }
 
         private async Task<bool> DisconnectFlatDeviceDialog() {

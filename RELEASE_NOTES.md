@@ -3,6 +3,19 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.1 Hotfix 1
+
+## Improvements
+- On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.
+- The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected
+
+## Bugfixes
+- Fixed an issue where a sequence item was sometimes not marked as failed on error
+- Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
+- Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
+- Native autofocus: When only one star is detected, the routine will no longer fail with the error that there is not enough HFR spread
+- Prevent an edge case where the time condition did not cancel the remaining instructions following an instruction that did not fit into the remaining time, even though those subsequent instructions would fit within the available time
+
 # Version 3.1
 
 ## Behavioral Changes
