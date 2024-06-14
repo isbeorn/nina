@@ -985,7 +985,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Adresář Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darky k převzetí</value>
+    <value>Počet Dark Flatů</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. Přejezd</value>
@@ -6973,7 +6973,7 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value>Čeká se na pokyn k potvrzení zrušení</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Bylo přikázáno otevřít štěrbinu nebo střechu, ale bezpečnostní monitor je odpojeno. Otevření bylo zrušeno.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>Externí Příkaz</value>
