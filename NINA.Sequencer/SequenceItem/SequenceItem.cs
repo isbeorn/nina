@@ -243,6 +243,9 @@ namespace NINA.Sequencer.SequenceItem {
                                     if (completedTask == checkTask) {
                                         Logger.Error($"Execution for {this} did not finish after being cancelled for over {checkTimeout.Minutes} minutes! Continuing...");
                                         Notification.ShowError(string.Format(Loc.Instance["Lbl_SequenceItem_SkippingAfterFailedCancellation"], this, checkTimeout.Minutes));
+                                    } else {
+                                        // Ensure any exceptions from main task are observed
+                                        await executionTask;
                                     }
                                     localToken.ThrowIfCancellationRequested();
                                 }
