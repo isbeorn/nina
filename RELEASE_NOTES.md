@@ -3,6 +3,11 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.tbd
+
+## Bugfixes
+- When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.
+
 # Version 3.1 Hotfix 1
 
 ## Improvements
