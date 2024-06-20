@@ -294,7 +294,7 @@ namespace NINA.ViewModel.ImageHistory {
                 }
 
                 if (last == null) {
-                    last = new ImageHistoryPoint(GetNextImageId(), "NONE");
+                    last = new ImageHistoryPoint(0, "NONE");
                 }
                 last.PopulateAFPoint(report);
                 AutoFocusPoints.Add(last);

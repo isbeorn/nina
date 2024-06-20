@@ -30,6 +30,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <h2 id="bugfixes">Bugfixes</h2>
 <ul>
 <li>When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.</li>
+<li>In some special cases the <code>AutoFocus After Exposures</code> trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.</li>
 </ul>
 <h1 id="version-3.1-hotfix-1">Version 3.1 Hotfix 1</h1>
 <h2 id="improvements">Improvements</h2>
