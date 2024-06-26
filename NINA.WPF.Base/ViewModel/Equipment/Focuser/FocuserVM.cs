@@ -208,7 +208,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     ToggleTempComp(false);
                 }
                 try {
-                    using (timeoutCts.Token.Register(() => HaltFocuser())) {
+                    // Only register to call Halt() when no timeout happens
+                    using (ct.Register(() => HaltFocuser())) {
                         Logger.Info($"Moving Focuser to position {position}");
                         progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFocuserMoveToPosition"], position) });
 
@@ -230,7 +231,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         BroadcastFocuserInfo();
                     }
                 } catch (OperationCanceledException) {
-                    if (ct.IsCancellationRequested == true) {
+                    if (!ct.IsCancellationRequested) {
+                        Logger.Error("Focuser movement timed out after 10 minutes");
+                        Notification.ShowError(string.Format(Loc.Instance["LblFocuserMoveTimeout"], 10));
+                    } else {
                         Logger.Info("Focuser move cancelled");
                         throw;
                     }
