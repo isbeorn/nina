@@ -40,6 +40,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using NINA.WPF.Base.View;
+using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
 
@@ -86,6 +87,29 @@ namespace NINA.ViewModel {
             } catch (Exception) {
                 Logger.Info($"No ASCOM Platform installed");
             }
+        }
+
+        [RelayCommand]
+        private Task CheckDiskInfo() {
+            return Task.Run(() => {
+                var sw = Stopwatch.StartNew();
+                try {
+                    foreach (var drive in DriveInfo.GetDrives()) {
+                        try {
+                            if (drive.IsReady) {
+                                Logger.Info(string.Format("Available Space on Drive {0}: {1} GB", drive.Name, Math.Round(drive.AvailableFreeSpace / (1024d * 1024d * 1024d), 2).ToString(CultureInfo.InvariantCulture)));
+                            } else {
+                                Logger.Info(string.Format("Drive {0} is not ready", drive.Name));
+                            }
+                        } catch {
+                            Logger.Info(string.Format("Error occurred to retrieve drive info for {0}", drive.Name));
+                        }
+                    }
+                } catch {
+                    Logger.Info("Unable to retrieve drive info");
+                }
+                var elapsed = sw.Elapsed;
+            });            
         }
 
         [RelayCommand]
