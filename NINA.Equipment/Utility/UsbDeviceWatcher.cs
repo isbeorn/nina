@@ -81,7 +81,9 @@ namespace NINA.Equipment.Utility {
                         try { status = device["Status"]?.ToString(); } catch { status = "N/A"; }
 
                         if (deviceId != "N/A") {
-                            devices[deviceId] = new UsbDeviceInfo(deviceId, pnpDeviceId, description, name, manufacturer, service, status);
+                            if(deviceId.ToUpper().StartsWith("USB")) {
+                                devices[deviceId] = new UsbDeviceInfo(deviceId, pnpDeviceId, description, name, manufacturer, service, status);
+                            }                            
                         }
                     }
                 }

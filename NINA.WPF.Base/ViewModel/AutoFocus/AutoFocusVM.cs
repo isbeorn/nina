@@ -440,8 +440,8 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
                 }
 
                 Logger.Debug($"Current Focus: Position: {_focusPosition}, HFR: {analysisResult.AverageHFR}");
-
-                return new MeasureAndError() { Measure = analysisResult.AverageHFR, Stdev = analysisResult.HFRStdDev };
+                var stdev = double.IsNaN(analysisResult.HFRStdDev) ? 0 : analysisResult.HFRStdDev;
+                return new MeasureAndError() { Measure = analysisResult.AverageHFR, Stdev = stdev };
             } else {
                 var analysis = new ContrastDetection();
                 var analysisParams = new ContrastDetectionParams() {
@@ -455,7 +455,8 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
                 }
                 var analysisResult = await analysis.Measure(image, analysisParams, progress, token);
 
-                MeasureAndError ContrastMeasurement = new MeasureAndError() { Measure = analysisResult.AverageContrast, Stdev = analysisResult.ContrastStdev };
+                var stdev = double.IsNaN(analysisResult.ContrastStdev) ? 0 : analysisResult.ContrastStdev;
+                MeasureAndError ContrastMeasurement = new MeasureAndError() { Measure = analysisResult.AverageContrast, Stdev = stdev };
                 return ContrastMeasurement;
             }
         }

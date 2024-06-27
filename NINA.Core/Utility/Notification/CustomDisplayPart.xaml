@@ -48,6 +48,11 @@
                         VerticalAlignment="Center"
                         Foreground="#FFAAAAAA"
                         Text="{Binding Source={x:Static coreutil:CoreUtil.Title}}" />
+                    <TextBlock
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#FFAAAAAA"
+                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}}" />
                 </StackPanel>
 
                 <Button

@@ -213,9 +213,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     try {
                         var token = connectSwitchCts.Token;
                         var connected = await switchHub?.Connect(token);
-                        token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.SwitchHub = switchHub;
+                            token.ThrowIfCancellationRequested();
 
                             WritableSwitches = new AsyncObservableCollection<IWritableSwitch>();
                             ReadonlySwitches = new AsyncObservableCollection<ISwitch>();
@@ -284,20 +284,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         }
 
         public async Task Disconnect() {
-            if (SwitchInfo.Connected) {
+            try {
                 if (updateTimer != null) {
                     await updateTimer.Stop();
                 }
                 SwitchHub?.Disconnect();
-            }
-            WritableSwitches = new AsyncObservableCollection<IWritableSwitch>();
-            ReadonlySwitches = new AsyncObservableCollection<ISwitch>();
-            SwitchHub = null;
-            SwitchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
-            if (SwitchInfo.Connected) {
+                WritableSwitches = new AsyncObservableCollection<IWritableSwitch>();
+                ReadonlySwitches = new AsyncObservableCollection<ISwitch>();
+                SwitchHub = null;
+                SwitchInfo.Reset();
                 BroadcastSwitchInfo();
                 await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Switch");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 

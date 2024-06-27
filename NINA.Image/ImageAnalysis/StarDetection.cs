@@ -236,7 +236,7 @@ namespace NINA.Image.ImageAnalysis {
 
                     if (result.StarList.Count > 0) {
                         var mean = (from star in result.StarList select star.HFR).Average();
-                        var stdDev = double.NaN;
+                        var stdDev = 0d;
                         if (result.StarList.Count > 1) {
                             stdDev = Math.Sqrt((from star in result.StarList select (star.HFR - mean) * (star.HFR - mean)).Sum() / (result.StarList.Count - 1));
                         }

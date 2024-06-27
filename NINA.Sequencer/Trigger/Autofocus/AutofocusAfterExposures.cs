@@ -117,8 +117,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
 
             var shouldTrigger =
-                lastAFId < history.ImageHistory.Count
-                && history.ImageHistory.Count > 0
+                lightImageHistory.Count > 0
                 && ProgressExposures == 0;
 
             if (shouldTrigger) {
@@ -128,6 +127,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 }
             }
 
+            Logger.Debug($"{nameof(AutofocusAfterExposures)} - Should Trigger: {shouldTrigger}; Image History count since last AF: {lightImageHistory.Count}; Progress Exposures: {ProgressExposures}");
             return shouldTrigger;
         }
 

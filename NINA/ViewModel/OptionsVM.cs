@@ -30,7 +30,6 @@ using NINA.Image.ImageAnalysis;
 using NINA.Plugin;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
-using NINA.Utility;
 using NINA.WPF.Base.InputBox;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Utility;

@@ -74,6 +74,18 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             await flatDeviceMediator.SetBrightness(Brightness, progress, token);
 
             var brightnessState = flatDeviceMediator.GetInfo().Brightness;
+            var minBrightness = flatDeviceMediator.GetInfo().MinBrightness;
+            var maxBrightness = flatDeviceMediator.GetInfo().MaxBrightness;
+
+            // we shouldn't consider the flatdevice bringing the brightness up to to min or down to the max a failure
+            if (Brightness < minBrightness && brightnessState == minBrightness) {
+                return;
+            }
+
+            if (Brightness > maxBrightness && brightnessState == maxBrightness) {
+                return;
+            }
+
             if (brightnessState != Brightness) {
                 throw new SequenceEntityFailedException($"Failed to set brightness. Current brightness: {brightnessState}");
             }

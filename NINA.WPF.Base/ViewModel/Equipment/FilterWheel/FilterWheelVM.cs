@@ -32,6 +32,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment;
 using NINA.Core.Utility.Extensions;
+using NINA.Equipment.Equipment.MyFlatDevice;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
@@ -229,12 +230,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 var fW = (IFilterWheel)DeviceChooserVM.SelectedDevice;
                 _cancelChooseFilterWheelSource?.Dispose();
                 _cancelChooseFilterWheelSource = new CancellationTokenSource();
+                var token = _cancelChooseFilterWheelSource.Token;
                 if (fW != null) {
                     try {
                         var connected = await fW?.Connect(_cancelChooseFilterWheelSource.Token);
-                        _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.FW = fW;
+                            token.ThrowIfCancellationRequested();
 
                             FilterWheelInfo = new FilterWheelInfo {
                                 Connected = true,
@@ -311,17 +313,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         }
 
         public async Task Disconnect() {
-            if (FW != null) {
+            try {
                 try { _changeFilterCancellationSource?.Cancel(); } catch { }
-                FW.Disconnect();
+                FW?.Disconnect();
                 FW = null;
-                FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
+                FilterWheelInfo.Reset();
                 RaisePropertyChanged(nameof(FW));
                 BroadcastFilterWheelInfo();
                 await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Filter Wheel");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            return;
         }
 
         private readonly IFilterWheelMediator filterWheelMediator;

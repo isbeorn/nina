@@ -6971,12 +6971,12 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Se ordenó abrir la ventana de la cúpula o el techo, pero el dispositivo de monitoreo de seguridad informa de condiciones inseguras. Se ha interrumpido la apertura.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Comando externo</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>El comando externo no se pudo ejecutar correctamente</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>Comando externo no encontrado en '{0}'</value>
   </data>
 </root>

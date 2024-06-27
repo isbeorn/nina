@@ -204,6 +204,9 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblWaitingForCamera"] });
                     await semaphoreSlim.WaitAsync(token);
 
+                    var gain = sequence.Gain == -1 ? cameraInfo.DefaultGain : sequence.Gain;
+                    var filter = sequence.FilterType != null ? sequence.FilterType.Name : filterWheelInfo?.SelectedFilter?.Name ?? string.Empty;
+
                     try {
                         if (CameraInfo.Connected != true) {
                             Notification.ShowWarning(Loc.Instance["LblNoCameraConnected"]);
@@ -230,7 +233,7 @@ namespace NINA.ViewModel {
                         token.ThrowIfCancellationRequested();
 
                         if (data == null) {
-                            throw new CameraDownloadFailedException(sequence);
+                            throw new CameraDownloadFailedException(sequence.ExposureTime, sequence.ImageType, gain, filter);
                         }
 
                         AddMetaData(data.MetaData, sequence, exposureStart, midpointDateTime, rms, targetName);
@@ -249,7 +252,7 @@ namespace NINA.ViewModel {
                         throw;
                     } catch (CameraDownloadFailedException ex) {
                         Logger.Error(ex.Message);
-                        Notification.ShowError(string.Format(Loc.Instance["LblCameraDownloadFailed"], sequence.ExposureTime, sequence.ImageType, sequence.Gain, sequence.FilterType?.Name ?? string.Empty));
+                        Notification.ShowError(string.Format(Loc.Instance["LblCameraDownloadFailed"], sequence.ExposureTime, sequence.ImageType, gain, filter));
                         throw;
                     } catch (CameraExposureFailedException ex) {
                         Logger.Error(ex.Message);

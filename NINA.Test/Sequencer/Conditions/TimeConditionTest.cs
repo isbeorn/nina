@@ -283,5 +283,96 @@ namespace NINA.Test.Sequencer.Conditions {
 
             sut.ToString().Should().Be("Condition: TimeCondition, Time: 10:20:30h");
         }
+
+        [Test]
+        public void TimeCondition_NextItemTooLong_AllChecksFollowingFalse() {
+            var dateMock = new Mock<ICustomDateTime>();
+            dateMock.SetupGet(x => x.Now).Returns(new DateTime(2024, 06, 1, 18, 0, 0));
+
+            var providerMock = new Mock<IDateTimeProvider>();
+            providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2024, 06, 1, 18, 1, 0));
+
+            var sut = new TimeCondition(new List<IDateTimeProvider>() { providerMock.Object }, providerMock.Object);
+            sut.DateTime = dateMock.Object;
+
+            var nextItem = new Mock<ISequenceItem>();
+            nextItem.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.FromMinutes(5));
+
+            var check1 = sut.Check(default, default);
+            var check2 = sut.Check(default, nextItem.Object);
+            var check3 = sut.Check(default, default);
+
+            check1.Should().BeTrue();
+            check2.Should().BeFalse();
+            check3.Should().BeFalse();
+        }
+
+        [Test]
+        public void TimeCondition_NextItemTooLong_AllChecksFollowingFalse_ConditionResetsProperlyWithNewTime() {
+            var dateMock = new Mock<ICustomDateTime>();
+            dateMock.SetupGet(x => x.Now).Returns(new DateTime(2024, 06, 1, 18, 0, 0));
+
+            var providerMock = new Mock<IDateTimeProvider>();
+            providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2024, 06, 1, 18, 1, 0));
+
+            var sut = new TimeCondition(new List<IDateTimeProvider>() { providerMock.Object }, providerMock.Object);
+            sut.DateTime = dateMock.Object;
+
+            var nextItem = new Mock<ISequenceItem>();
+            nextItem.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.FromMinutes(5));
+
+            var check1 = sut.Check(default, default);
+            var check2 = sut.Check(default, nextItem.Object);
+            var check3 = sut.Check(default, default);
+
+            check1.Should().BeTrue();
+            check2.Should().BeFalse();
+            check3.Should().BeFalse();
+                        
+            providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2024, 06, 1, 19, 0, 0));
+            // Trigger a time update
+            sut.SelectedProvider = providerMock.Object;
+
+            var check4 = sut.Check(default, default);
+            var check5 = sut.Check(default, nextItem.Object);
+            var check6 = sut.Check(default, default);
+
+            check4.Should().BeTrue();
+            check5.Should().BeTrue();
+            check6.Should().BeTrue();
+        }
+
+        [Test]
+        public void TimeCondition_NextItemTooLong_AllChecksFollowingFalse_ConditionResetsProperlyAfterReset() {
+            var dateMock = new Mock<ICustomDateTime>();
+            dateMock.SetupGet(x => x.Now).Returns(new DateTime(2024, 06, 1, 18, 0, 0));
+
+            var providerMock = new Mock<IDateTimeProvider>();
+            providerMock.Setup(x => x.GetDateTime(It.IsAny<ISequenceEntity>())).Returns(new DateTime(2024, 06, 1, 18, 1, 0));
+
+            var sut = new TimeCondition(new List<IDateTimeProvider>() { providerMock.Object }, providerMock.Object);
+            sut.DateTime = dateMock.Object;
+
+            var nextItem = new Mock<ISequenceItem>();
+            nextItem.Setup(x => x.GetEstimatedDuration()).Returns(TimeSpan.FromMinutes(5));
+
+            var check1 = sut.Check(default, default);
+            var check2 = sut.Check(default, nextItem.Object);
+            var check3 = sut.Check(default, default);
+
+            check1.Should().BeTrue();
+            check2.Should().BeFalse();
+            check3.Should().BeFalse();
+
+            sut.ResetProgress();
+
+            var check4 = sut.Check(default, default);
+            var check5 = sut.Check(default, nextItem.Object);
+            var check6 = sut.Check(default, default);
+
+            check4.Should().BeTrue();
+            check2.Should().BeFalse();
+            check3.Should().BeFalse();
+        }
     }
 }

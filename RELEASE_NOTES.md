@@ -3,7 +3,24 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-### <span style="color:yellow;">Beta builds are preview builds that contain the full development effort for the next release. These builds contain the full set of features for the next version and are under evaluation to find and fix potential bugs. No major changes will occur in these builds and the focus is on bug fixing only - major changes may only occur if a critical issue is identified and a major change is necessary to fix it. Thus these builds should already be quite stable to use.</br>To be able to roll back to a previous released version without losing the profiles, backup the profiles which are located at %localappdata%\NINA</span>
+# Version 3.tbd
+
+## Bugfixes
+- When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.
+- In some special cases the `AutoFocus After Exposures` trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.
+
+# Version 3.1 Hotfix 1
+
+## Improvements
+- On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.
+- The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected
+
+## Bugfixes
+- Fixed an issue where a sequence item was sometimes not marked as failed on error
+- Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
+- Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
+- Native autofocus: When only one star is detected, the routine will no longer fail with the error that there is not enough HFR spread
+- Prevent an edge case where the time condition did not cancel the remaining instructions following an instruction that did not fit into the remaining time, even though those subsequent instructions would fit within the available time
 
 # Version 3.1
 
@@ -28,8 +45,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes
 - A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.
 - USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status
+- On Camera Download Failed the gain and filter is now displayed properly when using default gain values and current filter input
 - The documentation is now included as an offline page with the installer.
-  - Additionally, the documentation is now integrated directly into the application. You can access it by clicking the question mark icon in the lower-left corner, instead of opening it in a browser window.
+  - Additionally, the documentation is now integrated directly into the application. You can access it by clicking the book icon in the lower-left corner, instead of opening it in a browser window.
+  - Furthermore some sections of the application now offer a direct popup to their respective section in the manual by clicking the book icon
+- The application version number is now shown in the title bar of a notification. Furthermore the notification window size is slightly increased in width.
 
 ## Bugfixes
 - Fix Center instruction to consider plate solver gain
@@ -44,6 +64,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard
 - An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation
 - Removed an unnecessary 5 seconds delay after executing an external script
+- Autofocus runs with current Profile-ID are now shown after changing the profile
+- Fixed interpretation of pixel scale value in PinPoint's solve results
 
 ## Plugin Development
 ### New Feature: `IMessageBroker` Interface

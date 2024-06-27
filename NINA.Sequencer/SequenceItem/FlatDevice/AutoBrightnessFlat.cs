@@ -342,11 +342,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                         });
                         return brightness;
                     case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
-                        Logger.Info($"Exposure too dim at panel brightness {brightness}. Retrying with higher exposure time");
+                        Logger.Info($"Exposure too dim at panel brightness {brightness}. ADU measured at: {DeterminedHistogramADU}. Retrying with higher brightness");
                         currentMin = brightness;
                         break;
                     case HistogramMath.ExposureAduState:
-                        Logger.Info($"Exposure too bright at panel brightness {brightness}s. Retrying with lower exposure time");
+                        Logger.Info($"Exposure too bright at panel brightness {brightness}. ADU measured at: {DeterminedHistogramADU}. Retrying with lower brightness");
                         currentMax = brightness;
                         break;
                 }

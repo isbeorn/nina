@@ -91,7 +91,7 @@
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid>
             <TabControl
-                Margin="-5,0,0,0"
+                Margin="0,0,0,0"
                 ContentTemplateSelector="{StaticResource templateSelector}"
                 ItemsSource="{Binding Steps}"
                 SelectedItem="{Binding Steps.ActiveStep}">

@@ -990,7 +990,7 @@
     <value>Cygwin 目录</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>暗场拍摄张数</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Robert Vice 极轴漂移法</value>
@@ -1177,7 +1177,7 @@
     <value>无法连接到 ASCOM 圆顶 驱动程序：</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Dome can follow</value>
+    <value>顶棚可随动</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>天窗状态</value>
@@ -1207,7 +1207,7 @@
     <value>在零位</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Dome following telescope</value>
+    <value>顶棚正在跟随望远镜移动</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>旋转中</value>
@@ -2069,7 +2069,7 @@
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>From N.I.N.A. to Mount</value>
+    <value>从 N.I.N.A. 到望远镜</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>否</value>
@@ -6675,25 +6675,25 @@ This should only be disabled when having a good pointing model that must not be 
     <value>Peak RA: {0} ({1}")</value>
   </data>
   <data name="LblPluginRepositories" xml:space="preserve">
-    <value>Plugin Repositories</value>
+    <value>插件库</value>
   </data>
   <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
-    <value>Enter Plugin Repository URL</value>
+    <value>输入插件库URL</value>
   </data>
   <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
-    <value>Plugin Repository Url is invalid: {0}</value>
+    <value>插件库URL无效： {0}</value>
   </data>
   <data name="LblTSXImageLink" xml:space="preserve">
     <value>TheSkyX Imagelink</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
-    <value>TheSkyX Host</value>
+    <value>TheSkyX 主机地址</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
-    <value>TheSkyX Port</value>
+    <value>TheSkyX 端口号</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
-    <value>Mono bin</value>
+    <value>Mono bin 模式</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
     <value>When on, the camera will average binned pixels to create monochrome output</value>
@@ -6702,16 +6702,16 @@ This should only be disabled when having a good pointing model that must not be 
     <value>PinPoint</value>
   </data>
   <data name="LblPinPointCatalogRoot" xml:space="preserve">
-    <value>Catalog root</value>
+    <value>星表路径</value>
   </data>
   <data name="LblPinPointFailedInitialize" xml:space="preserve">
-    <value>Failure to initialize PinPoint Astrometric Engine</value>
+    <value>无法初始化 PinPoint 天体测量引擎</value>
   </data>
   <data name="LblPinPointNotInstalled" xml:space="preserve">
-    <value>Failed to initialize PinPoint Astrometric Engine. It or its 64bit component does not appear to be installed.</value>
+    <value>无法初始化 PinPoint 天体测量引擎。本体或64位组件似乎没有正确安装。</value>
   </data>
   <data name="LblPinPointReferenceCatalog" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>参考星表</value>
   </data>
   <data name="LblPinPointCatAtas" xml:space="preserve">
     <value>ATLAS / PanSTARRS+Gaia</value>
@@ -6723,7 +6723,7 @@ This should only be disabled when having a good pointing model that must not be 
     <value>ESA Tycho-2</value>
   </data>
   <data name="LblPinPointCatType" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>参考目录</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
@@ -6741,66 +6741,66 @@ This should only be disabled when having a good pointing model that must not be 
     <value>USNO B1.0</value>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
-    <value>Expansion</value>
+    <value>扩展</value>
   </data>
   <data name="LblPinPointExpansionToolTip" xml:space="preserve">
     <value>Expansion of catalog search area outside the image dimensions (min = 0, max = 80, default = 40)</value>
   </data>
   <data name="LblPinPointMaxMagnitude" xml:space="preserve">
-    <value>Max. magnitude</value>
+    <value>极限星等</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
     <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>AllSky API 主机</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (default = nova.astrometry.net)</value>
+    <value>Astrometry.net/AllSky API 主机 (默认 = nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
-    <value>AllSky API key</value>
+    <value>AllSky API 密钥</value>
   </data>
   <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API key (optional)</value>
+    <value>Astrometry.net/AllSky API 密钥(可选)</value>
   </data>
   <data name="LblPinPointAllSkySolve" xml:space="preserve">
-    <value>PinPoint AllSky solve</value>
+    <value>PinPoint 全天解析</value>
   </data>
   <data name="LblPinPointLocalSolve" xml:space="preserve">
-    <value>PinPoint local solve</value>
+    <value>PinPoint 本地解析</value>
   </data>
   <data name="LblPinPointErrorMessage" xml:space="preserve">
-    <value>PinPoint Error Message</value>
+    <value>PinPoint 错误消息</value>
   </data>
   <data name="LblUnableToSetMountElevation" xml:space="preserve">
-    <value>Unable to set mount elevation to {0}!</value>
+    <value>无法将望远镜海拔设置为 {0}！</value>
   </data>
   <data name="LblSaveInCache" xml:space="preserve">
-    <value>Cache Image for Offline Use</value>
+    <value>缓存图像以供离线使用</value>
     <comment>To store an image automatically in the framing assistant offline cache or not</comment>
   </data>
   <data name="LblSaveInCacheTooltip" xml:space="preserve">
-    <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
+    <value>当开启时，图像将被保存到您的设备，并可以在离线星图中查看</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>关闭</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
-    <value>Show Histogram</value>
+    <value>显示直方图</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info only</value>
+    <value>仅显示信息</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
     <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
   </data>
   <data name="LblParked" xml:space="preserve">
-    <value>Parked</value>
+    <value>已停放</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>旋转中</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6818,13 +6818,13 @@ This should only be disabled when having a good pointing model that must not be 
     <value>RICE</value>
   </data>
   <data name="LblAddFzExtension" xml:space="preserve">
-    <value>Add .fz extension</value>
+    <value>添加 .fz 扩展后缀</value>
   </data>
   <data name="LblAddFzExtensionTooltip" xml:space="preserve">
-    <value>Adds an additional .fz extension to the file name of compressed FITS files. Example: filename.fits.fz</value>
+    <value>向压缩的 FITS 文件名添加附加.fz 后缀。例如：filename.fits.fz</value>
   </data>
   <data name="LblASCOMCreate32BitData" xml:space="preserve">
-    <value>Create 32-bit data</value>
+    <value>创建 32 位数据</value>
   </data>
   <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
     <value>When the feature is enabled, N.I.N.A. will generate image data with a 32-bit depth, enhancing the pixel value range. 
@@ -6833,28 +6833,28 @@ Keep in mind that only XISF and FITS file formats can store image data in this 3
 Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
   </data>
   <data name="LblUseCfitsio" xml:space="preserve">
-    <value>Use CFITSIO</value>
+    <value>使用 CFITSIO</value>
   </data>
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
-    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
+    <value>启用此功能后，将改用 CFITSIO 库来创建 FITS 文件。该库引入了一些额外功能，例如压缩 FITS 文件大小、以32位格式存储数据以提高数据精度。</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>坏点修正</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>坏点修正阈值</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>已关闭</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
-    <value>Closing</value>
+    <value>正在关闭...</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>打开</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
-    <value>Opening</value>
+    <value>正在打开...</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
     <value>Telescope find home has timed out after {0} minutes</value>
@@ -6866,13 +6866,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Telescope unpark has timed out after {0} minutes.</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
-    <value>Time sync</value>
+    <value>时间同步</value>
   </data>
   <data name="LblTimeSyncTooltip" xml:space="preserve">
-    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+    <value>启用后，当连接望远镜时，N.I.N.A. 会将望远镜驱动的时间与系统时间同步。</value>
   </data>
   <data name="LblCoordinatesMountSync" xml:space="preserve">
-    <value>Coordinates sync</value>
+    <value>坐标同步</value>
   </data>
   <data name="LblMount" xml:space="preserve">
     <value>Mount</value>
@@ -6916,36 +6916,36 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
+    <value>使用IPv4</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>使用IPv4来搜寻 ASCOM Alpaca 设备(默认：开启)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
+    <value>使用IPv6</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>使用IPv6来搜寻 ASCOM Alpaca 设备(默认：关闭)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
     <value>Toggle Catalogue Display</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>目标高度角</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>目标方位角</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptik 平场控制器</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
-    <value>LED Lights</value>
+    <value>LED 指示灯</value>
   </data>
   <data name="LblLEDLightsTooltop" xml:space="preserve">
-    <value>Turn the LED lights on the camera on or off</value>
+    <value>打开或关闭相机的 LED 指示灯</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
     <value>The minimum brightness is higher than the maximum brightness!</value>

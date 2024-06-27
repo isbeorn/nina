@@ -19,7 +19,6 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Profile.Interfaces;
-using NINA.Utility;
 using NINA.View.About;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
@@ -47,7 +46,6 @@ namespace NINA.ViewModel {
     internal partial class ApplicationVM : BaseVM, IApplicationVM, ICameraConsumer {
 
         public ApplicationVM(IProfileService profileService,
-                             ProjectVersion projectVersion,
                              ICameraMediator cameraMediator,
                              IApplicationMediator applicationMediator,
                              IImageSaveMediator imageSaveMediator,
@@ -55,7 +53,6 @@ namespace NINA.ViewModel {
                              IDockManagerVM dockManagerVM,
                              IApplicationDeviceConnectionVM applicationDeviceConnectionVM) : base(profileService) {
             applicationMediator.RegisterHandler(this);
-            this.projectVersion = projectVersion;
             this.cameraMediator = cameraMediator;
             this.imageSaveMediator = imageSaveMediator;
             this.pluginProvider = pluginProvider;
@@ -145,7 +142,7 @@ namespace NINA.ViewModel {
             }
             browser.Margin = new Thickness(2,0,2,2);
             var service = new WindowServiceFactory().Create();
-            service.Show(browser, Title + " - " + Loc.Instance["LblDocumentation"], ResizeMode.CanResize, WindowStyle.ToolWindow);
+            service.Show(browser, CoreUtil.Title + " - " + Loc.Instance["LblDocumentation"], ResizeMode.CanResize, WindowStyle.ToolWindow);
         }
 
         [RelayCommand]
@@ -154,7 +151,7 @@ namespace NINA.ViewModel {
             window.Width = 1280;
             window.Height = 720;
             var service = new WindowServiceFactory().Create();
-            service.Show(window, Title + " - " + Loc.Instance["LblAbout"], ResizeMode.NoResize, WindowStyle.ToolWindow);
+            service.Show(window, CoreUtil. Title + " - " + Loc.Instance["LblAbout"], ResizeMode.NoResize, WindowStyle.ToolWindow);
         }
 
         [RelayCommand]
@@ -172,10 +169,9 @@ namespace NINA.ViewModel {
         public void ChangeTab(ApplicationTab tab) {
             TabIndex = (int)tab;
         }
+        public string Version => CoreUtil.VersionFriendlyName;
 
-        public string Version => projectVersion.ToString();
-
-        public string Title => NINA.Core.Utility.CoreUtil.Title;
+        public string Title => CoreUtil.Title;
 
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private readonly ICameraMediator cameraMediator;
@@ -318,9 +314,5 @@ namespace NINA.ViewModel {
         public void Dispose() {
             cameraMediator.RemoveConsumer(this);
         }
-
-        private readonly ProjectVersion projectVersion;
-
-
     }
 }

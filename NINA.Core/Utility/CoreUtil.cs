@@ -41,6 +41,7 @@ namespace NINA.Core.Utility {
             }
         }
 
+        public static string VersionFriendlyName => new ProjectVersion(Version).ToString();
         public static bool IsReleaseBuild => new Version(Version).Revision >= 9000;
         public static bool IsBetaBuild => new Version(Version).Revision >= 2000 && new Version(Version).Revision < 3000;
         public static bool IsRCBuild => new Version(Version).Revision >= 3000 && new Version(Version).Revision < 9000;
@@ -74,21 +75,24 @@ namespace NINA.Core.Utility {
         public static bool DebugMode { get; set; } = false;
 
         public static string GetUniqueFilePath(string fullPath) {
+            return GetUniqueFilePath(fullPath, "{0}({1})");
+        }
+        public static string GetUniqueFilePath(string fullPath, string format) {
             int count = 1;
 
-            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);            
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
             string extension = Path.GetExtension(fullPath);
-            if(extension.ToLower() == ".fz") {
+            if (extension.ToLower() == ".fz") {
                 // special handling for ".fits.fz" extension
                 extension = ".fits" + extension;
                 fileNameOnly = Path.GetFileNameWithoutExtension(fileNameOnly);
             }
-            
+
             string path = Path.GetDirectoryName(fullPath);
             string newFullPath = fullPath;
 
             while (File.Exists(newFullPath)) {
-                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                string tempFileName = string.Format(format, fileNameOnly, count++);
                 newFullPath = Path.Combine(path, tempFileName + extension);
             }
             return newFullPath;
@@ -100,10 +104,10 @@ namespace NINA.Core.Utility {
         /// <param name="unixTimeStamp">Milliseconds after 1970</param>
         /// <returns>DateTime</returns>
         public static DateTime UnixTimeStampToDateTime(long unixTimeStamp) {
-            // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime;
+        // Unix timestamp is seconds past epoch
+        System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+        dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+        return dtDateTime;
         }
 
         /// <summary>

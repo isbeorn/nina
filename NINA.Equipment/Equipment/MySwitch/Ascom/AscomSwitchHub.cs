@@ -72,6 +72,10 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
             }
         }
 
+        protected override async Task PreConnect() {
+            Switches = new AsyncObservableCollection<ISwitch>();
+        }
+
         protected override async Task PostConnect() {
             await ScanForSwitches();
         }

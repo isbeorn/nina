@@ -256,6 +256,19 @@ namespace NINA.Test.FlatDevice {
             sut.Brightness.Should().Be(0);
             mockFlatDevice.VerifySet(m => m.Brightness = 100, Times.Once);
         }
+        [Test]
+        public async Task TestSetBrightness_ToZeroValue_NotAdjusted() {
+            mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, mockFlatDevice.Object);
+            mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            mockFlatDevice.Setup(m => m.Brightness).Returns(200);
+            mockFlatDevice.Setup(m => m.MinBrightness).Returns(100);
+            mockFlatDevice.Setup(m => m.MaxBrightness).Returns(1000);
+            mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+            await sut.Connect();
+            (await sut.SetBrightness(0, null, CancellationToken.None)).Should().Be(true);
+            mockFlatDevice.VerifySet(m => m.Brightness = 0, Times.Once);
+        }
 
         [Test]
         public async Task TestSetBrightness_UnderMinValue_Adjusted() {

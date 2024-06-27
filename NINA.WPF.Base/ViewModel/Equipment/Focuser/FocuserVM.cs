@@ -208,7 +208,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     ToggleTempComp(false);
                 }
                 try {
-                    using (timeoutCts.Token.Register(() => HaltFocuser())) {
+                    // Only register to call Halt() when no timeout happens
+                    using (ct.Register(() => HaltFocuser())) {
                         Logger.Info($"Moving Focuser to position {position}");
                         progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFocuserMoveToPosition"], position) });
 
@@ -230,7 +231,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         BroadcastFocuserInfo();
                     }
                 } catch (OperationCanceledException) {
-                    if (ct.IsCancellationRequested == true) {
+                    if (!ct.IsCancellationRequested) {
+                        Logger.Error("Focuser movement timed out after 10 minutes");
+                        Notification.ShowError(string.Format(Loc.Instance["LblFocuserMoveTimeout"], 10));
+                    } else {
                         Logger.Info("Focuser move cancelled");
                         throw;
                     }
@@ -284,11 +288,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 var newFocuser = GetBacklashCompensationFocuser(profileService, (IFocuser)DeviceChooserVM.SelectedDevice);
                 cancelChooseFocuserCts?.Dispose();
                 cancelChooseFocuserCts = new CancellationTokenSource();
+                var token = cancelChooseFocuserCts.Token;
                 try {
                     var connected = await newFocuser.Connect(cancelChooseFocuserCts.Token);
-                    cancelChooseFocuserCts.Token.ThrowIfCancellationRequested();
                     if (connected) {
                         Focuser = newFocuser;
+                        token.ThrowIfCancellationRequested();
 
                         FocuserInfo = new FocuserInfo {
                             Connected = true,
@@ -325,7 +330,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                         return false;
                     }
                 } catch (OperationCanceledException) {
-                    if (FocuserInfo.Connected) { await Disconnect(); }
+                    if (newFocuser?.Connected == true) { await Disconnect(); }
                     return false;
                 }
             } finally {
@@ -408,17 +413,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         }
 
         public async Task Disconnect() {
-            if (Focuser != null) {
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                Focuser?.Disconnect();
+                Focuser = null;
+                FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
+                BroadcastFocuserInfo();
+                RaisePropertyChanged(nameof(Focuser));
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 Logger.Info("Disconnected Focuser");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
-            await updateTimer.Stop();
-            Focuser?.Disconnect();
-            Focuser = null;
-            FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
-            BroadcastFocuserInfo();
-            RaisePropertyChanged(nameof(Focuser));
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public Task<bool> Connect() {

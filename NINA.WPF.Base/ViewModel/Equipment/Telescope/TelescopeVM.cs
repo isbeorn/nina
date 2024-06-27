@@ -131,7 +131,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             bool result = true;
 
             await Task.Run(async () => {
-                Logger.Info("Telescope has been commanded to park");
+                Logger.Info("Mount has been commanded to park");
                 IsParkingOrHoming = true;
 
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -145,14 +145,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             
                             await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                         } else {
-                            Logger.Info("Telescope commanded to park but it is already parked");
+                            Logger.Info("Mount commanded to park but it is already parked");
                         }
                     } else { // Telescope is incapable of parking. Slew safely to the celestial pole and stop tracking instead
                         Coordinates targetCoords = GetHomeCoordinates(telescopeInfo.Coordinates);
-                        Logger.Info($"Telescope cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
+                        Logger.Info($"Mount cannot park. Will slew to RA {targetCoords.RAString}, Dec {targetCoords.DecString}");
                         await SlewToCoordinatesAsync(targetCoords, timeoutCts.Token);
 
-                        Logger.Trace("Telescope will stop tracking");
+                        Logger.Trace("Mount will stop tracking");
                         result = SetTrackingEnabled(false);
                         await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                     }
@@ -177,10 +177,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             });
 
             if (result) {
-                Logger.Info("Telescope has parked");
+                Logger.Info("Mount has parked");
                 await (Parked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             } else {
-                Logger.Error("Telescope failed to park");
+                Logger.Error("Mount failed to park");
             }
 
             return result;
@@ -188,7 +188,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public async Task<bool> SetParkPosition() {
             if (Telescope.CanSetPark && !Telescope.AtPark) {
-                Logger.Info($"Setting telescope park position to {Telescope.Coordinates}");
+                Logger.Info($"Setting mount park position to {Telescope.Coordinates}");
                 await Task.Run(() => { Telescope.Setpark(); });
 
                 return true;
@@ -227,10 +227,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public async Task<bool> UnparkTelescope(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool success = false;
-            Logger.Info("Telescope ordered to unpark");
+            Logger.Info("Mount ordered to unpark");
 
             if (!Telescope.Connected) {
-                Logger.Error("Telescope is not connected");
+                Logger.Error("Mount is not connected");
                 return false;
             }
 
@@ -263,22 +263,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                     }
                 } else {
-                    Logger.Info("Telescope is already unparked");
+                    Logger.Info("Mount is already unparked");
                     success = true;
                 }
             });
             if (success) {
-                Logger.Info("Telescope has unparked");
+                Logger.Info("Mount has unparked");
                 await (Unparked?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             } else {
-                Logger.Error("Telescope failed to unpark");
+                Logger.Error("Mount failed to unpark");
             }
             return success;
         }
 
         public async Task<bool> FindHome(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool success = false;
-            Logger.Info("Telescope ordered to locate home position");
+            Logger.Info("Mount ordered to locate home position");
             string reason = string.Empty;
 
             await Task.Run(async () => {
@@ -335,10 +335,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             });
 
             if (success) {
-                Logger.Info("Telescope has located its home position");
+                Logger.Info("Mount has located its home position");
                 await (Homed?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
             } else {
-                Logger.Error($"Telescope cannot locate home because {reason}");
+                Logger.Error($"Mount cannot locate home because {reason}");
             }
 
             return success;
@@ -384,14 +384,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 var telescope = (ITelescope)DeviceChooserVM.SelectedDevice;
                 _cancelChooseTelescopeSource?.Dispose();
                 _cancelChooseTelescopeSource = new CancellationTokenSource();
+                var token = _cancelChooseTelescopeSource.Token;
                 if (telescope != null) {
                     try {
-                        var currentThread = System.Threading.Thread.CurrentThread;
-
                         var connected = await telescope?.Connect(_cancelChooseTelescopeSource.Token);
-                        _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             Telescope = telescope;
+                            token.ThrowIfCancellationRequested();
 
                             if (Telescope.EquatorialSystem == Epoch.B1950 || Telescope.EquatorialSystem == Epoch.J2050) {
                                 Logger.Error($"Mount uses an unsupported equatorial system: {Telescope.EquatorialSystem}");
@@ -516,7 +515,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
-                            Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");
+                            Logger.Info($"Successfully connected mount. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");
 
                             return true;
                         } else {
@@ -524,7 +523,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             return false;
                         }
                     } catch (OperationCanceledException ex) {
-                        if (telescope?.Connected == true) { await Disconnect(); }
+                        if (telescope?.Connected == true) {
+                            await Disconnect(); 
+                        }
                         Notification.ShowError(ex.Message);
                         return false;
                     }
@@ -750,15 +751,19 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task Disconnect() {
-            if (Telescope != null) { Logger.Info("Disconnected Mount"); }
-            if (updateTimer != null) {
-                await updateTimer.Stop();
+            try {
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
+                Telescope?.Disconnect();
+                Telescope = null;
+                TelescopeInfo.Reset();
+                BroadcastTelescopeInfo();
+                await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
+                Logger.Info("Disconnected mount");
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-            Telescope?.Disconnect();
-            Telescope = null;
-            TelescopeInfo.Reset();
-            BroadcastTelescopeInfo();
-            await (Disconnected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
         }
 
         public void MoveAxis(TelescopeAxes axis, double rate) {
@@ -906,7 +911,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     }
 
                     if (Telescope?.AtPark == true) {
-                        Logger.Error("Slew requested while telescope is parked");
+                        Logger.Error("Slew requested while mount is parked");
                         Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
                         return false;
                     }
@@ -946,12 +951,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     await (Slewed?.InvokeAsync(this, new MountSlewedEventArgs(from: position, to: coords)) ?? Task.CompletedTask);
                     return true;
                 } else {
-                    Logger.Warning("Telescope is not connected to slew");
+                    Logger.Warning("Mount is not connected to slew");
                     return false;
                 }
             } catch (OperationCanceledException) {
                 if (token.IsCancellationRequested != true) {
-                    Logger.Error("Telescope slew timed out after 10 Minutes");
+                    Logger.Error("Mount slew timed out after 10 Minutes");
                     return false;
                 } else {
                     throw;

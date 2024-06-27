@@ -20,6 +20,7 @@
     mc:Ignorable="d">
     <wv2:WebView2
         Name="webView"
+        x:FieldModifier="public"
         AllowExternalDrop="{Binding AllowExternalDrop, ElementName=UC}"
         DefaultBackgroundColor="{Binding DefaultBackgroundColor, ElementName=UC}"
         Source="{Binding Source, ElementName=UC}"
