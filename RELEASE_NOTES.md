@@ -7,11 +7,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Improvements
 - The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.
+- Quicker switching between single-exposure and stream mode on QHY cameras, bringing improved responsiveness when using the Speckle or Lucky Imaging plugins.
 
-## Bugfixes
+## Bug Fixes
 - When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.
 - In some special cases the `AutoFocus After Exposures` trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.
-
+- QHY Cameras:
+  - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
+  - The list of available cameras will now propertly update when one camera is replaced by a different one.
 
 # Version 3.1 Hotfix 1
 
@@ -19,7 +22,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.
 - The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected
 
-## Bugfixes
+## Bug Fixes
 - Fixed an issue where a sequence item was sometimes not marked as failed on error
 - Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection
 - Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question
