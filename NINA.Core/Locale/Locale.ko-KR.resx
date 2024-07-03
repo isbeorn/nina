@@ -7006,4 +7006,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>External command was not found at '{0}'</value>
   </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
 </root>

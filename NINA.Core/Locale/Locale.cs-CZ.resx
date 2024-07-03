@@ -6984,4 +6984,7 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>Externí příkaz nebyl nalezen na '{0}'</value>
   </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Pohyb zaostření se po {0} minutách ukončilo.</value>
+  </data>
 </root>

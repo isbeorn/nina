@@ -6956,4 +6956,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>外部コマンドが'{0}'で見つかりませんでした</value>
   </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
 </root>

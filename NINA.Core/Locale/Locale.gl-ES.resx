@@ -6992,4 +6992,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>External command was not found at '{0}'</value>
   </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
 </root>

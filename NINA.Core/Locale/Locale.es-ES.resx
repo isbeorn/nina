@@ -1409,10 +1409,10 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>FITS</value>
   </data>
   <data name="LblFlatCalculatedExposureTime" xml:space="preserve">
-    <value>Calculado tiempo de exposición del objetivo</value>
+    <value>Tiempo de exposición calculado</value>
   </data>
   <data name="LblFlatCalculatedHistogramMean" xml:space="preserve">
-    <value>Calculada la media del Histograma del Objetivo</value>
+    <value>Media del histograma calculada</value>
   </data>
   <data name="LblFlatCount" xml:space="preserve">
     <value>Flats a Capturar</value>
@@ -6978,5 +6978,8 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>Comando externo no encontrado en '{0}'</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>El movimiento del enfocador ha expirado después de {0} minutos.</value>
   </data>
 </root>

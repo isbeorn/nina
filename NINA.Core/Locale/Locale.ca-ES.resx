@@ -6975,12 +6975,15 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>Es va ordenar que la persiana o el sostre s'obrissin, però el dispositiu de monitor de seguretat informa de condicions insegures. L'obertura s'ha avortat.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Ordre Externa</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>L'ordre externa no s'ha pogut executar correctament</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>No s'ha trobat l'ordre externa a '{0}'</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>El moviment del focus s'ha esgotat després de {0} minuts.</value>
   </data>
 </root>
