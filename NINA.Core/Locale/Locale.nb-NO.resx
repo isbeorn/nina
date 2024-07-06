@@ -6971,4 +6971,7 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>External command was not found at '{0}'</value>
   </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
 </root>
