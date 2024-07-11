@@ -30,11 +30,19 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <h2 id="improvements">Improvements</h2>
 <ul>
 <li>The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.</li>
+<li>Quicker switching between single-exposure and stream mode on QHY cameras, bringing improved responsiveness when using the Speckle or Lucky Imaging plugins.</li>
 </ul>
-<h2 id="bugfixes">Bugfixes</h2>
+<h2 id="bug-fixes">Bug Fixes</h2>
 <ul>
 <li>When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.</li>
 <li>In some special cases the <code>AutoFocus After Exposures</code> trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.</li>
+<li>Fixed an issue where sky flat exposure time compensation was going into the wrong direction</li>
+<li>QHY Cameras:
+<ul>
+<li>The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.</li>
+<li>The list of available cameras will now propertly update when one camera is replaced by a different one.</li>
+</ul>
+</li>
 </ul>
 <h1 id="version-3.1-hotfix-1">Version 3.1 Hotfix 1</h1>
 <h2 id="improvements-1">Improvements</h2>
@@ -42,7 +50,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.</li>
 <li>The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected</li>
 </ul>
-<h2 id="bugfixes-1">Bugfixes</h2>
+<h2 id="bug-fixes-1">Bug Fixes</h2>
 <ul>
 <li>Fixed an issue where a sequence item was sometimes not marked as failed on error</li>
 <li>Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection</li>
@@ -89,7 +97,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </li>
 <li>The application version number is now shown in the title bar of a notification. Furthermore the notification window size is slightly increased in width.</li>
 </ul>
-<h2 id="bugfixes-2">Bugfixes</h2>
+<h2 id="bugfixes">Bugfixes</h2>
 <ul>
 <li>Fix Center instruction to consider plate solver gain</li>
 <li>Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app</li>
@@ -303,7 +311,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-3">Bugfixes</h2>
+<h2 id="bugfixes-1">Bugfixes</h2>
 <ul>
 <li>Fixed SVBony Native driver that was sometimes showing the exposure before the latest one after a cancelled exposure</li>
 <li>Fixed PlayerOne resolution not fully resetting to complete size after subframe or binning</li>
@@ -330,7 +338,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-4">Bugfixes</h2>
+<h2 id="bugfixes-2">Bugfixes</h2>
 <ul>
 <li>Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException - this time for real</li>
 <li>Fix potential race condition in PlateSolvingStatusVM when setting platesolve result</li>
@@ -339,7 +347,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>FLICamera - Fix Exposure time that it can also set fractions of a second</li>
 </ul>
 <h1 id="version-2.3-hotfix-1">Version 2.3 Hotfix 1</h1>
-<h2 id="bugfixes-5">Bugfixes</h2>
+<h2 id="bugfixes-3">Bugfixes</h2>
 <ul>
 <li>Database migration and creation on first time upgrade or installation will now be much faster</li>
 <li>Fixed Issue in QHY Driver when overscan area was being shown in video mode.</li>
@@ -360,12 +368,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame</li>
 <li>When clicking on the load adv. sequence button, it is now possible to also load in a template or a target</li>
 </ul>
-<h2 id="bugfixes-6">Bugfixes</h2>
+<h2 id="bugfixes-4">Bugfixes</h2>
 <ul>
 <li>The profile chooser on startup did not remember the on/off selection to save the selected profile</li>
 </ul>
 <h1 id="version-2.2">Version 2.2</h1>
-<h2 id="bugfixes-7">Bugfixes</h2>
+<h2 id="bugfixes-5">Bugfixes</h2>
 <ul>
 <li>Fixed Slew to Alt/Az instruction not considering changes to Latitude &amp; Longitude values</li>
 <li>Loading a FITS File that contains exponential notation for double values should now have its headers be correctly read</li>
@@ -407,7 +415,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Fixed an issue that USB limit could not be set correctly</li>
 </ul>
 <h1 id="version-2.1">Version 2.1</h1>
-<h2 id="bugfixes-8">Bugfixes</h2>
+<h2 id="bugfixes-6">Bugfixes</h2>
 <ul>
 <li>When an interrupt happens during a meridian flip it in a sequence it is no longer ignored while the flip is running</li>
 <li>Fix an issue where for some coordinates, the coordinates were off by one arcminute after reloading it into the sequence from file, due to double precision rounding issues</li>
@@ -435,7 +443,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Add access to the device instances</li>
 </ul>
 <h1 id="version-2.0-hotfix-2">Version 2.0 Hotfix 2</h1>
-<h2 id="bugfixes-9">Bugfixes</h2>
+<h2 id="bugfixes-7">Bugfixes</h2>
 <ul>
 <li>Fixed QHY Camera selection being lost on rescan</li>
 <li>Imaging Platesolve Panel will preset initial gain from platesolve settings</li>
@@ -491,7 +499,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>New Plugin Eventhooks to react on Befor/After MeridianFlip and After Dithers</li>
 </ul>
 <h1 id="version-2.0-hf-1">Version 2.0 HF 1</h1>
-<h2 id="bugfixes-10">Bugfixes</h2>
+<h2 id="bugfixes-8">Bugfixes</h2>
 <ul>
 <li>Changed the default value for ASCOM Camera BayerOffsetX/BayerOffsetY to be 0, instead of -1, when not available via the driver</li>
 <li>Corrections made to assorted entries in the NINA object database</li>
@@ -872,7 +880,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Live View function has been disabled for QHY cameras. It was functionally inoperative and will be discontinued for all but Canon and Nikon in 1.11</li>
 <li>The version of the QHY USB driver will be checked and a warning will be presented if it is not the minimum recommended version</li>
 </ul>
-<h2 id="bug-fixes">Bug fixes</h2>
+<h2 id="bug-fixes-2">Bug fixes</h2>
 <ul>
 <li>Nikon: Cancelled or aborted exposures are now properly handled</li>
 <li>FLI: Stop background flush prior to reading out the sensor</li>
@@ -899,7 +907,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Updates to various vendor-supplied SDKs for bug fixes and new model support in the respective native drivers</li>
 <li>QHY: Legacy CCD and A-series cameras can now select Normal or Fast readout speeds when using the native driver</li>
 </ul>
-<h2 id="bugfixes-11">Bugfixes</h2>
+<h2 id="bugfixes-9">Bugfixes</h2>
 <ul>
 <li>The telescope will no longer go on a journey to the celestial pole before going to the park position</li>
 <li>Parking the telescope from the Equipment &gt; Telescope screen will no longer cause the UI to freeze while the telescope is in the process of parking</li>
@@ -953,7 +961,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Rotators will now display the sky angle as the current position, when rotation via plate solving was invoked</li>
 <li>Added toggle to reverse direction for rotators</li>
 </ul>
-<h2 id="bugfixes-12">Bugfixes</h2>
+<h2 id="bugfixes-10">Bugfixes</h2>
 <ul>
 <li>When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format</li>
 <li>Log files now show correct operating system version</li>
@@ -1397,7 +1405,7 @@ Thank you for your support!</p>
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-13">Bugfixes</h2>
+<h2 id="bugfixes-11">Bugfixes</h2>
 <ul>
 <li>Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur</li>
 <li>Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming</li>
@@ -1505,7 +1513,7 @@ the background itself will be moved like in an orrery</li>
 <li>Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.</li>
 <li>Additionally the changelog for the new version will now be displayed prior to updating, too.</li>
 </ul>
-<h2 id="bugfixes-14">Bugfixes</h2>
+<h2 id="bugfixes-12">Bugfixes</h2>
 <ul>
 <li>Corrected Max Binning level for ASI Cameras</li>
 <li>Focuser move command fixed where lots of move commands where sent by accident</li>
@@ -1626,7 +1634,7 @@ Thank you for your support!</p>
 <li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
 <li>Serial Relay (via USB) interaction for Nikon Bulb</li>
 </ul>
-<h2 id="bugfixes-15">Bugfixes</h2>
+<h2 id="bugfixes-13">Bugfixes</h2>
 <ul>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>

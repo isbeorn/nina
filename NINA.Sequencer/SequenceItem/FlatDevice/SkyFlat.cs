@@ -424,7 +424,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         /// <summary>
         /// This method will take twilight sky flat exposures by adjusting the exposure time based on the changing sky conditions during the runtime.
         /// A paper which explains the math behind the algorithm can be found here
-        /// http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.56.3178&rep=rep1&type=pdf
+        /// https://ui.adsabs.harvard.edu/abs/1993AJ....105.1206T/abstract
         /// </summary>
         /// <param name="skyFlatTimes"></param>
         /// <param name="firstExposureTime"></param>
@@ -549,7 +549,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        private class SkyFlatExposureDetermination {
+        public class SkyFlatExposureDetermination {
             private TimeSpan ti;
             private double k;
             private double s;
@@ -557,38 +557,46 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             private double currentExposureTime;
             private Stopwatch timer;
 
-            public SkyFlatExposureDetermination(Stopwatch timer, double startExposureTime, double springTwilight, double todayTwilight) {
+            private ICustomDateTime DateTime { get; }
+
+            public SkyFlatExposureDetermination(Stopwatch timer, double startExposureTime, double springTwilight, double todayTwilight, ICustomDateTime dateTime = null) {
                 this.timer = timer;
                 this.StartExposureTime = startExposureTime;
                 this.currentExposureTime = startExposureTime;
+                this.DateTime = dateTime ?? new SystemDateTime();
 
-
-                var tau = todayTwilight / springTwilight;
+                var tau = Math.Abs(todayTwilight) / Math.Abs(springTwilight);
                 ti = TimeSpan.Zero;
 
-                k = DateTime.Now.Hour < 12 ? 0.094 / 60 : -0.094 / 60;
+                k = DateTime.Now.Hour < 12 ? 0.091 / 60 : -0.094 / 60;
 
                 s = startExposureTime;
                 a = Math.Pow(10, k / tau);
             }
+
             public double StartExposureTime { get; private set; }
-            public Stopwatch Timer { get; }
 
             public TimeSpan GetElapsedTime () {
                 return timer.Elapsed;
             }
 
-            public double GetNextExposureTime () {
-                var trot = timer.Elapsed - ti - TimeSpan.FromSeconds(currentExposureTime);
+            public double GetNextExposureTime() {
+                return GetNextExposureTime(timer.Elapsed);
+            }
+
+            public double GetNextExposureTime(TimeSpan delta) {
+                var trot = delta - ti - TimeSpan.FromSeconds(currentExposureTime);
                 if (trot.TotalMilliseconds < 0) trot = TimeSpan.FromMilliseconds(0);
 
-                var tiPlus1 = Math.Log(Math.Pow(a, ti.TotalSeconds + trot.TotalSeconds) + s * Math.Log(a))
+                var tiPlus1 = Math.Log(
+                                    Math.Pow(a, ti.TotalSeconds + trot.TotalSeconds) + s * Math.Log(a)
+                              )
                               / Math.Log(a);
                 currentExposureTime = tiPlus1 - (ti + trot).TotalSeconds;
 
                 Logger.Debug($"ti:{ti}, trot:{trot}, tiPlus1:{tiPlus1}, eiPlus1:{currentExposureTime}");
 
-                ti = timer.Elapsed;
+                ti = delta;
                 return currentExposureTime;
             }
         }
