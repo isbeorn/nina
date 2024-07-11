@@ -1487,10 +1487,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
             Buffer.BlockCopy(flatArray, 0, imgData, 0, imgData.Length);
 
             // Sanity check
-            var start_flag = (imgData[17] / 16) % 4;
-            var end_flag = (imgData[25] / 16) % 4;
-            var now_flag = (imgData[33] / 16) % 4;
-            if (start_flag != end_flag || start_flag != now_flag || end_flag != now_flag) {
+            var now_sec = (256 * 256 * 256 * imgData[34]) + (256 * 256 * imgData[35]) + (256 * imgData[36]) + imgData[37];
+            var now_us = ((256 * 256 * imgData[38]) + (256 * imgData[39]) + imgData[40]) / 10;
+            var now_utc = JulianSecToDateTime(now_sec, now_us).ToUniversalTime();
+            TimeSpan utc_diff = DateTime.UtcNow - now_utc;
+            if (Math.Abs(utc_diff.TotalMinutes) > 1) {
                 Logger.Warning("GPS is on, but extracted data is bad.");
                 return; 
             }
@@ -1524,6 +1525,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var longitude = (deg + (min + fractMin) / 60.0) * (west ? -1 : 1);
             metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LON", longitude, "longitude"));
             //Shutter start time
+            var start_flag = (imgData[17] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SFLG", start_flag, "QHY start_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_SST", ReceiverStatus(start_flag), "QHY start_flag status"));
             var start_sec = (256 * 256 * 256 * imgData[18]) + (256 * 256 * imgData[19]) + (256 * imgData[20]) + imgData[21];
@@ -1532,6 +1534,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SUS", start_us, "[us] QHY start"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_SUTC", JulianSecToDateTime(start_sec, start_us).ToUniversalTime(), "QHY start_time"));
             //Shutter end time
+            var end_flag = (imgData[25] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EFLG", end_flag, "QHY end_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_EST", ReceiverStatus(end_flag), "QHY end_flag status"));
             var end_sec = (256 * 256 * 256 * imgData[26]) + (256 * 256 * imgData[27]) + (256 * imgData[28]) + imgData[29];
@@ -1540,13 +1543,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EUS", end_us, "[us] QHY end"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_EUTC", JulianSecToDateTime(end_sec, end_us).ToUniversalTime(), "QHY end_time"));
             //The current time
+            var now_flag = (imgData[33] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NFLG", now_flag, "QHY now_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_NST", ReceiverStatus(now_flag), "QHY now_flag status"));
-            var now_sec = (256 * 256 * 256 * imgData[34]) + (256 * 256 * imgData[35]) + (256 * imgData[36]) + imgData[37];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NSEC", now_sec, "[s] QHY now"));
-            var now_us = ((256 * 256 * imgData[38]) + (256 * imgData[39]) + imgData[40]) / 10;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NUS", now_us, "[us] QHY now"));
-            metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_NUTC", JulianSecToDateTime(now_sec, now_us).ToUniversalTime(), "QHY now_time"));
+            metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_NUTC", now_utc, "QHY now_time"));
             //Exposure time
             var exposure = ((end_sec - start_sec) * 1000 * 1000) + (end_us - start_us);
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EXP", exposure, "[us] QHY exposure"));
