@@ -2354,7 +2354,7 @@ HFR calculat: {2}    </value>
     <value>Port del Servidor de PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>URL del Servidor de PHD2</value>
+    <value>PHD2 Server Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Configuració de PHD2</value>
@@ -6985,5 +6985,11 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
     <value>El moviment del focus s'ha esgotat després de {0} minuts.</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Failure to resolve PHD2 server hostname: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>PHD2 server hostname has not been set</value>
   </data>
 </root>

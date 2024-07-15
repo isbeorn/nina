@@ -2351,7 +2351,7 @@ Calculated HFR: {2}
     <value>PHD2 Server Port</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server URL</value>
+    <value>PHD2 Server Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 Settings</value>
@@ -6984,5 +6984,11 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
     <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Failure to resolve PHD2 server hostname: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>PHD2 server hostname has not been set</value>
   </data>
 </root>
