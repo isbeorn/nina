@@ -3,7 +3,7 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
-# Version 3.tbd
+# Version 3.1 Hotfix 2
 
 ## Improvements
 - The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.
