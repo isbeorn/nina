@@ -175,20 +175,44 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         private TaskCompletionSource<bool> _tcs;
 
-        private bool initialized;
+        private bool initialized = false;
 
         public async Task<bool> Connect(CancellationToken token) {
-            initialized = false;
+            bool connected = false;
+            IPHostEntry hostEntry;
             _tcs = new TaskCompletionSource<bool>();
 
-            var hostEntry = Dns.GetHostEntry(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl);
-            phd2Ip = hostEntry.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
+            var serverHost = profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl;
+            var serverPort = profileService.ActiveProfile.GuiderSettings.PHD2ServerPort;
 
-            var startedPHD2 = await StartPHD2Process();
+            if (string.IsNullOrEmpty(serverHost)) {
+                Notification.ShowError(Loc.Instance["LblPhd2ServerHostNotSet"]);
+                return connected;
+            }
 
-            _ = Task.Run(RunListener);
+            try {
+                hostEntry = DnsHelper.GetIPHostEntryByName(serverHost);
+                phd2Ip = hostEntry.AddressList.First();
+            } catch (Exception ex) {
+                Logger.Error($"Failed to resolve PHD2 server {serverHost}: {ex.Message}");
+                Notification.ShowError(string.Format(Loc.Instance["LblPhd2ServerHostNotResolved"], serverHost));
+                return connected;
+            }
 
-            bool connected = await _tcs.Task;
+            Logger.Info($"Connecting to PHD2 server at {phd2Ip}:{serverPort}");
+
+            // Start PHD2 if we are connecting to an instance on this machine
+            if (IPAddress.IsLoopback(phd2Ip)) {
+                var startedPHD2 = await StartPHD2Process();
+
+                if (!startedPHD2) {
+                    return connected;
+                }
+            }
+
+            _ = Task.Run(RunListener, token);
+
+            connected = await _tcs.Task;
 
             try {
                 if (connected) {
@@ -356,7 +380,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             return true;
         }
 
-        private void CheckPhdError(PhdMethodResponse m) {
+        private static void CheckPhdError(PhdMethodResponse m) {
             if (m.error != null) {
                 Notification.ShowError("PHDError: " + m.error.message + "\n CODE: " + m.error.code);
                 Logger.Warning("PHDError: " + m.error.message + " CODE: " + m.error.code);
@@ -504,22 +528,21 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                         await WaitForCalibrationFinished(progress, ct);
                     }
 
-                    using (var cancelOnTimeoutOrParent = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
-                        var timeout = Task.Delay(
-                            retryAfterSeconds,
-                            cancelOnTimeoutOrParent.Token);
-                        var guidingHasBegun = WaitForGuidingStarted(progress, cancelOnTimeoutOrParent.Token);
+                    using var cancelOnTimeoutOrParent = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                    var timeout = Task.Delay(
+                        retryAfterSeconds,
+                        cancelOnTimeoutOrParent.Token);
+                    var guidingHasBegun = WaitForGuidingStarted(progress, cancelOnTimeoutOrParent.Token);
 
-                        if ((await Task.WhenAny(timeout, guidingHasBegun)) == guidingHasBegun) {
-                            // Guiding has been started successfully in time
-                            // Wait for phd2 to settle and exit
-                            if (waitForSettle) {
-                                await WaitForSettling(progress, ct);
-                            }
-                            return true;
+                    if ((await Task.WhenAny(timeout, guidingHasBegun)) == guidingHasBegun) {
+                        // Guiding has been started successfully in time
+                        // Wait for phd2 to settle and exit
+                        if (waitForSettle) {
+                            await WaitForSettling(progress, ct);
                         }
-                        try { cancelOnTimeoutOrParent?.Cancel(); } catch { }
+                        return true;
                     }
+                    try { cancelOnTimeoutOrParent?.Cancel(); } catch { }
                 }
                 retries += 1;
 
@@ -565,23 +588,22 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         private async Task<bool> WaitForStarSelected(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var lockPos = await GetLockPositionInternal(5000);
             if (lockPos == null) {
-                using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
-                    var timeoutTime = TimeSpan.FromSeconds(30);
-                    timeoutCts.CancelAfter(timeoutTime);
-                    try {
-                        while (lockPos == null) {
-                            await Task.Delay(1000, timeoutCts.Token);
-                            lockPos = await GetLockPositionInternal(5000);
-                        }
-                        return true;
-                    } catch (OperationCanceledException) {
-                        if (ct.IsCancellationRequested) {
-                            throw;
-                        } else {
-                            //After {timeoutTime.TotalSeconds} the state is still in looping or stopped state, so selecting a guide star has failed
-                            Logger.Error($"Failed to select guide star after {timeoutTime.TotalSeconds} seconds");
-                            return false;
-                        }
+                using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                var timeoutTime = TimeSpan.FromSeconds(30);
+                timeoutCts.CancelAfter(timeoutTime);
+                try {
+                    while (lockPos == null) {
+                        await Task.Delay(1000, timeoutCts.Token);
+                        lockPos = await GetLockPositionInternal(5000);
+                    }
+                    return true;
+                } catch (OperationCanceledException) {
+                    if (ct.IsCancellationRequested) {
+                        throw;
+                    } else {
+                        //After {timeoutTime.TotalSeconds} the state is still in looping or stopped state, so selecting a guide star has failed
+                        Logger.Error($"Failed to select guide star after {timeoutTime.TotalSeconds} seconds");
+                        return false;
                     }
                 }
             }
@@ -762,35 +784,36 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         public async Task<T> SendMessage<T>(Phd2Method msg, int receiveTimeout = 60000) where T : PhdMethodResponse {
             try {
-                using (var client = new TcpClient()) {
-                    var serializedMessage = JsonConvert.SerializeObject(msg, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
-                    Logger.Debug($"Phd2 - Sending message '{serializedMessage}'");
-                    client.ReceiveTimeout = receiveTimeout;
+                var serializedMessage = JsonConvert.SerializeObject(msg, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
+                Logger.Debug($"Phd2 - Sending message '{serializedMessage}'");
 
-                    await client.ConnectAsync(
-                        phd2Ip,
-                        profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                    var stream = client.GetStream();
-                    var data = Encoding.ASCII.GetBytes(serializedMessage + Environment.NewLine);
+                using var client = new TcpClient() {
+                    ReceiveTimeout = receiveTimeout,
+                    SendTimeout = receiveTimeout,
+                    NoDelay = true,
+                };
 
-                    await stream.WriteAsync(data, 0, data.Length);
+                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                var stream = client.GetStream();
+                var data = Encoding.ASCII.GetBytes(serializedMessage + Environment.NewLine);
 
-                    using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-                        string line;
-                        while ((line = await reader.ReadLineAsync()) != null) {
-                            var o = JObject.Parse(line);
-                            string phdevent = "";
-                            var t = o.GetValue("id");
-                            if (t != null) {
-                                phdevent = t.ToString();
-                            }
-                            if (phdevent == msg.Id) {
-                                Logger.Debug($"Phd2 - Received message answer '{line}'");
-                                var response = o.ToObject<T>();
-                                CheckPhdError(response);
-                                return response;
-                            }
-                        }
+                await stream.WriteAsync(data);
+
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                string line;
+
+                while ((line = await reader.ReadLineAsync()) != null) {
+                    var o = JObject.Parse(line);
+                    string phdevent = "";
+                    var t = o.GetValue("id");
+                    if (t != null) {
+                        phdevent = t.ToString();
+                    }
+                    if (phdevent == msg.Id) {
+                        Logger.Debug($"Phd2 - Received message answer '{line}'");
+                        var response = o.ToObject<T>();
+                        CheckPhdError(response);
+                        return response;
                     }
                 }
             } catch (Exception ex) {
@@ -1100,61 +1123,62 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         }
 
         private async Task RunListener() {
-            JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            var jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
             _clientCTS?.Dispose();
             _clientCTS = new CancellationTokenSource();
-            using (var client = new TcpClient()) {
-                try {
-                    await client.ConnectAsync(
-                        phd2Ip,
-                        profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                    Connected = true;
-                    _tcs.TrySetResult(true);
 
-                    using (NetworkStream s = client.GetStream()) {
-                        while (true) {
-                            var state = GetState(client);
-                            if (state == TcpState.CloseWait) {
-                                throw new Exception(Loc.Instance["LblPhd2ServerConnectionLost"]);
+            try {
+                using var client = new TcpClient() {
+                    NoDelay = true,
+                };
+
+                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                Connected = true;
+                _tcs.TrySetResult(true);
+
+                using NetworkStream s = client.GetStream();
+
+                while (true) {
+                    var state = GetState(client);
+                    if (state == TcpState.CloseWait) {
+                        throw new Exception(Loc.Instance["LblPhd2ServerConnectionLost"]);
+                    }
+
+                    var message = string.Empty;
+                    while (s.DataAvailable) {
+                        byte[] response = new byte[1024];
+                        await s.ReadAsync(response, _clientCTS.Token);
+                        message += Encoding.ASCII.GetString(response);
+                    }
+
+                    var lines = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                    foreach (string line in lines) {
+                        if (!string.IsNullOrEmpty(line) && line.StartsWith('{')) {
+                            JObject o = JObject.Parse(line, jls);
+                            JToken t = o.GetValue("Event");
+                            string phdevent = "";
+                            if (t != null) {
+                                phdevent = t.ToString();
+                                Logger.Trace($"PHD2 event received - {o}");
+                                await ProcessEvent(phdevent, o);
                             }
-
-                            var message = string.Empty;
-                            while (s.DataAvailable) {
-                                byte[] response = new byte[1024];
-                                await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
-                                message += System.Text.Encoding.ASCII.GetString(response);
-                            }
-
-                            foreach (string line in message.Split(new[] { Environment.NewLine },
-                                StringSplitOptions.None)) {
-                                if (!string.IsNullOrEmpty(line) && line.StartsWith("{")) {
-                                    JObject o = JObject.Parse(line, jls);
-                                    JToken t = o.GetValue("Event");
-                                    string phdevent = "";
-                                    if (t != null) {
-                                        phdevent = t.ToString();
-                                        Logger.Trace($"PHD2 event received - {o}");
-                                        await ProcessEvent(phdevent, o);
-                                    }
-                                }
-                            }
-
-                            await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                         }
                     }
-                } catch (OperationCanceledException) {
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowError("PHD2 Error: " + ex.Message);
-                    throw;
-                } finally {
-                    Settling = false;
-                    AppState = new PhdEventAppState() { State = "" };
-                    PixelScale = 0.0d;
-                    Connected = false;
-                    _tcs.TrySetResult(false);
-                    PHD2ConnectionLost?.Invoke(this, EventArgs.Empty);
+
+                    await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                 }
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError("PHD2 Error: " + ex.Message);
+                throw;
+            } finally {
+                Settling = false;
+                AppState = new PhdEventAppState() { State = "" };
+                PixelScale = 0.0d;
+                Connected = false;
+                _tcs.TrySetResult(false);
+                PHD2ConnectionLost?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -1176,7 +1200,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         public event EventHandler<IGuideStep> GuideEvent;
 
-        public IList<string> SupportedActions => new List<string>();
+        public IList<string> SupportedActions => [];
 
         public string Action(string actionName, string actionParameters) {
             throw new NotImplementedException();
