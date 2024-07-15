@@ -1126,7 +1126,7 @@
     <value>直接导星无法连接赤道仪</value>
   </data>
   <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>赤道仪已断开连接。 直接导星将断开连接。抖动不再有效！</value>
+    <value>望远镜已断开连接。 直接导星将断开连接。抖动不再有效！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>图像保存目录未找到！</value>
@@ -2358,7 +2358,7 @@
     <value>PHD2 服务器端口</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 服务器 URL</value>
+    <value>PHD2 Server Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -3717,7 +3717,7 @@
 只有电调断开时才能更改回差补偿方法！</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>超出值</value>
+    <value>超调</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
   <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
@@ -4108,7 +4108,7 @@
     <value>由于星点强度低而停止导星。可能会有云。</value>
   </data>
   <data name="LblDomeSyncTimeout" xml:space="preserve">
-    <value>同步超时</value>
+    <value>圆顶同步超时</value>
   </data>
   <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
     <value>圆顶与望远镜同步位置的最大时限，以秒为单位</value>
@@ -5464,7 +5464,7 @@
     <value>PHD2 - 等待开始导星</value>
   </data>
   <data name="LblPHD2StartGuidingTimeoutRetry" xml:space="preserve">
-    <value>PHD2 - 开始导星超时。正在重试...</value>
+    <value>PHD2 开始导星超时。正在重试...</value>
   </data>
   <data name="LblFont" xml:space="preserve">
     <value>字体</value>
@@ -6857,13 +6857,13 @@
     <value>正在打开...</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
-    <value>望远镜在自动找零 {0} 分钟后超时。</value>
+    <value>望远镜回零位命令在{0} 分钟后超时。</value>
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
-    <value>望远镜在归位 {0} 分钟后超时。</value>
+    <value>望远镜停放命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
-    <value>望远镜在解除归位 {0} 分钟后超时。</value>
+    <value>望远镜解除停放命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
     <value>时间同步</value>
@@ -6984,6 +6984,12 @@
     <value>在"{0}"中找不到外部命令</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
-    <value>Focuser movement has timed out after {0} minutes.</value>
+    <value>电调移动命令在 {0} 分钟后超时。</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Failure to resolve PHD2 server hostname: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>PHD2 server hostname has not been set</value>
   </data>
 </root>
