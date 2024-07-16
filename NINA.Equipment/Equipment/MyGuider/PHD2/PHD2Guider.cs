@@ -1071,46 +1071,44 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         private async Task<bool> StartPHD2Process() {
             // If PHD2 instance is not running start it.
             try {
-                bool startInstance = true;
                 var windowTitleRegex = new Regex(@"PHD2 Guiding\(?#?([0-9]*)\)?");
 
+                // Check if PHD2 is already started with the expected instance number
                 foreach (var p in Process.GetProcessesByName("phd2")) {
                     var match = windowTitleRegex.Match(p.MainWindowTitle);
                     if ((int.TryParse(match.Groups[1].Value, out int i) ? i : 1) == profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber) {
-                        startInstance = false;
-                        break;
+                        // PHD2 is already started
+                        return true;
                     }
                 }
 
-                if (startInstance) {
-                    if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
-                        throw new FileNotFoundException();
-                    }
-
-                    var process = new Process {
-                        StartInfo = {
-                            FileName = profileService.ActiveProfile.GuiderSettings.PHD2Path,
-                            Arguments = $"-i={profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber}"
-                        }
-                     };
-                    process?.Start();
-                    process?.WaitForInputIdle();
-
-                    await Task.Delay(2000);
-
-                    //Try to read the appstate and retry for 5 times. On slow systems the startup of phd can take a couple of seconds.
-                    string appState = string.Empty;
-                    int retries = 5;
-                    do {
-                        try {
-                            retries--;
-                            appState = await GetAppState(2000);
-                        } catch (Exception) {
-                        }
-                    } while (string.IsNullOrEmpty(appState) && retries > 0);
-
-                    return !string.IsNullOrEmpty(appState);
+                if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
+                    throw new FileNotFoundException();
                 }
+
+                var process = new Process {
+                    StartInfo = {
+                        FileName = profileService.ActiveProfile.GuiderSettings.PHD2Path,
+                        Arguments = $"-i={profileService.ActiveProfile.GuiderSettings.PHD2InstanceNumber}"
+                    }
+                    };
+                process?.Start();
+                process?.WaitForInputIdle();
+
+                await Task.Delay(2000);
+
+                //Try to read the appstate and retry for 5 times. On slow systems the startup of phd can take a couple of seconds.
+                string appState = string.Empty;
+                int retries = 5;
+                do {
+                    try {
+                        retries--;
+                        appState = await GetAppState(2000);
+                    } catch (Exception) {
+                    }
+                } while (string.IsNullOrEmpty(appState) && retries > 0);
+
+                return !string.IsNullOrEmpty(appState);
             } catch (FileNotFoundException ex) {
                 Logger.Error(Loc.Instance["LblPhd2PathNotFound"], ex);
                 Notification.ShowError(Loc.Instance["LblPhd2PathNotFound"]);
