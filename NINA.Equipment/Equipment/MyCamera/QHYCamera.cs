@@ -1324,6 +1324,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void StartLiveView(CaptureSequence sequence) {
+            Logger.Info("QHYCCD: Switching to video mode");
             RaiseIfNotConnected();
             LiveViewEnabled = true;
             ReconnectForLiveView();
@@ -1386,6 +1387,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void StopLiveView() {
+            Logger.Info("QHYCCD: Switching to single exposure mode");
             RaiseIfNotConnected();
             if (Sdk.StopQHYCCDLive() != QhySdk.QHYCCD_SUCCESS) {
                 Logger.Warning("QHYCCD: Failed to stop video mode");
@@ -1401,7 +1403,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             LiveViewEnabled = false;
             ReconnectForLiveView();
-            Logger.Info("QHYCCD: Disabled video mode");
+            Logger.Info("QHYCCD: Switched to single exposure mode");
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
