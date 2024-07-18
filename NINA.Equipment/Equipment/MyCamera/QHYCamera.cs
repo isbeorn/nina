@@ -760,9 +760,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
             try {
                 if (!internalReconnect) {
                     Sdk.InitSdk();
+                    Logger.Info($"QHYCCD: Connecting to {Info.Id}");
                 }
 
-                Logger.Info($"QHYCCD: Connecting to {Info.Id}");
 
                 /*
                  * Get our selected camera's ID from the SDK
@@ -1049,9 +1049,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     Connected = false;
                     CancelCoolingSync();
                     CancelSensorStatsSync();
+                    Logger.Info($"QHYCCD: Closing camera {Info.Id}");
                 }
 
-                Logger.Info($"QHYCCD: Closing camera {Info.Id}");
                 Sdk.Close();
 
                 // Do not release the SDK if we are reconnecting to switch between modes. Only need to close and reopen to do that.
@@ -1303,7 +1303,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private void ReconnectForLiveView() {
-            // Steps documented as required when changing live view:
+            // Steps documented as required when changing video mode:
             // CloseQHYCCD
             // ReleaseQHYCCDResource
             // ScanQHYCCD
@@ -1329,7 +1329,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             ReconnectForLiveView();
 
             if (Sdk.SetStreamMode((byte)QhySdk.QHYCCD_CAMERA_MODE.VIDEO_STREAM) != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to switch to single exposuremode");
+                Logger.Warning("QHYCCD: Failed to switch to video mode");
                 CameraState = CameraStates.Error;
                 return;
             }
@@ -1355,7 +1355,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             uint startx, starty, sizex, sizey;
             if (!SetResolution(out startx, out starty, out sizex, out sizey)) {
-                Logger.Warning("QHYCCD: Failed to set resolution for live view");
+                Logger.Warning("QHYCCD: Failed to set resolution for video mode");
                 CameraState = CameraStates.Error;
                 return;
             }
@@ -1374,7 +1374,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             ImageSize = (uint)((sizex * sizey * BitDepth) + (8 - 1)) / 8;
 
             if (Sdk.BeginQHYCCDLive() != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to start live view");
+                Logger.Warning("QHYCCD: Failed to start video mode");
                 CameraState = CameraStates.Error;
                 LiveViewEnabled = false;
                 ReconnectForLiveView();
@@ -1382,13 +1382,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             CameraState = CameraStates.Exposing;
 
-            Logger.Debug("QHYCCD: Enabled live view");
+            Logger.Info("QHYCCD: Enabled video mode");
         }
 
         public void StopLiveView() {
             RaiseIfNotConnected();
             if (Sdk.StopQHYCCDLive() != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to stop live view");
+                Logger.Warning("QHYCCD: Failed to stop video mode");
                 CameraState = CameraStates.Error;
                 // Continue on to reconnecting the camera
             } else if (Sdk.SetStreamMode((byte)QhySdk.QHYCCD_CAMERA_MODE.SINGLE_EXPOSURE) != QhySdk.QHYCCD_SUCCESS) {
@@ -1401,7 +1401,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             LiveViewEnabled = false;
             ReconnectForLiveView();
-            Logger.Debug("QHYCCD: Disabled live view");
+            Logger.Info("QHYCCD: Disabled video mode");
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
