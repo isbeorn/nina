@@ -759,9 +759,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             try {
                 if (!internalReconnect) {
+                    Sdk.InitSdk();
                     Logger.Info($"QHYCCD: Connecting to {Info.Id}");
                 }
-                Sdk.InitSdk();
+
 
                 /*
                  * Get our selected camera's ID from the SDK
@@ -1052,7 +1053,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
 
                 Sdk.Close();
-                Sdk.ReleaseSdk();
+
+                // Do not release the SDK if we are reconnecting to switch between modes. Only need to close and reopen to do that.
+                if (!internalReconnect) {
+                    Sdk.ReleaseSdk();
+                }
             } catch (Exception ex) {
                 Logger.Error("QHYCCD: Failed to disconnect", ex);
             }
