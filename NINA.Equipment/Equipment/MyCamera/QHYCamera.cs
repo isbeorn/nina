@@ -939,19 +939,19 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     if (!internalReconnect) {
                         CoolerOn = false;
                         CancelCoolingSync();
+
+                        /*
+                         * Start the thread that operates the TEC
+                         * This thread will operate the TEC in accordance with the user turning the cooler on or off
+                         * and program the camera's TEC to cool to the desired temperature. This thread will operate
+                         * for as long as the camera is connected.
+                         */
+                        Logger.Debug("QHYCCD: Starting CoolerWorker task");
+                        coolerWorkerCts = new CancellationTokenSource();
+                        coolerTask = CoolerWorker(coolerWorkerCts.Token);
                     } else {
                         CoolerOn = tempCoolerOn;
                     }
-
-                    /*
-                     * Start the thread that operates the TEC
-                     * This thread will operate the TEC in accordance with the user turning the cooler on or off
-                     * and program the camera's TEC to cool to the desired temperature. This thread will operate
-                     * for as long as the camera is connected.
-                     */
-                    Logger.Debug("QHYCCD: Starting CoolerWorker task");
-                    coolerWorkerCts = new CancellationTokenSource();
-                    coolerTask = CoolerWorker(coolerWorkerCts.Token);
                 }
 
                 /*
