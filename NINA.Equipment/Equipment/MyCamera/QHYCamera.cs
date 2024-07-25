@@ -994,12 +994,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 QhyHasSensorAirPressure = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_PRESSURE);
                 QhyHasSensorHumidity = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_HUMIDITY);
 
-                if (QhyHasSensorAirPressure || QhyHasSensorHumidity) {
-                    Logger.Debug("QHYCCD: Starting SensorStatsWorker task");
+                if(!internalReconnect) {
+                    if (QhyHasSensorAirPressure || QhyHasSensorHumidity) {
+                        Logger.Debug("QHYCCD: Starting SensorStatsWorker task");
 
-                    sensorStatsCts = new CancellationTokenSource();
-                    sensorStatsTask = SensorStatsWorker(sensorStatsCts.Token);
-                }
+                        sensorStatsCts = new CancellationTokenSource();
+                        sensorStatsTask = SensorStatsWorker(sensorStatsCts.Token);
+                    }
+                }                
 
                 QhyFirmwareVersion = GetFirmwareVersion();
                 QhyFPGAVersion = GetFPGAVersion();
