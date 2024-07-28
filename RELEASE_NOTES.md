@@ -13,6 +13,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.
 - In some special cases the `AutoFocus After Exposures` trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.
 - Fixed an issue where sky flat exposure time compensation was going into the wrong direction
+- The color boxes in the color schema settings now show their true color also when they are not clickable
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
   - The list of available cameras will now propertly update when one camera is replaced by a different one.

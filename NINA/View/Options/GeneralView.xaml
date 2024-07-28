@@ -584,6 +584,9 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
                                     UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblCopyColorSchemaToCustom}" />
+                                </Button.ToolTip>
                             </Button>
                             <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                 <TextBlock
@@ -779,6 +782,9 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
                                     UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblCopyColorSchemaToAlternativeCustom}" />
+                                </Button.ToolTip>
                             </Button>
                             <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                 <TextBlock

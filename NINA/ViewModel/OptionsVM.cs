@@ -82,7 +82,7 @@ namespace NINA.ViewModel {
                 PluginRepositories.Insert(0, Constants.MainPluginRepository);
             }
             CopyToCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
-            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
+            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.AltColorSchema?.Name != "Alternative Custom");
 
             RecreatePatterns();
 

@@ -6999,4 +6999,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
     <value>PHD2 server hostname has not been set</value>
   </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+  </data>
 </root>
