@@ -961,8 +961,15 @@
                                 Text="{ns:Loc LblDefaultSequenceFolder}" />
                             <TextBox
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Text="{Binding DefaultSequenceFolder}" />
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="DefaultSequenceFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                             <Button
                                 Grid.Column="2"
                                 Width="20"
@@ -994,8 +1001,15 @@
                                 Text="{ns:Loc LblSequenceTemplateFolder}" />
                             <TextBox
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Text="{Binding SequencerTemplatesFolder}" />
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SequencerTemplatesFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                             <Button
                                 Grid.Column="2"
                                 Width="20"
@@ -1027,8 +1041,15 @@
                                 Text="{ns:Loc Lbl_OldSequencer_Template}" />
                             <TextBox
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Text="{Binding TemplatePath}" />
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="TemplatePath" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                             <Button
                                 Grid.Column="2"
                                 Width="20"
@@ -1060,8 +1081,15 @@
                                 Text="{ns:Loc LblStartupSequenceTemplate}" />
                             <TextBox
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Text="{Binding StartupSequenceTemplate}" />
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="StartupSequenceTemplate" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                             <Button
                                 Grid.Column="2"
                                 Width="20"
@@ -1093,8 +1121,15 @@
                                 Text="{ns:Loc LblSequencerTargetsFolder}" />
                             <TextBox
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Text="{Binding SequencerTargetsFolder}" />
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SequencerTargetsFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                             <Button
                                 Grid.Column="2"
                                 Width="20"

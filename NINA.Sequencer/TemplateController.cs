@@ -133,6 +133,8 @@ namespace NINA.Sequencer {
 
         private async void SequenceSettings_SequencerTemplatesFolderChanged(object sender, System.EventArgs e) {
             if ((e as PropertyChangedEventArgs)?.PropertyName == nameof(profileService.ActiveProfile.SequenceSettings.SequencerTemplatesFolder)) {
+                if (!Directory.Exists(profileService.ActiveProfile.SequenceSettings.SequencerTemplatesFolder)) { return; }
+
                 sequenceTemplateFolderWatcher.Path = profileService.ActiveProfile.SequenceSettings.SequencerTemplatesFolder;
                 try {
                     sequenceTemplateFolderWatcher.EnableRaisingEvents = false;
