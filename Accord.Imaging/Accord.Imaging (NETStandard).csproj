@@ -25,7 +25,7 @@
     <PackageReference Include="Accord" Version="3.8.2-alpha" />
     <PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
     <PackageReference Include="Accord.Statistics" Version="3.8.2-alpha" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
   </ItemGroup>
 
 

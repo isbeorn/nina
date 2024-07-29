@@ -15,19 +15,16 @@
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
-using System;
 using NINA.Image.Interfaces;
+using System;
 
 namespace QHYCCD {
 
-    public class QHYCameras {
+    public class QHYCameras(IExposureDataFactory exposureDataFactory) {
         private static readonly QHYCamera[] _cameras = new QHYCamera[16];
-        public IQhySdk Sdk { get; set; } = QhySdk.Instance;
-        private readonly IExposureDataFactory exposureDataFactory;
+        private readonly IExposureDataFactory exposureDataFactory = exposureDataFactory;
 
-        public QHYCameras(IExposureDataFactory exposureDataFactory) {
-            this.exposureDataFactory = exposureDataFactory;
-        }
+        public IQhySdk Sdk { get; set; } = QhySdk.Instance;
 
         public uint Count {
             get {
@@ -41,10 +38,12 @@ namespace QHYCCD {
         }
 
         public QHYCamera GetCamera(uint cameraId, IProfileService profileService) {
-            if (cameraId > Count)
+            if (cameraId > Count) {
                 throw new IndexOutOfRangeException();
+            }
 
-            return _cameras[cameraId] ?? (_cameras[cameraId] = new QHYCamera(cameraId, profileService, exposureDataFactory));
+            _cameras[cameraId] = new QHYCamera(cameraId, profileService, exposureDataFactory);
+            return _cameras[cameraId];
         }
     }
 }

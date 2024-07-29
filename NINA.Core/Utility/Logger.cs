@@ -80,29 +80,11 @@ namespace NINA.Core.Utility {
             } catch { 
                 sb.AppendLine(PadBoth("Unable to determine OS information", 70, '-'));
             }
-            
 
             try {
                 sb.AppendLine(PadBoth("Total Physical Memory {0} GB", 70, '-', Math.Round(GetTotalPhysicalMemory() / 1024d / 1024d / 1024d, 2).ToString()));
             } catch {
                 sb.AppendLine(PadBoth("Unable to determine Physical Memory", 70, '-'));
-            }
-            
-            try {
-                foreach (var drive in DriveInfo.GetDrives()) {
-                    try {
-                        if (drive.IsReady) {
-                            sb.AppendLine(PadBoth("Available Space on Drive {0}: {1} GB", 70, '-', drive.Name, Math.Round(drive.AvailableFreeSpace / (1024d * 1024d * 1024d), 2).ToString(CultureInfo.InvariantCulture)));
-                        } else {
-                            sb.AppendLine(PadBoth("Drive {0} is not ready", 70, '-', drive.Name));
-                        }
-                    } catch {
-                        sb.AppendLine(PadBoth("Error occurred to retrieve drive info for {0}", 70, '-', drive.Name));
-                    }
-
-                }
-            } catch {
-                sb.AppendLine(PadBoth("Unable to retrieve drive info", 70, '-'));
             }
 
             sb.AppendLine(PadBoth("", 70, '-'));

@@ -963,7 +963,7 @@
     <value>逆时针</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>现在盖上你的望远镜镜头盖，按“确定”开始拍摄暗场。</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>现在盖上你的望远镜镜头盖</value>
@@ -1123,10 +1123,10 @@
     <value>赤纬导星速率（角秒/秒）</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider could not connect to Mount</value>
+    <value>直接导星无法连接赤道仪</value>
   </data>
   <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</value>
+    <value>望远镜已断开连接。 直接导星将断开连接。抖动不再有效！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>图像保存目录未找到！</value>
@@ -1483,7 +1483,7 @@
     <value>打开</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>打开镜头盖拍摄暗场</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>设定</value>
@@ -1927,7 +1927,7 @@
     <value>手动控制</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates</value>
+    <value>手动坐标</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>手动滤镜轮</value>
@@ -2126,10 +2126,10 @@
     <value>不同步</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>启用后，应用程序将不会向望远镜发送同步命令。 只有在望远镜本身有高精度指向模型（或有特殊需求不使用同步命令），并且不需要由软件改变原先设定的时候，才应该使用此方法。</value>
   </data>
   <data name="LblNoMount" xml:space="preserve">
-    <value>No Mount</value>
+    <value>无支架</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>错误</value>
@@ -2358,7 +2358,7 @@
     <value>PHD2 服务器端口</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 服务器 URL</value>
+    <value>PHD2 Server Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -2540,7 +2540,7 @@
     <value>准备拍摄</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>正在准备暗场序列</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>平场拍摄滤镜: {0}</value>
@@ -2612,7 +2612,7 @@
     <value>序列的读出模式</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>相机的这种读出模式将用于序列中的亮场，偏置，暗场，平场和暗平场。</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>快照的读出模式</value>
@@ -2645,7 +2645,7 @@
     <value>请重新连接电调！</value>
   </data>
   <data name="LblReconnectMount" xml:space="preserve">
-    <value>Please reconnect mount!</value>
+    <value>请重新连接支架！</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>选择日期</value>
@@ -3067,15 +3067,14 @@
     <value>同步</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Mount sync failed</value>
+    <value>支架同步失败</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>同步地理位置</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Mount's site settings differ from N.I.N.A.'s.
-
-Should the settings be synchronized?</value>
+    <value>支架的站点设置（地理位置）与NINA中的设置不同。
+是否同步设置？</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>目标</value>
@@ -3147,7 +3146,7 @@ Should the settings be synchronized?</value>
     <value>从望远镜同步坐标</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
-    <value>From Mount to N.I.N.A.</value>
+    <value>从支架到NINA。</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -3338,7 +3337,7 @@ Should the settings be synchronized?</value>
     <value>无法启动相机曝光</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Unable to sync. Mount is not connected</value>
+    <value>无法同步。支架没有连接</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>发生未知错误</value>
@@ -3718,7 +3717,7 @@ Should the settings be synchronized?</value>
 只有电调断开时才能更改回差补偿方法！</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>超出值</value>
+    <value>超调</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
   <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
@@ -4001,7 +4000,7 @@ Should the settings be synchronized?</value>
     <value>断开旋转器？</value>
   </data>
   <data name="LblDisconnectMount" xml:space="preserve">
-    <value>Disconnect Mount?</value>
+    <value>断开支架？</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>望远镜已经停放，在指向之前可能需要解除停放</value>
@@ -4109,7 +4108,7 @@ Should the settings be synchronized?</value>
     <value>由于星点强度低而停止导星。可能会有云。</value>
   </data>
   <data name="LblDomeSyncTimeout" xml:space="preserve">
-    <value>同步超时</value>
+    <value>圆顶同步超时</value>
   </data>
   <data name="LblDomeSyncTimeoutTooltip" xml:space="preserve">
     <value>圆顶与望远镜同步位置的最大时限，以秒为单位</value>
@@ -5251,10 +5250,10 @@ Should the settings be synchronized?</value>
     <value>移动旋转器到位置 {0}</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>查找指定参数的训练曝光值，并进行暗场曝光</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>经过训练的暗场曝光</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>左侧</value>
@@ -5465,7 +5464,7 @@ Should the settings be synchronized?</value>
     <value>PHD2 - 等待开始导星</value>
   </data>
   <data name="LblPHD2StartGuidingTimeoutRetry" xml:space="preserve">
-    <value>PHD2 - 开始导星超时。正在重试...</value>
+    <value>PHD2 开始导星超时。正在重试...</value>
   </data>
   <data name="LblFont" xml:space="preserve">
     <value>字体</value>
@@ -5527,7 +5526,7 @@ Should the settings be synchronized?</value>
     <value>检查更新</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Install via the N.I.N.A. plugin manager or manually download and copy the DLL file into %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; from:</value>
+    <value>通过NINA的插件管理器安装，或手动下载DLL文件并复制到以下目录： %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt;</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>通过 N.I.N.A. 插件管理器安装，或手动下载并运行安装程序，下载地址：</value>
@@ -6422,7 +6421,7 @@ Should the settings be synchronized?</value>
     <value>天窗和圆顶被要求打开，但安全监视器尚未连接，打开程序已被终止。</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>注意：这些设置与您的设备安全相关。配置前，请确保熟悉您的整套设备，并经过仔细考虑。这些设置仅管理N.I.N.A.对设备的直接控制，如果N.I.N.A未运行或未连接到相关设备，它们将无法生效。确保圆顶拥有可靠的电源保障和硬件保护设施，以防止任何意外的移动。您有责任确保这些设置不会与圆顶驱动程序的设置冲突。</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
     <value>折叠左边栏，仅显示图标</value>
@@ -6480,11 +6479,11 @@ Should the settings be synchronized?</value>
     <value>硬件加速</value>
   </data>
   <data name="LblHardwareAccelerationTooltip" xml:space="preserve">
-    <value>This will enable or disable hardware accelerated rendering of the application.
-In case you are having rendering issues, or the application is turning blank when using a remote software while there is no monitor attached disabling hardware acceleration might be beneficial.
-Keep in mind that disabling hardware acceleration might reduce overall application performance.
+    <value>这将启用或禁用应用程序的硬件加速渲染。
+如果应用程序显示异常，如在远程桌面控制时显示为空白窗口，禁用硬件加速或许能解决问题。
+请记住，禁用硬件加速可能会降低应用程序的总体性能。
 
-Changing the value will require an app restart to take affect.</value>
+更改此选项需要重启应用程序才能生效。</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
     <value>配置文件</value>
@@ -6495,8 +6494,9 @@ Changing the value will require an app restart to take affect.</value>
     <comment>The option to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblAutomaticMountSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will send a sync command to the mount during platesolve &amp; center operations. 
-This should only be disabled when having a good pointing model that must not be altered in any way. When disabled the plate solve panel in imaging tab will also not show the sync toggle.</value>
+    <value>当启用时，NINA将在解析和居中操作时向赤道仪发送“同步”指令。
+请保持启用，除非不需要由NINA改变赤道仪设置（例如赤道仪本身指向足够精准或有其他特殊需求时）。
+当禁用时，“主控台-解析”标签中的“同步”选项将被隐藏。</value>
     <comment>The option tooltip to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblCameraDitherPixels" xml:space="preserve">
@@ -6566,10 +6566,10 @@ This should only be disabled when having a good pointing model that must not be 
     <value>自动调节平场板亮度</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
+    <value>此指令自动调整曝光时间以拍摄暮光天光平场，类似于平场助手的功能。 它将根据对天空亮度变化的实时预测，动态调整每次的曝光时间。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Twilight Sky Flats</value>
+    <value>暮光天光平场</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>正在关闭镜头盖</value>
@@ -6669,10 +6669,10 @@ This should only be disabled when having a good pointing model that must not be 
     <value>当连接到望远镜时，若望远镜和程序的地理位置不一致，程序行为由该选项控制</value>
   </data>
   <data name="LblPHD2PeakDec" xml:space="preserve">
-    <value>Peak Dec: {0} ({1}")</value>
+    <value>赤纬轴峰值： {0} ({1}")</value>
   </data>
   <data name="LblPHD2PeakRA" xml:space="preserve">
-    <value>Peak RA: {0} ({1}")</value>
+    <value>赤经轴峰值： {0} ({1}")</value>
   </data>
   <data name="LblPluginRepositories" xml:space="preserve">
     <value>插件库</value>
@@ -6684,7 +6684,7 @@ This should only be disabled when having a good pointing model that must not be 
     <value>插件库URL无效： {0}</value>
   </data>
   <data name="LblTSXImageLink" xml:space="preserve">
-    <value>TheSkyX Imagelink</value>
+    <value>TheSkyX解析（Imagelink）</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
     <value>TheSkyX 主机地址</value>
@@ -6696,7 +6696,7 @@ This should only be disabled when having a good pointing model that must not be 
     <value>Mono bin 模式</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
-    <value>When on, the camera will average binned pixels to create monochrome output</value>
+    <value>开启时，相机将以相邻像素的平均值合并，并读出黑白图像</value>
   </data>
   <data name="LblPinPoint" xml:space="preserve">
     <value>PinPoint</value>
@@ -6744,13 +6744,13 @@ This should only be disabled when having a good pointing model that must not be 
     <value>扩展</value>
   </data>
   <data name="LblPinPointExpansionToolTip" xml:space="preserve">
-    <value>Expansion of catalog search area outside the image dimensions (min = 0, max = 80, default = 40)</value>
+    <value>在图像尺寸之外扩展目录搜索区域(最小= 0，最大= 80，缺省= 40)</value>
   </data>
   <data name="LblPinPointMaxMagnitude" xml:space="preserve">
     <value>极限星等</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
-    <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
+    <value>从参考目录中选择恒星的最大(最佳) 星等(最小=2.0，最大=20.0，默认=20.0)</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
     <value>AllSky API 主机</value>
@@ -6793,7 +6793,7 @@ This should only be disabled when having a good pointing model that must not be 
     <value>仅显示信息</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
-    <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
+    <value>“仅显示信息内容”和“显示交互控制”之间切换</value>
   </data>
   <data name="LblParked" xml:space="preserve">
     <value>已停放</value>
@@ -6827,10 +6827,10 @@ This should only be disabled when having a good pointing model that must not be 
     <value>创建 32 位数据</value>
   </data>
   <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
-    <value>When the feature is enabled, N.I.N.A. will generate image data with a 32-bit depth, enhancing the pixel value range. 
-However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
-Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
-Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+    <value>启用该功能后，N.I.N.A. 将生成32位深度的图像数据，扩展单个像素取值范围以提升精度。 
+请注意，这将占用更多内存容量、硬盘空间和处理时间。
+记住，仅有XISF 和 FITS 文件格式支持32位。 
+此外，所使用的 ASCOM 驱动程序也必须支持32位深度。 如果驱动不支持32位， 那么开启该选项，只会增加文件大小，而对图像精度没有实际提升。</value>
   </data>
   <data name="LblUseCfitsio" xml:space="preserve">
     <value>使用 CFITSIO</value>
@@ -6857,13 +6857,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>正在打开...</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
-    <value>Telescope find home has timed out after {0} minutes</value>
+    <value>望远镜回零位命令在{0} 分钟后超时。</value>
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
-    <value>Telescope park has timed out after {0} minutes.</value>
+    <value>望远镜停放命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
-    <value>Telescope unpark has timed out after {0} minutes.</value>
+    <value>望远镜解除停放命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
     <value>时间同步</value>
@@ -6875,45 +6875,45 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>坐标同步</value>
   </data>
   <data name="LblMount" xml:space="preserve">
-    <value>Mount</value>
+    <value>支架</value>
   </data>
   <data name="LblMountName" xml:space="preserve">
-    <value>Mount name</value>
+    <value>支架名称</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>发现持续时间</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
+    <value>尝试发现ASCOM Alpaca设备的持续时间 (默认: 2 秒)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>发现端口</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>ASCOM Alpaca 发现 IP 端口号(默认：32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value># 广播次数</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
+    <value>ASCOM Alpaca设备发现广播次数(默认：1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>解析DNS名称</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>尝试ASCOM Alpaca 设备的DNS解析(默认：关闭)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>使用 HTTPS</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>设定使用 HTTP 或 HTTPS 进行 ASCOM Alpaca 设备搜寻 (默认：关闭)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
     <value>使用IPv4</value>
@@ -6930,7 +6930,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>使用IPv6来搜寻 ASCOM Alpaca 设备(默认：关闭)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>切换目录显示</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>目标高度角</value>
@@ -6948,39 +6948,48 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>打开或关闭相机的 LED 指示灯</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum brightness is higher than the maximum brightness!</value>
+    <value>最小亮度大于最大亮度！</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>最小曝光时间大于最大曝光时间！</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+    <value>已为天空平场曝光启用抖动，但是望远镜无法进行脉冲导星</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+    <value>已为天空平场曝光启用抖动，但是望远镜未连接</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+    <value>已为天空平场曝光启用抖动，但是望远镜已停放</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>最小曝光时间大于最大曝光时间！</value>
   </data>
   <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
-    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+    <value>指令 "{0}" 在 {1} 分钟后仍未响应取消请求。序列将继续，并忽略未响应的任务。</value>
   </data>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
-    <value>Waiting for instruction to acknowledge cancellation</value>
+    <value>等待确认取消的命令</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>要求打开天窗和圆顶，但安全监视器尚未连接。已中止打开程序。</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>外部命令</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>外部命令运行失败</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>在"{0}"中找不到外部命令</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>电调移动命令在 {0} 分钟后超时。</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Failure to resolve PHD2 server hostname: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>PHD2 server hostname has not been set</value>
   </data>
 </root>

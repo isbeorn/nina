@@ -46,11 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AsyncEnumerator" Version="4.0.2" />
-    <PackageReference Include="CsvHelper" Version="31.0.2" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.115" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2535.41" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
     <PackageReference Include="Nito.Mvvm.Async" Version="1.0.0-pre-04" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />

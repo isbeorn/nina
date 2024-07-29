@@ -80,6 +80,7 @@
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding VersionCheckVM.CheckUpdateCommand}" />
+            <i:InvokeCommandAction Command="{Binding AppVM.CheckDiskInfoCommand}" />
             <i:InvokeCommandAction Command="{Binding AppVM.CheckWindowsVersionCommand}" />
             <i:InvokeCommandAction Command="{Binding AppVM.CheckASCOMPlatformVersionCommand}" />
             <i:InvokeCommandAction Command="{Binding AppVM.CheckEphemerisExistsCommand}" />
