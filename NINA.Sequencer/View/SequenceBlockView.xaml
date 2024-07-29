@@ -452,7 +452,10 @@
                 <WrapPanel.Resources>
                     <DataTemplate x:Key="WithAttempts">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblNumberOfAttempts}">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblNumberOfAttempts}">
 
                                 <TextBlock.ToolTip>
                                     <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
@@ -462,7 +465,8 @@
                                 MinWidth="40"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                VerticalContentAlignment="Center">
+                                VerticalContentAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}">
                                 <TextBox.ToolTip>
                                     <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
                                 </TextBox.ToolTip>
@@ -513,7 +517,10 @@
                                 Path="ErrorBehavior" />
                         </PriorityBinding>
                     </StackPanel.Visibility>
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOnError}">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource ButtonForegroundBrush}"
+                        Text="{ns:Loc LblOnError}">
 
                         <TextBlock.ToolTip>
                             <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_ErrorBehavior_Tooltip}" />
@@ -524,7 +531,13 @@
                         x:Name="PART_ErrorBehavior"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
+                        Background="{StaticResource TertiaryBackgroundBrush}"
                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type sequtil:InstructionErrorBehavior}}}">
+                        <ComboBox.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                            </Style>
+                        </ComboBox.Resources>
                         <ComboBox.ToolTip>
                             <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_ErrorBehavior_Tooltip}" />
                         </ComboBox.ToolTip>
@@ -558,7 +571,7 @@
                         <Path
                             Margin="5"
                             Data="{StaticResource PowerSVG}"
-                            Fill="{StaticResource PrimaryBrush}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
                     </Grid>
@@ -594,7 +607,7 @@
                         <Path
                             Margin="5"
                             Data="{StaticResource RefreshSVG}"
-                            Fill="{StaticResource PrimaryBrush}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
                     </Grid>
@@ -631,7 +644,7 @@
                         <Path
                             Margin="5"
                             Data="{StaticResource CopySVG}"
-                            Fill="{StaticResource PrimaryBrush}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
                     </Grid>
@@ -656,7 +669,7 @@
                         <Path
                             Margin="5"
                             Data="{StaticResource ArrowUpSVG}"
-                            Fill="{StaticResource PrimaryBrush}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
                     </Grid>
@@ -681,7 +694,7 @@
                         <Path
                             Margin="5"
                             Data="{StaticResource ArrowDownSVG}"
-                            Fill="{StaticResource PrimaryBrush}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
                     </Grid>
