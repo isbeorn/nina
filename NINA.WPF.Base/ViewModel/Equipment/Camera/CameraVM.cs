@@ -226,7 +226,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 }
 
                 // Wait for final step
-                var timeout = TimeSpan.FromMinutes(1);
+                var timeout = TimeSpan.FromMinutes(2);
                 var idleTime = TimeSpan.Zero;
                 var progressThreshold = 0.5d;
                 var previousTemperature = currentTemp;
