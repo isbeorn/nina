@@ -16,6 +16,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The color boxes in the color schema settings now show their true color also when they are not clickable
 - Text color when opening the additional options of Sequence Instructions using the three dots are now using the same color as the instruction text itself
 - When using the `Cool Camera` instruction, the camera's failure to reach the target setpoint now results in a sequence error event. An example cause would be the camera's cooling progress stalling (moving < 0.5°C over 2 minutes) while the cooler is at 100% power due the ambient temperature being too hot to reach the desired setpoint.
+- Fixed a display issue in the mini sequencer where the sequence container header was indented too much.
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
   - The list of available cameras will now propertly update when one camera is replaced by a different one.
