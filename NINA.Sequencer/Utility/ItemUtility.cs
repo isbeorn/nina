@@ -260,19 +260,24 @@ namespace NINA.Sequencer.Utility {
             data.TargetAltitude = data.Offset;
         }
 
-        /*
-         * info: common instruction info
-         * offset: is the offset for rise/set for the sun and moon
-         * until: true if the instruction is "<instruction> UNTIL <altitude>" as opposed to "<instruction> IF <altitude>"
-         * allowance: the amount of slop we allow when confirming time estimates, in minutes.  For DSO's this is minimal, since
-         *   their RA/Dec doesn't change (just a matter of getting to the minute.  For the Sun, a bit more is needed, and for
-         *   the Moon, a fair bit more since coordinates change rapidly
-         * func: a function that returns the sun/moon's altitude at a given time
-         * 
-         * We either know that the expected time is "Now" (i.e. the condition is already met) or we will iterate to find
-         * the actual time
-         */
+        [Obsolete]
         public static void CalculateExpectedTimeCommon(WaitLoopData data, double offset, bool until, int allowance, Func<DateTime, ObserverInfo, double> getCurrentAltitude) {
+            CalculateExpectedTimeCommon(data, until, allowance, getCurrentAltitude);
+        }
+
+            /*
+             * info: common instruction info
+             * offset: is the offset for rise/set for the sun and moon
+             * until: true if the instruction is "<instruction> UNTIL <altitude>" as opposed to "<instruction> IF <altitude>"
+             * allowance: the amount of slop we allow when confirming time estimates, in minutes.  For DSO's this is minimal, since
+             *   their RA/Dec doesn't change (just a matter of getting to the minute.  For the Sun, a bit more is needed, and for
+             *   the Moon, a fair bit more since coordinates change rapidly
+             * func: a function that returns the sun/moon's altitude at a given time
+             * 
+             * We either know that the expected time is "Now" (i.e. the condition is already met) or we will iterate to find
+             * the actual time
+             */
+        public static void CalculateExpectedTimeCommon(WaitLoopData data, bool until, int allowance, Func<DateTime, ObserverInfo, double> getCurrentAltitude) {
             // Don't waste time on constructors
             if (data == null) { return; }            
             if (data.Coordinates == null) { return; }
@@ -290,7 +295,7 @@ namespace NINA.Sequencer.Utility {
                 }
             }
 
-            RiseSetMeridian rsm = CalculateTimeAtAltitude(coord, data.Latitude, data.Longitude, targetAltitude + offset);
+            RiseSetMeridian rsm = CalculateTimeAtAltitude(coord, data.Latitude, data.Longitude, targetAltitude);
             data.IsRising = rsm.IsRising;
 
             // Not thrilled with this exception, but don't want a more significant refactor at this point
@@ -300,7 +305,7 @@ namespace NINA.Sequencer.Utility {
 
             if (data.UseCustomHorizon) {
                 // For knowing if the condition is met NOW, target altitude must use current horizon
-                targetAltitude = data.GetTargetAltitudeWithHorizon(DateTime.Now) + offset;
+                targetAltitude = data.GetTargetAltitudeWithHorizon(DateTime.Now);
             }
 
             switch (data.Comparator) {
@@ -361,12 +366,14 @@ namespace NINA.Sequencer.Utility {
             return new RiseSetMeridian(risingTime, settingTime, meridianTime, currentAltitude, isRising);
         }
 
+        [Obsolete]
         public static Coordinates CalculateSunRADec(ObserverInfo observer) {
             double jd = AstroUtil.GetJulianDate(DateTime.Now);
             NOVAS.SkyPosition skyPos = AstroUtil.GetSunPosition(DateTime.Now, jd, observer);
             return new Coordinates(skyPos.RA, skyPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
         }
 
+        [Obsolete]
         public static Coordinates CalculateMoonRADec(ObserverInfo observer) {
             double jd = AstroUtil.GetJulianDate(DateTime.Now);
             NOVAS.SkyPosition skyPos = AstroUtil.GetMoonPosition(DateTime.Now, jd, observer);

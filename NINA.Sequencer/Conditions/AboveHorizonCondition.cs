@@ -106,7 +106,7 @@ namespace NINA.Sequencer.Conditions {
 
         public void CalculateExpectedTime(DateTime time) {
             Data.CurrentAltitude = GetCurrentAltitude(time, Data.Observer);
-            CalculateExpectedTimeCommon(Data, offset: 0, until: false, 90, GetCurrentAltitude);
+            CalculateExpectedTimeCommon(Data, until: false, 90, GetCurrentAltitude);
         }
     }
 }

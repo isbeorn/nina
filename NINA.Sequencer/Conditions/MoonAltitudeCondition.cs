@@ -17,9 +17,11 @@ using NINA.Profile.Interfaces;
 using NINA.Astrometry;
 using System;
 using System.ComponentModel.Composition;
-using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Core.Enum;
+using NINA.Astrometry.RiseAndSet;
+using NINA.Core.Locale;
+using Nito.AsyncEx;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -33,7 +35,7 @@ namespace NINA.Sequencer.Conditions {
 
         [ImportingConstructor]
         public MoonAltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-           InterruptReason = "Moon is outside of the specified altitude range";
+            InterruptReason = "Moon is outside of the specified altitude range";
         }
 
         private MoonAltitudeCondition(MoonAltitudeCondition cloneMe) : this(cloneMe.ProfileService) {
@@ -46,11 +48,41 @@ namespace NINA.Sequencer.Conditions {
             };
         }
 
+        private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
+        private double lastCalculationOffset = double.NaN;
+        private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
+
         //h = -0.583 degrees -: Moon's upper limb touches the horizon; atmospheric refraction accounted for
         public override void CalculateExpectedTime() {
-            Data.Coordinates.Coordinates = CalculateMoonRADec(Data.Observer);
-            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, -.583, until: true, 60, AstroUtil.GetMoonAltitude);
+            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer) + .583;
+            if (!Check(null, null, true)) {
+                Data.ExpectedDateTime = DateTime.Now;
+                Data.ExpectedTime = Loc.Instance["LblNow"];
+                lastCalculation = DateTimeOffset.MinValue;
+            } else {
+                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                // Only calculate every day or when the parameters have changed
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                    Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
+                    if (Data.ExpectedDateTime < DateTime.Now) {
+                        Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
+                    }
+
+                    if (Data.ExpectedDateTime == DateTime.MaxValue) {
+                        Data.ExpectedTime = "--";
+                    }
+                    lastCalculation = referenceDate;
+                    lastCalculationOffset = Data.Offset;
+                    lastCalculationComparator = Data.Comparator;
+                }
+            }
+        }
+
+        private DateTime CalculateExpectedDateTime(DateTime time) {
+            // The MoonRiseAndSet already models refraction and moon disk size
+            var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
+            AsyncContext.Run(customRiseAndSet.Calculate);
+            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
     }
 }

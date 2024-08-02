@@ -24,7 +24,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.Validations;
-using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Astrometry.RiseAndSet;
+using Nito.AsyncEx;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -52,7 +53,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
-                 CalculateExpectedTime();
+                CalculateExpectedTime();
 
                 if (MustWait()) {
                     progress.Report(new ApplicationStatus() {
@@ -70,21 +71,50 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         private bool MustWait() {
-
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
-                   return Data.CurrentAltitude > Data.Offset;
-                
+                    return Data.CurrentAltitude > Data.Offset;
+
                 default:
                     return Data.CurrentAltitude <= Data.Offset;
             }
         }
 
+        private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
+        private double lastCalculationOffset = double.NaN;
+        private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
+
         // See SunAltitudeCondition for documentation on the -.833 constant
         public override void CalculateExpectedTime() {
-            Data.Coordinates.Coordinates = CalculateSunRADec(Data.Observer);
-            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, -.833, until: false, 30, AstroUtil.GetSunAltitude);
+            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + 0.833;
+
+            if (!MustWait()) {
+                Data.ExpectedDateTime = DateTime.Now;
+                Data.ExpectedTime = Loc.Instance["LblNow"];
+                lastCalculation = DateTimeOffset.MinValue;
+            } else {
+                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                // Only calculate every day or when the parameters have changed
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                    Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
+                    if (Data.ExpectedDateTime < DateTime.Now) {
+                        Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
+                    }
+
+                    if (Data.ExpectedDateTime == DateTime.MaxValue) {
+                        Data.ExpectedTime = "--";
+                    }
+                    lastCalculation = referenceDate;
+                    lastCalculationOffset = Data.Offset;
+                    lastCalculationComparator = Data.Comparator;
+                }
+            }
+        }
+
+        private DateTime CalculateExpectedDateTime(DateTime time) {
+            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset - 0.833);
+            AsyncContext.Run(customRiseAndSet.Calculate);
+            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
 
         public override string ToString() {
