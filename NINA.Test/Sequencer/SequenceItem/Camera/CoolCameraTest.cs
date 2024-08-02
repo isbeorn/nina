@@ -99,6 +99,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Camera {
         [TestCase(0, 10)]
         public async Task Execute_NoIssues_LogicCalled(double temperature, int duration) {
             cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo() { Connected = true, CanSetTemperature = true });
+            cameraMediatorMock.Setup(x => x.CoolCamera(It.Is<double>(temp => temp == temperature), It.Is<TimeSpan>(t => t == TimeSpan.FromMinutes(duration)), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
             var sut = new CoolCamera(cameraMediatorMock.Object);
             sut.Temperature = temperature;
