@@ -56,7 +56,7 @@ namespace NINA.Sequencer.Conditions {
         //h = -0.583 degrees: Center of Sun's disk touches the horizon; atmospheric refraction accounted for
         //h = -0.833 degrees: Sun's upper limb touches the horizon; atmospheric refraction accounted for
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.AdjustAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
+            Data.CurrentAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
 
             if (!Check(null, null, true)) {
                 Data.ExpectedDateTime = DateTime.Now;

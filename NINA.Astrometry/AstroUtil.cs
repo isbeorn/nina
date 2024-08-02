@@ -688,7 +688,7 @@ namespace NINA.Astrometry {
             return GetAltitude(hourAngle, observerInfo.Latitude, tuple.Item2.Dec);
         }
 
-        public static double AdjustAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude) {
+        public static double CalculateAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude) {
             var zenithDistance = 90d - currentAltitude;
             var location = new NOVAS.OnSurface() {
                 Latitude = latitude,

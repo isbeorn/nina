@@ -86,7 +86,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         // See SunAltitudeCondition for documentation on the -.833 constant
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.AdjustAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
+            Data.CurrentAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
 
             if (!MustWait()) {
                 Data.ExpectedDateTime = DateTime.Now;

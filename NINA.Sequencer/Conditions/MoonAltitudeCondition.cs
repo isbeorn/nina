@@ -54,7 +54,7 @@ namespace NINA.Sequencer.Conditions {
 
         //h = -0.583 degrees -: Moon's upper limb touches the horizon; atmospheric refraction accounted for
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.AdjustAltitudeForStandardRefraction(AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer), Data.Observer.Latitude, Data.Observer.Longitude);
+            Data.CurrentAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer), Data.Observer.Latitude, Data.Observer.Longitude);
             if (!Check(null, null, true)) {
                 Data.ExpectedDateTime = DateTime.Now;
                 Data.ExpectedTime = Loc.Instance["LblNow"];
