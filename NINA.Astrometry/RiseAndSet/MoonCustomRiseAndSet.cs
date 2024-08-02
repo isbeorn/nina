@@ -16,7 +16,7 @@ namespace NINA.Astrometry.RiseAndSet {
 
         protected override double AdjustAltitude(BasicBody body) {
             /* Readjust moon altitude based on earth radius and refraction */
-            var horizon = 90.0;
+            var horizon = 90.0 - MoonAltitude;
             var location = new NOVAS.OnSurface() {
                 Latitude = Latitude,
                 Longitude = Longitude

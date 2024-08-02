@@ -15,6 +15,7 @@
 using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Database;
 using NINA.Core.Utility;
+using NINA.Profile;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Concurrent;
@@ -685,6 +686,16 @@ namespace NINA.Astrometry {
             var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, tuple.Item2.RA));
 
             return GetAltitude(hourAngle, observerInfo.Latitude, tuple.Item2.Dec);
+        }
+
+        public static double AdjustAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude) {
+            var zenithDistance = 90d - currentAltitude;
+            var location = new NOVAS.OnSurface() {
+                Latitude = latitude,
+                Longitude = longitude
+            };
+            var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, zenithDistance);
+            return currentAltitude + refraction;
         }
 
         [Obsolete("Use NINA.Astrometry.ObserverInfo object instead of latitude and longitude arguments")]

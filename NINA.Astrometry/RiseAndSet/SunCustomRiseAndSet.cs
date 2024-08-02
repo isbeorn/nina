@@ -11,10 +11,18 @@ namespace NINA.Astrometry.RiseAndSet {
             SunAltitude = sunAltitude;
         }
 
-        private double SunAltitude {  get; }
+        private double SunAltitude { get; }
 
         protected override double AdjustAltitude(BasicBody body) {
-            return body.Altitude - SunAltitude;
+            /* Readjust altitude based on earth radius and refraction */
+            var zenithDistance = 90d - SunAltitude;
+            var location = new NOVAS.OnSurface() {
+                Latitude = Latitude,
+                Longitude = Longitude
+            };
+            var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, zenithDistance);
+            var altitude = body.Altitude - AstroUtil.ToDegree(Earth.Radius) / body.Distance + AstroUtil.ToDegree(body.Radius) / body.Distance + refraction;
+            return altitude - SunAltitude;
         }
 
         protected override BasicBody GetBody(DateTime date) {

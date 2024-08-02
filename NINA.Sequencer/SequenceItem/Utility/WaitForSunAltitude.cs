@@ -86,7 +86,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         // See SunAltitudeCondition for documentation on the -.833 constant
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + 0.833;
+            Data.CurrentAltitude = AstroUtil.AdjustAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
 
             if (!MustWait()) {
                 Data.ExpectedDateTime = DateTime.Now;
@@ -112,7 +112,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
-            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset - 0.833);
+            // The SunRiseAndSet already models refraction and sun disk size
+            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
             AsyncContext.Run(customRiseAndSet.Calculate);
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }

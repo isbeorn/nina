@@ -17,21 +17,9 @@ using System;
 
 namespace NINA.Astrometry.RiseAndSet {
 
-    public class AstronomicalTwilightRiseAndSet : RiseAndSetEvent {
+    public class AstronomicalTwilightRiseAndSet : SunCustomRiseAndSet {
 
-        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
-        }
-
-        private double AstronomicalTwilightDegree =>
-                //http://aa.usno.navy.mil/faq/docs/RST_defs.php #Paragraph Astronomical twilight
-                -18;
-
-        protected override double AdjustAltitude(BasicBody body) {
-            return body.Altitude - AstronomicalTwilightDegree;
-        }
-
-        protected override BasicBody GetBody(DateTime date) {
-            return new Sun(date, Latitude, Longitude);
+        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude, -18) {
         }
     }
 }

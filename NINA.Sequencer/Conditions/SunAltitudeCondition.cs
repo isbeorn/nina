@@ -55,9 +55,9 @@ namespace NINA.Sequencer.Conditions {
         //h = -0.25 degrees: Sun's upper limb touches a mathematical horizon
         //h = -0.583 degrees: Center of Sun's disk touches the horizon; atmospheric refraction accounted for
         //h = -0.833 degrees: Sun's upper limb touches the horizon; atmospheric refraction accounted for
-
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + .833;
+            Data.CurrentAltitude = AstroUtil.AdjustAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
+
             if (!Check(null, null, true)) {
                 Data.ExpectedDateTime = DateTime.Now;
                 Data.ExpectedTime = Loc.Instance["LblNow"];
@@ -82,7 +82,8 @@ namespace NINA.Sequencer.Conditions {
         }
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
-            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset - .833);
+            // The SunRiseAndSet already models refraction and sun disk size
+            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
             AsyncContext.Run(customRiseAndSet.Calculate);
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
