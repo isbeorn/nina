@@ -7009,4 +7009,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Light</value>
     <comment>Light as in light bulb</comment>
   </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Saves the current sequence at the specified file path</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Save Sequence</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>File path is invalid</value>
+  </data>
 </root>
