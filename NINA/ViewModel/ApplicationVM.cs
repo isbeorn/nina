@@ -146,6 +146,7 @@ namespace NINA.ViewModel {
         [RelayCommand]
         private void CheckEphemerisExists(object o) {
             if (!File.Exists(NOVAS.EphemerisLocation)) {
+                Logger.Error("Ephemeris file is missing");
                 Notification.ShowError(Loc.Instance["LblEphemerisNotFound"]);
             }
         }
