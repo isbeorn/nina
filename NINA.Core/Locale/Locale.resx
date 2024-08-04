@@ -7005,4 +7005,8 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
     <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
   </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Light</value>
+    <comment>Light as in light bulb</comment>
+  </data>
 </root>
