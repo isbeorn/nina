@@ -18,6 +18,8 @@ using NINA.Sequencer.Container;
 using NINA.ViewModel.Sequencer;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Interfaces.Mediator {
@@ -48,6 +50,8 @@ namespace NINA.Sequencer.Interfaces.Mediator {
         Task StartAdvancedSequence(bool skipValidation);
         void CancelAdvancedSequence();
         bool IsAdvancedSequenceRunning();
+        Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token);
+        string GetAdvancedSequencerSavePath();
 
         event Func<object, EventArgs, Task> SequenceStarting;
         event Func<object, EventArgs, Task> SequenceFinished;

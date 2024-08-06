@@ -504,11 +504,14 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
         }
 
         private bool LoadDirectoryDialog() {
-            if (settings.DirectorySettings.DirectoryPath == "")
+            if (string.IsNullOrWhiteSpace(settings.DirectorySettings.DirectoryPath)) {
                 settings.DirectorySettings.DirectoryPath = Path.GetDirectoryName(profileService.ActiveProfile.ImageFileSettings.FilePath);
+            }
             OpenFolderDialog dialog = new OpenFolderDialog();
             dialog.Title = "Load Image Directory";
-            dialog.InitialDirectory = settings.DirectorySettings.DirectoryPath;
+            if(Directory.Exists(settings.DirectorySettings.DirectoryPath)) {
+                dialog.InitialDirectory = settings.DirectorySettings.DirectoryPath;
+            }
             if (dialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(dialog.FolderName)) {
                 settings.DirectorySettings.DirectoryPath = dialog.FolderName;
                 files = Directory.GetFiles(dialog.FolderName).Where(BaseImageData.FileIsSupported).ToArray();

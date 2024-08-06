@@ -91,7 +91,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override void CalculateExpectedTime() {
             Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, offset: 0, until: true, 90, GetCurrentAltitude);
+            CalculateExpectedTimeCommon(Data, until: true, 90, GetCurrentAltitude);
         }
 
 

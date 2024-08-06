@@ -17,25 +17,9 @@ using System;
 
 namespace NINA.Astrometry.RiseAndSet {
 
-    public class MoonRiseAndSet : RiseAndSetEvent {
+    public class MoonRiseAndSet : MoonCustomRiseAndSet {
 
-        public MoonRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
-        }
-
-        protected override double AdjustAltitude(BasicBody body) {
-            /* Readjust moon altitude based on earth radius and refraction */
-            var horizon = 90.0;
-            var location = new NOVAS.OnSurface() {
-                Latitude = Latitude,
-                Longitude = Longitude
-            };
-            var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, horizon); ;
-            var altitude = body.Altitude - AstroUtil.ToDegree(Earth.Radius) / body.Distance + AstroUtil.ToDegree(body.Radius) / body.Distance + refraction;
-            return altitude;
-        }
-
-        protected override BasicBody GetBody(DateTime date) {
-            return new Moon(date, Latitude, Longitude);
+        public MoonRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude, 0) {
         }
     }
 }

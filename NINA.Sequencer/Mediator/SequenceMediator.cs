@@ -22,6 +22,7 @@ using NINA.Sequencer.Interfaces.Mediator;
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NINA.Sequencer.Mediator {
 
@@ -121,6 +122,19 @@ namespace NINA.Sequencer.Mediator {
                 throw SequenceMediatorException;
             }
             return sequenceNavigation.Sequence2VM.IsRunning;
+        }
+        public Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token) {
+            if (!Initialized) {
+                throw SequenceMediatorException;
+            }
+            return sequenceNavigation.Sequence2VM.SaveContainer(content, filePath, token);
+        }
+
+        public string GetAdvancedSequencerSavePath() {
+            if (!Initialized) {
+                throw SequenceMediatorException;
+            }
+            return sequenceNavigation.Sequence2VM.GetAdvancedSequencerSavePath();
         }
 
         public event Func<object, EventArgs, Task> SequenceStarting {

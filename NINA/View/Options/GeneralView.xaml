@@ -584,6 +584,9 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
                                     UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblCopyColorSchemaToCustom}" />
+                                </Button.ToolTip>
                             </Button>
                             <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                 <TextBlock
@@ -779,6 +782,9 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
                                     UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblCopyColorSchemaToAlternativeCustom}" />
+                                </Button.ToolTip>
                             </Button>
                             <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                 <TextBlock
@@ -891,7 +897,7 @@
                             <ninactrl:UnitTextBox.Text>
                                 <Binding
                                     Path="Latitude"
-                                    StringFormat="{}{0:0.000}"
+                                    StringFormat="0.######"
                                     UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:LatitudeRule />
@@ -934,7 +940,7 @@
                             <ninactrl:UnitTextBox.Text>
                                 <Binding
                                     Path="Longitude"
-                                    StringFormat="{}{0:0.000}"
+                                    StringFormat="0.######"
                                     UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:LongitudeRule />
