@@ -2350,7 +2350,7 @@ Obliczone HFR: {2}</value>
     <value>Port serwera PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>Nazwa hosta serwera PHD2</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Ustawienia PHD2</value>
@@ -6983,9 +6983,28 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Przekroczono limit czasu dla focusera o {0} minut.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>Nie udało się wyszukać nazwy hosta serwera PHD2: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>Nazwa hosta serwera PHD2 nie została ustawiona</value>
+  </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Light</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Saves the current sequence at the specified file path</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Save Sequence</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>File path is invalid</value>
   </data>
 </root>
