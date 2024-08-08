@@ -59,9 +59,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            guiderMediator.StopGuiding(token);
-            return telescopeMediator.FindHome(progress, token);
+        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            await guiderMediator.StopGuiding(token);
+            await telescopeMediator.FindHome(progress, token);
         }
 
         public bool Validate() {
