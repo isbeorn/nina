@@ -53,6 +53,7 @@ namespace NINA.Image.ImageData {
 
             Observer.Latitude = profile.AstrometrySettings.Latitude;
             Observer.Longitude = profile.AstrometrySettings.Longitude;
+            Observer.Elevation = profile.AstrometrySettings.Elevation;
         }
 
         public SensorType StringToSensorType(string pattern) {
