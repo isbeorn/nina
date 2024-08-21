@@ -50,8 +50,8 @@ namespace NINA.Astrometry {
             : this(azimuth, altitude, latitude, longitude, SystemDateTime) {
         }
 
-        public TopocentricCoordinates Copy() {
-            return new TopocentricCoordinates(Azimuth.Copy(), Altitude.Copy(), Latitude.Copy(), Longitude.Copy());
+        public TopocentricCoordinates Clone() {
+            return new TopocentricCoordinates(Azimuth.CopyByDegree(), Altitude.CopyByDegree(), Latitude.CopyByDegree(), Longitude.CopyByDegree());
         }
 
         public Coordinates Transform(Epoch epoch, DatabaseInteraction db = null) {

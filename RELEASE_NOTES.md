@@ -21,6 +21,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When using the `Cool Camera` instruction, the camera's failure to reach the target setpoint now results in a sequence error event. An example cause would be the camera's cooling progress stalling (moving < 0.5°C over 2 minutes) while the cooler is at 100% power due the ambient temperature being too hot to reach the desired setpoint.
 - Fixed a display issue in the mini sequencer where the sequence container header was indented too much.
 - Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside
+- Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
   - The list of available cameras will now properly update when one camera is replaced by a different one.
