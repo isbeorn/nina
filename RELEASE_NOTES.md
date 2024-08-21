@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Improved accuracy of estimated time display for Wait If Sun/Moon altitude instructions as well as Loop while Sun/Moon altitude conditions
 - Improved the dock panel layout for flat panels inside the imaging tab when smaller sized
 - Added a new instruction `Save Sequence` to be able to automatically save the sequence during runtime inside the advanced sequencer
+- In Framing Assistant the "Annotate DSO" and "Annotate Grid" buttons will keep their state when resizing or reloading the framing image
 
 ## Bug Fixes
 - When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.
