@@ -29,6 +29,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
   - The list of available cameras will now properly update when one camera is replaced by a different one.
+- When dome option to "close on unsafe conditions" was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish
 
 # Version 3.1 Hotfix 1
 
