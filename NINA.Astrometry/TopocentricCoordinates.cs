@@ -54,7 +54,7 @@ namespace NINA.Astrometry {
             return Clone();
         }
         public TopocentricCoordinates Clone() {
-            return new TopocentricCoordinates(Azimuth.CopyByDegree(), Altitude.CopyByDegree(), Latitude.CopyByDegree(), Longitude.CopyByDegree());
+            return new TopocentricCoordinates(Azimuth.CopyByDegree(), Altitude.CopyByDegree(), Latitude.CopyByDegree(), Longitude.CopyByDegree(), Elevation, DateTime);
         }
 
         public Coordinates Transform(Epoch epoch, DatabaseInteraction db = null) {
