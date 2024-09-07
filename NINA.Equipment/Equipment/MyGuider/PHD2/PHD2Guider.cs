@@ -1126,7 +1126,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             _clientCTS = new CancellationTokenSource();
 
             try {
-                using var client = new TcpClient() {
+                using var client = new TcpClient(AddressFamily.InterNetwork) {
                     NoDelay = true,
                 };
 
