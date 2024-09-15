@@ -981,8 +981,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             var coords = targetCoordinates.Transform(TelescopeInfo.EquatorialSystem);
             if (TelescopeInfo.Connected) {
                 var flipResult = await Telescope.MeridianFlip(coords, token);
-                await this.domeMediator.WaitForDomeSynchronization(CancellationToken.None);
-                await updateTimer.WaitForNextUpdate(default);
+                await this.domeMediator.WaitForDomeSynchronization(token);
+                await updateTimer.WaitForNextUpdate(token);
                 return flipResult;
             } else {
                 return false;

@@ -52,6 +52,7 @@ using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Core.MyMessageBox;
 using System.Windows;
+using NINA.Sequencer.Validations;
 
 namespace NINA.Sequencer.Container {
 
@@ -347,6 +348,30 @@ namespace NINA.Sequencer.Container {
 
         public override bool Validate() {
             CameraInfo = this.cameraMediator.GetInfo();
+
+            var issues = new List<string>();
+            if (this.Status == SequenceEntityStatus.CREATED) {
+                var startup = CreateStartupContainer();
+                startup.Validate();
+
+                foreach (var item in startup.GetItemsSnapshot()) {
+                    if (item is IValidatable validatable) {
+                        issues.AddRange(validatable.Issues);
+                    }
+                }
+
+                var closure = CreateClosureContainer();
+                closure.Validate();
+
+                foreach (var item in closure.GetItemsSnapshot()) {
+                    if (item is IValidatable validatable) {
+                        issues.AddRange(validatable.Issues);
+                    }
+                }
+            }
+
+
+            this.Issues = issues;
             return base.Validate();
         }
 
@@ -607,7 +632,9 @@ namespace NINA.Sequencer.Container {
         private SequentialContainer CreateClosureContainer() {
             var closure = factory.GetContainer<SequentialContainer>();
 
-            closure.Add(factory.GetItem<StopGuiding>());
+            if(StartGuiding) {
+                closure.Add(factory.GetItem<StopGuiding>());
+            }
 
             return closure;
         }

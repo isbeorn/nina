@@ -285,6 +285,7 @@ namespace NINA.ViewModel {
 
         [RelayCommand]
         private void Closing() {
+            Logger.Info("Application shutting down");
             UnsubscribeSystemEvents();
             try {
                 Logger.Debug("Saving dock layout");

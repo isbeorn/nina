@@ -36,6 +36,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Added a new instruction <code>Save Sequence</code> to be able to automatically save the sequence during runtime inside the advanced sequencer</li>
 <li>In Framing Assistant the &quot;Annotate DSO&quot; and &quot;Annotate Grid&quot; buttons will keep their state when resizing or reloading the framing image</li>
 <li>SITELEV keyword is now populated from Options &gt; Astrometry instead of the mount</li>
+<li>Legacy sequencer now also shows validation issues for target startup actions like slew, center &amp; rotate</li>
+<li>Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics</li>
 </ul>
 <h2 id="bug-fixes">Bug Fixes</h2>
 <ul>
@@ -48,12 +50,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Fixed a display issue in the mini sequencer where the sequence container header was indented too much.</li>
 <li>Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside</li>
 <li>Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions</li>
+<li>When using a dome with the dome follower, a timeout during dome synchronization will no longer cancel the remaining steps after a meridian flip</li>
 <li>QHY Cameras:
 <ul>
 <li>The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.</li>
 <li>The list of available cameras will now properly update when one camera is replaced by a different one.</li>
 </ul>
 </li>
+<li>When dome option to &quot;close on unsafe conditions&quot; was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish</li>
 </ul>
 <h1 id="version-3.1-hotfix-1">Version 3.1 Hotfix 1</h1>
 <h2 id="improvements-1">Improvements</h2>

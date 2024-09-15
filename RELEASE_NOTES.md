@@ -13,6 +13,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added a new instruction `Save Sequence` to be able to automatically save the sequence during runtime inside the advanced sequencer
 - In Framing Assistant the "Annotate DSO" and "Annotate Grid" buttons will keep their state when resizing or reloading the framing image
 - SITELEV keyword is now populated from Options > Astrometry instead of the mount
+- Legacy sequencer now also shows validation issues for target startup actions like slew, center & rotate
+- Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics
 
 ## Bug Fixes
 - When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.
@@ -24,9 +26,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Fixed a display issue in the mini sequencer where the sequence container header was indented too much.
 - Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside
 - Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions
+- When using a dome with the dome follower, a timeout during dome synchronization will no longer cancel the remaining steps after a meridian flip
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
   - The list of available cameras will now properly update when one camera is replaced by a different one.
+- When dome option to "close on unsafe conditions" was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish
 
 # Version 3.1 Hotfix 1
 
