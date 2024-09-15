@@ -14,6 +14,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Win32;
 using NINA.Astrometry;
 using NINA.Core.Enum;
@@ -111,7 +112,10 @@ namespace NINA.ViewModel {
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
             };
 
-            FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
+            var typeFace = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch) ?? ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(); ;
+            if (typeFace != null) {
+                FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
+            }
 
             Profiles = CollectionViewSource.GetDefaultView(profileService.Profiles);
             Profiles.SortDescriptions.Add(new SortDescription("IsActive", ListSortDirection.Descending));
