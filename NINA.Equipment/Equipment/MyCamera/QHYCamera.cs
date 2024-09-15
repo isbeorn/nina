@@ -23,9 +23,7 @@ using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using NINA.Image.ImageData;
-using Nito.AsyncEx;
 using NINA.Core.Enum;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
@@ -33,7 +31,6 @@ using NINA.Image.Interfaces;
 using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Exceptions;
-using NINA.Core.Model;
 using System.Collections;
 using NINA.Astrometry;
 using NINA.Equipment.Utility;
@@ -62,8 +59,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
 
-            StringBuilder cameraId = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
-            StringBuilder cameraModel = new StringBuilder(0);
+            var cameraId = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
+            var cameraModel = new StringBuilder(0);
 
             /*
              * Camera model long form, eg: "QHY183C-c915484fa76ea7552"
@@ -84,7 +81,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             Info.Id = cameraId;
 
             Logger.Debug($"QHYCCD: Found camera {Info.Id}");
-            _gpsSettings = new Hashtable();
+            _gpsSettings = [];
         }
 
         public string Category { get; } = "QHYCCD";
@@ -241,7 +238,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool CoolerOn {
-            get => Info.CoolerOn;
+            get {
+                if (internalReconnect) {
+                    return tempCoolerOn;
+                }
+
+                return Info.CoolerOn;
+            }
             set {
                 if (Connected && CanSetTemperature) {
                     Logger.Debug(string.Format("QHYCCD: Cooler turned {0}", value ? "ON" : "OFF"));
@@ -696,9 +699,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 cts?.Cancel();
             } catch { }
             try {
-                using (var timeoutSource = new CancellationTokenSource(COOLING_TIMEOUT)) {
-                    coolerTask?.Wait(timeoutSource.Token);
-                }
+                using var timeoutSource = new CancellationTokenSource(COOLING_TIMEOUT);
+                coolerTask?.Wait(timeoutSource.Token);
             } catch (Exception ex) {
                 Logger.Error($"QHYCCD: Cooling thread failed to terminate within {COOLING_TIMEOUT}", ex);
             } finally {
@@ -725,9 +727,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 cts?.Cancel();
             } catch { }
             try {
-                using (var timeoutSource = new CancellationTokenSource(COOLING_TIMEOUT)) {
-                    sensorStatsTask?.Wait(timeoutSource.Token);
-                }            
+                using var timeoutSource = new CancellationTokenSource(COOLING_TIMEOUT);
+                sensorStatsTask?.Wait(timeoutSource.Token);
             } catch (Exception ex) {
                 Logger.Error($"QHYCCD: SensorStats thread failed to terminate within {COOLING_TIMEOUT}", ex);
             } finally {
@@ -737,7 +738,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        private void ThrowOnFailure(string op, uint result) {
+        private static void ThrowOnFailure(string op, uint result) {
             if (result != QhySdk.QHYCCD_SUCCESS) {
                 throw new Exception($"QHYCCD: {op} failed");
             }
@@ -750,16 +751,18 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             var success = false;
             double min = 0, max = 0, step = 0;
-            List<string> modeList = new List<string>();
-            StringBuilder cameraID = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
-            StringBuilder modeName = new StringBuilder(0);
+            var modeList = new List<string>();
+            var cameraID = new StringBuilder(QhySdk.QHYCCD_ID_LEN);
+            var modeName = new StringBuilder(0);
             uint num_modes = 0;
             Info.HasReadoutSpeed = false;
 
             try {
-                Sdk.InitSdk();
+                if (!internalReconnect) {
+                    Sdk.InitSdk();
+                    Logger.Info($"QHYCCD: Connecting to {Info.Id}");
+                }
 
-                Logger.Info($"QHYCCD: Connecting to {Info.Id}");
 
                 /*
                  * Get our selected camera's ID from the SDK
@@ -933,20 +936,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     /*
                      * Force any TEC cooler to off upon startup
                      */
-                    if(!internalReconnect) { 
+                    if (!internalReconnect) {
                         CoolerOn = false;
-                    }
+                        CancelCoolingSync();
 
-                    /*
-                     * Start the thread that operates the TEC
-                     * This thread will operate the TEC in accordance with the user turning the cooler on or off
-                     * and program the camera's TEC to cool to the desired temperature. This thread will operate
-                     * for as long as the camera is connected.
-                     */
-                    Logger.Debug("QHYCCD: Starting CoolerWorker task");
-                    CancelCoolingSync();
-                    coolerWorkerCts = new CancellationTokenSource();
-                    coolerTask = CoolerWorker(coolerWorkerCts.Token);
+                        /*
+                         * Start the thread that operates the TEC
+                         * This thread will operate the TEC in accordance with the user turning the cooler on or off
+                         * and program the camera's TEC to cool to the desired temperature. This thread will operate
+                         * for as long as the camera is connected.
+                         */
+                        Logger.Debug("QHYCCD: Starting CoolerWorker task");
+                        coolerWorkerCts = new CancellationTokenSource();
+                        coolerTask = CoolerWorker(coolerWorkerCts.Token);
+                    } else {
+                        CoolerOn = tempCoolerOn;
+                    }
                 }
 
                 /*
@@ -989,12 +994,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 QhyHasSensorAirPressure = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_PRESSURE);
                 QhyHasSensorHumidity = Sdk.IsControl(QhySdk.CONTROL_ID.CAM_HUMIDITY);
 
-                if (QhyHasSensorAirPressure || QhyHasSensorHumidity) {
-                    Logger.Debug("QHYCCD: Starting SensorStatsWorker task");
+                if(!internalReconnect) {
+                    if (QhyHasSensorAirPressure || QhyHasSensorHumidity) {
+                        Logger.Debug("QHYCCD: Starting SensorStatsWorker task");
 
-                    sensorStatsCts = new CancellationTokenSource();
-                    sensorStatsTask = SensorStatsWorker(sensorStatsCts.Token);
-                }
+                        sensorStatsCts = new CancellationTokenSource();
+                        sensorStatsTask = SensorStatsWorker(sensorStatsCts.Token);
+                    }
+                }                
 
                 QhyFirmwareVersion = GetFirmwareVersion();
                 QhyFPGAVersion = GetFPGAVersion();
@@ -1042,14 +1049,17 @@ namespace NINA.Equipment.Equipment.MyCamera {
             try {
                 if(!internalReconnect) {
                     Connected = false;
-                }                
+                    CancelCoolingSync();
+                    CancelSensorStatsSync();
+                    Logger.Info($"QHYCCD: Closing camera {Info.Id}");
+                }
 
-                CancelCoolingSync();
-                CancelSensorStatsSync();
-
-                Logger.Info($"QHYCCD: Closing camera {Info.Id}");
                 Sdk.Close();
-                Sdk.ReleaseSdk();
+
+                // Do not release the SDK if we are reconnecting to switch between modes. Only need to close and reopen to do that.
+                if (!internalReconnect) {
+                    Sdk.ReleaseSdk();
+                }
             } catch (Exception ex) {
                 Logger.Error("QHYCCD: Failed to disconnect", ex);
             }
@@ -1294,10 +1304,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        private uint QHYCCDMemLength = 0;
-
         private void ReconnectForLiveView() {
-            // Steps documented as required when changing live view:
+            // Steps documented as required when changing video mode:
             // CloseQHYCCD
             // ReleaseQHYCCDResource
             // ScanQHYCCD
@@ -1309,6 +1317,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             tempUSBLimit = USBLimit;
             tempCoolerPower = CoolerPower;
             tempTemperature = Temperature;
+            tempCoolerOn = CoolerOn;
+
             internalReconnect = true;
             Disconnect();
             ConnectSync();
@@ -1316,12 +1326,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void StartLiveView(CaptureSequence sequence) {
+            Logger.Info("QHYCCD: Switching to video mode");
             RaiseIfNotConnected();
             LiveViewEnabled = true;
             ReconnectForLiveView();
 
             if (Sdk.SetStreamMode((byte)QhySdk.QHYCCD_CAMERA_MODE.VIDEO_STREAM) != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to switch to single exposuremode");
+                Logger.Warning("QHYCCD: Failed to switch to video mode");
                 CameraState = CameraStates.Error;
                 return;
             }
@@ -1347,7 +1358,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             uint startx, starty, sizex, sizey;
             if (!SetResolution(out startx, out starty, out sizex, out sizey)) {
-                Logger.Warning("QHYCCD: Failed to set resolution for live view");
+                Logger.Warning("QHYCCD: Failed to set resolution for video mode");
                 CameraState = CameraStates.Error;
                 return;
             }
@@ -1365,10 +1376,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
              */
             ImageSize = (uint)((sizex * sizey * BitDepth) + (8 - 1)) / 8;
 
-            QHYCCDMemLength = Sdk.GetQHYCCDMemLength();
-
             if (Sdk.BeginQHYCCDLive() != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to start live view");
+                Logger.Warning("QHYCCD: Failed to start video mode");
                 CameraState = CameraStates.Error;
                 LiveViewEnabled = false;
                 ReconnectForLiveView();
@@ -1376,13 +1385,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             CameraState = CameraStates.Exposing;
 
-            Logger.Debug("QHYCCD: Enabled live view");
+            Logger.Info("QHYCCD: Enabled video mode");
         }
 
         public void StopLiveView() {
+            Logger.Info("QHYCCD: Switching to single exposure mode");
             RaiseIfNotConnected();
             if (Sdk.StopQHYCCDLive() != QhySdk.QHYCCD_SUCCESS) {
-                Logger.Warning("QHYCCD: Failed to stop live view");
+                Logger.Warning("QHYCCD: Failed to stop video mode");
                 CameraState = CameraStates.Error;
                 // Continue on to reconnecting the camera
             } else if (Sdk.SetStreamMode((byte)QhySdk.QHYCCD_CAMERA_MODE.SINGLE_EXPOSURE) != QhySdk.QHYCCD_SUCCESS) {
@@ -1395,7 +1405,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             LiveViewEnabled = false;
             ReconnectForLiveView();
-            Logger.Debug("QHYCCD: Disabled live view");
+            Logger.Info("QHYCCD: Switched to single exposure mode");
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
@@ -1481,10 +1491,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
             Buffer.BlockCopy(flatArray, 0, imgData, 0, imgData.Length);
 
             // Sanity check
-            var start_flag = (imgData[17] / 16) % 4;
-            var end_flag = (imgData[25] / 16) % 4;
-            var now_flag = (imgData[33] / 16) % 4;
-            if (start_flag != end_flag || start_flag != now_flag || end_flag != now_flag) {
+            var now_sec = (256 * 256 * 256 * imgData[34]) + (256 * 256 * imgData[35]) + (256 * imgData[36]) + imgData[37];
+            var now_us = ((256 * 256 * imgData[38]) + (256 * imgData[39]) + imgData[40]) / 10;
+            var now_utc = JulianSecToDateTime(now_sec, now_us).ToUniversalTime();
+            TimeSpan utc_diff = DateTime.UtcNow - now_utc;
+            if (Math.Abs(utc_diff.TotalMinutes) > 1) {
                 Logger.Warning("GPS is on, but extracted data is bad.");
                 return; 
             }
@@ -1518,6 +1529,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var longitude = (deg + (min + fractMin) / 60.0) * (west ? -1 : 1);
             metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LON", longitude, "longitude"));
             //Shutter start time
+            var start_flag = (imgData[17] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SFLG", start_flag, "QHY start_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_SST", ReceiverStatus(start_flag), "QHY start_flag status"));
             var start_sec = (256 * 256 * 256 * imgData[18]) + (256 * 256 * imgData[19]) + (256 * imgData[20]) + imgData[21];
@@ -1526,6 +1538,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SUS", start_us, "[us] QHY start"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_SUTC", JulianSecToDateTime(start_sec, start_us).ToUniversalTime(), "QHY start_time"));
             //Shutter end time
+            var end_flag = (imgData[25] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EFLG", end_flag, "QHY end_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_EST", ReceiverStatus(end_flag), "QHY end_flag status"));
             var end_sec = (256 * 256 * 256 * imgData[26]) + (256 * 256 * imgData[27]) + (256 * imgData[28]) + imgData[29];
@@ -1534,30 +1547,29 @@ namespace NINA.Equipment.Equipment.MyCamera {
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EUS", end_us, "[us] QHY end"));
             metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_EUTC", JulianSecToDateTime(end_sec, end_us).ToUniversalTime(), "QHY end_time"));
             //The current time
+            var now_flag = (imgData[33] / 16) % 4;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NFLG", now_flag, "QHY now_flag"));
             metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_NST", ReceiverStatus(now_flag), "QHY now_flag status"));
-            var now_sec = (256 * 256 * 256 * imgData[34]) + (256 * 256 * imgData[35]) + (256 * imgData[36]) + imgData[37];
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NSEC", now_sec, "[s] QHY now"));
-            var now_us = ((256 * 256 * imgData[38]) + (256 * imgData[39]) + imgData[40]) / 10;
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_NUS", now_us, "[us] QHY now"));
-            metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_NUTC", JulianSecToDateTime(now_sec, now_us).ToUniversalTime(), "QHY now_time"));
+            metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_NUTC", now_utc, "QHY now_time"));
             //Exposure time
             var exposure = ((end_sec - start_sec) * 1000 * 1000) + (end_us - start_us);
             metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EXP", exposure, "[us] QHY exposure"));
         }
 
-        private DateTime JulianSecToDateTime(double sec, double us) {
+        private static DateTime JulianSecToDateTime(double sec, double us) {
             return NOVAS.JulianToDateTime(2450000.5d + ((sec + (us / 1e6d)) / 86400d));
         }
 
-        private string ReceiverStatus(int flag) {
-            switch (flag) {
-                case 0: return "just powered on";
-                case 1: return "not locked";
-                case 2: return "not locked but data valid"; // position and time
-                case 3: return "locked and valid";
-                default: return "Unknown";
-            }
+        private static string ReceiverStatus(int flag) {
+            return flag switch {
+                0 => "just powered on",
+                1 => "not locked",
+                2 => "not locked but data valid",// position and time
+                3 => "locked and valid",
+                _ => "Unknown",
+            };
         }
 
         public bool QhyIncludeOverscan {
@@ -1659,7 +1671,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     SetGPS();
                     break;
                 case "Reset":
-                    _gpsSettings = new Hashtable();
+                    _gpsSettings = [];
                     break;
                 default:
                     Logger.Debug("Adding setting " + actionName + " to " + actionParameters);
@@ -1752,7 +1764,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private void DriverVersionCheck() {
             // Minimum driver versions. Key: Driver name. Value: Minimum driver version
-            Dictionary<string, string> driverDatabase = new Dictionary<string, string> {
+            var driverDatabase = new Dictionary<string, string> {
                 { "QHY5IIISeries_IO", "21.10.18.0" },
                 { "QHY5II_IO", "0.0.9.0" },
                 { "QHY8LBASE", "0.0.9.0" },
@@ -1944,6 +1956,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         /// <summary>
         /// This flag is used for switching between single mode and video mode 
         /// During this time the CoolerPower, Temperature, Gain, Offset and USBLimit values are returned from temporary stored values
+        /// We also must remember the state of the cooler and whether it was on or off
         /// </summary>
         private bool internalReconnect = false;
         private int tempGain;
@@ -1951,5 +1964,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private int tempUSBLimit;
         private double tempCoolerPower;
         private double tempTemperature;
+        private bool tempCoolerOn;
     }
 }

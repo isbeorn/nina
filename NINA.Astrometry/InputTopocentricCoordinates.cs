@@ -42,6 +42,9 @@ namespace NINA.Astrometry {
             Coordinates = coordinates;
         }
 
+        public InputTopocentricCoordinates Clone() =>
+            new InputTopocentricCoordinates(coordinates.Clone());
+
         public void SetPosition(Angle latitude, Angle longitude) {
             Coordinates = new TopocentricCoordinates(Coordinates.Azimuth, Coordinates.Altitude, latitude, longitude);
         }
@@ -69,7 +72,16 @@ namespace NINA.Astrometry {
 
         [JsonProperty]
         public int AzMinutes {
-            get => (int)(Math.Floor(coordinates.Azimuth.Degree * 60.0d) % 60);
+            get {
+                var minutes = (Math.Abs(coordinates.Azimuth.Degree * 60.0d) % 60);
+
+                var seconds = (int)Math.Round((Math.Abs(coordinates.Azimuth.Degree * 60.0d * 60.0d) % 60), 5);
+                if (seconds > 59) {
+                    minutes += 1;
+                }
+
+                return (int)Math.Floor(minutes);
+            }
             set {
                 if (value >= 0) {
                     coordinates.Azimuth = Angle.ByDegree(coordinates.Azimuth.Degree - AzMinutes / 60.0d + value / 60.0d);
@@ -79,8 +91,14 @@ namespace NINA.Astrometry {
         }
 
         [JsonProperty]
-        public int AzSeconds {
-            get => (int)(Math.Floor(coordinates.Azimuth.Degree * 60.0d * 60.0d) % 60);
+        public double AzSeconds {
+            get {
+                var seconds = Math.Round((Math.Abs(coordinates.Azimuth.Degree * 60.0d * 60.0d) % 60), 5);
+                if (seconds >= 60.0) {
+                    seconds = 0;
+                }
+                return seconds;
+            }
             set {
                 if (value >= 0) {
                     coordinates.Azimuth = Angle.ByDegree(coordinates.Azimuth.Degree - AzSeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d));
@@ -114,7 +132,16 @@ namespace NINA.Astrometry {
 
         [JsonProperty]
         public int AltMinutes {
-            get => (int)Math.Floor((Math.Abs(coordinates.Altitude.Degree * 60.0d) % 60));
+            get {
+                var minutes = (Math.Abs(coordinates.Altitude.Degree * 60.0d) % 60);
+
+                var seconds = (int)Math.Round((Math.Abs(coordinates.Altitude.Degree * 60.0d * 60.0d) % 60), 5);
+                if (seconds > 59) {
+                    minutes += 1;
+                }
+
+                return (int)Math.Floor(minutes);
+            }
             set {
                 if (coordinates.Altitude.Degree < 0) {
                     coordinates.Altitude = Angle.ByDegree(coordinates.Altitude.Degree + AltMinutes / 60.0d - value / 60.0d);
@@ -127,8 +154,14 @@ namespace NINA.Astrometry {
         }
 
         [JsonProperty]
-        public int AltSeconds {
-            get => (int)Math.Round((Math.Abs(coordinates.Altitude.Degree * 60.0d * 60.0d) % 60));
+        public double AltSeconds {
+            get {
+                var seconds = Math.Round((Math.Abs(coordinates.Altitude.Degree * 60.0d * 60.0d) % 60), 5);
+                if (seconds >= 60.0) {
+                    seconds = 0;
+                }
+                return seconds;
+            }
             set {
                 if (coordinates.Altitude.Degree < 0) {
                     coordinates.Altitude = Angle.ByDegree(coordinates.Altitude.Degree + AltSeconds / (60.0d * 60.0d) - value / (60.0d * 60.0d));
@@ -141,8 +174,8 @@ namespace NINA.Astrometry {
         }
 
         private void RaiseCoordinatesChanged() {
-            if(!deserializing) { 
-                if(Coordinates?.Azimuth.Degree != 0 || Coordinates?.Altitude.Degree != 0) { 
+            if (!deserializing) {
+                if (Coordinates?.Azimuth.Degree != 0 || Coordinates?.Altitude.Degree != 0) {
                     RaisePropertyChanged(nameof(Coordinates));
                     RaisePropertyChanged(nameof(AzDegrees));
                     RaisePropertyChanged(nameof(AzMinutes));

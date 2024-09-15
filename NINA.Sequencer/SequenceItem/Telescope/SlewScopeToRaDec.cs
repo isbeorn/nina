@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
+using NINA.Sequencer.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -97,27 +98,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public override void AfterParentChanged() {
-            var coordinates = RetrieveContextCoordinates(this.Parent);
+            var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
-                Coordinates.Coordinates = coordinates;
+                Coordinates.Coordinates = coordinates.Coordinates;
                 Inherited = true;
             } else {
                 Inherited = false;
             }
             Validate();
-        }
-
-        private Coordinates RetrieveContextCoordinates(ISequenceContainer parent) {
-            if (parent != null) {
-                var container = parent as IDeepSkyObjectContainer;
-                if (container != null) {
-                    return container.Target.InputCoordinates.Coordinates;
-                } else {
-                    return RetrieveContextCoordinates(parent.Parent);
-                }
-            } else {
-                return null;
-            }
         }
 
         public bool Validate() {

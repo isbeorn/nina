@@ -495,8 +495,11 @@ namespace NINA.Image.ImageData {
                 if (fileSaveInfo.FITSAddFzExtension && fileSaveInfo.FITSCompressionType != FITSCompressionTypeEnum.NONE) {
                     extension += ".fz";
                 }
-                var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension));
 
+                // CFitsio treats paranthesis for special logic and are thus not allowed
+                fileSaveInfo.FilePath = fileSaveInfo.FilePath.Replace("(", "_").Replace(")", "_").Replace("[", "_").Replace("]", "_");
+                var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension), "{0}_{1}");
+                
                 var compression = GetFITSCompression(fileSaveInfo.FITSCompressionType);
 
                 CFitsioFITS f = null;

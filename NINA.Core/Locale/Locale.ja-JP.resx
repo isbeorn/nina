@@ -2344,7 +2344,7 @@
     <value>PHD2サーバーポート</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2サーバーURL</value>
+    <value>PHD2サーバーのホスト名</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2設定</value>
@@ -6955,5 +6955,33 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>外部コマンドが'{0}'で見つかりませんでした</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Focuser movement has timed out after {0} minutes.</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>PHD2サーバーのホスト名 : {0}を処理できませんでした</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>PHD2サーバーのホスト名が設定されていません</value>
+  </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Light</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Saves the current sequence at the specified file path</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Save Sequence</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>File path is invalid</value>
   </data>
 </root>

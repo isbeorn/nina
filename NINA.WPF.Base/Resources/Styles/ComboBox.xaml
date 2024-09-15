@@ -72,6 +72,7 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
         <Setter Property="MinWidth" Value="50" />
         <Setter Property="MinHeight" Value="20" />
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -116,7 +117,7 @@
                                 UseLayoutRounding="True">
                                 <Border
                                     x:Name="DropDownBorder"
-                                    Background="{StaticResource BackgroundBrush}"
+                                    Background="{TemplateBinding Background}"
                                     BorderBrush="{StaticResource BorderBrush}"
                                     BorderThickness="1,0,1,1" />
                                 <ScrollViewer Margin="4,6,4,6" UseLayoutRounding="True">

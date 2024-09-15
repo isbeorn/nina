@@ -113,7 +113,6 @@ namespace NINA.Equipment.Utility {
                 if (string.IsNullOrWhiteSpace(data.Telescope.Name)) {
                     data.Telescope.Name = info.Name;
                 }
-                data.Observer.Elevation = info.SiteElevation;
                 data.Telescope.Coordinates = info.Coordinates;
                 data.Telescope.Altitude = info.Altitude;
                 data.Telescope.Azimuth = info.Azimuth;

@@ -35,7 +35,6 @@ using NINA.WPF.Base.Utility.AutoFocus;
 using Microsoft.Win32;
 using NINA.Equipment.Model;
 using NINA.Profile;
-using static NINA.Equipment.Equipment.MyGPS.PegasusAstro.UnityApi.DriverUranusReport;
 
 namespace NINA.ViewModel.ImageHistory {
 
@@ -295,7 +294,7 @@ namespace NINA.ViewModel.ImageHistory {
                 }
 
                 if (last == null) {
-                    last = new ImageHistoryPoint(GetNextImageId(), "NONE");
+                    last = new ImageHistoryPoint(0, "NONE");
                 }
                 last.PopulateAFPoint(report);
                 AutoFocusPoints.Add(last);

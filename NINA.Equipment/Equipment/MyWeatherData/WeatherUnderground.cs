@@ -31,8 +31,10 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
     public class WeatherUnderground : BaseINPC, IWeatherData {
         private const string _category = "N.I.N.A.";
         private const string _driverId = "NINA.WeatherUnderground.Client";
-        private const string _driverName = "WeatherUnderground";
+        private const string _driverName = "Weather Underground";
         private const string _driverVersion = "1.0";
+
+        private readonly IProfileService profileService;
 
         // WU current weather API base URL
         private const string _WUnderBaseURL = "https://api.weather.com/v2/pws/observations/current";
@@ -42,14 +44,12 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         private const double _WUnderQueryPeriod = 600;
 
         private Task updateWorkerTask;
-
         private CancellationTokenSource WUnderUpdateWorkerCts;
 
         public WeatherUnderground(IProfileService profileService) {
             this.profileService = profileService;
         }
 
-        private IProfileService profileService;
         public string Category => _category;
         public string Id => _driverId;
         public string Name => _driverName;
@@ -59,7 +59,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         public string Description => Loc.Instance["LblWeatherUndergroundClientDescription"];
         public bool HasSetupDialog => false;
 
-        private double _temperature;
+        private double _temperature = double.NaN;
 
         public double Temperature {
             get => _temperature;
@@ -69,7 +69,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
-        private double _pressure;
+        private double _pressure = double.NaN;
 
         public double Pressure {
             get => _pressure;
@@ -79,7 +79,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
-        private double _humidity;
+        private double _humidity = double.NaN;
 
         public double Humidity {
             get => _humidity;
@@ -89,7 +89,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
-        private double _windDirection;
+        private double _windDirection = double.NaN;
 
         public double WindDirection {
             get => _windDirection;
@@ -99,12 +99,22 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
-        private double _windSpeed;
+        private double _windSpeed = double.NaN;
 
         public double WindSpeed {
             get => _windSpeed;
             set {
                 _windSpeed = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _windGust = double.NaN;
+
+        public double WindGust {
+            get => _windGust;
+            set {
+                _windGust = value;
                 RaisePropertyChanged();
             }
         }
@@ -119,7 +129,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
-        private double _dewpoint;
+        private double _dewpoint = double.NaN;
 
         public double DewPoint {
             get => _dewpoint;
@@ -129,26 +139,28 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             }
         }
 
+        private double _rainRate = double.NaN;
+
+        public double RainRate {
+            get => _rainRate;
+            set {
+                _rainRate = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private double _averagePeriod;
         public double AveragePeriod { get => _averagePeriod; set => _averagePeriod = value; }
 
-        public double RainRate => double.NaN;
-
         public double SkyBrightness => double.NaN;
-
         public double SkyQuality => double.NaN;
-
         public double SkyTemperature => double.NaN;
-
         public double StarFWHM => double.NaN;
 
-        public double WindGust => double.NaN;
+        private string WUAPIKey;
+        private string WUStation;
 
-        public string WUAPIKey;
-
-        public string WUStation;
-
-        private bool _connected;
+        private bool _connected = false;
 
         public bool Connected {
             get => _connected;
@@ -161,70 +173,73 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         private async Task WUnderUpdateWorker(CancellationToken ct) {
             try {
                 while (true) {
-                    var url = _WUnderBaseURL + "?stationId={0}&format=json&units=m&apiKey={1}";
+                    // Sleep thread until the next WU API query
+                    await Task.Delay(TimeSpan.FromSeconds(_WUnderQueryPeriod), ct);
 
-                    var request = new HttpGetRequest(url, WUStation, WUAPIKey);
-                    string result = await request.Request(new CancellationToken());
+                    string result = await QueryWunderground(WUStation, WUAPIKey, ct);
+
                     // Exit and disconnect if result is empty
                     if (string.IsNullOrEmpty(result)) {
-                        Notification.ShowError("Weather Underground API did not respond.");
-                        Logger.Warning("WU: API return is empty.");
+                        Notification.ShowError(Loc.Instance["LblWeatherUndergroundErrNoResponse"]);
+                        Logger.Error("WU: API return is empty.");
                         Disconnect();
                         break;
                     }
 
-                    var wunderdata = WUnderData.FromJson(result);
-
-                    // temperature is Centigrade
-                    Temperature = wunderdata.Observations[0].metric.Temp;
-
-                    // pressure is hectopascals
-                    Pressure = wunderdata.Observations[0].metric.Pressure;
-
-                    // Dew Point is Centigrade
-                    DewPoint = wunderdata.Observations[0].metric.Dewpt;
-
-                    // humidity in percent
-                    Humidity = wunderdata.Observations[0].Humidity;
-
-                    // wind speed in meters per second from kph
-                    WindSpeed = wunderdata.Observations[0].metric.WindSpeed * 0.2778;
-
-                    // wind heading in degrees
-                    WindDirection = wunderdata.Observations[0].Winddir;
-
-                    // Sleep thread until the next WU API query
-                    await Task.Delay(TimeSpan.FromSeconds(_WUnderQueryPeriod), ct);
+                    UpdateWeatherData(result);
                 }
             } catch (OperationCanceledException) {
                 Logger.Debug("WU: WUnderUpdate task cancelled");
+            } catch (Exception ex) {
+                Notification.ShowError(string.Format(Loc.Instance["LblWeatherUndergroundErrReqFailed"], ex.Message));
+                Logger.Error($"WU: API query failed: {ex.Message}");
             }
         }
 
-        public Task<bool> Connect(CancellationToken ct) {
-            if (string.IsNullOrEmpty(GetWUAPIKey())) {
-                Notification.ShowError("There is no Weather Underground API key configured.");
-                Logger.Warning("WU: No API key has been set");
+        public async Task<bool> Connect(CancellationToken ct) {
+            Connected = false;
 
-                Connected = false;
-                return Task.FromResult(false);
-            } else if (string.IsNullOrEmpty(GetWUStation())) {
-                Notification.ShowError("There is no Weather Underground station configured.");
-                Logger.Warning("WU: No Weather Underground station has been set");
+            WUAPIKey = profileService.ActiveProfile.WeatherDataSettings.WeatherUndergroundAPIKey;
+            WUStation = profileService.ActiveProfile.WeatherDataSettings.WeatherUndergroundStation;
 
-                Connected = false;
-                return Task.FromResult(false);
+            if (string.IsNullOrEmpty(WUAPIKey)) {
+                Notification.ShowError(Loc.Instance["LblWeatherUndergroundErrNoAPIKey"]);
+                Logger.Error("WU: No API key has been set");
+
+                return Connected;
             }
 
-            WUAPIKey = GetWUAPIKey();
-            WUStation = GetWUStation();
+            if (string.IsNullOrEmpty(WUStation)) {
+                Notification.ShowError(Loc.Instance["LblWeatherUndergroundErrNoStationID"]);
+                Logger.Error("WU: No Weather Underground station has been set");
+
+                return Connected;
+            }
+
+            // Test our ability to use Weather Underground
+            try {
+                var result = await QueryWunderground(WUStation, WUAPIKey, ct);
+
+                if (string.IsNullOrEmpty(result)) {
+                    Notification.ShowError(Loc.Instance["LblWeatherUndergroundErrNoResponse"]);
+                    Logger.Error("WU: API return is empty.");
+                    return Connected;
+                }
+
+                UpdateWeatherData(result);
+            } catch (Exception ex) {
+                Notification.ShowError(string.Format(Loc.Instance["LblWeatherUndergroundErrReqFailed"], ex.Message));
+                Logger.Error($"WU: API query failed: {ex}");
+                return Connected;
+            }
+
             Logger.Debug("WU: Starting WUnderUpdate task");
             WUnderUpdateWorkerCts?.Dispose();
             WUnderUpdateWorkerCts = new CancellationTokenSource();
             updateWorkerTask = WUnderUpdateWorker(WUnderUpdateWorkerCts.Token);
 
             Connected = true;
-            return Task.FromResult(true);
+            return Connected;
         }
 
         public void Disconnect() {
@@ -236,6 +251,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             try {
                 WUnderUpdateWorkerCts?.Cancel();
                 WUnderUpdateWorkerCts?.Dispose();
+                updateWorkerTask?.Dispose();
             } catch { }
 
             Connected = false;
@@ -262,12 +278,45 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             throw new NotImplementedException();
         }
 
-        private string GetWUAPIKey() {
-            return profileService.ActiveProfile.WeatherDataSettings.WeatherUndergroundAPIKey;
+        private static Task<string> QueryWunderground(string stationId, string apiKey, CancellationToken ct) {
+            var url = $"{_WUnderBaseURL}?stationId={stationId}&format=json&units=m&apiKey={apiKey}&numericPrecision=decimal";
+
+            var request = new HttpGetRequest(url, true);
+            return request.Request(ct);
         }
 
-        private string GetWUStation() {
-            return profileService.ActiveProfile.WeatherDataSettings.WeatherUndergroundStation;
+        private void UpdateWeatherData(string wuQueryJson) {
+            try {
+                var wunderdata = WUnderData.FromJson(wuQueryJson);
+
+                // temperature is Centigrade
+                Temperature = wunderdata.Observations[0].metric.Temp;
+
+                // pressure is hectopascals
+                Pressure = wunderdata.Observations[0].metric.Pressure;
+
+                // Dew Point is Centigrade
+                DewPoint = wunderdata.Observations[0].metric.Dewpt;
+
+                // humidity in percent
+                Humidity = wunderdata.Observations[0].Humidity;
+
+                // rain rate in mm/h
+                RainRate = wunderdata.Observations[0].metric.PrecipRate;
+
+                // wind speed in meters per second from kph
+                WindSpeed = wunderdata.Observations[0].metric.WindSpeed * 0.2778;
+
+                // wind heading in degrees
+                WindDirection = wunderdata.Observations[0].Winddir;
+
+                // wind gust in meters per second from kph
+                WindGust = wunderdata.Observations[0].metric.WindGust * 0.2778;
+
+            } catch (Exception ex) {
+                Logger.Error($"WU: API query failed: {ex}");
+                throw new Exception(Loc.Instance["LblUnexpectedError"]);
+            }
         }
 
         public partial class WUnderData {
@@ -300,16 +349,16 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             public object SolarRadiation { get; set; }
 
             [JsonProperty("lon", NullValueHandling = NullValueHandling.Ignore)]
-            public double? Lon { get; set; }
+            public double Lon { get; set; } = double.NaN;
 
             [JsonProperty("realtimeFrequency")]
             public object RealtimeFrequency { get; set; }
 
             [JsonProperty("epoch", NullValueHandling = NullValueHandling.Ignore)]
-            public long? Epoch { get; set; }
+            public double Epoch { get; set; } = double.NaN;
 
             [JsonProperty("lat", NullValueHandling = NullValueHandling.Ignore)]
-            public double? Lat { get; set; }
+            public double Lat { get; set; } = double.NaN;
 
             [JsonProperty("uv")]
             public object Uv { get; set; }
@@ -318,7 +367,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             public double Winddir { get; set; } = double.NaN;
 
             [JsonProperty("humidity")]
-            public long Humidity { get; set; }
+            public double Humidity { get; set; } = double.NaN;
 
             [JsonProperty("qcStatus", NullValueHandling = NullValueHandling.Ignore)]
             public long? QcStatus { get; set; }
@@ -330,22 +379,22 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         public class Metric {
 
             [JsonProperty("temp")]
-            public int Temp { get; set; }
+            public double Temp { get; set; } = double.NaN;
 
             [JsonProperty("heatIndex")]
-            public int HeatIndex { get; set; }
+            public double HeatIndex { get; set; } = double.NaN;
 
             [JsonProperty("dewpt")]
-            public int Dewpt { get; set; }
+            public double Dewpt { get; set; } = double.NaN;
 
             [JsonProperty("windChill")]
-            public int WindChill { get; set; }
+            public double WindChill { get; set; } = double.NaN;
 
             [JsonProperty("windSpeed")]
             public double WindSpeed { get; set; } = double.NaN;
 
             [JsonProperty("windGust")]
-            public int WindGust { get; set; }
+            public double WindGust { get; set; } = double.NaN;
 
             [JsonProperty("pressure")]
             public double Pressure { get; set; } = double.NaN;
@@ -357,7 +406,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             public double PrecipTotal { get; set; } = double.NaN;
 
             [JsonProperty("elev")]
-            public int Elev { get; set; }
+            public double Elev { get; set; } = double.NaN;
         }
 
         public partial class WUnderData {
@@ -368,7 +417,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
     internal static class Converter {
 
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings {
+        public static readonly JsonSerializerSettings Settings = new() {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
             NullValueHandling = NullValueHandling.Ignore,

@@ -19,6 +19,8 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Sequencer.Container;
 using NINA.ViewModel.Interfaces;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel.Sequencer {

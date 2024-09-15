@@ -2353,7 +2353,7 @@ Přeskočit.</value>
     <value>Port Serveru PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>Adresa URL Serveru PHD2</value>
+    <value>Název Hostitele Serveru PHD2</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Nastavení PHD2</value>
@@ -6983,5 +6983,33 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
     <value>Externí příkaz nebyl nalezen na '{0}'</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Pohyb zaostření se po {0} minutách ukončilo.</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Nepodařilo se rozpoznat hostitelské jméno serveru PHD2: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>Název hostitele serveru PHD2 nebyl nastaven</value>
+  </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Zkopíruje aktuální barevné schéma do nastavitelného barevného schématu "Alternativní Vlastní"</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Zkopíruje aktuální barvy barevného schématu do nastavitelného barevného schématu "Vlastní"</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Světlý</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Uloží aktuální sekvenci na zadanou cestu k souboru</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Uložit Sekvenci</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>Cesta k souboru je neplatná</value>
   </data>
 </root>

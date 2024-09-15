@@ -2352,7 +2352,7 @@ Forventet HFR: {2}</value>
     <value>PHD2-port</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2-URL</value>
+    <value>PHD2 server vertsnavn</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2-innstillinger</value>
@@ -6936,10 +6936,10 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Slå LED-lysene på kameraet på eller av</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum brightness is higher than the maximum brightness!</value>
+    <value>Minimum lysstyrke er høyere enn maksimal lysstyrke!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Minste eksponeringstid er høyere enn maksimal eksponeringstid!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
     <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
@@ -6951,24 +6951,52 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Dither between sky flat exposures enabled but telescope is parked</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Minste eksponeringstid er høyere enn maksimal eksponeringstid!</value>
   </data>
   <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
-    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+    <value>Instruksjon "{0}" har ikke anerkjent kansellering etter {1} minutter. Sekvensen vil fortsette, og instruksjonen som ikke svarer vil bli ignorert.</value>
   </data>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
-    <value>Waiting for instruction to acknowledge cancellation</value>
+    <value>Venter på at instruksjon skal anerkjenne kansellering</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Under åpning av luke eller tak, rapporterte sikkerhetsovervåker om usikre forhold. Åpning avbrytes.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Ekstern kommando</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>Ekstern kommando feilet</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>Ekstern kommando ble ikke funnet ved '{0}'</value>
+  </data>
+  <data name="LblFocuserMoveTimeout" xml:space="preserve">
+    <value>Fokusbevegelse avbrutt, tidsavbrudd etter {0} minutter.</value>
+  </data>
+  <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
+    <value>Kunne ikke slå opp vertsnavn for PHD2 server: {0}</value>
+  </data>
+  <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
+    <value>Vertsnavn til PHD2 server mangler</value>
+  </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Light</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Saves the current sequence at the specified file path</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Save Sequence</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>File path is invalid</value>
   </data>
 </root>

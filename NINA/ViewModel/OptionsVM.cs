@@ -82,7 +82,7 @@ namespace NINA.ViewModel {
                 PluginRepositories.Insert(0, Constants.MainPluginRepository);
             }
             CopyToCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
-            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
+            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.AltColorSchema?.Name != "Alternative Custom");
 
             RecreatePatterns();
 
@@ -111,7 +111,10 @@ namespace NINA.ViewModel {
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
             };
 
-            FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
+            var typeFace = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch) ?? ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(); ;
+            if (typeFace != null) {
+                FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
+            }
 
             Profiles = CollectionViewSource.GetDefaultView(profileService.Profiles);
             Profiles.SortDescriptions.Add(new SortDescription("IsActive", ListSortDirection.Descending));
@@ -622,10 +625,11 @@ namespace NINA.ViewModel {
                 CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
 
                 FamilyTypeface = value.FamilyTypefaces.FirstOrDefault(x => (x.AdjustedFaceNames.First().Value == "Regular") || (x.AdjustedFaceNames.First().Value == "Normal")) ?? value.FamilyTypefaces.FirstOrDefault();
-                FontStretch = FamilyTypeface.Stretch;
-                FontStyle = FamilyTypeface.Style;
-                FontWeight = FamilyTypeface.Weight;
-
+                if (FamilyTypeface != null) {
+                    FontStretch = FamilyTypeface.Stretch;
+                    FontStyle = FamilyTypeface.Style;
+                    FontWeight = FamilyTypeface.Weight;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -636,11 +640,12 @@ namespace NINA.ViewModel {
             get => familyTypeface;
             set {
                 familyTypeface = value;
-                FontStretch = familyTypeface.Stretch;
-                FontStyle = familyTypeface.Style;
-                FontWeight = familyTypeface.Weight;
-
-                RaisePropertyChanged();
+                if(familyTypeface != null) {
+                    FontStretch = familyTypeface.Stretch;
+                    FontStyle = familyTypeface.Style;
+                    FontWeight = familyTypeface.Weight;
+                    RaisePropertyChanged();
+                }
             }
         }
 

@@ -343,11 +343,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                         });
                         return exposureTime;
                     case HistogramMath.ExposureAduState.ExposureBelowLowerBound:
-                        Logger.Info($"Exposure too dim at {exposureTime}s. Retrying with higher exposure time");
+                        Logger.Info($"Exposure too dim at {exposureTime}s. ADU measured at: {DeterminedHistogramADU}. Retrying with higher exposure time");
                         currentMin = exposureTime;
                         break;
                     case HistogramMath.ExposureAduState:
-                        Logger.Info($"Exposure too bright at {exposureTime}s. Retrying with lower exposure time");
+                        Logger.Info($"Exposure too bright at {exposureTime}s. ADU measured at: {DeterminedHistogramADU}. Retrying with lower exposure time");
                         currentMax = exposureTime;
                         break;
                 }
