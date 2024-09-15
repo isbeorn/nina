@@ -39,7 +39,6 @@ namespace NINA.WPF.Base.ViewModel {
             IsVisible = true;
 
             HideCommand = new RelayCommand(Hide);
-            ToggleSettingsCommand = new RelayCommand(ToggleSettings);
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(Title));
             };
@@ -71,11 +70,6 @@ namespace NINA.WPF.Base.ViewModel {
         [ObservableProperty]
         protected bool settingsVisible;
         public ICommand HideCommand { get; private set; }
-        public ICommand ToggleSettingsCommand { get; private set; }
-
-        public virtual void ToggleSettings(object o) {
-            SettingsVisible = !SettingsVisible;
-        }
 
         public virtual void Hide(object o) {
             this.IsVisible = !IsVisible;
