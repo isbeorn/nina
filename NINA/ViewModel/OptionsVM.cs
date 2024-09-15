@@ -14,7 +14,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Win32;
 using NINA.Astrometry;
 using NINA.Core.Enum;
