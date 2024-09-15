@@ -255,10 +255,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 }
             } catch (OperationCanceledException) {
                 connected = false;
-            } catch(Exception ex) {
-                Logger.Error(ex);
+            } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
+                Logger.Error(ex);
+                if (GuiderInfo.Connected) { await Disconnect(); }
+                GuiderInfo.Connected = false;
                 connected = false;
+                return false;
             }
 
             if (!connected) {

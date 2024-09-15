@@ -151,6 +151,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                     } catch (OperationCanceledException) {
                         if (weatherdev?.Connected == true) { await Disconnect(); }
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (WeatherDataInfo.Connected) { await Disconnect(); }
+                        WeatherDataInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;

@@ -247,7 +247,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
                     return false;
                 } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
                     Logger.Error(ex);
+                    if (FlatDeviceInfo.Connected) { await Disconnect(); }
+                    FlatDeviceInfo.Connected = false;
                     return false;
                 }
             } finally {

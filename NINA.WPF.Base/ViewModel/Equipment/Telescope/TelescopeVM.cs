@@ -528,6 +528,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                         Notification.ShowError(ex.Message);
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (TelescopeInfo.Connected) { await Disconnect(); }
+                        TelescopeInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;

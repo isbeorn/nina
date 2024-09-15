@@ -176,6 +176,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                     } catch (OperationCanceledException) {
                         if (sm?.Connected == true) { await Disconnect(); }
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (SafetyMonitorInfo.Connected) { await Disconnect(); }
+                        SafetyMonitorInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;
