@@ -14,6 +14,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In Framing Assistant the "Annotate DSO" and "Annotate Grid" buttons will keep their state when resizing or reloading the framing image
 - SITELEV keyword is now populated from Options > Astrometry instead of the mount
 - Legacy sequencer now also shows validation issues for target startup actions like slew, center & rotate
+- Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics
 
 ## Bug Fixes
 - When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.
