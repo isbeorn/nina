@@ -622,10 +622,11 @@ namespace NINA.ViewModel {
                 CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
 
                 FamilyTypeface = value.FamilyTypefaces.FirstOrDefault(x => (x.AdjustedFaceNames.First().Value == "Regular") || (x.AdjustedFaceNames.First().Value == "Normal")) ?? value.FamilyTypefaces.FirstOrDefault();
-                FontStretch = FamilyTypeface.Stretch;
-                FontStyle = FamilyTypeface.Style;
-                FontWeight = FamilyTypeface.Weight;
-
+                if (FamilyTypeface != null) {
+                    FontStretch = FamilyTypeface.Stretch;
+                    FontStyle = FamilyTypeface.Style;
+                    FontWeight = FamilyTypeface.Weight;
+                }
                 RaisePropertyChanged();
             }
         }
