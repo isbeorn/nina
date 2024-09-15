@@ -636,11 +636,12 @@ namespace NINA.ViewModel {
             get => familyTypeface;
             set {
                 familyTypeface = value;
-                FontStretch = familyTypeface.Stretch;
-                FontStyle = familyTypeface.Style;
-                FontWeight = familyTypeface.Weight;
-
-                RaisePropertyChanged();
+                if(familyTypeface != null) {
+                    FontStretch = familyTypeface.Stretch;
+                    FontStyle = familyTypeface.Style;
+                    FontWeight = familyTypeface.Weight;
+                    RaisePropertyChanged();
+                }
             }
         }
 
