@@ -59,9 +59,6 @@
                                         <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                                         <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
                                     </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Opacity" Value="0.4" />
-                                    </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>

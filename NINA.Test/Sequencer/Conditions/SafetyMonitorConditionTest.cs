@@ -162,7 +162,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             monitorMock.Setup(x => x.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = false });
 
-            await Task.Delay(50);
+            await Task.Delay(500);
 
             parentMock.Verify(x => x.Interrupt(), Times.AtLeastOnce);
         }

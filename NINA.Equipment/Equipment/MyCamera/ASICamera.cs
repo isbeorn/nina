@@ -173,6 +173,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(DisplayName));
                 RaisePropertyChanged(nameof(Id));
                 profileService.ActiveProfile.CameraSettings.Id = Id;
             }

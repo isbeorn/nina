@@ -78,8 +78,12 @@ namespace NINA.Sequencer.SequenceItem.Camera {
             }
         }
 
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return cameraMediator.CoolCamera(Temperature, TimeSpan.FromMinutes(Duration), progress, token);
+        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            var success = await cameraMediator.CoolCamera(Temperature, TimeSpan.FromMinutes(Duration), progress, token);
+
+            if (!success) {
+                throw new SequenceEntityFailedException(Loc.Instance["LblCouldNotReachTargetTemperature"]);
+            }
         }
 
         public bool Validate() {

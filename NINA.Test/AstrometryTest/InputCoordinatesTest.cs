@@ -389,7 +389,66 @@ namespace NINA.Test.AstrometryTest {
 
         //}
 
+        //[Test]
+        //public void SerializationAndDeserialization_Altitude_Test() {
 
+        //    // Right Ascension Tests
+        //    for (int altDegree = 0; altDegree < 90; altDegree++) {
+        //        for (int altMinutes = 0; altMinutes < 60; altMinutes++) {
+        //            for (int altSeconds = 0; altSeconds < 60; altSeconds++) {
+
+        //                var azDegree = 0;
+        //                var azMinutes = 0;
+        //                var azSeconds = 0;
+        //                var negativeAlt = false;
+
+        //                var coordinates = new InputTopocentricCoordinates(Angle.ByDegree(0), Angle.ByDegree(0));
+        //                coordinates.AzDegrees = azDegree;
+        //                coordinates.AzMinutes = azMinutes;
+        //                coordinates.AzSeconds = azSeconds;
+        //                coordinates.AltDegrees = altDegree;
+        //                coordinates.AltMinutes = altMinutes;
+        //                coordinates.AltSeconds = altSeconds;
+        //                coordinates.NegativeAlt = negativeAlt;
+
+        //                coordinates.AzDegrees.Should().Be(azDegree, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.AzMinutes.Should().Be(azMinutes, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.AzSeconds.Should().Be(azSeconds, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.AltDegrees.Should().Be(altDegree, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.AltMinutes.Should().Be(altMinutes, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.AltSeconds.Should().Be(altSeconds, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                coordinates.NegativeAlt.Should().Be(negativeAlt, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+
+        //                if (negativeAlt) {
+        //                    coordinates.Coordinates.Altitude.Degree.Should().BeLessThan(0);
+        //                } else {
+        //                    coordinates.Coordinates.Altitude.Degree.Should().BeGreaterThanOrEqualTo(0);
+        //                }
+
+
+
+        //                var json = JsonConvert.SerializeObject(coordinates);
+
+        //                var sut = JsonConvert.DeserializeObject<InputTopocentricCoordinates>(json);
+
+        //                sut.AzDegrees.Should().Be(azDegree, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.AzMinutes.Should().Be(azMinutes, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.AzSeconds.Should().Be(azSeconds, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.AltDegrees.Should().Be(altDegree, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.AltMinutes.Should().Be(altMinutes, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.AltSeconds.Should().Be(altSeconds, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                sut.NegativeAlt.Should().Be(negativeAlt, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+
+        //                if (negativeAlt) {
+        //                    sut.Coordinates.Altitude.Degree.Should().BeLessThan(0, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                } else {
+        //                    sut.Coordinates.Altitude.Degree.Should().BeGreaterThanOrEqualTo(0, $"{azDegree}:{azMinutes}:{azSeconds} | {altDegree}d{altMinutes}m{altSeconds}s | AltNegative: {negativeAlt}");
+        //                }
+
+        //            }
+        //        }
+        //    }
+        //}
 
     }
 }

@@ -535,6 +535,15 @@ namespace NINA.ViewModel.Sequencer {
             RaisePropertyChanged("StartSequenceTooltip");
         }
 
+        public async Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token) {            
+            var json = SequenceJsonConverter.Serialize(content);
+            await File.WriteAllTextAsync(filePath, json, token);
+        }
+
+        public string GetAdvancedSequencerSavePath() {
+            return SavePath;
+        }
+
         public ICommand AddTemplateCommand { get; private set; }
         public ICommand AddTargetToControllerCommand { get; private set; }
 

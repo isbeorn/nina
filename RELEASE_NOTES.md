@@ -3,21 +3,40 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.2
+
+## Improvements
+- The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
+- ZWO EAF is now available as a native driver
+
 # Version 3.1 Hotfix 2
 
 ## Improvements
 - The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.
 - Quicker switching between single-exposure and stream mode on QHY cameras, bringing improved responsiveness when using the Speckle or Lucky Imaging plugins.
+- Improved accuracy of estimated time display for Wait If Sun/Moon altitude instructions as well as Loop while Sun/Moon altitude conditions
+- Improved the dock panel layout for flat panels inside the imaging tab when smaller sized
+- Added a new instruction `Save Sequence` to be able to automatically save the sequence during runtime inside the advanced sequencer
+- In Framing Assistant the "Annotate DSO" and "Annotate Grid" buttons will keep their state when resizing or reloading the framing image
+- SITELEV keyword is now populated from Options > Astrometry instead of the mount
+- Legacy sequencer now also shows validation issues for target startup actions like slew, center & rotate
+- Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics
 
 ## Bug Fixes
-- When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.
+- When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.
 - In some special cases the `AutoFocus After Exposures` trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.
 - Fixed an issue where sky flat exposure time compensation was going into the wrong direction
 - The color boxes in the color schema settings now show their true color also when they are not clickable
 - Text color when opening the additional options of Sequence Instructions using the three dots are now using the same color as the instruction text itself
+- When using the `Cool Camera` instruction, the camera's failure to reach the target setpoint now results in a sequence error event. An example cause would be the camera's cooling progress stalling (moving < 0.5°C over 2 minutes) while the cooler is at 100% power due the ambient temperature being too hot to reach the desired setpoint.
+- Fixed a display issue in the mini sequencer where the sequence container header was indented too much.
+- Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside
+- Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions
+- When using a dome with the dome follower, a timeout during dome synchronization will no longer cancel the remaining steps after a meridian flip
 - QHY Cameras:
   - The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.
-  - The list of available cameras will now propertly update when one camera is replaced by a different one.
+  - The list of available cameras will now properly update when one camera is replaced by a different one.
+- When dome option to "close on unsafe conditions" was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish
 
 # Version 3.1 Hotfix 1
 

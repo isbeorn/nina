@@ -717,4 +717,43 @@
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:SaveSequence}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFile}" />
+                    <TextBox
+                        Grid.Column="1"
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Text="{Binding FilePath}"
+                        TextAlignment="Left" />
+                    <Button
+                        Grid.Column="2"
+                        Width="20"
+                        Height="20"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenDialogCommand}"
+                        Style="{StaticResource BackgroundButton}">
+                        <Path
+                            Margin="2,10,2,0"
+                            Data="{StaticResource DotsSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Button>
+                </Grid>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
 </ResourceDictionary>

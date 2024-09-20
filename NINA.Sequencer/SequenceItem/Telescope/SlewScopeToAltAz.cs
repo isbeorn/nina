@@ -59,7 +59,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public override object Clone() {
             return new SlewScopeToAltAz(this) {
-                Coordinates = new InputTopocentricCoordinates(Coordinates.Coordinates.Copy())
+                Coordinates = Coordinates?.Clone()
             };
         }
 

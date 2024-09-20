@@ -127,6 +127,9 @@ namespace NINA.Astrometry {
         public Angle Copy() {
             return Angle.ByRadians(this.Radians);
         }
+        public Angle CopyByDegree() {
+            return Angle.ByDegree(this.Degree);
+        }
 
         public static Angle operator -(Angle a) {
             return Angle.ByRadians(-a.Radians);

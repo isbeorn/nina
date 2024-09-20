@@ -24,7 +24,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.Validations;
-using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Astrometry.RiseAndSet;
+using Nito.AsyncEx;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -70,10 +71,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 }
             } while (true);
         }
-        
-        private bool MustWait() {
-            CalculateExpectedTime();
 
+        private bool MustWait() {
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
                     return Data.CurrentAltitude > Data.Offset;
@@ -82,11 +81,42 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
+        private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
+        private double lastCalculationOffset = double.NaN;
+        private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
+
         // See MoonAltitudeCondition for explanation of the constant
         public override void CalculateExpectedTime() {
-            Data.Coordinates.Coordinates = CalculateMoonRADec(Data.Observer);
-            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, -.583, until: false, 60, AstroUtil.GetMoonAltitude);
+            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer) + .583;
+
+            if (!MustWait()) {
+                Data.ExpectedDateTime = DateTime.Now;
+                Data.ExpectedTime = Loc.Instance["LblNow"];
+                lastCalculation = DateTimeOffset.MinValue;
+            } else {
+                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                // Only calculate every day or when the parameters have changed
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                    Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
+                    if (Data.ExpectedDateTime < DateTime.Now) {
+                        Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
+                    }
+
+                    if (Data.ExpectedDateTime == DateTime.MaxValue) {
+                        Data.ExpectedTime = "--";
+                    }
+                    lastCalculation = referenceDate;
+                    lastCalculationOffset = Data.Offset;
+                    lastCalculationComparator = Data.Comparator;
+                }
+            }
+        }
+
+        private DateTime CalculateExpectedDateTime(DateTime time) {
+            // The MoonRiseAndSet already models refraction and moon disk size
+            var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
+            AsyncContext.Run(customRiseAndSet.Calculate);
+            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
 
         public override string ToString() {

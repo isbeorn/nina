@@ -17,8 +17,11 @@ using NINA.Profile.Interfaces;
 using NINA.Astrometry;
 using System;
 using System.ComponentModel.Composition;
-using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.SequenceItem.Utility;
+using NINA.Astrometry.RiseAndSet;
+using NINA.Core.Enum;
+using Nito.AsyncEx;
+using NINA.Core.Locale;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -44,15 +47,45 @@ namespace NINA.Sequencer.Conditions {
            };
         }
 
+        private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
+        private double lastCalculationOffset = double.NaN;
+        private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
+
         //h = 0 degrees: Center of Sun's disk touches a mathematical horizon
         //h = -0.25 degrees: Sun's upper limb touches a mathematical horizon
         //h = -0.583 degrees: Center of Sun's disk touches the horizon; atmospheric refraction accounted for
         //h = -0.833 degrees: Sun's upper limb touches the horizon; atmospheric refraction accounted for
-
         public override void CalculateExpectedTime() {
-            Data.Coordinates.Coordinates = CalculateSunRADec(Data.Observer);
-            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer);
-            CalculateExpectedTimeCommon(Data, -.833, until: true, 30, AstroUtil.GetSunAltitude);
+            Data.CurrentAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
+
+            if (!Check(null, null, true)) {
+                Data.ExpectedDateTime = DateTime.Now;
+                Data.ExpectedTime = Loc.Instance["LblNow"];
+                lastCalculation = DateTimeOffset.MinValue;
+            } else {
+                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                // Only calculate every day or when the parameters have changed
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                    Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
+                    if (Data.ExpectedDateTime < DateTime.Now) {
+                        Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
+                    }
+
+                    if (Data.ExpectedDateTime == DateTime.MaxValue) {
+                        Data.ExpectedTime = "--";
+                    }
+                    lastCalculation = referenceDate;
+                    lastCalculationOffset = Data.Offset;
+                    lastCalculationComparator = Data.Comparator;
+                }
+            }
+        }
+
+        private DateTime CalculateExpectedDateTime(DateTime time) {
+            // The SunRiseAndSet already models refraction and sun disk size
+            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
+            AsyncContext.Run(customRiseAndSet.Calculate);
+            return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN || Data.Comparator == ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL ? customRiseAndSet.Rise : customRiseAndSet.Set) ?? DateTime.MaxValue;
         }
     }
 }

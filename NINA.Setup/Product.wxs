@@ -763,8 +763,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.624.26715.dll" Guid="4a7dbb1d-8ac4-4936-9b77-edeae70c24fa">
-        <File Id="mscordaccore_amd64_amd64_8.0.624.26715.dll" Name="mscordaccore_amd64_amd64_8.0.624.26715.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.624.26715.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Guid="164cec36-5833-4a7a-83fb-1f8f7238f695">
+        <File Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Name="mscordaccore_amd64_amd64_8.0.824.36612.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.824.36612.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1711,6 +1711,9 @@
       </Component>
       <Component Id="External_x64_ASI_EFW_filter.dll" Guid="e416c8c9-c2a2-47b9-9b53-d79812ebd9c6" Bitness="$(var.Win64)">
         <File Id="External_x64_ASI_EFW_filter.dll" Name="EFW_filter.dll" Source="$(var.NINA_TargetDir)External\x64\ASI\EFW_filter.dll" />
+      </Component>
+      <Component Id="External_x64_ASI_EAF_focuser.dll" Guid="BCF807AB-AB30-4E0A-8B05-A83C7D6A79D2" Bitness="$(var.Win64)">
+        <File Id="External_x64_ASI_EAF_focuser.dll" Name="EAF_focuser.dll" Source="$(var.NINA_TargetDir)External\x64\ASI\EAF_focuser.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

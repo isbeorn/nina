@@ -406,6 +406,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                     } catch (OperationCanceledException) {
                         if (rotator?.Connected == true) { await Disconnect(); }
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (RotatorInfo.Connected) { await Disconnect(); }
+                        RotatorInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;

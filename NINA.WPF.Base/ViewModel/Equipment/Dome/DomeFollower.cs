@@ -100,16 +100,29 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         }
 
         public async Task WaitForDomeSynchronization(CancellationToken cancellationToken) {
-            var timeoutCTS = new CancellationTokenSource(TimeSpan.FromSeconds(profileService.ActiveProfile.DomeSettings.DomeSyncTimeoutSeconds));
-            var timeoutOrClientCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(timeoutCTS.Token, cancellationToken).Token;
-            while (IsFollowing && !IsSynchronized) {
-                if (timeoutOrClientCancellationToken.IsCancellationRequested) {
-                    Notification.ShowWarning(Loc.Instance["LblDomeSyncError_SyncTimeout"]);
-                    Logger.Warning("Waiting for Dome synchronization cancelled or timed out");
-                    return;
+            if (!IsFollowing || IsSynchronized) {
+                return;
+            }
+            var timeoutTime = TimeSpan.FromSeconds(profileService.ActiveProfile.DomeSettings.DomeSyncTimeoutSeconds);
+            using var timeoutCTS = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCTS.CancelAfter(timeoutTime);
+            var timeoutOrClientCancellationToken = timeoutCTS.Token;
+
+            Logger.Info("Waiting for dome synchronization");
+            try {
+                while (IsFollowing && !IsSynchronized) {
+                    timeoutOrClientCancellationToken.ThrowIfCancellationRequested();
+                    Logger.Trace("Dome not synchronized. Waiting...");
+                    await Task.Delay(TimeSpan.FromSeconds(1), timeoutOrClientCancellationToken);
                 }
-                Logger.Trace("Dome not synchronized. Waiting...");
-                await Task.Delay(TimeSpan.FromSeconds(1), timeoutOrClientCancellationToken);
+                Logger.Info("Dome synchronized");
+            } catch (OperationCanceledException) {
+                if (cancellationToken.IsCancellationRequested != true) {
+                    Logger.Error($"Dome synchronization has timed out after {timeoutTime.TotalMinutes} minutes");
+                    Notification.ShowError(Loc.Instance["LblDomeSyncError_SyncTimeout"]);
+                } else {
+                    Logger.Info("Waiting for dome synchronization cancelled");
+                }
             }
         }
 

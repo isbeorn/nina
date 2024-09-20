@@ -2350,7 +2350,7 @@ HFR calculada: {2}
     <value>Puerto del Servidor de PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>Nombre de Servidor PHD2</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Ajustes PHD2</value>
@@ -6983,9 +6983,28 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>El movimiento del enfocador ha expirado después de {0} minutos.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>Fallo al resolver el nombre del servido PHD2: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>No se estableció nombre de servidor PHD2</value>
+  </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copia los colores del actual esquema de color al esquema ajustable de color "Personalización "alternativa"</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copia los colores del esquema de color al esquema ajustable de color "Personalizado"</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Luz</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Guarda la secuencia actual en la ruta especificada</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Guardar la Secuencia</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>La ruta es inválida</value>
   </data>
 </root>

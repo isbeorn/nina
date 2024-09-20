@@ -59,6 +59,8 @@ namespace NINA.WPF.Base.SkySurvey {
             FrameLineMatrix = new FrameLineMatrix2();
             ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
             cacheImages = new List<CacheImage>();
+            annotateDSO = true;
+            annotateGrid = true;
         }
 
         public SkyMapAnnotator(ITelescopeMediator mediator) : this() {
@@ -72,9 +74,6 @@ namespace NINA.WPF.Base.SkySurvey {
             g?.Dispose();
             img?.Dispose();
             dsoImageBuffer?.Dispose();
-
-            AnnotateDSO = true;
-            AnnotateGrid = true;
 
             this.cache = cache;
 

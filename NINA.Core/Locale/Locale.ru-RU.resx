@@ -6992,4 +6992,23 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
     <value>PHD2 server hostname has not been set</value>
   </data>
+  <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+  </data>
+  <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
+    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+  </data>
+  <data name="LblLight" xml:space="preserve">
+    <value>Light</value>
+    <comment>Light as in light bulb</comment>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
+    <value>Saves the current sequence at the specified file path</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
+    <value>Save Sequence</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
+    <value>File path is invalid</value>
+  </data>
 </root>

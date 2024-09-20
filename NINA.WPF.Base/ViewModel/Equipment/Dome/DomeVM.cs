@@ -199,6 +199,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     } catch (OperationCanceledException) {
                         if (dome?.Connected == true) { await Disconnect(); }
                         return false;
+                    }  catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (DomeInfo.Connected) { await Disconnect(); }
+                        DomeInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;
@@ -787,7 +793,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             closeShutterTask = Task.Run(async () => {
                                 Logger.Warning("Closing dome shutter due to unsafe conditions");
                                 Notification.ShowWarning(Loc.Instance["LblDomeCloseOnUnsafeWarning"]);
-                                return CloseShutter(CancellationToken.None);
+                                await CloseShutter(CancellationToken.None);
                             });
                         }
                     }

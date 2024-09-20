@@ -26,28 +26,47 @@
     <h1 id="n.i.n.a-nighttime-imaging-n-astronomy-changelog">N.I.N.A. - Nighttime Imaging 'N' Astronomy Changelog</h1>
 <p>If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.<br />
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a></p>
-<h1 id="version-3.1-hotfix-2">Version 3.1 Hotfix 2</h1>
+<h1 id="version-3.2">Version 3.2</h1>
 <h2 id="improvements">Improvements</h2>
+<ul>
+<li>The device chooser will now show a stored device id that is currently not available as an &quot;Offline device&quot; instead of showing &quot;No Device&quot; to differentiate having no device selected versus a saved device that is currently unavailable</li>
+<li>ZWO EAF is now available as a native driver</li>
+</ul>
+<h1 id="version-3.1-hotfix-2">Version 3.1 Hotfix 2</h1>
+<h2 id="improvements-1">Improvements</h2>
 <ul>
 <li>The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.</li>
 <li>Quicker switching between single-exposure and stream mode on QHY cameras, bringing improved responsiveness when using the Speckle or Lucky Imaging plugins.</li>
+<li>Improved accuracy of estimated time display for Wait If Sun/Moon altitude instructions as well as Loop while Sun/Moon altitude conditions</li>
+<li>Improved the dock panel layout for flat panels inside the imaging tab when smaller sized</li>
+<li>Added a new instruction <code>Save Sequence</code> to be able to automatically save the sequence during runtime inside the advanced sequencer</li>
+<li>In Framing Assistant the &quot;Annotate DSO&quot; and &quot;Annotate Grid&quot; buttons will keep their state when resizing or reloading the framing image</li>
+<li>SITELEV keyword is now populated from Options &gt; Astrometry instead of the mount</li>
+<li>Legacy sequencer now also shows validation issues for target startup actions like slew, center &amp; rotate</li>
+<li>Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics</li>
 </ul>
 <h2 id="bug-fixes">Bug Fixes</h2>
 <ul>
-<li>When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. Paranthesis are special characters for CFitsio and will thus replaced with an underscore.</li>
+<li>When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.</li>
 <li>In some special cases the <code>AutoFocus After Exposures</code> trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.</li>
 <li>Fixed an issue where sky flat exposure time compensation was going into the wrong direction</li>
 <li>The color boxes in the color schema settings now show their true color also when they are not clickable</li>
 <li>Text color when opening the additional options of Sequence Instructions using the three dots are now using the same color as the instruction text itself</li>
+<li>When using the <code>Cool Camera</code> instruction, the camera's failure to reach the target setpoint now results in a sequence error event. An example cause would be the camera's cooling progress stalling (moving &lt; 0.5°C over 2 minutes) while the cooler is at 100% power due the ambient temperature being too hot to reach the desired setpoint.</li>
+<li>Fixed a display issue in the mini sequencer where the sequence container header was indented too much.</li>
+<li>Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside</li>
+<li>Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions</li>
+<li>When using a dome with the dome follower, a timeout during dome synchronization will no longer cancel the remaining steps after a meridian flip</li>
 <li>QHY Cameras:
 <ul>
 <li>The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.</li>
-<li>The list of available cameras will now propertly update when one camera is replaced by a different one.</li>
+<li>The list of available cameras will now properly update when one camera is replaced by a different one.</li>
 </ul>
 </li>
+<li>When dome option to &quot;close on unsafe conditions&quot; was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish</li>
 </ul>
 <h1 id="version-3.1-hotfix-1">Version 3.1 Hotfix 1</h1>
-<h2 id="improvements-1">Improvements</h2>
+<h2 id="improvements-2">Improvements</h2>
 <ul>
 <li>On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.</li>
 <li>The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected</li>
@@ -74,7 +93,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 </li>
 </ul>
-<h2 id="improvements-2">Improvements</h2>
+<h2 id="improvements-3">Improvements</h2>
 <ul>
 <li>Allow camera cooling values down to -200°C instead of restricting it to -50°C</li>
 <li>Disallow opening the ASCOM setup screens when a device is connected</li>
@@ -182,7 +201,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>The application has transitioned to .NET 8. This is not merely a version upgrade from the previously used .NET Framework 4.8. Instead, .NET 8 is rooted in .NET Core, representing a complete rewrite of the .NET Framework by Microsoft. This marks a significant technical advancement for N.I.N.A.</li>
 <li>Plugins from previous versions are disabled. They must be patched by the plugin authors and targeted specifically for the new version to ensure compatibility with .NET 8.</li>
 </ul>
-<h2 id="improvements-3">Improvements</h2>
+<h2 id="improvements-4">Improvements</h2>
 <ul>
 <li>The Profile Chooser will now be displayed before the application fully initializes
 <ul>
@@ -331,7 +350,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>When switching profiles, the dock layout will be saved prior to switching</li>
 </ul>
 <h1 id="version-2.3-hotfix-2">Version 2.3 Hotfix 2</h1>
-<h2 id="improvements-4">Improvements</h2>
+<h2 id="improvements-5">Improvements</h2>
 <ul>
 <li>Framing tab will now remember the last selected rotation value between sessions</li>
 <li>The method the application uses to store and recall the window's position and size has been enhanced. This ensures that the window's location is more consistently retained across sessions.
@@ -358,14 +377,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Fixed an issue when changing the profiles that the ObjectTypes in Framing Assistant were duplicated</li>
 <li>Exposure Info: When the total exposure time exceeds 24 hours, it will now be displayed properly.</li>
 </ul>
-<h2 id="improvements-5">Improvements</h2>
+<h2 id="improvements-6">Improvements</h2>
 <ul>
 <li>In Options it is now possible to specify custom plugin repositories. Only add software repositories from sources that you trust!</li>
 <li>Sequencer Target Sidebar will now load much faster when having a large number of targets</li>
 <li>A grid splitter is added to the plugin tab so that the list of plugins can be minimized and more room for the detail page is available</li>
 </ul>
 <h1 id="version-2.3">Version 2.3</h1>
-<h2 id="improvements-6">Improvements</h2>
+<h2 id="improvements-7">Improvements</h2>
 <ul>
 <li>Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame</li>
 <li>When clicking on the load adv. sequence button, it is now possible to also load in a template or a target</li>
@@ -395,7 +414,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>In Options &gt; Imaging &gt; Image File Pattern it is now possible to set different patterns per image type. When no pattern is set for a specific image type the main image pattern will be taken.</li>
 <li>NMEA GPS import now also imports the site elevation</li>
 </ul>
-<h2 id="improvements-7">Improvements</h2>
+<h2 id="improvements-8">Improvements</h2>
 <ul>
 <li>The Field of View value in the Framing Tab is now limited to two decimal places</li>
 <li>Camera simulator can now set arbitrary values for Offset and USB limit</li>
@@ -427,7 +446,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>ASCOM Switch target values now adhere to the step size of a switch and round to the nearest value if the user provided a value outside of the step size</li>
 <li>Fixed an issue where SynchronizeDomeTrigger would run into an exception when evaluating if it should trigger when the dome and telescope is not connected</li>
 </ul>
-<h2 id="improvements-8">Improvements</h2>
+<h2 id="improvements-9">Improvements</h2>
 <ul>
 <li>Player One Cameras that support different sensor modes can now switch between these via ReadoutModes when using the native driver</li>
 <li>Player One Cameras that have a temperature probe but not cooler will now show the temperature</li>
@@ -453,7 +472,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Flat Wizard Sky Flat Mode no longer closes a flat device cover when connected</li>
 <li>AutofocusAfterTemperatureChangeTrigger did not set initial temperature correctly when focuser was not connected on sequence start</li>
 </ul>
-<h2 id="improvements-9">Improvements</h2>
+<h2 id="improvements-10">Improvements</h2>
 <ul>
 <li>Guide Chart Colors can now be customized in the guider tab</li>
 <li>Plugin load times have been improved</li>
@@ -510,7 +529,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>When the filter is changed while the Smart Exposure or Simple Sequencer Exposure is already running, the first exposure afterwards no longer uses the previous filter but switches to the expected new filter</li>
 <li>Fixed an issue where the Camera Cooling Charts could get stuck and not update anymore</li>
 </ul>
-<h2 id="improvements-10">Improvements</h2>
+<h2 id="improvements-11">Improvements</h2>
 <ul>
 <li>Improved error message presentation if the selected sky survey image serivce fails to accept a request</li>
 <li>The image save queue size can now be adjusted to allow for more concurrent image processing and save operations. Do be careful when changing this, as it will increase overall system resource usage during fast image captures</li>
@@ -863,7 +882,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 <h4 id="included-camera-sdk-versions-can-now-be-found-inside-the-about-page-of-n.i.n.a">Included Camera SDK Versions can now be found inside the about page of N.I.N.A.</h4>
 <h1 id="version-1.10-hf3">Version 1.10 HF3</h1>
-<h2 id="improvements-11">Improvements</h2>
+<h2 id="improvements-12">Improvements</h2>
 <ul>
 <li>The camera temperature setpoint is now displayed <em>only</em> when the cooler is active</li>
 <li>A secondary HIPS2 server will be attempted if the main HIPS2 image server is not available</li>
@@ -903,7 +922,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li><strong>ZWO:</strong> 1.16.3</li>
 </ul>
 <h1 id="version-1.10-hf2">Version 1.10 HF2</h1>
-<h2 id="improvements-12">Improvements</h2>
+<h2 id="improvements-13">Improvements</h2>
 <ul>
 <li>Rotator now displays mechanical position as well as sky position. Sky position will be displayed once the rotator is synced at least once.</li>
 <li>Updates to various vendor-supplied SDKs for bug fixes and new model support in the respective native drivers</li>
@@ -948,7 +967,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>New translation for Greek (Ελληνικά) has been added</li>
 <li>Added a new sky survey <a href="http://alasky.u-strasbg.fr/hips-image-services/hips2fits" target="_blank">Hips 2 Fits</a> as an option in framing assistant. This survey seems to provide a much faster image compared to the other surveys.</li>
 </ul>
-<h2 id="improvements-13">Improvements</h2>
+<h2 id="improvements-14">Improvements</h2>
 <ul>
 <li>Canon CR3 image format is now supported (use FreeImage as your RAW converter)</li>
 <li>Adding support for the EOS R5 and EOS R6</li>
@@ -1425,7 +1444,7 @@ Thank you for your support!</p>
 <li>Some Sky Surveys did not work in some locales due to decimal pointer settings</li>
 <li>Fixed race condition when using DCRaw when the previous temp image was not finished processed and the new image tried to replace the previous temp image</li>
 </ul>
-<h2 id="improvements-14">Improvements</h2>
+<h2 id="improvements-15">Improvements</h2>
 <ul>
 <li>When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.</li>
 <li>N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.</li>
@@ -1533,7 +1552,7 @@ the background itself will be moved like in an orrery</li>
 <li>Fixed Platesolve result reporting wrong Dec Error.</li>
 <li>Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.</li>
 </ul>
-<h2 id="improvements-15">Improvements</h2>
+<h2 id="improvements-16">Improvements</h2>
 <ul>
 <li>Clear button for PHD2 Graph</li>
 <li>Hide camera cooler controls when not available for current camera model</li>
@@ -1641,7 +1660,7 @@ Thank you for your support!</p>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>
 </ul>
-<h2 id="improvements-16">Improvements</h2>
+<h2 id="improvements-17">Improvements</h2>
 <ul>
 <li>Guider is also connected when pushing &quot;Connect All&quot;</li>
 <li>Changed FilterWheel UI for switching filters</li>

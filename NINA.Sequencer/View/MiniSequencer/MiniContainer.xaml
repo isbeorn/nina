@@ -74,11 +74,11 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Viewbox Grid.Column="0" HorizontalAlignment="Center">
+        <Viewbox Grid.Column="0" HorizontalAlignment="Left">
             <ContentPresenter Content="{Binding}" Style="{StaticResource ProgressPresenter}" />
         </Viewbox>
         <Path
@@ -86,8 +86,8 @@
             Grid.Column="1"
             Width="16"
             Height="16"
-            Margin="0"
-            HorizontalAlignment="Center"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Left"
             Data="{Binding Icon}"
             Fill="{StaticResource PrimaryBrush}"
             Stretch="Uniform"

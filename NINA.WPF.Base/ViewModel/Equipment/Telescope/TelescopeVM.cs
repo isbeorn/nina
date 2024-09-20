@@ -528,6 +528,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                         Notification.ShowError(ex.Message);
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (TelescopeInfo.Connected) { await Disconnect(); }
+                        TelescopeInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;
@@ -981,8 +987,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             var coords = targetCoordinates.Transform(TelescopeInfo.EquatorialSystem);
             if (TelescopeInfo.Connected) {
                 var flipResult = await Telescope.MeridianFlip(coords, token);
-                await this.domeMediator.WaitForDomeSynchronization(CancellationToken.None);
-                await updateTimer.WaitForNextUpdate(default);
+                await this.domeMediator.WaitForDomeSynchronization(token);
+                await updateTimer.WaitForNextUpdate(token);
                 return flipResult;
             } else {
                 return false;

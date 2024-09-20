@@ -44,12 +44,12 @@ namespace ZWOptical.ASISDK {
             ASI_ANTI_DEW_HEATER,
             ASI_FAN_ADJUST,
             ASI_PWRLED_BRIGNT,
+            ASI_USBHUB_RESET,
             ASI_GPS_SUPPORT,
             ASI_GPS_START_LINE,
             ASI_GPS_END_LINE,
             ASI_ROLLING_INTERVAL,//microsecond
         }
-
 
         public enum ASI_IMG_TYPE {
             //Supported image type
@@ -59,7 +59,6 @@ namespace ZWOptical.ASISDK {
             ASI_IMG_Y8,
             ASI_IMG_END = -1
         }
-
 
         public enum ASI_GUIDE_DIRECTION {
             ASI_GUIDE_NORTH = 0,
@@ -199,7 +198,7 @@ namespace ZWOptical.ASISDK {
             public int Second;
             public int Msecond;
             public int Usecond;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U1)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64, ArraySubType = UnmanagedType.U1)]
             public byte[] Unused;
         }
         public struct ASI_GPS_DATA {

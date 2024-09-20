@@ -64,7 +64,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             var service = windowServiceFactory.Create();
             var msgBoxResult = new MessageBoxResult(Text);
 
-            await service.ShowDialog(msgBoxResult, Loc.Instance["Lbl_Sequencer_Title"]);
+            using (token.Register(() => service.Close())) {
+                await service.ShowDialog(msgBoxResult, Loc.Instance["Lbl_Sequencer_Title"]);
+            }
+            token.ThrowIfCancellationRequested();
 
             if(!msgBoxResult.Continue) {
                 Logger.Info("Stopping Sequence");

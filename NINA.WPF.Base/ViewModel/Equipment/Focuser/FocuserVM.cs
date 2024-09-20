@@ -332,6 +332,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 } catch (OperationCanceledException) {
                     if (newFocuser?.Connected == true) { await Disconnect(); }
                     return false;
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                    Logger.Error(ex);
+                    if (FocuserInfo.Connected) { await Disconnect(); }
+                    FocuserInfo.Connected = false;
+                    return false;
                 }
             } finally {
                 ss.Release();

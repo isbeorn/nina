@@ -279,9 +279,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                     } catch (OperationCanceledException) {
                         if (fW?.Connected == true) { await Disconnect(); }
                         return false;
-                    } catch (Exception e) {
-                        Logger.Error($"Failed to connect to filter wheel: {e}");
-                        Notification.ShowError(e.Message);
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (FilterWheelInfo.Connected) { await Disconnect(); }
+                        FilterWheelInfo.Connected = false;
                         return false;
                     }
                 } else {

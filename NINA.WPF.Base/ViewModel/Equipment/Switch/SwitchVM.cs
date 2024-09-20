@@ -268,6 +268,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     } catch (OperationCanceledException) {
                         await Disconnect();
                         return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (SwitchInfo.Connected) { await Disconnect(); }
+                        SwitchInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;

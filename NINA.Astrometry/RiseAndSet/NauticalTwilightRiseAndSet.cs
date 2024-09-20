@@ -17,19 +17,9 @@ using System;
 
 namespace NINA.Astrometry.RiseAndSet {
 
-    public class NauticalTwilightRiseAndSet : RiseAndSetEvent {
+    public class NauticalTwilightRiseAndSet : SunCustomRiseAndSet {
 
-        public NauticalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
-        }
-
-        private double NauticalTwilightDegree => -12;
-
-        protected override double AdjustAltitude(BasicBody body) {
-            return body.Altitude - NauticalTwilightDegree;
-        }
-
-        protected override BasicBody GetBody(DateTime date) {
-            return new Sun(date, Latitude, Longitude);
+        public NauticalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude, -12) {
         }
     }
 }
