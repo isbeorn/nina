@@ -220,7 +220,7 @@ namespace NINA.Astrometry {
         }
 
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength) {
-            return this.Transform(latitude, longitude, elevation, 0.0d, 0.0d, 0.0d, 0.0d, DateTime.Now);
+            return this.Transform(latitude: latitude, longitude: longitude, elevation: elevation, pressurehPa: pressurehPa, tempCelcius: tempCelcius, relativeHumidity: relativeHumidity, wavelength: wavelength, now: DateTime.Now);
         }
 
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude, DateTime now) {
