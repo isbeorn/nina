@@ -204,6 +204,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(DisplayName));
                 RaisePropertyChanged(nameof(Id));
                 profileService.ActiveProfile.FilterWheelSettings.Id = Id;
             }

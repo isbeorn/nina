@@ -7030,4 +7030,16 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
     <value>Weather Underground API request failed: {0}</value>
   </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Set current position to zero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Set max step</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Set current position to zero?</value>
+  </data>
 </root>
