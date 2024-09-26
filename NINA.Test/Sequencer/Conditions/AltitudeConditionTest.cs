@@ -51,7 +51,7 @@ namespace NINA.Test.Sequencer.Conditions {
         [TestCase(40, 35)]
         [TestCase(35, 40)]
         public void Check_When_Scope_Pointing_East_Returns_True(double currentAltitude, double targetAltitude) {
-            var altaz = new TopocentricCoordinates(Angle.ByDegree(90), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero);
+            var altaz = new TopocentricCoordinates(Angle.ByDegree(90), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero, 0);
             var coords = altaz.Transform(Epoch.J2000);
 
             var sut = new AltitudeCondition(profileServiceMock.Object);
@@ -70,7 +70,7 @@ namespace NINA.Test.Sequencer.Conditions {
         [TestCase(-10, -11)]
         [TestCase(-10, -10)]
         public void Check_When_Scope_Is_Pointing_West_Above_Target_Alt_Returns_True(double currentAltitude, double targetAltitude) {
-            var altaz = new TopocentricCoordinates(Angle.ByDegree(270), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero);
+            var altaz = new TopocentricCoordinates(Angle.ByDegree(270), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero, 0);
             var coords = altaz.Transform(Epoch.J2000);
 
             var sut = new AltitudeCondition(profileServiceMock.Object);
@@ -86,7 +86,7 @@ namespace NINA.Test.Sequencer.Conditions {
         [TestCase(-10, 0)]
         [TestCase(-20, -10)]
         public void Check_When_Scope_Is_Pointing_West_Below_Target_Alt_Returns_False(double currentAltitude, double targetAltitude) {
-            var altaz = new TopocentricCoordinates(Angle.ByDegree(270), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero);
+            var altaz = new TopocentricCoordinates(Angle.ByDegree(270), Angle.ByDegree(currentAltitude), Angle.Zero, Angle.Zero, 0);
             var coords = altaz.Transform(Epoch.J2000);
 
             var sut = new AltitudeCondition(profileServiceMock.Object);

@@ -400,10 +400,16 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
                     var coordinates = new Coordinates(Angle.ByDegree(initial.RADegrees + AstroUtil.ArcsecToDegree(Settings.SkySurveySettings.RAError)), Angle.ByDegree(initial.Dec + AstroUtil.ArcsecToDegree(Settings.SkySurveySettings.DecError)), Epoch.J2000);
 
-                    var altAz = coordinates.Transform(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+                    var altAz = coordinates.Transform(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
 
                     if (Settings.SkySurveySettings.AzShift != 0 || Settings.SkySurveySettings.AltShift != 0) {
-                        coordinates = new TopocentricCoordinates(altAz.Azimuth + Angle.ByDegree(Settings.SkySurveySettings.AzShift / 60d / 60d), altAz.Altitude + Angle.ByDegree(Settings.SkySurveySettings.AltShift / 60d / 60d), altAz.Latitude, altAz.Longitude).Transform(Epoch.J2000);
+                        coordinates = new TopocentricCoordinates(
+                            azimuth: altAz.Azimuth + Angle.ByDegree(Settings.SkySurveySettings.AzShift / 60d / 60d),
+                            altitude: altAz.Altitude + Angle.ByDegree(Settings.SkySurveySettings.AltShift / 60d / 60d),
+                            latitude: altAz.Latitude, 
+                            longitude: altAz.Longitude,
+                            elevation: altAz.Elevation
+                            ).Transform(Epoch.J2000);
                     }
 
                     if (!ImageCache.TryGetValue(coordinates.ToString(), out var image)) {

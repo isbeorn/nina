@@ -35,6 +35,7 @@ namespace NINA.Test.Dome {
 
         private Angle siteLatitude;
         private Angle siteLongitude;
+        private double siteElevation;
         private Angle domeTargetAzimuth;
         private Angle domeTargetAltitude;
         private double domeAzimuth;
@@ -56,14 +57,15 @@ namespace NINA.Test.Dome {
 
             siteLatitude = Angle.ByDegree(41.5);
             siteLongitude = Angle.ByDegree(-23.2);
+            siteElevation = 100;
             useSideOfPier = true;
 
             mockProfileService.SetupGet(p => p.ActiveProfile.DomeSettings.AzimuthTolerance_degrees).Returns(() => domeAzimuthToleranceDegrees);
             mockProfileService.SetupGet(p => p.ActiveProfile.DomeSettings.SynchronizeDuringMountSlew).Returns(() => synchronizeDuringMountSlew);
             mockProfileService.SetupGet(p => p.ActiveProfile.MeridianFlipSettings.UseSideOfPier).Returns(() => useSideOfPier);
             mockDomeSynchronization
-                .Setup(x => x.TargetDomeCoordinates(It.IsAny<Coordinates>(), It.IsAny<double>(), It.IsAny<Angle>(), It.IsAny<Angle>(), It.IsAny<PierSide>()))
-                .Returns(() => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: siteLatitude, longitude: siteLongitude));
+                .Setup(x => x.TargetDomeCoordinates(It.IsAny<Coordinates>(), It.IsAny<double>(), It.IsAny<Angle>(), It.IsAny<Angle>(), It.IsAny<double>(), It.IsAny<PierSide>()))
+                .Returns(() => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: siteLatitude, longitude: siteLongitude, elevation: siteElevation));
         }
 
         private DomeFollower CreateSUT() {
@@ -78,6 +80,7 @@ namespace NINA.Test.Dome {
                 Connected = true,
                 SiteLatitude = siteLatitude.Degree,
                 SiteLongitude = siteLongitude.Degree,
+                SiteElevation = siteElevation,
                 SiderealTime = 11.2,
                 SideOfPier = PierSide.pierEast,
                 Coordinates = new Coordinates(1.0, 2.0, Epoch.J2000, Coordinates.RAType.Degrees)
@@ -89,7 +92,7 @@ namespace NINA.Test.Dome {
             sut.UpdateDeviceInfo(t1);
             sut.UpdateDeviceInfo(d1);
             sut.TriggerTelescopeSync();
-            mockDomeSynchronization.Verify(x => x.TargetDomeCoordinates(t1.Coordinates, t1.SiderealTime, siteLatitude, siteLongitude, t1.SideOfPier), Times.Once);
+            mockDomeSynchronization.Verify(x => x.TargetDomeCoordinates(t1.Coordinates, t1.SiderealTime, siteLatitude, siteLongitude, siteElevation, t1.SideOfPier), Times.Once);
         }
 
         [Test]

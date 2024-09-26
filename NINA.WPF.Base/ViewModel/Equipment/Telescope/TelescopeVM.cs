@@ -62,7 +62,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 this.applicationStatusMediator.StatusUpdate(p);
             });
 
-            InputCoordinatesAltAz = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+            InputCoordinatesAltAz = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseTelescope), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new Core.Utility.RelayCommand(CancelChooseTelescope);
@@ -101,7 +101,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         private void ProfileService_LocationChanged(object sender, EventArgs e) {
-            InputCoordinatesAltAz?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+            InputCoordinatesAltAz?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
         }
 
         public async Task<IList<string>> Rescan() {

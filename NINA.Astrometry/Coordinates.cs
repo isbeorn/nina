@@ -211,6 +211,7 @@ namespace NINA.Astrometry {
             return new Coordinates(raCelestial, decCelestial, Epoch.J2000, creationDate, DateTime);
         }
 
+        [Obsolete("Use Transform with elevation provided")]
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude) {
             return this.Transform(latitude, longitude, 0.0);
         }
@@ -219,12 +220,17 @@ namespace NINA.Astrometry {
             return this.Transform(latitude, longitude, elevation, 0.0d, 0.0d, 0.0d, 0.0d);
         }
 
-        public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength) {
-            return this.Transform(latitude: latitude, longitude: longitude, elevation: elevation, pressurehPa: pressurehPa, tempCelcius: tempCelcius, relativeHumidity: relativeHumidity, wavelength: wavelength, now: DateTime.Now);
-        }
-
+        [Obsolete("Use Transform with elevation provided")]
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude, DateTime now) {
             return this.Transform(latitude, longitude, 0.0, 0.0d, 0.0d, 0.0d, 0.0d, now);
+        }
+
+        public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, DateTime now) {
+            return this.Transform(latitude, longitude, elevation, 0.0d, 0.0d, 0.0d, 0.0d, now);
+        }
+
+        public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength) {
+            return this.Transform(latitude: latitude, longitude: longitude, elevation: elevation, pressurehPa: pressurehPa, tempCelcius: tempCelcius, relativeHumidity: relativeHumidity, wavelength: wavelength, now: DateTime.Now);
         }
 
         public TopocentricCoordinates Transform(Angle latitude, Angle longitude, double elevation, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength, DateTime now) {

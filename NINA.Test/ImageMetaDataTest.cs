@@ -110,7 +110,8 @@ namespace NINA.Test {
 
                 AstrometrySettings = {
                     Latitude = 10,
-                    Longitude = 20
+                    Longitude = 20,
+                    Elevation = 102.3
                 }
             };
 
@@ -123,6 +124,7 @@ namespace NINA.Test {
             ClassicAssert.AreEqual(5, sut.Telescope.FocalRatio);
             ClassicAssert.AreEqual(10, sut.Observer.Latitude);
             ClassicAssert.AreEqual(20, sut.Observer.Longitude);
+            ClassicAssert.AreEqual(102.3, sut.Observer.Elevation);
         }
 
         [Test]
@@ -289,7 +291,6 @@ namespace NINA.Test {
             sut.FromTelescopeInfo(telescopeInfo);
 
             ClassicAssert.AreEqual("TestName", sut.Telescope.Name);
-            ClassicAssert.AreEqual(120.3, sut.Observer.Elevation);
             ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalLength);
             ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
 

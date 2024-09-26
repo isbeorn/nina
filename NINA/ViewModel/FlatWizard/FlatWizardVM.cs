@@ -164,8 +164,9 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> SlewToZenith(CancellationToken token) {
             var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
             var longitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude);
+            var elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
             var azimuth = AltitudeSite == AltitudeSite.WEST ? Angle.ByDegree(90) : Angle.ByDegree(270);
-            await telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude), token);
+            await telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude, elevation), token);
             telescopeMediator.SetTrackingEnabled(false);
             return true;
         }
