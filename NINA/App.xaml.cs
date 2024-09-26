@@ -174,8 +174,9 @@ namespace NINA {
                 new RoutedEventHandler(TextBox_GotFocus));
 
 
-            if (!NINA.Properties.Settings.Default.HardwareAcceleration) {
+            if (!NINA.Properties.Settings.Default.HardwareAcceleration || _commandLineOptions.DisableHardwareAcceleration) {
                 Logger.Info("Disabling Hardware Acceleration");
+                NINA.Properties.Settings.Default.HardwareAcceleration = false;
                 RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
             }
 
