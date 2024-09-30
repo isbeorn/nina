@@ -5,11 +5,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.2
 
+## Bugfixes
+- Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation
+
 ## Improvements
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
 - ZWO EAF is now available as a native driver
-
-## Behavioral Changes
 - Looping mode is no longer started when NINA connects to PHD2.
 
 ## Commandline Options
