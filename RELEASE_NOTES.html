@@ -32,6 +32,10 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>The device chooser will now show a stored device id that is currently not available as an &quot;Offline device&quot; instead of showing &quot;No Device&quot; to differentiate having no device selected versus a saved device that is currently unavailable</li>
 <li>ZWO EAF is now available as a native driver</li>
 </ul>
+<h2 id="behavioral-changes">Behavioral Changes</h2>
+<ul>
+<li>Looping mode is no longer started when NINA connects to PHD2.</li>
+</ul>
 <h2 id="commandline-options">Commandline Options</h2>
 <p>The following command line options have been added</p>
 <pre><code>-g, --disable-hardware-acceleration        Disables UI hardware acceleration
@@ -84,7 +88,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Prevent an edge case where the time condition did not cancel the remaining instructions following an instruction that did not fit into the remaining time, even though those subsequent instructions would fit within the available time</li>
 </ul>
 <h1 id="version-3.1">Version 3.1</h1>
-<h2 id="behavioral-changes">Behavioral Changes</h2>
+<h2 id="behavioral-changes-1">Behavioral Changes</h2>
 <ul>
 <li>Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run</li>
 <li>Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance</li>

@@ -9,6 +9,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
 - ZWO EAF is now available as a native driver
 
+## Behavioral Changes
+- Looping mode is no longer started when NINA connects to PHD2.
+
 ## Commandline Options
 The following command line options have been added
 ```
