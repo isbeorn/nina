@@ -765,10 +765,15 @@ namespace NINA.ViewModel {
             }
 
             var targetArea = factory.GetContainer<TargetAreaContainer>();
-            foreach (var item in Targets.GetItemsSnapshot()) {
-                var target = item as SimpleDSOContainer;
+            var itemSnapshot = Targets.GetItemsSnapshot();
+            foreach (var item in itemSnapshot) {
+                var target = item as SimpleDSOContainer;                
                 if (target.Status == SequenceEntityStatus.CREATED) {
-                    targetArea.Add(target.TransformToDSOContainer());
+                    var dsoContainer = target.TransformToDSOContainer();
+                    if (itemSnapshot.First() != target) {
+                        dsoContainer.IsExpanded = false;
+                    }
+                    targetArea.Add(dsoContainer);
                 }
             }
 
