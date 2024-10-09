@@ -21,7 +21,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyWeatherData {
 
-    internal class AscomObservingConditions : AscomDevice<IObservingConditions>, IWeatherData, IDisposable {
+    internal class AscomObservingConditions : AscomDevice<IObservingConditionsV2>, IWeatherData, IDisposable {
         public AscomObservingConditions(string weatherDataId, string weatherDataName) : base(weatherDataId, weatherDataName) {
         }
         public AscomObservingConditions(AscomDevice deviceMeta) : base(deviceMeta) {
@@ -57,7 +57,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
         protected override string ConnectionLostMessage => Loc.Instance["LblWeatherConnectionLost"];
 
-        protected override IObservingConditions GetInstance() {
+        protected override IObservingConditionsV2 GetInstance() {
             if (deviceMeta == null) {
                 return new ObservingConditions(Id);
             } else {

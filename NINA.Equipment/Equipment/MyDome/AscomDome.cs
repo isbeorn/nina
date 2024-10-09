@@ -82,7 +82,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
     }
 
-    internal class AscomDome : AscomDevice<ASCOM.Common.DeviceInterfaces.IDomeV2>, IDome, IDisposable {
+    internal class AscomDome : AscomDevice<ASCOM.Common.DeviceInterfaces.IDomeV3>, IDome, IDisposable {
 
         public AscomDome(string domeId, string domeName) : base(domeId, domeName) {
         }
@@ -390,7 +390,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             return Task.CompletedTask;
         }
 
-        protected override ASCOM.Common.DeviceInterfaces.IDomeV2 GetInstance() {
+        protected override ASCOM.Common.DeviceInterfaces.IDomeV3 GetInstance() {
             if (deviceMeta == null) {
                 return new Dome(Id);
             } else {

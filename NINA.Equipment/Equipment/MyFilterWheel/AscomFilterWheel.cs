@@ -28,7 +28,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
-    internal class AscomFilterWheel : AscomDevice<IFilterWheelV2>, IFilterWheel, IDisposable {
+    internal class AscomFilterWheel : AscomDevice<IFilterWheelV3>, IFilterWheel, IDisposable {
 
         public AscomFilterWheel(string filterWheelId, string name, IProfileService profileService) : base(filterWheelId, name) {
             this.profileService = profileService;
@@ -102,7 +102,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             return Task.CompletedTask;
         }
 
-        protected override IFilterWheelV2 GetInstance() {
+        protected override IFilterWheelV3 GetInstance() {
             if (deviceMeta == null) {
                 return new FilterWheel(Id);
             } else {

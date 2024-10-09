@@ -19,7 +19,7 @@ using NINA.Equipment.Interfaces;
 
 namespace NINA.Equipment.Equipment.MySafetyMonitor {
 
-    internal class AscomSafetyMonitor : AscomDevice<ASCOM.Common.DeviceInterfaces.ISafetyMonitor>, ISafetyMonitor {
+    internal class AscomSafetyMonitor : AscomDevice<ASCOM.Common.DeviceInterfaces.ISafetyMonitorV3>, ISafetyMonitor {
         public AscomSafetyMonitor(string id, string name) : base(id, name) {
         }
         public AscomSafetyMonitor(AscomDevice deviceMeta) : base(deviceMeta) {
@@ -29,7 +29,7 @@ namespace NINA.Equipment.Equipment.MySafetyMonitor {
 
         protected override string ConnectionLostMessage => Loc.Instance["LblSafetyMonitorConnectionLost"];
 
-        protected override ASCOM.Common.DeviceInterfaces.ISafetyMonitor GetInstance() {
+        protected override ASCOM.Common.DeviceInterfaces.ISafetyMonitorV3 GetInstance() {
             if (deviceMeta == null) {
                 return new SafetyMonitor(Id);
             } else {

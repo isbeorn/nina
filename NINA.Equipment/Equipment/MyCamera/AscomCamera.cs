@@ -40,7 +40,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class AscomCamera : AscomDevice<ICameraV3>, ICamera, IDisposable {
+    public class AscomCamera : AscomDevice<ICameraV4>, ICamera, IDisposable {
 
         public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(cameraId, name) {
             this.profileService = profileService;
@@ -818,16 +818,15 @@ namespace NINA.Equipment.Equipment.MyCamera {
             throw new System.NotImplementedException();
         }
 
-        protected override Task PostConnect() {
+        protected override async Task PostConnect() {
             if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
                 Disconnect();
                 throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
             }
             Initialize();
-            return Task.CompletedTask;
         }
 
-        protected override ICameraV3 GetInstance() {
+        protected override ICameraV4 GetInstance() {
             if(deviceMeta == null) {
                 return new Camera(this.Id);
             } else {
