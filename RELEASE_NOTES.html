@@ -41,6 +41,16 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <p>The following command line options have been added</p>
 <pre><code>-g, --disable-hardware-acceleration        Disables UI hardware acceleration
 </code></pre>
+<h2 id="plugin-development">Plugin Development</h2>
+<h3 id="assemblyloadcontext">AssemblyLoadContext</h3>
+<ul>
+<li>Plugins are now loaded within separate <a href="https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext">AssemblyLoadContexts</a>
+<ul>
+<li>This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues</li>
+<li>No changes to existing plugins are required</li>
+</ul>
+</li>
+</ul>
 <h1 id="version-3.1-hotfix-2">Version 3.1 Hotfix 2</h1>
 <h2 id="improvements-1">Improvements</h2>
 <ul>
@@ -144,7 +154,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Autofocus runs with current Profile-ID are now shown after changing the profile</li>
 <li>Fixed interpretation of pixel scale value in PinPoint's solve results</li>
 </ul>
-<h2 id="plugin-development">Plugin Development</h2>
+<h2 id="plugin-development-1">Plugin Development</h2>
 <h3 id="new-feature-imessagebroker-interface">New Feature: <code>IMessageBroker</code> Interface</h3>
 <h4 id="introduction-of-imessagebroker-interface">Introduction of <code>IMessageBroker</code> Interface:</h4>
 <ul>
