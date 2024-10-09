@@ -2069,7 +2069,7 @@
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>从 N.I.N.A. 到望远镜</value>
+    <value>从NINA到支架</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>否</value>
@@ -2358,7 +2358,7 @@
     <value>PHD2 服务器端口</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>PHD2 服务器主机名</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -3146,7 +3146,7 @@
     <value>从望远镜同步坐标</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
-    <value>从支架到NINA。</value>
+    <value>从支架到NINA</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -6987,28 +6987,52 @@
     <value>电调移动命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>无法解析 PHD2 服务器主机名： {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>PHD2 服务器主机名尚未设置</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>将当前配色方案复制到可调整的“Alternative Custom”中</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>将当前配色方案复制到可调整的“Custom”中</value>
   </data>
   <data name="LblLight" xml:space="preserve">
     <value>Light</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>将当前序列保存至指定文件夹</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>保存序列</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>文件路径无效</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>There is no Weather Underground API key configured.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>There is no Weather Underground station configured.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Weather Underground API did not respond.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Weather Underground API request failed: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Set current position to zero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Set max step</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Set current position to zero?</value>
   </data>
 </root>

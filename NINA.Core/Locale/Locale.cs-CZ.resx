@@ -7012,4 +7012,28 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>Cesta k souboru je neplatná</value>
   </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>Není nakonfigurován žádný klíč API služby Weather Underground.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>Není nakonfigurována žádná stanice Weather Underground.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Rozhraní API služby Weather Underground neodpovědělo.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Požadavek API Weather Underground selhal: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Nastavení aktuální polohy na nulu</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Otočit</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Nastavení max kroku</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Nastavení aktuální polohy na nulu?</value>
+  </data>
 </root>
