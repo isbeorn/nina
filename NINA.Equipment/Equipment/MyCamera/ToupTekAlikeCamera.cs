@@ -780,7 +780,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool CanSetLEDLights {
-            get => sdk is ToupTekSDKWrapper;
+            get => sdk is ToupTekSDKWrapper || sdk is OgmaSDKWrapper;
         }
 
         public bool LEDLights {
