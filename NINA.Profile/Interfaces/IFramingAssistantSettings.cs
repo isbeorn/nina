@@ -24,5 +24,9 @@ namespace NINA.Profile.Interfaces {
         SkySurveySource LastSelectedImageSource { get; set; }
         double LastRotationAngle { get; set; }
         bool SaveImageInOfflineCache { get; set; }
+        bool AnnotateConstellationBoundaries { get; set; }
+        bool AnnotateConstellations { get; set; }
+        bool AnnotateDSO { get; set; }
+        bool AnnotateGrid { get; set; }
     }
 }
