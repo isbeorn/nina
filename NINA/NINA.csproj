@@ -371,6 +371,7 @@
     <Folder Include="External\x64\Nikon\Type0028\" />
     <Folder Include="External\x64\Nikon\Type0029\" />
     <Folder Include="External\x64\Nikon\Type0030\" />
+    <Folder Include="External\x64\Nikon\Type0031\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
