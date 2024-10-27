@@ -397,6 +397,9 @@
       <Component Id="ASCOM.Alpaca.dll" Guid="1f88443b-e5bb-4951-a001-72d769aa686c">
         <File Id="ASCOM.Alpaca.dll" Name="ASCOM.Alpaca.dll" Source="$(var.NINA_TargetDir)ASCOM.Alpaca.dll" />
       </Component>
+      <Component Id="ASCOM.Tools.dll" Guid="de3bf45b-b15e-4b07-8717-b20bec8814c7">
+        <File Id="ASCOM.Tools.dll" Name="ASCOM.Tools.dll" Source="$(var.NINA_TargetDir)ASCOM.Tools.dll" />
+      </Component>
       <Component Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f" Bitness="$(var.Win64)">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
       </Component>
@@ -763,8 +766,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Guid="164cec36-5833-4a7a-83fb-1f8f7238f695">
-        <File Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Name="mscordaccore_amd64_amd64_8.0.824.36612.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.824.36612.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Guid="77c0b4df-2608-4641-8727-2c9f79a30e2b">
+        <File Id="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Name="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1024.46610.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />

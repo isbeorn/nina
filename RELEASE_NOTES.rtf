@@ -1,0 +1,1290 @@
+{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 N.I.N.A. - Nighttime Imaging \u8216'N\u8217' Astronomy Changelog\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.\line More details at nighttime-imaging.eu/donate/\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 3.2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The device chooser will now show a stored device id that is currently not available as an \u8220"Offline device\u8221" instead of showing \u8220"No Device\u8221" to differentiate having no device selected versus a saved device that is currently unavailable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO EAF is now available as a native driver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing assistant sky annotation options are now saved to the active profile\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Looping mode is no longer started when NINA connects to PHD2.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Commandline Options\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The following command line options have been added\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 -g, --disable-hardware-acceleration        Disables UI hardware acceleration\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Plugin Development\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 AssemblyLoadContext\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins are now loaded within separate {\field{\*\fldinst{HYPERLINK "https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext"}}{\fldrslt{\ul
+AssemblyLoadContexts
+}}}
+\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab No changes to existing plugins are required\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 3.1 Hotfix 2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The hard disk space scan is no longer put into the log header and thus blocking the application start for the duration of the scan. This check can take a bit when network drives are mapped where the initial connection to them can take a while. Instead the check will done asynchronously and put into an info log statement.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Quicker switching between single-exposure and stream mode on QHY cameras, bringing improved responsiveness when using the Speckle or Lucky Imaging plugins.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved accuracy of estimated time display for Wait If Sun/Moon altitude instructions as well as Loop while Sun/Moon altitude conditions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved the dock panel layout for flat panels inside the imaging tab when smaller sized\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a new instruction {\f1 Save Sequence} to be able to automatically save the sequence during runtime inside the advanced sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In Framing Assistant the \u8220"Annotate DSO\u8221" and \u8220"Annotate Grid\u8221" buttons will keep their state when resizing or reloading the framing image\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab SITELEV keyword is now populated from Options > Astrometry instead of the mount\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Legacy sequencer now also shows validation issues for target startup actions like slew, center & rotate\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Weather Underground client now knows about wind gust and rain rate, and has increased decimal precision for all supported weather statistics\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bug Fixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using CFitsio to save files, if the file name contains a parenthesis, it will no longer fail to save. parenthesis are special characters for CFitsio and will thus replaced with an underscore.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In some special cases the {\f1 AutoFocus After Exposures} trigger was no longer firing. The trigger logic is adjusted and should handle these cases properly now.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where sky flat exposure time compensation was going into the wrong direction\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The color boxes in the color schema settings now show their true color also when they are not clickable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Text color when opening the additional options of Sequence Instructions using the three dots are now using the same color as the instruction text itself\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using the {\f1 Cool Camera} instruction, the camera\u8217's failure to reach the target setpoint now results in a sequence error event. An example cause would be the camera\u8217's cooling progress stalling (moving < 0.5\u176?C over 2 minutes) while the cooler is at 100% power due the ambient temperature being too hot to reach the desired setpoint.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed a display issue in the mini sequencer where the sequence container header was indented too much.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Messagebox instruction now automatically closes when a loop will interrupt the instruction set where the message box is placed inside\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved input behavior for topocentric coordinates where sometimes a small rounding issue lead to incorrect display when cloning instructions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using a dome with the dome follower, a timeout during dome synchronization will no longer cancel the remaining steps after a meridian flip\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY Cameras:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab The TEC setpoint and state is now preserved when switching between single-exposure and stream mode.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab The list of available cameras will now properly update when one camera is replaced by a different one.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When dome option to \u8220"close on unsafe conditions\u8221" was selected it is no longer commanding the closure multiple times when switching to unsafe and instead properly waits for the first call to finish\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 3.1 Hotfix 1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab On the equipment camera tab, the cooler chart axes are now annotated with their units of measure. The temperature axis has been moved to the right side.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The meridian flip pop-up no longer shows guiding related items when no guider is connected or when direct guider is connected\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bug Fixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where a sequence item was sometimes not marked as failed on error\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Cancelling a connection attempt to switch equipment will no longer result in duplicate switches upon a subsequent successful connection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Handling of unresponsive sequence instructions is no longer applied to instruction sets and thus preventing multiple error messages and isolating the issue to the specific instruction in question\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native autofocus: When only one star is detected, the routine will no longer fail with the error that there is not enough HFR spread\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Prevent an edge case where the time condition did not cancel the remaining instructions following an instruction that did not fit into the remaining time, even though those subsequent instructions would fit within the available time\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 3.1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Behavioral Changes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Loop while unsafe condition will not be skipped anymore when the safety monitor is not connected but instead it is assumed that the state is unsafe and the loop for it will run\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Center after drift will now only trigger when the next instruction is a LIGHT frame exposure (similar to autofocus triggers). This will not affect the background solving to determine the drift distance\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sky Atlas Images are now generated from the Offline Sky Map Cache. The \u8220"Sky Atlas Image Repository\u8221" option has been removed as it is now fully superseded by the Offline Sky Map Cache.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The image saving method has been updated from a two-step process (writing a temporary file and then moving it to the destination) to a single write process. Now, the image is processed first and then written directly to the destination.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab This change addresses issues on some systems where cloud sync file listeners, antivirus software, and similar processes block file access.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab For exposures lasting multiple seconds, there will be no noticeable performance loss.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab For short burst exposures, to achieve similar performance as before, adjust the file save queue size. Go to Options > General > Advanced > Image Save Queue Size and set the queue size to greater than one. Note that this setting will require more application memory.\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Allow camera cooling values down to -200\u176?C instead of restricting it to -50\u176?C\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Disallow opening the ASCOM setup screens when a device is connected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The setup screens for devices now run in separate non-blocking STA (Single-Threaded Apartment) Threads\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab As a result, you can open ASCOM setup screens without compromising the main application\u8217's responsiveness.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab However, please note that you must close the setup screen for the specific device before being able to connect to it.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Offline Framing Gridlines for right ascension now use a better increment of 5, 10, 15 , 30, 60 minutes on the scale\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Alpaca Devices can now open their setup in a web browser when clicking on the setup button next to the device chooser\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Image History axis selection now persists across sessions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved handling of unresponsive sequence instructions after cancellation: Now continues sequence execution if an instruction fails to react to cancellation within two minutes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A warning message is now displayed in the lower right corner of the application when trace logging is enabled. This warning highlights to the user that trace logging is active, ensuring it is not accidentally left on. Trace logging should only be enabled for debugging specific issues due to its potential impact on performance and log file size.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab USB device connection and disconnection are now logged with detailed information including Device ID, PNP Device ID, Description, Name, Manufacturer, Service and Status\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab On Camera Download Failed the gain and filter is now displayed properly when using default gain values and current filter input\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The documentation is now included as an offline page with the installer.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Additionally, the documentation is now integrated directly into the application. You can access it by clicking the book icon in the lower-left corner, instead of opening it in a browser window.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Furthermore some sections of the application now offer a direct popup to their respective section in the manual by clicking the book icon\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The application version number is now shown in the title bar of a notification. Furthermore the notification window size is slightly increased in width.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix Center instruction to consider plate solver gain\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed that an incorrect flag was evaluated for the mount capability of PulseGuiding\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue in TimeCondition where the time would be overridden to current time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When polling the SafetyMontior for \u8220"IsSafe\u8221" and an error occurs it will now always assume unsafe conditions instead of using the last known value\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When hovering over the list of plugin entries in the plugin tab the complete row is now clickable to select the entry instead of just the text area\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Alpaca devices that are no longer responding are now properly recognized and disconnected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Previously, during the exposure time or brightness determination in the flat wizard, along with its corresponding sequencer instructions, all images were retained in memory, leading to a spike in memory consumption. This issue has been addressed; now, only the most recent image will be kept in memory.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Offline Sky Cache will now always find the relevant tiles for small field of views.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where Auto Brightness Flat and Auto Exposure Flat would apply an incorrect value range when used via the flat wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An autofocus that happened before any LIGHT frame was saved is now registered properly in the history and considered for triggerevaluation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Removed an unnecessary 5 seconds delay after executing an external script\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autofocus runs with current Profile-ID are now shown after changing the profile\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed interpretation of pixel scale value in PinPoint\u8217's solve results\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Plugin Development\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 New Feature: {\f1 IMessageBroker} Interface\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Introduction of {\f1 IMessageBroker} Interface:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new {\f1 IMessageBroker} interface has been added to facilitate inter-plugin communication.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab This interface allows plugins to publish and subscribe to messages of type {\f1 NINA.Plugin.Interfaces.IMessage}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Promotes loose coupling between plugins by allowing them to communicate without direct references to each other.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Publishing Messages:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins can now inject the IMessageBroker interface to publish messages.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Messages can carry various metadata, including:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab SenderId: The unique identifier of the sender plugin.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Sender: The name of the sender plugin.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab SentAt: The UTC timestamp when the message was sent.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab MessageId: A unique identifier for each message.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Topic: The topic or intent of the message.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Content: The generic body of the message.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Additional metadata such as Priority, Expiration, CorrelationId, and custom headers.\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Subscribing to Messages:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins can subscribe to specific message topics via the {\f1 IMessageBroker}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When a message is published to a topic, all subscribed plugins will receive and process the message asynchronously.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Event Additions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Device mediators have been enhanced with numerous new events that subscribers can monitor following an action performed by the device (e.g., mount slewing, cover opening, etc.)\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Platesolve Measurements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The CenteringSolver\u8217's substeps, which were previously opaque, are now measured individually.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Results of these measurements are provided via {\f1 Measurement} data structure alongside the plate solve result.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 New Control \u8220"Browser\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab NINA.WPF.Base now includes the dependencies to {\field{\*\fldinst{HYPERLINK "https://learn.microsoft.com/en-us/microsoft-edge/webview2/"}}{\fldrslt{\ul
+WebView2
+}}}
+\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Using this dependency you can embed a browser into the application\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 3.0\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Important Changes\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Rotation values in N.I.N.A. have been updated to use the counter-clockwise notation, aligning with the common \u8220"East of North of North Celestial Pole\u8221" standard used in most astronomical applications. Existing templates, targets, and other saved items from previous versions will be automatically migrated to reflect this change.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO: Persistent device IDs (Aliases) are now supported for ZWO cameras and filter wheels. If one is already set in either of these devices and has not yet connected to it under NINA 3.0, the device will need to be selected again and connected in NINA\u8217's Camera or Filter Wheel equipment selection list. This change makes it easier to support setups where multiple ZWO cameras and filter wheels are present.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Device IDs are limited to 8 ASCII characters in length.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab ZWO EFWs must have firmware version 3.0.9 or later to support storing persistent device IDs.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The command line options have been revisited. Previously {\f1 /profileid <profile id>} was available. This has been changed to {\f1 --profileid <profile id>}. See below for more details.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Wizard logic has been revamped and can now also be used inside the sequencer. See below for more details.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The \u8220"Loop for time\u8221" condition and \u8220"Wait for time\u8221" instruction have been redesigned. When selecting dawn or dusk times, the rollover will now occur at sunrise or sunset, respectively. For example, when dusk is selected, the rollover will happen at dawn.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The native driver for Pegasus Ultimate Power Box v2 has been removed. The Pegasus Unity ASCOM driver supersedes this implementation and should be used instead.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The native driver for PrimaLuceLab EAGLE has been removed. The EAGLE ASCOM Switch Driver supersedes this implementation and should be used instead.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab SGP Server API has been removed from the core application. Instead this is available as a plugin via \u8220"SGP Server Emulation\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Touptek, RisingCam, Altair, MallinCam, OgmaCam and OmegonCam now support HDR modes if available. The \u8220"High Conversion Gain\u8221" toggle has been removed and instead this is controlled via ReadoutModes!\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab DARKFLAT has been removed from the selection of image types. They really are just DARKs and are classified as such. Previous saved sequences and templates will be automatically migrated.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 .NET 8\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The application has transitioned to .NET 8. This is not merely a version upgrade from the previously used .NET Framework 4.8. Instead, .NET 8 is rooted in .NET Core, representing a complete rewrite of the .NET Framework by Microsoft. This marks a significant technical advancement for N.I.N.A.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins from previous versions are disabled. They must be patched by the plugin authors and targeted specifically for the new version to ensure compatibility with .NET 8.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Profile Chooser will now be displayed before the application fully initializes\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab This change also fixes the issue that sequence templates are loaded from the first profile when switching it in the chooser instead of the one being chosen\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The guider tab will now also show the dither pixels translated to the main camera based on the guider pixel scale reported by the connected guiding application\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab N.I.N.A. will attempt to synchronize the mount\u8217's clock with that of the computer\u8217's. Not all mount drivers support this feature. A warning will be displayed if the difference between the clocks is more than 10 seconds and the mount time cannot be set\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO: Native driver for ZWO EFWs now supports setting the Unidirectional option as well as initiate a calibration run.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO: The native driver for ZWO cameras now supports managing the {\field{\*\fldinst{HYPERLINK "https://astronomy-imaging-camera.com/tutorials/everything-you-need-to-know-about-astrophotography-pixel-binning-the-fundamentals/"}}{\fldrslt{\ul
+Mono Bin
+}}}
+ feature of models with color sensors.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY: Added support for 6x6 and 8x8 bin modes to the QHY native driver. This applies to camera models that support these modes.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab GNSS devices: Support for retrieving site location information has been expanded to enable different types of sources:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab NMEA serial GNSS devices\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab PegasusAstro Uranus Meteo\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab PrimaLuceLab Eagle\u8217's GPS and Eagle Manager X\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In the Imaging Tab above the image preview, a new button to flip an image horizontally per click is added. Each following image will then also be flipped. This flip is for display only and doesn\u8217't affect the data.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Further parallelization of post image capture actions. This should especially speed up capturing using a dslr native driver where the time consuming raw conversion will no longer hold up the next exposure.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added an option under Options > Equipment > Telescope to define the automatic sync direction for location. This can be used to supress a user prompt for automatic connection and control.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugin folder in {\f1 %localappdata%\\NINA\\Plugins} now contains a subfolder with the {\f1 Major.Minor.Revision} version of the application containing plugins for the current version. This will make it simpler to upgrade and downgrade application versions without having to exchange plugins for developers. From user perspective nothing will change as everything is automatically migrated.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequencer Sidebar Tab for Templates and Targets now indicate a load progress when the list is refreshed and should also load faster.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In Options you can now specify custom plugin repositories for privately hosted plugins\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autofocus report JSON files now append the profile id in their filename and get filtered in the application by only using the relevant files from the current profile\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Mini sequencer will now auto scroll to active items\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The SkyX Imagelink is now available as a plate solver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab DC-3 Dreams PinPoint is now available as a plate solver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When switching profiles the \u8220"Switch Filter\u8221" instruction will rematch the filter selection based on the name or the index\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In framing tab and Deep Sky Object Containers you can now paste in full text coordinates into the RA/Dec text fields and they will be parsed into the separate boxes - e.g.\u160?when pasting the following string into the textbox the coordinates will be fully populated: {\f1 RA: 05h43m05s.90 DEC: +52\u176?10\u8242?58\u8243?.0}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When sending location to the telescope the elevation is now handled separately and a different error message is shown\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab DitherAfterExposures will only trigger when the next item is an exposure item of type LIGHT\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a new toggle in the framing assistant to control the automatic saving of images for the offline sky map. If you\u8217're using the complete offline map from the homepage, you can disable this setting to prevent changes to the cache.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Within the imaging tab, several panels now feature a settings button on the upper right corner. This button allows you to reveal or conceal adjustable settings for that particular panel.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab In conjunction with this update, the HFR History panel has been modified. It will now use the aforementioned settings button, eliminating the previous feature where settings appeared upon mouse hover.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Every equipment panel now features an \u8220"Info only\u8221" switch, allowing users to opt for purely informational displays or to incorporate interactive controls.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Changed the default application theme to \u8220"Persian Faint\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Reverse autofocus direction when backlash compensation mode is set to \u8220"Overshoot\u8221" and a BacklashIN value is specified, to reduce the amount of required backlash compensation during autofocus\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native autofocus will now properly show star detection result in the image statistics panel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The native autofocus mechanism has been upgraded to simultaneously process images while shifting to new focus points, which enhances the speed of the entire autofocus operation.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Offset is now displayed next to Gain in the Image Statistics window\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Adjusted color picker style to follow along the customized theme colors of the application\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab \u8220"Telescope\u8221" in equipment area has been renamed to \u8220"Mount\u8221". Furthermore the equipment options have been separated by telescope and mount. The renaming is an ongoing effort, so some labels might still refer to \u8220"telescope\u8221" instead of \u8220"mount\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When the offline sky map is selected, you can customize which Deep Sky Objects are displayed by disabling specific catalogues. To do this, find and adjust the settings in the \u8216'Toggle Catalogue Display\u8217' menu located in the lower-left corner of the user interface.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added Alt/Az input for manual coordinates in telescope tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Previously, when users clicked \u8216'X\u8217' to close the profile chooser window, the application would start with the selected profile. With this update, clicking \u8216'X\u8217' on the profile chooser will now exit the application instead of launching it.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Commandline Options\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Multiple command line options have been added to be able to adjust some of the startup parameters for the application\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 -p, --profileid         Load profile for a given id at startup.\line
+-s, --sequencefile      Load a sequence file at startup.\line
+-r, --runsequence       (Default: false) Automatically start a sequence loaded with -s and switch to Imaging tab.\line
+-x, --exitaftersequence (Default: false) Automatically exit the application after the sequence has been finished.\line
+-d, --debug             (Default: false) Activates Debug Mode in the application, revealing additional UI elements and features that are available only for development and testing purposes. This mode is intended to assist developers and testers in diagnosing issues, understanding application flow, and verifying UI elements that are not accessible in the standard operation mode.\line
+--help                  Display this help screen.\line
+--version               Display version information\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Flat Wizard Rework\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Flat Wizard screen\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Binning and Gain settings have been relocated to align with other settings, and they can now be configured on a filter-specific basis.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additionally it is now possible to specify a camera offset\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A step size is no longer required. The algorithm will now initiate at ((Min+Max)/2) and continually halve to determine the optimal exposure time.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The option for dark frames is concealed when selecting sky flats; due to variable exposure times with sky flats, darks become redundant.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Internally the flat wizard will now use the new advanced sequencer instructions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Flat Wizard will now save the exposure used to determine the exposure time, reducing the overall number of exposures taken by one and saving time\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Trained Flat Exposure List\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The settings page to view and maintain the trained flat exposures for the flat device has been reworked\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Trained exposures are now presented in a single unified grid, replacing the previous multiple grids.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The new layout aims to enhance user comprehension and simplify manual adjustments.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Settings from previous versions will be seamlessly migrated to this new format.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 New Instructions for advanced sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto Exposure Flat: An instruction to find an exposure time for a static flat brightness\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto Brightness Flat: An instruction to find a flat panel brightness for a static exposure time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sky Flat: Similar to the Flat Wizard sky flat, this will take flat frames that have a constantly adjusted exposure time while progressing to compensate for illumination changes due to sun altitude.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Object Database Additions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 1538 LDN objects (Lynds\u8217' Catalogue of Dark Nebulae - Lynds 1962)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 180 Barnard objects (The Barnard Catalogue of Dark Markings in the Sky - Barnard,1927)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 66 StDr, StDrLu, StDrL, PaStDr, StDrLuLDu objects (25 confirmed planetary nebulae / 21 likely planetary nebulae / 20 possible planetary nebulae)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 131 vdB objects (Catalogue of Reflection Nebulae - Van den Bergh, 1966)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 235 Sharpless (Sh2) objects (Catalogue of HII Regions - Sharpless, 1959)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 149 RCW objects (H-\u945? emission regions in Southern Milky Way - Rodgers, Campbell, Whiteoak 1960)\line \par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 100 HCG objects (Hickson\u8217's Compact groups of Galaxies - Hickson+ 1982-1994)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 294 SNR objects (A Catalogue of Galactic Supernova Remnants - Green 2019)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 66 objects PN candidates (Planetary nebulae candidates discovered by French amateurs - Ferrero+ 2015)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 28 objects of uncertain nature like Ou 4 discovered by French amateurs - Ferrero+ 2015)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab 13 Asterisms like Little Orion, Napoleons Hat, Kemble 3 and others\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 File Formats\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 FITS\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Implemented functionality to read compressed data into Framing Assistant and Camera Simulator\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Introduced a new FITS keyword \u8220"CAMERAID\u8221" to uniquely identify the camera used.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab For the majority of native drivers, this field will be populated with the camera\u8217's serial number, assuming it is accessible.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a toggle to use CFITSIO to write FITS files. This enables the following features:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Introduced checksum support for enhanced data integrity.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Expanded storage options to include compressed formats, utilizing RICE, GZIP1, GZIP2, PLIO, and HCOMPRESS algorithms. Notably, RICE offers an optimal balance of speed and compression efficiency\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Enabled the storage of compressed FITS files with the \u8220".fits.fz\u8221" extension for improved file identification\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Added support for storing data in a 32-bit unsigned integer format\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 XISF\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added support for storing data in a 32-bit unsigned integer format\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FITS Header Cards are now correctly enclosed with single quotes\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Alpaca\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM Alpaca discovery is now available in N.I.N.A. and discovered devices are selectable in the equipment choosers to connect to\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Discovery settings can be adjusted in Options > Equipment > ASCOM Alpaca Discovery\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed SVBony Native driver that was sometimes showing the exposure before the latest one after a cancelled exposure\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed PlayerOne resolution not fully resetting to complete size after subframe or binning\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added automatic retry of exposure start when POA_ERROR_EXPOSING error happens\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Selecting a date in sky atlas no longer sets the date one day earlier than selected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Radius will now always be calculated and displayed in the plate solver window\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab AF after Exposures will now properly consider previous autofocus runs and reset its counter accordingly\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dither after exposures will no longer fail to run when clearing the image statistics history\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sky Atlas date picker now correctly sets the selected date instead of the day before the selected one\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab For relative ASCOM focusers the MaxIncrement is now considered for move commands\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab SBIG native driver no longer stores (incorrect 0) Gain in image meta data\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When an update notification in the app was available but after the initial pop-up a new version was published, it will no longer fail the checksum check\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM Camera ImageArray can now properly transform Byte[,], Short[,], UShort[,] in addition to the existing Int[,] to the 16 bit data structure N.I.N.A. is using\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dragging an instruction below a sequence container when nothing else is below it will now work correctly\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When switching profiles, the dock layout will be saved prior to switching\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.3 Hotfix 2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing tab will now remember the last selected rotation value between sessions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The method the application uses to store and recall the window\u8217's position and size has been enhanced. This ensures that the window\u8217's location is more consistently retained across sessions.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Due to this update, please re-adjust the window to the desired position and size once after the upgrade. From then on, the application will remember the settings.\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException - this time for real\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix potential race condition in PlateSolvingStatusVM when setting platesolve result\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dither after exposures will no longer fail when clearing the image history\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab SkyAtlas: Date Picker will now set the correct date\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FLICamera - Fix Exposure time that it can also set fractions of a second\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.3 Hotfix 1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Database migration and creation on first time upgrade or installation will now be much faster\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Issue in QHY Driver when overscan area was being shown in video mode.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Side Of Pier during Meridian Flip will not be flipped when the current position is already a counter weight down position (e.g.\u160?when having a pause before meridian time set)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue when changing the profiles that the ObjectTypes in Framing Assistant were duplicated\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Exposure Info: When the total exposure time exceeds 24 hours, it will now be displayed properly.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In Options it is now possible to specify custom plugin repositories. Only add software repositories from sources that you trust!\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequencer Target Sidebar will now load much faster when having a large number of targets\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A grid splitter is added to the plugin tab so that the list of plugins can be minimized and more room for the detail page is available\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.3\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When clicking on the load adv. sequence button, it is now possible to also load in a template or a target\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The profile chooser on startup did not remember the on/off selection to save the selected profile\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Slew to Alt/Az instruction not considering changes to Latitude & Longitude values\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Loading a FITS File that contains exponential notation for double values should now have its headers be correctly read\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where the sequence was not able to be loaded when a plugin was missing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue for plugin focusers to not show the plugin specific settings section\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When simple sequencer was set to \u8220"Rotate Through\u8221" mode, the estimated time calculation was incorrect when partially finished. It should now reflect the correct estimate.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sending an image to framing wizard without setting a name will no longer cause the caching to fail\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue for Atik OSC cameras where debayering would crash the application.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Using TIFF without compression selected now properly saves the files without any compression\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab \u8220"Clear all\u8221" button on notifications will now also properly clear all pending notifications\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Image file patterns will now remove trailing and leading white spaces for directories and file names.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added new Instruction \u8220"Set USB Limit\u8221" to control the usb limit inside the sequencer (if available)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new toggle in options > general > advanced is available to disable hardware acceleration. Disabling this can be useful if you are experiencing graphic glitches or the application goes blank when using a remote client to connect to the pc.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In Options > Imaging > Image File Pattern it is now possible to set different patterns per image type. When no pattern is set for a specific image type the main image pattern will be taken.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab NMEA GPS import now also imports the site elevation\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Field of View value in the Framing Tab is now limited to two decimal places\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Camera simulator can now set arbitrary values for Offset and USB limit\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Conditions now log on info level when they are done\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Options > Equipment > Telescope > \u8220"Do not sync\u8221" is renamed to \u8220"Automatic Sync\u8221" and the toggle value is reversed. To not send syncs to the mount this should be turned off. The behavior is unchanged, only the UI shows it in reversed logic.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Snapshot panel in imaging tab now has a targetname field to enter a value manually to be used for the {\i T}{\i A}{\i R}{\i G}{\i E}{\i T}{\i N}{\i A}{\i M}{\i E} image pattern when the toggle to save the image is enabled\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Altair, Mallincam, Omegon, Risingcam and Touptek\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added High Fullwell Mode control for cameras that support it (also added for custom device actions)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added target dew heater strength control to be able to reduce the strength of the dew heater if supported (also added for custom device actions)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab High Gain, Ultra Mode, High Fullwell and Dew Heater Strength settings are now stored in the profile and will be restored on next connect\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 PlayerOne\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added temperature control for cooled camera series\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Cooled cameras can now control dew heater and fan strength\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native driver for Player One Filter Wheels is now available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue that USB limit could not be set correctly\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When an interrupt happens during a meridian flip it in a sequence it is no longer ignored while the flip is running\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix an issue where for some coordinates, the coordinates were off by one arcminute after reloading it into the sequence from file, due to double precision rounding issues\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Prevent unhandled exception popup to be visible more than once in parallel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat wizard should no longer try to set a negative brightness value in dynamic brightness mode\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Focuser tab should no longer clip the \u8220"Move\u8221" button when window size is small\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM Switch target values now adhere to the step size of a switch and round to the nearest value if the user provided a value outside of the step size\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where SynchronizeDomeTrigger would run into an exception when evaluating if it should trigger when the dome and telescope is not connected\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Player One Cameras that support different sensor modes can now switch between these via ReadoutModes when using the native driver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Player One Cameras that have a temperature probe but not cooler will now show the temperature\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Solve & Sync instruction will now also sync the sky angle with a rotator when connected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Slew instructions will now show a failure when the telescope is parked\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When a platesolver is not set up the message \u8220"Executable not found\u8221" will now also tell that this is about the plate solver not being set up\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Options > General > Profiles are now ordered by Name with the active profile being on top\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Layout of Switch Tab has been overhauled for a more compact and readable overview\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing Assistant will no longer update the altitude chart on the left while the rectangle is dragged around to be able to drag it more smoothly. The chart will update once the dragging is stopped.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Plugin Enablement\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New Plugin Eventhook to react on GuidePulses\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab GuiderInfo now includes current RMS Error values\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Add access to the device instances\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.0 Hotfix 2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed QHY Camera selection being lost on rescan\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Imaging Platesolve Panel will preset initial gain from platesolve settings\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Wizard not showing results until N.I.N.A. restarted for some filters\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Wizard Sky Flat Mode no longer closes a flat device cover when connected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab AutofocusAfterTemperatureChangeTrigger did not set initial temperature correctly when focuser was not connected on sequence start\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guide Chart Colors can now be customized in the guider tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugin load times have been improved\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing Assistant now accepts fractional second inputs for RA and declination and will display them out to the tenth of a second.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added instance number setting to PHD2 to be able to have N.I.N.A. autostart PHD2 with multiple instances and not just the first one\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Changed Message Box Instruction to include \u8220"Stop Sequence\u8221" button along with \u8220"Continue\u8221" to be able to stop the sequence in case this is used as a checkpoint\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When PHD2 Configuration Changes happen, N.I.N.A. will now requery the pixel scale in case the focal length or pixel size setting of the guider has changed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved layout of plate solve pop up during centering and added a status indicator inside the window as well\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plate solve pop out from solve button above the image inside the imaging tab now shows the thumbnail and also keeps the solve history\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Aberration inspector no longer pops up a new window but is instead a toggleable button and replaces the image itself. This also allows for looping exposures and keeping the inspector updated.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing Assistant Cache list has a button added to delete individual entries\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Atik native driver improvements:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Full support for Apx26/Apx60 exposure speeds and presets\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Fast readout/preview mode may be selected on CCD models that support them\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Window heater may now be controlled on models that are equipped with one\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab 16bit output is now explicitly configured on CMOS models that support both 12bit and 16bit output\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Many thanks to {\field{\*\fldinst{HYPERLINK "https://www.atik-cameras.com/"}}{\fldrslt{\ul
+Atik Cameras, Ltd.
+}}}
+ for loaning a 428ex camera for use in the testing and improvement of the native driver\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Enhanced Meridian Flip options with a toggle to automatically rotate the target in the imaging tab for displaying purposes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added an option in the filter wheel options to disable guiding during a filter change. This can be useful when having filter focus offsets and overshoot backlash compensation enabled to prevent losing guide stars.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Custom Action to toggle Low Noise, High Gain, Fan Speed and Average Binning via custom device actions added to Altair, Mallincam, Omegon, Risingcam and Touptek cameras. This action can be controlled via plugins.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Valid parameters for Low Noise, High Gain and Average Binning are \u8220"0\u8221", \u8220"off\u8221", \u8220"no\u8221", \u8220"false\u8221", \u8220"f\u8221", \u8220"1\u8221", \u8220"on\u8221", \u8220"yes\u8221", \u8220"true\u8221", \u8220"t\u8221"\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Valid parameters for Fan Speed are integer values from 0 to Max Fan Speed\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added additional options that relate to dome or roll-off-roof shutter operation. Please review the notice in the Shutter Coordination area of Options > Dome settings.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In the Sequencer Sidebar inside the Instructions Tab a new button is added to enter a Settings Mode - There individual instructions can be disabled to be shown in the sidebar or in the context menus. For example when you have no dome, you can hide all dome instructions to not clog up space.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Collapse and Expand all button is added to the sequencer sidebar for the Instructions Tab\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Plugin Enablement\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added interfaces that allow plugins to provide device drivers\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Each device type can also provide dedicated settings in the equipment setting sections\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab This change will make it necessary for plugins to be loaded completely before being able to connect to the devices.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins can now query for Telescope \u8220"DestinationSideOfPier\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New Plugin Eventhooks to react on Befor/After MeridianFlip and After Dithers\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.0 HF 1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Changed the default value for ASCOM Camera BayerOffsetX/BayerOffsetY to be 0, instead of -1, when not available via the driver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Corrections made to assorted entries in the NINA object database\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix an issue where for some coordinates, the coordinates were off by one arcminute after reloading it into the sequence from file, due to double precision rounding issues\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Touch input is now working properly when dragging the rectangle in framing assistant\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When the filter is changed while the Smart Exposure or Simple Sequencer Exposure is already running, the first exposure afterwards no longer uses the previous filter but switches to the expected new filter\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue where the Camera Cooling Charts could get stuck and not update anymore\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved error message presentation if the selected sky survey image serivce fails to accept a request\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The image save queue size can now be adjusted to allow for more concurrent image processing and save operations. Do be careful when changing this, as it will increase overall system resource usage during fast image captures\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i Wait For Time} | {\i Loop Until Time} - When no dusk/dawn is available at the current date the instructions will now show an error instead of falling back to the current time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i Wait For Time} | {\i Loop Until Time} - When the date changes (at noon) the instructions will now automatically redetermine the times\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Altitude charts across the app should now automatically update on a new date (at noon with a maximum of ~10 minutes delay)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Replaced old FITS library for reading FITS files with CFITSIO. Opening FITS files should now be much faster\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugin initialization now shows a status in the application status bar\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing mosaics can now also be done with overlapping pixel count instead of an overlap percentage\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guider settings could only be set when being connected. Now these settings are also available in the setup screen of each guider without requiring a connection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When cloning a profile, the dock config for that profile will be cloned too\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Simple Sequencer - \u8220"Cool Camera\u8221" toggled to on will also turn on dew heater when available as well as \u8220"Warm Camera\u8221" toggled to on will turn off the dew heater when enabled\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab \u8220"Wait For Time\u8221", \u8220"Wait for Timespan\u8221" and Settle reports now count down instead of up in the progress report\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Standard Autofocus: Break out of autofocus when a large number of points were taken without success or when the focuser hits the zero position\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When loading a file for framing that needs to be platesolved the prompt that shows up now has more details and values can be adjusted if required. This should make it more clear of what is happening.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added interfaces and capabilities so that plugins can inject custom image meta data and image file patterns\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added missing Sharpless, LBN, Collinder, and Caldwell designations to existing entries in NINA\u8217's object database\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab AstcamPan cameras can now be controlled via a native driver implementation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The last plate solve failure in each session, target and solver type will now be kept for further error analysis and automatically cleaned up after seven days\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a toggle in Options > General > Advanced to only have one imaging tab layout for all profiles instead of it being profile dependent\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In Options > Imaging > Layout two new buttons have been added to backup and restore the imaging tab layout\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added interfaces for plugins to register to FailureEvents inside the SequenceRootContainer to react on all failures that are raised during a sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Deep Sky Object Containers now also show a section with exposure times done on that particular target.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab When a target is saved these recorded exposure times are also stored with it to be reloaded at a later point\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Furthermore this info will also be used to set the {\f1 $$FRAMENR$$} for exposures in the context of that target to have a continuous increment\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Rows can manually be removed and the counter will reset\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In the Imaging Tab above the image preview, a new button to rotate an image by 90\u176? per click is added. Each following image will then also be rotated. This rotation is for display only and doesn\u8217't affect the data.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 2.0\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The changelog contains the most prominent changes of Version 2.0. In summary this version has tons of improvements and almost every aspect of the application has been touched and improved. A big thank you to everyone that participated in this long release cycle!\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Important change of existing settings and panels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Options page tab location is moved to the left instead of the top to be similar to main tabs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequencer end options have been moved into the simple sequencer tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequencer is split into the old style sequencing and a new much more adjustable advanced sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Meridian Flip settings show no longer an enabled flag, but must be enabled in the simple sequencer screen or added as a trigger into the advanced sequencer instead\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autofocus options have been moved into a separate tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab PHD2 specific settings are now available in the equipment guider tab after connection\line \par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sky Atlas altitude search is reworked to specify a duration for a time range instead of needing the target to be above for the whole time frame\line \par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Optimal exposure calculator is removed from the core application, but available as a plugin\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32  X86 Deprecation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The x86 version of N.I.N.A. will be phased out after version 2.0. It is already reduced in capabilities, due to the limitations of the x86 platform, and will be removed completely in future.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Parallel saving and processing of images is disabled for x86. They will be processed and then saved sequentially\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Debayering and related settings are disabled for x86\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins might not be compatible with x86\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Nikon offers no more x86 SDK libraries\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Offline Sky Map Image Cache rendering is not available for x86\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Complete Sequencer Rework\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sequence Tab changed to show a sequence navigation first\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Old Sequencer has been renamed to \u8220"Simple Sequencer\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The internal engine for the simple sequencer has been completely revamped. The simple sequencer will use the advanced sequencer framework internally while exposing a similar user interface that was used previously\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab If required a simple sequence can be generated into the advanced sequence for fine tuning\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Instead of loading an empty target by default, the UI will show a separate UI when no target was set, where the user can choose which kind of sequence should be loaded instead or jump directly into the advanced sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab End of sequence options are moved from the options tab to the sequence tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Introduced new start of sequence options to be used\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new toggle to \u8220"Rotate Target\u8221" to the desired orientation has been added. Previously this was always done when a rotator was connected and skipped when it was not connected. The new approach should be much more intuitive for the user to understand when rotation will be considered or not.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Removed external command and flat panel items from the simple sequencer UI, as these are only for advanced usage and not used by the majority that use the simple sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added support for fetching sky view and location coordinates from the {\field{\*\fldinst{HYPERLINK "http://www.astrosurf.com/c2a/"}}{\fldrslt{\ul
+C2A
+}}}
+ and {\field{\*\fldinst{HYPERLINK "http://www.skytechx.eu/"}}{\fldrslt{\ul
+SkytechX
+}}}
+ planetarium programs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequence mode loop has been changed sligthly to not define a number of exposures on each row but rather on the whole sequence instead to loop through.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 New Advanced Sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In this area a custom sequence can be built completely from scratch by individual small building blocks\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Each user has a different flow of how a sequence should look like. This advanced planning can serve most requirements that a user might have.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The building blocks consist of these categories\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Instruction Sets}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab These sets group together different instructions\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Templates can be generated out of these sets to be used later with the same parameters\sa180\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Instructions}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab These are the individual steps to automate the sequence\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Each item has a different operation, like switching to a filter or taking an exposure\sa180\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Trigger}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Triggers are part of an instruction set and are evaluated after each instruction is processed\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab They have certain conditions that are checked and when these are fullfilled the triggers will fire\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Examples for these are autofocus after certain parameters, merdian flip or dithering after an amount of exposures\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Triggers are always cascading. So a trigger on an instruction set on a higher level than the currently executed instruction set will also be evaluated\sa180\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Loop Conditions}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab These conditions are attached to an instruction set and drive the behavior of the set\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab As long as a condition is fullfilled, the instruction set will be looped\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Once a condition is not fullfilled anymore, all remaining instructions inside an instruction set will be skipped\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Loop conditions are always cascading. So a conditions on an instruction set on a higher level than the currently executed instruction set will also be evaluated\sa180\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Templates}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Each instruction set can be saved as a template\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab These templates store all info that has been set inside the instruction set and can be restored for later usage\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Furthermore these will be stored physically inside the default sequence folder and can be reorganized there\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Sub folders inside the default sequence folder are possible and will group these templates together\sa180\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Targets}\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Each Deep Sky Object Sequence be saved as a target\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab These target store all info that has been set inside the deep sky object sequence and can be restored for later usage\par}
+{\pard \ql \f0 \sa0 \li1080 \fi-360 \bullet \tx360\tab Furthermore these will be stored physically inside the default sequence folder and can be reorganized there\sa180\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab For more details on the usage refer to the documentation\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 New Plugin Tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab With the introduction of the advanced sequencer, a sequence can be planned with individual building blocks. These blocks have been designed to work like small plugins that will be initialized on startup. This opens up the possibility for specialized custom plugins that can be installed independently on demand.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab To manage these custom plugins for the advanced sequencer a new application tab page has been introduced. There a user can setup and see all installed plugins as well as having the possiblity to see, install and update plugins from the official online plugin repository.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plugins can currently hook into the advanced sequencer, add new dock panels in the imaging tab or add different behaviors for autofocus, star detection and star annotation. More areas to be pluggable are planned for the future.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The main benefit of these plugins are the possibility to create very specialized behavior, that would only benefit by a smaller user base, without cluttering the application with these capabilities for users that do not need this special behavior.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Framing Tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Instead of sending the current target to the sequencer, the user will be prompted to either choose the simple sequencer or directly send the target to the new advanced sequencer while also being able to choose from different templates\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Replacing of the complete targets is removed, as this is not necessary.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Possibility to manually enter target rotation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new multi action button replaces the slew button. This button can either \u8220"slew\u8221", \u8220"slew and center\u8221" or \u8220"slew, center and rotate\u8221" your current framing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved precision when dragging the rectangle around, especially for longer distances\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a new option to preserve the alignment when being far away from celestial equator where panels won\u8217't be perfectly aligned to a rectangle anymore when having the same rotation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Visually show the misalignment when having the same rotation for each panel when being further away from the celestial equator\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a new grid showing the mosaic panel coordinates and orientations\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a center dot for the framing rectangle\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new toggle is available to toggle the sky background instead of the framing rectangle\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Sky Object Annotation will now properly draw elliptical objects when position angle and size information is available instead of always showing them as circular\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Offline Sky Map can now show images from the cache (x64 only). The \u8220"Sky Atlas Image Repository\u8221" could unfortunately not be lifted for this, but existing images from the cache in framing will can be used.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Imaging Tab - Sequence Panel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab As the new sequencer has a dynamic operation mode, the old summary is not feasible anymore when using the advanced sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Instead the sequence panel will show a minimized representation of the advanced sequence, where you can see the instructions with basic details\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using the simple sequencer the old style will still be shown instead\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 New hardware support\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 SkyGuard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Integration of SkyGuard in NINA\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added of SkyGuard Guider and its setup\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Implementation of the Connect, Disconnect, StartGuiding, StopGuiding and Dither methods\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 MGEN3\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Full control of the MGEN3 by mirroring the controller display into N.I.N.A.\u8217's user interface\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automatic power-on when connecting\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Starts guiding on sequence start\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Performs calibration and star auto-selection when required\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Displays star drift during guiding in a graph\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dithering during sequencing\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 MetaGuide\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab MetaGuide is now available as an option for a guiding application\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 SVBony\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a native driver for SVBony cameras. Tested with SV305M Pro and SV405CC.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 SBIG\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a native driver for SBIG cameras.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 MallinCam\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added native driver for MallinCam cameras.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Risingcam\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native support for Risingcam added\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Player One\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native support for Player One Cameras\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 ASCOM Dome\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM Domes are supported throughout the application\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Natively provides azimuth synchronization with the telescope, so no additional applications are needed (such as ASCOM Device Hub)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Lateral offsets supported, enabling side-by-side telescope setups\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab When synchronization is enabled, telescope slews wait for the dome to synchronize before next actions, such as imaging and plate solving\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Homes the dome prior to parking, which can improve the reliability of arriving precisely at the park location. This can be important if a shutter motor battery charges in the park position\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dome actions provided in the new sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Enable dome synchronization\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Open/Close shutter\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Park dome\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 ASCOM CoverCalibrator\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab With the ASCOM Platform Version 6.5 a new type of interface was added called \u8220"CoverCalibrator\u8221".\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab These are basically flat panel devices which will now be available to choose from in the application under the flat panel section\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 ASCOM SafetyMonitor\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An ASCOM device to monitor safe conditions for an imaging run\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab These devices can be used inside the sequencer to interrupt an imaging run, when they report unsafe conditions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Option to automatically close the dome shutter immediately when the safety monitor reports unsafe conditions\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Native support for Atik EFW2/3 and internal Filterwheels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The integrated filter wheels for Atik cameras like the Atik One 9.0 are now natively supported\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab This allows usage of native camera drivers for Atik cameras with integrated filter wheels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Atik EFW2 and 3 can also be natively connected without using the ASCOM driver\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Improvements for Altair, Touptek, Omegaon, Mallincam and Risingcam native drivers\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native driver implementation unified for a common interface, as the underlying SDKs are similar\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additive binning can be turned on\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fan speed can be controlled when available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Binning info for these cameras are now properly inserted into Metadata\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 PHD2\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dither will be skipped when not actively guiding or the guide star was lost\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Settle time will now correctly be considered when starting guiding\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding start timeout will not consider calibration time and will also be used when \u8220"Guiding start retry\u8221" is off\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding start retry will not retry more than three times to prevent an infinite loop\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A ROI percentage can now be set for PHD2 to be considered during guidestar search\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Profiles can now be switched from the list of available PHD2 profiles\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Device-related Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i Canon}: Automatically send request to increase shutdown time, when camera is about to shutdown\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i Nikon}: Fixed an issue where cancelling an exposure would lead to unexpected bulb exposure times\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Device Brightness is no longer expressed in percentage, but rather in the absolute values the flat panel supports\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Device {\i trained brightness levels} will be {\i automatically migrated} from percentage to absolute values {\i after first flat panel device connection}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Filter Wheel List of Filters are now all using the list from the profile instead of having a mix of filters from the ASCOM driver and those from the profile. De-Sync of these lists can\u8217't happen anymore.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Some mount drivers have reversed primary and secondary axis implementation for manual movements. Now a reverse flag is available to manually correct this behavior.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM Camera driver can now handle odd sensor width & height for mono sensors. A setting to enable this new behavior is available.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM connection and disconnection logic is now unified between all devices to ensure same bahvior\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM connection that is lost without any raised error will now be tried to be reconnected one time. If an error happens due to that the application will disconnect like before.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM get and set methods use a unified logic to ensure same behavior for all devices\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i FLI}: Background flush is now disabled prior to readout to prevent a hung readout\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i FLI}: Filter wheel driver now removes any extraneous {\f1 /} character from single-filter positions on CenterLine filter wheels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\i MGEN2} now supports unattended guide star selection and calibration, and automatic meridian flips\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Altair, MallinCam, Omegon, RisingCam and ToupTek subsampling is now available\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Application Improvements\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 General\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The application distribution is now code signed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Application window will now remember its placing and state\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Application initialization is utilizing more parallel processing to startup faster.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Application logs are vastly improved to log a lot more info of what is happening at the various levels. INFO level will also contain a lot more info of what is happening at a high level.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is now possible to change the application font in the options\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is now possible to start, resume and cancel sequences from the preview window\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Options menu has been restructured to adhere to the Equipment layout\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto-focus is now its own tab in the Options menu\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Empty gain and offset settings will now always reflect the settings set in Equipment - Camera (valid for imaging, sequence and auto-focus)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Any active field of view or ocular rotation angle is now imported along with coordinates from Stellarium and TheSky X\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New translation for Czech (\u268?e\u353?tina) has been added\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New translation for Norwegian Bokmal (Norsk bokm\u229?l) has been added\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New translation for Korean (\u54620?\u44397?\u50612?) has been added\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Can send the sequencer target coordinates to the Framing Wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved Meridian Flip reliability by retrying when changing the pier or slewing close to the meridian fails. NINA now provides a warning suggesting to increase the meridian wait time if this hapens\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guider settings moved to the guider equipment page making them easier to find and exposing only settings relevant for each type of guider\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Connect all button now connects all devices in a sequential order to prevent collisions with com port scanning that could happen\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab After hitting connect all button, it will show highlighted and when hit again it will disconnect all devices instead\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Meridian Flip now allows for a time range instead of a single point in time to allow for less time lost\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Some areas where the user interface was clipped on lower resolutions (down to 720p) are now showing all details\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Telescope panel in imaging tab now shows an indicator when the telescope is not unparked\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Telescope Park action will now wait for the scope to reach park position\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Profile chooser on startup can now be re-activated in options again once it is disabled\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding gets stopped before any telescope-moving sequencer command gets executed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Gain/Offset fields will now show the default values as a hint text, rather than being populated inside the textbox itself. Having this approach, a user can directly enter specific values without having to clear the default value first.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The imaging tab layout is now saved per profile, instead of one layout for all profiles\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Most options and values now also display a unit of measure if applicable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Weather information in equipment tab now shows correct wind direction.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Various layout improvements and redesign of controls\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Wizard page controls are streamlined with the rest of the application by replacing the sliders with steppers\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When closing a dock panel in the imaging tab and reopening it again, the position is properly restored\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Cooling charts in the camera equipment tab have been merged into one single chart with the history size increased from 100 to 1000\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab On web requests the user-agent header is now filled properly\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An autofocus indicator in the HFR history will no longer change the Y-Axis scale\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The automatic roll over to a blind solver can now be switched off in the plate solver tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab For the first image in an image view control, the image will now be shown as size to fit instead of 1:1 by default\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Profiles can now store an arbitrary description\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Pixel inspector on imaging tab (by holding right click on an image) now also includes min, max and mean of the pixel area\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Subsampling\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The sub sample button above the image panel has been removed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In the imaging camera control panel when subsampling is enabled a new control will be visible to adjust the subsampling directly there\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab This should be more intuitive to use and does not require a certain order of operations and an active non sub sampled image to set up\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Local Horizon Display\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is now possible to define a custom horizon to be used and displayed in the altitude charts\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Using these custom horizons will make target planning a lot more convenient when only a portion of the sky is available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The horizon file consists of a simple mapping of azimuth to altitude values\par}
+{\pard \ql \f0 \sa180 \li360 \fi-360 \bullet \tx360\tab \outlinelevel1 \b \fs32 The sky atlas has a new entry for altitude filter to filter for the object to be above the horizon for the specified time range\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 # Example horizon file content\line
+# A line starting with # is treated as a comment\line
+# The horizon file consists of a pair of azimuth and altitude values\line
+# Azimuth values that are not explicitly defined will interpolate the altitude by using the existing datapoints\line
+# A minimum of two points have to be defined\line
+0 10\line
+100 30\line
+150 35\line
+250 30\line
+300 20\line
+350 15\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sky Atlas\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The sky atlas has a new entry for altitude filter to filter for the object to be above the horizon for the specified duration\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Filter for time from/through is now only showing time without a day\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Altitude filter is changed to use a duration instead of a start and end time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Moon distance is now shown in the list for each object. Furthermore a new filter is added to filter by moon distance.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Auto-focus system\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto-focus can now have different settings for gain, offset and binning per filter\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using an autofocus filter with offsets this filter will now also be used for the first and last measurement instead of the filter prior to starting the auto focus\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab During an auto-focus run while taking an image, if the download fails it will be automatically retried up to two times to try to recover\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new optional setting R\u178? threshold can now be set. When this threshold is non-zero, the autofocus run has to fullfill a minimum required R\u178? - {\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Coefficient_of_determination"}}{\fldrslt{\ul
+Coefficient of determination
+}}}
+ - above this threshold to be considered as successful.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 File name patterns and FITS keywords\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Keyword list to choose from is now grouped by category\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 CENTALT}, and {\f1 CENTAZ} keywords\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 AIRMASS} keyword, calculated from mount altitude using Gueymard 1993\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$CAMERA$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$TELESCOPE$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$ROTATEANGLE$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$STARCOUNT$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$TEMPERATURESETPOINT$$} file pattern\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Included Camera SDK Versions can now be found inside the about page of N.I.N.A.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.10 HF3\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The camera temperature setpoint is now displayed {\i only} when the cooler is active\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A secondary HIPS2 server will be attempted if the main HIPS2 image server is not available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon cameras will now be kept awake to avoid camera auto-shutdown\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Meridian flip will now be considered on objects traversing through their lowest altitude too\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 QHYCCD native driver improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b IMPORTANT:} NINA 1.10 HF3 (and later) require {\i at least} {\field{\*\fldinst{HYPERLINK "https://www.qhyccd.com/download.html"}}{\fldrslt{\ul
+QHY System Pack
+}}}
+ version 21.02.20.19 to be installed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improvements to reliability\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Seamless switching between 11M and 47M modes for the QHY294 Pro\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY CCDs that have fast and slow readout modes can now select the mode\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY cameras that have sensor chamber air pressure and humidity sensors will display their readings on the Equipment > Camera screen\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY camera firmware and FPGA versions are now displayed on the Equipment > Camera screen\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The integrated filter wheels of A-Series cameras should now operate correctly\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Live View function has been disabled for QHY cameras. It was functionally inoperative and will be discontinued for all but Canon and Nikon in 1.11\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The version of the QHY USB driver will be checked and a warning will be presented if it is not the minimum recommended version\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bug fixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Nikon: Cancelled or aborted exposures are now properly handled\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FLI: Stop background flush prior to reading out the sensor\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM camera: SensorType is no longer considered to be a mandadory property\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue when the location for ASTAP and ASPS where entered manually the validation was incorrect to assume a folder instead of a file\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When subsampling selection was still active after the app already subsampled an image it would further try to subsample. In some occasions this could cause a crash. The subsampling rectangle is now disabled after the first additional capture.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Included Camera SDK Versions:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Altair Astro:} 48.18830.20210423\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Atik:} 2020.08.3.642\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Canon:} 13.13.0.6408\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b FLI:} 1.104.0.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Nikon:} 1.3.2.3000\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Omegon:} 39.15325.2019.810\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b QHY:} 21.02.19.19\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ToupTek:} 48.18081.2020.1205\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ZWO:} 1.16.3\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.10 HF2\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Rotator now displays mechanical position as well as sky position. Sky position will be displayed once the rotator is synced at least once.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Updates to various vendor-supplied SDKs for bug fixes and new model support in the respective native drivers\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY: Legacy CCD and A-series cameras can now select Normal or Fast readout speeds when using the native driver\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The telescope will no longer go on a journey to the celestial pole before going to the park position\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Parking the telescope from the Equipment > Telescope screen will no longer cause the UI to freeze while the telescope is in the process of parking\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When rotator reports final position too early while still reporting IsMoving as true, N.I.N.A. will now still wait for the movement to complete\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab SkyAtlas File Source will now consider binning for solving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed issue with filter wheel filter import in options when filters have the same name\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The MGEN2 guider can now auto select a guide star unattended, with a new calibration just downstream of that, which enables auto meridian flips\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The timeout values for the MGEN2 guider can now be overridden in the implementations of IMGENCommand\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The MGEN2 guider drift values are now correctly reported in fractional pixels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASCOM devices are now properly disposed after calling the setup dialog\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The MGEN guider now doesn\u8217't autoselect guide stars that lie too close to the sensor edge, based on a stand-off distance that the user can set in the UI\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab All guiders now report when a successful connection happens\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Disconnecting Atik Cameras from other applications on startup or scan for new devices will not happen anymore\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue in Framing Assistant when solving a file, that the near solver was incorrectly used as the blind solver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY: QHY294M/C Pro is properly handled by the QHY native driver\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Included Camera SDK Versions:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Altair Astro:} 48.18421.20210202\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Atik:} 2020.08.3.642\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Canon:} 13.13.0.6408\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b FLI:} 1.104.0.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Nikon:} 1.3.2.3000\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Omegon:} 39.15325.2019.810\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b QHY:} 21.02.19.19\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ToupTek:} 48.18081.2020.1205\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ZWO:} 1.16.3\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.10 HF1\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Ability to inspect pixel area and pixel values in detail by holding right click\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Relative Focusers can now be connected and will be simulated to behave like absolute focusers\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is possible now to import Telescopius Observing Lists and Telescopius Mosaic Plans via CSV\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added Ultra Mode and Dew Heater Controls for supported Altair Cameras.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab New translation for Greek (\u917?\u955?\u955?\u951?\u957?\u953?\u954?\u940?) has been added\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a new sky survey Hips 2 Fits as an option in framing assistant. This survey seems to provide a much faster image compared to the other surveys.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon CR3 image format is now supported (use FreeImage as your RAW converter)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Adding support for the EOS R5 and EOS R6\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$CAMERA$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$TELESCOPE$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$ROTATEANGLE$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added {\f1 $$STARCOUNT$$} file pattern\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Telescope views now display the side of pier when available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Replaced LZ4 library with a more optimized one for faster XISF compression\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Save target set in sequence screen is now enabled also when sequence is running\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added info logs for start exposure, download location and star detection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Rotators will now display the sky angle as the current position, when rotation via plate solving was invoked\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added toggle to reverse direction for rotators\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Log files now show correct operating system version\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Cancelling a sequence that is paused, will no longer throw a semaphore error\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Set white balance and gamma to 50 for ASI native driver on connection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FITS header parsing can now deal with keywords that don\u8217't have any comment at all\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Safeguard against NaN values for Hfr Std Deviation which could ruin an autofocus run\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix issue for QHY cameras to dither too early when camera was still exposing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Images that are mirrored (e.g.\u160?on a scope like a hyperstar) now have a correct rotation inside the framing wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed a problem with Nikon Shutterspeeds between 1s and 30s not being parsed correctly in certain locale settings\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue when using the file camera together with dithering, where the dither signal was triggered directly after starting the exposure, as the file camera directly switched to download state. Instead the file camera will wait for the exposure time instead before switching to download state.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Included Camera SDK Versions:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Altair Astro:} 48.18195.2020.1222\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Atik:} 2020.08.3.642\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Canon:} 13.12.31\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b FLI:} 1.104.0.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Nikon:} 1.3.1.3001\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Omegon:} 39.15325.2019.810\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b QHY:} 20.8.26.3\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ToupTek:} 46.17309.2020.616\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ZWO:} 1.16.3.0\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.10\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 New hardware support\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Flat Panel control and automation\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Control supported flat panel devices from within N.I.N.A.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat Wizard can specify a specific panel brightness to attain optimal flat frame exposures\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flat panels or covers that open and close will automatically do so at the beginning and end of a sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The following flat panels are supported, with no additional software required:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab All-Pro Spike-a Flat Fielder\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Alnitak Flip-Flat, Flat-Man, and Remote Dust Cover\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Artesky USB Flat Box\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Pegasus Astro Flatmaster\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Omegon veTEC and veLOX series cameras\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native support for the line of veTEC and veLOX cameras from Omegon\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Native support for QHY integrated and CFW filter wheels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc.) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab This allows the native QHY camera driver to be used with these cameras and filter wheel configurations.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Lacerta MGEN-2 Autoguider integration\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Full control of the MGEN-2 by mirroring the controller display into N.I.N.A.\u8217's user interface\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automatic power-on when connecting\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Starts guiding on sequence start\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Performs calibration and star auto-selection when required\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Displays star drift during guiding in a graph (currently only measured in pixels)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Dithering during sequencing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab MGEN-3 support will appear in a future release\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Native support for Pegasus Astro Ultimate Powerbox V2\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Connect to and control the Ultimate Powerbox V2 from within the application\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Monitor input voltage and power consumption\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Turn power and USB ports on and off via the Switch interface\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Set the output voltage of the variable power port\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Control the dew heater ports, including the Auto-Dew feature\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Support for using the Powerbox\u8217's sensors as a weather device\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Support for using the stepper motor driver as a focuser\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Expanded native camera support\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Altair Astro:} Added support for Altair Astro Hypercam 269 PRO TEC and other new cameras\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Atik:} Updated vendor SDK for new camera support and bug fixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Canon:} Added support for EOS M6 Mark II, EOS 90D, and EOS M200. CR3 RAW file is not supported at this time but is expected to be in a future release\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Nikon:} Added support for the Z-series, D780, and D6\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b QHYCCD:} Added support for QHY268C, QHY600M/C, QHY367C-PRO, QHY4040 and others\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ZWO:} Added support for the ASI533MC-Pro, ASI2600MC-Pro, and ASI6200MC/M-Pro\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plus many bug fixes and feature enhancements in the respective camera vendor SDKs. Refer to the bottom of this release\u8217's section for the version numbers of the included vendor SDKs.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Localization\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab N.I.N.A. is now available on Crowdin! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.\u8217's user interface to any language. To help with localization and translation efforts, details may be found at nina.crowdin.com. Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Thirteen new languages are included in this release:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Dansk (Danish)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Espa\u241?ol (Spanish)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Fran\u231?ais (French)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab \u26085?\u26412?\u35486? (Japanese)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Nederlands (Dutch)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Polski (Polish)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab \u1056?\u1091?\u1089?\u1089?\u1082?\u1080?\u1081? (Russian)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab \u31616?\u20307?\u20013?\u25991?, \u20013?\u22269? (Simplified Chinese, China)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab \u32321?\u20307?\u20013?\u25991?, \u21488?\u28771? (Traditional Chinese, Taiwan)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab \u32321?\u20307?\u20013?\u25991?, \u39321?\u28207? (Traditional Chinese, Hong Kong)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab T\u252?rk (Turkish)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Galego (Galician)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Portugese (Portugu\u234?s)\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Application Improvements\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 General\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the ability to record flat frame exposure times with the Flat Wizard, which may be later used in a sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The Flat Wizard\u8217's limit of 50 exposures has been eliminated, but we\u8217're still not sure why you would want more than that\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The telescope will now stop tracking after being commanded to slew to zenith in the Framing Wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the name of the active profile to the application title bar\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Warning notifications are now appear for 30 seconds instead of 3 seconds before automatically dismissing. Error notifications still display until they are dismissed by the user\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Logs older than 30 days are now automatically cleaned up when N.I.N.A. starts\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The timestamps in N.I.N.A.\u8217's log file now have millisecond resolution and use the 24 hour time format\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In the {\b Equipment > Camera} window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera\u8217's cooler\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The current Earth Rotation Parameter data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An occasional miscalculation of the moon\u8217's current phase has been corrected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added an empty entry in the Constellation filter in Sky Atlas to allow for its deselection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Clean-ups of the status text in the status bar at the bottom of the main window\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Various spelling and grammar fixes throughout the application\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added or clarified several missing tool tips\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Gain/Offset controls now display the current gain/offset the camera is set to when no gain/offset is specified\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Auto-focus system\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto-focus has been enhanced to support multiple curve fitting methodologies:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Parabolic fitting, weighted by standard deviation\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Hyperbolic fitting, weighted by standard deviation\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab A combination of parabolic or hyperbolic fitting, with trend lines. The averages of fitting minimum and trend line intersection are then used\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A contrast detection auto-focus routine has been added. Instead of analyzing stars to determine the point of best focus, the routine will analyze the overall contrast of the image using various contrast detection methods. A Gaussian fit is then performed on the obtained focus points. On some systems, this process can employ shorter exposure times compared to Star HFR and produce results faster\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The single backlash compensation system has been improved and split into two selectable behaviors:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Absolute, where the focuser is moved in or out by the specified number of steps plus any additional steps for backlash. This is the same system that has existed before\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Overshoot, a new method, where the focuser is moved in or out by the requested number of steps, plus any \u8220"overshoot\u8221" number of steps, and is then moved in the opposite direction by the same number of \u8220"overshoot\u8221" steps. This is suitable for optical systems such as SCTs, which might benefit from this method in order to eliminate mirror flop\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The \u8220"Crop Ratio\u8221" setting has been changed to \u8220"Inner Crop Ratio\u8221", and an additional \u8220"Outer Crop Ratio\u8221" setting has been added. This allows users to define a centered ROI, or a centered \u8220"square doughnut\u8221", which will be used by star detection. This allows for avoiding stars in the center and at the edges of the camera\u8217's FOV when a frame is analyzed during auto-focus\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab HFR calculation is now computed using the mean background surrounding the star instead of the entire image\u8217's mean\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab HFR calculation has been enhanced to provide more accurate results, especially for imaging systems that have central obstructions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto-focus trend lines now use a weighted fit based on HFR standard deviation in each image rather than an unweighted fit. This provides much better slopes and final derived focus point\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A filter for use in auto-focusing can be set if \u8220"Use filter offsets\u8221" is set to true. When defined, the auto-focus routine will use the specified filter instead of the current imaging filter. Initial baseline HFR and final HFR (used to determine whether the auto-focus run was successful) will still use the intended imaging filter.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the ability to keep guiding active during auto-focus operations\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The auto-focus routine has been changed so that it doesn\u8217't attempt to measure the focus twice for the same point on the curve\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab If it is turned on, a focuser driver\u8217's internal temperature compensation feature is now turned off before an auto-focus operation starts and is turned back on when the operation completes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Meridian Flip now has an option to trigger an auto-focus operation after a meridian flip while a sequence is running\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Backlash compensation will no longer be applied more than once if focuser movement is canceled during focuser settle time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An auto-focus operation will not be performed if it might interfere with a pending meridian flip\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab All auto-focus operations and their data points are now logged to their own JSON-formatted file located in {\f1 %LOCALAPPDATA%\\NINA\\AutoFocus}. This allows one to retrace what was measured at a later time\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sequencer\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Parameters in rows that are added to a sequence will now default to the parameters specified in the row above it\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A user-specified command (batch script, Windows/DOS executable, etc.) may be ran at the conclusion of a sequence. This command may be specified under {\b Options > Imaging > Sequence}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequence Gain and Offset settings can now be entered without having any camera connected. The values will be validated on sequence start in case an incompatible value was specified\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The pre-sequence checklist has been enhanced to check whether the telescope is parked. If it is parked, and the user affirms the action, N.I.N.A. will unpark the telescope before beginning the sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a pre-sequence check to ensure that enough disk space is available to store the whole sequence\u8217's amount of images. The calculation does not take any file compression into account as that is unpredictable.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab End of Sequence operations are now done in parallel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The \u8220"Auto-focus after % HFR Change\u8221" option has been enhanced to not be triggered by a single bad frame which might have been caused by a temporary condition such as wind or a passing vibration\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab \u8220"Auto-focus after % HFR Change\u8221" now resets its reference index on sequence start, a target change, or any auto-focus operation that is caused by other criteria\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab \u8220"Auto-focus After Number of Exposures\u8221" now correctly triggers after the specified number of exposures\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When the camera fails to indicate that an image is available for download after exposure time + 15 seconds, the exposure will be canceled and skipped\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using filter offsets, NINA will no longer pause a sequence for any specified focuser settle time if there was no change in the focuser\u8217's position after switching filters\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Camera Gain and Offset are now saved as integers and are no longer saved with decimal places\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added estimated target start and end times to sequence view. This is useful for multi-target sequence sets\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding was improperly stopped when performing an auto-focus operation at start of sequence, even if the Disable Guiding option was false\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequence file names are now saved with valid file name characters. Invalid characters are replaced with a hyphen (-)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Various sequence window presentation and layout improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab HFR calculation is enforced for light frames when autofocus after HFR change is enabled to ensure that the trigger will always work\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Plate Solving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additional information has been added to the plate solve pop-up window that appears during sequencing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A camera gain and binning setting may be configured for use during automated plate solves\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Removed the \u8220"Repeat until\u8221" option from the {\b Imaging > Plate Solve} tool window. This action will be always occur when \u8220"Reslew to Target\u8221" is enabled\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plate solvers will now receive an unstretched FITS image instead of a JPEG. This can allow for a quicker and more reliable solve result\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Any {\f1 WARNING} FITS keyword that a plate solver inserts into a solved image will result in a warning notice in N.I.N.A. that contains the keyword\u8217's text\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A custom Astrometry.net API URL may be configured\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved status feedback and logging for Astrometry.net plate solve jobs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Plate Solving window\u8217's Sync and Reslew settings will be saved\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Reworked the plate solving code completely for cleaner operations\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Guiding\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved the resiliency of StartGuider when PHD2 is unable to detect a guide star when guiding is started due to temporary clouds or other factors. An auto-retry mechanism has been added to command PHD2 to attempt to select guide star after a configurable timeout\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The guiding graph will now pause during dithering to avoid displaying guide pulses that are not actual corrections\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The guiding graph now displays a gray triangle icon along the X axis at the point where a dither action occurred\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The drawing of lines in the guiding graph will now pause when guiding itself is paused\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The scaling of lines in the guiding graph will now be consistent even if there are missing data points\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding graph settings are now stored in the profile and are loaded when application is started\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Framing Wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image\u8217's characteristics\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When importing FITS or XISF files, any metadata they contain concerning the RA and declination of the image will be used to hint the plate solver. This can drastically speed up the importing of images into the Framing Wizard by avoiding blind solves\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab If a FITS or XISF file contains WCS (World Coordinate System) information due to it already being plate solved externally, Framing Wizard will now retrieve and use that information instead of running its own plate solve on the image, resulting in instant positioning and rendering of the image\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The font size of the mosaic panel ID numbers is now scaled based on the imaging rectangle size and zoom level\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Coordinate input fields in the Framing Assistant and Sequence windows now allow for {\f1 -0} to be entered for declination\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When loading an image file into the Framing Assistant, the rectangle dimensions are now correctly calculated\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Device-related improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The following camera settings are now saved to the active profile: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, Cooling and Warming Duration\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Images from OSC cameras now use their advertised bayer pattern instead of RGGB being assumed all the time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab N.I.N.A.\u8217's camera simulator will now assume the pixel size, bayer matrix, and sensor temperature attributes of any FITS or XISF file that is loaded into it\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The equatorial system reported by the mount driver is now used, and the Epoch setting under {\b Options > General > Astrometry} has been removed. N.I.N.A. will default to J2000 when a mount\u8217's driver reports an epoch of \u8220"other\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Wait and check to see if the mount flipped automatically at the meridian when \u8220"Use Telescope Side of Pier\u8221" is on\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A short timeout after mount sync operations has been added as some mounts may not immediately report updated coordinates after a Sync command is sent to them\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab N.I.N.A.\u8217's File Camera can now watch folders for Sony\u8217's {\f1 .ARW} and Olympus\u8217' {\f1 .ORF} RAW file formats\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Reintroduced a \u8220"No Guider\u8221" option under the {\b Equipment > Guiding} device list so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the \u8220"Connect All Devices\u8221" button is pressed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When a sequence is in the centering stage, rotators will now rotate to nearest orientation even if it results in an image that is upside down. An image\u8217's vertical orientation is not relevant for framing due to the corrective action of star alignment in post-processing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Focuser control buttons are now disabled while the focuser is reporting that it is moving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new option is available to prevent sending any Sync command to the mount. The centering logic will then use offset a coordinate calculation instead. This new logic will also be called when a Sync command fails\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added button to the {\b Equipment > Telescope} window to set the current position of the mount to be its park position. This button is available only if the connected mount\u8217's ASCOM driver supports setting a park position\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon camera support has been improved and many common errors have been fixed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Atik cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FLI cameras no longer sit idle for the length of the exposure time prior to actually initiating the exposure\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY native camera driver now retrieves only the non-overscan area (the \u8220"effective area\u8221") of the sensor by default. A Camera option now exists to include the overscan area, if desired\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY native camera driver now supports selecting readout modes if the camera offers any\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY native camera driver now optimizes image file size based on the actual image dimensions, resulting in slightly smaller image file sizes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Binned exposures now finish on QHY cameras that have overscan areas\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO cameras now properly handle odd bin dimensions (e.g.\u160?3x3)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a bit scaling option under {\b Options > Equipment > Camera > Advanced Settings}, intended for users of Altair Astro, Omegon, and ToupTek cameras, to bit-shift the raw sub-16 bit data camera data that N.I.N.A. receives to 16 bits in order to improve file compatibility with other capture software\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FreeImage library upgraded to 3.18 for improved DSLR raw file display\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO cameras now write correct EGAIN values when switching Gain\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO cameras reset the FLIP STATUS to NONE in case it was altered by another software\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Time to meridian flip is displayed in telescope windows when enabled\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Imaging window changes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added more southern hemisphere stars to the Manual Focus Stars tool\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Zooming to high magnification inside the Image viewer will no longer show smeared pixels. Sharp pixel edges will be shown instead\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The mid-tone stretch algorithm no longer inverts blown-out pixels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The HFR History graph now displays indicators that denote when an auto-focus operation has occurred. Hovering over an indicator with the mouse pointer will reveal details for that operation, including the previous focuser position, the newly calculated focuser position, and the focuser\u8217's temperature at the time\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Optimal Exposure Calculator (OEC) has been moved out of the statistics window and into its own tool window for improved user experience, with improved calculations\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab OEC can now load SharpCap Sensor Analysis files to populate fields for the camera\u8217's full well and read noise parameters with measured values\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The camera snapshot control window will now save its parameters across application sessions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a layout reset button for the Imaging window, located at {\b Options > Imaging > Layout}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Images from OSCs are no longer debayered for presentation twice\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Planetarium software integration\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab All Planetarium options have been moved to their own section in the {\b Options > Equipment} tab and the {\b Options > Planetarium} tab has been removed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When using Stellarium, N.I.N.A. now takes current view\u8217's center coordinates when no target is selected\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added an option to retrieve the coordinates of the center of the sky chart instead of any selected object when using TheSkyX\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Increased reliability when parsing coordinates that are retrieved from Cartes du Ciel and Stellarium, especially in cases where the user\u8217's locale uses characters other than the decimal point as the decimal separator\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Reworked the Planetarium interfacing to be more robust\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 FITS and XISF support\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab XISF files may be created with optional compression or shuffled compression of the image data using the LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file that includes one\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Opening XISF and FITS files that have non-16 bit data is now supported. This benefits the Framing Wizard and N.I.N.A. Simulator Camera\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab XISF image properties for aperture and focal length now correctly state values in meters rather than millimeters\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 File name patterns and FITS keywords\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\f1 $$DATEMINUS12$$}: Shifts the current date and time to 12 hours into the past. This allows for all images from a day-crossing session to be saved into the same date folder\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\f1 $$READOUTMODE$$}: Allows the camera\u8217's readout mode to be used in file or folder names\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\f1 $$SQM$$}: Allows the current reading from an attached sky quality meter to be used in file or folder names\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\f1 $$USBLIMIT$$}: Allows the USB Limit setting for the camera, if available, to be use in file or folder names\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The {\f1 $$FRAMENR$$} pattern now creates a 4 digit number, padding with zeros. Example: {\f1 0004}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The \u8220"Image File Pattern\u8221" setting will now correctly save its state to the active profile when file patterns are dragged from the list into the \u8220"Image File Pattern\u8221" field\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new example preview of the currently-assembled file pattern appears below the \u8220"Image File Pattern\u8221" field. Any folder separators that are specified are denoted by a {\f1 \u8250?} character\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab File pattern values are now scrubbed for leading and trailing white spaces and other illegal characters to prevent the creation of an invalid file or folder name\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the {\f1 READOUTM} keyword to FITS and XISF files to record the name of the readout mode used to create the image\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the {\f1 BAYERPAT}, {\f1 XBAYEROFF}, and {\f1 YBAYEROFF} keywords to FITS and XISF files when using color cameras. A menu under {\b Options > Equipment > Camera} allows the user to override the driver-specified Bayer pattern with an alternative pattern. This allows for automatic debayering in some processing applications, including the use of the \u8220"Auto\u8221" setting in PixInsight\u8217's Debayer process.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added the {\f1 USBLIMIT} keyword to FITS and XISF files to record the USB Limit setting of the camera\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The FITS {\f1 XPIXSZ} and {\f1 YPIXSZ} keywords (and related XISF properties) now correctly account for the binning factor\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Special Thanks\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The N.I.N.A. team would like to sincerely thank:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The staff at Teleskop Austria for providing an MGEN-2 unit as well as a detailed communication protocol document for implementing and fully testing MGEN-2 support in N.I.N.A.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHYCCD for providing a QHY183M and CFW3 filter wheel to test and verify NINA\u8217's native QHY camera and filter wheel drivers\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 These items helped a lot during development and testing.\line Thank you for your support!\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Included Camera SDK Versions:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Altair Astro:} 46.16909.2020.404\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Atik:} 2020.6.18.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Canon:} 13.12.10\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b FLI:} 1.104.0.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Nikon:} 1.3.1.3001\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Omegon:} 39.15325.2019.810\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b QHY:} 20.6.26.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ToupTek:} 46.17309.2020.616\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b ZWO:} 1.15.6.17\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.9\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Camera Control\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native support for Finger Lakes Instrumentation ProLine/MicroLine cameras and color filter wheels\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Switch Hubs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new equipment type \u8220"Switch\u8221" has been added which can connect to an AscomSwitch or to a PrimaLuceLab EAGLE PC\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Dither without guiding\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new Direct Guider has been added, which doesn\u8217't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Enhanced direct guider will accept decimal durations (e.g.\u160?0.5s), and perform random angle selection in a way that minimizes target deviation from center, even after many dither operations.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Plate Solving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab If plate solve fails, it automatically falls back to blind failover\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab If blind failover also fails, plate solve can be set to await a certain time period (by default 10 minutes) before trying again, up to a certain number of attempts (user-defined)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab If all attempts fail, or Meridian is getting close, plate solve will be considered failed, but sequence will continue as usual\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 GPS Assisted Location\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a NMEA GPS interface to retrieve the current location\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Interfacing with planetarium programs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Manual Camera\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Inside the camera selection there is a new entry for \u8220"Manual Camera\u8221".\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It will watch a specified folder for newly created files. These files will be stored inside an internal queue.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings->Equipment->Camera on Exposure Start.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When this trigger is deactivated the application will just skip the Start Exposure and wait for another file to roll into the specified folder\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Weather data sources\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The existing OpenWeatherMap implementation has been replaced with a full weather data interface.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The new interface allows devices with ASCOM ObservingConditions class drivers to supply N.I.N.A. with weather data and other conditions.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Native OpenWeatherMap functionality is maintained, and any configured OWM API key is retained and utilized by the new native OWM client.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Weather data sources are now configured under the Equipment section.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Any available weather data types (air temperature, pressure, wind speed, etc.) are inserted into images as FITS keywords and/or XISF image properties.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Focusing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Backlash can be compensated using two methods. Absolut and Overshoot. Absolut will add absolute backlash values to the movement while overshoot will overshoot the position by a larger amount and move backwards again.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements depending on the method specified.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequence Auto-Focus can now be triggered if measured HFR of any frame is X% worse than the first frame taken after the previous auto-focus routine.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab More resilient autofocus:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Ability to automatically reattempt autofocus from scratch several times in case it failed\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Automatically go back to original focus position if obtained HFR is significantly worse than original\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab A crop ratio has been added to the autofocus, letting users autofocus only on the center of the frame\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Autofocus can now be set to use only the top brightest stars, so the same stars are used throughout the autofocus routine. This will work best on sparse star fields, and for stable, well-aligned equipment (e.g.\u160?so stars don\u8217't move between auto-focus exposures)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Ability to use binning for autofocus\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sequencing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab End of Sequence Options are now available, which include:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Parking the telescope - This will stop the guiding, and invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. {\b Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.}\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, telescope not connected but slew enabled, etc.) at sequence start\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The sequence start button is unavailable if an imaging loop is in progress in the imaging tab\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab It is now possible to set the Offset in addition to the Gain within each sequence item\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added buttons to move sequence row up and down the list\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab File handling now changed so that:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab the default folder for sequences is set under Options -> Imaging\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab a \u8216'modified\u8217' status is maintained for each target\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab targets can be loaded from any xml file\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab targets can be saved back to the file it was loaded from\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab a \u8216'Save as\u8217' option is added to save to a new file\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab a warning is issued if a target is closed without saving when it has been modified. This also applies when the application is closed.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Controls to change order of targets in a multi-target sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Ability to save and load \u8216'target sets\u8217' (a set of targets in a certain sequence)\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Flat Wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Progress bars have been added for remaining filters and exposures\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new option to pause between filters has been added. This is to allow the user the chance to set lightbox settings\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Interface\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Imaging tab - Equipment specific views will only show the \u8220"Connected\u8221" flag when the device is not connected to save space\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a layout reset button to the imaging tab to restore the default dock layout.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Equipment chooser dropdowns are now grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 File Handling\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab All FITS keywords now have descriptive comments with units of measurement noted if applicable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FITS keyword {\f1 DATE-OBS} now has millisecond resolution, eg: {\f1 2019-03-24T04:04:55.045}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additional FITS keywords are now added to images if their associated data is available:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 DATE-LOC}: Date and time of exposure adjusted for local time\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FOCRATIO}: Focal ratio of the telescope, user-configurable under Options->Equipment->Telescope\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 SET-TEMP}: The configured CCD cooling setpoint\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 SITEELEV}: Elevation of the observing site, in meters\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 SWCREATE}: Contains {\f1 N.I.N.A. <version> <architecture>}\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 TELESCOP}: Telescope name if provided under Options->Equipment->Telescope. Falls back to ASCOM mount driver name\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 OSC Camera Handling\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Debayering is now applied prior to plate-solving or auto-focus star detection\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab An Unlinked Stretch option has been added. When enabled, color channels will be stretched separately, helping hide the sky background. This results in more visible celestial objects, and helps enhance both autofocus and platesolving reliablity, especially in light polluted areas. Processing time is however increased.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A Debayered HFR option has been added. When enabled, the HFR computation will be made on the Debayered image rather than the Bayered array, providing better Auto-focus results\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Star Detection Sensitivity\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Star Detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum and has sufficient bright pixels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In addition, a new Star Sensitivity Parameter is available in the Imaging options. It has three settings:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Normal: use standard NINA star detection\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab High: More sensitive method, with little to no performance impact. Typically picks up 1.5x - 2.5x more stars than Normal\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Highest: Most sensitive method, with some performance impact. Typically picks up 1.5x - 2.5x more stars than High\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The higher the detection level, the more likely lumps of noise are liable to be picked up (despite rejection parameters to avoid that)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A noise reduction parameter has been added for better star detection in fairly noisy images, which can be important if using High or Highest star sensitivity levels, although the Normal sensitivity level will also benefit from it. Several settings are available:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab None: no noise reduction on full size image done before star detection\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Median: a Median filter is applied to the full size image before star detection. This is good if the sensor has many hot pixels, but time consuming\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Normal: a standard fast Gaussian filter is applied to the full size image before star detection. This is good for smoothing out the thermal and bias noise of the sensor\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab High: a strong fast Gaussian filter is applied to the full size image before star detection. This is for fairly noisy images, but can make star detection more difficult\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Highest: a very strong fast Gaussian filter is applied to the full size image before star detection. This is for noisy images, although star detection may suffer\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue in FramingAssistant when reloading the image and having multiple panels selected, that the orientation was not considered properly resulting in wrong coordinates\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue in the Telescope Equipment tab that could potentially slew to the wrong Declination if the declination angle was negative\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed issues in the subsampling logic for ASCOM, ZWO, and QHY cameras - the origin coordinates are now properly set, and take binning into account\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed an issue for Nikon SDK that looked into the wrong folder for the external md3 files.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed a bug where Platesolve Orientation was displayed as negative and also throwed of the rotation centering when using rotators.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed a bug in Autofocus routine that could wrongly declare an autofocus run a failure if the starting point couldn\u8217't detect any stars\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed custom color schema not saving properly and resetting to default when reloading the application\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The backlash measurement routine has been fixed so that the focuser is properly recentered before the backlashOUT measurement procedure\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Some Sky Surveys did not work in some locales due to decimal pointer settings\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed race condition when using DCRaw when the previous temp image was not finished processed and the new image tried to replace the previous temp image\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Image History Graph will only contain statistics from sequence items\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Further increased parallelism during sequencing.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab After capture during image download: Parallel dither and change filter (if required)\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab After download: Parallel image saving and processing to display the image\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Image HFR is now available as an image file name token ({\f1 $$HFR$$})\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Focuser Temperature is now available as an image file name token ({\f1 $$FOCUSERTEMP$$})\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a clear button on HFR History graph. The button will be displayed when hovering the control.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A new button is added in the options to directly open the log destination folder\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: https://altaircameras.com/black_preview_screen/\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Special Thanks\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The N.I.N.A. team would like to sincerely thank: - The staff at {\field{\*\fldinst{HYPERLINK "https://cloudbreakoptics.com/"}}{\fldrslt{\ul
+Cloud Break Optics
+}}}
+ and {\field{\*\fldinst{HYPERLINK "http://flicamera.com/"}}{\fldrslt{\ul
+Finger Lakes Instrumentation
+}}}
+ for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support. - Filippo Bradaschia from {\field{\*\fldinst{HYPERLINK "https://www.primalucelab.com/"}}{\fldrslt{\ul
+PrimaLuceLab
+}}}
+ for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Included Camera SDK Versions:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Altair: 46.17427.2020.704\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Atik: 8.7.3.5\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon: 3.8.20.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab FLI: 1.104.0.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Nikon: 1.3.0.3001\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHY: 0.5.1.0\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ToupTek: 30.13342.2018.1121\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ZWO: 1.14.7.15\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.8 Hotfix 1\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Prevent an unnecessary profile saving on application start\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Profiles where always saved after a sequence exposure, which slows down the image saving process. During sequence capture the profile saving is disabled now.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.8\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sequence\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Enable/Disable sequence entries\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Plate Solving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added interface for All Sky Platesolver\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Camera Control\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Altair native driver support\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ToupTek native driver support\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab QHYCCD native driver support\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added support for anti-dew heaters in ZWO cameras\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab On ASCOM drivers support for setting readout modes\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Framing Assistant\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Add SkyAtlas image source which allows for framing based on offline SkyAtlas data\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Flat Wizard\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Supports you taking flats\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Imaging\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a list of manual focus targets (bright stars) that are currently visible in the sky\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Framing Assistant Offline Sky Chart\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Based on Sky Atlas data a basic sky chart showing objects can be displayed\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Instead of dragging the rectangular through the initial image like in the other framing sources the background itself will be moved like in an orrery\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Guiding\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added Synchronized PHD2 Guider (experimental)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Known limitations: Dithering will happen every possible synchronized frame and is not changeable\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Auto-Update Channels\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additionally the changelog for the new version will now be displayed prior to updating, too.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Corrected Max Binning level for ASI Cameras\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Focuser move command fixed where lots of move commands where sent by accident\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Rotation value now considered for sequence import|export\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon: Fixed bulb mode for exposure times <30s\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon: All shutter speeds now correctly added when step set custom function is set to 1/3\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Meridian Flip window does not get stuck anymore when clicking on cancel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Log Level will now be set on application start based on profile settings.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab In some cases the application stayed open in the background after closing. This should not happen anymore\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\f1 $$DATETime$$} and {\f1 $$TIME$$} will now use timestamp on exposure start, not on exposure end\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Meridian Offset default values for plate solved polar alignment\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab On sequence target guiding will be paused, prior to slewing to a new target\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autofocus will not trigger a pause/resume command anymore, as this was not reliable in some cases. Instead PHD2 is stopped and started, similar to what is done during meridian flip.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Platesolve result reporting wrong Dec Error.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Clear button for PHD2 Graph\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Hide camera cooler controls when not available for current camera model\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Zero Floating point numbers now displayed as \u8220"0.00\u8221" instead of \u8220".00\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Show better exception message when an ASCOM Interop Exception occurs\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Canon: Errors are now shown to users in a readable format if any occur\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Removed hard requirement of ASCOM platform. Application can now function without it\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved UI Style.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab New logo\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Better version display\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Tweaked some color themes for more consistent colors\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Better spacing between elements to reduce wasted space\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Two new background colors to better pronounce some ui elements\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Reworked Imaging tab to have a common style.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Profiles don\u8217't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autostretch replaced by a better midpoint transformation function\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Autostretch now has black point clipping options\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Vastly improved image statistics calculation time.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Estimated Finish Time will automatically update in the sequencing view\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added copy button for existing color schemas to copy over to custom and alternative custom schemas\line \par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing tab:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Moved coordinates out of framing boxes to not obscure target\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Added a new button to be able to add the framing target to a sequence instead of replacing\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Control to adjust opacity of framing box\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Framing Assistant now can annotate DSO\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sensor offset is now available as an image file name token ({\f1 $$OFFSET$$})\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automatically import filter wheel filters to the profile on connection when profile filter list is still empty\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Changed log file format. Each application start will write to a separate log file for better distinction\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Improved XISF save speed and resulting file size by not embedding the image as base64 string, but instead as attached raw byte data\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Additional FITS keywords are now added to images if their associated data is available:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 OBJECT}: The name of the target, as supplied in the active Sequence\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 DEC} and {\f1 RA}: The DEC and RA of the telescope at the time of the exposure\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 INSTRUME}: The name of the connected camera\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 OFFSET}: The sensor offset, if applicable\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FWHEEL}: Name of the connected filter wheel\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FOCNAME}: Name of the connected focuser\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FOCPOS} and {\f1 FOCUSPOS}: Position of the focuser, in steps\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FOCUSSZ}: Size of a focuser step, in microns\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 FOCTEMP} and {\f1 FOCUSTEM}: Temperature reported by the focuser\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 ROTNAME} Name of the connected rotator\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 ROTATOR} and {\f1 ROTATANG}: Angle of the rotator\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 ROTSTPSZ} Minimum rotator step size, in degrees\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Applicable XISF Image Property analogs of the above, as defined by XISF 1.0 Section 11.5.3\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Special Thanks\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 The N.I.N.A. team would like to thank\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Nick Smith from {\field{\*\fldinst{HYPERLINK "https://www.altairastro.com/"}}{\fldrslt{\ul
+Altair Astro
+}}}
+ for providing a GPCAM2 290C to integrate Altair SDK\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Elias Erdnuess from {\field{\*\fldinst{HYPERLINK "https://www.astroshop.eu"}}{\fldrslt{\ul
+Astroshop.eu
+}}}
+ for providing multiple Toupcam Cameras to integrate ToupTek SDK\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab The staff at QHYCCD dealer {\field{\*\fldinst{HYPERLINK "https://cloudbreakoptics.com/"}}{\fldrslt{\ul
+Cloud Break Optics
+}}}
+ for lending a QHY183C to integrate QHYCCD SDK\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 These items helped a lot during development and testing.\line Thank you for your support!\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Version 1.7\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Features\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Framing Assistant\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Mosaic planning for framing assistant\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added multiple new SkySurveys to choose from for framing\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab DSLR RAW files can now be loaded into framing assistant\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Sequences\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sequence multiple target planning. Import/Export also available\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Consider Rotation for framing assistant when set for a sequence during platesolves\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Filter Wheel\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added a manual FilterWheel for users without a motorized wheel or with a filter drawer. There will pop up a window and prompt the user when a filter change is requested\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Rotators\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Support for ASCOM Rotators added\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab A manual rotator option is added, for users without an automatic rotator. A pop up will show with the current angle and target angle for a user to manually rotate to\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Imaging\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab DSLR Users: Images will now always be saved as RAW to prevent any loss of data due to conversions\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Aberration inspector added to imaging tab. It will show a 3x3 Panel containing the current image\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Battery display for DSLRs\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Settings\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Added ImageParameter {\f1 $$RMSARCSEC$$} and {\f1 $$FOCUSPOSITION$$}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Serial Relay (via USB) interaction for Nikon Bulb\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Bugfixes\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fixed memory leak when using Free Image RAW Converter\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guider is also connected when pushing \u8220"Connect All\u8221"\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Changed FilterWheel UI for switching filters\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Some improvements to memory consumption\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automatically triggered Autofocus and Platesolving now spawns inside a separate window\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Guiding Dither thresholds now configurable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Flipped + and - for Stepper Controls\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Minor UI Layout improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Made SkySurvey Cache directory configurable\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Local astrometry.net client will now downscale image for faster image solving\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab ImagePatterns inside options can now be dragged from the list to the textbox\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Major code refactorings for better maintainability\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Lots and lots of minor bugfixes and improvements\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Launch NINA with a specific ProfileId via cmdline\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Integrated with Windows JumpList feature to launch instance with specific profile loaded\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Enhanced Altitude Check to permit imaging of targets that are below the configured altitude when they are rising in the sky and display a visual cue to distinguish rising versus setting targets\sa180\par}
+}
