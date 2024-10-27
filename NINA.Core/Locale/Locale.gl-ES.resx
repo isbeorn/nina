@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -5840,6 +5840,12 @@ Consulta o manual da cámara para coñecer a localización desta configuración<
   </data>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} foi desconectado dende o computador. Comproba a conexión USB e a fonte de alimentación</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>O SDK de Canon tivo un erro interno. Pode producirse un funcionamento pouco fiable da cámara</value>
