@@ -117,6 +117,7 @@ namespace NINA.Profile {
             schema.ButtonBackgroundSelectedColor = ColorSchema.ButtonBackgroundSelectedColor;
             schema.ButtonForegroundColor = ColorSchema.ButtonForegroundColor;
             schema.ButtonForegroundDisabledColor = ColorSchema.ButtonForegroundDisabledColor;
+            schema.CrosshairColor = ColorSchema.CrosshairColor;
             schema.NotificationWarningColor = ColorSchema.NotificationWarningColor;
             schema.NotificationWarningTextColor = ColorSchema.NotificationWarningTextColor;
             schema.NotificationErrorColor = ColorSchema.NotificationErrorColor;
@@ -137,6 +138,7 @@ namespace NINA.Profile {
             schema.ButtonBackgroundSelectedColor = AltColorSchema.ButtonBackgroundSelectedColor;
             schema.ButtonForegroundColor = AltColorSchema.ButtonForegroundColor;
             schema.ButtonForegroundDisabledColor = AltColorSchema.ButtonForegroundDisabledColor;
+            schema.CrosshairColor = AltColorSchema.CrosshairColor;
             schema.NotificationWarningColor = AltColorSchema.NotificationWarningColor;
             schema.NotificationWarningTextColor = AltColorSchema.NotificationWarningTextColor;
             schema.NotificationErrorColor = AltColorSchema.NotificationErrorColor;
