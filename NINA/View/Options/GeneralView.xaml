@@ -668,6 +668,20 @@
                                     VerticalAlignment="Center"
                                     SelectedColor="{Binding ColorSchema.NotificationErrorTextColor}" />
                             </StackPanel>
+                            
+                            <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="170"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCrosshair}" />
+                                <xceed:ColorPicker
+                                    Width="80"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    ShowStandardColors="False"
+                                    ShowTabHeaders="False"
+                                    SelectedColor="{Binding ColorSchema.CrosshairColor}" />
+                            </StackPanel>
                         </StackPanel>
                     </UniformGrid>
                 </ScrollViewer>
@@ -865,6 +879,20 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     SelectedColor="{Binding AltColorSchema.NotificationErrorTextColor}" />
+                            </StackPanel>
+
+                            <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="170"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCrosshair}" />
+                                <xceed:ColorPicker
+                                    Width="80"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    ShowStandardColors="False"
+                                    ShowTabHeaders="False"
+                                    SelectedColor="{Binding AltColorSchema.CrosshairColor}" />
                             </StackPanel>
                         </StackPanel>
                     </UniformGrid>

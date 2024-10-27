@@ -50,6 +50,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
@@ -67,6 +68,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FFb8e0f3"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFF4F4F4"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FFF4F4F4"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
@@ -84,6 +86,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
@@ -101,6 +104,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF9A12B3"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFaa69bc"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FFaa69bc"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
@@ -118,6 +122,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF00A592"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
@@ -135,6 +140,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF00BCA6"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
@@ -152,6 +158,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF00b7b1"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF7f7f7f"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF7f7f7f"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
@@ -169,6 +176,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FFe5a859"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFF7F7FF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF7F7FF"),
@@ -186,6 +194,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF64A6BD"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFF8E9E9"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF696D7D"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF696D7D"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF8E9E9"),
@@ -203,6 +212,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF04E824"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
@@ -220,6 +230,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF24252A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFA9AAAC"),
@@ -237,6 +248,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF32555E"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF9E9E9E"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFBDC3C7"),
@@ -254,6 +266,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF9B59B6"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFa866c4"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FFa866c4"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FF5E330B"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFECF0F1"),
@@ -271,6 +284,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF488093"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFBFEEFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF3a5168"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF3a5168"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFE93B19"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF6FC3DF"),
@@ -288,6 +302,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF696C70"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF6495ED"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFBA5E07"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
@@ -305,6 +320,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF106CE6"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFEAF430"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFBA5E07"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFEAF430"),
@@ -324,6 +340,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF696C70"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF6495ED"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF848484"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFBA5E07"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FF700000"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFF0F8FF"),
@@ -343,6 +360,7 @@ namespace NINA.Core.Utility.ColorSchema {
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
+                CrosshairColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
@@ -364,6 +382,7 @@ namespace NINA.Core.Utility.ColorSchema {
         private Color notificationErrorColor;
         private Color notificationWarningColor;
         private Color buttonForegroundDisabledColor;
+        private Color crosshairColor;
         private Color buttonForegroundColor;
         private Color buttonBackgroundSelectedColor;
         private Color buttonBackgroundColor;
@@ -480,6 +499,20 @@ namespace NINA.Core.Utility.ColorSchema {
             set {
                 if (buttonForegroundDisabledColor != value) {
                     buttonForegroundDisabledColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        public Color CrosshairColor {
+            get => crosshairColor;
+            set {
+                if(value == new Color()) {
+                    value = (Color)ColorConverter.ConvertFromString("#FFFFFF00");
+                }
+                if (crosshairColor != value) {
+                    crosshairColor = value;
                     RaisePropertyChanged();
                 }
             }

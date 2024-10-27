@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -5831,6 +5831,12 @@
   </data>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} 已与计算机断开连接。请检查其USB连接和电源</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Canon SDK 发生了内部错误。可能会导致不可靠的相机操作</value>

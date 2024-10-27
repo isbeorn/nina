@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -5854,6 +5854,12 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   </data>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} 이 컴퓨터에서 연결이 끊어졌습니다. USB연결과 전원을 확인하세요.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>캐논 SDK에서 내부 오류가 발생했습니다. 신뢰할 수 없는 카메라 조작으로 인해 발생할 수 있음</value>
