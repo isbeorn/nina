@@ -280,6 +280,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private TaskCompletionSource<object> downloadExposure;
 
         public void AbortExposure() {
+            Logger.Debug("AbortExposure");
             CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
             CancelDownloadExposure();
         }
@@ -314,7 +315,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private uint Camera_SDKStateEvent(uint inEvent, uint inParameter, IntPtr inContext) {
-            Logger.Debug($"CANON: Received state event: 0x{inEvent:x}, parameter: 0x{inParameter:x}");
+            Logger.Debug($"CANON: Received state event: {StateEventCodeToString(inEvent)}, parameter: 0x{inParameter:x}");
 
             switch (inEvent) {
                 case EDSDK.StateEvent_WillSoonShutDown:
@@ -338,18 +339,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private uint Camera_SDKObjectEvent(uint inEvent, IntPtr inRef, IntPtr inContext) {
-            Logger.Debug($"CANON: Received object event: 0x{inEvent:x}");
+            Logger.Debug($"CANON: Received object event: {ObjectEventCodeToString(inEvent)}");
 
             if (inEvent == EDSDK.ObjectEvent_DirItemRequestTransfer) {
                 this.DirectoryItem = inRef;
+                if (downloadExposure.Task.IsCanceled) {                        
+                        EDSDK.EdsDownloadCancel(inRef); 
+                } else { 
                 try { bulbCompletionCTS?.Cancel(); } catch { }
                 downloadExposure?.TrySetResult(true);
+                }
             }
             return EDSDK.EDS_ERR_OK;
         }
 
         private uint Camera_SDKPropertyEvent(uint inEvent, uint inPropertyID, uint inParam, IntPtr inContext) {
-            Logger.Debug($"CANON: Received property event: 0x{inEvent:x}, propertyID: 0x{inPropertyID:x}, parameter: 0x{inParam:x}");
+            Logger.Debug($"CANON: Received property event: {PropertyEventCodeToString(inEvent)}, propertyID: {PropertyIDCodeToString(inPropertyID)}, parameter: 0x{inParam:x}");
 
             if (inEvent == EDSDK.PropertyEvent_PropertyChanged) {
                 EDSDK.EdsGetPropertyData(_cam, inPropertyID, 0, out uint data);
@@ -516,6 +521,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         if (DirectoryItem == IntPtr.Zero) {
                             Logger.Error("CANON: No new image is ready for downlaod");
                             return null;
+                        } else {
+                            Logger.Debug($"Download of DirectoryItem 0x{DirectoryItem:x}");
                         }
                         CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(DirectoryItem, out directoryItemInfo));
 
@@ -585,6 +592,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private void CancelDownloadExposure() {
+            Logger.Debug($"CancelDownloadExposure of DirectoryItem 0x{DirectoryItem:x}");
             EDSDK.EdsDownloadCancel(this.DirectoryItem);
             try { bulbCompletionCTS?.Cancel(); } catch { }
             downloadExposure.TrySetCanceled();
@@ -897,6 +905,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 var ex = new Exception(string.Format(Loc.Instance["LblCanonErrorOccurred"], ErrorCodeToString(err)));
                 if (err == EDSDK.EDS_ERR_INVALID_HANDLE) {                    
                     ex = new CameraConnectionLostException(string.Format(Loc.Instance["LblCanonCameraDisconnected"], Name));
+                }else if(err == EDSDK.EDS_ERR_COMM_PORT_IS_IN_USE) {
+                    var eosUtil = System.Diagnostics.Process.GetProcessesByName("EOS Utility");
+                    if (eosUtil.Length > 0) {
+                        ex = new CameraConnectionLostException(string.Format(Loc.Instance["LblCanonCameraAlreadyInUseEOSUtil"], Name));
+                    } else { 
+                    ex = new CameraConnectionLostException(string.Format(Loc.Instance["LblCanonCameraAlreadyInUse"], Name));
+                    }
                 }
 
                 Logger.Error(ex, memberName);
@@ -945,6 +960,50 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
 
             return errStr;
+        }
+
+        private string PropertyEventCodeToString(uint eventcode) {
+            string eventStr;
+            if (EDSDKLocal.PropertyEvents.ContainsKey(eventcode)) {
+                eventStr = EDSDKLocal.PropertyEvents[eventcode];
+            } else {
+                eventStr = $"Unknown ({eventcode})";
+            }
+
+            return eventStr;
+        }
+
+        private string ObjectEventCodeToString(uint eventcode) {
+            string eventStr;
+            if (EDSDKLocal.ObjectEvents.ContainsKey(eventcode)) {
+                eventStr = EDSDKLocal.ObjectEvents[eventcode];
+            } else {
+                eventStr = $"Unknown ({eventcode})";
+            }
+
+            return eventStr;
+        }
+
+        private string PropertyIDCodeToString(uint eventcode) {
+            string eventStr;
+            if (EDSDKLocal.PropertyIDs.ContainsKey(eventcode)) {
+                eventStr = EDSDKLocal.PropertyIDs[eventcode];
+            } else {
+                eventStr = $"Unknown ({eventcode})";
+            }
+
+            return eventStr;
+        }
+
+        private string StateEventCodeToString(uint eventcode) {
+            string eventStr;
+            if (EDSDKLocal.StateEvents.ContainsKey(eventcode)) {
+                eventStr = EDSDKLocal.StateEvents[eventcode];
+            } else {
+                eventStr = $"Unknown ({eventcode})";
+            }
+
+            return eventStr;
         }
 
         public async Task<bool> Connect(CancellationToken token) {
