@@ -237,6 +237,8 @@ namespace NINA.Plugin {
                             DeviceProviders = new List<IEquipmentProvider>();
                             Plugins = new Dictionary<IPluginManifest, bool>();
 
+                            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
                             /* Compose the core catalog */
                             var types = GetCoreSequencerTypes();
                             var sdkTypes = GetCoreEquipmentSDKTypes();
@@ -382,6 +384,9 @@ namespace NINA.Plugin {
 
                             Plugins[manifest] = true;
 
+                            //Add the loaded plugin assembly to the assembly resolver to be able to deserialize the type
+                            Assemblies.Add(plugin.Assembly);
+
                             Logger.Info($"Successfully loaded plugin {manifest.Name} version {manifest.Version} by {manifest.Author}");
                         } catch (Exception ex) {
                             //Manifest ok - plugin composition failed
@@ -522,6 +527,7 @@ namespace NINA.Plugin {
         public IList<IPluggableBehavior> PluggableBehaviors { get; private set; }
         public IDictionary<IPluginManifest, bool> Plugins { get; private set; }
         public IList<IEquipmentProvider> DeviceProviders { get; private set; }
+        public IList<Assembly> Assemblies { get; private set; } = new List<Assembly>();
 
         private readonly IProfileService profileService;
         private readonly ICameraMediator cameraMediator;
@@ -560,7 +566,18 @@ namespace NINA.Plugin {
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
-        private readonly IMessageBroker messageBroker;
+        private readonly IMessageBroker messageBroker; 
+        
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+            // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
+            var parts = args?.Name?.Split(',');
+            if (parts != null && parts.Length > 0) {
+                var name = parts[0];
+                var assembly = this.Assemblies.FirstOrDefault(x => x.GetName().Name == name);
+                return assembly;
+            }
+            return null;
+        }
 
         /// <summary>
         /// This returns a list of types in the NINA.Sequencer namespace to load the core plugins
