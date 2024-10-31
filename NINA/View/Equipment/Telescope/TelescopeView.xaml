@@ -578,6 +578,7 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="20" />
                                 <RowDefinition Height="100" />
                                 <RowDefinition Height="100" />
                                 <RowDefinition Height="100" />
@@ -657,7 +658,7 @@
                                 <ninactrl:StepperControl Value="{Binding Telescope.SecondaryMovingRate, Mode=TwoWay}" />
                             </StackPanel>
                             <Button
-                                Grid.Row="2"
+                                Grid.Row="3"
                                 Grid.Column="0"
                                 Width="80"
                                 Height="80"
@@ -692,7 +693,7 @@
                                 </i:Interaction.Triggers>
                             </Button>
                             <Button
-                                Grid.Row="2"
+                                Grid.Row="3"
                                 Grid.Column="2"
                                 Width="80"
                                 Height="80"
@@ -727,7 +728,7 @@
                                 </i:Interaction.Triggers>
                             </Button>
                             <Button
-                                Grid.Row="1"
+                                Grid.Row="2"
                                 Grid.Column="1"
                                 Width="80"
                                 Height="80"
@@ -762,7 +763,7 @@
                                 </i:Interaction.Triggers>
                             </Button>
                             <Button
-                                Grid.Row="3"
+                                Grid.Row="4"
                                 Grid.Column="1"
                                 Width="80"
                                 Height="80"
@@ -798,7 +799,7 @@
                                 </i:Interaction.Triggers>
                             </Button>
                             <Button
-                                Grid.Row="2"
+                                Grid.Row="3"
                                 Grid.Column="1"
                                 Width="80"
                                 Height="80"
@@ -808,7 +809,7 @@
                             </Button>
 
                             <Button
-                                Grid.Row="2"
+                                Grid.Row="4"
                                 Grid.Column="3"
                                 Width="80"
                                 Height="80"
@@ -823,9 +824,10 @@
                                 Width="80"
                                 Height="80"
                                 HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
                                 Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Button Command="{Binding UnparkCommand}" Visibility="{Binding TelescopeInfo.AtPark, Converter={StaticResource VisibilityConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblUnpark}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblUnpark}" TextWrapping="Wrap" />
                                 </Button>
                             </Grid>
 
@@ -833,10 +835,10 @@
                                 Grid.Row="3"
                                 Grid.Column="3"
                                 Width="80"
-                                Height="40"
+                                Height="80"
                                 Margin="0,0,0,0"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
+                                VerticalAlignment="Center"
                                 Command="{Binding SetParkPositionCommand}"
                                 Visibility="{Binding TelescopeInfo.CanSetPark, Converter={StaticResource VisibilityConverter}}">
                                 <Button.IsEnabled>
@@ -850,17 +852,17 @@
                                         <TextBlock Text="{ns:Loc LblSetParkToolTip}" />
                                     </ToolTip>
                                 </Button.ToolTip>
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" />
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" TextWrapping="Wrap" />
                             </Button>
 
                             <Button
-                                Grid.Row="3"
+                                Grid.Row="4"
                                 Grid.Column="3"
                                 Width="80"
-                                Height="40"
+                                Height="80"
                                 Margin="0,0,0,10"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
+                                VerticalAlignment="Top"
                                 Command="{Binding FindHomeCommand}"
                                 Visibility="{Binding TelescopeInfo.CanFindHome, Converter={StaticResource VisibilityConverter}}">
                                 <Button.IsEnabled>
@@ -875,11 +877,11 @@
                                         <TextBlock Text="{ns:Loc LblFindHomeToolTip}" />
                                     </ToolTip>
                                 </Button.ToolTip>
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblHome}" />
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblHome}" TextWrapping="Wrap" />
                             </Button>
 
                             <StackPanel
-                                Grid.Row="4"
+                                Grid.Row="5"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 HorizontalAlignment="Left"
