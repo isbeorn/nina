@@ -227,7 +227,13 @@ namespace NINA.Equipment.Equipment {
                     device = concreteDevice;
 
                     Logger.Trace($"{Name} - Calling Connect for {Id}");
-                    await device.ConnectAsync(token);
+
+                    int interfaceVersion = 1;
+                    try {
+                        interfaceVersion = device.InterfaceVersion;
+                    } catch { }
+
+                    await device.ConnectAsync(ToDeviceType(), interfaceVersion, token, logger: new AscomLogger());
                     lock (lockObj) {
                         connectedExpectation = true;
                         InvalidatePropertyCache();
@@ -245,6 +251,20 @@ namespace NINA.Equipment.Equipment {
                 return Connected;
             });
         }
+
+        private DeviceTypes ToDeviceType() => device switch {
+            ICameraV3 => DeviceTypes.Camera,
+            IDomeV2 => DeviceTypes.Dome,
+            IFilterWheelV2 => DeviceTypes.FilterWheel,
+            ICoverCalibratorV1 => DeviceTypes.CoverCalibrator,
+            IFocuserV3 => DeviceTypes.Focuser,
+            IRotatorV3 => DeviceTypes.Rotator,
+            ASCOM.Common.DeviceInterfaces.ISafetyMonitor => DeviceTypes.SafetyMonitor,
+            ISwitchV2 => DeviceTypes.Switch,
+            ITelescopeV3 => DeviceTypes.Telescope,
+            IObservingConditions => DeviceTypes.ObservingConditions,
+            _ => throw new ArgumentException("Unknown Device Type")
+        };
 
         protected abstract DeviceT GetInstance();
 
