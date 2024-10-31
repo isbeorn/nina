@@ -7041,4 +7041,7 @@
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Set current position to zero?</value>
   </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Crosshair</value>
+  </data>
 </root>

@@ -7064,4 +7064,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Set current position to zero?</value>
   </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Crosshair</value>
+  </data>
 </root>

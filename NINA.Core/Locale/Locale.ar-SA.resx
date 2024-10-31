@@ -7048,4 +7048,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Set current position to zero?</value>
   </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Crosshair</value>
+  </data>
 </root>

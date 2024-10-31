@@ -5834,10 +5834,10 @@ Umístění tohoto nastavení naleznete v příručce k fotoaparátu</value>
     <value>Aplikace {0} byla odpojena od počítače. Zkontrolujte jeho připojení USB a zdroj napájení</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} je již používán jiným programem. Před pokusem o opětovné připojení tento program zavřete nebo znovu připojte kameru k počítači.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} je již používán programem EOS Utility. Před pokusem o opětovné připojení ukončete program EOS Utility, včetně všech úloh na pozadí.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>V sadě Canon SDK došlo k vnitřní chybě. Může dojít k nespolehlivému provozu fotoaparátu</value>
@@ -7041,5 +7041,8 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Nastavení aktuální polohy na nulu?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Crosshair</value>
   </data>
 </root>

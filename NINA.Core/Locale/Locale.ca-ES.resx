@@ -5832,10 +5832,10 @@ Consulteu el manual de la càmera per conèixer la ubicació d'aquesta configura
     <value>{0} s'ha desconnectat de la computadora. Comprova si el USB està i el voltatge suficient</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} ja està en ús per un altre programa. Si us plau, tanqueu aquest programa abans de tornar a connectar-lo o torneu a connectar la càmera a l'ordinador.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} ja està utilitzant EOS Utility. Tanqueu EOS Utility, incloses les tasques en segon pla, abans de tornar a connectar-vos.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>El Canon SDK ha experimentat un error intern. Es pot produir un funcionament poc fiable de la càmera</value>
@@ -7040,5 +7040,8 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Voleu posar la posició actual a zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Punt de mira</value>
   </data>
 </root>

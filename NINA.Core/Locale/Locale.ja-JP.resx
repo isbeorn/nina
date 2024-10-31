@@ -5811,10 +5811,10 @@ Refer to your camera's manual for the location of this setting</value>
     <value>{0} has been disconnected from the computer. Check its USB connection and power source</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} はすでに別のプログラムで使用されています。このプログラムを閉じてから再接続するか、カメラをPCに再接続してください。</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} はすでにEOSユーティリティで使用されています。EOSユーティリティと全てのバックグラウンド・タスクを終了してから、再接続してください。</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>The Canon SDK has experienced an internal error. Unreliable camera operation might result</value>
@@ -7013,5 +7013,8 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
     <value>Set current position to zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>十字線</value>
   </data>
 </root>

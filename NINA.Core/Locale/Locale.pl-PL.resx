@@ -5828,10 +5828,10 @@ Dotyczy tylko sterownika kamery ASCOM!</value>
     <value>{0} został odłączony od komputera. Sprawdź jego połączenie USB i źródło zasilania</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} jest już używany przez inny program. Zamknij ten program przed ponownym połączeniem lub ponownie podłącz kamerę do komputera.</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} jest już w użyciu przez narzędzie EOS. Zamknij narzędzie EOS, w tym wszelkie zadania w tle, przed ponownym połączeniem.</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Pakiet Canon SDK napotkał błąd wewnętrzny. Może to prowadzić do błędnej pracy aparatu</value>
@@ -7026,15 +7026,18 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Wywołanie API Weather Underground nie powiodło się: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>Ustaw bieżącą pozycję na zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Odwróć</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>Ustaw maksymalny krok</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>Ustawić bieżącą pozycję na zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Krzyżyk</value>
   </data>
 </root>
