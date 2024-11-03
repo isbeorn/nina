@@ -114,7 +114,7 @@ namespace NINA.Sequencer.Conditions {
             get {
                 var duration = TimeSpan.FromHours(Hours) + TimeSpan.FromMinutes(Minutes) + TimeSpan.FromSeconds(Seconds);
                 if (startTime.HasValue) {
-                    var elapsed = DateTime.Now - startTime.Value;
+                    var elapsed = DateTime.UtcNow - startTime.Value;
                     if (previousRemainingTime > TimeSpan.Zero) {
                         elapsed = elapsed + duration - previousRemainingTime.Value;
                     }
@@ -141,7 +141,7 @@ namespace NINA.Sequencer.Conditions {
                     Logger.Info($"No more time remaining. Remaining: {RemainingTime}, Next Item {nextItem.Name ?? ""}, Next Item Estimated Duration {nextItemDuration}, Next Item Attempts: {nextItem.Attempts}");
                 }
                 // There is no time remaining due to the next instruction taking longer - cut off any remaining time
-                startTime = DateTime.Now.Subtract(TimeSpan.FromHours(Hours) + TimeSpan.FromMinutes(Minutes) + TimeSpan.FromSeconds(Seconds));
+                startTime = DateTime.UtcNow.Subtract(TimeSpan.FromHours(Hours) + TimeSpan.FromMinutes(Minutes) + TimeSpan.FromSeconds(Seconds));
                 RaisePropertyChanged(nameof(RemainingTime));
             }
             if (!hasTimeRemaining && IsActive()) {
@@ -151,7 +151,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         public override void SequenceBlockInitialize() {
-            startTime = DateTime.Now;
+            startTime = DateTime.UtcNow;
 
             ConditionWatchdog?.Start();
         }
@@ -166,7 +166,7 @@ namespace NINA.Sequencer.Conditions {
         public override void ResetProgress() {
             Status = SequenceEntityStatus.CREATED;
             previousRemainingTime = null;
-            startTime = DateTime.Now;
+            startTime = DateTime.UtcNow;
         }
 
         public override string ToString() {
