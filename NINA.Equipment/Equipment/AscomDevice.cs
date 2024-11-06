@@ -233,6 +233,8 @@ namespace NINA.Equipment.Equipment {
                         interfaceVersion = device.InterfaceVersion;
                     } catch { }
 
+                    var deviceType = ToDeviceType();
+                    Logger.Debug($"Connecting {deviceType} {DisplayName} with Interface Version {interfaceVersion}");
                     await device.ConnectAsync(ToDeviceType(), interfaceVersion, token, logger: new AscomLogger());
                     lock (lockObj) {
                         connectedExpectation = true;
