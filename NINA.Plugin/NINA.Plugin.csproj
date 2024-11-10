@@ -45,13 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NJsonSchema" Version="11.0.1" />
+    <PackageReference Include="NJsonSchema" Version="11.0.2" />
     <PackageReference Include="Trinet.Core.IO.Ntfs" Version="4.1.1" />
   </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.1.2.9001</Version>
+    <Version>3.2.0.1001-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>

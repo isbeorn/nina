@@ -24,6 +24,9 @@ namespace NINA.Utility {
 
             [Option(shortName: 'd', longName: "debug", Default = false, HelpText = "Activates Debug Mode in the application, revealing additional UI elements and features that are available only for development and testing purposes. This mode is intended to assist developers and testers in diagnosing issues, understanding application flow, and verifying UI elements that are not accessible in the standard operation mode.")]
             public bool Debug { get; set; }
+
+            [Option(shortName: 'g', longName: "disable-hardware-acceleration", Default = false, HelpText = "Disables UI hardware acceleration")]
+            public bool DisableHardwareAcceleration { get; set; }
         }
 
         public CommandLineOptions(string[] args) {
@@ -42,6 +45,7 @@ namespace NINA.Utility {
         public bool ExitAfterSequence { get; private set; }
         public bool HasErrors { get; private set; }
         public bool Debug { get; private set; }
+        public bool DisableHardwareAcceleration { get; private set; }
 
         private void CaptureOptions(Options opts) {
             ProfileId = opts.ProfileId;
@@ -49,6 +53,7 @@ namespace NINA.Utility {
             RunSequence = opts.RunSequence;
             ExitAfterSequence = opts.ExitAfterSequence;
             Debug = opts.Debug;
+            DisableHardwareAcceleration = opts.DisableHardwareAcceleration;
         }
 
         private void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs) {

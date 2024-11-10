@@ -86,7 +86,7 @@ namespace NINA.Sequencer.SequenceItem.Guider {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTimeout);
+            return TimeSpan.FromSeconds(Math.Min(profileService.ActiveProfile.GuiderSettings.SettleTimeout, 300));
         }
     }
 }

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyFlatDevice {
 
-    public class AscomCoverCalibrator : AscomDevice<ICoverCalibratorV1>, IFlatDevice, IDisposable {
+    public class AscomCoverCalibrator : AscomDevice<ICoverCalibratorV2>, IFlatDevice, IDisposable {
 
         public AscomCoverCalibrator(string id, string name) : base(id, name) {
         }
@@ -172,7 +172,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
             return Task.CompletedTask;
         }
 
-        protected override ICoverCalibratorV1 GetInstance() {
+        protected override ICoverCalibratorV2 GetInstance() {
             if (deviceMeta == null) {
                 return new CoverCalibrator(Id);
             } else {

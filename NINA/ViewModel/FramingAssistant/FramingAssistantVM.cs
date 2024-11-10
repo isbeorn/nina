@@ -91,7 +91,7 @@ namespace NINA.ViewModel.FramingAssistant {
             this.imageDataFactory = imageDataFactory;
             this.windowServiceFactory = windowServiceFactory;
 
-            SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator);
+            SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator, profileService);
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
@@ -623,7 +623,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 Cache.DeleteFromCache(elem);
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             }
-        }        
+        }
 
         public static string FRAMINGASSISTANTCACHEPATH = Path.Combine(NINA.Core.Utility.CoreUtil.APPLICATIONTEMPPATH, "FramingAssistantCache");
         public static string FRAMINGASSISTANTCACHEINFOPATH = Path.Combine(FRAMINGASSISTANTCACHEPATH, "CacheInfo.xml");
@@ -1146,7 +1146,7 @@ namespace NINA.ViewModel.FramingAssistant {
                         await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, AstroUtil.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, Cache, _loadImageSource.Token);
                         SkyMapAnnotator.DynamicFoV = FramingAssistantSource == SkySurveySource.SKYATLAS;
                         CalculateRectangle(SkyMapAnnotator.ViewportFoV);
-                        if(FramingAssistantSource != SkySurveySource.FILE) { 
+                        if (FramingAssistantSource != SkySurveySource.FILE) {
                             RectangleTotalRotation = profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
                         }
                     }
@@ -1183,9 +1183,9 @@ namespace NINA.ViewModel.FramingAssistant {
             var diag = windowServiceFactory.Create();
             await diag.ShowDialog(framingPlateSolveParameter, Loc.Instance["LblPlateSolveRequired"]);
 
-            if(framingPlateSolveParameter.DoBlindSolve == null) { throw new OperationCanceledException(); }
+            if (framingPlateSolveParameter.DoBlindSolve == null) { throw new OperationCanceledException(); }
             //var diagResult = MyMessageBox.Show(string.Format(Loc.Instance["LblBlindSolveAttemptForFraming"], referenceCoordinates.RAString, referenceCoordinates.DecString), Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
-            
+
             if (framingPlateSolveParameter.DoBlindSolve == true) {
                 framingPlateSolveParameter.Coordinates = null;
                 skySurveyImage.Data.MetaData.Target.Coordinates = new Coordinates(Angle.Zero, Angle.Zero, Epoch.J2000);
@@ -1193,7 +1193,7 @@ namespace NINA.ViewModel.FramingAssistant {
             var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
             var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
 
-            
+
 
             var parameter = new PlateSolveParameter() {
                 Binning = framingPlateSolveParameter.Binning,
@@ -1306,8 +1306,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (SelectedOverlapUnit == "%") {
                         panelOverlapWidth = CameraWidth * OverlapPercentage * conversion;
                         panelOverlapHeight = CameraHeight * OverlapPercentage * conversion;
-                    }
-                    else { // px
+                    } else { // px
                         panelOverlapWidth = OverlapPixels * conversion;
                         panelOverlapHeight = OverlapPixels * conversion;
                     }
@@ -1555,7 +1554,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand CancelSlewToCoordinatesCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
-        public ICommand DeleteCacheEntryCommand { get; private set; }        
+        public ICommand DeleteCacheEntryCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; private set; }
         public ICommand RefreshSkyMapAnnotationCommand { get; private set; }
         public ICommand MouseWheelCommand { get; private set; }

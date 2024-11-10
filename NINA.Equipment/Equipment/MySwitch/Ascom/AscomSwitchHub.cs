@@ -25,7 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
-    public partial class AscomSwitchHub : AscomDevice<ISwitchV2>, ISwitchHub, IDisposable {
+    public partial class AscomSwitchHub : AscomDevice<ISwitchV3>, ISwitchHub, IDisposable {
         public AscomSwitchHub(string id, string name) : base(id, name) {
             switches = new AsyncObservableCollection<ISwitch>();
         }
@@ -84,7 +84,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
             Switches = new AsyncObservableCollection<ISwitch>();
         }
 
-        protected override ISwitchV2 GetInstance() {
+        protected override ISwitchV3 GetInstance() {
             if (deviceMeta == null) {
                 return new Switch(Id);
             } else {

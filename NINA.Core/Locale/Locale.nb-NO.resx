@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -5824,6 +5824,12 @@ Se bruksanvisningen for denne innstillingen</value>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} har blitt koblet fra datamaskinen. Sjekk USB-tilkoblingen og strømkilden</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} er allerede i bruk av et annet program. Lukk dette programmet før du prøver å koble til på nytt, eller koble kameraet til PCen på nytt.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} er allerede i bruk av EOS Utility. Lukk EOS Utility, inkludert eventuelle bakgrunnsoppgaver, før du prøver å koble til på nytt.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Canon SDK har støtt på en intern feil. Kommunikasjon med kamera kan være upålitelig etter dette</value>
   </data>
@@ -6942,13 +6948,13 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Minste eksponeringstid er høyere enn maksimal eksponeringstid!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+    <value>Kan ikke gjøre dither mellom himmelflatbilder når teleskopet ikke støtter puls-guiding</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+    <value>Kan ikke gjøre dither mellom himmelflatbilder når ingen montering er tilkoblet</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+    <value>Kan ikke gjøre dither mellom himmelflatbilder når teleskopet er parkert</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
     <value>Minste eksponeringstid er høyere enn maksimal eksponeringstid!</value>
@@ -6981,22 +6987,49 @@ Det er nødvendig at ASCOM-driveren som brukes også støtter 32-bit dybde; hvis
     <value>Vertsnavn til PHD2 server mangler</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>Kopierer gjeldende fargeskjema til det justerbare "Alternativt egendefinert" fargeskjema</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>Kopierer gjeldende fargeskjema til det justerbare "Egendefinert" fargeskjema</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Lys</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>Lagrer gjeldende sekvens i den angitte filbanen</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Lagre sekvens</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>Filbanen er ugyldig</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>Weather Underground API-nøkkel er ikke angitt i innstillingene.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>Weather Underground stasjon er ikke angitt i innstillingene.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Weather Underground APIet svarte ikke.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Weather Underground API-forespørsel feilet: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Sett gjeldende posisjon til null</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Omvendt</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Angi største steglengde</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Sett gjeldende posisjon til null?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Trådkors</value>
   </data>
 </root>

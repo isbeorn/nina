@@ -15,6 +15,7 @@
     <SolidColorBrush x:Key="ButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonBackgroundSelectedColor}" />
     <SolidColorBrush x:Key="ButtonForegroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonForegroundColor}" />
     <SolidColorBrush x:Key="ButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonForegroundDisabledColor}" />
+    <SolidColorBrush x:Key="CrosshairBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.CrosshairColor}" />
     <SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.BackgroundColor}" />
     <SolidColorBrush x:Key="NotificationWarningBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningColor}" />
     <SolidColorBrush x:Key="NotificationErrorBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorColor}" />
@@ -30,6 +31,7 @@
     <SolidColorBrush x:Key="AltButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonBackgroundSelectedColor}" />
     <SolidColorBrush x:Key="AltButtonForegroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonForegroundColor}" />
     <SolidColorBrush x:Key="AltButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonForegroundDisabledColor}" />
+    <SolidColorBrush x:Key="AltCrosshairBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.CrosshairColor}" />
     <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.BackgroundColor}" />
     <SolidColorBrush x:Key="AltNotificationWarningBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationWarningColor}" />
     <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationErrorColor}" />

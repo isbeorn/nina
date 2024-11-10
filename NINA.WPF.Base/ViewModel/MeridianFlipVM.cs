@@ -98,10 +98,12 @@ namespace NINA.WPF.Base.ViewModel {
             get => _status;
             set {
                 _status = value;
-                _status.Source = "MeridianFlip";
-                RaisePropertyChanged();
+                if(value != null) {
+                    value.Source = "MeridianFlip";
+                    RaisePropertyChanged();
 
-                this.applicationStatusMediator.StatusUpdate(_status);
+                    this.applicationStatusMediator.StatusUpdate(value);
+                }                
             }
         }
 

@@ -108,7 +108,7 @@ namespace NINA.Test.Sequencer.Trigger.Dome {
             domeInfo.Azimuth = currentAzimuth;
             var targetAzimuth = 10.1d;
             var targetAltitude = 30.0d;
-            var targetCoordinates = new TopocentricCoordinates(Angle.ByDegree(targetAzimuth), Angle.ByDegree(targetAltitude), Angle.ByDegree(0), Angle.ByDegree(0));
+            var targetCoordinates = new TopocentricCoordinates(Angle.ByDegree(targetAzimuth), Angle.ByDegree(targetAltitude), Angle.ByDegree(0), Angle.ByDegree(0), 0);
             domeFollowerMock.Setup(x => x.GetSynchronizedDomeCoordinates(It.IsAny<TelescopeInfo>())).Returns(targetCoordinates);
             domeFollowerMock.Setup(x => x.IsDomeWithinTolerance(It.IsAny<Angle>(), It.IsAny<TopocentricCoordinates>())).Returns(withinTolerance);
 

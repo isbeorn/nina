@@ -49,6 +49,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Windows;
 using Trinet.Core.IO.Ntfs;
@@ -56,10 +57,6 @@ using Trinet.Core.IO.Ntfs;
 namespace NINA.Plugin {
 
     public partial class PluginLoader : IPluginLoader {
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool AddDllDirectory(string lpPathName);
 
         public PluginLoader(IProfileService profileService,
                               ICameraMediator cameraMediator,
@@ -147,7 +144,6 @@ namespace NINA.Plugin {
                 new SunriseProvider(nighttimeCalculator),
                 new MeridianProvider(profileService)
             };
-            assemblyReferencePathMap = new Dictionary<string, string>();
             compatibilityMap = new PluginCompatibilityMap();
         }
 
@@ -338,30 +334,12 @@ namespace NINA.Plugin {
                 }
                 
                 var references = PluginAssemblyReader.GrabAssemblyReferences(file);
-
-                var pluginDllDirectory = new DirectoryInfo(Path.Combine(pluginFileInfo.Directory.FullName, "dll"));
-                if (pluginDllDirectory.Exists) {
-                    // If there's a dll sub-directory, enumerate the references for any potentially matching dlls, and add them
-                    // to a dictionary that can be used by the assembly resolver
-                    foreach (var reference in references) {
-                        if (assemblyReferencePathMap.ContainsKey(reference)) {
-                            continue;
-                        }
-
-                        var assemblyName = new AssemblyName(reference);
-                        var assemblyPath = Path.Combine(pluginDllDirectory.FullName, assemblyName.Name + ".dll");
-                        if (!File.Exists(assemblyPath)) {
-                            continue;
-                        }
-                        assemblyReferencePathMap.Add(reference, assemblyPath);
-                    }
-                }
-
                 if (references.FirstOrDefault(x => x.Contains("NINA.Plugin")) != null) {
                     try {
-                        var assembly = Assembly.LoadFrom(file);
-                        var plugin = new AssemblyCatalog(assembly);
+                        var context = new PluginAssemblyLoadContext(Guid.NewGuid().ToString(), file);
+                        var assembly = context.LoadFromAssemblyPath(file);                       
 
+                        var plugin = new AssemblyCatalog(assembly);
                         var manifestImport = new ManifestImport();
                         var container = GetContainer(plugin);
                         container.ComposeParts(manifestImport);
@@ -406,13 +384,9 @@ namespace NINA.Plugin {
 
                             Plugins[manifest] = true;
 
-                            //Add the loaded plugin assembly to the assembly resolver
+                            //Add the loaded plugin assembly to the assembly resolver to be able to deserialize the type
                             Assemblies.Add(plugin.Assembly);
 
-                            // If there's a dll sub-directory for the plugin, add it to the dll search path to help deal with subsequent loads
-                            if (pluginDllDirectory.Exists && !AddDllDirectory(pluginDllDirectory.FullName)) {
-                                Logger.Warning($"Failed to add {pluginDllDirectory.FullName} to dll search path");
-                            }
                             Logger.Info($"Successfully loaded plugin {manifest.Name} version {manifest.Version} by {manifest.Author}");
                         } catch (Exception ex) {
                             //Manifest ok - plugin composition failed
@@ -552,8 +526,8 @@ namespace NINA.Plugin {
         public IList<IDockableVM> DockableVMs { get; private set; }
         public IList<IPluggableBehavior> PluggableBehaviors { get; private set; }
         public IDictionary<IPluginManifest, bool> Plugins { get; private set; }
-        public IList<Assembly> Assemblies { get; private set; } = new List<Assembly>();
         public IList<IEquipmentProvider> DeviceProviders { get; private set; }
+        public IList<Assembly> Assemblies { get; private set; } = new List<Assembly>();
 
         private readonly IProfileService profileService;
         private readonly ICameraMediator cameraMediator;
@@ -592,21 +566,17 @@ namespace NINA.Plugin {
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
-        private readonly IMessageBroker messageBroker;
-        private readonly Dictionary<string, string> assemblyReferencePathMap;
-
+        private readonly IMessageBroker messageBroker; 
+        
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            var assembly = this.Assemblies.FirstOrDefault(x => x.GetName().Name == args.Name);
-            if (assembly == null) {
-                if (assemblyReferencePathMap.TryGetValue(args.Name, out string assemblyPath)) {
-                    try {
-                        assembly = Assembly.LoadFrom(assemblyPath);
-                    } catch (Exception) {
-                        Logger.Warning($"Failed to load dependent assembly {args.Name} using {assemblyPath}");
-                    }
-                }
+            // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
+            var parts = args?.Name?.Split(',');
+            if (parts != null && parts.Length > 0) {
+                var name = parts[0];
+                var assembly = this.Assemblies.FirstOrDefault(x => x.GetName().Name == name);
+                return assembly;
             }
-            return assembly;
+            return null;
         }
 
         /// <summary>
@@ -693,6 +663,29 @@ namespace NINA.Plugin {
                 return Loc.Instance[label];
             } else {
                 return label;
+            }
+        }
+
+        private class PluginAssemblyLoadContext : AssemblyLoadContext {
+
+            private string[] dllFiles;
+
+            public PluginAssemblyLoadContext(string name, string directory, bool isCollectible = false) : base(name, isCollectible) {
+                this.dllFiles = Directory.GetFiles(Path.GetDirectoryName(directory), "*.dll", SearchOption.AllDirectories);
+                this.Resolving += PluginAssemblyLoadContext_Resolving;
+            }
+
+            private Assembly PluginAssemblyLoadContext_Resolving(AssemblyLoadContext assemblyLoadContext, AssemblyName assemblyName) {
+                var dependencyPath = dllFiles.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x) == assemblyName.Name);
+                Assembly assembly = null;
+                if (dependencyPath != null) {
+                    try {
+                        assembly = assemblyLoadContext.LoadFromAssemblyPath(dependencyPath);
+                    } catch (Exception) {
+                        Logger.Warning($"Failed to load dependent assembly {assemblyName.Name} using {dependencyPath}");
+                    }
+                }
+                return assembly;
             }
         }
     }

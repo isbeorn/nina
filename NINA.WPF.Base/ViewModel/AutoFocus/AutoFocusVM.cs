@@ -152,6 +152,7 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
             bool completed = false;
             using (var stopWatch = MyStopWatch.Measure()) {
                 try {
+                    focuserMediator.BroadcastAutoFocusRunStarting();
                     if (focuserMediator.GetInfo().TempCompAvailable && focuserMediator.GetInfo().TempComp) {
                         tempComp = true;
                         focuserMediator.ToggleTempComp(false);

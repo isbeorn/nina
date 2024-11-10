@@ -26,7 +26,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
-    internal class AscomRotator : AscomDevice<IRotatorV3>, IRotator, IDisposable {
+    internal class AscomRotator : AscomDevice<IRotatorV4>, IRotator, IDisposable {
 
         public AscomRotator(string id, string name) : base(id, name) {
         }
@@ -123,7 +123,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
             return Task.CompletedTask;
         }
 
-        protected override IRotatorV3 GetInstance() {
+        protected override IRotatorV4 GetInstance() {
             if (deviceMeta == null) {
                 return new Rotator(Id);
             } else {

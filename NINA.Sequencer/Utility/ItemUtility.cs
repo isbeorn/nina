@@ -34,7 +34,7 @@ namespace NINA.Sequencer.Utility {
                 var container = parent as IDeepSkyObjectContainer;
                 if (container != null && container.Target != null && container.Target.InputCoordinates != null && container.Target.DeepSkyObject != null) {
                     return new ContextCoordinates(
-                        container.Target.InputCoordinates.Coordinates, 
+                        container.Target.InputCoordinates.Coordinates,
                         container.Target.PositionAngle,
                         container.Target.DeepSkyObject.ShiftTrackingRate);
                 } else {
@@ -163,10 +163,6 @@ namespace NINA.Sequencer.Utility {
 
         public static double ReferenceDays(double longitude) {
             return ReferenceDays(DateTime.UtcNow, longitude);
-         }
-
-        public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double targetAltitude) {
-            return CalculateTimeAtAltitude(coord, latitude, longitude, targetAltitude, DateTime.Now);
         }
 
         private const int LOOP_INTERVAL = 5;  // How many minutes for each loop
@@ -252,7 +248,7 @@ namespace NINA.Sequencer.Utility {
                 }
                 startTime = startTime.AddMinutes(interval);
             }
-            
+
             Logger.Debug(data.Name + ": CalculateExpectedTime failed after " + ++iterations + " iterations, Custom: " + data.UseCustomHorizon);
             data.ExpectedDateTime = startTime;
             data.ExpectedTime = "--";
@@ -265,21 +261,21 @@ namespace NINA.Sequencer.Utility {
             CalculateExpectedTimeCommon(data, until, allowance, getCurrentAltitude);
         }
 
-            /*
-             * info: common instruction info
-             * offset: is the offset for rise/set for the sun and moon
-             * until: true if the instruction is "<instruction> UNTIL <altitude>" as opposed to "<instruction> IF <altitude>"
-             * allowance: the amount of slop we allow when confirming time estimates, in minutes.  For DSO's this is minimal, since
-             *   their RA/Dec doesn't change (just a matter of getting to the minute.  For the Sun, a bit more is needed, and for
-             *   the Moon, a fair bit more since coordinates change rapidly
-             * func: a function that returns the sun/moon's altitude at a given time
-             * 
-             * We either know that the expected time is "Now" (i.e. the condition is already met) or we will iterate to find
-             * the actual time
-             */
+        /*
+         * info: common instruction info
+         * offset: is the offset for rise/set for the sun and moon
+         * until: true if the instruction is "<instruction> UNTIL <altitude>" as opposed to "<instruction> IF <altitude>"
+         * allowance: the amount of slop we allow when confirming time estimates, in minutes.  For DSO's this is minimal, since
+         *   their RA/Dec doesn't change (just a matter of getting to the minute.  For the Sun, a bit more is needed, and for
+         *   the Moon, a fair bit more since coordinates change rapidly
+         * func: a function that returns the sun/moon's altitude at a given time
+         * 
+         * We either know that the expected time is "Now" (i.e. the condition is already met) or we will iterate to find
+         * the actual time
+         */
         public static void CalculateExpectedTimeCommon(WaitLoopData data, bool until, int allowance, Func<DateTime, ObserverInfo, double> getCurrentAltitude) {
             // Don't waste time on constructors
-            if (data == null) { return; }            
+            if (data == null) { return; }
             if (data.Coordinates == null) { return; }
 
             Coordinates coord = data.Coordinates.Coordinates;
@@ -295,7 +291,7 @@ namespace NINA.Sequencer.Utility {
                 }
             }
 
-            RiseSetMeridian rsm = CalculateTimeAtAltitude(coord, data.Latitude, data.Longitude, targetAltitude);
+            RiseSetMeridian rsm = CalculateTimeAtAltitude(coord, data.Latitude, data.Longitude, data.Elevation, targetAltitude);
             data.IsRising = rsm.IsRising;
 
             // Not thrilled with this exception, but don't want a more significant refactor at this point
@@ -328,11 +324,24 @@ namespace NINA.Sequencer.Utility {
             }
         }
 
+        [Obsolete("Use CalculateTimeAtAltitude with elevation provided")]
+        public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double targetAltitude) {
+            return CalculateTimeAtAltitude(coord, latitude, longitude, 0, targetAltitude, DateTime.Now);
+        }
+        [Obsolete("Use CalculateTimeAtAltitude with elevation provided")]
         public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double targetAltitude, DateTime time) {
+            return CalculateTimeAtAltitude(coord, latitude, longitude, 0, targetAltitude, time);
+        }
+
+        public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double elevation, double targetAltitude) {
+            return CalculateTimeAtAltitude(coord, latitude, longitude, elevation, targetAltitude, DateTime.Now);
+        }
+
+        public static RiseSetMeridian CalculateTimeAtAltitude(Coordinates coord, double latitude, double longitude, double elevation, double targetAltitude, DateTime time) {
             int tzoHours = new DateTimeOffset(time).Offset.Hours;
             double ra = coord.RADegrees;
             double dec = coord.Dec;
-            var altaz = coord.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), time);
+            var altaz = coord.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation, time);
             double currentAltitude = altaz.Altitude.Degree;
             bool isRising = altaz.AltitudeSite == Core.Enum.AltitudeSite.EAST;
 

@@ -34,7 +34,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +53,7 @@
   <PropertyGroup>
     <Description>This assembly contains the profile related components of N.I.N.A.</Description>
     <Title>$(AssemblyName)</Title>
-    <Version>3.1.2.9001</Version>
+    <Version>3.2.0.1001-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>

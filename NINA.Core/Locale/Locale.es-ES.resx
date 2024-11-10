@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -5828,6 +5828,12 @@ Consulta el manual de la cámara para ver la localización de este ajuste</value
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} ha sido desconectado por el ordenador. Comprueba tanto su conexión USB como la fuente de alimentación</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} ya está siendo usado por otro programa. Por favor, cierra ese programa antes de intentar volver a conectar, o vuelve a conectar la cámara al PC.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} ya está siendo usado por EOS Utility. Por favor, cierre la utilidad de EOS, incluyendo cualquier tarea en segundo plano, antes de intentar reconectar.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>El SDK de Canon ha sufrido un error interno. Puede provocar un comportamiento no fiable de la cámara</value>
   </data>
@@ -7006,5 +7012,32 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>La ruta es inválida</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>There is no Weather Underground API key configured.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>There is no Weather Underground station configured.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Weather Underground API did not respond.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Weather Underground API request failed: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Set current position to zero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Set max step</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Set current position to zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Punto de mira</value>
   </data>
 </root>

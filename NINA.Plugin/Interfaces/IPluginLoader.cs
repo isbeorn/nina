@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 namespace NINA.Plugin.Interfaces {
 
     public interface IPluginLoader {
-        IList<Assembly> Assemblies { get; }
         IDictionary<IPluginManifest, bool> Plugins { get; }
         IList<ISequenceCondition> Conditions { get; }
         IList<ISequenceContainer> Container { get; }

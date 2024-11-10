@@ -91,7 +91,7 @@ namespace NINA.Test.Dome {
             mockSafetyMonitorMediator = new Mock<ISafetyMonitorMediator>();
             mockDomeFollower = new Mock<IDomeFollower>();
             mockDomeFollower.Setup(x => x.GetSynchronizedDomeCoordinates(It.IsAny<TelescopeInfo>())).Returns(
-                () => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: Angle.ByDegree(0), longitude: Angle.ByDegree(0)));
+                () => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: Angle.ByDegree(0), longitude: Angle.ByDegree(0), elevation: 0));
             mockDeviceUpdateTimer = new Mock<IDeviceUpdateTimer>();
             mockDeviceUpdateTimerFactory = new Mock<IDeviceUpdateTimerFactory>();
             mockDeviceUpdateTimerFactory

@@ -26,7 +26,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyFocuser {
 
-    internal class AscomFocuser : AscomDevice<IFocuserV3>, IFocuser, IDisposable {
+    internal class AscomFocuser : AscomDevice<IFocuserV4>, IFocuser, IDisposable {
 
         public AscomFocuser(string focuser, string name) : base(focuser, name) {
         }
@@ -178,7 +178,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             return Task.CompletedTask;
         }
 
-        protected override IFocuserV3 GetInstance() {
+        protected override IFocuserV4 GetInstance() {
             if (deviceMeta == null) {
                 return new Focuser(Id);
             } else {

@@ -291,7 +291,7 @@ namespace NINA.Astrometry {
                                     };
 
                         if (!string.IsNullOrEmpty(searchParams.Constellation)) {
-                            query = query.Where(x => x.constellation == searchParams.Constellation);
+                            query = query.Where(x => x.constellation.ToLower() == searchParams.Constellation.ToLower());
                         }
 
                         if (searchParams.RightAscension.From != null && (searchParams.RightAscension.Thru == null || searchParams.RightAscension.Thru > searchParams.RightAscension.From)) {

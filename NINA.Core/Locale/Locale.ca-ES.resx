@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1674,7 +1674,7 @@ HFR calculat: {2}    </value>
     <value>No s'ha detectat cap dispositiu {0}</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Importa la ubicació des d'un dispositiu GNSS</value>
+    <value>Informa la ubicació des d'un dispositiu GNSS</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guiatge</value>
@@ -2354,7 +2354,7 @@ HFR calculat: {2}    </value>
     <value>Port del Servidor de PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>Nom del servidor de PHD2</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Configuració de PHD2</value>
@@ -5831,6 +5831,12 @@ Consulteu el manual de la càmera per conèixer la ubicació d'aquesta configura
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} s'ha desconnectat de la computadora. Comprova si el USB està i el voltatge suficient</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} ja està en ús per un altre programa. Si us plau, tanqueu aquest programa abans de tornar a connectar-lo o torneu a connectar la càmera a l'ordinador.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} ja està utilitzant EOS Utility. Tanqueu EOS Utility, incloses les tasques en segon pla, abans de tornar a connectar-vos.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>El Canon SDK ha experimentat un error intern. Es pot produir un funcionament poc fiable de la càmera</value>
   </data>
@@ -6987,28 +6993,55 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>El moviment del focus s'ha esgotat després de {0} minuts.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>Fallada en resoldre el nom del servit PHD2: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>No s'ha establert nom de servidor PHD2</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>Còpia els colors de l'actual esquema de color a l'esquema ajustable de color "Personalització "alternativa"</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>Còpia els colors de l’esquema de color a l'esquema ajustable de color "Personalitza"</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Llum</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>Guarda la seqüència actual en la ruta especificada</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Desar la Seqüència</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>La ruta és invalida</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>No hi ha cap clau API de Werther Underground configurada.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>No hi ha cap estació de Weather Underground configurada.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>L' API de Weather Underground no respon.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>La sol·licitud de l'API Weather Underground ha fallat: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Estableix la posició actual a zero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Invertir</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Estableix el pas màxim</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Voleu posar la posició actual a zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Punt de mira</value>
   </data>
 </root>

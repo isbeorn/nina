@@ -258,6 +258,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 localSiderealTime: telescopeInfo.SiderealTime,
                 siteLatitude: Angle.ByDegree(telescopeInfo.SiteLatitude),
                 siteLongitude: Angle.ByDegree(telescopeInfo.SiteLongitude),
+                siteElevation: telescopeInfo.SiteElevation,
                 sideOfPier: targetSideOfPier);
             return targetDomeCoordinates;
         }

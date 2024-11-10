@@ -36,7 +36,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyTelescope {
 
-    internal class AscomTelescope : AscomDevice<ITelescopeV3>, ITelescope, IDisposable {
+    internal class AscomTelescope : AscomDevice<ITelescopeV4>, ITelescope, IDisposable {
         private static readonly TimeSpan MERIDIAN_FLIP_SLEW_RETRY_WAIT = TimeSpan.FromMinutes(1);
         private const int MERIDIAN_FLIP_SLEW_RETRY_ATTEMPTS = 20;
         private const double TRACKING_RATE_EPSILON = 0.000001;
@@ -387,7 +387,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                             break;
                         } else {
                             var jsnowCoordinates = targetCoordinates.Transform(Epoch.JNOW);
-                            var topocentricCoordinates = jsnowCoordinates.Transform(latitude: Angle.ByDegree(SiteLatitude), longitude: Angle.ByDegree(SiteLongitude));
+                            var topocentricCoordinates = jsnowCoordinates.Transform(latitude: Angle.ByDegree(SiteLatitude), longitude: Angle.ByDegree(SiteLongitude), SiteElevation);
                             Logger.Warning($"Failed to slew for Meridian Flip. Retry {retries} of {MERIDIAN_FLIP_SLEW_RETRY_ATTEMPTS} times with a {MERIDIAN_FLIP_SLEW_RETRY_WAIT} wait between each.  " +
                                 $"SideOfPier: {SideOfPier}, RA: {jsnowCoordinates.RAString}, Dec: {jsnowCoordinates.DecString}, Azimuth: {topocentricCoordinates.Azimuth}");
 
@@ -1000,7 +1000,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             return Task.CompletedTask;
         }
 
-        protected override ITelescopeV3 GetInstance() {
+        protected override ITelescopeV4 GetInstance() {
             if (deviceMeta == null) {
                 return new Telescope(Id);
             } else {

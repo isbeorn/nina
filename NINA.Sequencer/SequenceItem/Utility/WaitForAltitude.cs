@@ -76,7 +76,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
                 var coordinates = Data.Coordinates.Coordinates;
-                var altaz = coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude));
+                var altaz = coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude), Data.Elevation);
                 progress?.Report(new ApplicationStatus() {
                     Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitForAltitude_Progress"], Math.Round(altaz.Altitude.Degree, 2), Data.TargetAltitude)
                 });
@@ -92,7 +92,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public double GetCurrentAltitude(DateTime time, ObserverInfo observer) {
-            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), time);
+            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation, time);
             return altaz.Altitude.Degree;
         }
 

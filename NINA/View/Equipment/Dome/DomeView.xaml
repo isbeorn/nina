@@ -220,7 +220,7 @@
                                     Margin="5"
                                     Command="{Binding SyncCommand}"
                                     Visibility="{Binding DomeInfo.CanSyncAzimuth, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeSyncAzimuth}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeSyncAzimuth}" TextWrapping="Wrap" />
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
                                             <TextBlock Text="{ns:Loc LblDomeSyncAzimuthTooltip}" />
@@ -234,7 +234,7 @@
                                     Command="{Binding FindHomeCommand}"
                                     IsEnabled="{Binding DomeInfo.AtHome, Converter={StaticResource InverseBooleanConverter}}"
                                     Visibility="{Binding DomeInfo.CanFindHome, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeFindHome}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeFindHome}" TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -250,7 +250,7 @@
                 <GroupBox Grid.Row="1" Header="{ns:Loc LblManualControl}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="180" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
@@ -381,9 +381,9 @@
                                         </TextBox.Text>
                                     </ninactrl:UnitTextBox>
                                     <Button
-                                        Width="40"
+                                        Width="80"
                                         Height="40"
-                                        Margin="5"
+                                        Margin="10,5,5,5"
                                         HorizontalAlignment="Right"
                                         Command="{Binding ManualSlewCommand}">
                                         <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
@@ -431,7 +431,7 @@
                                 </Button>
                                 <Button
                                     Width="80"
-                                    Height="40"
+                                    Height="80"
                                     Margin="5"
                                     Command="{Binding SetParkPositionCommand}"
                                     IsEnabled="{Binding DomeInfo.AtPark, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}"
@@ -441,7 +441,7 @@
                                             <TextBlock Text="{ns:Loc LblSetParkToolTip}" />
                                         </ToolTip>
                                     </Button.ToolTip>
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>

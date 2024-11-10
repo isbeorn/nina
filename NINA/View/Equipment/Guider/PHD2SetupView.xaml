@@ -60,7 +60,7 @@
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding OpenPHD2DiagCommand}">
+                    Command="{Binding OpenPHD2FileDialogCommand}">
                     <Path
                         Margin="2,10,2,0"
                         Data="{StaticResource DotsSVG}"

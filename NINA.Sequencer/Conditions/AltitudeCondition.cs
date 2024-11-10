@@ -81,7 +81,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         public double GetCurrentAltitude(DateTime time, ObserverInfo observer) {
-            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), time);
+            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation, time);
             return altaz.Altitude.Degree;
         }
 

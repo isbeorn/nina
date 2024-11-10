@@ -33,6 +33,17 @@ namespace NINA.Equipment.Equipment.MyDome {
             this.profileService = profileService;
         }
 
+        [Obsolete("Use interface that provides site elevation")]
+        public TopocentricCoordinates TargetDomeCoordinates(
+            Coordinates scopeCoordinates,
+            double localSiderealTime,
+            Angle siteLatitude,
+            Angle siteLongitude,
+            PierSide sideOfPier) {
+            return TargetDomeCoordinates(scopeCoordinates: scopeCoordinates, localSiderealTime: localSiderealTime, siteLatitude: siteLatitude, siteLongitude: siteLongitude, siteElevation: 0, sideOfPier: sideOfPier);
+        }
+
+
         /// <summary>
         /// Gets the dome coordinates required so the scope points directly out of the shutter. This works for Alt-Az, EQ mounts, and fork mounts on a wedge
         /// and depends on careful user measurements including:
@@ -62,6 +73,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             double localSiderealTime,
             Angle siteLatitude,
             Angle siteLongitude,
+            double siteElevation,
             PierSide sideOfPier) {
             scopeCoordinates = scopeCoordinates.Transform(Epoch.JNOW);
             var domeSettings = profileService.ActiveProfile.DomeSettings;
@@ -109,7 +121,8 @@ namespace NINA.Equipment.Equipment.MyDome {
                 azimuth: Angle.ByRadians(domeAzimuthRadians),
                 altitude: Angle.ByRadians(domeAltitudeRadians),
                 latitude: siteLatitude,
-                longitude: siteLongitude);
+                longitude: siteLongitude,
+                elevation: siteElevation);
         }
 
         private Matrix4x4 CalculateForkOnWedge(

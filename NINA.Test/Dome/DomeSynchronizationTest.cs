@@ -30,6 +30,7 @@ namespace NINA.Test.Dome {
     public class DomeSynchronizationTest {
         private double siteLatitude;
         private double siteLongitude;
+        private double siteElevation;
         private double localSiderealTime;
         private DatabaseInteraction db;
         private static Angle DEGREES_EPSILON = Angle.ByDegree(0.1);
@@ -50,7 +51,8 @@ namespace NINA.Test.Dome {
             double mountOffsetY = 0.0,
             double mountOffsetZ = 0.0,
             double siteLatitude = 41.3,
-            double siteLongitude = -74.4) {
+            double siteLongitude = -74.4,
+            double siteElevation = 100) {
             var mockProfileService = new Mock<IProfileService>();
             mockProfileService.SetupGet(x => x.ActiveProfile.DomeSettings.MountType).Returns(mountType);
             mockProfileService.SetupGet(x => x.ActiveProfile.DomeSettings.DomeRadius_mm).Returns(domeRadius);
@@ -62,13 +64,14 @@ namespace NINA.Test.Dome {
             mockProfileService.SetupGet(x => x.ActiveProfile.DomeSettings.ScopePositionUpDown_mm).Returns(mountOffsetZ);
             this.siteLatitude = siteLatitude;
             this.siteLongitude = siteLongitude;
+            this.siteElevation = siteElevation;
             this.localSiderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, this.siteLongitude, this.db);
             var mountOffset = new Vector3D(mountOffsetX, mountOffsetY, mountOffsetZ);
             return new DomeSynchronization(mockProfileService.Object);
         }
 
         private TopocentricCoordinates CalculateCoordinates(IDomeSynchronization domeSynchronization, Coordinates coordinates, PierSide sideOfPier) {
-            return domeSynchronization.TargetDomeCoordinates(coordinates, localSiderealTime, Angle.ByDegree(siteLatitude), Angle.ByDegree(siteLongitude), sideOfPier);
+            return domeSynchronization.TargetDomeCoordinates(coordinates, localSiderealTime, Angle.ByDegree(siteLatitude), Angle.ByDegree(siteLongitude), siteElevation, sideOfPier);
         }
 
         private Coordinates GetCoordinatesFromAltAz(double altitude, double azimuth) {
@@ -76,7 +79,8 @@ namespace NINA.Test.Dome {
                 azimuth: Angle.ByDegree(azimuth),
                 altitude: Angle.ByDegree(altitude),
                 latitude: Angle.ByDegree(siteLatitude),
-                longitude: Angle.ByDegree(siteLongitude)).Transform(Epoch.JNOW, db);
+                longitude: Angle.ByDegree(siteLongitude),
+                elevation: siteElevation).Transform(Epoch.JNOW, db);
         }
 
         [Test]

@@ -5,9 +5,28 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.2
 
+## Bugfixes
+- Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation
+- `Autofocus after Time` and `Loop for Timespan` are now using UTC time instead of local time
+
 ## Improvements
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
 - ZWO EAF is now available as a native driver
+- Framing assistant sky annotation options are now saved to the active profile
+- Looping mode is no longer started when NINA connects to PHD2.
+
+## Commandline Options
+The following command line options have been added
+```
+-g, --disable-hardware-acceleration        Disables UI hardware acceleration
+```
+
+## Plugin Development
+
+### AssemblyLoadContext
+- Plugins are now loaded within separate [AssemblyLoadContexts](https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext)
+    - This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues
+    - No changes to existing plugins are required
 
 # Version 3.1 Hotfix 2
 

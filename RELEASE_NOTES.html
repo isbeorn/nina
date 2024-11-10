@@ -27,10 +27,31 @@
 <p>If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.<br />
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a></p>
 <h1 id="version-3.2">Version 3.2</h1>
+<h2 id="bugfixes">Bugfixes</h2>
+<ul>
+<li>Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation</li>
+<li><code>Autofocus after Time</code> and <code>Loop for Timespan</code> are now using UTC time instead of local time</li>
+</ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
 <li>The device chooser will now show a stored device id that is currently not available as an &quot;Offline device&quot; instead of showing &quot;No Device&quot; to differentiate having no device selected versus a saved device that is currently unavailable</li>
 <li>ZWO EAF is now available as a native driver</li>
+<li>Framing assistant sky annotation options are now saved to the active profile</li>
+<li>Looping mode is no longer started when NINA connects to PHD2.</li>
+</ul>
+<h2 id="commandline-options">Commandline Options</h2>
+<p>The following command line options have been added</p>
+<pre><code>-g, --disable-hardware-acceleration        Disables UI hardware acceleration
+</code></pre>
+<h2 id="plugin-development">Plugin Development</h2>
+<h3 id="assemblyloadcontext">AssemblyLoadContext</h3>
+<ul>
+<li>Plugins are now loaded within separate <a href="https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext">AssemblyLoadContexts</a>
+<ul>
+<li>This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues</li>
+<li>No changes to existing plugins are required</li>
+</ul>
+</li>
 </ul>
 <h1 id="version-3.1-hotfix-2">Version 3.1 Hotfix 2</h1>
 <h2 id="improvements-1">Improvements</h2>
@@ -118,7 +139,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </li>
 <li>The application version number is now shown in the title bar of a notification. Furthermore the notification window size is slightly increased in width.</li>
 </ul>
-<h2 id="bugfixes">Bugfixes</h2>
+<h2 id="bugfixes-1">Bugfixes</h2>
 <ul>
 <li>Fix Center instruction to consider plate solver gain</li>
 <li>Fixed colors of Flat Wizard Tabs to use same styling as other similar tabs in the app</li>
@@ -135,7 +156,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Autofocus runs with current Profile-ID are now shown after changing the profile</li>
 <li>Fixed interpretation of pixel scale value in PinPoint's solve results</li>
 </ul>
-<h2 id="plugin-development">Plugin Development</h2>
+<h2 id="plugin-development-1">Plugin Development</h2>
 <h3 id="new-feature-imessagebroker-interface">New Feature: <code>IMessageBroker</code> Interface</h3>
 <h4 id="introduction-of-imessagebroker-interface">Introduction of <code>IMessageBroker</code> Interface:</h4>
 <ul>
@@ -252,7 +273,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Added Alt/Az input for manual coordinates in telescope tab</li>
 <li>Previously, when users clicked 'X' to close the profile chooser window, the application would start with the selected profile. With this update, clicking 'X' on the profile chooser will now exit the application instead of launching it.</li>
 </ul>
-<h2 id="commandline-options">Commandline Options</h2>
+<h2 id="commandline-options-1">Commandline Options</h2>
 <ul>
 <li>Multiple command line options have been added to be able to adjust some of the startup parameters for the application</li>
 </ul>
@@ -332,7 +353,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-1">Bugfixes</h2>
+<h2 id="bugfixes-2">Bugfixes</h2>
 <ul>
 <li>Fixed SVBony Native driver that was sometimes showing the exposure before the latest one after a cancelled exposure</li>
 <li>Fixed PlayerOne resolution not fully resetting to complete size after subframe or binning</li>
@@ -359,7 +380,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-2">Bugfixes</h2>
+<h2 id="bugfixes-3">Bugfixes</h2>
 <ul>
 <li>Do not throw an error when TrackingRate SET is throwing a PropertyNotImplementedException - this time for real</li>
 <li>Fix potential race condition in PlateSolvingStatusVM when setting platesolve result</li>
@@ -368,7 +389,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>FLICamera - Fix Exposure time that it can also set fractions of a second</li>
 </ul>
 <h1 id="version-2.3-hotfix-1">Version 2.3 Hotfix 1</h1>
-<h2 id="bugfixes-3">Bugfixes</h2>
+<h2 id="bugfixes-4">Bugfixes</h2>
 <ul>
 <li>Database migration and creation on first time upgrade or installation will now be much faster</li>
 <li>Fixed Issue in QHY Driver when overscan area was being shown in video mode.</li>
@@ -389,12 +410,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Autofocus triggers will now only trigger when the next exposure would be a LIGHT frame</li>
 <li>When clicking on the load adv. sequence button, it is now possible to also load in a template or a target</li>
 </ul>
-<h2 id="bugfixes-4">Bugfixes</h2>
+<h2 id="bugfixes-5">Bugfixes</h2>
 <ul>
 <li>The profile chooser on startup did not remember the on/off selection to save the selected profile</li>
 </ul>
 <h1 id="version-2.2">Version 2.2</h1>
-<h2 id="bugfixes-5">Bugfixes</h2>
+<h2 id="bugfixes-6">Bugfixes</h2>
 <ul>
 <li>Fixed Slew to Alt/Az instruction not considering changes to Latitude &amp; Longitude values</li>
 <li>Loading a FITS File that contains exponential notation for double values should now have its headers be correctly read</li>
@@ -436,7 +457,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Fixed an issue that USB limit could not be set correctly</li>
 </ul>
 <h1 id="version-2.1">Version 2.1</h1>
-<h2 id="bugfixes-6">Bugfixes</h2>
+<h2 id="bugfixes-7">Bugfixes</h2>
 <ul>
 <li>When an interrupt happens during a meridian flip it in a sequence it is no longer ignored while the flip is running</li>
 <li>Fix an issue where for some coordinates, the coordinates were off by one arcminute after reloading it into the sequence from file, due to double precision rounding issues</li>
@@ -464,7 +485,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Add access to the device instances</li>
 </ul>
 <h1 id="version-2.0-hotfix-2">Version 2.0 Hotfix 2</h1>
-<h2 id="bugfixes-7">Bugfixes</h2>
+<h2 id="bugfixes-8">Bugfixes</h2>
 <ul>
 <li>Fixed QHY Camera selection being lost on rescan</li>
 <li>Imaging Platesolve Panel will preset initial gain from platesolve settings</li>
@@ -520,7 +541,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>New Plugin Eventhooks to react on Befor/After MeridianFlip and After Dithers</li>
 </ul>
 <h1 id="version-2.0-hf-1">Version 2.0 HF 1</h1>
-<h2 id="bugfixes-8">Bugfixes</h2>
+<h2 id="bugfixes-9">Bugfixes</h2>
 <ul>
 <li>Changed the default value for ASCOM Camera BayerOffsetX/BayerOffsetY to be 0, instead of -1, when not available via the driver</li>
 <li>Corrections made to assorted entries in the NINA object database</li>
@@ -928,7 +949,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Updates to various vendor-supplied SDKs for bug fixes and new model support in the respective native drivers</li>
 <li>QHY: Legacy CCD and A-series cameras can now select Normal or Fast readout speeds when using the native driver</li>
 </ul>
-<h2 id="bugfixes-9">Bugfixes</h2>
+<h2 id="bugfixes-10">Bugfixes</h2>
 <ul>
 <li>The telescope will no longer go on a journey to the celestial pole before going to the park position</li>
 <li>Parking the telescope from the Equipment &gt; Telescope screen will no longer cause the UI to freeze while the telescope is in the process of parking</li>
@@ -982,7 +1003,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>Rotators will now display the sky angle as the current position, when rotation via plate solving was invoked</li>
 <li>Added toggle to reverse direction for rotators</li>
 </ul>
-<h2 id="bugfixes-10">Bugfixes</h2>
+<h2 id="bugfixes-11">Bugfixes</h2>
 <ul>
 <li>When using a DSLR and Astrometry.net the uploaded file is now correctly sent as FITS instead of raw format</li>
 <li>Log files now show correct operating system version</li>
@@ -1426,7 +1447,7 @@ Thank you for your support!</p>
 </ul>
 </li>
 </ul>
-<h2 id="bugfixes-11">Bugfixes</h2>
+<h2 id="bugfixes-12">Bugfixes</h2>
 <ul>
 <li>Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur</li>
 <li>Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming</li>
@@ -1534,7 +1555,7 @@ the background itself will be moved like in an orrery</li>
 <li>Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.</li>
 <li>Additionally the changelog for the new version will now be displayed prior to updating, too.</li>
 </ul>
-<h2 id="bugfixes-12">Bugfixes</h2>
+<h2 id="bugfixes-13">Bugfixes</h2>
 <ul>
 <li>Corrected Max Binning level for ASI Cameras</li>
 <li>Focuser move command fixed where lots of move commands where sent by accident</li>
@@ -1655,7 +1676,7 @@ Thank you for your support!</p>
 <li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
 <li>Serial Relay (via USB) interaction for Nikon Bulb</li>
 </ul>
-<h2 id="bugfixes-13">Bugfixes</h2>
+<h2 id="bugfixes-14">Bugfixes</h2>
 <ul>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>

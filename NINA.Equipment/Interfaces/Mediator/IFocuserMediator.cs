@@ -32,5 +32,6 @@ namespace NINA.Equipment.Interfaces.Mediator {
         void BroadcastSuccessfulAutoFocusRun(AutoFocusInfo info);
 
         void BroadcastUserFocused(FocuserInfo info);
+        void BroadcastAutoFocusRunStarting();
     }
 }
