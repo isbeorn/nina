@@ -28,5 +28,8 @@ namespace NINA.Core.Enum {
 
         [Description("LblPrimaLuceLabEagle")]
         PrimaLuceLabEagle,
+
+        [Description("LblGpsd")]
+        Gpsd,
     }
 }
