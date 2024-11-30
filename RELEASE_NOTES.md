@@ -14,6 +14,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - ZWO EAF is now available as a native driver
 - Framing assistant sky annotation options are now saved to the active profile
 - Looping mode is no longer started when NINA connects to PHD2.
+- GPSD support added as a GNSS source for getting site location information
 
 ## Commandline Options
 The following command line options have been added

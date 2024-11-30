@@ -30,6 +30,7 @@ namespace NINA.Equipment.Equipment.MyGPS {
                 GnssSourceEnum.NmeaSerial => new NMEAGps(profileService),
                 GnssSourceEnum.PegausAstroUranusMeteo => new UranusMeteo(profileService),
                 GnssSourceEnum.PrimaLuceLabEagle => new PrimaLuceLabEagle(profileService),
+                GnssSourceEnum.Gpsd => new Gpsd(profileService),
                 _ => null,
             };
         }

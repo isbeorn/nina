@@ -19,6 +19,7 @@
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
     Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -808,15 +809,74 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDevice}" />
+                            <TextBlock
+                                Width="130"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSource}" />
                             <ComboBox
                                 Name="PART_GnssSourceList"
                                 Grid.Column="1"
                                 MinWidth="150"
-                                Margin="10,0,0,0"
                                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GnssSourceEnum}}}"
                                 SelectedItem="{Binding GnssSource}" />
                         </StackPanel>
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.Resources>
+                            <DataTemplate x:Key="Default" />
+
+                            <DataTemplate x:Key="Gpsd">
+                                <StackPanel Orientation="Vertical"
+                                            DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}">
+                                    <DockPanel Margin="0,0,0,5">
+                                        <TextBlock
+                                            Width="130"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblHost}" />
+                                        <TextBox
+                                            Width="200"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding GpsdHost}" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,0,0,5">
+                                        <TextBlock
+                                            Width="130"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblPort}" />
+                                        <TextBox
+                                            Width="200"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center">
+                                            <TextBox.Text>
+                                                <Binding Mode="TwoWay" Path="GpsdPort">
+                                                    <Binding.ValidationRules>
+                                                        <rules:IsValidIpPortRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </DockPanel>
+                                </StackPanel>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Failed">
+                                <TextBlock Text="Failed to load data template" />
+                            </DataTemplate>
+
+                            <local:GnssSourceTemplateSelector
+                                x:Key="GnssContentSelector"
+                                Default="{StaticResource Default}"
+                                Gpsd="{StaticResource Gpsd}"
+                                FailedToLoadTemplate="{StaticResource Failed}"
+                                Postfix="{x:Static wpfutil:DataTemplatePostfix.GnssSourceSettings}" />
+                        </Grid.Resources>
+                        <ContentControl
+                            Content="{Binding GnssSource}"
+                            ContentTemplateSelector="{StaticResource GnssContentSelector}" />
                     </Grid>
                 </StackPanel>
             </GroupBox>
