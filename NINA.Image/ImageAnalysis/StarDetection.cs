@@ -144,7 +144,7 @@ namespace NINA.Image.ImageAnalysis {
                 double hfr = 0.0d;
                 if (this.pixelData.Count > 0) {
                     double outerRadius = this.radius * 1.2;
-                    double sum = 0, sumDist = 0, allSum = 0;
+                    double sum = 0, sumDist = 0, allSum = 0, sumValX = 0, sumValY = 0;
 
                     double centerX = this.Position.X;
                     double centerY = this.Position.Y;
@@ -160,6 +160,8 @@ namespace NINA.Image.ImageAnalysis {
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
                             sum += data.value;
                             sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
+                            sumValX += (data.PosX - Rectangle.X) * data.value;
+                            sumValY += (data.PosY - Rectangle.Y) * data.value;
                         }
                     }
 
@@ -169,6 +171,14 @@ namespace NINA.Image.ImageAnalysis {
                         hfr = Math.Sqrt(2) * outerRadius;
                     }
                     this.Average = allSum / this.pixelData.Count;
+
+                    if (sum != 0) {
+                        // Update the centroid
+                        double centroidX = sumValX / sum;
+                        double centroidY = sumValY / sum;
+                        this.Position.X = (float)centroidX + Rectangle.X;
+                        this.Position.Y = (float)centroidY + Rectangle.Y;
+                    }
                 }
                 this.HFR = hfr;
                 this.pixelData.Clear();
