@@ -123,15 +123,15 @@ namespace NINA.Image.ImageAnalysis {
 
         public class Star {
             public double Radius { get; init; }
-            public double HFR { get; private set; }
-            public Point Position { get;set; }
+            public Rectangle Rectangle { get; init; }
             public double MeanBrightness { get; set; }
-            public double Average { get; private set; } 
             public double SurroundingMean { get; set; }
             public double MaxPixelValue { get; set; }
-            public Rectangle Rectangle { get; init; }
+            public Point Position { get;set; }
+            public double HFR { get; private set; }
+            public double Average { get; private set; } 
 
-            public void CalculateHfr(List<PixelData> pixelData) {
+            public void Calculate(List<PixelData> pixelData) {
                 double hfr = 0.0d;
                 if (pixelData.Count > 0) {
                     double outerRadius = this.Radius * 1.2;
@@ -188,47 +188,39 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        public class PixelData {
-            public int PosX;
-            public int PosY;
-            public ushort Value;
-
-            public override string ToString() {
-                return Value.ToString();
-            }
-        }
+        public record PixelData (int PosX, int PosY, double Value);
 
         public async Task<StarDetectionResult> Detect(IRenderedImage image, PixelFormat pf, StarDetectionParams p, IProgress<ApplicationStatus> progress, CancellationToken token) {
             var result = new StarDetectionResult();
-            Bitmap _bitmapToAnalyze = null;
+            Bitmap bitmapToAnalyze = null;
             try {
                 using (MyStopWatch.Measure()) {
                     progress?.Report(new ApplicationStatus() { Status = "Preparing image for star detection" });
 
                     var state = GetInitialState(image, pf, p);
-                    _bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(state._originalBitmapSource);
+                    bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(state._originalBitmapSource);
 
                     token.ThrowIfCancellationRequested();
 
                     /* Perform initial noise reduction on full size image if necessary */
                     if (p.NoiseReduction != NoiseReductionEnum.None) {
-                        _bitmapToAnalyze = ReduceNoise(_bitmapToAnalyze, p);
+                        bitmapToAnalyze = ReduceNoise(bitmapToAnalyze, p);
                     }
 
                     /* Resize to speed up manipulation */
-                    _bitmapToAnalyze = DetectionUtility.ResizeForDetection(_bitmapToAnalyze, _maxWidth, state._resizefactor);
+                    bitmapToAnalyze = DetectionUtility.ResizeForDetection(bitmapToAnalyze, _maxWidth, state._resizefactor);
 
                     /* prepare image for structure detection */
-                    PrepareForStructureDetection(_bitmapToAnalyze, p, token);
+                    PrepareForStructureDetection(bitmapToAnalyze, p, token);
 
                     progress?.Report(new ApplicationStatus() { Status = "Detecting structures" });
 
                     /* get structure info */
-                    var blobCounter = DetectStructures(_bitmapToAnalyze, token);
+                    var blobCounter = DetectStructures(bitmapToAnalyze, token);
 
                     progress?.Report(new ApplicationStatus() { Status = "Analyzing stars" });
 
-                    result.StarList = IdentifyStars(p, state, blobCounter, _bitmapToAnalyze, result, token, out var detectedStars);
+                    result.StarList = IdentifyStars(p, state, blobCounter, bitmapToAnalyze, result, token, out var detectedStars);
 
                     token.ThrowIfCancellationRequested();
 
@@ -249,25 +241,25 @@ namespace NINA.Image.ImageAnalysis {
             } catch (OperationCanceledException) {
             } finally {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
-                _bitmapToAnalyze?.Dispose();
+                bitmapToAnalyze?.Dispose();
             }
             return result;
         }
 
-        private bool InROI(Bitmap _bitmapToAnalyze, StarDetectionParams p, Blob blob) {
+        private bool InROI(Bitmap bitmapToAnalyze, StarDetectionParams p, Blob blob) {
             return DetectionUtility.InROI(
-                new Size(width: _bitmapToAnalyze.Width, height: _bitmapToAnalyze.Height),
+                new Size(width: bitmapToAnalyze.Width, height: bitmapToAnalyze.Height),
                 blob: blob.Rectangle,
                 outerCropRatio: p.OuterCropRatio,
                 innerCropRatio: p.InnerCropRatio);
         }
 
-        private List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, BlobCounter blobCounter, Bitmap _bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
+        private List<DetectedStar> IdentifyStars(StarDetectionParams p, State state, BlobCounter blobCounter, Bitmap bitmapToAnalyze, StarDetectionResult result, CancellationToken token, out int detectedStars) {
             using (MyStopWatch.Measure()) {
                 detectedStars = 0;
                 Blob[] blobs = blobCounter.GetObjectsInformation();
                 SimpleShapeChecker checker = new SimpleShapeChecker();
-                List<Star> starlist = new List<Star>();
+                List<Star> starList = new List<Star>();
                 double sumRadius = 0;
                 double sumSquares = 0;
                 foreach (Blob blob in blobs) {
@@ -281,13 +273,11 @@ namespace NINA.Image.ImageAnalysis {
                     }
 
                     // If camera cannot subSample, but crop ratio is set, use blobs that are either within or without the ROI
-                    if (p.UseROI && !InROI(_bitmapToAnalyze, p, blob)) {
+                    if (p.UseROI && !InROI(bitmapToAnalyze, p, blob)) {
                         continue;
                     }
 
                     var points = blobCounter.GetBlobsEdgePoints(blob);
-                    Accord.Point centerpoint;
-                    float radius;
                     var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * state._inverseResizefactor), (int)Math.Floor(blob.Rectangle.Y * state._inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Width * state._inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Height * state._inverseResizefactor));
 
                     //Build a rectangle that encompasses the blob
@@ -301,15 +291,15 @@ namespace NINA.Image.ImageAnalysis {
 
                     //Star is circle
                     Star s;
-                    if (checker.IsCircle(points, out centerpoint, out radius)) {
-                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), Radius = radius * state._inverseResizefactor, Rectangle = rect };
+                    if (checker.IsCircle(points, out Point centerPoint, out float radius)) {
+                        s = new Star { Position = new Point(centerPoint.X * (float)state._inverseResizefactor, centerPoint.Y * (float)state._inverseResizefactor), Radius = radius * state._inverseResizefactor, Rectangle = rect };
                     } else { //Star is elongated
                         var eccentricity = CalculateEccentricity(rect.Width, rect.Height);
                         //Discard highly elliptical shapes.
                         if (eccentricity > 0.8) {
                             continue;
                         }
-                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), Radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
+                        s = new Star { Position = new Point(centerPoint.X * (float)state._inverseResizefactor, centerPoint.Y * (float)state._inverseResizefactor), Radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
                     }
 
                     /* get pixeldata */
@@ -331,7 +321,7 @@ namespace NINA.Image.ImageAnalysis {
                                     s.MaxPixelValue = Math.Max(s.MaxPixelValue, pixelValue);
                                 }
                                 ushort value = pixelValue;
-                                PixelData pd = new PixelData { PosX = x, PosY = y, Value = (ushort)value };
+                                var pd = new PixelData(PosX: x, PosY: y, Value: value);
                                 pixelDataList.Add(pd);
                             } else { //We're in the larger surrounding holed rectangle, providing local background
                                 largeRectPixelSum += pixelValue;
@@ -350,49 +340,49 @@ namespace NINA.Image.ImageAnalysis {
                     if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
                         sumRadius += s.Radius;
                         sumSquares += s.Radius * s.Radius;
-                        s.CalculateHfr(pixelDataList);
-                        starlist.Add(s);
+                        s.Calculate(pixelDataList);
+                        starList.Add(s);
                     }
                 }
 
                 // No stars could be found. Return.
-                if (starlist.Count == 0) {
+                if (starList.Count == 0) {
                     return new List<DetectedStar>();
                 }
 
                 //Now that we have a properly filtered star list, let's compute stats and further filter out from the mean
-                if (starlist.Count > 0) {
-                    double avg = sumRadius / (double)starlist.Count;
-                    double stdev = Math.Sqrt((sumSquares - starlist.Count * avg * avg) / starlist.Count);
+                if (starList.Count > 0) {
+                    double avg = sumRadius / (double)starList.Count;
+                    double stdev = Math.Sqrt((sumSquares - starList.Count * avg * avg) / starList.Count);
                     if (p.Sensitivity != StarSensitivityEnum.Highest) {
-                        starlist = starlist.Where(s => s.Radius <= avg + 1.5 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starList = starList.Where(s => s.Radius <= avg + 1.5 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
                     } else {
                         //More sensitivity means getting fainter and smaller stars, and maybe some noise, skewing the distribution towards low radius. Let's be more permissive towards the large star end.
-                        starlist = starlist.Where(s => s.Radius <= avg + 2 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starList = starList.Where(s => s.Radius <= avg + 2 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
                     }
                 }
 
                 // Ensure we provide the list of detected stars, even if NumberOfAF stars is used
-                detectedStars = starlist.Count;
+                detectedStars = starList.Count;
 
                 //We are performing AF with only a limited number of stars
                 if (p.NumberOfAFStars > 0) {
                     //First AF exposure, let's find the brightest star positions and store them
-                    if (starlist.Count != 0 && (p.MatchStarPositions == null || p.MatchStarPositions.Count == 0)) {
-                        if (starlist.Count <= p.NumberOfAFStars) {
-                            result.BrightestStarPositions = starlist.ConvertAll(s => s.Position);
+                    if (starList.Count != 0 && (p.MatchStarPositions == null || p.MatchStarPositions.Count == 0)) {
+                        if (starList.Count <= p.NumberOfAFStars) {
+                            result.BrightestStarPositions = starList.ConvertAll(s => s.Position);
                         } else {
-                            starlist = starlist.OrderByDescending(s => s.Radius * 0.3 + s.MeanBrightness * 0.7).Take(p.NumberOfAFStars).ToList<Star>();
-                            result.BrightestStarPositions = starlist.ConvertAll(i => i.Position);
+                            starList = starList.OrderByDescending(s => s.Radius * 0.3 + s.MeanBrightness * 0.7).Take(p.NumberOfAFStars).ToList<Star>();
+                            result.BrightestStarPositions = starList.ConvertAll(i => i.Position);
                         }
-                        return starlist.Select(s => s.ToDetectedStar()).ToList();
+                        return starList.Select(s => s.ToDetectedStar()).ToList();
                     } else { //find the closest stars to the brightest stars previously identified
                         List<Star> topStars = new List<Star>();
-                        p.MatchStarPositions.ForEach(pos => topStars.Add(starlist.Aggregate((min, next) => min.Position.DistanceTo(pos) < next.Position.DistanceTo(pos) ? min : next)));
+                        p.MatchStarPositions.ForEach(pos => topStars.Add(starList.Aggregate((min, next) => min.Position.DistanceTo(pos) < next.Position.DistanceTo(pos) ? min : next)));
                         return topStars.Select(s => s.ToDetectedStar()).ToList(); ;
                     }
                 }
-                return starlist.Select(s => s.ToDetectedStar()).ToList();
+                return starList.Select(s => s.ToDetectedStar()).ToList();
             }
         }
 
@@ -440,31 +430,31 @@ namespace NINA.Image.ImageAnalysis {
             }
         }
 
-        private Bitmap ReduceNoise(Bitmap _bitmapToAnalyze, StarDetectionParams p) {
+        private Bitmap ReduceNoise(Bitmap bitmapToAnalyze, StarDetectionParams p) {
             using (MyStopWatch.Measure()) {
-                if (_bitmapToAnalyze.Width > _maxWidth) {
+                if (bitmapToAnalyze.Width > _maxWidth) {
                     Bitmap bmp;
                     switch (p.NoiseReduction) {
                         case NoiseReductionEnum.High:
-                            bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(2);
+                            bmp = new FastGaussianBlur(bitmapToAnalyze).Process(2);
                             break;
 
                         case NoiseReductionEnum.Highest:
-                            bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(3);
+                            bmp = new FastGaussianBlur(bitmapToAnalyze).Process(3);
                             break;
 
                         case NoiseReductionEnum.Median:
-                            bmp = new Median().Apply(_bitmapToAnalyze);
+                            bmp = new Median().Apply(bitmapToAnalyze);
                             break;
 
                         default:
-                            bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
+                            bmp = new FastGaussianBlur(bitmapToAnalyze).Process(1);
                             break;
                     }
-                    _bitmapToAnalyze.Dispose();
-                    _bitmapToAnalyze = bmp;
+                    bitmapToAnalyze.Dispose();
+                    bitmapToAnalyze = bmp;
                 }
-                return _bitmapToAnalyze;
+                return bitmapToAnalyze;
             }
         }
 
