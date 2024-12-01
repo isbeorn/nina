@@ -7040,4 +7040,13 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblCrosshair" xml:space="preserve">
     <value>Krzyżyk</value>
   </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Nie udało się rozpoznać {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>Nie określono hosta w ustawieniach</value>
+  </data>
 </root>

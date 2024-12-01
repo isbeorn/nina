@@ -7044,4 +7044,13 @@
   <data name="LblCrosshair" xml:space="preserve">
     <value>Crosshair</value>
   </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Failed to resolve {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No host specified in settings</value>
+  </data>
 </root>

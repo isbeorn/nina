@@ -7040,4 +7040,13 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblCrosshair" xml:space="preserve">
     <value>Punto de mira</value>
   </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Error al resolver {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No se ha especificado ningún host en la configuración</value>
+  </data>
 </root>

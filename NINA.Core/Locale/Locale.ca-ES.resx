@@ -7044,4 +7044,13 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblCrosshair" xml:space="preserve">
     <value>Punt de mira</value>
   </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Error resolent {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No s'ha especificat cap host en la configuració</value>
+  </data>
 </root>

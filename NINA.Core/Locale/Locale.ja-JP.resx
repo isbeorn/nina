@@ -7017,4 +7017,13 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblCrosshair" xml:space="preserve">
     <value>十字線</value>
   </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Failed to resolve {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>設定でホストが指定されていません</value>
+  </data>
 </root>
