@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Point = Accord.Point;
 
 namespace NINA.Image.ImageAnalysis {
 
@@ -121,47 +122,36 @@ namespace NINA.Image.ImageAnalysis {
         }
 
         public class Star {
-            public double radius;
-            public double HFR;
-            public Accord.Point Position;
-            public double meanBrightness;
-            private List<PixelData> pixelData;
-            public double Average { get; private set; } = 0;
-            public double SurroundingMean { get; set; } = 0;
-            public double maxPixelValue { get; set; } = 0;
+            public double Radius { get; init; }
+            public double HFR { get; private set; }
+            public Point Position { get;set; }
+            public double MeanBrightness { get; set; }
+            public double Average { get; private set; } 
+            public double SurroundingMean { get; set; }
+            public double MaxPixelValue { get; set; }
+            public Rectangle Rectangle { get; init; }
 
-            public Rectangle Rectangle;
-
-            public Star() {
-                pixelData = new List<PixelData>();
-            }
-
-            public void AddPixelData(PixelData value) {
-                this.pixelData.Add(value);
-            }
-
-            public void CalculateHfr() {
+            public void CalculateHfr(List<PixelData> pixelData) {
                 double hfr = 0.0d;
-                if (this.pixelData.Count > 0) {
-                    double outerRadius = this.radius * 1.2;
+                if (pixelData.Count > 0) {
+                    double outerRadius = this.Radius * 1.2;
                     double sum = 0, sumDist = 0, allSum = 0, sumValX = 0, sumValY = 0;
 
                     double centerX = this.Position.X;
                     double centerY = this.Position.Y;
 
-                    foreach (PixelData data in this.pixelData) {
-                        double value = Math.Round(data.value - SurroundingMean);
+                    foreach (PixelData data in pixelData) {
+                        double value = Math.Round(data.Value - SurroundingMean);
                         if (value < 0) {
                             value = 0;
                         }
-                        data.value = (ushort)Math.Round(value);
 
-                        allSum += data.value;
+                        allSum += value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
-                            sum += data.value;
-                            sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
-                            sumValX += (data.PosX - Rectangle.X) * data.value;
-                            sumValY += (data.PosY - Rectangle.Y) * data.value;
+                            sum += value;
+                            sumDist += value * Math.Sqrt(Math.Pow(data.PosX - centerX, 2.0d) + Math.Pow(data.PosY - centerY, 2.0d));
+                            sumValX += (data.PosX - Rectangle.X) * value;
+                            sumValY += (data.PosY - Rectangle.Y) * value;
                         }
                     }
 
@@ -170,18 +160,16 @@ namespace NINA.Image.ImageAnalysis {
                     } else {
                         hfr = Math.Sqrt(2) * outerRadius;
                     }
-                    this.Average = allSum / this.pixelData.Count;
+                    this.Average = allSum / pixelData.Count;
 
                     if (sum != 0) {
                         // Update the centroid
                         double centroidX = sumValX / sum;
                         double centroidY = sumValY / sum;
-                        this.Position.X = (float)centroidX + Rectangle.X;
-                        this.Position.Y = (float)centroidY + Rectangle.Y;
+                        this.Position = new Point((float)centroidX + Rectangle.X, (float)centroidY + Rectangle.Y);
                     }
                 }
                 this.HFR = hfr;
-                this.pixelData.Clear();
             }
 
             internal bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
@@ -193,7 +181,7 @@ namespace NINA.Image.ImageAnalysis {
                     HFR = HFR,
                     Position = Position,
                     AverageBrightness = Average,
-                    MaxBrightness = maxPixelValue,
+                    MaxBrightness = MaxPixelValue,
                     Background = SurroundingMean,
                     BoundingBox = Rectangle
                 };
@@ -203,10 +191,10 @@ namespace NINA.Image.ImageAnalysis {
         public class PixelData {
             public int PosX;
             public int PosY;
-            public ushort value;
+            public ushort Value;
 
             public override string ToString() {
-                return value.ToString();
+                return Value.ToString();
             }
         }
 
@@ -314,14 +302,14 @@ namespace NINA.Image.ImageAnalysis {
                     //Star is circle
                     Star s;
                     if (checker.IsCircle(points, out centerpoint, out radius)) {
-                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), radius = radius * state._inverseResizefactor, Rectangle = rect };
+                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), Radius = radius * state._inverseResizefactor, Rectangle = rect };
                     } else { //Star is elongated
                         var eccentricity = CalculateEccentricity(rect.Width, rect.Height);
                         //Discard highly elliptical shapes.
                         if (eccentricity > 0.8) {
                             continue;
                         }
-                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
+                        s = new Star { Position = new Accord.Point(centerpoint.X * (float)state._inverseResizefactor, centerpoint.Y * (float)state._inverseResizefactor), Radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
                     }
 
                     /* get pixeldata */
@@ -331,19 +319,20 @@ namespace NINA.Image.ImageAnalysis {
                     double largeRectPixelSumSquares = 0;
                     List<ushort> innerStarPixelValues = new List<ushort>();
 
+                    var pixelDataList = new List<PixelData>();
                     for (int x = largeRect.X; x < largeRect.X + largeRect.Width; x++) {
                         for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
                             var pixelValue = state._iarr.FlatArray[x + (state.imageProperties.Width * y)];
                             if (x >= s.Rectangle.X && x < s.Rectangle.X + s.Rectangle.Width && y >= s.Rectangle.Y && y < s.Rectangle.Y + s.Rectangle.Height) { //We're in the small rectangle directly surrounding the star
-                                if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.radius)) { // We're in the inner sanctum of the star
+                                if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.Radius)) { // We're in the inner sanctum of the star
                                     starPixelSum += pixelValue;
                                     starPixelCount++;
                                     innerStarPixelValues.Add(pixelValue);
-                                    s.maxPixelValue = Math.Max(s.maxPixelValue, pixelValue);
+                                    s.MaxPixelValue = Math.Max(s.MaxPixelValue, pixelValue);
                                 }
                                 ushort value = pixelValue;
-                                PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
-                                s.AddPixelData(pd);
+                                PixelData pd = new PixelData { PosX = x, PosY = y, Value = (ushort)value };
+                                pixelDataList.Add(pd);
                             } else { //We're in the larger surrounding holed rectangle, providing local background
                                 largeRectPixelSum += pixelValue;
                                 largeRectPixelSumSquares += pixelValue * pixelValue;
@@ -351,17 +340,17 @@ namespace NINA.Image.ImageAnalysis {
                         }
                     }
 
-                    s.meanBrightness = starPixelSum / (double)starPixelCount;
+                    s.MeanBrightness = starPixelSum / (double)starPixelCount;
                     double largeRectPixelCount = largeRect.Height * largeRect.Width - rect.Height * rect.Width;
                     double largeRectMean = largeRectPixelSum / largeRectPixelCount;
                     s.SurroundingMean = largeRectMean;
                     double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
                     int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(state._originalBitmapSource.PixelWidth, state._originalBitmapSource.PixelHeight) / 1000d);
 
-                    if (s.meanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
-                        sumRadius += s.radius;
-                        sumSquares += s.radius * s.radius;
-                        s.CalculateHfr();
+                    if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
+                        sumRadius += s.Radius;
+                        sumSquares += s.Radius * s.Radius;
+                        s.CalculateHfr(pixelDataList);
                         starlist.Add(s);
                     }
                 }
@@ -376,10 +365,10 @@ namespace NINA.Image.ImageAnalysis {
                     double avg = sumRadius / (double)starlist.Count;
                     double stdev = Math.Sqrt((sumSquares - starlist.Count * avg * avg) / starlist.Count);
                     if (p.Sensitivity != StarSensitivityEnum.Highest) {
-                        starlist = starlist.Where(s => s.radius <= avg + 1.5 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starlist = starlist.Where(s => s.Radius <= avg + 1.5 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
                     } else {
                         //More sensitivity means getting fainter and smaller stars, and maybe some noise, skewing the distribution towards low radius. Let's be more permissive towards the large star end.
-                        starlist = starlist.Where(s => s.radius <= avg + 2 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
+                        starlist = starlist.Where(s => s.Radius <= avg + 2 * stdev && s.Radius >= avg - 1.5 * stdev).ToList<Star>();
                     }
                 }
 
@@ -393,7 +382,7 @@ namespace NINA.Image.ImageAnalysis {
                         if (starlist.Count <= p.NumberOfAFStars) {
                             result.BrightestStarPositions = starlist.ConvertAll(s => s.Position);
                         } else {
-                            starlist = starlist.OrderByDescending(s => s.radius * 0.3 + s.meanBrightness * 0.7).Take(p.NumberOfAFStars).ToList<Star>();
+                            starlist = starlist.OrderByDescending(s => s.Radius * 0.3 + s.MeanBrightness * 0.7).Take(p.NumberOfAFStars).ToList<Star>();
                             result.BrightestStarPositions = starlist.ConvertAll(i => i.Position);
                         }
                         return starlist.Select(s => s.ToDetectedStar()).ToList();
