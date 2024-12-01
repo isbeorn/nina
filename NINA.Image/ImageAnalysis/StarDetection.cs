@@ -341,7 +341,13 @@ namespace NINA.Image.ImageAnalysis {
                         sumRadius += s.Radius;
                         sumSquares += s.Radius * s.Radius;
                         s.Calculate(pixelDataList);
-                        starList.Add(s);
+                        if (s.Position.X > (s.Rectangle.X + 1) && s.Position.Y > (s.Rectangle.Y + 1) && s.Position.X < (s.Position.X + s.Rectangle.Width - 2) && s.Position.Y < (s.Position.Y + s.Rectangle.Height - 2)) {
+                            // Only add star when centroid is not touching the rectangle edges
+                            starList.Add(s);
+                        }
+
+
+                        
                     }
                 }
 
