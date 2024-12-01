@@ -160,20 +160,27 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             try {
                 TempChangeRunning = true;
                 Logger.Info($"Warming Camera. Duration: {duration}");
-                var progressRouter = new Progress<double>((p) => {
+                IProgress<double> progressRouter = new Progress<double>((p) => {
                     progress.Report(new ApplicationStatus() {
                         Status = Loc.Instance["LblWarming"],
-                        Progress = p
+                        Progress = p,
+                        ProgressType = ApplicationStatus.StatusProgressType.Percent,
                     });
                 });
 
-                if (Cam.Temperature < 20) {
-                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
+                progressRouter.Report(0);
+
+                using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
+                    timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
+                    double initialCoolerPower = Cam.CoolerPower;
+                    double step = 1;
+
+                    while (Cam.CoolerPower >= 1) {
                         try {
-                            timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
-                            await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
-                        } catch(OperationCanceledException) { 
-                            if(ct.IsCancellationRequested == true) {
+                            progressRouter.Report(Math.Min(((initialCoolerPower - Cam.CoolerPower) / initialCoolerPower), 1));
+                            await RegulateTemperature(Cam.TemperatureSetPoint + step, duration, false, null, timeoutCts.Token);
+                        } catch (OperationCanceledException) {
+                            if (ct.IsCancellationRequested == true) {
                                 throw;
                             }
                         } catch (CannotReachTargetTemperatureException) {
@@ -216,7 +223,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         Cam.TemperatureSetPoint = temperatureStep;
 
                         var progressTemp = Math.Abs(currentTemp - temperature);
-                        progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+                        progress?.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
 
                         await CoreUtil.Wait(interval, ct);
                         currentTemp = Cam.Temperature;
@@ -232,7 +239,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 var previousTemperature = currentTemp;
                 while ((cooling && currentTemp > (temperature + 1)) || (!cooling && currentTemp < (temperature - 1))) {
                     var progressTemp = Math.Abs(currentTemp - temperature);
-                    progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+                    progress?.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
 
                     var t = await CoreUtil.Wait(TimeSpan.FromSeconds(5), ct);
                     currentTemp = Cam.Temperature;
