@@ -48,12 +48,12 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ASCOM.Alpaca.Components" Version="2.0.7" />
-    <PackageReference Include="ASCOM.Alpaca.Device" Version="2.0.7" />
-    <PackageReference Include="ASCOM.Com.Components" Version="2.0.7" />
+    <PackageReference Include="ASCOM.Alpaca.Components" Version="2.0.8" />
+    <PackageReference Include="ASCOM.Alpaca.Device" Version="2.0.8" />
+    <PackageReference Include="ASCOM.Com.Components" Version="2.0.8" />
     <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.28.3" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.29.0" />
     <PackageReference Include="Grpc.Tools" Version="2.67.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

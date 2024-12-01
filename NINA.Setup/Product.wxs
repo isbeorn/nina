@@ -766,8 +766,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Guid="77c0b4df-2608-4641-8727-2c9f79a30e2b">
-        <File Id="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Name="mscordaccore_amd64_amd64_8.0.1024.46610.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1024.46610.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.1124.51707.dll" Guid="d5f1444f-821d-4aae-9db7-2ec1d20cb108">
+        <File Id="mscordaccore_amd64_amd64_8.0.1124.51707.dll" Name="mscordaccore_amd64_amd64_8.0.1124.51707.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1124.51707.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
