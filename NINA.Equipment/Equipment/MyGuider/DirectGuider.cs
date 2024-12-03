@@ -42,7 +42,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
             this.telescopeMediator.RegisterConsumer(this);
         }
 
-        public string Name => "Direct Guider";
+        public string Name => "Mount Dither";
         public string DisplayName => Name;
 
         public string Id => "Direct_Guider";
@@ -52,7 +52,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
             if (Connected && !this.telescopeInfo.Connected) {
-                Notification.ShowWarning(Loc.Instance["LblDirectGuiderMountDisconnect"]);
+                Notification.ShowWarning(Loc.Instance["LblMountDitherMountDisconnect"]);
                 Logger.Warning("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
                 Disconnect();
             } else {
@@ -153,9 +153,9 @@ namespace NINA.Equipment.Equipment.MyGuider {
 
         public string Category => "Guiders";
 
-        public string Description => "Direct Guider";
+        public string Description => "Mount Dither";
 
-        public string DriverInfo => "Direct Guider";
+        public string DriverInfo => "Mount Dither";
 
         public string DriverVersion => "1.0";
 
@@ -164,7 +164,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
             if (telescopeInfo.Connected) {
                 Connected = true;
             } else {
-                Notification.ShowWarning(Loc.Instance["LblDirectGuiderConnectionFail"]);
+                Notification.ShowWarning(Loc.Instance["LblMountDitherConnectionFail"]);
                 Connected = false;
             }
 

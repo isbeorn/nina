@@ -15,6 +15,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Framing assistant sky annotation options are now saved to the active profile
 - Looping mode is no longer started when NINA connects to PHD2.
 - GPSD support added as a GNSS source for getting site location information
+- Renamed "Direct Guider" to "Mount Dither" 
+  - The device type has been renamed to better reflect its purpose. The "Mount Dither" driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface. This change ensures clarity and better alignment with the feature's intended functionality.
 
 ## Commandline Options
 The following command line options have been added
