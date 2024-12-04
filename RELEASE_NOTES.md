@@ -20,6 +20,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Plate solver specific settings are now shown for the selected Plate Solver and Blind Solver only. This makes it simpler to see at a glance that everything is set up correctly.
 - N.I.N.A. Star Detector now properly calculates the centroid of stars
   - The centroid is now also annotated in the N.I.N.A. Star Annotator
+- Autofocus report now displays the determined step number as an integer instead of a floating point number
 
 ## Commandline Options
 The following command line options have been added

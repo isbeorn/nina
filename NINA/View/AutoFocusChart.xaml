@@ -283,7 +283,7 @@
                 BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblTime}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -292,7 +292,7 @@
                 BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblPosition}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat=\{0:0.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat={}{0:F0}}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -301,7 +301,7 @@
                 BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblHFR}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat=\{0:0.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat={}{0:0.00}}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -347,7 +347,7 @@
                     <TextBlock Text="{ns:Loc LblParabolic}" />
                     <TextBlock Text=" R²" />
                 </StackPanel>
-                <TextBlock Margin="5,0,0,0" Text="{Binding QuadraticFitting.RSquared, StringFormat=\{0:0.00\}}" />
+                <TextBlock Margin="5,0,0,0" Text="{Binding QuadraticFitting.RSquared, StringFormat={}{0:0.00}}" />
             </UniformGrid>
             <UniformGrid VerticalAlignment="Center" Columns="2">
                 <UniformGrid.Visibility>
@@ -365,7 +365,7 @@
                     <TextBlock Text="{ns:Loc LblHyperbolic}" />
                     <TextBlock Text=" R²" />
                 </StackPanel>
-                <TextBlock Margin="5,0,0,0" Text="{Binding HyperbolicFitting.RSquared, StringFormat=\{0:0.00\}}" />
+                <TextBlock Margin="5,0,0,0" Text="{Binding HyperbolicFitting.RSquared, StringFormat={}{0:0.00}}" />
             </UniformGrid>
             <UniformGrid VerticalAlignment="Center" Columns="2">
                 <UniformGrid.Visibility>
@@ -384,9 +384,9 @@
                     <TextBlock Text=" R²" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.LeftTrend.RSquared, StringFormat=\{0:0.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.LeftTrend.RSquared, StringFormat={}{0:0.00}}" />
                     <TextBlock Margin="5,0,0,0" Text="|" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.RightTrend.RSquared, StringFormat=\{0:0.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.RightTrend.RSquared, StringFormat={}{0:0.00}}" />
                 </StackPanel>
             </UniformGrid>
             <UniformGrid
