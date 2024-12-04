@@ -18,6 +18,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Renamed "Direct Guider" to "Mount Dither" 
   - The device type has been renamed to better reflect its purpose. The "Mount Dither" driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface. This change ensures clarity and better alignment with the feature's intended functionality.
 - Plate solver specific settings are now shown for the selected Plate Solver and Blind Solver only. This makes it simpler to see at a glance that everything is set up correctly.
+- N.I.N.A. Star Detector now properly calculates the centroid of stars
+  - The centroid is now also annotated in the N.I.N.A. Star Annotator
 
 ## Commandline Options
 The following command line options have been added

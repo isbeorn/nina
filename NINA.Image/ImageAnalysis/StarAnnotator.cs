@@ -27,7 +27,9 @@ namespace NINA.Image.ImageAnalysis {
 
     public class StarAnnotator : IStarAnnotator {
         private static Pen ELLIPSEPEN = new Pen(Brushes.LightYellow, 1);
+        private static Pen STARBOXPEN = new Pen(Brushes.DarkRed, 1);
         private static Pen RECTPEN = new Pen(Brushes.LightYellow, 2);
+        private static Pen CENTROIDPEN = new Pen(Brushes.DarkBlue, 0.5f);
         private static SolidBrush TEXTBRUSH = new SolidBrush(Color.Yellow);
         private static FontFamily FONTFAMILY = new FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 24, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -52,6 +54,8 @@ namespace NINA.Image.ImageAnalysis {
                         using (var newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb)) {
                             Graphics graphics = Graphics.FromImage(newBitmap);
                             graphics.DrawImage(bmp, 0, 0);
+                            // Set smoothing mode for sub pixel rendering
+                            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                             var starList = result.StarList;
 
                             if (starList?.Count > 0) {
@@ -69,8 +73,17 @@ namespace NINA.Image.ImageAnalysis {
                                     token.ThrowIfCancellationRequested();
                                     textposx = star.Position.X - offset;
                                     textposy = star.Position.Y - offset;
-                                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.BoundingBox.X, star.BoundingBox.Y, star.BoundingBox.Width, star.BoundingBox.Height));
+                                    graphics.DrawRectangle(STARBOXPEN, new Rectangle(star.BoundingBox.X, star.BoundingBox.Y, star.BoundingBox.Width, star.BoundingBox.Height));
                                     graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+
+                                    var starX = star.Position.X;
+                                    var starY = star.Position.Y;
+                                    var length = (float)star.HFR;
+                                    
+                                    graphics.DrawLine(
+                                        CENTROIDPEN, starX - length, starY, starX + length, starY);
+                                    graphics.DrawLine(
+                                        CENTROIDPEN, starX, starY - length, starX, starY + length);
                                 }
                             }
 
