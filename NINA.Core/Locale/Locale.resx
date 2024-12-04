@@ -7060,4 +7060,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
     <value>No host specified in settings</value>
   </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Blind Solver Settings</value>
+  </data>
 </root>
