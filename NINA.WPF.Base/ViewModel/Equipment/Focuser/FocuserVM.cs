@@ -283,6 +283,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     return false;
                 }
 
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
+                }
+
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblConnecting"] });
 
                 var newFocuser = GetBacklashCompensationFocuser(profileService, (IFocuser)DeviceChooserVM.SelectedDevice);

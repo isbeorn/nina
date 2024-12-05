@@ -220,6 +220,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                     return false;
                 }
 
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
+                }
+
                 applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus() {
                         Source = Title,
