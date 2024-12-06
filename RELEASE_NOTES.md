@@ -8,6 +8,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 - Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation
 - `Autofocus after Time` and `Loop for Timespan` are now using UTC time instead of local time
+- Added support for latest version of SkyGuard (SkySurveyor, SkyGuard, SkyGuide, SkyWave depending on license)
 
 ## Improvements
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
