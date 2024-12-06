@@ -1093,11 +1093,11 @@
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>デジタル スカイ サーベイ</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>ダイレクトガイド時間</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>架台ディザー時間</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>一般的なパルスガイド時間（秒）</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>一般的なパルス時間（秒）</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>RAガイドレート</value>
@@ -1111,11 +1111,11 @@
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Decガイドレート(秒角/秒)</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guiderは赤道儀に接続できませんでした</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>架台ディザーが架台に接続できませんでした</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>赤道儀が切断されました。Direct Guiderは切断されます。ディザリングはもう有効ではありません！</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>架台が切断されました。架台ディザーは切断されます。ディザリングはもう有効ではありません！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>画像保存ディレクトリーが見つかりません。</value>
@@ -1153,7 +1153,7 @@
   <data name="LblDitherPixels" xml:space="preserve">
     <value>デザリングピクセル</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>ディザリングする一般的なピクセル数。ディザリングは、ターゲットを中心とした正規分布に従い、この値を標準偏差とします。67% のディザリングはこの距離内に収まります。</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -7025,5 +7025,8 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
     <value>設定でホストが指定されていません</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>ブラインドソルバーの設定</value>
   </data>
 </root>

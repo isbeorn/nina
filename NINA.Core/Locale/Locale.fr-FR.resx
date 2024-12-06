@@ -1105,11 +1105,11 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Délai Direct Guide</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Mount dither Duration</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Durée typique des impulsions de guidage en secondes</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Typical pulse duration in seconds</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Taux de guidage en Ascension Droite</value>
@@ -1123,11 +1123,11 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Taux de guidage en déclinaison en arcsecondes par seconde</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider could not connect to Mount</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Mount Dither could not connect to Mount</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Répertoire pour enregistrer l'image non trouvée!</value>
@@ -1165,8 +1165,8 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Décaler les pixels</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
-    <value>Nombre typique de pixels à utiliser. Le dither suit une distribution normale centrée sur la cible, dont cette valeur est l'écart-type. 67% des dithers se trouveront à cette distance</value>
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
+    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither AD Seulement</value>
@@ -7055,5 +7055,8 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
     <value>No host specified in settings</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Blind Solver Settings</value>
   </data>
 </root>

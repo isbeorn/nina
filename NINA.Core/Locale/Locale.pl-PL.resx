@@ -1097,11 +1097,11 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Cyfrowy przegląd nieba</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Bezpośredni czas prowadzenia</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Mount dither Duration</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Czas trwania impulsu dla prowadzenia</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Typical pulse duration in seconds</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Szybkość prowadzenia w rektascensji</value>
@@ -1115,11 +1115,11 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Szybkość prowadzenia deklinacji w sekundach kątowych na sekundę</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Sterownik guidera nie mógł połączyć się z montażem</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Montaż nie mógł wykonać ditheringu</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Montaż został odłączony. Guder został odłączony. Dithering nie działa!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Montaż został rozłączony. Dithering zostanie zakończony, ponieważ nie jest skuteczny!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Nie znaleziono katalogu do zapisywania obrazu!</value>
@@ -1157,7 +1157,7 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Piksele ditheringu</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Liczba pikseli do ditheringu. Proces przebiega zgodnie z rozkładem normalnym skoncentrowanym wokół celu, a liczba pikseli jest odchyleniem standardowym. 67% operacji ditheringu pozostaje w tej odległości</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -7048,5 +7048,8 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
     <value>Nie określono hosta w ustawieniach</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Ustawienia adnotacji obiektów</value>
   </data>
 </root>
