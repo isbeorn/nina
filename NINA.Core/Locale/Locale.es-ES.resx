@@ -1096,11 +1096,11 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Duración de Guiado Directo</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Duración del dither de la montura</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Duración típica de la guía de pulso en segundos</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Duración típica del pulso en segundos</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Velocidad de guiado en Ascensión Recta</value>
@@ -1114,11 +1114,11 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Velocidad de guiado en Declinación Recta en arcosegundos por segundo</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>El Guiado directo no puede conectarse a la montura</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>El dither no se ha podido conectar a la montura</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>La montura se ha desconectado. El Guiado directo se desconectará. ¡El dither ya no será efectivo!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>La montura se ha desconectado. El dither de la montura se desconectará. ¡El dither ya no será efectivo!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>¡No se ha econtrado el directorio para guardar la imagen!</value>
@@ -1156,7 +1156,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Píxeles en el dither</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Número típico de píxeles a usar. Dithering sigue una distribución normal centrada en el objetivo, siendo este valor la desviación estándar. El 67% de los dither estará a esta distancia</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -7039,5 +7039,17 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="LblCrosshair" xml:space="preserve">
     <value>Punto de mira</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Error al resolver {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No se ha especificado ningún host en la configuración</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Blind Solver Settings</value>
   </data>
 </root>

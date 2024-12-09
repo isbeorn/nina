@@ -8,12 +8,20 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 - Sky Atlas constellation filter is no longer failing to find some of the objects that are part of the selected constellation
 - `Autofocus after Time` and `Loop for Timespan` are now using UTC time instead of local time
+- Added support for latest version of SkyGuard (SkySurveyor, SkyGuard, SkyGuide, SkyWave depending on license)
 
 ## Improvements
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
 - ZWO EAF is now available as a native driver
 - Framing assistant sky annotation options are now saved to the active profile
 - Looping mode is no longer started when NINA connects to PHD2.
+- GPSD support added as a GNSS source for getting site location information
+- Renamed "Direct Guider" to "Mount Dither" 
+  - The device type has been renamed to better reflect its purpose. The "Mount Dither" driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface. This change ensures clarity and better alignment with the feature's intended functionality.
+- Plate solver specific settings are now shown for the selected Plate Solver and Blind Solver only. This makes it simpler to see at a glance that everything is set up correctly.
+- N.I.N.A. Star Detector now properly calculates the centroid of stars
+  - The centroid is now also annotated in the N.I.N.A. Star Annotator
+- Autofocus report now displays the determined step number as an integer instead of a floating point number
 
 ## Commandline Options
 The following command line options have been added

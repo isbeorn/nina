@@ -240,7 +240,7 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
             try
             {
 
-                if (Process.GetProcessesByName("SkyGuard").Length == 0 && Process.GetProcessesByName("SkyGuide").Length == 0)
+                if (Process.GetProcessesByName("SkyGuard").Length == 0 && Process.GetProcessesByName("SkyGuide").Length == 0 && Process.GetProcessesByName("SkySurveyor").Length == 0)
                 {
                     if (!File.Exists(profileService.ActiveProfile.GuiderSettings.SkyGuardPath))
                     {
@@ -519,7 +519,7 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
         //TODO : Verify if [o] parameter could be removed.
         private void OpenSkyGuardFileDiag(object o)
         {
-            var dialog = CoreUtil.GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.SkyGuardPath, "SkyGuard.exe", "SkyGuard files :|SkyGuard.exe;SkyGuide.exe| All files(*.*) | *.*");
+            var dialog = CoreUtil.GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.SkyGuardPath, "SkyGuard.exe", "SkyGuard files :|SkyGuard.exe;SkyGuide.exe;SkySurveyor.exe| All files(*.*) | *.*");
             if (dialog.ShowDialog() == true)
             {
                 this.profileService.ActiveProfile.GuiderSettings.SkyGuardPath = dialog.FileName;

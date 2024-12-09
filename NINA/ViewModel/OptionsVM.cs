@@ -268,7 +268,10 @@ namespace NINA.ViewModel {
 
                     Logger.Error(message);
                     Notification.ShowExternalError(message, Loc.Instance["LblGnss"]);
-                } catch(OperationCanceledException) {
+                } catch (OperationCanceledException) {
+                } catch (GnssInvalidHostException ex) {
+                    Logger.Error($"Failed to resolve GNSS server {gnss.Name}: {ex.Message}");
+                    Notification.ShowError(string.Format(Loc.Instance["LblGnssInvalidHost"], gnss.Name, ex.Message));
                 } catch (GnssNotFoundException ex) {
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format(Loc.Instance["LblGnssNotFound"], gnss.Name));

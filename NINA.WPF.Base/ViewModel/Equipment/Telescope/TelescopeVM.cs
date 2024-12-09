@@ -374,6 +374,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     return false;
                 }
 
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
+                }
+
                 this.applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus() {
                         Source = Title,

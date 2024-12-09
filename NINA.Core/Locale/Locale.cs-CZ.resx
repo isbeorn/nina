@@ -1098,11 +1098,11 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Čas Přímé Pointace</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Doba trvání montáže ditheringu</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Typická doba trvání pointačních pulzů v sekundách</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Typická délka pulzu v sekundách</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Míra Pointace Rektascenze</value>
@@ -1116,11 +1116,11 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Míra pointace deklinace v obloukových sekundách za sekundu</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Přímé Navádění se nepodařilo navázat spojení s Mountáží</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Montáž nemohla provést dithering</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Montáž byla odpojena. Přímé navádění se odpojí. Dithering již není účinný!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Montáž byla odpojena. Dithering montáž bude odpojen, protože již nebude účinný!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Adresář pro uložení obrázku nebyl nalezen!</value>
@@ -1158,7 +1158,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Dithering Pixely</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Typický počet pixelů ditheringu. Dithering následuje normální rozdělení zaměřené na cíl a tato hodnota se považuje za směrodatnou odchylku. 67% ditheringu bude v této oblasti</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -7044,5 +7044,17 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="LblCrosshair" xml:space="preserve">
     <value>Crosshair</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Selhalo řešení {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>V nastavení není zadán žádný host</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Nastavení Slepého Řešení</value>
   </data>
 </root>

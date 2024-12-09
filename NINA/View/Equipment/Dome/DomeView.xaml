@@ -185,10 +185,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="80" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="80" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Border
                             Grid.Row="0"
@@ -207,6 +207,22 @@
                                     IsChecked="{Binding FollowEnabled}" />
                             </UniformGrid>
                         </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            Visibility="{Binding FollowEnabled, Converter={StaticResource VisibilityConverter}}">
+                            <Grid Visibility="{Binding ActiveProfile.MeridianFlipSettings.UseSideOfPier, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontStyle="Italic"
+                                    Text="{ns:Loc LblDomeFollowingSideOfPierDisabled}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
                         <Grid
                             Grid.Row="0"
                             Grid.RowSpan="4"
@@ -220,7 +236,10 @@
                                     Margin="5"
                                     Command="{Binding SyncCommand}"
                                     Visibility="{Binding DomeInfo.CanSyncAzimuth, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeSyncAzimuth}" TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblDomeSyncAzimuth}"
+                                        TextWrapping="Wrap" />
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
                                             <TextBlock Text="{ns:Loc LblDomeSyncAzimuthTooltip}" />
@@ -234,7 +253,10 @@
                                     Command="{Binding FindHomeCommand}"
                                     IsEnabled="{Binding DomeInfo.AtHome, Converter={StaticResource InverseBooleanConverter}}"
                                     Visibility="{Binding DomeInfo.CanFindHome, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeFindHome}" TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblDomeFindHome}"
+                                        TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -441,7 +463,10 @@
                                             <TextBlock Text="{ns:Loc LblSetParkToolTip}" />
                                         </ToolTip>
                                     </Button.ToolTip>
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblSetPark}"
+                                        TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>

@@ -38,6 +38,18 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 <li>ZWO EAF is now available as a native driver</li>
 <li>Framing assistant sky annotation options are now saved to the active profile</li>
 <li>Looping mode is no longer started when NINA connects to PHD2.</li>
+<li>GPSD support added as a GNSS source for getting site location information</li>
+<li>Renamed &quot;Direct Guider&quot; to &quot;Mount Dither&quot;
+<ul>
+<li>The device type has been renamed to better reflect its purpose. The &quot;Mount Dither&quot; driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface. This change ensures clarity and better alignment with the feature's intended functionality.</li>
+</ul>
+</li>
+<li>Plate solver specific settings are now shown for the selected Plate Solver and Blind Solver only. This makes it simpler to see at a glance that everything is set up correctly.</li>
+<li>N.I.N.A. Star Detector now properly calculates the centroid of stars
+<ul>
+<li>The centroid is now also annotated in the N.I.N.A. Star Annotator</li>
+</ul>
+</li>
 </ul>
 <h2 id="commandline-options">Commandline Options</h2>
 <p>The following command line options have been added</p>

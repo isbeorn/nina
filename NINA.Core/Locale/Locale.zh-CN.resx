@@ -1104,11 +1104,11 @@
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital 巡天图库(在线)</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>直接导星持续时间</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Mount dither Duration</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>导星持续时间（秒）</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Typical pulse duration in seconds</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -1122,11 +1122,11 @@
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>赤纬导星速率（角秒/秒）</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>直接导星无法连接赤道仪</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Mount Dither could not connect to Mount</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>望远镜已断开连接。 直接导星将断开连接。抖动不再有效！</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>图像保存目录未找到！</value>
@@ -1164,8 +1164,8 @@
   <data name="LblDitherPixels" xml:space="preserve">
     <value>抖动像素</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
-    <value>抖动数值（像素），这个值是标准偏差，以被导星为中心执行抖动，其中67%的抖动将在这个距离内</value>
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
+    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>仅抖动赤经</value>
@@ -7043,5 +7043,17 @@
   </data>
   <data name="LblCrosshair" xml:space="preserve">
     <value>Crosshair</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Failed to resolve {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No host specified in settings</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Blind Solver Settings</value>
   </data>
 </root>
