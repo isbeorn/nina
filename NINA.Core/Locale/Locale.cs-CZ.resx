@@ -7057,4 +7057,7 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblBlindSolveSettings" xml:space="preserve">
     <value>Nastavení Slepého Řešení</value>
   </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Varování: „Použít dalekohled na straně pilíře“ v nastavení poledníku je vypnuto a může způsobit problémy se zarovnáním u rovníkových montáží s kopulí v blízkosti poledníku. Kopule bude předpokládat, že k poledníkovému překlopení dojde přesně na poledníku, což může vést k chybnému zarovnání, pokud montáž ještě nebyla překlopena.</value>
+  </data>
 </root>

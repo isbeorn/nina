@@ -7052,4 +7052,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblBlindSolveSettings" xml:space="preserve">
     <value>Blind Solver Settings</value>
   </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+  </data>
 </root>

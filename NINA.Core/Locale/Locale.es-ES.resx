@@ -7052,4 +7052,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblBlindSolveSettings" xml:space="preserve">
     <value>Blind Solver Settings</value>
   </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Aviso: "Usar el lado del pie del telescopior" en la configuración del cambio de meridiano está desactivado y puede causar problemas de alineación en monturas ecuatoriales con cúpulas cerca del meridiano. La cúpula asumirá que un cambio de meridiano se produce precisamente en el meridiano, lo que potencialmente conducirá a un mal alineamiento si la montura aún no se ha dado la vuelta.</value>
+  </data>
 </root>
