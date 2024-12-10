@@ -37,15 +37,19 @@ namespace NINA.Equipment.Equipment {
     public abstract class AscomDevice<DeviceT> : BaseINPC, IDevice
         where DeviceT : IAscomDeviceV2 {
 
+        private string ascomRegistrationName;
+
+
         public AscomDevice(string id, string name) {
             Id = id;
-            Name = name;
+            ascomRegistrationName = name;
             DisplayName = name;
             this.Category = "ASCOM";
         }
 
         public AscomDevice(ASCOM.Alpaca.Discovery.AscomDevice deviceMeta) : this(deviceMeta.UniqueId, deviceMeta.AscomDeviceName) {
             this.deviceMeta = deviceMeta;
+            name = deviceMeta.AscomDeviceName;
             DisplayName = $"{Name} @ {deviceMeta.HostName} #{deviceMeta.AlpacaDeviceNumber}";
             this.Category = "ASCOM Alpaca";
         }
@@ -61,8 +65,23 @@ namespace NINA.Equipment.Equipment {
 
         public string Id { get; }
 
-        public string Name { get; }
-        public string DisplayName { get; }
+        private string name;
+        public string Name {
+            get {
+                if(name is null && deviceMeta is null && Connected) {
+                    try {
+                        // Update name of ASCOM after connection
+                        name = device?.Name ?? ascomRegistrationName;
+                        DisplayName = $"{name} (ASCOM)";
+                    } catch {
+                        name = ascomRegistrationName;
+                    }
+                }
+                return name ?? ascomRegistrationName;
+            }
+        }
+
+        public string DisplayName { get; private set; }
 
         public string Description {
             get {
@@ -330,6 +349,8 @@ namespace NINA.Equipment.Equipment {
             Logger.Trace($"{Name} - Calling PostDisconnect");
             PostDisconnect();
             Dispose();
+            name = null;
+            DisplayName = ascomRegistrationName;
             RaiseAllPropertiesChanged();
         }
 
