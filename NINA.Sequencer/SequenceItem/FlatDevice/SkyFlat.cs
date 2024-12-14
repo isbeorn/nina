@@ -106,6 +106,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.imageSaveMediator = imageSaveMediator;
             this.twilightCalculator = twilightCalculator;
             this.telescopeMediator = telescopeMediator;
+            ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
+            ditherSettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime;
 
             this.Add(new Annotation());
             this.Add(new Annotation());
@@ -120,6 +122,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             IsExpanded = false;
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
+                DitherPixels = cloneMe.DitherPixels;
+                DitherSettleTime = cloneMe.DitherSettleTime;
             }
         }
 
@@ -388,6 +392,25 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        private double ditherPixels;
+        [JsonProperty]
+        public double DitherPixels {
+            get => ditherPixels;
+            set {
+                ditherPixels = value;
+                RaisePropertyChanged();
+            }
+        }
+        private double ditherSettleTime;
+        [JsonProperty]
+        public double DitherSettleTime {
+            get => ditherSettleTime;
+            set {
+                ditherSettleTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();
             var takeExposure = GetExposureItem();
@@ -529,7 +552,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 using (var directGuider = new DirectGuider(profileService, telescopeMediator)) { 
                     await directGuider.Connect(token);
                     await directGuider.StartGuiding(false, null, token);
-                    await directGuider.Dither(progress, token);
+                    await directGuider.Dither(DitherPixels, TimeSpan.FromSeconds(DitherSettleTime), false, progress, token);
                     await directGuider.StopGuiding(token);
                     directGuider.Disconnect();
                 }
