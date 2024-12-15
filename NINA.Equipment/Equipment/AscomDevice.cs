@@ -133,9 +133,7 @@ namespace NINA.Equipment.Equipment {
                             if (expected != val) {
                                 Logger.Error($"{Name} should be connected but reports to be disconnected. Trying to reconnect...");
                                 try {
-                                    device.Connect();
-                                    WaitForConnectingFlag();
-                                    connectedExpectation = true;
+                                    Connected = true;
                                     if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
                                         getmemory.InvalidateCache();
                                     }
@@ -156,6 +154,19 @@ namespace NINA.Equipment.Equipment {
                         return val;
                     } else {
                         return false;
+                    }
+                }
+            }
+            private set {
+                lock (lockObj) {
+                    if (device != null) {
+                        Logger.Debug($"SET {Name} Connected to {value}");
+                        device.Connected = value;
+                        connectedExpectation = value;
+                        if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
+                            getmemory.InvalidateCache();
+                        }
+                        RaisePropertyChanged(nameof(HasSetupDialog));
                     }
                 }
             }
@@ -247,18 +258,7 @@ namespace NINA.Equipment.Equipment {
 
                     Logger.Trace($"{Name} - Calling Connect for {Id}");
 
-                    int interfaceVersion = 1;
-                    try {
-                        interfaceVersion = device.InterfaceVersion;
-                    } catch { }
-
-                    var deviceType = ToDeviceType();
-                    Logger.Debug($"Connecting {deviceType} {DisplayName} with Interface Version {interfaceVersion}");
-                    await device.ConnectAsync(ToDeviceType(), interfaceVersion, token, logger: new AscomLogger());
-                    lock (lockObj) {
-                        connectedExpectation = true;
-                        InvalidatePropertyCache();
-                    }
+                    Connected = true;
 
                     if (Connected) {
                         Logger.Trace($"{Name} - Calling PostConnect");
@@ -336,8 +336,7 @@ namespace NINA.Equipment.Equipment {
             Logger.Trace($"{Name} - Calling PreDisconnect");
             PreDisconnect();
             try {
-                device.Disconnect();
-                WaitForConnectingFlag();
+                Connected = false;
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
