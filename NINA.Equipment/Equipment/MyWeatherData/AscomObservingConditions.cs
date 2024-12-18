@@ -58,7 +58,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         protected override string ConnectionLostMessage => Loc.Instance["LblWeatherConnectionLost"];
 
         protected override IObservingConditionsV2 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new ObservingConditions(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaObservingConditions(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

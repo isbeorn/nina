@@ -827,7 +827,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override ICameraV4 GetInstance() {
-            if(deviceMeta == null) {
+            if(!IsAlpacaDevice()) {
                 return new Camera(this.Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

@@ -53,6 +53,11 @@ namespace NINA.Equipment.Equipment {
             DisplayName = $"{Name} @ {deviceMeta.HostName} #{deviceMeta.AlpacaDeviceNumber}";
             this.Category = "ASCOM Alpaca";
         }
+
+        public bool IsAlpacaDevice() {
+            return deviceMeta != null;
+        }
+
         protected readonly ASCOM.Alpaca.Discovery.AscomDevice deviceMeta;
 
         protected DeviceT device;
@@ -68,10 +73,10 @@ namespace NINA.Equipment.Equipment {
         private string name;
         public string Name {
             get {
-                if(name is null && deviceMeta is null && Connected) {
+                if(name == null && !IsAlpacaDevice() && Connected) {
                     try {
                         // Update name of ASCOM after connection
-                        name = device?.Name ?? ascomRegistrationName;
+                        name = string.IsNullOrEmpty(device?.Name) ? ascomRegistrationName : device?.Name;
                         DisplayName = $"{name} (ASCOM)";
                     } catch {
                         name = ascomRegistrationName;
@@ -291,7 +296,7 @@ namespace NINA.Equipment.Equipment {
 
         public void SetupDialog() {
             if (HasSetupDialog) {
-                if (deviceMeta is null) {
+                if (!IsAlpacaDevice()) {
                     // ASCOM
                     try {
                         bool dispose = false;
@@ -348,8 +353,10 @@ namespace NINA.Equipment.Equipment {
             Logger.Trace($"{Name} - Calling PostDisconnect");
             PostDisconnect();
             Dispose();
-            name = null;
-            DisplayName = ascomRegistrationName;
+            if(!IsAlpacaDevice()) {
+                name = null;
+                DisplayName = ascomRegistrationName;
+            }            
             RaiseAllPropertiesChanged();
         }
 

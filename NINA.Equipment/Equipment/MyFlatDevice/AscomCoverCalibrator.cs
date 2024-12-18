@@ -173,7 +173,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
         }
 
         protected override ICoverCalibratorV2 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new CoverCalibrator(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCoverCalibrator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

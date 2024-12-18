@@ -124,7 +124,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         protected override IRotatorV4 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Rotator(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaRotator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

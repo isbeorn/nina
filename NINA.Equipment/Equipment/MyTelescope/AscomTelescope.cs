@@ -1001,7 +1001,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         protected override ITelescopeV4 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Telescope(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaTelescope(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

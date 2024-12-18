@@ -179,7 +179,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         }
 
         protected override IFocuserV4 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Focuser(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaFocuser(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);
