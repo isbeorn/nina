@@ -246,7 +246,7 @@ namespace NINA.Image.FileFormat.FITS {
         private static ushort[] ToUshortArray(float[] src) {
             ushort[] pixels = new ushort[src.Length];
             for (int i = 0; i < src.Length; i++) {
-                pixels[i] = (ushort)(src[i]);
+                pixels[i] = (ushort)(src[i] * ushort.MaxValue);
             }
             return pixels;
         }
