@@ -182,7 +182,7 @@ namespace NINA.Image.FileFormat.FITS {
             [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_COMMENT)] StringBuilder comm,
             out int status);
 
-        private static double fits_read_key_double(IntPtr fptr, string keyname) {
+        public static double fits_read_key_double(IntPtr fptr, string keyname) {
             _fits_read_key_double(fptr, keyname, out var value, null, out var status);
             CheckStatus("fits_read_key_long", status);
             return value;
