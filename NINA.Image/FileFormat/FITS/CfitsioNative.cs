@@ -173,6 +173,20 @@ namespace NINA.Image.FileFormat.FITS {
             CheckStatus("fits_read_key_long", status);
             return value;
         }
+        // fits_read_key_double      ffgkye
+        [DllImport("cfitsionative.dll", CharSet = CharSet.Ansi, EntryPoint = "ffgkyd", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int _fits_read_key_double(
+            IntPtr fptr,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_KEYWORD)] string keyname,
+            out double value,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_COMMENT)] StringBuilder comm,
+            out int status);
+
+        private static double fits_read_key_double(IntPtr fptr, string keyname) {
+            _fits_read_key_double(fptr, keyname, out var value, null, out var status);
+            CheckStatus("fits_read_key_long", status);
+            return value;
+        }
 
         // void CFITS_API ffgerr(int status, char *errtext);
         [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffgerr", CallingConvention = CallingConvention.Cdecl)]
@@ -345,6 +359,8 @@ namespace NINA.Image.FileFormat.FITS {
         public static extern int fits_write_img_uint(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, uint[] array, out int status);
         [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_write_img_float(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, float[] array, out int status);
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img_double(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, double[] array, out int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr MemReallocDelegate(IntPtr ptr, IntPtr newSize);
