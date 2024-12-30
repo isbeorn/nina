@@ -262,7 +262,7 @@ namespace NINA.Sequencer.Container {
                         .Select(y => {
                             var filterName = y.Key;
                             var total = TimeSpan.FromSeconds(y.Sum(s => s.ExposureTime * s.Count));
-                            return $"{filterName} - {total.Hours:D2}:{total.Minutes:D2}:{total.Seconds:D2}";
+                            return $"{filterName} - {Math.Truncate(total.TotalHours)}:{total.Minutes:D2}:{total.Seconds:D2}";
                         });
 
                     return string.Join(" | ", exposureByFilter);
