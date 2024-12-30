@@ -23,7 +23,7 @@ using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.Core.Utility {
-
+    [Obsolete]
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
 
         private static SynchronizationContext _synchronizationContext =
@@ -53,7 +53,7 @@ namespace NINA.Core.Utility {
             RunOnSynchronizationContext(() => base.AddItem(item));
         }
     }
-
+    [Obsolete]
     public class ObservableLimitedSizedStack<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
         private int _maxSize;
 

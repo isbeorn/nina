@@ -78,7 +78,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
             TempChangeRunning = false;
-            CoolerHistory = new AsyncObservableLimitedSizedStack<CameraCoolingStep>(100);
+            CoolerHistory = new LinkedList<CameraCoolingStep>();
             CoolerHistoryMax = 20;
             coolerHistoryMin = -20;
             ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
@@ -358,6 +358,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             CoolerHistory.Clear();
                             CoolerHistoryMax = 20;
                             CoolerHistoryMin = -20;
+                            CoolerHistoryChangeId++;
                             this.Cam = cam;
                             token.ThrowIfCancellationRequested();
 
@@ -576,7 +577,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.PixelSize), out o);
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
-            CoolerHistory.Add(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            if(CoolerHistory.Count > 100) {
+                CoolerHistory.RemoveFirst();
+            }
+            CoolerHistoryChangeId++;
             CoolerHistoryMax = Math.Max(CameraInfo.Temperature, CoolerHistoryMax);
             CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
@@ -987,7 +992,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             return Cam;
         }
 
-        public AsyncObservableLimitedSizedStack<CameraCoolingStep> CoolerHistory { get; private set; }
+        [ObservableProperty]
+        private ulong coolerHistoryChangeId;
+
+        public LinkedList<CameraCoolingStep> CoolerHistory { get; private set; }
 
         [ObservableProperty]
         private double coolerHistoryMax;
