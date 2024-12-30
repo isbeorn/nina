@@ -61,7 +61,8 @@ namespace NINA.Core.Utility {
     public abstract class SerializableINPC : INotifyPropertyChanged {
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         [field: System.NonSerialized]
@@ -92,7 +93,8 @@ namespace NINA.Core.Utility {
         }
 
         protected void RaiseAllPropertiesChanged() {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(null));
         }
     }
 }

@@ -303,7 +303,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 foreach (RMS rms in rmsRecords) {
                     rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
                 }
-                GuideEvent?.Invoke(this, e);
+                var handler = GuideEvent;
+                handler?.Invoke(this, e);
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
