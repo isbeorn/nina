@@ -24,6 +24,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Autofocus report now displays the determined step number as an integer instead of a floating point number
 - N.I.N.A. will now query the ASCOM device name after connecting to the driver.
 - Added separate options for dither pixel and dither settle time parameters to Sky Flat instructions
+- Improved rendering performance of guider chart
 
 ## Commandline Options
 The following command line options have been added

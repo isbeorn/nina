@@ -168,6 +168,7 @@ namespace NINA.Equipment.Equipment {
                 RMS.Clear();
                 MaxDurationY = 1;
                 HistoryStep.ResetIdProvider();
+                ChangeId++;
             }
         }
 
