@@ -47,18 +47,22 @@ namespace NINA.Core.Utility.ExternalCommand {
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
                 process.EnableRaisingEvents = true;
-                process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
+
+                DataReceivedEventHandler outputDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
                         StatusUpdate(src, e.Data);
                         Logger.Info($"STDOUT: {e.Data}");
                     }
                 };
-                process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
+                process.OutputDataReceived += outputDataReceivedCallback;
+                DataReceivedEventHandler errorDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
                         StatusUpdate(src, e.Data);
                         Logger.Error($"STDERR: {e.Data}");
                     }
                 };
+                process.ErrorDataReceived += errorDataReceivedCallback;
+
                 if (!string.IsNullOrWhiteSpace(args)) {
                     process.StartInfo.Arguments = args;
                 }                    
@@ -68,6 +72,9 @@ namespace NINA.Core.Utility.ExternalCommand {
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
+
+                process.OutputDataReceived -= outputDataReceivedCallback;
+                process.ErrorDataReceived -= errorDataReceivedCallback;
 
                 return process.ExitCode == 0;
             } catch (Exception e) {
