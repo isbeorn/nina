@@ -500,7 +500,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         private void ToggleDewHeaterOn(object o) {
             if (CameraInfo.Connected) {
-                Cam.DewHeaterOn = (bool)o;
+                var cam = Cam;
+                if (cam != null) {
+                    Cam.DewHeaterOn = (bool)o;
+                }                
             }
         }
 
