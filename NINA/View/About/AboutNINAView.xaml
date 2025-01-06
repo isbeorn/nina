@@ -169,7 +169,7 @@
                 Margin="5,0,0,0"
                 VerticalAlignment="Top"
                 Orientation="Horizontal">
-                <TextBlock FontSize="16" Text="Copyright © 2016 - 2024 Stefan Berg " />
+                <TextBlock FontSize="16" Text="Copyright © 2016 - 2025 Stefan Berg " />
                 <TextBlock FontSize="16">
                     <Hyperlink NavigateUri="mailto:isbeorn86+NINA@googlemail.com" RequestNavigate="Hyperlink_RequestNavigate">
                         &lt;isbeorn86+NINA@googlemail.com&gt;
