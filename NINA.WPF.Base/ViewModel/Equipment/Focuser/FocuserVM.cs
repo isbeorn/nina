@@ -479,6 +479,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             }
         }
         public IDevice GetDevice() {
+            if (Focuser is OvershootBacklashCompensationDecorator overshoot) {
+                return overshoot.Focuser;
+            } else if (Focuser is AbsoluteBacklashCompensationDecorator absolute) {
+                return absolute.Focuser;
+            }
             return Focuser;
         }
 

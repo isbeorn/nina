@@ -992,6 +992,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public IDevice GetDevice() {
+            if (Cam is PersistSettingsCameraDecorator decorator) {
+                return decorator.Camera;
+            }
             return Cam;
         }
 
