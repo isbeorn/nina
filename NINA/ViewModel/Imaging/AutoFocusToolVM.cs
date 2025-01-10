@@ -281,44 +281,52 @@ namespace NINA.Imaging.ViewModel.Imaging {
             this.focuserMediator.RemoveConsumer(this);
         }
 
+        private int isLoadingChart = 0;
+
         public async Task<bool> LoadChart() {
-            if (SelectedChart != null && ChartListSelectable) {
-                try {
-                    var comparer = new FocusPointComparer();
-                    var plotComparer = new PlotPointComparer();
-                    AutoFocusVM.FocusPoints.Clear();
-                    AutoFocusVM.PlotFocusPoints.Clear();
+            if (SelectedChart == null || !ChartListSelectable) {
+                return false;
+            }
+            if (Interlocked.Exchange(ref isLoadingChart, 1) == 1) {
+                return false;
+            }
+            try {
+                var comparer = new FocusPointComparer();
+                var plotComparer = new PlotPointComparer();
+                AutoFocusVM.FocusPoints.Clear();
+                AutoFocusVM.PlotFocusPoints.Clear();
 
-                    using (var reader = File.OpenText(SelectedChart.FilePath)) {
-                        var text = await reader.ReadToEndAsync();
-                        var report = JsonConvert.DeserializeObject<AutoFocusReport>(text);
+                using (var reader = File.OpenText(SelectedChart.FilePath)) {
+                    var text = await reader.ReadToEndAsync();
+                    var report = JsonConvert.DeserializeObject<AutoFocusReport>(text);
 
-                        if (Enum.TryParse<AFCurveFittingEnum>(report.Fitting, out var afCurveFittingEnum)) {
-                            AutoFocusVM.FinalFocusPoint = new DataPoint(report.CalculatedFocusPoint.Position, report.CalculatedFocusPoint.Value);
-                            AutoFocusVM.LastAutoFocusPoint = new ReportAutoFocusPoint { Focuspoint = AutoFocusVM.FinalFocusPoint, Temperature = report.Temperature, Timestamp = report.Timestamp, Filter = report.Filter };
+                    if (Enum.TryParse<AFCurveFittingEnum>(report.Fitting, out var afCurveFittingEnum)) {
+                        AutoFocusVM.FinalFocusPoint = new DataPoint(report.CalculatedFocusPoint.Position, report.CalculatedFocusPoint.Value);
+                        AutoFocusVM.LastAutoFocusPoint = new ReportAutoFocusPoint { Focuspoint = AutoFocusVM.FinalFocusPoint, Temperature = report.Temperature, Timestamp = report.Timestamp, Filter = report.Filter };
 
-                            var focusPoints = new AsyncObservableCollection<ScatterErrorPoint>();
-                            var plotFocusPoints = new AsyncObservableCollection<DataPoint>();
-                            foreach (FocusPoint fp in report.MeasurePoints) {
-                                focusPoints.AddSorted(new ScatterErrorPoint(Convert.ToInt32(fp.Position), fp.Value, 0, fp.Error), comparer);
-                                plotFocusPoints.AddSorted(new DataPoint(Convert.ToInt32(fp.Position), fp.Value), plotComparer);
-                            }
-
-                            AutoFocusVM.FocusPoints = focusPoints;
-                            AutoFocusVM.PlotFocusPoints = plotFocusPoints;
-
-                            AutoFocusVM.AutoFocusChartMethod = report.Method == AFMethodEnum.STARHFR.ToString() ? AFMethodEnum.STARHFR : AFMethodEnum.CONTRASTDETECTION;
-                            AutoFocusVM.AutoFocusChartCurveFitting = afCurveFittingEnum;
-                            AutoFocusVM.SetCurveFittings(report.Method, report.Fitting);
-                            AutoFocusVM.AutoFocusDuration = report.Duration;
+                        var focusPoints = new AsyncObservableCollection<ScatterErrorPoint>();
+                        var plotFocusPoints = new AsyncObservableCollection<DataPoint>();
+                        foreach (FocusPoint fp in report.MeasurePoints) {
+                            focusPoints.AddSorted(new ScatterErrorPoint(Convert.ToInt32(fp.Position), fp.Value, 0, fp.Error), comparer);
+                            plotFocusPoints.AddSorted(new DataPoint(Convert.ToInt32(fp.Position), fp.Value), plotComparer);
                         }
 
-                        Logger.Debug("Finished loading latest AutoFocus chart");
-                        return true;
+                        AutoFocusVM.FocusPoints = focusPoints;
+                        AutoFocusVM.PlotFocusPoints = plotFocusPoints;
+
+                        AutoFocusVM.AutoFocusChartMethod = report.Method == AFMethodEnum.STARHFR.ToString() ? AFMethodEnum.STARHFR : AFMethodEnum.CONTRASTDETECTION;
+                        AutoFocusVM.AutoFocusChartCurveFitting = afCurveFittingEnum;
+                        AutoFocusVM.SetCurveFittings(report.Method, report.Fitting);
+                        AutoFocusVM.AutoFocusDuration = report.Duration;
                     }
-                } catch (Exception ex) {
-                    Logger.Error("Failed to load autofocus chart", ex);
+
+                    Logger.Debug("Finished loading latest AutoFocus chart");
+                    return true;
                 }
+            } catch (Exception ex) {
+                Logger.Error("Failed to load autofocus chart", ex);
+            } finally {
+                Interlocked.Exchange(ref isLoadingChart, 0);
             }
             return false;
         }
