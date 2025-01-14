@@ -128,12 +128,14 @@ namespace NINA.Equipment.SDK.CameraSDKs.ASTPANSDK {
             return null;
         }
 
-        public void StartExposure(double exposureTime, int width, int height) {
+        public DateTime StartExposure(double exposureTime, int width, int height) {
             long transformedExposureTime = (long)(exposureTime * 1000000d);
             if(transformedExposureTime > int.MaxValue) { transformedExposureTime = int.MaxValue; }
             SetControlValue(ASTPAN_AUTO_TYPE.ASTPAN_AUTO_CFG_Exposure, (int)transformedExposureTime);
 
+            DateTime exposureStart = DateTime.UtcNow;
             CheckAndThrowError(pInvoke.ASTPANStartExposure(id));
+            return exposureStart;
         }
 
         public void StopExposure() {
