@@ -1431,8 +1431,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 uint numPixels = is16bit ? ImageSize / 2U : ImageSize;
                 ushort[] ImgData = new ushort[numPixels];
 
+                lastExposureStartTime = DateTime.UtcNow;
                 while (!ct.IsCancellationRequested) {
-                    lastExposureStartTime = DateTime.UtcNow;
                     rv = Sdk.GetQHYCCDLiveFrame(ref width, ref height, ref bpp, ref channels, ImgData);
                     if (rv == uint.MaxValue) {
                         await Task.Yield();
