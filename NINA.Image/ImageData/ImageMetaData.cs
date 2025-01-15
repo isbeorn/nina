@@ -137,6 +137,14 @@ namespace NINA.Image.ImageData {
         public string Binning { get; set; } = string.Empty;
         public double ExposureTime { get; set; } = double.NaN;
         public RMS RecordedRMS { get; set; } = null;
+
+        public void SetExposureTimes(DateTime startTime, DateTime endTime) {
+            if (startTime == DateTime.MinValue ||  startTime == DateTime.MaxValue) { return; }
+            ExposureStart = startTime;
+            if (endTime == DateTime.MinValue || endTime == DateTime.MaxValue) { return; }
+            var midpointDateTime = startTime + TimeSpan.FromTicks((endTime - startTime).Ticks / 2);            
+            ExposureMidPoint = midpointDateTime;
+        }
     }
 
     public class CameraParameter {

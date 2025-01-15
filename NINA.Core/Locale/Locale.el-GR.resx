@@ -7056,4 +7056,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
     <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
   </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Complete duration</value>
+  </data>
 </root>

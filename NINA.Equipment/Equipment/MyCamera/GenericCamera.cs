@@ -211,19 +211,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
             exposureTaskWidth = width;
             exposureTaskHeight = height;
             exposureTaskTime = sequence.ExposureTime;
-            sdk.StartExposure(sequence.ExposureTime, width, height);
+            lastExposureStartTime = sdk.StartExposure(sequence.ExposureTime, width, height);
 
         }
 
         private int exposureTaskWidth;
         private int exposureTaskHeight;
         private double exposureTaskTime;
+        private DateTime lastExposureStartTime;
+        private DateTime lastExposureEndTime;
 
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
                 while (!sdk.IsExposureReady()) {
                     await CoreUtil.Wait(TimeSpan.FromMilliseconds(10), token);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
             }
         }
 
@@ -263,6 +266,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             var metaData = new ImageMetaData();
             metaData.FromCamera(this);
+            metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
             return exposureDataFactory.CreateImageArrayExposureData(
                         input: data,
                         width: width,
@@ -439,13 +443,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             return Task.Run<IExposureData>(async () => {
                 try {
+                    var lastLiveViewExposureStart = DateTime.UtcNow;
                     var data = await sdk.GetVideoCapture(exposureTaskTime, exposureTaskWidth, exposureTaskHeight, token);
+                    var lastLiveViewExposureEnd = DateTime.UtcNow;
                     if (data == null) { return null; }
 
                     var (x, y, width, height, binning) = sdk.GetROI();
 
                     var metaData = new ImageMetaData();
                     metaData.FromCamera(this);
+                    metaData.Image.SetExposureTimes(lastLiveViewExposureStart, lastLiveViewExposureEnd);
                     return exposureDataFactory.CreateImageArrayExposureData(
                                 input: data,
                                 width: width,
