@@ -975,20 +975,22 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 throw new NotSupportedException("Custom tracking rate not supported");
             }
 
-            try {
-                this.device.TrackingRate = DriveRate.Sidereal;
-            } catch (ASCOM.NotImplementedException pnie) {
-                // TrackingRate Write can throw a PropertyNotImplementedException.
-                Logger.Debug(pnie.Message);
-            }
-            if(this.CanSetTrackingEnabled) { 
-                this.device.Tracking = true;
+            if (rightAscensionRate != 0 || declinationRate != 0) {
+                try {
+                    this.device.TrackingRate = DriveRate.Sidereal;
+                } catch (ASCOM.NotImplementedException pnie) {
+                    // TrackingRate Write can throw a PropertyNotImplementedException.
+                    Logger.Debug(pnie.Message);
+                }
+                if (this.CanSetTrackingEnabled) {
+                    this.device.Tracking = true;
+                }
+                RaisePropertyChanged(nameof(TrackingMode));
+                RaisePropertyChanged(nameof(TrackingRate));
+                RaisePropertyChanged(nameof(TrackingEnabled));
             }
             this.device.RightAscensionRate = rightAscensionRate;
             this.device.DeclinationRate = declinationRate;
-            RaisePropertyChanged(nameof(TrackingMode));
-            RaisePropertyChanged(nameof(TrackingRate));
-            RaisePropertyChanged(nameof(TrackingEnabled));
         }
 
         protected override Task PostConnect() {
