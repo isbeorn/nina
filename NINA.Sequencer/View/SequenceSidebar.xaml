@@ -307,7 +307,7 @@
                                         </Border>
                                     </Grid>
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                 </Border>
                                 <CheckBox
@@ -383,7 +383,7 @@
                                         </Border>
                                     </Grid>
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                 </Border>
                                 <CheckBox
@@ -459,7 +459,7 @@
                                         </Border>
                                     </Grid>
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                 </Border>
                                 <CheckBox
@@ -535,7 +535,7 @@
                                         </Border>
                                     </Grid>
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                 </Border>
                                 <CheckBox
@@ -737,7 +737,7 @@
                             <DataTemplate DataType="{x:Type sequencer:TemplatedSequenceContainer}">
                                 <Border MinHeight="30" Margin="0,5,0,0">
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                     <Border>
                                         <Expander
@@ -844,7 +844,7 @@
                                                     HorizontalAlignment="Stretch"
                                                     Background="Transparent">
                                                     <i:Interaction.Behaviors>
-                                                        <behaviors:DragDropBehavior />
+                                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                                     </i:Interaction.Behaviors>
                                                     <DockPanel DockPanel.Dock="Left">
                                                         <Path
@@ -1102,7 +1102,7 @@
                             <DataTemplate>
                                 <Border Margin="0,5,0,0">
                                     <i:Interaction.Behaviors>
-                                        <behaviors:DragDropBehavior />
+                                        <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}}" />
                                     </i:Interaction.Behaviors>
                                     <Grid x:Name="PART_Grid">
                                         <Grid.RowDefinitions>

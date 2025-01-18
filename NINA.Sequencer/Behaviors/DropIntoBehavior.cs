@@ -74,6 +74,7 @@ namespace NINA.Sequencer.Behaviors {
 
         public bool CanDropInto(Type type) {
             if (type == null) { return false; }
+            if (AssociatedObject?.IsEnabled != true) { return false; }
             if (!AllowedDragDropTypes.Any()) return true;
             else return AllowedDragDropTypes.Any(t => t.IsAssignableFrom(type));
         }
@@ -81,6 +82,7 @@ namespace NINA.Sequencer.Behaviors {
         public void ExecuteDropInto(DropIntoParameters parameter) {
             if (!CanDropInto(parameter?.Source?.GetType())) return;
             if (AssociatedObject == null) return;
+            if (!AssociatedObject.IsEnabled) { return; }
             if (parameter.Position == null) parameter.Position = DropTargetEnum.Center;
             if (parameter.Target == null) parameter.Target = (AssociatedObject as FrameworkElement).DataContext as ISequenceContainer;
             if (Keyboard.IsKeyDown(Key.LeftAlt)) {

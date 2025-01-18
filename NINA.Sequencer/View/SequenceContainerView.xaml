@@ -205,7 +205,7 @@
                                             UseLayoutRounding="True">
                                             <i:Interaction.Behaviors>
                                                 <!--  This gives the ability to drag and drop a sequence container by its header  -->
-                                                <behaviors:DragDropBehavior />
+                                                <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}}" />
                                             </i:Interaction.Behaviors>
                                         </ContentPresenter>
                                     </Grid>

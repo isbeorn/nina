@@ -47,7 +47,7 @@
     </UserControl.Resources>
     <StackPanel Margin="0,0,0,1" Orientation="Vertical">
         <i:Interaction.Behaviors>
-            <behaviors:DragDropBehavior />
+            <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}}" />
             <behaviors:DragOverBehavior
                 AllowDragCenter="False"
                 DragAboveSize="25"

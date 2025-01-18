@@ -55,10 +55,12 @@ using NINA.Sequencer.Trigger.Autofocus;
 using NINA.Equipment.Equipment.MyCamera;
 using System.ComponentModel;
 using NINA.Core.Utility.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.ViewModel.Sequencer {
 
-    internal class Sequence2VM : BaseVM, ISequence2VM {
+    internal partial class Sequence2VM : BaseVM, ISequence2VM {
         private ICommandLineOptions commandLineOptions;
         private IApplicationStatusMediator applicationStatusMediator;
         private ISequenceMediator sequenceMediator;
@@ -125,6 +127,34 @@ namespace NINA.ViewModel.Sequencer {
                 sequencer = value;
                 AttachSequencerINPC();
             }
+        }
+
+        [ObservableProperty]
+        private bool isLocked;
+
+        [RelayCommand]
+        public void LockSequence() {
+            IsLocked = true;
+            Logger.Info("Sequencer unlocked");
+        }
+        [RelayCommand]
+        public void UnlockSequence() {
+            IsLocked = false;
+            Logger.Info("Sequencer locked");
+        }
+
+        [ObservableProperty]
+        private bool canDragAndDrop = true;
+
+        [RelayCommand]
+        public void DisableDragAndDrop() {
+            CanDragAndDrop = false;
+            Logger.Info("Sequencer drag and drop disabled");
+        }
+        [RelayCommand]
+        public void EnableDragAndDrop() {
+            CanDragAndDrop = true;
+            Logger.Info("Sequencer drag and drop enabled");
         }
 
         private void DetachSequencerINPC() {
