@@ -7081,4 +7081,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
     <value>Enable all drag and drop in the sequencer and sidebar</value>
   </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Invalid focal length!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+  </data>
 </root>

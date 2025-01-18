@@ -701,8 +701,18 @@
                                     Grid.Column="1"
                                     Margin="5,0,0,0"
                                     VerticalContentAlignment="Center"
-                                    Text="{Binding FocalLength}"
-                                    Unit="mm" />
+                                    Unit="mm">
+                                    <ninactrl:UnitTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource NaNToDoubleDashConverter}"
+                                            Path="FocalLength"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterThanZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:UnitTextBox.Text>
+                                </ninactrl:UnitTextBox>
                             </Grid>
                         </StackPanel>
                     </GroupBox>

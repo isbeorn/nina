@@ -1062,10 +1062,16 @@ namespace NINA.ViewModel.FramingAssistant {
         private CancellationTokenSource getRotationTokenSource;
 
         private IProgress<ApplicationStatus> _statusUpdate;
-
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
+
+                if (double.IsNaN(FocalLength)) {
+                    Notification.ShowError(Loc.Instance["Lbl_FramingAssistant_LoadImage_NoFocalLength"]);
+                    Logger.Error("No focal length was specified to load image for framing");
+                    return false;
+                }
+
                 _loadImageSource?.Dispose();
                 _loadImageSource = new CancellationTokenSource();
                 try {
