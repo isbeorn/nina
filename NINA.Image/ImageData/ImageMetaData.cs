@@ -54,6 +54,9 @@ namespace NINA.Image.ImageData {
             Observer.Latitude = profile.AstrometrySettings.Latitude;
             Observer.Longitude = profile.AstrometrySettings.Longitude;
             Observer.Elevation = profile.AstrometrySettings.Elevation;
+            Observer.Name= profile.AstrometrySettings.Observer;
+            Observer.Observatory = profile.AstrometrySettings.Observatory;
+            Observer.Site = profile.AstrometrySettings.Site;
         }
 
         public SensorType StringToSensorType(string pattern) {
@@ -231,6 +234,9 @@ namespace NINA.Image.ImageData {
         public double Latitude { get; set; } = double.NaN;
         public double Longitude { get; set; } = double.NaN;
         public double Elevation { get; set; } = double.NaN;
+        public string Name { get; set; } = string.Empty;
+        public string Observatory { get; set; } = string.Empty;
+        public string Site { get; set; } = string.Empty;
     }
 
     public class WeatherDataParameter {

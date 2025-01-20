@@ -355,14 +355,14 @@
 
                                 <Button
                                     Grid.Column="2"
-                                    Width="20"
+                                    Width="40"
                                     Height="20"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Command="{Binding DataContext.OpenCygwinFileDiagCommand, ElementName=UC}">
                                     <Path
-                                        Margin="2,10,2,0"
+                                        Margin="12,10,12,0"
                                         Data="{StaticResource DotsSVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform"
@@ -504,14 +504,14 @@
 
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenPS2FileDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
+                                    Margin="12,10,12,0"
                                     Data="{StaticResource DotsSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
@@ -575,14 +575,14 @@
 
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenPS3FileDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
+                                    Margin="12,10,12,0"
                                     Data="{StaticResource DotsSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
@@ -601,6 +601,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="ASPS_Label" />
                                 <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
@@ -626,14 +627,14 @@
 
                             <Button
                                 Grid.Column="3"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenASPSFileDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
+                                    Margin="12,10,12,0"
                                     Data="{StaticResource DotsSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
@@ -678,6 +679,7 @@
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="ASTAP_Label" />
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock
@@ -702,14 +704,14 @@
 
                             <Button
                                 Grid.Column="3"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenASTAPFileDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
+                                    Margin="12,10,12,0"
                                     Data="{StaticResource DotsSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
@@ -881,14 +883,14 @@
                             </TextBox>
                             <Button
                                 Grid.Column="3"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenPinPointCatalogDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
+                                    Margin="12,10,12,0"
                                     Data="{StaticResource DotsSVG}"
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"

@@ -55,14 +55,14 @@
                 </TextBox>
                 <Button
                     Grid.Column="2"
-                    Width="20"
+                    Width="40"
                     Height="20"
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Command="{Binding OpenPHD2FileDialogCommand}">
                     <Path
-                        Margin="2,10,2,0"
+                        Margin="12,10,12,0"
                         Data="{StaticResource DotsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform"

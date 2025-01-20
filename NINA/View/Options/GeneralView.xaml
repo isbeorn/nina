@@ -296,14 +296,14 @@
 
                         <Button
                             Grid.Column="2"
-                            Width="20"
+                            Width="40"
                             Height="20"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Command="{Binding OpenSkySurveyCacheDirectoryDiagCommand}">
                             <Path
-                                Margin="2,10,2,0"
+                                Margin="12,10,12,0"
                                 Data="{StaticResource DotsSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
                                 Stretch="Uniform"
@@ -668,7 +668,7 @@
                                     VerticalAlignment="Center"
                                     SelectedColor="{Binding ColorSchema.NotificationErrorTextColor}" />
                             </StackPanel>
-                            
+
                             <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                 <TextBlock
                                     Width="170"
@@ -678,9 +678,9 @@
                                     Width="80"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
+                                    SelectedColor="{Binding ColorSchema.CrosshairColor}"
                                     ShowStandardColors="False"
-                                    ShowTabHeaders="False"
-                                    SelectedColor="{Binding ColorSchema.CrosshairColor}" />
+                                    ShowTabHeaders="False" />
                             </StackPanel>
                         </StackPanel>
                     </UniformGrid>
@@ -890,9 +890,9 @@
                                     Width="80"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
+                                    SelectedColor="{Binding AltColorSchema.CrosshairColor}"
                                     ShowStandardColors="False"
-                                    ShowTabHeaders="False"
-                                    SelectedColor="{Binding AltColorSchema.CrosshairColor}" />
+                                    ShowTabHeaders="False" />
                             </StackPanel>
                         </StackPanel>
                     </UniformGrid>
@@ -910,112 +910,206 @@
                         <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_AstrometrySettings}}" />
                     </Grid>
                 </GroupBox.Header>
-                <StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            Width="150"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblSiteLatitude}" />
-                        <ninactrl:UnitTextBox
-                            MinWidth="120"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Unit="°">
-                            <ninactrl:UnitTextBox.Text>
-                                <Binding
-                                    Path="Latitude"
-                                    StringFormat="0.######"
-                                    UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:LatitudeRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </ninactrl:UnitTextBox.Text>
-                        </ninactrl:UnitTextBox>
-                        <ninactrl:CancellableButton
-                            Width="40"
-                            Height="21"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            ButtonImage="{StaticResource GPSSVG}"
-                            CancelButtonImage="{StaticResource CancelSVG}"
-                            CancelCommand="{Binding SiteFromGnssCancelCommand}"
-                            Command="{Binding SiteFromGnssCommand}"
-                            ToolTip="{ns:Loc LblGnssTooltip}" />
-                        <ninactrl:CancellableButton
-                            Width="40"
-                            Height="21"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            ButtonImage="{StaticResource GetCoordsSVG}"
-                            CancelButtonImage="{StaticResource CancelSVG}"
-                            CancelCommand="{Binding SiteFromPlanetariumCancelCommand}"
-                            Command="{Binding SiteFromPlanetariumCommand}"
-                            ToolTip="{ns:Loc LblPlanetariumLocationTooltip}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            Width="150"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblSiteLongitude}" />
-                        <ninactrl:UnitTextBox
-                            MinWidth="120"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Unit="°">
-                            <ninactrl:UnitTextBox.Text>
-                                <Binding
-                                    Path="Longitude"
-                                    StringFormat="0.######"
-                                    UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:LongitudeRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </ninactrl:UnitTextBox.Text>
-                        </ninactrl:UnitTextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            Width="150"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblSiteElevation}" />
-                        <ninactrl:UnitTextBox
-                            MinWidth="120"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Unit="m">
-                            <ninactrl:UnitTextBox.Text>
-                                <Binding
-                                    Path="Elevation"
-                                    StringFormat="{}{0:0.0}"
-                                    UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DoubleRangeRule>
-                                            <rules:DoubleRangeRule.ValidRange>
-                                                <rules:DoubleRangeChecker Maximum="10000.0" Minimum="-1000.0" />
-                                            </rules:DoubleRangeRule.ValidRange>
-                                        </rules:DoubleRangeRule>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </ninactrl:UnitTextBox.Text>
-                        </ninactrl:UnitTextBox>
-                    </StackPanel>
+                <StackPanel Grid.IsSharedSizeScope="True">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteLatitude}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="°">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Latitude"
+                                        StringFormat="0.######"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:LatitudeRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="15,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblObserver}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Observer}" />
+                            <ninactrl:CancellableButton
+                                Grid.Column="2"
+                                Width="40"
+                                Height="21"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                ButtonImage="{StaticResource GPSSVG}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding SiteFromGnssCancelCommand}"
+                                Command="{Binding SiteFromGnssCommand}"
+                                ToolTip="{ns:Loc LblGnssTooltip}" />
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteLongitude}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="°">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Longitude"
+                                        StringFormat="0.######"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:LongitudeRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="15,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblObservatory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Observatory}" />
+                            <ninactrl:CancellableButton
+                                Grid.Column="2"
+                                Width="40"
+                                Height="21"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                ButtonImage="{StaticResource GetCoordsSVG}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding SiteFromPlanetariumCancelCommand}"
+                                Command="{Binding SiteFromPlanetariumCommand}"
+                                ToolTip="{ns:Loc LblPlanetariumLocationTooltip}" />
+                        </Grid>
+                    </Grid>
 
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
                             <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteElevation}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="m">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Elevation"
+                                        StringFormat="{}{0:0.0}"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="10000.0" Minimum="-1000.0" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="15,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSiteName}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Site}" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCustomHorizon}" />
 
                         <TextBox
                             Grid.Column="1"
+                            Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             VerticalContentAlignment="Center">
                             <TextBox.Text>
@@ -1029,14 +1123,14 @@
 
                         <Button
                             Grid.Column="2"
-                            Width="20"
+                            Width="40"
                             Height="21"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Command="{Binding OpenHorizonFilePathDiagCommand}">
                             <Path
-                                Margin="2,10,2,0"
+                                Margin="12,10,12,0"
                                 Data="{StaticResource DotsSVG}"
                                 Fill="{StaticResource ButtonForegroundBrush}"
                                 Stretch="Uniform"

@@ -222,6 +222,15 @@ namespace NINA.Image.FileFormat.FITS {
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 AddHeader("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
             }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("OBSERVER", metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                AddHeader("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("SITENAME", metaData.Observer.Site, "Observatory site name");
+            }
 
             /* Filter Wheel */
             if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Name)) {

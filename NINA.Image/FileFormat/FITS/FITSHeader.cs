@@ -254,6 +254,18 @@ namespace NINA.Image.FileFormat.FITS {
                 metaData.Observer.Longitude = value;
             }
 
+            if (_headerCards.TryGetValue("OBSERVER", out card)) {
+                metaData.Observer.Name = card.OriginalValue;
+            }
+
+            if (_headerCards.TryGetValue("OBSERVAT", out card)) {
+                metaData.Observer.Observatory = card.OriginalValue;
+            }
+
+            if (_headerCards.TryGetValue("SITENAME", out card)) {
+                metaData.Observer.Site = card.OriginalValue;
+            }
+
             /* Filter Wheel */
             if (_headerCards.TryGetValue("FWHEEL", out card)) {
                 metaData.FilterWheel.Name = card.OriginalValue;
@@ -620,6 +632,15 @@ namespace NINA.Image.FileFormat.FITS {
             }
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 Add("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                Add("OBSERVER", metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                Add("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                Add("SITENAME", metaData.Observer.Site, "Observatory site name");
             }
 
             /* Filter Wheel */
