@@ -22,7 +22,10 @@
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <TextBox Text="{Binding Text, Mode=TwoWay}" />
+                <TextBox
+                    AcceptsReturn="True"
+                    Text="{Binding Text, Mode=TwoWay}"
+                    TextWrapping="Wrap" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
