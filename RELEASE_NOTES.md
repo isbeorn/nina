@@ -30,6 +30,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added drag-and-drop disable and enable buttons to the sequencer, which disable all drag-and-drop when activated
 - Hitting the escape key while dragging an item will cancel the drag and drop action
 - Added new observation related metadata fields in Options > Astrometry. These fields Observer, Observatory, and Site are also written to the FITS file as OBSERVER, OBSERVAT  and SITENAME, respectively.
+- MessageBox sequence instruction now accepts return for specifying multiline texts
 
 ## Commandline Options
 The following command line options have been added

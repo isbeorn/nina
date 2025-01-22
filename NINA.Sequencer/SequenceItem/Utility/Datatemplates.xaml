@@ -44,7 +44,9 @@
                         Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Text, Mode=TwoWay}" />
+                        AcceptsReturn="True"
+                        Text="{Binding Text, Mode=TwoWay}"
+                        TextWrapping="Wrap" />
                 </Grid>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
