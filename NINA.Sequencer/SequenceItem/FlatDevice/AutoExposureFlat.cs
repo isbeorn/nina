@@ -42,6 +42,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
 
+        private bool cameraIsLinear = true;
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             this.Items.Clear();
@@ -302,8 +304,23 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             var currentMin = initialMin;
             var currentMax = initialMax;
+            var lastExposureTime = 0d;
+            var determinedHistogramADUpercentage = 0d;
+            cameraIsLinear = true;
+            const int MAX_LINEAR_TEST_ATTEMPTS = 3;
+            int linearTestAttempts = 0;
+            var exposureAduPairs = new List<(double exposure, double adu)>();
             for (var iterations = 0; iterations <= 20; iterations++) {
                 var exposureTime = Math.Round((currentMax + currentMin) / 2d, 5);
+
+                if (cameraIsLinear) {
+                    if (lastExposureTime != 0d && (determinedHistogramADUpercentage >= 0.1 && determinedHistogramADUpercentage <= 0.9)) {
+                        exposureTime = Math.Round(lastExposureTime * (HistogramTargetPercentage / determinedHistogramADUpercentage), 5);
+
+                        exposureTime = Math.Min(exposureTime, initialMax);
+                        exposureTime = Math.Max(exposureTime, initialMin);
+                    }
+                }     
 
                 if (Math.Abs(exposureTime - initialMin) < TOLERANCE || Math.Abs(exposureTime - initialMax) < TOLERANCE) {
                     // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
@@ -329,6 +346,21 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
 
                 DeterminedHistogramADU = mean;
+                determinedHistogramADUpercentage = (mean / (Math.Pow(2, imageData.Properties.BitDepth) - 1));
+                lastExposureTime = exposureTime;
+                if (determinedHistogramADUpercentage > 0.1 && determinedHistogramADUpercentage < 0.9) {
+                    exposureAduPairs.Add((exposureTime, mean));
+                }
+
+                if (cameraIsLinear && exposureAduPairs.Count >= 2) {
+                    var isLinear = TestLinearity(exposureAduPairs);
+                    linearTestAttempts++;
+
+                    if (!isLinear && linearTestAttempts >= MAX_LINEAR_TEST_ATTEMPTS) {
+                        Logger.Warning("Camera response determined to be non-linear, switching to binary search method");
+                        cameraIsLinear = false;
+                    }
+                }
                 this.GetExposureItem().ExposureTime = exposureTime;
 
                 switch (check) {
@@ -359,6 +391,42 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright"]);
             }
 
+        }
+
+        private bool TestLinearity(List<(double exposure, double adu)> exposureAduPairs) {
+            const double LINEAR_R_SQUARED_THRESHOLD = 0.95;
+
+            if (exposureAduPairs.Count < 2) return true;
+
+            // Calculate linear regression
+            double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+            int n = exposureAduPairs.Count;
+
+            foreach (var pair in exposureAduPairs) {
+                sumX += pair.exposure;
+                sumY += pair.adu;
+                sumXY += pair.exposure * pair.adu;
+                sumX2 += pair.exposure * pair.exposure;
+            }
+
+            double slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            double intercept = (sumY - slope * sumX) / n;
+
+            // Calculate R-squared
+            double meanY = sumY / n;
+            double totalSumSquares = 0;
+            double residualSumSquares = 0;
+
+            foreach (var pair in exposureAduPairs) {
+                double predictedY = slope * pair.exposure + intercept;
+                residualSumSquares += Math.Pow(pair.adu - predictedY, 2);
+                totalSumSquares += Math.Pow(pair.adu - meanY, 2);
+            }
+
+            double rSquared = 1 - (residualSumSquares / totalSumSquares);
+
+            Logger.Debug($"Linearity test R-squared: {rSquared}");
+            return rSquared >= LINEAR_R_SQUARED_THRESHOLD;
         }
         private void FillTargetMetaData(ImageMetaData metaData) {
             var dsoContainer = RetrieveTarget(this.Parent);
