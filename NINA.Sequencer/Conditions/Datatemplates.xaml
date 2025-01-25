@@ -76,9 +76,6 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
@@ -98,9 +95,6 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
@@ -190,9 +184,6 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
@@ -213,9 +204,6 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>

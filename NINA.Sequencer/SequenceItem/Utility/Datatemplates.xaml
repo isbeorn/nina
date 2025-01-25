@@ -196,10 +196,7 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
-                             </Binding>
+                            </Binding>
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center" Text=":" />
@@ -219,9 +216,6 @@
                                         </rules:IntRangeRule.ValidRange>
                                     </rules:IntRangeRule>
                                 </Binding.ValidationRules>
-                                <Binding.StringFormat>
-                                    {0:00}
-                                </Binding.StringFormat>
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
