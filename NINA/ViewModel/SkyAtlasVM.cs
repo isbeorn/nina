@@ -378,15 +378,22 @@ namespace NINA.ViewModel {
                         var throughDate = GetDateFromReferenceDate(SelectedAltitudeTimeThrough, NighttimeData.ReferenceDate);
                         var fullDuration = throughDate - fromDate;
 
-                        var minimumDuration = TimeSpan.FromHours(SelectedAltitudeDuration) > fullDuration ? Math.Floor(fullDuration.TotalHours) : SelectedAltitudeDuration;
+                        var minimumDuration = SelectedAltitudeDuration;
+                        if (SelectedAltitudeDuration != double.MaxValue && TimeSpan.FromHours(SelectedAltitudeDuration) > fullDuration) {
+                            minimumDuration = Math.Floor(fullDuration.TotalHours);
+                        }
 
                         if (SelectedMinimumAltitudeDegrees == ALTITUDEABOVEHORIZONFILTER) {
                             filterFunction = (dso) => {
                                 var altitudesBetweenDates = dso.Altitudes
-                                    .Where((y) => { return y.X > DateTimeAxis.ToDouble(fromDate) && y.X < DateTimeAxis.ToDouble(throughDate); })
+                                    .Where((y) => { return y.X >= DateTimeAxis.ToDouble(fromDate) && y.X <= DateTimeAxis.ToDouble(throughDate); })
                                     .ToList();
-                                
-                                if(altitudesBetweenDates.Count > 1) {                                    
+
+                                if (minimumDuration == double.MaxValue) {
+                                    return altitudesBetweenDates.All(item => item.Y > (dso.Horizon.Count > 0 ? dso.Horizon.First(h => h.X == item.X).Y : 0));
+                                }
+
+                                if (altitudesBetweenDates.Count > 1) {                                    
                                     var duration = TimeSpan.Zero;
                                     var firstAboveHorizon = altitudesBetweenDates.First();                                    
 
@@ -411,6 +418,16 @@ namespace NINA.ViewModel {
                             };
                         } else {
                             filterFunction = (x) => {
+                                if(minimumDuration == double.MaxValue) {
+                                    var altitudesBetweenDates = x.Altitudes
+                                    .Where((y) => { return y.X >= DateTimeAxis.ToDouble(fromDate) && y.X <= DateTimeAxis.ToDouble(throughDate); })
+                                    .ToList();
+
+                                    if (minimumDuration == double.MaxValue) {
+                                        return altitudesBetweenDates.All(item => item.Y > SelectedMinimumAltitudeDegrees);
+                                    }
+                                }
+
                                 var aggregate = x.Altitudes.Where((y) => { return y.X > DateTimeAxis.ToDouble(fromDate) && y.X < DateTimeAxis.ToDouble(throughDate); })                                
                                     .Where((y) => y.Y > SelectedMinimumAltitudeDegrees)
                                     .Aggregate(new { min = double.MaxValue, max = double.MinValue }, (accumulator, o) => new { min = Math.Min(o.X, accumulator.min), max = o.X > accumulator.max ? o.X : accumulator.max });
@@ -494,6 +511,7 @@ namespace NINA.ViewModel {
             for (double i = 1; i <= 12; i++) {
                 AltitudeDurations.Add(new KeyValuePair<double, string>(i, i + "h"));
             }
+            AltitudeDurations.Add(new KeyValuePair<double, string>(double.MaxValue, Loc.Instance["LblCompleteDuration"]));
         }
 
         private void InitializeSizeFilters() {

@@ -85,7 +85,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
         }
 
         protected override ISwitchV3 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Switch(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaSwitch(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

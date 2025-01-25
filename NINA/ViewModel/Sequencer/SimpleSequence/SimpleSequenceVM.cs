@@ -414,7 +414,7 @@ namespace NINA.ViewModel {
                                 if (csv.TryGetField("pane", out name)) {
                                     var ra = AstroUtil.HMSToDegrees(csv.GetField("ra"));
                                     var dec = AstroUtil.DMSToDegrees(csv.GetField("dec"));
-                                                                        
+
                                     var angle = AstroUtil.EuclidianModulus(csv.GetField<double>("position angle (east)"), 360);
 
                                     var template = GetTemplate();
@@ -425,14 +425,21 @@ namespace NINA.ViewModel {
                                     this.Targets.Add(template);
                                 } else if (csv.TryGetField<string>("familiar name", out name)) {
                                     var catalogue = csv.GetField("catalogue entry");
-                                    var ra = AstroUtil.HMSToDegrees(csv.GetField("right ascension"));
-                                    var dec = AstroUtil.DMSToDegrees(csv.GetField("declination"));
+
+                                    if (!csv.TryGetField("right ascension", out string raHMS)) {
+                                        raHMS = csv.GetField("right ascension (j2000)");
+                                    }
+                                    var ra = AstroUtil.HMSToDegrees(raHMS);
+                                    if (!csv.TryGetField("right ascension", out string decHMS)) {
+                                        decHMS = csv.GetField("declination (j2000)");
+                                    }
+                                    var dec = AstroUtil.DMSToDegrees(decHMS);
 
                                     var template = GetTemplate();
                                     template.Name = string.IsNullOrWhiteSpace(name) ? catalogue : name; ;
                                     template.Target.TargetName = string.IsNullOrWhiteSpace(name) ? catalogue : name; ;
                                     template.Target.InputCoordinates.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
-                                    if (csv.TryGetField<string>("position angle (east)", out var stringAngle) && !string.IsNullOrWhiteSpace(stringAngle)) {                                        
+                                    if (csv.TryGetField<string>("position angle (east)", out var stringAngle) && !string.IsNullOrWhiteSpace(stringAngle)) {
                                         var angle = AstroUtil.EuclidianModulus(csv.GetField<double>("position angle (east)"), 360);
                                         template.Target.PositionAngle = angle;
                                     } else {
@@ -446,6 +453,9 @@ namespace NINA.ViewModel {
                             }
                         }
                     }
+                } catch (IOException ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Loc.Instance["LblUnknownImportFormat"]);

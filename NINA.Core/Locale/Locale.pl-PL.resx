@@ -7052,4 +7052,28 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblBlindSolveSettings" xml:space="preserve">
     <value>Ustawienia adnotacji obiektów</value>
   </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Uwaga: Opcja „Używaj teleskopu na słupie pier” w ustawieniu obrotu południka jest wyłączona i może powodować problemy z ustawieniem w przypadku montaży paralaktycznych z kopułami w pobliżu południka. Kopułka przyjmie, że obrót południka następuje dokładnie na południku, co może prowadzić do niewspółosiowości, jeśli montaż nie został jeszcze odwrócony.</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Pełny czas trwania</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Disable all drag and drop in the sequencer and sidebar</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Enable all drag and drop in the sequencer and sidebar</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Nieprawidłowa długość ogniskowej!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>Nie można załadować obrazu. Wprowadź faktyczną długość ogniskowej swojego teleskopu w sekcji parametr kamery!</value>
+  </data>
 </root>

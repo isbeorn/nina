@@ -809,6 +809,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     if (id != -1) {
                         Logger.Trace($"{Category} - Setting DownloadExposure Result on Task {id}");
                         var success = imageReadyTCS?.TrySetResult(true);
+                        lastExposureEndTime = DateTime.UtcNow;
                         Logger.Trace($"{Category} - DownloadExposure Result on Task {id} set successfully: {success}");
                     } else {
                         Logger.Trace($"{Category} - unexpected EVENT_IMAGE returned by camera, likely buggy vendor SDK");
@@ -821,6 +822,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 case ToupTekAlikeEvent.EVENT_STILLIMAGE:
                     Logger.Warning($"{Category} - Still image event received, but not expected to get one!");
                     imageReadyTCS?.TrySetResult(true);
+                    lastExposureEndTime = DateTime.UtcNow;
                     break;
 
                 case ToupTekAlikeEvent.EVENT_NOFRAMETIMEOUT:
@@ -880,6 +882,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             var metaData = new ImageMetaData();
             metaData.FromCamera(this);
+            metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
             var imageData = exposureDataFactory.CreateImageArrayExposureData(
                     input: data,
                     width: width,
@@ -923,6 +926,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             var localCTS = CancellationTokenSource.CreateLinkedTokenSource(token);
+            lastExposureStartTime = DateTime.UtcNow;
             return DownloadExposure(localCTS.Token);
         }
 
@@ -991,6 +995,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             SetExposureTime(sequence.ExposureTime);
 
+            lastExposureStartTime = DateTime.UtcNow;
             if (!sdk.Trigger(1)) {
                 throw new Exception($"{Category} - Failed to trigger camera");
             }
@@ -998,6 +1003,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private TaskCompletionSource<bool> imageReadyTCS;
         private int nativeBitDepth;
+        private DateTime lastExposureStartTime;
+        private DateTime lastExposureEndTime;
+
         public int BitDepth => profileService.ActiveProfile.CameraSettings.BitScaling ? 16 : nativeBitDepth;
 
         private void OnEventDisconnected() {

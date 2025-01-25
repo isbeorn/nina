@@ -17,6 +17,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:seqItem="clr-namespace:NINA.Sequencer.SequenceItem"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    x:Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -59,6 +60,16 @@
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
             VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Standard">
+            <TreeView.Style>
+                <Style TargetType="TreeView">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <!--  Set the same brush to keep the background consistent  -->
+                            <Setter Property="Background" Value="Red" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
             <TreeView.Resources>
                 <ResourceDictionary>
                     <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
@@ -75,7 +86,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Grid>
+                                <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MinWidth="20" />
                                         <ColumnDefinition />

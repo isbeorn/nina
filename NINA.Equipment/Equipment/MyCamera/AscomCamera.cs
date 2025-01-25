@@ -615,8 +615,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
                 while (!ImageReady) {
-                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), token);
+                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(10), token);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
             }
         }
 
@@ -630,6 +631,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                         var metaData = new ImageMetaData();
                         metaData.FromCamera(this);
+                        metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
 
                         return exposureDataFactory.CreateFlipped2DExposureData(
                             flipped2DArray: (Array)ImageArray,
@@ -673,6 +675,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS);
 
+            lastExposureStartTime = DateTime.UtcNow;
             device.StartExposure(sequence.ExposureTime, isLightFrame);
         }
 
@@ -711,6 +714,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private IList<int> offsets = new List<int>();
         private bool offsetValueMode = true;
         private bool canSetOffset = false;
+        private DateTime lastExposureEndTime;
+        private DateTime lastExposureStartTime;
 
         public bool CanSetOffset {
             get => canSetOffset;
@@ -827,7 +832,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         protected override ICameraV4 GetInstance() {
-            if(deviceMeta == null) {
+            if(!IsAlpacaDevice()) {
                 return new Camera(this.Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

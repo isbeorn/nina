@@ -46,6 +46,9 @@ namespace NINA.Profile {
             longitude = 0;
             elevation = 0;
             horizonFilePath = string.Empty;
+            observer = string.Empty;
+            observatory = string.Empty;
+            site = string.Empty;
         }
 
         private double latitude;
@@ -107,6 +110,45 @@ namespace NINA.Profile {
             set {
                 horizon = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private string observer;
+
+        [DataMember]
+        public string Observer {
+            get => observer;
+            set {
+                if (observer != value) {
+                    observer = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string observatory;
+
+        [DataMember]
+        public string Observatory {
+            get => observatory;
+            set {
+                if (observatory != value) {
+                    observatory = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string site;
+
+        [DataMember]
+        public string Site {
+            get => site;
+            set {
+                if (site != value) {
+                    site = value;
+                    RaisePropertyChanged();
+                }
             }
         }
     }

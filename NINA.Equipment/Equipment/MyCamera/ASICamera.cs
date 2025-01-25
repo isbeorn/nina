@@ -405,8 +405,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
                 while (ExposureStatus == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING) {
-                    await Task.Delay(100, token);
+                    await Task.Delay(10, token);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
             }
         }
 
@@ -432,6 +433,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     var metaData = new ImageMetaData();
                     metaData.FromCamera(this);
+                    metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
 
                     if (HasZwoAsiMonoBinMode && ZwoAsiMonoBinMode && BinX > 1) {
                         metaData.Camera.BayerPattern = BayerPatternEnum.None;
@@ -493,6 +495,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 );
             }
 
+            lastExposureStartTime = DateTime.UtcNow;
             ASICameraDll.StartExposure(_cameraId, isDarkFrame);
         }
 
@@ -608,6 +611,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private short _readoutModeForNormalImages;
+        private DateTime lastExposureEndTime;
+        private DateTime lastExposureStartTime;
 
         public short ReadoutModeForNormalImages {
             get => _readoutModeForNormalImages;
@@ -778,10 +783,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                     }
 
-                    DateTime midpointDateTime = startDateTime + TimeSpan.FromTicks((DateTime.UtcNow - startDateTime).Ticks / 2);
+                    DateTime endDateTime = DateTime.UtcNow;
                     var metaData = new ImageMetaData();
                     metaData.FromCamera(this);
-                    metaData.Image.ExposureMidPoint = midpointDateTime;
+                    metaData.Image.SetExposureTimes(startDateTime, endDateTime);
 
                     if (HasZwoAsiMonoBinMode && ZwoAsiMonoBinMode && BinX > 1) {
                         metaData.Camera.BayerPattern = BayerPatternEnum.None;

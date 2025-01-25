@@ -391,7 +391,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         protected override ASCOM.Common.DeviceInterfaces.IDomeV3 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Dome(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaDome(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

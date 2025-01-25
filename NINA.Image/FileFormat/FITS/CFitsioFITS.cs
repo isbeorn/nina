@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static NINA.Image.FileFormat.FITS.CfitsioNative;
-using System.Windows.Media.Media3D;
 using NINA.Image.ImageData;
 using System.Globalization;
 using NINA.Core.Enum;
@@ -45,6 +44,20 @@ namespace NINA.Image.FileFormat.FITS {
             CfitsioNative.fits_create_img(filePtr, CfitsioNative.BITPIX.LONG_IMG, 2, new int[] { width, height }, out var status);
             CheckStatus("fits_create_img", status);
             CfitsioNative.fits_write_img_int(filePtr, CfitsioNative.DATATYPE.TINT, 1, width * height, data, out status);
+            CheckStatus("fits_write_img", status);
+        }
+
+        public CFitsioFITS(string filePath, float[] data, int width, int height, COMPRESSION compression = COMPRESSION.NOCOMPRESS) : this(filePath, compression) {
+            CfitsioNative.fits_create_img(filePtr, CfitsioNative.BITPIX.FLOAT_IMG, 2, new int[] { width, height }, out var status);
+            CheckStatus("fits_create_img", status);
+            CfitsioNative.fits_write_img_float(filePtr, CfitsioNative.DATATYPE.TDOUBLE, 1, width * height, data, out status);
+            CheckStatus("fits_write_img", status);
+        }
+
+        public CFitsioFITS(string filePath, double[] data, int width, int height, COMPRESSION compression = COMPRESSION.NOCOMPRESS) : this(filePath, compression) {
+            CfitsioNative.fits_create_img(filePtr, CfitsioNative.BITPIX.DOUBLE_IMG, 2, new int[] { width, height }, out var status);
+            CheckStatus("fits_create_img", status);
+            CfitsioNative.fits_write_img_double(filePtr, CfitsioNative.DATATYPE.TDOUBLE, 1, width * height, data, out status);
             CheckStatus("fits_write_img", status);
         }
 
@@ -208,6 +221,15 @@ namespace NINA.Image.FileFormat.FITS {
             }
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 AddHeader("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("OBSERVER", metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                AddHeader("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("SITENAME", metaData.Observer.Site, "Observatory site name");
             }
 
             /* Filter Wheel */

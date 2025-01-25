@@ -30,7 +30,7 @@ namespace NINA.Equipment.Equipment.MySafetyMonitor {
         protected override string ConnectionLostMessage => Loc.Instance["LblSafetyMonitorConnectionLost"];
 
         protected override ASCOM.Common.DeviceInterfaces.ISafetyMonitorV3 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new SafetyMonitor(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaSafetyMonitor(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

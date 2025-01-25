@@ -165,6 +165,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        private DateTime lastExposureStartTime;
+
         public int CameraXSize { get; private set; }
         public int CameraYSize { get; private set; }
 
@@ -1087,6 +1089,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 while (Sdk.GetExposureRemaining() > 0) {
                     await Task.Delay(10, ct);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
 
                 /*
                  * Size the image data byte array for the image
@@ -1123,6 +1126,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 // Try getting more info from the camera
                 var metaData = new ImageMetaData();
                 metaData.FromCamera(this);
+                metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
                 ExtractPreciseExposureInfo(metaData);
                 // Add gps info to the metaData
                 ExtractGpsMetaData(ImgData, metaData);
@@ -1275,6 +1279,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
              */
             Logger.Debug("QHYCCD: Starting exposure...");
             CameraState = CameraStates.Exposing;
+            lastExposureStartTime = DateTime.UtcNow;
             uint ret = Sdk.ExpSingleFrame();
             if (ret == QhySdk.QHYCCD_ERROR) {
                 Logger.Error("QHYCCD: Failed to initiate the exposure!");
@@ -1426,6 +1431,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 uint numPixels = is16bit ? ImageSize / 2U : ImageSize;
                 ushort[] ImgData = new ushort[numPixels];
 
+                lastExposureStartTime = DateTime.UtcNow;
                 while (!ct.IsCancellationRequested) {
                     rv = Sdk.GetQHYCCDLiveFrame(ref width, ref height, ref bpp, ref channels, ImgData);
                     if (rv == uint.MaxValue) {
@@ -1437,6 +1443,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv}");
                         throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                     } else {
+                        lastExposureEndTime = DateTime.UtcNow;
                         break;
                     }
                 }
@@ -1445,6 +1452,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 // Try getting more info from the camera
                 var metaData = new ImageMetaData();
                 metaData.FromCamera(this);
+                metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
                 ExtractPreciseExposureInfo(metaData);
                 // Add gps info to the metaData
                 ExtractGpsMetaData(ImgData, metaData);
@@ -1965,5 +1973,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private double tempCoolerPower;
         private double tempTemperature;
         private bool tempCoolerOn;
+        private DateTime lastExposureEndTime;
     }
 }

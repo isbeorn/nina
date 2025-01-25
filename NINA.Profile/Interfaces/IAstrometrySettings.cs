@@ -23,5 +23,8 @@ namespace NINA.Profile.Interfaces {
 
         string HorizonFilePath { get; set; }
         CustomHorizon Horizon { get; set; }
+        string Observer { get; set; }
+        string Observatory { get; set; }
+        string Site { get; set; }
     }
 }

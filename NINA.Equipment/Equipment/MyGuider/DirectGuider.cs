@@ -222,17 +222,14 @@ namespace NINA.Equipment.Equipment.MyGuider {
 
         public event EventHandler<IGuideStep> GuideEvent { add { } remove { } }
 
-        public async Task<bool> Dither(IProgress<ApplicationStatus> progress, CancellationToken ct) {
+        public async Task<bool>Dither (double ditherPixels, TimeSpan settleTime, bool ditherRAOnly, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             State = "Dithering...";
-
-            var settleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime);
-            var ditherRAOnly = profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
 
             // Extra defense against telescope disconnection right before a dithering operation
             if (!telescopeInfo.Connected) {
                 return false;
             } else {
-                var pulseInstructions = SelectDitherPulse();
+                var pulseInstructions = SelectDitherPulse(ditherPixels);
 
                 // Note: According to the ASCOM specification, PulseGuide returns immediately (asynchronous) if the mount supports back to back axis moves, otherwise
                 // it waits until completion. To be strictly correct here we'd start a counter here instead to avoid a potential extra wait. However, DirectGuiding is
@@ -252,6 +249,10 @@ namespace NINA.Equipment.Equipment.MyGuider {
             return true;
         }
 
+        public Task<bool> Dither(IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Dither(profileService.ActiveProfile.GuiderSettings.DitherPixels, TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), profileService.ActiveProfile.GuiderSettings.DitherRAOnly, progress, ct);
+        }
+
         private struct GuidePulses {
             public GuideDirections directionWestEast;
             public GuideDirections directionNorthSouth;
@@ -268,11 +269,11 @@ namespace NINA.Equipment.Equipment.MyGuider {
         /// </summary>
         /// <returns>Parameters for two guide pulses, one in N/S direction and one in E/W direction</returns>
 
-        private GuidePulses SelectDitherPulse() {
+        private GuidePulses SelectDitherPulse(double ditherPixels) {
             double ditherAngle = random.NextDouble() * Math.PI;
             double cosAngle = Math.Cos(ditherAngle);
             double sinAngle = Math.Sin(ditherAngle);
-            var expectedDitherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
+            var expectedDitherPixels = ditherPixels;
 
             // Generate a normally distributed distance from 0 with standard deviation equal to the configured "Dither Pixels", and clamped to +- 3 standard deviations
             double targetDistancePixels = NormalDistribution.Random(mean: 0.0, stdDev: expectedDitherPixels);

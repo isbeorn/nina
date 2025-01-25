@@ -103,7 +103,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         protected override IFilterWheelV3 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new FilterWheel(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaFilterWheel(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

@@ -975,20 +975,22 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 throw new NotSupportedException("Custom tracking rate not supported");
             }
 
-            try {
-                this.device.TrackingRate = DriveRate.Sidereal;
-            } catch (ASCOM.NotImplementedException pnie) {
-                // TrackingRate Write can throw a PropertyNotImplementedException.
-                Logger.Debug(pnie.Message);
-            }
-            if(this.CanSetTrackingEnabled) { 
-                this.device.Tracking = true;
+            if (rightAscensionRate != 0 || declinationRate != 0) {
+                try {
+                    this.device.TrackingRate = DriveRate.Sidereal;
+                } catch (ASCOM.NotImplementedException pnie) {
+                    // TrackingRate Write can throw a PropertyNotImplementedException.
+                    Logger.Debug(pnie.Message);
+                }
+                if (this.CanSetTrackingEnabled) {
+                    this.device.Tracking = true;
+                }
+                RaisePropertyChanged(nameof(TrackingMode));
+                RaisePropertyChanged(nameof(TrackingRate));
+                RaisePropertyChanged(nameof(TrackingEnabled));
             }
             this.device.RightAscensionRate = rightAscensionRate;
             this.device.DeclinationRate = declinationRate;
-            RaisePropertyChanged(nameof(TrackingMode));
-            RaisePropertyChanged(nameof(TrackingRate));
-            RaisePropertyChanged(nameof(TrackingEnabled));
         }
 
         protected override Task PostConnect() {
@@ -1001,7 +1003,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         protected override ITelescopeV4 GetInstance() {
-            if (deviceMeta == null) {
+            if (!IsAlpacaDevice()) {
                 return new Telescope(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaTelescope(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

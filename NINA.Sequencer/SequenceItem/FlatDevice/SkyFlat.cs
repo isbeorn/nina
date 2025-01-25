@@ -37,6 +37,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -53,6 +54,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IImageSaveMediator imageSaveMediator;
         private ITwilightCalculator twilightCalculator;
         private ITelescopeMediator telescopeMediator;
+
+        private bool cameraIsLinear = true;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -106,6 +109,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             this.imageSaveMediator = imageSaveMediator;
             this.twilightCalculator = twilightCalculator;
             this.telescopeMediator = telescopeMediator;
+            ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
+            ditherSettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime;
 
             this.Add(new Annotation());
             this.Add(new Annotation());
@@ -120,6 +125,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             IsExpanded = false;
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
+                DitherPixels = cloneMe.DitherPixels;
+                DitherSettleTime = cloneMe.DitherSettleTime;
             }
         }
 
@@ -219,6 +226,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     GetExposureItem().ExposureTime = exposureDetermination.StartExposureTime;
                 }
 
+                exposureDetermination.CameraIsLinear = cameraIsLinear;
                 await TakeSkyFlats(exposureDetermination, progress, token);
             } finally {
                 await CoreUtil.Wait(TimeSpan.FromMilliseconds(500));
@@ -231,8 +239,24 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             var currentMin = initialMin;
             var currentMax = initialMax;
+            var lastExposureTime = 0d;
+            var determinedHistogramADUpercentage = 0d;
+            cameraIsLinear = true;            
+            const int MAX_LINEAR_TEST_ATTEMPTS = 3;
+            int linearTestAttempts = 0;
+            var exposureAduPairs = new List<(double exposure, double adu)>();
             for (var iterations = 0; iterations <= 20; iterations++) {
                 var exposureTime = Math.Round((currentMax + currentMin) / 2d, 5);
+
+                // If the histogram is between 10% and 90%, we can use the last exposure time to calculate the target exposure time
+                if (cameraIsLinear) {
+                    if (lastExposureTime != 0d && (determinedHistogramADUpercentage >= 0.1 && determinedHistogramADUpercentage <= 0.9)) {
+                        exposureTime = Math.Round(lastExposureTime * (HistogramTargetPercentage / determinedHistogramADUpercentage), 5);
+
+                        exposureTime = Math.Min(exposureTime, initialMax);
+                        exposureTime = Math.Max(exposureTime, initialMin);                        
+                    }
+                }
 
                 if (Math.Abs(exposureTime - initialMin) < TOLERANCE || Math.Abs(exposureTime - initialMax) < TOLERANCE) {
                     // If the exposure time is equal to the min/max and not yield a result it will be skip any more unnecessary attempts
@@ -255,10 +279,27 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 var statistics = await imageData.Statistics;
 
                 var mean = statistics.Mean;
+                DeterminedHistogramADU = mean;
+                determinedHistogramADUpercentage = (mean / (Math.Pow(2, imageData.Properties.BitDepth) - 1));
+
+                if (determinedHistogramADUpercentage > 0.1 && determinedHistogramADUpercentage < 0.9) {
+                    exposureAduPairs.Add((exposureTime, mean));
+                }
+               
+                if (cameraIsLinear && exposureAduPairs.Count >= 2) {
+                    var isLinear = TestLinearity(exposureAduPairs);
+                    linearTestAttempts++;
+
+                    if (!isLinear && linearTestAttempts >= MAX_LINEAR_TEST_ATTEMPTS) {
+                        Logger.Warning("Camera response determined to be non-linear, switching to binary search method");
+                        cameraIsLinear = false;
+                    }
+                }
 
                 var check = HistogramMath.GetExposureAduState(mean, HistogramTargetPercentage, image.BitDepth, HistogramTolerancePercentage);
 
-                DeterminedHistogramADU = mean;
+        
+                lastExposureTime = exposureTime;
                 this.GetExposureItem().ExposureTime = exposureTime;
 
                 switch (check) {
@@ -289,6 +330,42 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             } else {
                 throw new SequenceEntityFailedException(Loc.Instance["Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright"]);
             }
+        }
+
+        private bool TestLinearity(List<(double exposure, double adu)> exposureAduPairs) {
+            const double LINEAR_R_SQUARED_THRESHOLD = 0.95;
+
+            if (exposureAduPairs.Count < 2) return true;
+
+            // Calculate linear regression
+            double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+            int n = exposureAduPairs.Count;
+
+            foreach (var pair in exposureAduPairs) {
+                sumX += pair.exposure;
+                sumY += pair.adu;
+                sumXY += pair.exposure * pair.adu;
+                sumX2 += pair.exposure * pair.exposure;
+            }
+
+            double slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            double intercept = (sumY - slope * sumX) / n;
+
+            // Calculate R-squared
+            double meanY = sumY / n;
+            double totalSumSquares = 0;
+            double residualSumSquares = 0;
+
+            foreach (var pair in exposureAduPairs) {
+                double predictedY = slope * pair.exposure + intercept;
+                residualSumSquares += Math.Pow(pair.adu - predictedY, 2);
+                totalSumSquares += Math.Pow(pair.adu - meanY, 2);
+            }
+
+            double rSquared = 1 - (residualSumSquares / totalSumSquares);
+
+            Logger.Debug($"Linearity test R-squared: {rSquared}");
+            return rSquared >= LINEAR_R_SQUARED_THRESHOLD;
         }
 
         private void FillTargetMetaData(ImageMetaData metaData) {
@@ -384,6 +461,25 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             get => shouldDither;
             set {
                 shouldDither = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double ditherPixels;
+        [JsonProperty]
+        public double DitherPixels {
+            get => ditherPixels;
+            set {
+                ditherPixels = value;
+                RaisePropertyChanged();
+            }
+        }
+        private double ditherSettleTime;
+        [JsonProperty]
+        public double DitherSettleTime {
+            get => ditherSettleTime;
+            set {
+                ditherSettleTime = value;
                 RaisePropertyChanged();
             }
         }
@@ -497,11 +593,16 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                                      $"elapsed time: {exposureDetermination.GetElapsedTime().TotalSeconds:#.##}" + Environment.NewLine +
                                      $"mean adu: {imageStatistics.Mean:#.##}." + Environment.NewLine +
                                      $"The sky flat exposure time will be determined again and the exposure will be repeated.");
+                        
+                        
+                        cameraIsLinear = false;
 
                         exposureDetermination = await DetermineExposureTime(MinExposure, MaxExposure, progress, token);
                         continue;
                 }
-
+                exposureDetermination.TargetADU = (Math.Pow(2, imageData.Properties.BitDepth) - 1) * HistogramTargetPercentage;
+                exposureDetermination.LastADU = imageStatistics.Mean;
+                exposureDetermination.CameraIsLinear = cameraIsLinear;
 
                 FillTargetMetaData(imageData.MetaData);
                 await imageSaveMediator.Enqueue(imageData, prepTask, progress, token);
@@ -529,7 +630,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 using (var directGuider = new DirectGuider(profileService, telescopeMediator)) { 
                     await directGuider.Connect(token);
                     await directGuider.StartGuiding(false, null, token);
-                    await directGuider.Dither(progress, token);
+                    await directGuider.Dither(DitherPixels, TimeSpan.FromSeconds(DitherSettleTime), false, progress, token);
                     await directGuider.StopGuiding(token);
                     directGuider.Disconnect();
                 }
@@ -557,6 +658,30 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             private double currentExposureTime;
             private Stopwatch timer;
 
+            private double lastADU;
+            public double LastADU {
+                get => lastADU;
+                set {
+                    lastADU = value;
+                }
+            }
+
+            private double targetADU;
+            public double TargetADU {
+                get => targetADU;
+                set {
+                    targetADU = value;
+                }
+            }
+
+            private bool cameraIsLinear;
+            public bool CameraIsLinear {
+                get => cameraIsLinear;
+                set {
+                    cameraIsLinear = value;
+                }
+            }
+
             private ICustomDateTime DateTime { get; }
 
             public SkyFlatExposureDetermination(Stopwatch timer, double startExposureTime, double springTwilight, double todayTwilight, ICustomDateTime dateTime = null) {
@@ -572,6 +697,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
                 s = startExposureTime;
                 a = Math.Pow(10, k / tau);
+
+                this.lastADU = 0;
+                this.targetADU = 0;
+                this.cameraIsLinear = true;                
             }
 
             public double StartExposureTime { get; private set; }
@@ -581,7 +710,19 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             public double GetNextExposureTime() {
+                if (cameraIsLinear) {
+                    return GetNextExposureTimeByADU();
+                }
                 return GetNextExposureTime(timer.Elapsed);
+            }
+
+            public double GetNextExposureTimeByADU() {
+                var calibrationFactor = 1.0;
+                if (lastADU > 0.1) calibrationFactor *= targetADU / lastADU;
+
+                Logger.Debug($"Calibration factor: {calibrationFactor}");               
+
+                return currentExposureTime * calibrationFactor;
             }
 
             public double GetNextExposureTime(TimeSpan delta) {

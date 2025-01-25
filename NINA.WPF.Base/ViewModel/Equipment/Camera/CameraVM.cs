@@ -78,7 +78,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
             TempChangeRunning = false;
-            CoolerHistory = new AsyncObservableLimitedSizedStack<CameraCoolingStep>(100);
+            CoolerHistory = new LinkedList<CameraCoolingStep>();
             CoolerHistoryMax = 20;
             coolerHistoryMin = -20;
             ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
@@ -160,27 +160,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             try {
                 TempChangeRunning = true;
                 Logger.Info($"Warming Camera. Duration: {duration}");
-                IProgress<double> progressRouter = new Progress<double>((p) => {
+                var progressRouter = new Progress<double>((p) => {
                     progress.Report(new ApplicationStatus() {
                         Status = Loc.Instance["LblWarming"],
-                        Progress = p,
-                        ProgressType = ApplicationStatus.StatusProgressType.Percent,
+                        Progress = p
                     });
                 });
 
-                progressRouter.Report(0);
-
-                using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
-                    timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
-                    double initialCoolerPower = Cam.CoolerPower;
-                    double step = 1;
-
-                    while (Cam.CoolerPower >= 1) {
+                if (Cam.Temperature < 20) {
+                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
                         try {
-                            progressRouter.Report(Math.Min(((initialCoolerPower - Cam.CoolerPower) / initialCoolerPower), 1));
-                            await RegulateTemperature(Cam.TemperatureSetPoint + step, duration, false, null, timeoutCts.Token);
-                        } catch (OperationCanceledException) {
-                            if (ct.IsCancellationRequested == true) {
+                            timeoutCts.CancelAfter(duration + TimeSpan.FromMinutes(15));
+                            await RegulateTemperature(20, duration, false, progressRouter, timeoutCts.Token);
+                        } catch(OperationCanceledException) { 
+                            if(ct.IsCancellationRequested == true) {
                                 throw;
                             }
                         } catch (CannotReachTargetTemperatureException) {
@@ -223,7 +216,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                         Cam.TemperatureSetPoint = temperatureStep;
 
                         var progressTemp = Math.Abs(currentTemp - temperature);
-                        progress?.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+                        progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
 
                         await CoreUtil.Wait(interval, ct);
                         currentTemp = Cam.Temperature;
@@ -239,7 +232,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 var previousTemperature = currentTemp;
                 while ((cooling && currentTemp > (temperature + 1)) || (!cooling && currentTemp < (temperature - 1))) {
                     var progressTemp = Math.Abs(currentTemp - temperature);
-                    progress?.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+                    progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
 
                     var t = await CoreUtil.Wait(TimeSpan.FromSeconds(5), ct);
                     currentTemp = Cam.Temperature;
@@ -365,6 +358,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             CoolerHistory.Clear();
                             CoolerHistoryMax = 20;
                             CoolerHistoryMin = -20;
+                            CoolerHistoryChangeId++;
                             this.Cam = cam;
                             token.ThrowIfCancellationRequested();
 
@@ -506,7 +500,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         private void ToggleDewHeaterOn(object o) {
             if (CameraInfo.Connected) {
-                Cam.DewHeaterOn = (bool)o;
+                var cam = Cam;
+                if (cam != null) {
+                    Cam.DewHeaterOn = (bool)o;
+                }                
             }
         }
 
@@ -583,7 +580,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.PixelSize), out o);
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
-            CoolerHistory.Add(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            if(CoolerHistory.Count > 100) {
+                CoolerHistory.RemoveFirst();
+            }
+            CoolerHistoryChangeId++;
             CoolerHistoryMax = Math.Max(CameraInfo.Temperature, CoolerHistoryMax);
             CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
@@ -991,10 +992,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public IDevice GetDevice() {
+            if (Cam is PersistSettingsCameraDecorator decorator) {
+                return decorator.Camera;
+            }
             return Cam;
         }
 
-        public AsyncObservableLimitedSizedStack<CameraCoolingStep> CoolerHistory { get; private set; }
+        [ObservableProperty]
+        private ulong coolerHistoryChangeId;
+
+        public LinkedList<CameraCoolingStep> CoolerHistory { get; private set; }
 
         [ObservableProperty]
         private double coolerHistoryMax;

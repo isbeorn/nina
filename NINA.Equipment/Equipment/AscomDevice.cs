@@ -37,18 +37,27 @@ namespace NINA.Equipment.Equipment {
     public abstract class AscomDevice<DeviceT> : BaseINPC, IDevice
         where DeviceT : IAscomDeviceV2 {
 
+        private string ascomRegistrationName;
+
+
         public AscomDevice(string id, string name) {
             Id = id;
-            Name = name;
+            ascomRegistrationName = name;
             DisplayName = name;
             this.Category = "ASCOM";
         }
 
         public AscomDevice(ASCOM.Alpaca.Discovery.AscomDevice deviceMeta) : this(deviceMeta.UniqueId, deviceMeta.AscomDeviceName) {
             this.deviceMeta = deviceMeta;
+            name = deviceMeta.AscomDeviceName;
             DisplayName = $"{Name} @ {deviceMeta.HostName} #{deviceMeta.AlpacaDeviceNumber}";
             this.Category = "ASCOM Alpaca";
         }
+
+        public bool IsAlpacaDevice() {
+            return deviceMeta != null;
+        }
+
         protected readonly ASCOM.Alpaca.Discovery.AscomDevice deviceMeta;
 
         protected DeviceT device;
@@ -61,8 +70,23 @@ namespace NINA.Equipment.Equipment {
 
         public string Id { get; }
 
-        public string Name { get; }
-        public string DisplayName { get; }
+        private string name;
+        public string Name {
+            get {
+                if(name == null && !IsAlpacaDevice() && Connected) {
+                    try {
+                        // Update name of ASCOM after connection
+                        name = string.IsNullOrEmpty(device?.Name) ? ascomRegistrationName : device?.Name;
+                        DisplayName = $"{name} (ASCOM)";
+                    } catch {
+                        name = ascomRegistrationName;
+                    }
+                }
+                return name ?? ascomRegistrationName;
+            }
+        }
+
+        public string DisplayName { get; private set; }
 
         public string Description {
             get {
@@ -114,9 +138,7 @@ namespace NINA.Equipment.Equipment {
                             if (expected != val) {
                                 Logger.Error($"{Name} should be connected but reports to be disconnected. Trying to reconnect...");
                                 try {
-                                    device.Connect();
-                                    WaitForConnectingFlag();
-                                    connectedExpectation = true;
+                                    Connected = true;
                                     if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
                                         getmemory.InvalidateCache();
                                     }
@@ -137,6 +159,19 @@ namespace NINA.Equipment.Equipment {
                         return val;
                     } else {
                         return false;
+                    }
+                }
+            }
+            private set {
+                lock (lockObj) {
+                    if (device != null) {
+                        Logger.Debug($"SET {Name} Connected to {value}");
+                        device.Connected = value;
+                        connectedExpectation = value;
+                        if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
+                            getmemory.InvalidateCache();
+                        }
+                        RaisePropertyChanged(nameof(HasSetupDialog));
                     }
                 }
             }
@@ -228,18 +263,7 @@ namespace NINA.Equipment.Equipment {
 
                     Logger.Trace($"{Name} - Calling Connect for {Id}");
 
-                    int interfaceVersion = 1;
-                    try {
-                        interfaceVersion = device.InterfaceVersion;
-                    } catch { }
-
-                    var deviceType = ToDeviceType();
-                    Logger.Debug($"Connecting {deviceType} {DisplayName} with Interface Version {interfaceVersion}");
-                    await device.ConnectAsync(ToDeviceType(), interfaceVersion, token, logger: new AscomLogger());
-                    lock (lockObj) {
-                        connectedExpectation = true;
-                        InvalidatePropertyCache();
-                    }
+                    Connected = true;
 
                     if (Connected) {
                         Logger.Trace($"{Name} - Calling PostConnect");
@@ -272,7 +296,7 @@ namespace NINA.Equipment.Equipment {
 
         public void SetupDialog() {
             if (HasSetupDialog) {
-                if (deviceMeta is null) {
+                if (!IsAlpacaDevice()) {
                     // ASCOM
                     try {
                         bool dispose = false;
@@ -317,8 +341,7 @@ namespace NINA.Equipment.Equipment {
             Logger.Trace($"{Name} - Calling PreDisconnect");
             PreDisconnect();
             try {
-                device.Disconnect();
-                WaitForConnectingFlag();
+                Connected = false;
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -330,6 +353,10 @@ namespace NINA.Equipment.Equipment {
             Logger.Trace($"{Name} - Calling PostDisconnect");
             PostDisconnect();
             Dispose();
+            if(!IsAlpacaDevice()) {
+                name = null;
+                DisplayName = ascomRegistrationName;
+            }            
             RaiseAllPropertiesChanged();
         }
 

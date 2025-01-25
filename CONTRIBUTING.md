@@ -145,7 +145,6 @@ This database will be automatically created by the EntityFramework based on the 
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
-    * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
     * [License Header Manager](https://github.com/rubicon-oss/LicenseHeaderManager) for automatic insertion of the license into new files
     * [Fine Code Coverage](https://github.com/FortuneN/FineCodeCoverage) To show code coverage
 * Static external dependencies are hosted in a separate git repository and pulled as a submodule, so they need to be checked out separately
@@ -217,8 +216,8 @@ Notes
 
 ## NINA.SetupBundle Prerequisites
 
-* To provide release notes for the setup bundle, there is a build event using "pandoc" that creates an rtf file out of RELEASE_NOTES.md
-* It is expected inside the folder "%LOCALAPPDATA%\Pandoc\pandoc.exe"
+* To provide release notes for the setup bundle and generate the release notes html file, there is a build event using "pandoc" that creates an these files out of RELEASE_NOTES.md
+* Pandoc is expected to be inside the folder "%LOCALAPPDATA%\Pandoc\pandoc.exe"
 * Setup can be downloaded at https://pandoc.org/installing.html
 
 ## IoC Container

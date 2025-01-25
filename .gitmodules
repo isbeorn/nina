@@ -4,4 +4,4 @@
 	branch = develop
 [submodule "NINA.Docs"]
 	path = NINA.Docs
-	url = https://Isbeorn@bitbucket.org/Isbeorn/nina.docs.git
+	url = https://bitbucket.org/Isbeorn/nina.docs.git
