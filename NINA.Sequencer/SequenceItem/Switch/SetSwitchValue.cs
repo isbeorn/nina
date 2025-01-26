@@ -71,9 +71,13 @@ namespace NINA.Sequencer.SequenceItem.Switch {
 
         private double value;
 
+        [JsonProperty]
         public double Value {
             get => value;
             set {
+                this.value = value;
+                Validate();
+                RaisePropertyChanged();
             }
         }
 
