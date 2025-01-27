@@ -31,6 +31,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Hitting the escape key while dragging an item will cancel the drag and drop action
 - Added new observation related metadata fields in Options > Astrometry. These fields Observer, Observatory, and Site are also written to the FITS file as OBSERVER, OBSERVAT  and SITENAME, respectively.
 - MessageBox and Annotation sequence instructions now accepts return for specifying multiline texts
+- Dome info panels now also include 
+    - Altitude if available
+    - Info if following is off, following via N.I.N.A. or following via driver to differentiate the different dome following mechanisms
 
 ## Commandline Options
 The following command line options have been added

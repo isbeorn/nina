@@ -51,6 +51,7 @@ namespace NINA.Equipment.Interfaces {
         bool CanPark { get; }
         bool CanFindHome { get; }
         double Azimuth { get; }
+        double Altitude { get; }
         bool AtPark { get; }
         bool AtHome { get; }
         bool DriverFollowing { get; set; }

@@ -1207,9 +1207,6 @@ when the lines are not aligned there is some Polar Alignment error</value>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>At home</value>
   </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Dome following telescope</value>
-  </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Slewing</value>
   </data>
@@ -7097,5 +7094,20 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblObserver" xml:space="preserve">
     <value>Observer</value>
     <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Following</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>via N.I.N.A.</value>
+    <comment>If the dome following logic is managed by the application</comment>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>via Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblEnableDomeFollowingViaNINA" xml:space="preserve">
+    <value>Dome following via N.I.N.A.</value>
   </data>
 </root>

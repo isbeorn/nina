@@ -56,6 +56,7 @@ namespace NINA.Test.Dome {
         private bool domeCanPark;
         private bool domeCanFindHome;
         private double domeAzimuth;
+        private double domeAltitude;
         private Angle domeTargetAzimuth;
         private Angle domeTargetAltitude;
         private bool domeAtPark;
@@ -75,7 +76,8 @@ namespace NINA.Test.Dome {
             domeCanSyncAzimuth = true;
             domeCanPark = true;
             domeCanFindHome = true;
-            domeAzimuth = 0.0;
+            domeAzimuth = 20.0;
+            domeAltitude = 10.0;
             domeTargetAzimuth = Angle.ByDegree(0.0);
             domeTargetAltitude = Angle.ByDegree(0.0);
             domeAtPark = true;
@@ -120,6 +122,7 @@ namespace NINA.Test.Dome {
             mockDome.SetupGet(x => x.CanPark).Returns(() => domeCanPark);
             mockDome.SetupGet(x => x.CanFindHome).Returns(() => domeCanFindHome);
             mockDome.SetupGet(x => x.Azimuth).Returns(() => domeAzimuth);
+            mockDome.SetupGet(x => x.Altitude).Returns(() => domeAltitude);
             mockDome.SetupGet(x => x.AtPark).Returns(() => domeAtPark);
             mockDome.SetupGet(x => x.AtHome).Returns(() => domeAtHome);
             mockDome.SetupGet(x => x.Slewing).Returns(() => domeSlewing);
