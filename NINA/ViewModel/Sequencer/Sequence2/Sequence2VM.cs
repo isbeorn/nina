@@ -312,9 +312,19 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private void LoadSequence(object obj) {
-            if (Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
+            bool isEmpty = true;
+            foreach (ISequenceContainer cont in Sequencer.MainContainer.Items) {
+                if (cont.Items.Count > 0) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            // Don't ask if this is an empty sequence
+            if (!isEmpty && Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
                 return;
             }
+
             var initialDirectory = string.Empty;
             if (Directory.Exists(profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder)) {
                 initialDirectory = Path.GetFullPath(profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder);
