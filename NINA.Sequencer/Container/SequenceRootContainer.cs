@@ -102,6 +102,13 @@ namespace NINA.Sequencer.Container {
                 }
             }
         }
+
+        public IReadOnlyCollection<ISequenceItem> GetCurrentRunningItems() {
+            lock (runningItemsLock) {
+                return runningItems.ToList().AsReadOnly();
+            }
+        }
+
         public event Func<object, SequenceEntityFailureEventArgs, Task> FailureEvent;
 
         public async Task RaiseFailureEvent(ISequenceEntity sender, Exception ex) {

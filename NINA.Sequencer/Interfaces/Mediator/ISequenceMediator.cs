@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.SequenceItem;
 using NINA.ViewModel.Sequencer;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,7 @@ namespace NINA.Sequencer.Interfaces.Mediator {
         Task StartAdvancedSequence(bool skipValidation);
         void CancelAdvancedSequence();
         bool IsAdvancedSequenceRunning();
+        IReadOnlyCollection<ISequenceItem> GetAdvancedSequencerCurrentRunningItems();
         Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token);
         string GetAdvancedSequencerSavePath();
 
