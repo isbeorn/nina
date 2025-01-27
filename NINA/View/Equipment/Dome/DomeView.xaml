@@ -222,7 +222,7 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEnableDomeFollowingViaNINA}" />
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowingViaNINA}" />
                                 <CheckBox
                                     Grid.Column="1"
                                     Width="120"
