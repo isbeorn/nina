@@ -7100,14 +7100,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
   </data>
   <data name="LblDomeFollowingViaNINA" xml:space="preserve">
-    <value>via N.I.N.A.</value>
-    <comment>If the dome following logic is managed by the application</comment>
+    <value>Dome following via N.I.N.A.</value>
   </data>
   <data name="LblDomeFollowingViaDriver" xml:space="preserve">
     <value>via Driver</value>
     <comment>If the dome following logic is managed by the driver</comment>
   </data>
-  <data name="LblEnableDomeFollowingViaNINA" xml:space="preserve">
-    <value>Dome following via N.I.N.A.</value>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>World Map</value>
   </data>
 </root>
