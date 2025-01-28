@@ -48,9 +48,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 Time = Time
             };
         }
+
+        [ObservableProperty]
+        [IsExpression]
+        [property:JsonProperty]
         private double time;
 
-        [JsonProperty]
+        /*[JsonProperty]
         [IsExpression]
         public double Time {
             get => time;
@@ -58,7 +62,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 time = value;
                 RaisePropertyChanged();
             }
-        }
+        }*/
 
         partial void TimeExpressionValidation(Expression exp) {
             if (exp.Value > 90) {

@@ -11,11 +11,11 @@ namespace NINA.Sequencer.Generators {
     [Generator]
     public class ExpressionGenerator : IIncrementalGenerator {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
-//#if DEBUG
-//            if (!Debugger.IsAttached) {
-//                Debugger.Launch();
-//            }
-//#endif 
+#if DEBUG
+            if (!Debugger.IsAttached) {
+                Debugger.Launch();
+            }
+#endif 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node),
                 transform: static (ctx, ct) => GetPropertyInfoOrNull(ctx)
@@ -23,7 +23,15 @@ namespace NINA.Sequencer.Generators {
 
             var allProperties = propertyDeclarations.Collect();
 
+            var mvvmPropertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
+                predicate: static (node, ct) => IsCandidateField(node),
+                transform: static (ctx, ct) => GetFieldPropertyInfoOrNull(ctx)
+            ).Where(m => m is not null);
+
+            var allMvvmProperties = mvvmPropertyDeclarations.Collect();
+
             context.RegisterSourceOutput(allProperties, Execute);
+            context.RegisterSourceOutput(allMvvmProperties, Execute);
             /*
             var compilation = context.CompilationProvider.Combine(provider.Collect());
 
@@ -52,6 +60,47 @@ namespace NINA.Sequencer.Generators {
         private static bool IsPropertyWithAttributes(SyntaxNode node) {
             return node is PropertyDeclarationSyntax pds && pds.AttributeLists.Count > 0;
         }
+        private static bool IsMvvmPropertyWithAttributes(SyntaxNode node) {
+            return node is FieldDeclarationSyntax pds && pds.AttributeLists.Count > 0;
+        }
+
+        static bool IsCandidateField(SyntaxNode node) {
+            // The node must represent a field declaration
+            if (node is not VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { AttributeLists.Count: > 0 } fieldNode } }) {
+
+                return false;
+            }
+
+
+            return true;
+        }
+
+        private static PropertyInfo? GetFieldPropertyInfoOrNull(GeneratorSyntaxContext context) {
+            // node must be PropertyDeclarationSyntax due to predicate
+            var fieldDecl = (VariableDeclaratorSyntax)context.Node;
+            //var variableDeclarator = fieldDecl.Variables.FirstOrDefault();
+            //if (variableDeclarator == null) { return null; }
+            var symbol = context.SemanticModel.GetDeclaredSymbol(fieldDecl);
+            if (symbol == null) return null;
+
+            if (symbol is not IFieldSymbol propertySymbol) { return null; }
+
+            // Look for [IsExpressionAttribute]
+            // Note to future me -- to get it working with MVVM toolkit we could scan for the [ObservableProperty] instead and generate based on that then
+            var myPropAttr = symbol.GetAttributes()
+                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.IsExpressionAttribute");
+
+            if (myPropAttr == null) return null;
+
+            // If found, we can also extract the ExtraInfo argument, if desired
+            // (If you want to handle multiple arguments or advanced scenarios, adapt accordingly.)
+            var extraInfo = (myPropAttr.ConstructorArguments.Length > 0)
+                ? myPropAttr.ConstructorArguments[0].Value?.ToString() ?? ""
+                : "";
+
+            return new PropertyInfo(propertySymbol.ContainingType, propertySymbol);
+        }
+
         private static PropertyInfo? GetPropertyInfoOrNull(GeneratorSyntaxContext context) {
             // node must be PropertyDeclarationSyntax due to predicate
             var propDecl = (PropertyDeclarationSyntax)context.Node;
@@ -133,18 +182,18 @@ namespace {namespaceName}
         }
 
         private sealed record PropertyInfo {
-            public PropertyInfo(INamedTypeSymbol containingType, IPropertySymbol propertySymbol) {
+            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol) {
                 ContainingType = containingType;
                 PropertySymbol = propertySymbol;
             }
 
             public INamedTypeSymbol ContainingType { get; }
-            public IPropertySymbol PropertySymbol { get; }
+            public ISymbol PropertySymbol { get; }
         }
     }
 
 
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class IsExpressionAttribute : Attribute {
         public IsExpressionAttribute() {
         }
