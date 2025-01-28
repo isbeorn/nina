@@ -7,6 +7,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release;SignedRelease</Configurations>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
     <OutputPath>bin\SignedRelease\</OutputPath>
@@ -41,6 +42,7 @@
     <ProjectReference Include="..\NINA.Platesolving\NINA.PlateSolving.csproj" />
     <ProjectReference Include="..\NINA.Profile\NINA.Profile.csproj" />
     <ProjectReference Include="..\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj" />
+    <ProjectReference Include="..\NINA.Sequencer.Generators\NINA.Sequencer.Generators.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -12,8 +12,12 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -23,14 +27,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
-
     [ExportMetadata("Name", "Lbl_SequenceItem_Utility_WaitForTimeSpan_Name")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Utility_WaitForTimeSpan_Description")]
     [ExportMetadata("Icon", "HourglassSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForTimeSpan : SequenceItem {
+    public partial class WaitForTimeSpan : SequenceItem {
 
         [ImportingConstructor]
         public WaitForTimeSpan() {
@@ -45,10 +48,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 Time = Time
             };
         }
-
         private double time;
 
         [JsonProperty]
+        [IsExpression]
         public double Time {
             get => time;
             set {
@@ -57,8 +60,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
+        partial void TimeExpressionValidation(Expression exp) {
+            if (exp.Value > 90) {
+                exp.Error = "This is wrong";
+            }
+        }
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");
+            var a = TimeExpression.Value;
+            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 
         public override TimeSpan GetEstimatedDuration() {
