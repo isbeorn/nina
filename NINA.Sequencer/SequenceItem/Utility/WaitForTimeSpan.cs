@@ -27,12 +27,14 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
+
     [ExportMetadata("Name", "Lbl_SequenceItem_Utility_WaitForTimeSpan_Name")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Utility_WaitForTimeSpan_Description")]
     [ExportMetadata("Icon", "HourglassSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [ExpressionObject]
     public partial class WaitForTimeSpan : SequenceItem {
 
         [ImportingConstructor]
@@ -43,28 +45,29 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        public override object Clone() {
-            return new WaitForTimeSpan(this) {
-                Time = Time
-            };
-        }
-
         [ObservableProperty]
         [IsExpression]
         [property:JsonProperty]
         private double time;
 
-        /*[JsonProperty]
+
+        private double fullPropertyTime;
+        [JsonProperty]
         [IsExpression]
-        public double Time {
-            get => time;
+        public double FullPropertyTime {
+            get => fullPropertyTime;
             set {
-                time = value;
+                fullPropertyTime = value;
                 RaisePropertyChanged();
             }
-        }*/
+        }
 
         partial void TimeExpressionValidation(Expression exp) {
+            if (exp.Value > 90) {
+                exp.Error = "This is wrong";
+            }
+        }
+        partial void FullPropertyTimeExpressionValidation(Expression exp) {
             if (exp.Value > 90) {
                 exp.Error = "This is wrong";
             }
@@ -72,6 +75,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var a = TimeExpression.Value;
+            var b = FullPropertyTimeExpression.Value;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 

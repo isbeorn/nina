@@ -16,7 +16,7 @@ using System.Windows.Media;
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-
+        public bool HasError => string.IsNullOrEmpty(Error);
         public string Error { get; set; }
         public double Value { get; set; }
 
