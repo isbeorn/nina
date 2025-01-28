@@ -60,7 +60,8 @@ namespace NINA.Sequencer.Generators {
 
             if (symbol is not IPropertySymbol propertySymbol) { return null; }
 
-            // Look for [MyPropertyAttribute]
+            // Look for [IsExpressionAttribute]
+            // Note to future me -- to get it working with MVVM toolkit we could scan for the [ObservableProperty] instead and generate based on that then
             var myPropAttr = symbol.GetAttributes()
                 .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.IsExpressionAttribute");
 
