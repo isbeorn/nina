@@ -42,12 +42,19 @@ The following command line options have been added
 -g, --disable-hardware-acceleration        Disables UI hardware acceleration
 ```
 
+## Plugin Merge
+
+### Connector
+- All instructions and triggers that the connector plugin offered are now merged into the core application
+- Existing templates and sequences will automatically migrate to the core instructions and triggers
+
 ## Plugin Development
 
 ### AssemblyLoadContext
 - Plugins are now loaded within separate [AssemblyLoadContexts](https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext)
     - This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues
     - No changes to existing plugins are required
+
 
 # Version 3.1 Hotfix 2
 

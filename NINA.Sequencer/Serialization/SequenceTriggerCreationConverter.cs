@@ -28,7 +28,8 @@ namespace NINA.Sequencer.Serialization {
 
         public override ISequenceTrigger Create(Type objectType, JObject jObject) {
             if (jObject.TryGetValue("$type", out var token)) {
-                var t = GetType(jObject.GetValue("$type").ToString());
+                token = PluginMergeMigration(token?.ToString());
+                var t = GetType(token?.ToString());
                 if (t == null) {
                     return new UnknownSequenceTrigger(token?.ToString());
                 }
@@ -48,5 +49,11 @@ namespace NINA.Sequencer.Serialization {
                 return new UnknownSequenceTrigger(token?.ToString());
             }
         }
+
+        private string PluginMergeMigration(string token) => token switch {
+            "NINA.Plugins.Connector.Instructions.ReconnectOnDownloadFailure, NINA.Plugins.Connector" => "NINA.Sequencer.Trigger.Connect.ReconnectOnDownloadFailure, NINA.Sequencer",
+            "NINA.Plugins.Connector.Instructions.ReconnectTrigger, NINA.Plugins.Connector" => "NINA.Sequencer.Trigger.Connect.ReconnectTrigger, NINA.Sequencer",
+            _ => token
+        };
     }
 }

@@ -457,10 +457,15 @@ namespace NINA.Plugin {
                     Application.Current?.Resources.MergedDictionaries.Add(template);
                 }
 
-                Items = Items.Concat(AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName)).ToList();
-                Conditions = Conditions.Concat(AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName)).ToList();
-                Triggers = Triggers.Concat(AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName)).ToList();
-                Container = Container.Concat(AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName)).ToList();
+                var pluginItems = AssignSequenceEntity(parts.ItemImports, resourceDictionary, pluginName);
+                var pluginConditions = AssignSequenceEntity(parts.ConditionImports, resourceDictionary, pluginName);
+                var pluginTriggers = AssignSequenceEntity(parts.TriggerImports, resourceDictionary, pluginName);
+                var pluginContainers = AssignSequenceEntity(parts.ContainerImports, resourceDictionary, pluginName);
+
+                Items = Items.Concat(pluginItems).ToList();
+                Conditions = Conditions.Concat(pluginConditions).ToList();
+                Triggers = Triggers.Concat(pluginTriggers).ToList();
+                Container = Container.Concat(pluginContainers).ToList();
 
                 DockableVMs = DockableVMs.Concat(parts.DockableVMImports).ToList();
                 PluggableBehaviors = PluggableBehaviors.Concat(parts.PluggableBehaviorImports).ToList();
@@ -630,6 +635,9 @@ namespace NINA.Plugin {
             foreach (var importItem in imports) {
                 try {
                     var item = importItem.Value;
+
+                    if (FilterMergedEntities(pluginName, item)) { continue; }
+
                     if (importItem.Metadata.TryGetValue("Name", out var nameObj)) {
                         string name = nameObj.ToString();
                         item.Name = GrabLabel(name);
@@ -656,6 +664,14 @@ namespace NINA.Plugin {
                 }
             }
             return items.OrderBy(item => item.Category + item.Name);
+        }
+
+        // Filter out any items that have been merged to core for seamless migration
+        private bool FilterMergedEntities<T>(string pluginName, T item) where T : ISequenceEntity {
+            if (PluginMergedEntityMap.MergedEntities.TryGetValue(pluginName, out var list)) {
+                return list.Any(x => x == item.GetType().ToString());
+            }
+            return false;
         }
 
         private string GrabLabel(string label) {
