@@ -12,8 +12,12 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -30,7 +34,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForTimeSpan : SequenceItem {
+    [ExpressionObject]
+    public partial class WaitForTimeSpan : SequenceItem {
 
         [ImportingConstructor]
         public WaitForTimeSpan() {
@@ -40,25 +45,38 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        public override object Clone() {
-            return new WaitForTimeSpan(this) {
-                Time = Time
-            };
-        }
-
+        [ObservableProperty]
+        [IsExpression]
+        [property:JsonProperty]
         private double time;
 
+
+        private double fullPropertyTime;
         [JsonProperty]
-        public double Time {
-            get => time;
+        [IsExpression]
+        public double FullPropertyTime {
+            get => fullPropertyTime;
             set {
-                time = value;
+                fullPropertyTime = value;
                 RaisePropertyChanged();
             }
         }
 
+        partial void TimeExpressionValidation(Expression exp) {
+            if (exp.Value > 90) {
+                exp.Error = "This is wrong";
+            }
+        }
+        partial void FullPropertyTimeExpressionValidation(Expression exp) {
+            if (exp.Value > 90) {
+                exp.Error = "This is wrong";
+            }
+        }
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");
+            var a = TimeExpression.Value;
+            var b = FullPropertyTimeExpression.Value;
+            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 
         public override TimeSpan GetEstimatedDuration() {

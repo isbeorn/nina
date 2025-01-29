@@ -16,6 +16,7 @@ using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
+using OxyPlot;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -51,6 +52,20 @@ namespace NINA.WPF.Base.Mediator {
             foreach (IFocuserConsumer c in receivers) {
                 try {
                     c.UpdateEndAutoFocusRun(info);
+                } catch (Exception e) {
+                    Logger.Error(e);
+                }
+            }
+        }
+
+        public void BroadcastNewAutoFocusPoint(DataPoint dataPoint) {
+            List<IFocuserConsumer> receivers;
+            lock (consumers) {
+                receivers = new List<IFocuserConsumer>(consumers);
+            }
+            foreach (IFocuserConsumer c in receivers) {
+                try {
+                    c.NewAutoFocusPoint(dataPoint);
                 } catch (Exception e) {
                     Logger.Error(e);
                 }

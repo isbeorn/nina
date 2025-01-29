@@ -7076,4 +7076,15 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
     <value>Nie można załadować obrazu. Wprowadź faktyczną długość ogniskowej swojego teleskopu w sekcji parametr kamery!</value>
   </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Nazwa witryny</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Obserwatorium</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Obserwator</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
 </root>

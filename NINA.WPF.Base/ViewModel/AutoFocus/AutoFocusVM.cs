@@ -567,7 +567,10 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new ScatterErrorPoint(currentFocusPosition, measurement.Measure, 0, Math.Max(0.001, measurement.Stdev)), comparer);
-                PlotFocusPoints.AddSorted(new DataPoint(currentFocusPosition, measurement.Measure), plotComparer);
+                var dataPoint = new DataPoint(currentFocusPosition, measurement.Measure);
+                PlotFocusPoints.AddSorted(dataPoint, plotComparer);
+
+                focuserMediator.BroadcastNewAutoFocusPoint(dataPoint);
 
                 token.ThrowIfCancellationRequested();
 

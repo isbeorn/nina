@@ -7076,4 +7076,15 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
     <value>No se puede cargar la imagen - por favor, introduce la longitud focal efectiva del telescopio en la sección de parámetros de la cámara.</value>
   </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Nombre de la ubicación</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatorio</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observador</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
 </root>

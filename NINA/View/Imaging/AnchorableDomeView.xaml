@@ -84,23 +84,6 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0">
                             <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeDriverFollowing}" />
-                                <CheckBox
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    BorderBrush="Transparent"
-                                    IsChecked="{Binding DomeInfo.DriverFollowing, FallbackValue=False, Mode=OneWay}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CheckmarkCheckbox}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,5,0,0"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0">
-                            <UniformGrid VerticalAlignment="Center" Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeSlewing}" />
                                 <CheckBox
                                     Width="20"
@@ -111,6 +94,18 @@
                                     IsChecked="{Binding DomeInfo.Slewing, FallbackValue=False, Mode=OneWay}"
                                     IsEnabled="False"
                                     Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowingShort}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding DomeInfo.FollowingType}" />
                             </UniformGrid>
                         </Border>
                         <Border
@@ -127,10 +122,20 @@
                             Margin="0,5,0,0"
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
-                            Visibility="{Binding DomeInfo.Azimuth, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
+                            Visibility="{Binding DomeInfo.AzimuthDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
                             <UniformGrid VerticalAlignment="Center" Columns="2">
-                                <TextBlock Text="{ns:Loc LblDomeAzimuth}" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter='°|2'}" />
+                                <TextBlock Text="{ns:Loc LblAzimuth}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.AzimuthDMS}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            Visibility="{Binding DomeInfo.AltitudeDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblAltitude}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.AltitudeDMS}" />
                             </UniformGrid>
                         </Border>
                     </StackPanel>

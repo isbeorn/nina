@@ -243,7 +243,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 { nameof(DomeInfo.AtHome), Dome?.AtHome ?? false },
                 { nameof(DomeInfo.DriverFollowing), Dome?.DriverFollowing ?? false },
                 { nameof(DomeInfo.Slewing), Dome?.Slewing ?? false },
-                { nameof(DomeInfo.Azimuth), Dome?.Azimuth ?? Double.NaN }
+                { nameof(DomeInfo.Azimuth), Dome?.Azimuth ?? double.NaN },
+                { nameof(DomeInfo.Altitude), Dome?.Altitude ?? double.NaN }
             };
 
             return domeValues;
@@ -292,7 +293,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             DomeInfo.Slewing = (bool)(o ?? false);
 
             domeValues.TryGetValue(nameof(DomeInfo.Azimuth), out o);
-            DomeInfo.Azimuth = (double)(o ?? Double.NaN);
+            DomeInfo.Azimuth = (double)(o ?? double.NaN);
+
+            domeValues.TryGetValue(nameof(DomeInfo.Altitude), out o);
+            DomeInfo.Altitude = (double)(o ?? double.NaN);
+
+            DomeInfo.ApplicationFollowing = domeFollower.IsFollowing;
 
             BroadcastDomeInfo();
         }

@@ -7036,21 +7036,32 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>Complete duration</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>手動の編集とドラッグ&amp;ドロップができないように、シーケンサーをロックする</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>手動の編集とドラッグ&amp;ドロップができるように、シーケンサーのロックを解除する</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>シーケンサーとサイドバー内のすべてのドラッグ&amp;ドロップを無効にする</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>シーケンサーとサイドバーのすべてのドラッグアンドドロップを有効にする</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
-    <value>Invalid focal length!</value>
+    <value>焦点距離が無効です！</value>
   </data>
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
-    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+    <value>画像を読み込むことができません。カメラのパラメータセクションに望遠鏡の実際の焦点距離を入力してください。</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>観測地名</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>観測所</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>観測者</value>
+    <comment>The person who is doing the observations</comment>
   </data>
 </root>

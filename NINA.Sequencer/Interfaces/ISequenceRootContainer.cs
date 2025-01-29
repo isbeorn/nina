@@ -16,6 +16,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Container {
@@ -27,6 +28,8 @@ namespace NINA.Sequencer.Container {
         void RemoveRunningItem(ISequenceItem item);
 
         void SkipCurrentRunningItems();
+
+        IReadOnlyCollection<ISequenceItem> GetCurrentRunningItems();
 
         string SequenceTitle { get; set; }
 

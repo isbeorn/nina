@@ -7080,4 +7080,15 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
     <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
   </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Site name</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatory</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observer</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
 </root>

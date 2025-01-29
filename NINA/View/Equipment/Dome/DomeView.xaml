@@ -118,13 +118,25 @@
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2"
-                                    Visibility="{Binding DomeInfo.Azimuth, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
-                                    <TextBlock Text="{ns:Loc LblDomeAzimuth}" />
+                                    Visibility="{Binding DomeInfo.AzimuthDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock Text="{ns:Loc LblAzimuth}" />
                                     <TextBlock
                                         Margin="5,0,0,0"
-                                        Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter='°|2'}"
+                                        Text="{Binding DomeInfo.AzimuthDMS}"
                                         TextWrapping="WrapWithOverflow" />
                                 </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding DomeInfo.AltitudeDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock Text="{ns:Loc LblAltitude}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.AltitudeDMS}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                            <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -132,6 +144,14 @@
                                     Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
                                     <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
                                     <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding DomeInfo.Connected, Converter={StaticResource VisibilityConverter}}">
+                                    <TextBlock Text="{ns:Loc LblDomeFollowing}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.FollowingType}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -197,15 +217,20 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
                             IsEnabled="{Binding TelescopeInfo.Connected}">
-                            <UniformGrid Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowing}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowingViaNINA}" />
                                 <CheckBox
+                                    Grid.Column="1"
                                     Width="120"
                                     Height="25"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding FollowEnabled}" />
-                            </UniformGrid>
+                            </Grid>
                         </Border>
                         <Border
                             Grid.Row="1"

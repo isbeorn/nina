@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Equipment.Equipment.MyFocuser;
+using OxyPlot;
 using System;
 
 namespace NINA.Equipment.Interfaces.Mediator {
@@ -41,5 +42,6 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         void UpdateUserFocused(FocuserInfo info);
         void AutoFocusRunStarting() { }
+        void NewAutoFocusPoint(DataPoint dataPoint) { }
     }
 }

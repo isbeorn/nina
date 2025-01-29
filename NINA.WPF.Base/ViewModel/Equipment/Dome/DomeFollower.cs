@@ -26,10 +26,11 @@ using System.Threading.Tasks;
 using NINA.Equipment.Interfaces;
 using NINA.Core.Locale;
 using NINA.Equipment.Equipment;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
-    public class DomeFollower : BaseINPC, IDomeFollower, ITelescopeConsumer, IDomeConsumer {
+    public partial class DomeFollower : BaseINPC, IDomeFollower, ITelescopeConsumer, IDomeConsumer {
         private const double RA_DEC_WARN_THRESHOLD = 2.0;
         private readonly IProfileService profileService;
         private readonly ITelescopeMediator telescopeMediator;
@@ -54,6 +55,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             this.domeMediator.RegisterConsumer(this);
             this.domeSynchronization = domeSynchronization;
         }
+
+        [ObservableProperty]
+        private bool isSynchronized = false;
+
+        [ObservableProperty]
+        private bool isFollowing = false;
 
         public void Dispose() {
             this.telescopeMediator?.RemoveConsumer(this);
@@ -273,30 +280,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 return domeRotationTask;
             }
             return Task.FromResult(true);
-        }
-
-        private bool isSynchronized = false;
-
-        public bool IsSynchronized {
-            get => this.isSynchronized;
-            private set {
-                if (this.isSynchronized != value) {
-                    this.isSynchronized = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private bool following = false;
-
-        public bool IsFollowing {
-            get => this.following;
-            private set {
-                if (this.following != value) {
-                    this.following = value;
-                    RaisePropertyChanged();
-                }
-            }
         }
     }
 }

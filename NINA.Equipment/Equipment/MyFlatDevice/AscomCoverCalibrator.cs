@@ -37,7 +37,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public CoverState CoverState {
             get {
-                var state = device.CoverState;
+                var state = GetProperty(nameof(CoverState), CoverStatus.Unknown);
                 switch (state) {
                     case ASCOM.Common.DeviceInterfaces.CoverStatus.Unknown:
                         return CoverState.Unknown;

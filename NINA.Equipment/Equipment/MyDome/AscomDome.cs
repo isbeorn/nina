@@ -102,6 +102,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         public bool CanFindHome => GetProperty(nameof(Dome.CanFindHome), false);
 
         public double Azimuth => GetProperty(nameof(Dome.Azimuth), double.NaN);
+        public double Altitude => GetProperty(nameof(Dome.Altitude), double.NaN);
 
         public bool AtPark => GetProperty(nameof(Dome.AtPark), false);
 

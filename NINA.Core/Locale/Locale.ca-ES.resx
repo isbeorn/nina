@@ -7063,21 +7063,32 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>Durada total</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>Bloqueja el seqüenciador per evitar edicions manuals o d'arrossegar i deixar anar</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
-    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+    <value>Desbloqueja el seqüenciador per evitar edicions manuals o d'arrossegar i deixar anar</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>Desactiva totes les accions d'arrossegar i deixar anar al seqüenciador i a la barra lateral</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>Activa totes les accions d'arrossegar i deixar anar al seqüenciador i a la barra lateral</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
-    <value>Invalid focal length!</value>
+    <value>Distància focal no vàlida!</value>
   </data>
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
-    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+    <value>No es pot carregar la imatge: introduïu la distància focal efectiva del vostre telescopi a la secció de paràmetres de la càmera!</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Nom del lloc</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatori</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observador</value>
+    <comment>The person who is doing the observations</comment>
   </data>
 </root>

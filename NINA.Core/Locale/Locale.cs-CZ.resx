@@ -7081,4 +7081,15 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
     <value>Obrázek nelze načíst – zadejte prosím skutečnou ohniskovou vzdálenost dalekohledu v nastavení parametrů kamery!</value>
   </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Název stanoviště</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatoř</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Pozorovatel</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
 </root>
