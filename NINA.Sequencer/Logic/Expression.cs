@@ -19,6 +19,9 @@ namespace NINA.Sequencer.Logic {
         public bool HasError => string.IsNullOrEmpty(Error);
         public string Error { get; set; }
         public double Value { get; set; }
+        public ISequenceEntity Context { get; set; }
+        public string Definition {  get; set; }
+        public double Default { get; set; } = Double.NaN;
 
     }
 }

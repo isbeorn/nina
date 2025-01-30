@@ -13,7 +13,7 @@ namespace NINA.Sequencer.Generators {
     public class ExpressionGenerator : IIncrementalGenerator {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
-//Uncomment to attach a debugger for source generation
+            //Uncomment to attach a debugger for source generation
 //#if DEBUG
 //            if (!Debugger.IsAttached) {
 //                Debugger.Launch();
@@ -148,6 +148,7 @@ namespace NINA.Sequencer.Generators {
             get => {fieldNameExpression};
             set {{
                 {fieldNameExpression} = value;
+                {propNameExpression}.Context = this;
                 {propNameExpression}Setter(value);
                 {propNameExpression}AfterSetter(value);
                 RaisePropertyChanged();
