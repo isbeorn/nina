@@ -51,31 +51,19 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private double time;
 
 
-        private double fullPropertyTime;
-        [JsonProperty]
-        [IsExpression]
-        public double FullPropertyTime {
-            get => fullPropertyTime;
-            set {
-                fullPropertyTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
         partial void TimeExpressionValidation(Expression exp) {
-            if (exp.Value > 90) {
-                exp.Error = "This is wrong";
-            }
-        }
-        partial void FullPropertyTimeExpressionValidation(Expression exp) {
-            if (exp.Value > 90) {
+            if (exp?.Value > 90) {
                 exp.Error = "This is wrong";
             }
         }
 
+        partial void TimeExpressionAfterSetter(Expression exp) {
+            Logger.Info("Foo");
+        }
+
+ 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var a = TimeExpression.Value;
-            var b = FullPropertyTimeExpression.Value;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 

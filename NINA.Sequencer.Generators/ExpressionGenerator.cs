@@ -149,20 +149,22 @@ namespace NINA.Sequencer.Generators {
             set {{
                 {fieldNameExpression} = value;
                 {propNameExpression}Setter(value);
+                {propNameExpression}AfterSetter(value);
                 RaisePropertyChanged();
             }}
         }}
                 ";
 
                 methodsSource += $@"
-        public void {propNameExpression}Setter(Expression exp) {{
+        public virtual void {propNameExpression}Setter(Expression exp) {{
             {propNameExpression}Validation(exp);
-            if (!exp.HasError) {{
+            if (exp != null && !exp.HasError) {{
                 {propName} = exp.Value;
             }}
         }}
                     
         partial void {propNameExpression}Validation (Expression exp);
+        partial void {propNameExpression}AfterSetter (Expression exp);
                 ";
             }
 
