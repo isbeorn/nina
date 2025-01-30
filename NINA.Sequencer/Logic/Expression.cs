@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NCalc;
 using Google.Protobuf.WellKnownTypes;
+using System.Windows.Media;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -27,6 +28,62 @@ namespace NINA.Sequencer.Logic {
             get => IsExpression || Error != null;
             set { }
         }
+
+        public SolidColorBrush InfoButtonColor {
+            get {
+                if (Error == null) return new SolidColorBrush(Colors.White);
+                return JustWarnings(Error) ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.Red);
+            }
+            set { }
+        }
+        public string InfoButtonChar {
+            get {
+                if (Error == null) return "\u24D8"; // "?";
+                return "\u26A0";
+            }
+            set { }
+        }
+        public double InfoButtonSize {
+            get {
+                if (Error == null) return 24;
+                return 18;
+            }
+            set { }
+        }
+        public string InfoButtonMargin {
+            get {
+                if (Error == null) return "5,-2,0,0";
+                return "5,2,0,0";
+            }
+            set { }
+        }
+        public static bool JustWarnings(string error) {
+            string[] errors = error.Split(";");
+            bool red = false;
+            bool orange = false;
+            foreach (string e in errors) {
+                if (e.Contains("Not evaluated") || e.Contains("External")) {
+                    orange = true; ;
+                } else {
+                    red = true;
+                }
+            }
+            if (orange && !red) return true;
+            return false;
+        }
+        public string ExprErrors {
+            get {
+                if (Error == null) {
+                    return "No errors in Expression";
+                } else if (JustWarnings(Error)) {
+                    return "Warning(s): " + Error;
+                } else {
+                    return "Error(s): " + Error;
+                }
+            }
+            set { }
+        }
+
         public Symbol Symbol { get; set; } = null;
 
         public string ValueString {
