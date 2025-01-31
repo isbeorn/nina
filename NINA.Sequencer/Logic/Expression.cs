@@ -24,6 +24,9 @@ namespace NINA.Sequencer.Logic {
         public string Error { get; set; }
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
+
+        public Action<Expression> Validator;
+
         public double Default { get; set; } = Double.NaN;
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
@@ -48,9 +51,9 @@ namespace NINA.Sequencer.Logic {
                     //    value = Double.Floor(value);
                     //}
                     _value = value;
-                    //if (Setter != null) {
-                    //    Setter(this);
-                    //}
+                    if (Validator != null) {
+                        Validator(this);
+                    }
                     //RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
@@ -58,8 +61,7 @@ namespace NINA.Sequencer.Logic {
                 }
             }
         }
-
-
+        
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);

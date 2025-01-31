@@ -142,6 +142,7 @@ namespace NINA.Sequencer.Generators {
                 ";
 
                 propertiesSource += $@"
+
         private Expression {fieldNameExpression} = new Expression(null, null);
         [JsonProperty]
         public Expression {propNameExpression} {{
@@ -150,15 +151,14 @@ namespace NINA.Sequencer.Generators {
                 {fieldNameExpression} = value;
                 if (value == null) return;
                 {propNameExpression}.Context = this;
-                {propNameExpression}Setter(value);
-                {propNameExpression}AfterSetter(value);
+                {propNameExpression}.Validator = {propNameExpression}Setter;
                 RaisePropertyChanged();
             }}
         }}
                 ";
 
                 methodsSource += $@"
-        public virtual void {propNameExpression}Setter(Expression exp) {{
+        public virtual void {propNameExpression}SetterZZ(Expression exp) {{
             {propNameExpression}Validation(exp);
             if (exp != null && !exp.HasError) {{
                 {propName} = exp.Value;
@@ -166,7 +166,6 @@ namespace NINA.Sequencer.Generators {
         }}
                     
         partial void {propNameExpression}Validation (Expression exp);
-        partial void {propNameExpression}AfterSetter (Expression exp);
                 ";
             }
 

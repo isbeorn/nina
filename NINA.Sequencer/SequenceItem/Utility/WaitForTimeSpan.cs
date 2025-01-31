@@ -67,7 +67,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        partial void TimeExpressionAfterSetter(Expression exp) {
+        public void TimeExpressionSetter(Expression exp) {
             Logger.Info("Foo");
         }
 
