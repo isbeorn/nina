@@ -16,6 +16,11 @@ namespace NINA.Sequencer.Logic {
         public static readonly DependencyProperty LabelProperty =
             DependencyProperty.Register("Label", typeof(string), typeof(ExprControl), null);
 
+        public string Suffix { get; set; }
+        
+        public static readonly DependencyProperty SuffixProperty =
+            DependencyProperty.Register("Suffix", typeof(string), typeof(ExprControl), null);
+
         public string Label { get; set; }
 
         public static readonly DependencyProperty ExpProperty =

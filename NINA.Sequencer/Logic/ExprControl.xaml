@@ -35,7 +35,7 @@
                     <Grid Background="{StaticResource ButtonBackgroundBrush}">
                         <Grid.Resources >
                             <Style TargetType="ItemsControl" >
-                                <Setter Property="Padding" Value="0,0,0,0" /> 
+                                <Setter Property="Padding" Value="0,0,0,0" />
                                 <Setter Property="TextBlock.TextAlignment" Value="Left" />
                             </Style>
                         </Grid.Resources>
@@ -78,6 +78,7 @@
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
+        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center" Margin="5,0,5,0" Text="{Binding Suffix}"/>
     </StackPanel>
 </UserControl>
      
