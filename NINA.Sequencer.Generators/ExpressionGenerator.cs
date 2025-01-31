@@ -142,12 +142,13 @@ namespace NINA.Sequencer.Generators {
                 ";
 
                 propertiesSource += $@"
-        private Expression {fieldNameExpression};
+        private Expression {fieldNameExpression} = new Expression(null, null);
         [JsonProperty]
         public Expression {propNameExpression} {{
             get => {fieldNameExpression};
             set {{
                 {fieldNameExpression} = value;
+                if (value == null) return;
                 {propNameExpression}.Context = this;
                 {propNameExpression}Setter(value);
                 {propNameExpression}AfterSetter(value);

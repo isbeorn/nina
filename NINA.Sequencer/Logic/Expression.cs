@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using NCalc;
 using Google.Protobuf.WellKnownTypes;
 using System.Windows.Media;
+using static NINA.Sequencer.Logic.Symbol;
+using System.Threading;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -204,7 +206,7 @@ namespace NINA.Sequencer.Logic {
                     // References now holds all of the CV's used in the expression
                     Parameters.Clear();
                     Resolved.Clear();
-                    //Evaluate();
+                    Evaluate();
                     if (Symbol != null) Symbol.SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
@@ -214,7 +216,7 @@ namespace NINA.Sequencer.Logic {
         public void RemoveParameter(string identifier) {
             Parameters.Remove(identifier);
             Resolved.Remove(identifier);
-            //Evaluate();
+            Evaluate();
         }
 
         public void ReferenceRemoved(Symbol sym) {
@@ -222,7 +224,249 @@ namespace NINA.Sequencer.Logic {
             string identifier = sym.Identifier;
             Parameters.Remove(identifier);
             Resolved.Remove(identifier);
-            //Evaluate();
+            Evaluate();
+        }
+        private void AddParameter(string reference, object value) {
+            Parameters.Add(reference, value);
+        }
+        private void Resolve(string reference, Symbol sym) {
+            Parameters.Remove(reference);
+            Resolved.Remove(reference);
+            if (sym.Expr.Error == null) {
+                Resolved.Add(reference, sym);
+                //if (sym.Expr.Value == double.NegativeInfinity) {
+                //    AddParameter(reference, sym.Expr.StringValue);
+                //} else
+                if (!Double.IsNaN(sym.Expr.Value)) {
+                    AddParameter(reference, sym.Expr.Value);
+                }
+            }
+        }
+
+        private void AddError(string s) {
+            if (Error == null) {
+                Error = s;
+            } else {
+                Error = Error + "; " + s;
+            }
+        }
+
+        public void Evaluate() {
+            Evaluate(false);
+        }
+
+        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
+
+        public void Evaluate(bool validateOnly) {
+            if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
+                try {
+                    if (!IsExpression) {
+                        //Error = null;
+                        return;
+                    }
+                    if (Definition.Length == 0) {
+                        // How the hell to clear the Expr
+                        IsExpression = false;
+                        RaisePropertyChanged("Value");
+                        RaisePropertyChanged("ValueString");
+                        //RaisePropertyChanged("StringValue");
+                        RaisePropertyChanged("IsExpression");
+                        return;
+                    }
+                    if (Context == null) return;
+                    if (!Symbol.IsAttachedToRoot(Context)) {
+                        return;
+                    }
+                    //Debug.WriteLine("Evaluate " + this);
+                    Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+
+                    //if (Volatile || GlobalVolatile) {
+                    //    IList<string> volatiles = new List<string>();
+                    //    foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                    //        if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                    //            volatiles.Add(kvp.Key);
+                    //        }
+                    //    }
+                    //    foreach (string key in volatiles) {
+                    //        Resolved.Remove(key);
+                    //        Parameters.Remove(key);
+                    //    }
+                    //}
+
+                    //Volatile = GlobalVolatile;
+
+                    //ImageVolatile = false;
+
+                    //StringValue = null;
+
+                    if (Parameters.Count < Resolved.Count) {
+                        Parameters.Clear();
+                        Resolved.Clear();
+                    }
+
+                    // External, don't report error during validation
+                    bool ext = false;
+
+                    // First, validate References
+                    foreach (string sRef in References) {
+                        Symbol sym;
+                        // Take care of "by reference" arguments
+                        string symReference = sRef;
+                        if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
+                            symReference = sRef.Substring(1);
+                        } else if (symReference.StartsWith("$")) {
+                            symReference = symReference.Substring(1);
+                            ext = true;
+                        }
+                        // Remember if we have any image data
+                        //if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                        //    ImageVolatile = true;
+                        //}
+                        bool found = Resolved.TryGetValue(symReference, out sym);
+                        if (!found || sym == null) {
+                            // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                            if (!found) {
+                                sym = Symbol.FindSymbol(symReference, Context.Parent);
+                            }
+                            if (sym != null) {
+                                // Link Expression to the Symbol
+                                Resolve(symReference, sym);
+                                sym.AddConsumer(this);
+                            } else {
+                                SymbolDictionary cached;
+                                found = false;
+                                //if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
+                                //    Symbol global;
+                                //    if (cached != null && cached.TryGetValue(symReference, out global)) {
+                                //        Resolve(symReference, global);
+                                //        global.AddConsumer(this);
+                                //        found = true;
+                                //    }
+                                //}
+                                // Try in the old Switch/Weather keys
+                                object Val;
+                                if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
+                                    // We don't want these resolved, just added to Parameters
+                                    Resolved.Remove(symReference);
+                                    Resolved.Add(symReference, null);
+                                    Parameters.Remove(symReference);
+                                    AddParameter(symReference, Val);
+                                    //Volatile = true;
+                                }
+                                if (!found && symReference.StartsWith("__ENV_")) {
+                                    string env = Environment.GetEnvironmentVariable(symReference.Substring(6), EnvironmentVariableTarget.User);
+                                    UInt32 val;
+                                    if (env == null || !UInt32.TryParse(env, out val)) {
+                                        val = 0;
+                                    }
+                                    // We don't want these resolved, just added to Parameters
+                                    Resolved.Remove(symReference);
+                                    Resolved.Add(symReference, null);
+                                    Parameters.Remove(symReference);
+                                    AddParameter(symReference, val);
+                                    //Volatile = true;
+                                }
+                            }
+                        }
+                    }
+
+                    NCalc.Expression e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+                    //e.EvaluateFunction += ExtensionFunction;
+                    e.Parameters = Parameters;
+
+                    if (e.HasErrors()) {
+                        Error = "Syntax Error";
+                        return;
+                    }
+
+                    Error = null;
+                    try {
+                        if (Parameters.Count != References.Count) {
+                            foreach (string r in References) {
+                                string symReference = r;
+                                if (symReference.StartsWith('_') || symReference.StartsWith('@')) {
+                                    symReference = symReference.Substring(1);
+                                }
+                                if (!Parameters.ContainsKey(symReference)) {
+                                    // Not defined or evaluated
+                                    Symbol s = FindSymbol(symReference, Context.Parent);
+                                    //if (s is SetVariable sv && !sv.Executed) {
+                                    //    AddError("Not evaluated: " + r);
+                                    //} else 
+                                    if (r.StartsWith("_")) {
+                                        AddError("Reference: " + r);
+                                    } else {
+                                        if (r.StartsWith('$') && ext && validateOnly) {
+                                            AddError("External: " + symReference);
+                                        } else {
+                                            AddError("Undefined: " + r);
+                                        }
+                                    }
+                                }
+                            }
+                            RaisePropertyChanged("Error");
+                            RaisePropertyChanged("ValueString");
+                            RaisePropertyChanged("StringValue");
+                            RaisePropertyChanged("Value");
+                        } else {
+                            object eval = e.Evaluate();
+                            // We got an actual value
+                            if (eval is Boolean b) {
+                                Value = b ? 1 : 0;
+                                Error = null;
+                            } else {
+                                try {
+                                    Value = Convert.ToDouble(eval);
+                                    Error = null;
+                                } catch (Exception) {
+                                    //string str = (string)eval;
+                                    //StringValue = str;
+                                    //Value = double.NegativeInfinity;
+                                    //if ("Integer".Equals(Type)) {
+                                    //    Error = "Syntax error";
+                                    //}
+                                }
+                            }
+                            RaisePropertyChanged("Error");
+                            RaisePropertyChanged("StringValue");
+                            RaisePropertyChanged("ValueString");
+                            RaisePropertyChanged("Value");
+                        }
+
+                    } catch (ArgumentException ex) {
+                        string error = ex.Message;
+                        // Shorten this common error from NCalc
+                        int pos = error.IndexOf(NOT_DEFINED);
+                        if (pos == 0) {
+                            string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
+                            if (!var.StartsWith("'_")) {
+                                Logger.Error("? Linda's error: " + ex.Message);
+                                error = "Reference";
+                            } else {
+                                error = "Undefined: " + var;
+                            }
+                        }
+                        Error = error;
+                    } catch (Exception ex) {
+                        if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
+                            Error = "Syntax Error";
+                            return;
+                        } else {
+                            Error = "Unknown Error; see log";
+                            Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
+                        }
+                    }
+                    Dirty = false;
+                } finally {
+                    Monitor.Exit(SYMBOL_LOCK);
+                }
+            } else {
+                Logger.Error("Evaluate could not get SYMBOL_LOCK: " + this);
+                //if (!LOCK_ERROR) {
+                //    Notification.ShowError("Evaluate could not get SYMBOL_LOCK; see log for info");
+                //}
+                //LOCK_ERROR = true;
+            }
         }
     }
 }

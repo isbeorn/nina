@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -35,7 +36,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [ExpressionObject]
-    public partial class WaitForTimeSpan : SequenceItem {
+    public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public WaitForTimeSpan() {
@@ -50,10 +51,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         [property:JsonProperty]
         private double time;
 
+        public IList<string> Issues = new List<string>();
+
+        IList<string> IValidatable.Issues => new List<string>();
 
         partial void TimeExpressionValidation(Expression exp) {
-            if (exp?.Value > 90) {
-                exp.Error = "This is wrong";
+            if (exp?.Value < 0) {
+                exp.Error = "Time Machine functionality requires NINA -1.0 or earlier.";
             }
         }
 
@@ -73,6 +77,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
+        }
+
+        public bool Validate() {
+            Logger.Info("Foo");
+            return true;
         }
     }
 }
