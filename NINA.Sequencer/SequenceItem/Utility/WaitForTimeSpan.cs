@@ -63,15 +63,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         partial void TimeExpressionValidation(Expression exp) {
             if (exp?.Value < 0) {
-                exp.Error = "Time Machine functionality requires NINA -1.0 or earlier.";
+                //exp.Error = "Time Machine functionality requires NINA -1.0 or earlier.";
             }
         }
 
         public void TimeExpressionSetter(Expression exp) {
-            Logger.Info("Foo");
+            if (exp?.Value < 0) {
+                exp.Error = "Time Machine functionality requires NINA -1.0 or earlier.";
+            }
         }
 
- 
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var a = TimeExpression.Value;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
@@ -86,7 +88,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public bool Validate() {
-            TimeExpressionValidation(TimeExpression);
             Expression.AddExprIssues(Issues, TimeExpression);
             RaisePropertyChanged("Issues");
             return Issues.Count > 0;

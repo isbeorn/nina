@@ -21,7 +21,26 @@ namespace NINA.Sequencer.Logic {
         }
 
         public bool HasError => string.IsNullOrEmpty(Error);
-        public string Error { get; set; }
+ 
+        private string _error;
+        public virtual string Error {
+            get => _error;
+            set {
+                if (value != _error) {
+                    _error = value;
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("IsExpression");
+                    RaisePropertyChanged("IsAnnotated");
+                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("InfoButtonColor");
+                    RaisePropertyChanged("InfoButtonChar");
+                    RaisePropertyChanged("InfoButtonSize");
+                    RaisePropertyChanged("InfoButtonMargin");
+                }
+            }
+        }
+
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
 
