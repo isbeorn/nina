@@ -51,9 +51,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         [property:JsonProperty]
         private double time;
 
-        public IList<string> Issues = new List<string>();
+        private IList<string> issues = new List<string>();
 
-        IList<string> IValidatable.Issues => new List<string>();
+        public IList<string> Issues {
+            get => issues;
+            set {
+                issues = value;
+                RaisePropertyChanged();
+            }
+        }
 
         partial void TimeExpressionValidation(Expression exp) {
             if (exp?.Value < 0) {
@@ -80,8 +86,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public bool Validate() {
-            Logger.Info("Foo");
-            return true;
+            TimeExpressionValidation(TimeExpression);
+            Expression.AddExprIssues(Issues, TimeExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count > 0;
         }
     }
 }

@@ -8,6 +8,8 @@ using Google.Protobuf.WellKnownTypes;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.Symbol;
 using System.Threading;
+using Newtonsoft.Json.Linq;
+using System.Windows;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -20,7 +22,6 @@ namespace NINA.Sequencer.Logic {
 
         public bool HasError => string.IsNullOrEmpty(Error);
         public string Error { get; set; }
-        public double Value { get; set; }
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
         public double Default { get; set; } = Double.NaN;
@@ -30,6 +31,34 @@ namespace NINA.Sequencer.Logic {
             get => IsExpression || Error != null;
             set { }
         }
+        private double _value = Double.NaN;
+        public virtual double Value {
+            get {
+                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
+                    return Default;
+                }
+                return _value;
+            }
+            set {
+                if (value != _value) {
+                    //if ("Integer".Equals(Type)) {
+                    //    if (StringValue != null) {
+                    //        Error = "Value must be an Integer";
+                    //    }
+                    //    value = Double.Floor(value);
+                    //}
+                    _value = value;
+                    //if (Setter != null) {
+                    //    Setter(this);
+                    //}
+                    //RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("IsExpression");
+                    //RaisePropertyChanged("DockableValue");
+                }
+            }
+        }
+
 
         public SolidColorBrush InfoButtonColor {
             get {
@@ -84,6 +113,38 @@ namespace NINA.Sequencer.Logic {
                 }
             }
             set { }
+        }
+
+        public void Validate(IList<string> issues) {
+            if (Error != null) {  // || Volatile) {
+                if (Definition != null && Definition.Length == 0 && Value == Default) {
+                    Error = null;
+                }
+                Evaluate(true);
+                ///foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                //    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                //        GlobalVolatile = true;
+                //    }
+                //}
+            } else if (Double.IsNaN(Value) && Definition.Length > 0) {
+                Error = "Not evaluated";
+            } else if (Definition.Length != 0 && Value == Default && Error == null) {
+                // This seems very wrong to me; need to figure it out
+                Evaluate(true);
+            }
+        }
+
+        public void Validate() {
+            Validate(null);
+        }
+
+        public static void AddExprIssues(IList<string> issues, params Expression[] exprs) {
+            foreach (Expression expr in exprs) {
+                expr.Validate();
+                if (expr != null && expr.Error != null && !Expression.JustWarnings(expr.Error)) {
+                    issues.Add(expr.Error);
+                }
+            }
         }
 
         public Symbol Symbol { get; set; } = null;
