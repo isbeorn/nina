@@ -1,10 +1,12 @@
-﻿using NINA.Sequencer;
+﻿using NINA.Sequencer.SequenceItem;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace NINA.Sequencer.Logic {
 
@@ -13,34 +15,24 @@ namespace NINA.Sequencer.Logic {
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty LabelProperty =
-            DependencyProperty.Register("Label", typeof(string), typeof(ExprControl), null);
-
-        public string Suffix { get; set; }
-        
-        public static readonly DependencyProperty SuffixProperty =
-            DependencyProperty.Register("Suffix", typeof(string), typeof(ExprControl), null);
-
-        public string Label { get; set; }
-
         public static readonly DependencyProperty ExpProperty =
-             DependencyProperty.Register("Exp", typeof(Expression), typeof(ExprControl), null);
+            DependencyProperty.Register("Exp", typeof(Expression), typeof(ExprControl), null);
 
         public Expression Exp { get; set; }
 
- 
+        public static readonly DependencyProperty LabelProperty =
+            DependencyProperty.Register("Label", typeof(String), typeof(ExprControl), null);
+
+        public String Label { get; set; }
+
+        public static readonly DependencyProperty DefaultProperty =
+             DependencyProperty.Register("Default", typeof(String), typeof(ExprControl), null);
+
+        public String Default { get; set; }
+
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(sender);
+            
         }
-
-        public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
-        //    TextBox predicateText = (TextBox)sender;
-        //    IfConstant ifConstant = (IfConstant)(predicateText.DataContext);
-        //    predicateText.ToolTip = ifConstant.ShowCurrentInfo();
-        //
-        //
-        }
-
 
     }
 }

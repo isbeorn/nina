@@ -1,20 +1,75 @@
 ﻿<UserControl x:Class="NINA.Sequencer.Logic.ExprControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:NINA.Sequencer.Logic">
-    <UserControl.Resources>
-        <local:ExprConverter x:Key="ec" />
-        <local:ValConverter x:Key="vc" />
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:NINA.Sequencer.Logic">
+        <UserControl.Resources>
+            <local:ExprConverter x:Key="ec" />
+            <local:ValConverter x:Key="vc" />
+            <local:CameraTemperatureConverter x:Key="tc" />
+        <Style TargetType="local:WhenTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:WhenTextBox}">
+                        <Grid>
+                            <TextBox
+                                x:Name="PART_TextBox"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                MaxWidth="{TemplateBinding MaxWidth}"
+                                MaxHeight="{TemplateBinding MaxHeight}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="{TemplateBinding Background}"
+                                Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:WhenTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                Margin="0,-2,0,0">
+                            </TextBox>
+                            <TextBlock
+                                x:Name="PART_HintText"
+                                Margin="0,-2,0,0"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="Transparent"
+                                Foreground="GreenYellow"
+                                IsHitTestVisible="False"
+                                Opacity="0.5"
+                                Text="{TemplateBinding HintText}"
+                                TextAlignment="{TemplateBinding TextAlignment}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=PART_TextBox}" Value="{x:Static s:String.Empty}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Text, ElementName=PART_TextBox}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
+    
     <StackPanel Orientation="Horizontal" 
                 VerticalAlignment="Center"
-                MinHeight="30"
+                Margin="0,-2,0,0"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}">
+        <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
         <TextBlock Margin="{Binding Exp.InfoButtonMargin}" 
                    Text="{Binding Exp.InfoButtonChar}" 
                    Foreground="{Binding Exp.InfoButtonColor}"
                    FontSize="{Binding Exp.InfoButtonSize}">
-            <TextBlock.ToolTip>
+            <!--<TextBlock.ToolTip>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                     <TextBlock MinHeight="20" Text="{Binding Exp.ExprErrors}" Margin="0,-2,0,0" VerticalAlignment="Center" Foreground="Orange" FontSize="14"  FontStyle="Italic"/>
                     <Grid Background="{StaticResource ButtonBackgroundBrush}">
@@ -37,50 +92,55 @@
                             <Style TargetType="ItemsControl" >
                                 <Setter Property="Padding" Value="0,0,0,0" />
                                 <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                                <Setter Property="TextBlock.Foreground" Value="White" />
                             </Style>
                         </Grid.Resources>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="210"/>
+                            <ColumnDefinition Width="210" />
                             <ColumnDefinition Width="140" />
                             <ColumnDefinition Width="140" />
                         </Grid.ColumnDefinitions>
-                        <!--<ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                        <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}"/>
                         <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
-                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />-->
+                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
                     </Grid>
                 </StackPanel>
-            </TextBlock.ToolTip>
-
+            </TextBlock.ToolTip>-->
         </TextBlock>
-
-        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center" Margin="5,0,5,0" Text="{Binding Label}"/>
-        <TextBox Foreground="{StaticResource ButtonForegroundBrush}"
-                 VerticalAlignment="Center" 
-                 MinWidth="20" 
-                 Margin="5,-3,0,-5" 
-                 Text="{Binding Exp.Definition}"
-                 ToolTip="Foo" 
-                 ToolTipOpening="ShowConstants" />
-        <TextBlock VerticalAlignment="Center" Margin="5,-4,01,-4">
-            <TextBlock.Visibility>
-                <Binding Path="Exp.IsAnnotated" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
-            </TextBlock.Visibility>
+        
+        <local:WhenTextBox
+                MinWidth="32"
+                Margin="5,-3,0,-5"
+                VerticalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Foreground="{StaticResource PrimaryBrush}"
+                TextAlignment="Center"
+                ToolTip="Foo" 
+                ToolTipOpening="ShowConstants" >
+            <local:WhenTextBox.HintText>
+                <Binding Mode="OneWay" Path="Exp.Default" Converter="{StaticResource tc}" UpdateSourceTrigger="PropertyChanged"/>
+            </local:WhenTextBox.HintText>
+            <local:WhenTextBox.Text>
+                <Binding Mode="TwoWay" Path="Exp.Definition" />
+            </local:WhenTextBox.Text>
+        </local:WhenTextBox>
+ 
+        <TextBlock VerticalAlignment="Center"
+                   Margin="0,-2,0,0"
+                   Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
-                    <Binding Path="Exp" />
-                    <Binding Path="Exp.ValueString" />
+                    <Binding Path="Exp"  />
+                    <Binding Path="Exp.ValueString"  />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}">
-                    <Binding Path="Exp"/>
-                    <Binding Path="Exp.ValueString" />
+                    <Binding Path="Exp"  />
+                    <Binding Path="Exp.ValueString"  />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
-        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center" Margin="5,0,5,0" Text="{Binding Suffix}"/>
     </StackPanel>
 </UserControl>
-     
-     
-    
