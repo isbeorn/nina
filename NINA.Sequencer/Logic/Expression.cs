@@ -515,20 +515,8 @@ namespace NINA.Sequencer.Logic {
                             RaisePropertyChanged("Value");
                         }
 
-                    } catch (ArgumentException ex) {
-                        string error = ex.Message;
-                        // Shorten this common error from NCalc
-                        int pos = error.IndexOf(NOT_DEFINED);
-                        if (pos == 0) {
-                            string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
-                            if (!var.StartsWith("'_")) {
-                                Logger.Error("? Linda's error: " + ex.Message);
-                                error = "Reference";
-                            } else {
-                                error = "Undefined: " + var;
-                            }
-                        }
-                        Error = error;
+                    } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
+                        Error = "Undefined: " + ex.ParameterName;
                     } catch (Exception ex) {
                         if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
                             Error = "Syntax Error";
