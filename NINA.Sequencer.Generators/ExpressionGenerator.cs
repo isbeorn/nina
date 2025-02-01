@@ -15,11 +15,11 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-#if DEBUG
-            if (!Debugger.IsAttached) {
-                Debugger.Launch();
-            }
-#endif 
+//#if DEBUG
+//            if (!Debugger.IsAttached) {
+//                Debugger.Launch();
+//            }
+//#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),
@@ -155,7 +155,14 @@ namespace NINA.Sequencer.Generators {
                 if (value == null) return;
                 {propNameExpression}.Context = this;
                 {propNameExpression}.Validator = {propNameExpression}Setter;
-                RaisePropertyChanged();
+                RaisePropertyChanged();";
+
+                foreach (var arg in prop.Args) {
+                    propertiesSource += $@"
+                {propNameExpression}.{arg.Key} = {arg.Value.Value};";
+                }
+
+                propertiesSource += $@"
             }}
         }}
                 ";
@@ -208,10 +215,10 @@ namespace {namespaceName}
         public IsExpressionAttribute() {
         }
 
-        public bool reviewed = false;
-        public bool Reviewed {
-            get { return reviewed; }
-            set { reviewed = value; }
+        public double _def = 0;
+        public double Def {
+            get { return _def; }
+            set { _def = value; }
         }
 
     }
