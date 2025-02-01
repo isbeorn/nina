@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Sequencer.Generators {
     [Generator]
@@ -14,11 +15,11 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-//#if DEBUG
-//            if (!Debugger.IsAttached) {
-//                Debugger.Launch();
-//            }
-//#endif 
+#if DEBUG
+            if (!Debugger.IsAttached) {
+                Debugger.Launch();
+            }
+#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),
@@ -103,13 +104,15 @@ namespace NINA.Sequencer.Generators {
 
             if (myPropAttr == null) return null;
 
+            IEnumerable<KeyValuePair<string, TypedConstant>> args = myPropAttr.NamedArguments;
+
             // If found, we can also extract the ExtraInfo argument, if desired
             // (If you want to handle multiple arguments or advanced scenarios, adapt accordingly.)
             var extraInfo = (myPropAttr.ConstructorArguments.Length > 0)
                 ? myPropAttr.ConstructorArguments[0].Value?.ToString() ?? ""
                 : "";
 
-            return new PropertyInfo(symbol.ContainingType, symbol, true);
+            return new PropertyInfo(symbol.ContainingType, symbol, true, args);
         }
 
         private static string GeneratePartialClass(
@@ -185,23 +188,32 @@ namespace {namespaceName}
         }
 
         private sealed record PropertyInfo {
-            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol, bool isDefinedByField) {
+            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol, bool isDefinedByField, IEnumerable<KeyValuePair<string, TypedConstant>> args) {
                 ContainingType = containingType;
                 PropertySymbol = propertySymbol;
                 IsDefinedByField = isDefinedByField;
+                Args = args;
             }
 
             public INamedTypeSymbol ContainingType { get; }
             public ISymbol PropertySymbol { get; }
             public bool IsDefinedByField { get; }
+            public IEnumerable<KeyValuePair<string, TypedConstant>> Args;
         }
     }
 
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public sealed class IsExpressionAttribute : Attribute {
+    public class IsExpressionAttribute : Attribute {
         public IsExpressionAttribute() {
         }
+
+        public bool reviewed = false;
+        public bool Reviewed {
+            get { return reviewed; }
+            set { reviewed = value; }
+        }
+
     }
 
     [AttributeUsage(AttributeTargets.Class)]
