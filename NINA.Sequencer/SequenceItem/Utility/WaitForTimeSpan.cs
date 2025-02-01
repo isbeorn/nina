@@ -82,6 +82,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public bool Validate() {
+            Issues.Clear();
             Expression.AddExprIssues(Issues, TimeExpression);
             RaisePropertyChanged("Issues");
             return Issues.Count > 0;

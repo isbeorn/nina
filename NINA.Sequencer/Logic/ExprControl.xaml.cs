@@ -29,6 +29,11 @@ namespace NINA.Sequencer.Logic {
              DependencyProperty.Register("Default", typeof(String), typeof(ExprControl), null);
 
         public String Default { get; set; }
+        
+        public static readonly DependencyProperty UnitProperty =
+             DependencyProperty.Register("Unit", typeof(String), typeof(ExprControl), null);
+
+        public String Unit { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
             

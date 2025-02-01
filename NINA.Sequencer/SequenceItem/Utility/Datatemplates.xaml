@@ -108,7 +108,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="{ns:Loc LblDelay}" Exp="{Binding TimeExpression, Mode=TwoWay}" />
+                    <logic:ExprControl Label="{ns:Loc LblDelay}" Exp="{Binding TimeExpression}" Unit="s"/>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
