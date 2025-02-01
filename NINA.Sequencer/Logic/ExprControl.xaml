@@ -63,6 +63,7 @@
     <StackPanel Orientation="Horizontal" 
                 VerticalAlignment="Center"
                 Margin="0,-2,0,0"
+                Height="30"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}">
         <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
         <TextBlock Margin="{Binding Exp.InfoButtonMargin}" 
