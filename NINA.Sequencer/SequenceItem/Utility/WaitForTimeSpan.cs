@@ -47,7 +47,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [ObservableProperty]
-        [IsExpression (Def = 50)]
+        [IsExpression (Default = 60)]
         [property:JsonProperty]
         private double time;
 

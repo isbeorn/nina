@@ -216,7 +216,7 @@ namespace {namespaceName}
         }
 
         public double _def = 0;
-        public double Def {
+        public double Default {
             get { return _def; }
             set { _def = value; }
         }
