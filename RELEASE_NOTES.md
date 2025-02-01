@@ -35,6 +35,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Altitude if available
     - Info if following is off, following via N.I.N.A. or following via driver to differentiate the different dome following mechanisms
 - Options > Astrometry can now show a world map with a pin of your entered latitude and longitude
+- "Center And Rotate" as well as "Solve And Rotate" will now give up after 10 unsuccessful rotation attempts
 
 ## Commandline Options
 The following command line options have been added

@@ -7154,4 +7154,10 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
     <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
   </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+  </data>
 </root>
