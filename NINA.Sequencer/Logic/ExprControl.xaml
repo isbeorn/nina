@@ -30,7 +30,7 @@
                             </TextBox>
                             <TextBlock
                                 x:Name="PART_HintText"
-                                Margin="0,-2,0,0"
+                                Margin="0,-4,0,0"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Background="Transparent"
@@ -110,7 +110,7 @@
         
         <local:WhenTextBox
                 MinWidth="32"
-                Margin="5,-3,0,-5"
+                Margin="5,1,0,-5"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -127,7 +127,7 @@
         </local:WhenTextBox>
  
         <TextBlock VerticalAlignment="Center"
-                   Margin="0,-2,0,0"
+                   Margin="0,2,0,0"
                    Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">

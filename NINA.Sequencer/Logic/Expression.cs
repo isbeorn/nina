@@ -104,7 +104,7 @@ namespace NINA.Sequencer.Logic {
         }
         public string InfoButtonMargin {
             get {
-                if (Error == null) return "5,-2,0,0";
+                if (Error == null) return "5,0,0,0";
                 return "5,2,0,0";
             }
             set { }
