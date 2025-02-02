@@ -81,6 +81,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
         }
 
+        [HasIssues]
         public bool Validate() {
             Issues.Clear();
             Expression.AddExprIssues(Issues, TimeExpression);
