@@ -71,17 +71,21 @@ namespace NINA.Sequencer.Logic {
                     //    value = Double.Floor(value);
                     //}
                     _value = value;
-                    if (Validator != null) {
+                    if (Range != null) {
+                        if (value < Range[0] || value > Range[1]) {
+                            Error = "Value must be between " + Range[0].ToString() + " and " + Range[1].ToString();
+                        }
+                    } else if (Validator != null) {
                         Validator(this);
                     }
                     //RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
-                    //RaisePropertyChanged("DockableValue");
+                    ////RaisePropertyChanged("DockableValue");
                 }
             }
         }
-        
+
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);

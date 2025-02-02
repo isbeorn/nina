@@ -48,7 +48,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [ObservableProperty]
         [IsExpression (Default = 60, Range = [0, 360])]
-        [property:JsonProperty]
         private double time;
 
         private IList<string> issues = new List<string>();
