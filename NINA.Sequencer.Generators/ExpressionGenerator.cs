@@ -161,10 +161,10 @@ namespace NINA.Sequencer.Generators {
 
                     if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
-                        int min = (int)values[0].Value;
-                        int max = (int)values[1].Value;
+                        double min = (double)values[0].Value;
+                        double max = (double)values[1].Value;
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = new int[] {{{min}, {max}}};";
+                {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}}};";
                     } else {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
@@ -230,8 +230,8 @@ namespace {namespaceName}
             set { _def = value; }
         }
 
-        public int[] _range = new int[2];
-        public int[] Range {
+        public double[] _range = new double[2];
+        public double[] Range {
             get { return _range; }
             set { _range = value; }
         }
