@@ -47,11 +47,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [ObservableProperty]
-        [IsExpression (Default = 60)]
+        [IsExpression (Default = 60, Range = [0, 360])]
         [property:JsonProperty]
         private double time;
 
         private IList<string> issues = new List<string>();
+
 
         public IList<string> Issues {
             get => issues;
@@ -81,7 +82,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
         }
 
-        [HasIssues]
         public bool Validate() {
             Issues.Clear();
             Expression.AddExprIssues(Issues, TimeExpression);

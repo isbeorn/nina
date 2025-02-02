@@ -46,7 +46,8 @@ namespace NINA.Sequencer.Logic {
 
         public Action<Expression> Validator;
 
-        public double? Default { get; set; } = null;
+        public double? Default { get; set; }
+        public int[]? Range { get; set; }
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
         public bool IsAnnotated {

@@ -16,8 +16,8 @@ namespace NINA.Sequencer.Generators {
 
             //Uncomment to attach a debugger for source generation
 //#if DEBUG
-//            if (!Debugger.IsAttached) {
-//                Debugger.Launch();
+//            if (!Debugger.IsAttached) {//
+//            Debugger.Launch();
 //            }
 //#endif 
 
@@ -157,9 +157,18 @@ namespace NINA.Sequencer.Generators {
                 {propNameExpression}.Validator = {propNameExpression}Setter;
                 RaisePropertyChanged();";
 
-                foreach (var arg in prop.Args) {
-                    propertiesSource += $@"
-                {propNameExpression}.{arg.Key} = {arg.Value.Value};";
+                foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
+
+                    if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
+                        var values = kvp.Value.Values;
+                        int min = (int)values[0].Value;
+                        int max = (int)values[1].Value;
+                        propertiesSource += $@"
+                {propNameExpression}.{kvp.Key} = new int[] {{{min}, {max}}};";
+                    } else {
+                        propertiesSource += $@"
+                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
+                    }
                 }
 
                 propertiesSource += $@"
@@ -219,6 +228,12 @@ namespace {namespaceName}
         public double Default {
             get { return _def; }
             set { _def = value; }
+        }
+
+        public int[] _range = new int[2];
+        public int[] Range {
+            get { return _range; }
+            set { _range = value; }
         }
 
     }
