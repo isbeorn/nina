@@ -84,6 +84,9 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        // 0x:- (greater than 0) ; 0:360 ; 0:360x ; -90:90 ; 0:59
+        // split by -; check & remove x
+
         private void CheckRange(double value, double[] range) {
             int r = Convert.ToInt32(Range[2]);
             double min = Range[0] + (((r & 1) == 1) ? 1e-8 : 0);

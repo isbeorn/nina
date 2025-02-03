@@ -15,6 +15,8 @@ using System.Reflection;
 using NINA.Sequencer.Logic;
 using System.Drawing;
 using System.Xml.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Constant")]
@@ -23,8 +25,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [ExpressionObject]
 
-    public class DefineConstant : Symbol, IValidatable {
+    public partial class DefineConstant : Symbol, IValidatable {
 
         [ImportingConstructor]
         public DefineConstant() : base() {
@@ -39,13 +42,20 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public override object Clone() {
-            DefineConstant clone = new DefineConstant(this);
+        //public override object Clone() {
+        //    DefineConstant clone = new DefineConstant(this);
 
-            clone.Identifier = Identifier;
-            clone.Definition = Definition;
-            clone.Expr = Expr;
-            return clone;
+        //    clone.Identifier = Identifier;
+        //    clone.Definition = Definition;
+        //    clone.Expr = Expr;
+        //    return clone;
+        //}
+
+        [ObservableProperty]
+        [IsExpression]
+        private double def;
+
+        public void DefExpressionSetter(Expression exp) {
         }
 
         public override string ToString() {
@@ -56,6 +66,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Expr: null";
             }
         }
+
+
+
+
 
         public override bool Validate() {
             if (!IsAttachedToRoot()) return true;
