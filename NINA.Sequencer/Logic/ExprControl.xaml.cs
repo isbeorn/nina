@@ -37,7 +37,7 @@ namespace NINA.Sequencer.Logic {
         public String Unit { get; set; }
 
         public void ShowSymbols(object sender, ToolTipEventArgs e) {
-            Logger.Info("ShowSymbols shim");
+            Symbol.ShowSymbols(sender);
         }
 
     }
