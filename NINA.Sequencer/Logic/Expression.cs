@@ -72,7 +72,7 @@ namespace NINA.Sequencer.Logic {
                     //}
                     _value = value;
                     if (Range != null) {
-                        if (value < Range[0] || value > Range[1]) {
+                        if (value <= Range[0] || value >= Range[1]) {
                             Error = "Value must be between " + Range[0].ToString() + " and " + Range[1].ToString();
                         }
                     } else if (Validator != null) {

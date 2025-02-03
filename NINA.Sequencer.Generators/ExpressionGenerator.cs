@@ -154,8 +154,7 @@ namespace NINA.Sequencer.Generators {
                 {fieldNameExpression} = value;
                 if (value == null) return;
                 {propNameExpression}.Context = this;
-                {propNameExpression}.Validator = {propNameExpression}Setter;
-                RaisePropertyChanged();";
+                {propNameExpression}.Validator = {propNameExpression}Setter;";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
@@ -172,6 +171,7 @@ namespace NINA.Sequencer.Generators {
                 }
 
                 propertiesSource += $@"
+                RaisePropertyChanged();
             }}
         }}
                 ";
