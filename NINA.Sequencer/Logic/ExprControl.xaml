@@ -144,7 +144,7 @@
             </TextBlock.Foreground>
         </TextBlock>
  
-        <TextBlock Margin="0,8,0,0" Text="{Binding Unit}" />
+        <TextBlock Margin="2,8,0,0" Text="{Binding Unit}" />
 
 
     </StackPanel>

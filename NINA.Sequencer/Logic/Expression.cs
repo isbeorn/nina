@@ -15,6 +15,10 @@ namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
 
+        /*
+         * HasSetter attribute?
+         */
+
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
@@ -44,7 +48,7 @@ namespace NINA.Sequencer.Logic {
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
 
-        public Action<Expression> Validator;
+        public Action<Expression>? Validator;
 
         public double? Default { get; set; }
         public double[]? Range { get; set; }
@@ -303,10 +307,10 @@ namespace NINA.Sequencer.Logic {
 
                     // Find the parameters used
                     References.Clear();
-                    // *****
-                    //foreach (var p in e.GetParametersNames()) {
-                    //    References.Add(p);
-                    //}
+
+                    foreach (var p in e.GetParameterNames()) {
+                        References.Add(p);
+                    }
 
                     // References now holds all of the CV's used in the expression
                     Parameters.Clear();

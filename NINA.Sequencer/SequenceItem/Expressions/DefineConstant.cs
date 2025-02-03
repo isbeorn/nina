@@ -22,7 +22,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Constant")]
     [ExportMetadata("Description", "Creates a Constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "ConstantSVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
+    [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [ExpressionObject]
@@ -55,21 +55,18 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         [IsExpression]
         private double def;
 
-        public void DefExpressionSetter(Expression exp) {
+        partial void DefExpressionSetter(Expression expr) {
+            Definition = expr.Definition;
+            Expr.Evaluate();
         }
 
         public override string ToString() {
             if (Expr != null) {
-                return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Dirty: {Expr.Dirty}";
-
+                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {DefExpression}";
             } else {
-                return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Expr: null";
+                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
             }
         }
-
-
-
-
 
         public override bool Validate() {
             if (!IsAttachedToRoot()) return true;
@@ -84,14 +81,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            //Expr.AddExprIssues(i, Expr);
+            Expression.AddExprIssues(Issues, DefExpression);
 
-            //foreach (var kvp in Expr.Resolved) {
-            //    if (kvp.Value == null || kvp.Value is SetVariable) {
-            //        i.Add("Constant definitions may not include Variables");
-            //        break;
-            //    }
-            //}
+            foreach (var kvp in DefExpression.Resolved) {
+                //if (kvp.Value == null || kvp.Value is SetVariable) {
+                //    i.Add("Constant definitions may not include Variables");
+                //    break;
+                //}
+            }
 
             Issues = i;
             RaisePropertyChanged("Issues");
@@ -147,25 +144,5 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 allProfiles = value;
             }
         }
-
-        // Legacy
-
-        [JsonProperty]
-        public string Constant {
-            get => null;
-            set {
-                if (value != null) Identifier = value;
-            }
-        }
-
-        [JsonProperty]
-        public string CValueExpr {
-            get => null;
-            set {
-                if (value != null) Definition = value;
-            }
-        }
-
-
     }
 }

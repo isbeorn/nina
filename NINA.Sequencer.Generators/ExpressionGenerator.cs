@@ -176,6 +176,9 @@ namespace NINA.Sequencer.Generators {
                 RaisePropertyChanged();
             }}
         }}
+        
+        partial void {propNameExpression}Setter (Expression expr);
+
                 ";
 
             }

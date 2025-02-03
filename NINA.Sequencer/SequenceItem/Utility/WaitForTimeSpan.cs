@@ -63,10 +63,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        public void TimeExpressionSetter(Expression exp) {
-            if (exp?.Value < 0) {
-                exp.Error = "Time Machine functionality requires NINA -1.0 or earlier.";
-            }
+        partial void TimeExpressionSetter(Expression expr) {
         }
 
 
