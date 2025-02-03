@@ -160,7 +160,6 @@ namespace NINA.Sequencer.Generators {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
                         double max = (double)values[1].Value;
-                        if (max == 0) max = 1e8;
                         double r = 0;
                         if (values.Length > 2) {
                             r = (double)values[2].Value;

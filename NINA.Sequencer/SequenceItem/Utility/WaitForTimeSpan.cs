@@ -49,7 +49,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [ObservableProperty]
-        [IsExpression (Default = 60, Range = [1, 99, 3])]
+        [IsExpression (Default = 60, Range = [1, 0])]
         private double time;
 
         private IList<string> issues = new List<string>();

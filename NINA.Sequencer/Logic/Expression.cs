@@ -72,20 +72,7 @@ namespace NINA.Sequencer.Logic {
                     //}
                     _value = value;
                     if (Range != null) {
-                        double min = Range[0];
-                        double max = Range[1];
-                        int r = Convert.ToInt32(Range[2]);
-                        if (value <= min || (max != 0 && value >= max)) {
-                            if (r == 0) {
-                                if (max == 0) {
-                                    Error = "Value must be be greater than " + min;
-                                } else {
-                                    Error = "Value must be between " + min + " and " + max;
-                                }
-                            } else {
-                                Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + min + " and " + (((r & 2) == 2) ? "less than " : "") + max;
-                            }
-                        }
+                        CheckRange((double)value, Range);
                     } else if (Validator != null) {
                         Validator(this);
                     }
@@ -93,6 +80,23 @@ namespace NINA.Sequencer.Logic {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     ////RaisePropertyChanged("DockableValue");
+                }
+            }
+        }
+
+        private void CheckRange(double value, double[] range) {
+            int r = Convert.ToInt32(Range[2]);
+            double min = Range[0] + (((r & 1) == 1) ? 1e-8 : 0);
+            double max = Range[1] - (((r & 2) == 2) ? 1e-8 : 0);
+            if (value <= min || (max != 0 && value >= max)) {
+                if (r == 0) {
+                    if (max == 0) {
+                        Error = "Value must be " + min + " or greater";
+                    } else {
+                        Error = "Value must be between " + min + " and " + max;
+                    }
+                } else {
+                    Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and " + (((r & 2) == 2) ? "less than " : "") + Range[1];
                 }
             }
         }
