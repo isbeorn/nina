@@ -57,7 +57,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         partial void DefExpressionSetter(Expression expr) {
             Definition = expr.Definition;
-            Expr.Evaluate();
         }
 
         public override string ToString() {

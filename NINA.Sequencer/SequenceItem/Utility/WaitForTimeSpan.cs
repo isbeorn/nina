@@ -42,7 +42,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [ImportingConstructor]
         public WaitForTimeSpan() {
-            Time = 1;
         }
 
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
@@ -73,18 +72,18 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(Time);
+            return TimeSpan.FromSeconds((double)TimeExpression.Value);
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
+            return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {TimeExpression.Value}s";
         }
 
         public bool Validate() {
             Issues.Clear();
             Expression.AddExprIssues(Issues, TimeExpression);
             RaisePropertyChanged("Issues");
-            return Issues.Count > 0;
+            return Issues.Count == 0;
         }
     }
 }

@@ -137,10 +137,12 @@ namespace NINA.Sequencer.Generators {
                 string fieldNameExpression = fieldName + "Expression";
                 string propNameExpression = propName + "Expression";
 
+                //cloneSource += $@"
+                //{propNameExpression} = new Expression ({propNameExpression}.Definition, this),
+                //{propName} = {propName},
+                //";
                 cloneSource += $@"
-                {propNameExpression} = {propNameExpression},
-                {propName} = {propName},
-                ";
+                {propNameExpression} = new Expression ({propNameExpression}.Definition, this)";
 
                 propertiesSource += $@"
 
@@ -194,8 +196,7 @@ namespace {namespaceName}
     partial class {className}
     {{
         public override object Clone() {{
-            var clone = new {className}(this) {{
-                {cloneSource}
+            var clone = new {className}(this) {{{cloneSource}
             }};
             AfterClone(clone);
             return clone;

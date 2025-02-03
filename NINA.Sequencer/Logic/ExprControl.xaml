@@ -117,8 +117,8 @@
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
                 TextAlignment="Center"
-                ToolTip="Foo" 
-                ToolTipOpening="ShowConstants" >
+                ToolTip="" 
+                ToolTipOpening="ShowSymbols" >
             <local:WhenTextBox.HintText>
                 <Binding Mode="OneWay" Path="Exp.Default" Converter="{StaticResource tc}" UpdateSourceTrigger="PropertyChanged"/>
             </local:WhenTextBox.HintText>

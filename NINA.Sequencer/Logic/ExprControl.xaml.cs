@@ -1,4 +1,5 @@
-﻿using NINA.Sequencer.SequenceItem;
+﻿using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -35,8 +36,8 @@ namespace NINA.Sequencer.Logic {
 
         public String Unit { get; set; }
 
-        public void ShowConstants(object sender, ToolTipEventArgs e) {
-            
+        public void ShowSymbols(object sender, ToolTipEventArgs e) {
+            Logger.Info("ShowSymbols shim");
         }
 
     }
