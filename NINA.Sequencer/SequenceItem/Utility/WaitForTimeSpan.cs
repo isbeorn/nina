@@ -45,18 +45,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             Time = 1;
         }
 
-        public static class RANGE {
-            public const int GreaterThanZero = int.MaxValue - 1;
-            public const int LessThan360 = int.MaxValue - 2;
-        }
-
-        private const double ep = 1e-12;
-        
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
         [ObservableProperty]
-        [IsExpression (Default = 60, Range = [Constants.SingleEpsilon, 360.0-Constants.SingleEpsilon])]
+        [IsExpression (Default = 60, Range = [1, 99, 3])]
         private double time;
 
         private IList<string> issues = new List<string>();

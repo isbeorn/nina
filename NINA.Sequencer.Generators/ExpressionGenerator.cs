@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace NINA.Sequencer.Generators {
     [Generator]
@@ -17,7 +15,7 @@ namespace NINA.Sequencer.Generators {
             //Uncomment to attach a debugger for source generation
 //#if DEBUG
 //            if (!Debugger.IsAttached) {//
-//            Debugger.Launch();
+//                Debugger.Launch();
 //            }
 //#endif 
 
@@ -162,8 +160,13 @@ namespace NINA.Sequencer.Generators {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
                         double max = (double)values[1].Value;
+                        if (max == 0) max = 1e8;
+                        double r = 0;
+                        if (values.Length > 2) {
+                            r = (double)values[2].Value;
+                        }
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}}};";
+                {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}, {r}}};";
                     } else {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
@@ -230,7 +233,7 @@ namespace {namespaceName}
             set { _def = value; }
         }
 
-        public double[] _range = new double[2];
+        public double[] _range = new double[3];
         public double[] Range {
             get { return _range; }
             set { _range = value; }

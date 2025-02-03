@@ -72,8 +72,19 @@ namespace NINA.Sequencer.Logic {
                     //}
                     _value = value;
                     if (Range != null) {
-                        if (value <= Range[0] || value >= Range[1]) {
-                            Error = "Value must be between " + Range[0].ToString() + " and " + Range[1].ToString();
+                        double min = Range[0];
+                        double max = Range[1];
+                        int r = Convert.ToInt32(Range[2]);
+                        if (value <= min || (max != 0 && value >= max)) {
+                            if (r == 0) {
+                                if (max == 0) {
+                                    Error = "Value must be be greater than " + min;
+                                } else {
+                                    Error = "Value must be between " + min + " and " + max;
+                                }
+                            } else {
+                                Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + min + " and " + (((r & 2) == 2) ? "less than " : "") + max;
+                            }
                         }
                     } else if (Validator != null) {
                         Validator(this);
