@@ -56,7 +56,7 @@ namespace NINA.Sequencer.Logic {
 
         public Action<Expression>? Validator;
 
-        public double? Default { get; set; }
+        public double Default { get; set; } = double.NaN;
         public double[]? Range { get; set; }
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
@@ -64,10 +64,10 @@ namespace NINA.Sequencer.Logic {
             get => IsExpression || Error != null;
             set { }
         }
-        private double? _value = null;
-        public virtual double? Value {
+        private double _value = Double.NaN;
+        public virtual double Value {
             get {
-                if (_value == null && Default != null) {
+                if (_value == double.NaN && Default != double.NaN) {
                     return Default;
                 }
                 return _value;
@@ -180,7 +180,7 @@ namespace NINA.Sequencer.Logic {
                 //        GlobalVolatile = true;
                 //    }
                 //}
-            } else if (Value == null && Definition?.Length > 0) {
+            } else if (Value == double.NaN && Definition?.Length > 0) {
                 Error = "Not evaluated";
             } else if (Definition.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out
@@ -245,7 +245,7 @@ namespace NINA.Sequencer.Logic {
                 value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
-                    if (Default != null) {
+                    if (Default != double.NaN) {
                         Value = Default;
                     } else {
                         Value = Double.NaN;
@@ -352,7 +352,7 @@ namespace NINA.Sequencer.Logic {
                 //if (sym.Expr.Value == double.NegativeInfinity) {
                 //    AddParameter(reference, sym.Expr.StringValue);
                 //} else
-                if (sym.Expr.Value != null) {
+                if (sym.Expr.Value != double.NaN) {
                     AddParameter(reference, sym.Expr.Value);
                 }
             }
