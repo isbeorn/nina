@@ -63,7 +63,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || Definition.Length == 0) {
+            if (Identifier.Length == 0 || Expr.Definition.Length == 0) {
                 i.Add("A name and a value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
