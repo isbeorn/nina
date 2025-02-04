@@ -25,7 +25,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
 
     public partial class DefineConstant : Symbol, IValidatable {
 
@@ -42,23 +41,18 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public void AfterClone(object clone) {
-            ((DefineConstant)clone).Identifier = Identifier;
-        }
-        
-        //    clone.Definition = Definition;
+        public override object Clone() {
+            DefineConstant clone = new DefineConstant(this);
 
-        [ObservableProperty]
-        [IsExpression]
-        private double def;
-
-        partial void DefExpressionSetter(Expression expr) {
-            Definition = expr.Definition;
+            clone.Identifier = Identifier;
+            clone.Definition = Definition;
+            clone.Expr = Expr;
+            return clone;
         }
 
         public override string ToString() {
             if (Expr != null) {
-                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {DefExpression}";
+                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {Expr}";
             } else {
                 return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
             }
@@ -77,13 +71,13 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            Expression.AddExprIssues(Issues, DefExpression);
+            Expression.AddExprIssues(Issues, Expr);
 
-            foreach (var kvp in DefExpression.Resolved) {
-                //if (kvp.Value == null || kvp.Value is SetVariable) {
-                //    i.Add("Constant definitions may not include Variables");
-                //    break;
-                //}
+            foreach (var kvp in Expr.Resolved) {
+                if (kvp.Value is DefineVariable) {
+                    i.Add("Constant definitions may not include Variables");
+                    break;
+                }
             }
 
             Issues = i;

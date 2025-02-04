@@ -29,7 +29,7 @@
                       Text="{Binding Identifier}"
                       VerticalAlignment="Center"
                       TextAlignment="Center" />
-                    <logic:ExprControl Label="Value: " Exp="{Binding DefExpression}" />
+                    <logic:ExprControl Label="Value: " Exp="{Binding Expr}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

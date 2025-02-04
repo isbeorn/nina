@@ -166,7 +166,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 Logger.Info("Executing Vx");
                 DumpSymbols();
             }
-            //Definition = OriginalDefinition;
+            Definition = DefExpression.Definition;
             Executed = true;
             Expr.Evaluate();
 
