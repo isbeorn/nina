@@ -38,6 +38,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [ExpressionObject]
+
     public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 
         [ImportingConstructor]

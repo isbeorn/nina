@@ -40,6 +40,9 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.Interfaces;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -49,7 +52,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Camera")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeExposure : SequenceItem, IExposureItem, IValidatable {
+    [ExpressionObject]
+
+    public partial class TakeExposure : SequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
@@ -74,22 +79,22 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            var clone = new TakeExposure(this) {
-                ExposureTime = ExposureTime,
-                ExposureCount = 0,
-                Binning = Binning,
-                Gain = Gain,
-                Offset = Offset,
-                ImageType = ImageType,
-            };
+        //public override object Clone() {
+        //    var clone = new TakeExposure(this) {
+        //        ExposureTime = ExposureTime,
+        //        ExposureCount = 0,
+        //        Binning = Binning,
+        //        Gain = Gain,
+        //        Offset = Offset,
+        //        ImageType = ImageType,
+        //    };
 
-            if (clone.Binning == null) {
-                clone.Binning = new BinningMode(1, 1);
-            }
+        //    if (clone.Binning == null) {
+        //        clone.Binning = new BinningMode(1, 1);
+        //    }
 
-            return clone;
-        }
+        //    return clone;
+        //}
 
         private IList<string> issues = new List<string>();
 
@@ -111,6 +116,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 RaisePropertyChanged();
             }
         }
+
+        [ObservableProperty]
+        [IsExpression(Default = 60, Range = [0, 0])]
+        private double expTime;
+
+        partial void ExpTimeExpressionSetter(Expression expr) {
+        }
+
 
         private int gain;
 
