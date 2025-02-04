@@ -66,7 +66,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         partial void TimeExpressionSetter(Expression expr) {
         }
 
-
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             var a = TimeExpression.Value;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            

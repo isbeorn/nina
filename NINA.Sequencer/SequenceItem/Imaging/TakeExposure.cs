@@ -79,22 +79,18 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CopyMetaData(cloneMe);
         }
 
-        //public override object Clone() {
-        //    var clone = new TakeExposure(this) {
-        //        ExposureTime = ExposureTime,
-        //        ExposureCount = 0,
-        //        Binning = Binning,
-        //        Gain = Gain,
-        //        Offset = Offset,
-        //        ImageType = ImageType,
-        //    };
+        partial void AfterClone(TakeExposure clone) {
+            ExposureTime = ExposureTime;
+            ExposureCount = 0;
+            Binning = Binning;
+            Gain = Gain;
+            Offset = Offset;
+            ImageType = ImageType;
 
-        //    if (clone.Binning == null) {
-        //        clone.Binning = new BinningMode(1, 1);
-        //    }
-
-        //    return clone;
-        //}
+            if (clone.Binning == null) {
+                clone.Binning = new BinningMode(1, 1);
+            }
+        }
 
         private IList<string> issues = new List<string>();
 
