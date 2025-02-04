@@ -102,19 +102,19 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        private double exposureTime;
+        //private double exposureTime;
 
-        [JsonProperty]
-        public double ExposureTime {
-            get => exposureTime;
-            set {
-                exposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
+        //[JsonProperty]
+        //public double ExposureTime {
+        //    get => exposureTime;
+        //    set {
+        //        exposureTime = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         [ObservableProperty]
-        [IsExpression(Default = 60, Range = [0, 0])]
+        [IsExpression(Default = 60, Range = [0, 0], UpgradeFrom="ExposureTime")]
         private double expTime;
 
         partial void ExpTimeExpressionSetter(Expression expr) {

@@ -136,6 +136,7 @@ namespace NINA.Sequencer.Generators {
                 string fieldName = propName.Substring(0, 1).ToLower() + propName.Substring(1);
                 string fieldNameExpression = fieldName + "Expression";
                 string propNameExpression = propName + "Expression";
+                string upgradeFrom = "";
 
                 //cloneSource += $@"
                 //{propNameExpression} = new Expression ({propNameExpression}.Definition, this),
@@ -168,9 +169,11 @@ namespace NINA.Sequencer.Generators {
                         }
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}, {r}}};";
-                    } else {
+                    } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
+                    } else if (kvp.Key == "UpgradeFrom") {
+                        upgradeFrom = (string)kvp.Value.Value;
                     }
                 }
 
@@ -182,6 +185,16 @@ namespace NINA.Sequencer.Generators {
         partial void {propNameExpression}Setter (Expression expr);
 
                 ";
+                if (upgradeFrom.Length > 0) {
+                    propertiesSource += $@"
+        public double {upgradeFrom} {{
+            get => (double){propNameExpression}.Value;
+            set {{
+                {propNameExpression}.Definition = value.ToString();
+            }}
+        }}
+";
+                }
 
             }
 
@@ -240,6 +253,12 @@ namespace {namespaceName}
         public double[] Range {
             get { return _range; }
             set { _range = value; }
+        }
+
+        public string _upgradeFrom = "";
+        public string UpgradeFrom {
+            get { return _upgradeFrom; }
+            set { _upgradeFrom = value; }
         }
 
     }
