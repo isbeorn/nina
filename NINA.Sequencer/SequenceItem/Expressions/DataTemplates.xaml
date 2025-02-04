@@ -35,4 +35,21 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
- </ResourceDictionary>
+    <DataTemplate DataType="{x:Type local:DefineVariable}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,5,10,-2"
+                      Text="{Binding Identifier}"
+                      TextAlignment="Center" />
+                    <logic:ExprControl Label="Initially:" Exp="{Binding DefExpression, Mode=TwoWay}"/>
+                    <!--<local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>-->
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+</ResourceDictionary>

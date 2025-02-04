@@ -174,7 +174,7 @@ namespace NINA.Sequencer.Logic {
                 //        GlobalVolatile = true;
                 //    }
                 //}
-            } else if (Value == null && Definition.Length > 0) {
+            } else if (Value == null && Definition?.Length > 0) {
                 Error = "Not evaluated";
             } else if (Definition.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out
@@ -230,7 +230,7 @@ namespace NINA.Sequencer.Logic {
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
 
-        private string definition;
+        private string definition = "";
         [JsonProperty]
         public virtual string Definition {
             get => definition;
@@ -565,5 +565,16 @@ namespace NINA.Sequencer.Logic {
                 //LOCK_ERROR = true;
             }
         }
+
+        public override string ToString() {
+            string id = Symbol != null ? Symbol.Identifier : Context.Name;
+            if (Error != null) {
+                return $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}";
+            } else if (Definition.Length == 0) {
+                return "None";
+            }
+            return $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}";
+        }
+
     }
 }

@@ -42,14 +42,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        //public override object Clone() {
-        //    DefineConstant clone = new DefineConstant(this);
-
-        //    clone.Identifier = Identifier;
+        public void AfterClone(object clone) {
+            ((DefineConstant)clone).Identifier = Identifier;
+        }
+        
         //    clone.Definition = Definition;
-        //    clone.Expr = Expr;
-        //    return clone;
-        //}
 
         [ObservableProperty]
         [IsExpression]
