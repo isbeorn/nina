@@ -7,7 +7,6 @@
         <UserControl.Resources>
             <local:ExprConverter x:Key="ec" />
             <local:ValConverter x:Key="vc" />
-            <local:CameraTemperatureConverter x:Key="tc" />
         <Style TargetType="local:WhenTextBox">
             <Setter Property="Template">
                 <Setter.Value>
@@ -120,7 +119,7 @@
                 ToolTip="" 
                 ToolTipOpening="ShowSymbols" >
             <local:WhenTextBox.HintText>
-                <Binding Mode="OneWay" Path="Exp.Default" Converter="{StaticResource tc}" UpdateSourceTrigger="PropertyChanged"/>
+                <Binding Mode="OneWay" Path="Exp.Default" UpdateSourceTrigger="PropertyChanged"/>
             </local:WhenTextBox.HintText>
             <local:WhenTextBox.Text>
                 <Binding Mode="TwoWay" Path="Exp.Definition" />
