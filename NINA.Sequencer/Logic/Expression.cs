@@ -24,6 +24,12 @@ namespace NINA.Sequencer.Logic {
             Context = context;
         }
 
+        public Expression(string definition, ISequenceEntity context, Symbol symbol) {
+            Definition = definition;
+            Context = context;
+            Symbol = symbol;
+        }
+
         public bool HasError => string.IsNullOrEmpty(Error);
  
         private string _error;

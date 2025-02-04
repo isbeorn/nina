@@ -47,6 +47,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             clone.Identifier = Identifier;
             clone.Definition = Definition;
             clone.Expr = Expr;
+            if (Expr != null) {
+                clone.Expr.Symbol = this;
+            }
             return clone;
         }
 
