@@ -441,7 +441,7 @@ namespace NINA.Sequencer.Logic {
                         if (!found || sym == null) {
                             // !found -> couldn't find it; sym == null -> it's a DataSymbol
                             if (!found) {
-                                sym = Symbol.FindSymbol(symReference, Context.Parent);
+                                sym = Symbol.FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             }
                             if (sym != null) {
                                 // Link Expression to the Symbol
