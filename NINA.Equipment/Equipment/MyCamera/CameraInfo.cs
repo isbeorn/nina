@@ -61,10 +61,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public bool CanSetFreeGain {
-            get => Connected && Gains.Count == 0;
-        }
-
         private double electronsPerADU;
 
         public double ElectronsPerADU {
