@@ -63,7 +63,9 @@ namespace NINA.Sequencer.Logic {
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
                 Identifier = copyMe.Identifier;
-                Definition = copyMe.Definition;
+                if (copyMe.Expr != null) {
+                    Expr = new Expression(copyMe.Expr.Definition, this);
+                }
             }
         }
 
@@ -183,7 +185,7 @@ namespace NINA.Sequencer.Logic {
             }
             LastSParent = sParent;
 
-            Expr = new Expression(Definition, Parent, this);
+            Expr = new Expression(Expr.Definition, Parent, this);
 
             try {
                 if (Identifier != null && Identifier.Length == 0) return;
@@ -297,37 +299,6 @@ namespace NINA.Sequencer.Logic {
                 //if (this is SetConstant constant && constant.GlobalName != null) {
                 //    constant.SetGlobalName(Identifier);
                 //}
-            }
-        }
-
-        private string _definition = "";
-
-        [JsonProperty]
-        public string Definition {
-            get => _definition;
-            set {
-                if (value == _definition) {
-                    if (Expr != null && value != Expr.Definition) {
-                        Logger.Warning("Definition not reflected in Expression; user changed value manually");
-                    } else {
-                        return;
-                    }
-                }
-                _definition = value;
-                if (SParent() != null) {
-                    if (Expr != null) {
-                        if (Debugging) {
-                            Logger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
-                        }
-                        Expr.Definition = value;
-                    }
-                }
-                RaisePropertyChanged("Expr");
-
-                //if (this is SetConstant constant && constant.GlobalValue != null) {
-                //    constant.SetGlobalValue(value);
-                //}
-
             }
         }
 

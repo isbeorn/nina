@@ -286,10 +286,6 @@ namespace NINA.Sequencer.Logic {
 
                 definition = value;
 
-                if (Symbol != null) {
-                    Symbol.Definition = value;
-                }
-
                 if (Double.TryParse(value, out result)) {
                     Error = null;
                     IsExpression = false;

@@ -45,11 +45,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             DefineConstant clone = new DefineConstant(this);
 
             clone.Identifier = Identifier;
-            clone.Definition = Definition;
             clone.Expr = Expr;
             if (Expr != null) {
                 clone.Expr.Symbol = this;
                 clone.Expr.Context = clone.Parent;
+                clone.Expr.Definition = Expr.Definition;
             }
             return clone;
         }
@@ -57,9 +57,9 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public override string ToString() {
             try {
                 if (Expr != null) {
-                    return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {Expr}";
+                    return $"Define Constant: {Identifier}, Definition: {Expr.Definition}, Parent: {Parent?.Name} Expr: {Expr}";
                 } else {
-                    return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
+                    return $"Define Constant: {Identifier}, Parent: {Parent?.Name} Expr: null";
                 }
             } catch (Exception ex) {
                 return "Foo";
@@ -82,10 +82,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Expression.AddExprIssues(Issues, Expr);
 
             foreach (var kvp in Expr.Resolved) {
-                if (kvp.Value is DefineVariable) {
-                    i.Add("Constant definitions may not include Variables");
-                    break;
-                }
+                //if (kvp.Value is DefineVariable) {
+                //    i.Add("Constant definitions may not include Variables");
+                //    break;
+                //}
             }
 
             Issues = i;
