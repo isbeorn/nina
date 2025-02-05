@@ -102,7 +102,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        //private double exposureTime;
+        //private double exposureTime
 
         //[JsonProperty]
         //public double ExposureTime {
@@ -121,18 +121,18 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
 
-        //[ObservableProperty]
+        [ObservableProperty]
         [IsExpression (UpgradeFrom = "Gain")]
-        private int gain;
+        private int oldGain;
 
-        partial void GainExpressionSetter(Expression expr) {
+        partial void OldGainExpressionSetter(Expression expr) {
         }
 
-        //[ObservableProperty]
+        [ObservableProperty]
         [IsExpression(UpgradeFrom = "Offset")]
-        public int offset;
+        public int oldOffset;
 
-        partial void OffsetExpressionSetter(Expression expr) {
+        partial void OldOffsetExpressionSetter(Expression expr) {
         }
 
         private BinningMode binning;
