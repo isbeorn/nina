@@ -121,15 +121,19 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
 
+        //[ObservableProperty]
+        [IsExpression (UpgradeFrom = "Gain")]
         private int gain;
 
-        [JsonProperty]
-        public int Gain { get => gain; set { gain = value; RaisePropertyChanged(); } }
+        partial void GainExpressionSetter(Expression expr) {
+        }
 
-        private int offset;
+        //[ObservableProperty]
+        [IsExpression(UpgradeFrom = "Offset")]
+        public int offset;
 
-        [JsonProperty]
-        public int Offset { get => offset; set { offset = value; RaisePropertyChanged(); } }
+        partial void OffsetExpressionSetter(Expression expr) {
+        }
 
         private BinningMode binning;
 
@@ -292,12 +296,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
+            Expression.AddExprIssues(i, ExpTimeExpression);
+
             Issues = i;
             return i.Count == 0;
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(this.ExposureTime);
+            return TimeSpan.FromSeconds(ExposureTime);
         }
 
         public override string ToString() {

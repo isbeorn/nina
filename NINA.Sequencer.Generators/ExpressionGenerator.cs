@@ -138,12 +138,16 @@ namespace NINA.Sequencer.Generators {
                 string propNameExpression = propName + "Expression";
                 string upgradeFrom = "";
 
+                IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
+                string fieldType = fieldSymbol.Type.Name;
+                if (fieldType == "Int32") fieldType = "int";
+
                 //cloneSource += $@"
                 //{propNameExpression} = new Expression ({propNameExpression}.Definition, this),
                 //{propName} = {propName},
                 //";
                 cloneSource += $@"
-                {propNameExpression} = new Expression ({propNameExpression}.Definition, this)";
+                {propNameExpression} = new Expression ({propNameExpression}.Definition, this),";
 
                 propertiesSource += $@"
 
@@ -187,8 +191,8 @@ namespace NINA.Sequencer.Generators {
                 ";
                 if (upgradeFrom.Length > 0) {
                     propertiesSource += $@"
-        public double {upgradeFrom} {{
-            get => (double){propNameExpression}.Value;
+        public {fieldType} {upgradeFrom} {{
+            get => ({fieldType}){propNameExpression}.Value;
             set {{
                 {propNameExpression}.Definition = value.ToString();
             }}
