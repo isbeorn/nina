@@ -332,6 +332,8 @@ namespace NINA.Sequencer.Logic {
         }
 
         private Expression _expr = null;
+
+        [JsonProperty]
         public Expression Expr {
             get => _expr;
             set {
@@ -547,7 +549,12 @@ namespace NINA.Sequencer.Logic {
         public abstract bool Validate();
 
         public override string ToString() {
-            return $"Symbol: Identifier {Identifier}, in {SParent()?.Name} with value {Expr.Value}";
+            try {
+                return $"Symbol: Identifier {Identifier}, in {SParent()?.Name} with value {Expr.Value}";
+            } catch (Exception ex) {
+                Logger.Error("Foo");
+                return "Foo";
+            }
         }
 
 

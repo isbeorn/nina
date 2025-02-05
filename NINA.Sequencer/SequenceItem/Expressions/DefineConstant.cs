@@ -49,15 +49,20 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             clone.Expr = Expr;
             if (Expr != null) {
                 clone.Expr.Symbol = this;
+                clone.Expr.Context = clone.Parent;
             }
             return clone;
         }
 
         public override string ToString() {
-            if (Expr != null) {
-                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {Expr}";
-            } else {
-                return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
+            try {
+                if (Expr != null) {
+                    return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: {Expr}";
+                } else {
+                    return $"Define Constant: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
+                }
+            } catch (Exception ex) {
+                return "Foo";
             }
         }
 

@@ -19,6 +19,10 @@ namespace NINA.Sequencer.Logic {
          * HasSetter attribute?
          */
 
+        public Expression() {
+
+        }
+
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
@@ -281,6 +285,11 @@ namespace NINA.Sequencer.Logic {
                 }
 
                 definition = value;
+
+                if (Symbol != null) {
+                    Symbol.Definition = value;
+                }
+
                 if (Double.TryParse(value, out result)) {
                     Error = null;
                     IsExpression = false;
@@ -573,7 +582,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public override string ToString() {
-            string id = Symbol != null ? Symbol.Identifier : Context.Name;
+            string id = Symbol != null ? Symbol.Identifier : Context?.Name;
             if (Error != null) {
                 return $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}";
             } else if (Definition.Length == 0) {
