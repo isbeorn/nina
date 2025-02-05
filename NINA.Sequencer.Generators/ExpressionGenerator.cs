@@ -175,12 +175,10 @@ namespace NINA.Sequencer.Generators {
                 {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}, {r}}};";
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};
-";
+                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
                 } else if (kvp.Key == "DefaultString") {
                     propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};
-";
+                {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
                 }
             }
 

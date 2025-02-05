@@ -110,7 +110,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
 
-        [IsExpression (Default = -1, DefaultString = "\"{Camera}\"")]
+        [IsExpression (Default = -1, DefaultString = "{Camera}")]
         private int gain;
 
         partial void GainExpressionSetter(Expression expr) {
@@ -119,7 +119,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression (DefaultString = "\"{Camera}\"")]
+        [IsExpression (DefaultString = "{Camera}")]
         public int offset;
 
         partial void OffsetExpressionSetter(Expression expr) {
