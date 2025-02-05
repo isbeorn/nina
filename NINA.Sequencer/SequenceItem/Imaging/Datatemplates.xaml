@@ -109,8 +109,8 @@
             <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding
-                        Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
-                        Path="Data.Gains"
+                        Converter="{StaticResource InverseBooleanToVisibilityCollapsedConverter}"
+                        Path="Data.CanSetFreeGain"
                         Source="{StaticResource CameraInfo}" />
                 </PriorityBinding>
             </WrapPanel.Visibility>
