@@ -10,6 +10,7 @@ using static NINA.Sequencer.Logic.Symbol;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -61,6 +62,21 @@ namespace NINA.Sequencer.Logic {
         public Action<Expression>? Validator;
 
         public double Default { get; set; } = double.NaN;
+
+        private string defaultString = null;
+        public string DefaultString {
+            get {
+                if (defaultString == null) {
+                    return Default.ToString();
+                } else {
+                    return defaultString;
+                }
+            }
+            set {
+                defaultString = value;
+            }
+        }
+
         public double[]? Range { get; set; }
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;

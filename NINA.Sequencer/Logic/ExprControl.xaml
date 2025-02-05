@@ -119,7 +119,7 @@
                 ToolTip="" 
                 ToolTipOpening="ShowSymbols" >
             <local:WhenTextBox.HintText>
-                <Binding Mode="OneWay" Path="Exp.Default" UpdateSourceTrigger="PropertyChanged"/>
+                <Binding Mode="OneWay" Path="Exp.DefaultString" UpdateSourceTrigger="PropertyChanged"/>
             </local:WhenTextBox.HintText>
             <local:WhenTextBox.Text>
                 <Binding Mode="TwoWay" Path="Exp.Definition" />

@@ -90,6 +90,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             if (clone.Binning == null) {
                 clone.Binning = new BinningMode(1, 1);
             }
+            GainExpression.DefaultString = "{Camera}";
+
         }
 
         private IList<string> issues = new List<string>();
