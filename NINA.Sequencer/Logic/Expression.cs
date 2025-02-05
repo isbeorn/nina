@@ -73,6 +73,8 @@ namespace NINA.Sequencer.Logic {
             get {
                 if (double.IsNaN(_value) && !double.IsNaN(Default)) {
                     return Default;
+                } else if (double.IsNaN(_value)) {
+                    return 0;
                 }
                 return _value;
             }
@@ -186,6 +188,9 @@ namespace NINA.Sequencer.Logic {
                 //}
             } else if (double.IsNaN(Value) && Definition?.Length > 0) {
                 Error = "Not evaluated";
+            } else if (Resolved.Count != References.Count) {
+                // Why would this happen... track down?
+                Evaluate();
             } else if (Definition.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out
                 Evaluate(true);
@@ -246,6 +251,7 @@ namespace NINA.Sequencer.Logic {
             get => definition;
             set {
                 if (value == null) return;
+                if (value == definition) return;
                 value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;

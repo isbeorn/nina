@@ -44,47 +44,45 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             DefineVariable sv = new DefineVariable();
             sv.AttachNewParent(parent);
             sv.Identifier = id;
-            sv.Definition = def;
             sv.Executed = true;
         }
 
-        public static void SetVariableReference(string id, string def, ISequenceContainer parent) {
-            DefineVariable sv = new DefineVariable();
-            sv.AttachNewParent(parent);
-            sv.Identifier = id;
+        public override object Clone() {
+            DefineVariable clone = new DefineVariable(this);
 
-            if (def.StartsWith('@')) {
-                sv.Definition = "'" + def.Substring(1) + "'";
-                sv.Executed = true;
-                return;
+            clone.Identifier = Identifier;
+            clone.Expr = Expr;
+            if (Expr != null) {
+                clone.Expr.Symbol = this;
+                clone.Expr.Context = clone.Parent;
+                clone.Expr.Definition = Expr.Definition;
             }
-
-            sv.Definition = def;
-            sv.Executed = true;
-
-
-            Symbol sym = Symbol.FindSymbol(def.Substring(1), parent);
-            if (sym != null) {
-                sv.Expr = sym.Expr;
-                sv.IsReference = true;
-            } else {
-                throw new SequenceEntityFailedException("Call by reference symbol not found: " + def);
-            }
+            return clone;
         }
 
-        [IsExpression]
-        private double def;
+        //public static void SetVariableReference(string id, string def, ISequenceContainer parent) {
+        //    DefineVariable sv = new DefineVariable();
+        //    sv.AttachNewParent(parent);
+        //    sv.Identifier = id;
+
+        //    if (def.StartsWith('@')) {
+        //        sv.Definition = "'" + def.Substring(1) + "'";
+        //        sv.Executed = true;
+        //        return;
+        //    }
+
+        //    sv.Definition = def;
+        //    sv.Executed = true;
 
 
-        public void AfterClone(object clone) {
-            DefineVariable c = (DefineVariable)clone;
-            c.Identifier = Identifier;
-            c.DefExpression = new Expression(DefExpression.Definition, this);
-        }
-
-        partial void DefExpressionSetter(Expression expr) {
-            Definition = expr.Definition;
-        }
+        //    Symbol sym = Symbol.FindSymbol(def.Substring(1), parent);
+        //    if (sym != null) {
+        //        sv.Expr = sym.Expr;
+        //        sv.IsReference = true;
+        //    } else {
+        //        throw new SequenceEntityFailedException("Call by reference symbol not found: " + def);
+        //    }
+        //}
 
         private bool iExecuted = false;
         public bool Executed {
@@ -97,7 +95,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            DefExpression = new Expression(Definition, this);
+            Expr = new Expression(Expr.Definition, this);
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
                 if (Expr.Definition.Length > 0) {
@@ -109,10 +107,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override string ToString() {
             if (Expr != null) {
-                return $"Variable: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name}, Expr: {Expr}";
+                return $"Variable: {Identifier}, Definition: {Expr.Definition}, Parent: {Parent?.Name}, Expr: {Expr}";
 
             } else {
-                return $"Variable: {Identifier}, Definition: {Definition}, Parent: {Parent?.Name} Expr: null";
+                return $"Variable: {Identifier}, Parent: {Parent?.Name} Expr: null";
             }
         }
 
@@ -120,28 +118,21 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (!IsAttachedToRoot()) return true;
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || DefExpression.Definition?.Length == 0) {
+            if (Identifier.Length == 0 || Expr.Definition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
             }
 
             if (!Executed) {
-                DefExpression.Validate();
-                if (DefExpression.Error != null) {
-                    Expression.AddExprIssues(i, DefExpression);
+                Expr.Validate();
+                if (Expr.Error != null) {
+                    Expression.AddExprIssues(i, Expr);
                 }
             }
             //if (Expr.Error != null) {
             //    Expression.AddExprIssues(i, Expr, OriginalExpr);
             //}
-
-
-
-            if (Definition != DefExpression.Definition) {
-                Definition = Expr.Definition;
-                Logger.Info("Validate: Definition diverges from Expr; fixing");
-            }
 
             Issues = i;
             RaisePropertyChanged("Issues");
@@ -151,7 +142,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public override void ResetProgress() {
             base.ResetProgress();
             Executed = false;
-            Definition = "";
+            Expr.Definition = "";
             if (Expr != null) {
                 Expr.IsExpression = true;
                 Expr.Evaluate();
@@ -165,7 +156,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 Logger.Info("Executing Vx");
                 DumpSymbols();
             }
-            Definition = DefExpression.Definition;
+            //Definition = DefExpression.Definition;
             Executed = true;
             Expr.Evaluate();
 

@@ -25,6 +25,7 @@
         Orientation="Horizontal">
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+            <logic:CameraDefaultConverter x:Key="tc" />
         </WrapPanel.Resources>
         <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExposureTimeExpression}" Unit="s" />
         <TextBlock
@@ -118,39 +119,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Bottom" Text="{ns:Loc LblGain}" />
-            <ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Bottom"
-                Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
-                <ninactrl:HintTextBox.HintText>
-                    <Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultGain"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />
-                </ninactrl:HintTextBox.HintText>
-                <ninactrl:HintTextBox.Text>
-                    <Binding
-                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                        Mode="TwoWay"
-                        Path="Gain"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:ShortRangeRule>
-                                <util:ShortRangeRule.ValidRange>
-                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                </util:ShortRangeRule.ValidRange>
-                            </util:ShortRangeRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>
+            <logic:ExprControl Label="{ns:Loc LblGain}" Exp="{Binding GainExpression, Converter={StaticResource tc}}"/>
         </WrapPanel>
 
         <!--  Offset  -->

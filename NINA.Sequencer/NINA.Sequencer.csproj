@@ -20,9 +20,6 @@
     <Page Remove="Converters\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="SequenceItem\Expressions\DefineVariable.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>

@@ -80,6 +80,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
 
             Expression.AddExprIssues(Issues, Expr);
+            Expr.Evaluate();
 
             foreach (var kvp in Expr.Resolved) {
                 //if (kvp.Value is DefineVariable) {

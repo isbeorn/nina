@@ -113,6 +113,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int gain;
 
         partial void GainExpressionSetter(Expression expr) {
+            if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
+                expr.Error = (string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
+            }
         }
 
         [IsExpression]
@@ -282,7 +285,15 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            Expression.AddExprIssues(i, ExposureTimeExpression);
+            if (GainExpression.Default != CameraInfo.DefaultGain) {
+                GainExpression.Default = CameraInfo.DefaultGain;
+            }
+
+            if (OffsetExpression.Default != CameraInfo.DefaultOffset) {
+                OffsetExpression.Default = CameraInfo.DefaultOffset;
+            }
+
+            Expression.AddExprIssues(i, ExposureTimeExpression, GainExpression, OffsetExpression);
 
             Issues = i;
             return i.Count == 0;
