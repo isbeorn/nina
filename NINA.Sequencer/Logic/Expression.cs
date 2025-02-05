@@ -30,12 +30,13 @@ namespace NINA.Sequencer.Logic {
         }
 
         public Expression(string definition, ISequenceEntity context, Symbol symbol) {
+            if (symbol.Expr is Expression expr) {
+                DefaultString = expr.DefaultString;
+                Default = expr.Default;
+            }
             Definition = definition;
             Context = context;
             Symbol = symbol;
-            if (symbol.Expr is Expression expr) {
-                DefaultString = expr.DefaultString;
-            }
         }
 
         public bool HasError => string.IsNullOrEmpty(Error);
@@ -272,6 +273,7 @@ namespace NINA.Sequencer.Logic {
                 if (value == null) return;
                 if (value == definition) return;
                 value = value.Trim();
+
                 if (value.Length == 0) {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {

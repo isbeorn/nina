@@ -43,6 +43,7 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Generators;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Sequencer.Logic;
+using System.Windows.Controls;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -109,7 +110,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
 
-        [IsExpression (DefaultString = "\"{Camera}\"")]
+        [IsExpression (Default = -1, DefaultString = "\"{Camera}\"")]
         private int gain;
 
         partial void GainExpressionSetter(Expression expr) {
