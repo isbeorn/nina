@@ -197,7 +197,6 @@ namespace NINA.Sequencer.Generators {
         public {fieldType} {propName} {{
             get => ({fieldType}){propNameExpression}.Value;
             set {{
-                {propNameExpression}.Definition = value.ToString();
             }}
         }}
 ";
