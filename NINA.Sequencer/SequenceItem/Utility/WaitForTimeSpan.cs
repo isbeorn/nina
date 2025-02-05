@@ -48,7 +48,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        [ObservableProperty]
         [IsExpression (Default = 60, Range = [1, 0])]
         private double time;
 
@@ -72,11 +71,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(TimeExpression.Value);
+            return TimeSpan.FromSeconds(Time);
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {TimeExpression.Value}s";
+            return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
         }
 
         public bool Validate() {

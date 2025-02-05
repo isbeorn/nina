@@ -72,7 +72,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        [ObservableProperty]
         [IsExpression]
         private double def;
 

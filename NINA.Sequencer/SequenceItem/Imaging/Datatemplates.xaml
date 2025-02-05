@@ -26,7 +26,7 @@
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
-        <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExpTimeExpression}" Unit="s" />
+        <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExposureTimeExpression}" Unit="s" />
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"

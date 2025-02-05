@@ -102,37 +102,23 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        //private double exposureTime
+        [IsExpression(Default = 60, Range = [0, 0, ExpressionRange.MIN_EXCLUSIVE])]
+        private double exposureTime;
 
-        //[JsonProperty]
-        //public double ExposureTime {
-        //    get => exposureTime;
-        //    set {
-        //        exposureTime = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
-
-        [ObservableProperty]
-        [IsExpression(Default = 60, Range = [0, 0, ExpressionRange.MIN_EXCLUSIVE], UpgradeFrom="ExposureTime")]
-        private double expTime;
-
-        partial void ExpTimeExpressionSetter(Expression expr) {
+        partial void ExposureTimeExpressionSetter(Expression expr) {
         }
 
 
-        [ObservableProperty]
-        [IsExpression (UpgradeFrom = "Gain")]
-        private int oldGain;
+        [IsExpression]
+        private int gain;
 
-        partial void OldGainExpressionSetter(Expression expr) {
+        partial void GainExpressionSetter(Expression expr) {
         }
 
-        [ObservableProperty]
-        [IsExpression(UpgradeFrom = "Offset")]
-        public int oldOffset;
+        [IsExpression]
+        public int offset;
 
-        partial void OldOffsetExpressionSetter(Expression expr) {
+        partial void OffsetExpressionSetter(Expression expr) {
         }
 
         private BinningMode binning;
@@ -296,7 +282,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            Expression.AddExprIssues(i, ExpTimeExpression);
+            Expression.AddExprIssues(i, ExposureTimeExpression);
 
             Issues = i;
             return i.Count == 0;

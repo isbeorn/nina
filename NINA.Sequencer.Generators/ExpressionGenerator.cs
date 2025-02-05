@@ -176,8 +176,6 @@ namespace NINA.Sequencer.Generators {
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
-                    } else if (kvp.Key == "UpgradeFrom") {
-                        upgradeFrom = (string)kvp.Value.Value;
                     }
                 }
 
@@ -189,9 +187,9 @@ namespace NINA.Sequencer.Generators {
         partial void {propNameExpression}Setter (Expression expr);
 
                 ";
-                if (upgradeFrom.Length > 0) {
+                if (true) {
                     propertiesSource += $@"
-        public {fieldType} {upgradeFrom} {{
+        public {fieldType} {propName} {{
             get => ({fieldType}){propNameExpression}.Value;
             set {{
                 {propNameExpression}.Definition = value.ToString();
