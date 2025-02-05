@@ -72,7 +72,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds((double)TimeExpression.Value);
+            return TimeSpan.FromSeconds(TimeExpression.Value);
         }
 
         public override string ToString() {

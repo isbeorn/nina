@@ -67,7 +67,7 @@ namespace NINA.Sequencer.Logic {
         private double _value = Double.NaN;
         public virtual double Value {
             get {
-                if (_value == double.NaN && Default != double.NaN) {
+                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
                     return Default;
                 }
                 return _value;
@@ -180,7 +180,7 @@ namespace NINA.Sequencer.Logic {
                 //        GlobalVolatile = true;
                 //    }
                 //}
-            } else if (Value == double.NaN && Definition?.Length > 0) {
+            } else if (double.IsNaN(Value) && Definition?.Length > 0) {
                 Error = "Not evaluated";
             } else if (Definition.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out
@@ -245,7 +245,7 @@ namespace NINA.Sequencer.Logic {
                 value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
-                    if (Default != double.NaN) {
+                    if (!double.IsNaN(Default)) {
                         Value = Default;
                     } else {
                         Value = Double.NaN;
@@ -352,7 +352,7 @@ namespace NINA.Sequencer.Logic {
                 //if (sym.Expr.Value == double.NegativeInfinity) {
                 //    AddParameter(reference, sym.Expr.StringValue);
                 //} else
-                if (sym.Expr.Value != double.NaN) {
+                if (!Double.IsNaN(sym.Expr.Value)) {
                     AddParameter(reference, sym.Expr.Value);
                 }
             }

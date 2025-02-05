@@ -58,7 +58,7 @@ namespace NINA.Sequencer.Logic {
                     string txt;
                     if (expr.Error == null) {
                         if (false) { //expr.Context is ITrueFalse) {
-                            if (expr.Value == double.NaN) {
+                            if (double.IsNaN(expr.Value)) {
                                 txt = "False";
                             } else {
                                 txt = "True";
@@ -69,7 +69,7 @@ namespace NINA.Sequencer.Logic {
                             } else if (expr.Value > NowMinusOneYear && expr.Value < NowPlusOneYear) {
                                 // Handle dates
                                 txt = expr.ValueString;
-                            } else if (expr.Value == double.NaN) {
+                            } else if (double.IsNaN(expr.Value)) {
                                 txt = "-null-";
                             } else {
                                 txt = Math.Round((Double)expr.Value, 2).ToString();
