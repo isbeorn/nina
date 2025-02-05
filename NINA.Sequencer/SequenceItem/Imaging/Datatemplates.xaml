@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Imaging"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -25,16 +26,7 @@
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
-        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTime}" />
-        <ninactrl:UnitTextBox
-            MinWidth="40"
-            Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            VerticalContentAlignment="Center"
-            Text="{Binding ExposureTime}"
-            TextAlignment="Right"
-            Unit="s" />
-
+        <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExpTimeExpression}" Unit="s" />
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"
@@ -126,13 +118,13 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+            <TextBlock VerticalAlignment="Bottom" Text="{ns:Loc LblGain}" />
             <ninactrl:HintTextBox
                 MinWidth="40"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Center"
+                VerticalContentAlignment="Bottom"
                 Foreground="{StaticResource PrimaryBrush}"
                 TextAlignment="Right">
                 <ninactrl:HintTextBox.HintText>

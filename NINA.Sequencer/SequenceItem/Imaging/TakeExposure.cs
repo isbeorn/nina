@@ -114,7 +114,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         //}
 
         [ObservableProperty]
-        [IsExpression(Default = 60, Range = [0, 0], UpgradeFrom="ExposureTime")]
+        [IsExpression(Default = 60, Range = [0, 0, ExpressionRange.MIN_EXCLUSIVE], UpgradeFrom="ExposureTime")]
         private double expTime;
 
         partial void ExpTimeExpressionSetter(Expression expr) {
