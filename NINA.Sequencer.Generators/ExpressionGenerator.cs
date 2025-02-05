@@ -175,11 +175,16 @@ namespace NINA.Sequencer.Generators {
                 {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}, {r}}};";
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
-                    }
+                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};
+";
+                } else if (kvp.Key == "DefaultString") {
+                    propertiesSource += $@"
+                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};
+";
                 }
+            }
 
-                propertiesSource += $@"
+            propertiesSource += $@"
                 RaisePropertyChanged();
             }}
         }}
@@ -257,10 +262,10 @@ namespace {namespaceName}
             set { _range = value; }
         }
 
-        public string _upgradeFrom = "";
-        public string UpgradeFrom {
-            get { return _upgradeFrom; }
-            set { _upgradeFrom = value; }
+        public string _defaultString = "";
+        public string DefaultString {
+            get { return _defaultString; }
+            set { _defaultString = value; }
         }
 
     }

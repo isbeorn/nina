@@ -33,6 +33,9 @@ namespace NINA.Sequencer.Logic {
             Definition = definition;
             Context = context;
             Symbol = symbol;
+            if (symbol.Expr is Expression expr) {
+                DefaultString = expr.DefaultString;
+            }
         }
 
         public bool HasError => string.IsNullOrEmpty(Error);

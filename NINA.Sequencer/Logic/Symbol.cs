@@ -185,7 +185,9 @@ namespace NINA.Sequencer.Logic {
             }
             LastSParent = sParent;
 
-            Expr = new Expression(Expr?.Definition ?? "", Parent, this);
+            if (Expr != null) {
+                Expr = new Expression(Expr?.Definition ?? "", Parent, this);
+            }
 
             try {
                 if (Identifier != null && Identifier.Length == 0) return;
