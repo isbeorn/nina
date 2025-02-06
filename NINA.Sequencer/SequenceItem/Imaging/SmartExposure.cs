@@ -106,6 +106,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
+        partial void AfterClone(SmartExposure clone, SmartExposure cloned) {
+            // The order of these matters!
+            clone.Add((SwitchFilter)cloned.GetSwitchFilter().Clone());
+            clone.Add((TakeExposure)cloned.GetTakeExposure().Clone());
+            clone.Add((LoopCondition)cloned.GetLoopCondition().Clone());
+            clone.Add((DitherAfterExposures)cloned.GetDitherAfterExposures().Clone());
+            // Weak thing...
+        }
+
+
         private void SwitchFilter_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if(e.PropertyName == nameof(SwitchFilter.Filter)) {
                 if(this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) { 
@@ -174,11 +184,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         public DitherAfterExposures GetDitherAfterExposures() {
-            return Triggers[0] as DitherAfterExposures;
+            return Triggers.Count > 0 ? Triggers[0] as DitherAfterExposures : null;
         }
 
         public LoopCondition GetLoopCondition() {
-            return Conditions[0] as LoopCondition;
+            return Conditions.Count > 0 ? Conditions[0] as LoopCondition : null;
         }
 
         public override bool Validate() {
@@ -206,16 +216,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             RaisePropertyChanged(nameof(Issues));
 
             return valid;
-        }
-
-        partial void AfterClone(SmartExposure clone, SmartExposure cloned) {
-            clone.Add((TakeExposure)cloned.GetTakeExposure().Clone());
-            clone.Add((LoopCondition)cloned.GetLoopCondition().Clone());
-            clone.Add((SwitchFilter)cloned.GetSwitchFilter().Clone());
-            clone.Add((DitherAfterExposures)cloned.GetDitherAfterExposures().Clone());
- 
-            SwitchFilter sf = clone.GetSwitchFilter();
-            //WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(sf, nameof(sf.PropertyChanged), SwitchFilter_PropertyChanged);
         }
 
         public override TimeSpan GetEstimatedDuration() {
