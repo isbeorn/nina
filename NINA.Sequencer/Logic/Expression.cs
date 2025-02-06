@@ -130,12 +130,14 @@ namespace NINA.Sequencer.Logic {
             if (value <= min || (max != 0 && value >= max)) {
                 if (r == 0) {
                     if (max == 0) {
-                        Error = "Value must be " + min + " or greater";
+                        Error = "Range: >= " + min;
+                        //Error = "Value must be " + min + " or greater";
                     } else {
-                        Error = "Value must be between " + min + " and " + max;
+                        Error = "Range: " + min + "> value < " + max;
+                        //Error = "Value must be between " + min + " and " + max;
                     }
                 } else {
-                    Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and " + (((r & 2) == 2) ? "less than " : "") + Range[1];
+                    Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and less than " + (((r & 2) == 2) ? "" : "or equal to ") + Range[1];
                 }
             }
         }
@@ -320,6 +322,7 @@ namespace NINA.Sequencer.Logic {
                     // Notify consumers
                     if (Symbol != null) {
                         Symbol.SymbolDirty(Symbol);
+                        Symbol.Validate();
                     } else {
                         // We always want to show the result if not a Symbol
                         //IsExpression = true;
@@ -354,7 +357,10 @@ namespace NINA.Sequencer.Logic {
                     Parameters.Clear();
                     Resolved.Clear();
                     Evaluate();
-                    if (Symbol != null) Symbol.SymbolDirty(Symbol);
+                    if (Symbol != null) {
+                        Symbol.SymbolDirty(Symbol);
+                        Symbol.Validate();
+                    }
                 }
                 RaisePropertyChanged("Expression");
                 RaisePropertyChanged("IsAnnotated");

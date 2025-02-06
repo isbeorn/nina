@@ -45,11 +45,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             DefineConstant clone = new DefineConstant(this);
 
             clone.Identifier = Identifier;
-            clone.Expr = Expr;
             if (Expr != null) {
-                clone.Expr.Symbol = this;
-                clone.Expr.Context = clone.Parent;
-                clone.Expr.Definition = Expr.Definition;
+                clone.Expr = new Expression(Expr.Definition, clone.Parent, this);
+            } else {
+                clone.Expr = new Expression("", clone.Parent, this);
             }
             return clone;
         }
