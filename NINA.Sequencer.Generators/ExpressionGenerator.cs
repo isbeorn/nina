@@ -215,11 +215,11 @@ namespace {namespaceName}
         public override object Clone() {{
             var clone = new {className}(this) {{{cloneSource}
             }};
-            AfterClone(clone);
+            AfterClone(clone, this);
             return clone;
         }}
 
-        partial void AfterClone({className} clone);
+        partial void AfterClone({className} clone, {className} cloned);
 {propertiesSource}
 {methodsSource}
     }}
