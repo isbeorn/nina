@@ -35,7 +35,7 @@ using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
-using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -146,8 +146,24 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression]
-        private int dummy;
+        [IsExpression(HasValidator = true)]
+        private int dither;
+        partial void DitherExpressionValidator(Logic.Expression expr) {
+            DitherAfterExposures dae = GetDitherAfterExposures();
+            if (dae != null) {
+                dae.AfterExposures = (int)expr.Value;
+            }
+        }
+
+        [IsExpression(HasValidator = true)]
+        private int iterations;
+        partial void IterationsExpressionValidator(Logic.Expression expr) {
+            if (Conditions.Count > 0) {
+                GetLoopCondition().Iterations = (int)expr.Value;
+            }
+        }
+
+
 
         public SwitchFilter GetSwitchFilter() {
             return Items[0] as SwitchFilter;
@@ -199,7 +215,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             clone.Add((DitherAfterExposures)cloned.GetDitherAfterExposures().Clone());
  
             SwitchFilter sf = clone.GetSwitchFilter();
-            WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(sf, nameof(sf.PropertyChanged), SwitchFilter_PropertyChanged);
+            //WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(sf, nameof(sf.PropertyChanged), SwitchFilter_PropertyChanged);
         }
 
         public override TimeSpan GetEstimatedDuration() {

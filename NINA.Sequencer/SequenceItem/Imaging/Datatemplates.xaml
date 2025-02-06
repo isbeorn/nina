@@ -282,13 +282,7 @@
             <view:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="#" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Conditions[0].Iterations}"
-                        TextAlignment="Right" />
+                    <logic:ExprControl Label="#" Exp="{Binding IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -325,20 +319,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblDitherEveryNoFrame}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding Triggers[0].AfterExposures}">
-                        <TextBox.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_Imaging_SmartExposure_DitherTooltip}" />
-                        </TextBox.ToolTip>
-                    </TextBox>
+                    <logic:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding Dither}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
