@@ -7160,4 +7160,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
     <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
   </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+  </data>
 </root>

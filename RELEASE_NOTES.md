@@ -36,6 +36,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Info if following is off, following via N.I.N.A. or following via driver to differentiate the different dome following mechanisms
 - Options > Astrometry can now show a world map with a pin of your entered latitude and longitude
 - "Center And Rotate" as well as "Solve And Rotate" will now give up after 10 unsuccessful rotation attempts
+- Added a lock/unlock button to the imaging tab to prevent panels from being closed or rearranged. Unlocking allows adjustments again.
+    - Resizing panels remains possible, as no method to disable this has been found.
+    - Switching tabs is allowed while locked, but rearranging them is prevented.
+    - Undocked floating windows are unaffected and can still be re-docked even when the layout is locked.
+
 
 ## Commandline Options
 The following command line options have been added

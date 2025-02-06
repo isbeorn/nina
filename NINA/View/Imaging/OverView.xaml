@@ -233,7 +233,8 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid
                     Margin="2,0,0,0"
@@ -315,6 +316,7 @@
                         Text="{ns:Loc LblInfo}"
                         TextAlignment="Center" />
                 </Grid>
+
                 <Grid
                     Grid.Column="1"
                     HorizontalAlignment="Right"
@@ -414,6 +416,51 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
+
+                <ToggleButton
+                    Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Margin="2.5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding IsLocked, Mode=TwoWay}">
+                    <ToggleButton.ToolTip>
+                        <TextBlock Text="{ns:Loc LblLockUnlockImagingArea}" />
+                    </ToggleButton.ToolTip>
+                    <ToggleButton.Style>
+                        <Style BasedOn="{StaticResource AvalonSideBarToggleButton}" TargetType="ToggleButton">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource LockSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                RenderTransformOrigin="0.5,0.5"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource UnlockSVG}"
+                                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                RenderTransformOrigin="0.5,0.5"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
             </Grid>
             <dock:DockingManager
                 x:Name="dockManager"

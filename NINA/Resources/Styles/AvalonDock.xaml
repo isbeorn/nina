@@ -109,7 +109,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dock:LayoutAnchorableTabItem}">
-                    <dock:DropDownControlArea DropDownContextMenu="{Binding Root.Manager.AnchorableContextMenu}" DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
+                    <dock:DropDownControlArea
+                        Name="ControlArea"
+                        DropDownContextMenu="{Binding Root.Manager.AnchorableContextMenu}"
+                        DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
                         <Border
                             Name="Panel"
                             Background="{StaticResource BackgroundBrush}"
@@ -136,6 +139,12 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsMouseOver}" Value="True">
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsLocked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True}" Value="True">
+                            <Setter TargetName="ControlArea" Property="IsHitTestVisible" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsLocked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True}" Value="False">
+                            <Setter TargetName="ControlArea" Property="IsHitTestVisible" Value="False" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -468,9 +477,11 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Border
+                        MinHeight="16"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        IsHitTestVisible="{Binding DataContext.IsLocked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -489,48 +500,51 @@
                                 ContentTemplate="{StaticResource AnchorableTitleContentTemplate}"
                                 ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
 
+                            <Grid Grid.Column="1" Visibility="{Binding DataContext.IsLocked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <!--  Directly bind to the model content. Assume this is an IDockableVM  -->
+                                <ToggleButton
+                                    x:Name="PART_SettingsPin"
+                                    Margin="5,1,7.5,1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Focusable="False"
+                                    IsChecked="{Binding Model.Content.SettingsVisible, RelativeSource={RelativeSource TemplatedParent}}"
+                                    IsHitTestVisible="True"
+                                    Style="{StaticResource TB}"
+                                    ToolTip="{ns:Loc LblSettings}"
+                                    Visibility="{Binding Model.Content.HasSettings, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+                                    <Path
+                                        Width="10"
+                                        Height="10"
+                                        Margin="2"
+                                        Data="{StaticResource SettingsSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                </ToggleButton>
+                            </Grid>
 
-                            <!--  Directly bind to the model content. Assume this is an IDockableVM  -->
-                            <ToggleButton
-                                x:Name="PART_SettingsPin"
-                                Grid.Column="1"
-                                Margin="5,1,7.5,1"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsChecked="{Binding Model.Content.SettingsVisible, RelativeSource={RelativeSource TemplatedParent}}"
-                                Focusable="False"
-                                Style="{StaticResource TB}"
-                                ToolTip="{ns:Loc LblSettings}"
-                                Visibility="{Binding Model.Content.HasSettings, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
-                                <Path
-                                    Width="10"
-                                    Height="10"
-                                    Margin="2"
-                                    Data="{StaticResource SettingsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
-                            </ToggleButton>
-
-                            <Button
-                                x:Name="PART_HidePin"
-                                Grid.Column="2"
-                                Margin="1"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{Binding Path=LayoutItem.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                Focusable="False"
-                                ToolTip="{ns:Loc LblClose}"
-                                Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
-                                <Path
-                                    Width="10"
-                                    Height="10"
-                                    Margin="2"
-                                    Data="{StaticResource CancelSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
-                            </Button>
+                            <Grid Grid.Column="2" Visibility="{Binding DataContext.IsLocked, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <Button
+                                    x:Name="PART_HidePin"
+                                    Grid.Column="2"
+                                    Margin="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{Binding Path=LayoutItem.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Focusable="False"
+                                    ToolTip="{ns:Loc LblClose}"
+                                    Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                                    <Path
+                                        Width="10"
+                                        Height="10"
+                                        Margin="2"
+                                        Data="{StaticResource CancelSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -599,8 +613,8 @@
                                         Margin="5,1,7.5,1"
                                         Background="Transparent"
                                         BorderThickness="0"
-                                        IsChecked="{Binding Model.SinglePane.SelectedContent.Content.SettingsVisible, RelativeSource={RelativeSource TemplatedParent}}"
                                         Focusable="False"
+                                        IsChecked="{Binding Model.SinglePane.SelectedContent.Content.SettingsVisible, RelativeSource={RelativeSource TemplatedParent}}"
                                         Style="{StaticResource TB}"
                                         ToolTip="{ns:Loc LblSettings}"
                                         Visibility="{Binding Model.SinglePane.SelectedContent.Content.HasSettings, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
