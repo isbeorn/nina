@@ -229,7 +229,6 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -277,6 +276,7 @@
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:SmartExposure}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>

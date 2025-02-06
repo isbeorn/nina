@@ -112,31 +112,6 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
-    <!--<DataTemplate DataType="{x:Type local:WaitForTimeSpan}">
-        <view:SequenceBlockView>
-            <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDelay}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        TextAlignment="Right"
-                        Unit="s">
-                        <ninactrl:UnitTextBox.Text>
-                            <Binding Mode="TwoWay" Path="Time">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterThanZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ninactrl:UnitTextBox.Text>
-                    </ninactrl:UnitTextBox>
-                </StackPanel>
-            </view:SequenceBlockView.SequenceItemContent>
-        </view:SequenceBlockView>
-    </DataTemplate>-->
-
     <DataTemplate x:Key="NINA.Sequencer.SequenceItem.Utility.WaitForTime_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>

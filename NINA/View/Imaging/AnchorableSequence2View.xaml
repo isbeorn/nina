@@ -98,7 +98,7 @@
                             LoadingImageBrush="{StaticResource PrimaryBrush}" />
 
                         <Grid Grid.Column="2" Visibility="{Binding CancelSequenceCommand, Converter={StaticResource NullToVisibilityConverter}}">
-              D              <Button Command="{Binding CancelSequenceCommand}">
+                            <Button Command="{Binding CancelSequenceCommand}">
                                 <Path
                                     Width="40"
                                     Margin="5"
