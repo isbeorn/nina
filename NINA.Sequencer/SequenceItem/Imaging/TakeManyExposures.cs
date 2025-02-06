@@ -32,6 +32,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -88,7 +89,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [IsExpression(Default = 1)]
         private int iterations;
-        partial void IterationsExpressionSetter(Expression expr) { }
+        partial void IterationsExpressionSetter(Expression expr) {
+            if (Conditions.Count > 0) {
+                GetLoopCondition().Iterations = (int)expr.Value;
+            }
+        }
 
 
         private int attempts = 1;
