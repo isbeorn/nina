@@ -34,6 +34,8 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
+using NINA.Sequencer.Generators;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -44,7 +46,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SmartExposure : SequentialContainer, IImmutableContainer {
+    [ExpressionObject]
+
+    public partial class SmartExposure : SequentialContainer, IImmutableContainer {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -93,6 +97,15 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 CopyMetaData(cloneMe);
             }
         }
+        private SmartExposure(SmartExposure cloneMe) {
+
+            IsExpanded = false;
+
+            if (cloneMe != null) {
+                CopyMetaData(cloneMe);
+            }
+        }
+
         private void SwitchFilter_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if(e.PropertyName == nameof(SwitchFilter.Filter)) {
                 if(this.Status == Core.Enum.SequenceEntityStatus.CREATED || this.Status == Core.Enum.SequenceEntityStatus.RUNNING) { 
@@ -132,6 +145,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 }
             }
         }
+
+        [IsExpression]
+        private int dummy;
 
         public SwitchFilter GetSwitchFilter() {
             return Items[0] as SwitchFilter;
@@ -176,15 +192,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             return valid;
         }
 
-        public override object Clone() {
-            var clone = new SmartExposure(
-                    this,
-                    (SwitchFilter)this.GetSwitchFilter().Clone(),
-                    (TakeExposure)this.GetTakeExposure().Clone(),
-                    (LoopCondition)this.GetLoopCondition().Clone(),
-                    (DitherAfterExposures)this.GetDitherAfterExposures().Clone()
-                );
-            return clone;
+        partial void AfterClone(SmartExposure clone, SmartExposure cloned) {
+            clone.Add((TakeExposure)cloned.GetTakeExposure().Clone());
+            clone.Add((LoopCondition)cloned.GetLoopCondition().Clone());
+            clone.Add((SwitchFilter)cloned.GetSwitchFilter().Clone());
+            clone.Add((DitherAfterExposures)cloned.GetDitherAfterExposures().Clone());
+ 
+            SwitchFilter sf = clone.GetSwitchFilter();
+            WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(sf, nameof(sf.PropertyChanged), SwitchFilter_PropertyChanged);
         }
 
         public override TimeSpan GetEstimatedDuration() {

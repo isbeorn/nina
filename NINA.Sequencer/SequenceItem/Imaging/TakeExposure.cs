@@ -106,11 +106,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         [IsExpression(Default = 60, Range = [0, 3600, ExpressionRange.MIN_EXCLUSIVE])]
         private double exposureTime;
 
-        partial void ExposureTimeExpressionSetter(Expression expr) {
-        }
 
-
-        [IsExpression (Default = -1, DefaultString = "{Camera}")]
+        [IsExpression (Default = -1, DefaultString = "{Camera}", HasValidator = true)]
         private int gain;
 
         partial void GainExpressionSetter(Expression expr) {
@@ -119,7 +116,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression (DefaultString = "{Camera}")]
+        [IsExpression (DefaultString = "{Camera}", HasValidator = true)]
         public int offset;
 
         partial void OffsetExpressionSetter(Expression expr) {

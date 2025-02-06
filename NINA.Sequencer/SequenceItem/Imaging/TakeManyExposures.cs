@@ -87,7 +87,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(Default = 1)]
+        [IsExpression(Default = 1, HasValidator = true)]
         private int iterations;
         partial void IterationsExpressionSetter(Expression expr) {
             if (Conditions.Count > 0) {
@@ -142,22 +142,10 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             return valid;
         }
 
-        //public override object Clone() {
-        //    var clone = new TakeManyExposures(
-        //            this,
-        //            (TakeExposure)this.GetTakeExposure().Clone(),
-        //            (LoopCondition)this.GetLoopCondition().Clone());
-        //    return clone;
-        //}
-
         public override TimeSpan GetEstimatedDuration() {
             return GetTakeExposure().GetEstimatedDuration();
         }
 
-        /// <summary>
-        /// When an inner instruction interrupts this set, it should reroute the interrupt to the real parent set
-        /// </summary>
-        /// <returns></returns>
         public override Task Interrupt() {
             return this.Parent?.Interrupt();
         }

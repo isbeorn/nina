@@ -91,7 +91,7 @@ namespace NINA.Sequencer.Generators {
 
         private static PropertyInfo? GetFieldPropertyInfoOrNull(GeneratorSyntaxContext context) {
             // node must be PropertyDeclarationSyntax due to predicate
-            if(context.Node is not VariableDeclaratorSyntax && context.Node is not PropertyDeclarationSyntax) { return null; }
+            if (context.Node is not VariableDeclaratorSyntax && context.Node is not PropertyDeclarationSyntax) { return null; }
 
             var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
             if (symbol == null) return null;
@@ -122,7 +122,8 @@ namespace NINA.Sequencer.Generators {
             var cloneSource = string.Empty;
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
-            
+            bool hasValidator = false;
+
             foreach (var prop in properties) {
                 if (prop is null) continue;
                 string propName = prop.PropertySymbol.Name;
@@ -131,7 +132,7 @@ namespace NINA.Sequencer.Generators {
                         propName = prop.PropertySymbol.Name.Substring(1, 2).ToUpper() + propName.Substring(2);
                     } else {
                         propName = prop.PropertySymbol.Name.Substring(0, 1).ToUpper() + propName.Substring(1);
-                    }                    
+                    }
                 }
                 string fieldName = propName.Substring(0, 1).ToLower() + propName.Substring(1);
                 string fieldNameExpression = fieldName + "Expression";
@@ -142,10 +143,6 @@ namespace NINA.Sequencer.Generators {
                 string fieldType = fieldSymbol.Type.Name;
                 if (fieldType == "Int32") fieldType = "int";
 
-                //cloneSource += $@"
-                //{propNameExpression} = new Expression ({propNameExpression}.Definition, this),
-                //{propName} = {propName},
-                //";
                 cloneSource += $@"
                 {propNameExpression} = new Expression ({propNameExpression}.Definition, this),";
 
@@ -158,10 +155,11 @@ namespace NINA.Sequencer.Generators {
             set {{
                 {fieldNameExpression} = value;
                 if (value == null) return;
-                {propNameExpression}.Context = this;
-                {propNameExpression}.Validator = {propNameExpression}Setter;";
+                {propNameExpression}.Context = this;";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
+
+                    if (kvp.Key == "HasValidator") hasValidator = true;
 
                     if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
@@ -176,22 +174,30 @@ namespace NINA.Sequencer.Generators {
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
-                } else if (kvp.Key == "DefaultString") {
-                    propertiesSource += $@"
+                    } else if (kvp.Key == "DefaultString") {
+                        propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
+                    }
                 }
-            }
 
-            propertiesSource += $@"
+                if (hasValidator) {
+                    propertiesSource += $@"
+                {propNameExpression}.Validator = {propNameExpression}Setter;";
+                }
+
+                propertiesSource += $@"
                 RaisePropertyChanged();
             }}
-        }}
+        }}";
+                if (hasValidator) {
+                    propertiesSource += $@"
         
-        partial void {propNameExpression}Setter (Expression expr);
+        partial void {propNameExpression}Setter(Expression expr);";
+                }
 
-                ";
                 if (true) {
                     propertiesSource += $@"
+
         public {fieldType} {propName} {{
             get => ({fieldType}){propNameExpression}.Value;
             set {{
@@ -264,6 +270,13 @@ namespace {namespaceName}
             get { return _defaultString; }
             set { _defaultString = value; }
         }
+
+        public bool _hasValidator = false;
+        public bool HasValidator {
+            get { return _hasValidator; }
+            set { _hasValidator = value; }
+        }
+
 
     }
 
