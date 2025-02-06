@@ -182,7 +182,7 @@ namespace NINA.Sequencer.Generators {
 
                 if (hasValidator) {
                     propertiesSource += $@"
-                {propNameExpression}.Validator = {propNameExpression}Setter;";
+                {propNameExpression}.Validator = {propNameExpression}Validator;";
                 }
 
                 propertiesSource += $@"
@@ -192,7 +192,7 @@ namespace NINA.Sequencer.Generators {
                 if (hasValidator) {
                     propertiesSource += $@"
         
-        partial void {propNameExpression}Setter(Expression expr);";
+        partial void {propNameExpression}Validator(Expression expr);";
                 }
 
                 if (true) {

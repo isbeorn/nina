@@ -89,7 +89,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [IsExpression(Default = 1, HasValidator = true)]
         private int iterations;
-        partial void IterationsExpressionSetter(Expression expr) {
+        partial void IterationsExpressionValidator(Expression expr) {
             if (Conditions.Count > 0) {
                 GetLoopCondition().Iterations = (int)expr.Value;
             }
