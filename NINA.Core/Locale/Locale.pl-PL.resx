@@ -1199,9 +1199,6 @@ W przypadku, gdy potrzebny jest dłuższy czas, można określić czas trwania, 
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>Ustawiony w pozycji startowej</value>
   </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Kopuła śledzi teleskop</value>
-  </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Obracam się</value>
   </data>
@@ -7086,5 +7083,73 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblObserver" xml:space="preserve">
     <value>Obserwator</value>
     <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Śledzenie</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Podążanie kopuły poprzez N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>przez sterownik</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapa świata</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Podłącz urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Dla wybranego urządzenia połączenie zostanie zapisane w profilu.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Połącz</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Odłącz urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Rozłącza wybrane urządzenie</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Podłącz wszystkie urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Połącz ze wszystkimi urządzeniami, które są zapisane w profilu</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Odłącz wszystkie urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Rozłącza wszystkie aktualnie połączone urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Ponowne połączenie kamery po niepowodzeniu pobierania danych</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>Wyzwalacz, który zostanie uruchomiony, gdy kamera nie pobierze ekspozycji i spróbuje ponownie się połączyć. Po ponownym podłączeniu stan chłodzenia i grzałki zostaną przywrócone.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Podłącz urządzenia</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Wyzwalacz, który uruchomi się po rozłączeniu wybranego urządzenia i spróbuje się ponownie podłączyć.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Przełącz profil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Rozłącza wszystkie aktualnie podłączone urządzenia, przełącza się na określony profil i ponownie łączy wszystkie urządzenia określonego profilu.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Nie udało się zdefiniować obrotu po {0} próbach. Czy powrotny tryb rotatora jest ustawiony prawidłowo?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
   </data>
 </root>

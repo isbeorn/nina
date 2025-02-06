@@ -1198,9 +1198,6 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>En posición inicial (home)</value>
   </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>La cúpula sigue al telescopio</value>
-  </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girando</value>
   </data>
@@ -1363,7 +1360,7 @@ También puedes calcular el bias haciendo clic en el botón con el dibujo del di
     <value>Esta cámara simulada permitirá el uso de cámaras que carecen de un SDK, mientras sigue utilizando todo el flujo de trabajo de N.I.N.A.
 Esta cámara simulada mostrará la carpeta especificada para los archivos recién creados. Estos archivos se almacenarán dentro de una cola interna.
 Cada vez que la aplicación quiera descargar una exposición de la cámara, el primer elemento de esta cola de archivos se resuelve y se carga en N.I.N.A.
-Además, se puede activar un disparador manual de Modo Bulb, así que usará el modo Bulb seleccionado en Configuración-&gt;Equipamiento-&gt;Cámara al empezar la exposición.
+Además, se puede activar un disparador manual de Modo Bulb, así que usará el modo Bulb seleccionado en Configuración->Equipamiento->Cámara al empezar la exposición.
 Cuando este disparador está desactivado, la aplicación se saltará "empezar exposición" y simplemente esperará a que otro archivo entre en la carpeta especificada</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
@@ -7086,5 +7083,73 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   <data name="LblObserver" xml:space="preserve">
     <value>Observador</value>
     <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Siguiendo</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Cúpula siguiendo vía N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>vía Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapamundi</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Conectar equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Para el dispositivo seleccionado, se conectará el dispositivo guardado en el perfil.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Desconectar equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Desconecta el dispositivo seleccionado</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Conectar todo el equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Conectar todos los dispositivos guardados en el perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Disconnect All Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Disconnects all currently connected devices</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Reconnect Camera On Download Failure</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Reconectar el equipo</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Un activador que se ejecutará cuando el dispositivo seleccionado se desconecte e intentará reconectarlo.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Cambiar el Perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Desconecta todos los dispositivos que están conectados actualmente, cambia al perfil especificado y reconecta todos los dispositivos del perfil especificado.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>No se pudo encontrar la rotación tras {0} intentos . ¿Has establecido correctamente la marca de reverso del rotador?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
   </data>
 </root>
