@@ -71,7 +71,9 @@ namespace NINA.Sequencer.Logic {
         private string defaultString = null;
         public string DefaultString {
             get {
-                if (defaultString == null) {
+                if (Double.IsNaN(Default) && Definition.Length == 0) {
+                    return "";
+                } else if (defaultString == null) {
                     return Default.ToString();
                 } else {
                     return defaultString;

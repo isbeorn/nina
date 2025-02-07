@@ -63,23 +63,4 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
-    <!--<DataTemplate DataType="{x:Type local:SetVariable}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Name:" />
-                    <TextBox
-                       MinWidth="40"
-                       Margin="5,5,10,-2"
-                       Text="{Binding Identifier}"
-                       TextAlignment="Center" />
-                    <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
-                    <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>-->
-
-
-
 </ResourceDictionary>

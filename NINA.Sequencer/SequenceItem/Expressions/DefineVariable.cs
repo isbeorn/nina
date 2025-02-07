@@ -23,7 +23,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
 
     public partial class DefineVariable : Symbol {
 
@@ -62,6 +61,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             } else {
                 clone.OriginalExpr = new Expression("", clone.Parent, this);
             }
+            clone.OriginalDefinition = OriginalDefinition;
             return clone;
         }
 
@@ -103,7 +103,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             get => OriginalExpr?.Definition;
             set {
                 OriginalExpr.Definition = value;
-                RaisePropertyChanged("OriginalExpr");
+                RaisePropertyChanged();
             }
         }
 
