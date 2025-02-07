@@ -17,17 +17,12 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem.FilterWheel;
-using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Guider;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -35,7 +30,6 @@ using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
-using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 

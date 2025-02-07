@@ -20,6 +20,20 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
+
+
+
+    <DataTemplate DataType="{x:Type local:WaitUntil}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <logic:ExprControl Label="Expression" Exp="{Binding Path=PredicateExpression, Mode=TwoWay}"/>
+                </StackPanel>
+
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:Annotation}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
