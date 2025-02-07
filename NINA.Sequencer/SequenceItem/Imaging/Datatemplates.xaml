@@ -25,7 +25,6 @@
         Orientation="Horizontal">
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
-            <logic:CameraDefaultConverter x:Key="tc" />
         </WrapPanel.Resources>
         <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExposureTimeExpression}" Unit="s" />
         <TextBlock
