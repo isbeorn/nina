@@ -14,6 +14,7 @@
 
 using NINA.Core.Utility;
 using NINA.Sequencer;
+using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,8 @@ namespace NINA.Sequencer.Logic {
                     }
                     string txt;
                     if (expr.Error == null) {
-                        if (false) { //expr.Context is ITrueFalse) {
-                            if (double.IsNaN(expr.Value)) {
+                        if (expr.Context is ITrueFalse) {
+                            if (expr.Value == 0) {
                                 txt = "False";
                             } else {
                                 txt = "True";

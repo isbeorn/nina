@@ -69,10 +69,10 @@
                    Text="{Binding Exp.InfoButtonChar}" 
                    Foreground="{Binding Exp.InfoButtonColor}"
                    FontSize="{Binding Exp.InfoButtonSize}">
-            <!--<TextBlock.ToolTip>
+            <TextBlock.ToolTip>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                     <TextBlock MinHeight="20" Text="{Binding Exp.ExprErrors}" Margin="0,-2,0,0" VerticalAlignment="Center" Foreground="Orange" FontSize="14"  FontStyle="Italic"/>
-                    <Grid Background="{StaticResource ButtonBackgroundBrush}">
+                    <!--<Grid Background="{StaticResource ButtonBackgroundBrush}">
                         <Grid.Resources >
                             <Style TargetType="ItemsControl" >
                                 <Setter Property="Padding" Value="5,0,5,0" />
@@ -103,9 +103,9 @@
                         <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}"/>
                         <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
                         <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
-                    </Grid>
+                    </Grid>-->
                 </StackPanel>
-            </TextBlock.ToolTip>-->
+            </TextBlock.ToolTip>
         </TextBlock>
         
         <local:WhenTextBox

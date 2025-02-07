@@ -23,7 +23,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [JsonObject(MemberSerialization.OptIn)]
     [ExpressionObject]
 
-    public partial class LoopWhile : SequenceCondition, IValidatable {
+    public partial class LoopWhile : SequenceCondition, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public LoopWhile() {
