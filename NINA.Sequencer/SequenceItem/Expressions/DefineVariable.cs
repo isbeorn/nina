@@ -18,7 +18,7 @@ using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Variable")]
-    [ExportMetadata("Description", "Creates a Variable whose numeric value can be used in various instructions")]
+    [ExportMetadata("Description", "Creates a Variable whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
@@ -65,6 +65,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             return clone;
         }
 
+        // This is for the Call instruction, which won't get ported to NINA
         //public static void SetVariableReference(string id, string def, ISequenceContainer parent) {
         //    DefineVariable sv = new DefineVariable();
         //    sv.AttachNewParent(parent);
@@ -144,11 +145,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (Identifier.Length == 0 || OriginalExpr.Definition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
-                i.Add("The name of a Constant must be alphanumeric");
+                i.Add("The name of a Variable must be alphanumeric");
             }
 
             if (!Executed) {
-                OriginalExpr.Validate();
                 if (Expr.Error != null) {
                     Expression.AddExprIssues(i, OriginalExpr);
                 }
