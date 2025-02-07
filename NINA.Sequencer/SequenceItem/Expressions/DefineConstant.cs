@@ -79,13 +79,12 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
 
             Expression.AddExprIssues(Issues, Expr);
-            Expr.Evaluate();
 
             foreach (var kvp in Expr.Resolved) {
-                //if (kvp.Value is DefineVariable) {
-                //    i.Add("Constant definitions may not include Variables");
-                //    break;
-                //}
+                if (kvp.Value is DefineVariable) {
+                    i.Add("Constant definitions may not include Variables");
+                    break;
+                }
             }
 
             Issues = i;

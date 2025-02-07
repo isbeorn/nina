@@ -11,6 +11,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Runtime.CompilerServices;
+using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -93,8 +94,8 @@ namespace NINA.Sequencer.Logic {
             get {
                 if (double.IsNaN(_value) && !double.IsNaN(Default)) {
                     return Default;
-                } else if (double.IsNaN(_value)) {
-                    return 0;
+                //} else if (double.IsNaN(_value)) {
+                //    return 0;
                 }
                 return _value;
             }
@@ -113,6 +114,7 @@ namespace NINA.Sequencer.Logic {
                         Validator(this);
                     }
                     //RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("Value");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     ////RaisePropertyChanged("DockableValue");
@@ -543,9 +545,9 @@ namespace NINA.Sequencer.Logic {
                                 if (!Parameters.ContainsKey(symReference)) {
                                     // Not defined or evaluated
                                     Symbol s = FindSymbol(symReference, Context.Parent);
-                                    //if (s is SetVariable sv && !sv.Executed) {
-                                    //    AddError("Not evaluated: " + r);
-                                    //} else 
+                                    if (s is DefineVariable sv && !sv.Executed) {
+                                        AddError("Not evaluated: " + r);
+                                    } else 
                                     if (r.StartsWith("_")) {
                                         AddError("Reference: " + r);
                                     } else {

@@ -53,9 +53,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             clone.Identifier = Identifier;
             clone.Expr = Expr;
             if (Expr != null) {
-                clone.Expr.Symbol = this;
-                clone.Expr.Context = clone.Parent;
-                clone.Expr.Definition = Expr.Definition;
+                clone.Expr = new Expression(Expr.Definition, clone.Parent, this);
+            }
+
+            clone.OriginalExpr = OriginalExpr;
+            if (OriginalExpr != null) {
+                clone.OriginalExpr = new Expression(Expr.Definition, clone.Parent, this);
+            } else {
+                clone.OriginalExpr = new Expression("", clone.Parent, this);
             }
             return clone;
         }
@@ -93,9 +98,27 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
+        [JsonProperty]
+        public string OriginalDefinition {
+            get => OriginalExpr?.Definition;
+            set {
+                OriginalExpr.Definition = value;
+                RaisePropertyChanged("OriginalExpr");
+            }
+        }
+
+        private Expression _originalExpr = null;
+        public Expression OriginalExpr {
+            get => _originalExpr;
+            set {
+                _originalExpr = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            Expr = new Expression(Expr.Definition, this);
+            Expr = new Expression(Expr?.Definition ?? "", this);
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
                 if (Expr.Definition.Length > 0) {
@@ -118,21 +141,20 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (!IsAttachedToRoot()) return true;
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || Expr.Definition?.Length == 0) {
+            if (Identifier.Length == 0 || OriginalExpr.Definition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
             }
 
             if (!Executed) {
-                Expr.Validate();
+                OriginalExpr.Validate();
                 if (Expr.Error != null) {
-                    Expression.AddExprIssues(i, Expr);
+                    Expression.AddExprIssues(i, OriginalExpr);
                 }
+            } else {
+                Expression.AddExprIssues(i, Expr, OriginalExpr);
             }
-            //if (Expr.Error != null) {
-            //    Expression.AddExprIssues(i, Expr, OriginalExpr);
-            //}
 
             Issues = i;
             RaisePropertyChanged("Issues");
@@ -142,8 +164,8 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         public override void ResetProgress() {
             base.ResetProgress();
             Executed = false;
-            Expr.Definition = "";
             if (Expr != null) {
+                Expr.Definition = "";
                 Expr.IsExpression = true;
                 Expr.Evaluate();
             }
@@ -156,7 +178,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 Logger.Info("Executing Vx");
                 DumpSymbols();
             }
-            //Definition = DefExpression.Definition;
+            Expr.Definition = OriginalExpr.Definition;
             Executed = true;
             Expr.Evaluate();
 
@@ -179,18 +201,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             //    }
             //}
             return Task.CompletedTask;
-        }
-
-        // Legacy
-
-        [JsonProperty]
-        public string Variable {
-            get => null;
-            set {
-                if (value != null) {
-                    Identifier = value;
-                }
-            }
         }
     }
 }
