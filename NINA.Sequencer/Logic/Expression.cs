@@ -399,6 +399,11 @@ namespace NINA.Sequencer.Logic {
                 }
             }
         }
+        public void Refresh() {
+            Parameters.Clear();
+            Resolved.Clear();
+            Evaluate();
+        }
 
         private void AddError(string s) {
             if (Error == null) {
@@ -411,8 +416,6 @@ namespace NINA.Sequencer.Logic {
         public void Evaluate() {
             Evaluate(false);
         }
-
-        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         public void Evaluate(bool validateOnly) {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
@@ -467,14 +470,7 @@ namespace NINA.Sequencer.Logic {
                     // First, validate References
                     foreach (string sRef in References) {
                         Symbol sym;
-                        // Take care of "by reference" arguments
                         string symReference = sRef;
-                        if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
-                            symReference = sRef.Substring(1);
-                        } else if (symReference.StartsWith("$")) {
-                            symReference = symReference.Substring(1);
-                            ext = true;
-                        }
                         // Remember if we have any image data
                         //if (!ImageVolatile && symReference.StartsWith("Image_")) {
                         //    ImageVolatile = true;
