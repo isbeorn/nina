@@ -115,7 +115,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             var contextCoordinates = RetrieveContextCoordinates(this.Parent);
             if (contextCoordinates != null) {
                 Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
-               HasDsoParent = true;
+                HasDsoParent = true;
             } else {
                 HasDsoParent = false;
             }

@@ -48,7 +48,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        [IsExpression (Default = 60, Range = [1, 0])]
+        [IsExpression (Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
         private double time;
 
         private IList<string> issues = new List<string>();
@@ -64,7 +64,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             TimeExpression.Evaluate();
-            var a = TimeExpression.Value;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 

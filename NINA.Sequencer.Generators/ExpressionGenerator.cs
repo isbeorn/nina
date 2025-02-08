@@ -113,10 +113,7 @@ namespace NINA.Sequencer.Generators {
             return new PropertyInfo(symbol.ContainingType, symbol, true, args);
         }
 
-        private static string GeneratePartialClass(
-        string namespaceName,
-        string className,
-        IGrouping<string, PropertyInfo?> properties
+        private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties
     ) {
             // Build the partial class with one method per property
             var cloneSource = string.Empty;
