@@ -137,7 +137,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public override bool Validate() {
             var item = GetTakeExposure();
             var valid = item.Validate();
+
+
             Issues = item.Issues;
+            Expression.AddExprIssues(Issues, IterationsExpression);
+
             RaisePropertyChanged(nameof(Issues));
             return valid;
         }

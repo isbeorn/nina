@@ -191,25 +191,23 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
 
-            bool valid = false;
-
-            valid = te.Validate() && valid;
             issues.AddRange(te.Issues);
 
             if (sw.Filter != null) {
-                valid = sw.Validate() && valid;
                 issues.AddRange(sw.Issues);
             }
 
             if (dither.AfterExposures > 0) {
-                valid = dither.Validate() && valid;
                 issues.AddRange(dither.Issues);
             }
 
             Issues = issues;
+
+            NINA.Sequencer.Logic.Expression.AddExprIssues(Issues, IterationsExpression, DitherExpression);
+
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
+            return Issues.Count == 0;
         }
 
         public override TimeSpan GetEstimatedDuration() {
