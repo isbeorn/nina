@@ -227,7 +227,7 @@ namespace NINA.Sequencer.Logic {
             Validate(null);
         }
 
-        public static void AddExprIssues(IList<string> issues, params Expression[] exprs) {
+        public static void ValidateExpressions(IList<string> issues, params Expression[] exprs) {
             foreach (Expression expr in exprs) {
                 expr.Validate();
                 if (expr != null && expr.Error != null && !Expression.JustWarnings(expr.Error)) {

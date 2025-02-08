@@ -203,7 +203,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             Issues = issues;
 
-            NINA.Sequencer.Logic.Expression.AddExprIssues(Issues, IterationsExpression, DitherExpression);
+            NINA.Sequencer.Logic.Expression.ValidateExpressions(Issues, IterationsExpression, DitherExpression);
 
             RaisePropertyChanged(nameof(Issues));
 

@@ -69,7 +69,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public bool Validate() {
             var i = new List<string>();
             
-            Expression.AddExprIssues(i, PredicateExpression);
+            Expression.ValidateExpressions(i, PredicateExpression);
             
             Issues = i;
             return i.Count == 0;

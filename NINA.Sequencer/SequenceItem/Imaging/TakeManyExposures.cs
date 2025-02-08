@@ -140,7 +140,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
 
             Issues = item.Issues;
-            Expression.AddExprIssues(Issues, IterationsExpression);
+            Expression.ValidateExpressions(Issues, IterationsExpression);
 
             RaisePropertyChanged(nameof(Issues));
             return valid;

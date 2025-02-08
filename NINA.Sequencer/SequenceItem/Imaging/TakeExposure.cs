@@ -294,7 +294,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 OffsetExpression.Default = CameraInfo.DefaultOffset;
             }
 
-            Expression.AddExprIssues(i, ExposureTimeExpression, GainExpression, OffsetExpression);
+            Expression.ValidateExpressions(i, ExposureTimeExpression, GainExpression, OffsetExpression);
 
             Issues = i;
             return i.Count == 0;

@@ -150,10 +150,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             if (!Executed) {
                 if (Expr.Error != null) {
-                    Expression.AddExprIssues(i, OriginalExpr);
+                    Expression.ValidateExpressions(i, OriginalExpr);
                 }
             } else {
-                Expression.AddExprIssues(i, Expr, OriginalExpr);
+                Expression.ValidateExpressions(i, Expr, OriginalExpr);
             }
 
             Issues = i;

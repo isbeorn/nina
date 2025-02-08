@@ -62,7 +62,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            Expression.AddExprIssues(Issues, Expr);
+            Expression.ValidateExpressions(Issues, Expr);
 
             foreach (var kvp in Expr.Resolved) {
                 if (kvp.Value is DefineVariable) {
