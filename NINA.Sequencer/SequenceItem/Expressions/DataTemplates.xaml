@@ -46,7 +46,7 @@
                       Text="{Binding Identifier}"
                       TextAlignment="Center" />
                     <logic:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
-                    <logic:ExprControl Margin="10,0,0,0" Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+                    <logic:ExprControlVariable Margin="10,0,0,0" Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

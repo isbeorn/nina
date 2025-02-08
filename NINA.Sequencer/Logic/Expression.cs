@@ -366,7 +366,7 @@ namespace NINA.Sequencer.Logic {
                         Symbol.Validate();
                     }
                 }
-                RaisePropertyChanged("Expression");
+                RaisePropertyChanged("Definition");
                 RaisePropertyChanged("IsAnnotated");
             }
         }
