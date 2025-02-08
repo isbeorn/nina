@@ -119,13 +119,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            Expr = new Expression(Expr?.Definition ?? "", this);
+            Expr = new Expression(Expr?.Definition ?? "", Parent, this);
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
                 if (Expr.Definition.Length > 0) {
                     Expr.Error = "Not evaluated";
                 }
             }
+            OriginalExpr = new Expression(OriginalExpr.Definition, Parent, this);
         }
 
 
@@ -149,9 +150,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
 
             if (!Executed) {
-                if (Expr.Error != null) {
-                    Expression.ValidateExpressions(i, OriginalExpr);
-                }
+                Expression.ValidateExpressions(i, OriginalExpr);
             } else {
                 Expression.ValidateExpressions(i, Expr, OriginalExpr);
             }

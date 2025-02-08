@@ -611,11 +611,11 @@ namespace NINA.Sequencer.Logic {
         }
 
         public override string ToString() {
-            string id = Symbol != null ? Symbol.Identifier : Context?.Name;
+            string id = Symbol != null ? (Symbol.Name + ": " + Symbol.Identifier) : Context?.Name;
             if (Error != null) {
                 return $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}";
             } else if (Definition.Length == 0) {
-                return "None";
+                return "Undefined";
             }
             return $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}";
         }
