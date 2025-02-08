@@ -581,7 +581,7 @@ namespace NINA.Sequencer.Logic {
                                 }
                             }
                             RaisePropertyChanged("Error");
-                            RaisePropertyChanged("StringValue");
+                            //RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("ValueString");
                             RaisePropertyChanged("Value");
                         }
