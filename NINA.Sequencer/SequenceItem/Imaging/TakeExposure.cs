@@ -117,7 +117,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [IsExpression (DefaultString = "{Camera}", HasValidator = true)]
-        public int offset;
+        private int offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
