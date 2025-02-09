@@ -48,9 +48,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        static public SequenceContainer GlobalConstants = new SequentialContainer() { Name = "Global Constants" };
-
-        static public SequenceContainer GlobalVariables = new SequentialContainer() { Name = "Global Variables" };
+        static public SequenceContainer GlobalSymbols = new SequentialContainer() { Name = "Global Symbols" };
 
         public bool isDataSymbol { get; set; } = false;
 
@@ -69,7 +67,7 @@ namespace NINA.Sequencer.Logic {
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
-                if (p is SequenceRootContainer) { // || p == WhenPluginObject.Globals) {
+                if (p is SequenceRootContainer || (p == GlobalSymbols)) {
                     return true;
                 } else {
                     p = p.Parent;
@@ -114,7 +112,7 @@ namespace NINA.Sequencer.Logic {
 
             Symbol sym;
             _ = dict.TryGetValue(id, out sym);
-            if (sym is DefineGlobalVariable && !IsAttachedToRoot(sym.Parent)) {
+            if ((sym is DefineGlobalVariable || sym is DefineGlobalConstant) && !IsAttachedToRoot(sym.Parent)) {
                 // This is an orphaned definition; allow it to be redefined
                 dict[id] = this;
                 return id;
@@ -137,7 +135,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent) && (Parent != GlobalVariables) && !(this is DefineGlobalVariable)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && !(this is DefineGlobalVariable || this is DefineGlobalConstant)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -176,7 +174,7 @@ namespace NINA.Sequencer.Logic {
                         }
                         bool added = cached.TryAdd(Identifier, this);
 
-                        if (!added && sParent == GlobalVariables) {
+                        if (!added && sParent == GlobalSymbols) {
                             Symbol gv;
                             cached.TryGetValue(Identifier, out gv);
                             if (gv != null) {
@@ -312,8 +310,8 @@ namespace NINA.Sequencer.Logic {
         public ISequenceContainer SParent() {
             if (Parent == null) {
                 return null;
-            } else if (this is DefineGlobalVariable) {
-                return GlobalVariables;
+            } else if (this is DefineGlobalVariable || this is DefineGlobalConstant) {
+                return GlobalSymbols;
             } else {
                 return Parent;
             }
@@ -363,7 +361,7 @@ namespace NINA.Sequencer.Logic {
         public static Symbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             Symbol global = null;
-            if (SymbolCache.TryGetValue(GlobalVariables, out cached)) {
+            if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
                     // Don't find symbols that aren't part of the current sequence
@@ -372,7 +370,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             }
-            if (global is DefineGlobalVariable) return global;
+            if (global is DefineGlobalVariable || global is DefineGlobalConstant) return global;
             return null;
         }
 
@@ -411,19 +409,6 @@ namespace NINA.Sequencer.Logic {
                     sb.Append(" (in ");
                     sb.Append(sym.SParent().Name);
                     ISequenceContainer sParent = sym.SParent();
-                    if (sParent != sym.Parent) {
-                        //if (sym.Parent is CVContainer) {
-                        //    sb.Append("/" + sym.Parent.Name);
-                        //    if (sym.Parent.Parent is TemplateContainer tc) {
-                        //        sb.Append("/TBR");
-                        //        if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) {
-                        //            sb.Append("-" + tbr.TemplateName);
-                        //        }
-                        //    }
-                        //} else if (sParent != GlobalVariables) {
-                        //    sb.Append(" - WTF");
-                        //}
-                    }
                     sb.Append(") = ");
                     sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.ValueString);
                 } else {
@@ -461,19 +446,6 @@ namespace NINA.Sequencer.Logic {
                     sb.Append(" (in ");
                     sb.Append(sym.SParent().Name);
                     ISequenceContainer sParent = sym.SParent();
-                    if (sParent != sym.Parent) {
-                        //if (sym.Parent is CVContainer) {
-                        //    sb.Append("/" + sym.Parent.Name);
-                        //    if (sym.Parent.Parent is TemplateContainer tc) {
-                        //        sb.Append("/TBR");
-                        //        if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) {
-                        //            sb.Append("-" + tbr.TemplateName);
-                        //        }
-                        //    }
-                        //} else {
-                        sb.Append(" - WTF");
-                        //}
-                    }
                     sb.Append(") = ");
                     sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
                 } else {
