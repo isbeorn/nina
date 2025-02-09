@@ -331,7 +331,6 @@ namespace NINA.Sequencer.Logic {
         }
 
         public ConcurrentDictionary<Expression, byte> Consumers = new ConcurrentDictionary<Expression, byte>();
-        //public static WhenPlugin WhenPluginObject { get; set; }
 
         public ISequenceContainer SParent() {
             if (Parent == null) {

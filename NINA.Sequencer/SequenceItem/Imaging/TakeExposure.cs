@@ -19,31 +19,24 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.Validations;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using NINA.Equipment.Model;
-using NINA.Astrometry;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.Interfaces;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Generators;
-using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Sequencer.Logic;
-using System.Windows.Controls;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
