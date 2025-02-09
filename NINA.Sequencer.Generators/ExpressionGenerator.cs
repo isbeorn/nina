@@ -134,7 +134,7 @@ namespace NINA.Sequencer.Generators {
                 string fieldName = propName.Substring(0, 1).ToLower() + propName.Substring(1);
                 string fieldNameExpression = fieldName + "Expression";
                 string propNameExpression = propName + "Expression";
-                string upgradeFrom = "";
+                string? proxy = null;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
@@ -156,9 +156,14 @@ namespace NINA.Sequencer.Generators {
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
-                    if (kvp.Key == "HasValidator") hasValidator = true;
+                    if (kvp.Key == "HasValidator") {
+                        hasValidator = true;
+                    } else if (kvp.Key == "Proxy") {
+                        proxy = (string)kvp.Value.Value;
+//                        propertiesSource += $@"
+//                {propNameExpression}.Definition = {kvp.Value.Value}.ToString();";
 
-                    if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
+                    } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
                         double max = (double)values[1].Value;
@@ -192,12 +197,24 @@ namespace NINA.Sequencer.Generators {
         partial void {propNameExpression}Validator(Expression expr);";
                 }
 
-                if (true) {
+                if (proxy == null) {
                     propertiesSource += $@"
 
         public {fieldType} {propName} {{
             get => ({fieldType}){propNameExpression}.Value;
             set {{
+            }}
+        }}
+";
+                } else {
+                    propertiesSource += $@"
+
+        [JsonProperty]
+        public {fieldType} {propName} {{
+            get => {propNameExpression}.Definition;
+            set {{
+                {propNameExpression}.Definition = value;
+                {proxy} = {propNameExpression}.Value;
             }}
         }}
 ";
@@ -274,6 +291,11 @@ namespace {namespaceName}
             set { _hasValidator = value; }
         }
 
+        public string _proxy = "";
+        public string Proxy {
+            get { return _proxy; }
+            set { _proxy = value; }
+        }
 
     }
 

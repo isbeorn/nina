@@ -112,7 +112,8 @@ namespace NINA.Sequencer.Logic {
                     _value = value;
                     if (Range != null) {
                         CheckRange((double)value, Range);
-                    } else if (Validator != null) {
+                    } 
+                    if (Validator != null) {
                         Validator(this);
                     }
                     //RaisePropertyChanged("StringValue");

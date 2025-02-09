@@ -297,7 +297,7 @@
         <TextBlock VerticalAlignment="Center" Text=" " />
         <TextBlock
             VerticalAlignment="Center"
-            Text="{Binding TargetAltitude}"
+            Text="{Binding TargetAltitude, StringFormat={}{0:N2}}"
             ToolTip="Your target altitude" />
         <TextBlock VerticalAlignment="Center" Text="°" />
         <TextBlock
@@ -545,27 +545,10 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
                         <ComboBox
-                            Margin="5,0,0,0"
+                            Margin="5,0,10,0"
                             ItemsSource="{Binding Data.ComparisonOperators}"
                             SelectedValue="{Binding Data.Comparator}" />
-                        <ninactrl:UnitTextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            VerticalContentAlignment="Center"
-                            TextAlignment="Right"
-                            Unit="°">
-                            <ninactrl:UnitTextBox.Text>
-                                <Binding Path="Data.Offset" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DoubleRangeRule>
-                                            <rules:DoubleRangeRule.ValidRange>
-                                                <rules:DoubleRangeChecker Maximum="90" Minimum="-90" />
-                                            </rules:DoubleRangeRule.ValidRange>
-                                        </rules:DoubleRangeRule>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </ninactrl:UnitTextBox.Text>
-                        </ninactrl:UnitTextBox>
+                        <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
