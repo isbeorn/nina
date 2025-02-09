@@ -46,9 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             sv.Executed = true;
         }
 
-        public override object Clone() {
-            DefineVariable clone = new DefineVariable(this);
-
+        protected void PreClone(DefineVariable clone) {
             clone.Identifier = Identifier;
             clone.Expr = Expr;
             if (Expr != null) {
@@ -62,33 +60,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 clone.OriginalExpr = new Expression("", clone.Parent, this);
             }
             clone.OriginalDefinition = OriginalDefinition;
-            return clone;
+
         }
 
-        // This is for the Call instruction, which won't get ported to NINA
-        //public static void SetVariableReference(string id, string def, ISequenceContainer parent) {
-        //    DefineVariable sv = new DefineVariable();
-        //    sv.AttachNewParent(parent);
-        //    sv.Identifier = id;
-
-        //    if (def.StartsWith('@')) {
-        //        sv.Definition = "'" + def.Substring(1) + "'";
-        //        sv.Executed = true;
-        //        return;
-        //    }
-
-        //    sv.Definition = def;
-        //    sv.Executed = true;
-
-
-        //    Symbol sym = Symbol.FindSymbol(def.Substring(1), parent);
-        //    if (sym != null) {
-        //        sv.Expr = sym.Expr;
-        //        sv.IsReference = true;
-        //    } else {
-        //        throw new SequenceEntityFailedException("Call by reference symbol not found: " + def);
-        //    }
-        //}
+        public override object Clone() {
+            DefineVariable clone = new DefineVariable(this);
+            PreClone(clone);
+            return clone;
+        }
 
         private bool iExecuted = false;
         public bool Executed {
@@ -181,24 +160,24 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Executed = true;
             Expr.Evaluate();
 
-            //if (this is SetGlobalVariable) {
-            //    // Find the one in Globals and set it
-            //    Symbol global = FindGlobalSymbol(Identifier);
-            //    if (global is SetGlobalVariable sgv) {
+            if (this is DefineGlobalVariable) {
+                // Find the one in Globals and set it
+                Symbol global = FindGlobalSymbol(Identifier);
+                if (global is DefineGlobalVariable sgv) {
 
-            //        // Bug fix
-            //        foreach (var res in Expr.Resolved) {
-            //            if (res.Value == null) {
-            //                Expr.GlobalVolatile = true;
-            //                break;
-            //            }
-            //        }
+                    // Bug fix
+                    foreach (var res in Expr.Resolved) {
+                        if (res.Value == null) {
+                            //res.GlobalVolatile = true;
+                            break;
+                        }
+                    }
 
-            //        sgv.Expr = Expr;
-            //        sgv.Definition = Expr.Expression;
-            //        sgv.Executed = true;
-            //    }
-            //}
+                    sgv.Expr = Expr;
+                    sgv.Expr.Definition = Expr.Definition;
+                    sgv.Executed = true;
+                }
+            }
             return Task.CompletedTask;
         }
     }

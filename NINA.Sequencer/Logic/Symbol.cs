@@ -7,37 +7,16 @@ using System.Threading.Tasks;
 using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
-using NINA.Sequencer;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Data;
-using NINA.Core.Model.Equipment;
-using NINA.Equipment.Equipment.MyCamera;
-using NINA.Equipment.Equipment.MyDome;
-using NINA.Equipment.Equipment.MyFlatDevice;
-using NINA.Equipment.Equipment.MyRotator;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using NINA.Equipment.Equipment.MySwitch;
-using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
-using NINA.Equipment.Equipment.MyFilterWheel;
-using System.IO;
-using System.Linq;
-using NINA.Equipment.Equipment.MyFocuser;
-using NINA.Equipment.Equipment.MyTelescope;
 using System.Collections.Concurrent;
 using NINA.Astrometry;
-using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
-using NINA.Equipment.Equipment.MyGuider.PHD2;
-using Newtonsoft.Json.Linq;
 using NINA.Core.Utility.Notification;
-using Google.Protobuf;
-using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Sequencer.Mediator;
-using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace NINA.Sequencer.Logic {
 
@@ -69,11 +48,9 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
+        static public SequenceContainer GlobalConstants = new SequentialContainer() { Name = "Global Constants" };
 
         static public SequenceContainer GlobalVariables = new SequentialContainer() { Name = "Global Variables" };
-
-        public bool IsGlobalVariable { get; set; } = false;
 
         public bool isDataSymbol { get; set; } = false;
 
@@ -137,11 +114,11 @@ namespace NINA.Sequencer.Logic {
 
             Symbol sym;
             _ = dict.TryGetValue(id, out sym);
-            //if (sym is SetGlobalVariable && !IsAttachedToRoot(sym.Parent)) {
-            //    // This is an orphaned definition; allow it to be redefined
-            //    dict[id] = this;
-            //    return id;
-            //}
+            if (sym is DefineGlobalVariable && !IsAttachedToRoot(sym.Parent)) {
+                // This is an orphaned definition; allow it to be redefined
+                dict[id] = this;
+                return id;
+            }
             Notification.ShowWarning("The Constant/Variable " + id + " is already defined");
             return "";
         }
@@ -160,7 +137,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent)) { // && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != GlobalVariables) && !(this is DefineGlobalVariable)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -335,14 +312,8 @@ namespace NINA.Sequencer.Logic {
         public ISequenceContainer SParent() {
             if (Parent == null) {
                 return null;
-                //} else if (this is SetGlobalVariable) {
-                //    return GlobalVariables;
-                //} else if (Parent is CVContainer cvc) {
-                //    if (cvc.Parent is TemplateContainer tc) {
-                //        return tc.Parent;
-                //    } else {
-                //        return cvc.Parent;
-                //    }
+            } else if (this is DefineGlobalVariable) {
+                return GlobalVariables;
             } else {
                 return Parent;
             }
@@ -401,7 +372,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             }
-            //if (global is SetGlobalVariable) return global;
+            if (global is DefineGlobalVariable) return global;
             return null;
         }
 
