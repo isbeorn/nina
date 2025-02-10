@@ -58,9 +58,13 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            InputCoordinates ic = (InputCoordinates)sender;
-            Coordinates c = ic.Coordinates;
-            RrExpression.Definition = c.RA.ToString();
+            // When coordinates change, we change the decimal value
+            if (e.PropertyName == "Coordinates") {
+                InputCoordinates ic = (InputCoordinates)sender;
+                Coordinates c = ic.Coordinates;
+                // I think 5 decimals is ok for this...
+                RaExpression.Definition = Math.Round(c.RA, 5).ToString();
+            }
         }
 
         private ITelescopeMediator telescopeMediator;
@@ -78,11 +82,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         [IsExpression (Default = 0, Range = [0, 24], HasValidator = true)]
-        private double rr = 0;
+        private double ra = 0;
 
-        partial void RrExpressionValidator(Expression expr) {
+        partial void RaExpressionValidator(Expression expr) {
+            // When the decimal value changes, we update the HMS values
             InputCoordinates ic = new InputCoordinates();
-            ic.Coordinates.RA = RrExpression.Value;
+            ic.Coordinates.RA = RaExpression.Value;
             Coordinates.RAHours = ic.RAHours;
             Coordinates.RAMinutes = ic.RAMinutes;
             Coordinates.RASeconds = ic.RASeconds;
@@ -122,8 +127,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             } else {
                 Inherited = false;
             }
-            Coordinates.PropertyChanged += Coordinates_PropertyChanged;
 
+            // Is this needed?
+            Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             Validate();
         }
 
@@ -133,7 +139,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
-            Expression.ValidateExpressions(i, RrExpression);
+            Expression.ValidateExpressions(i, RaExpression);
             Issues = i;
             return i.Count == 0;
         }
