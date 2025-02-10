@@ -141,7 +141,7 @@ namespace NINA.Sequencer.Generators {
                 if (fieldType == "Int32") fieldType = "int";
 
                 cloneSource += $@"
-                {propNameExpression} = new Expression ({propNameExpression}.Definition, this),";
+                {propNameExpression} = new Expression ({propNameExpression}),";
 
                 propertiesSource += $@"
 

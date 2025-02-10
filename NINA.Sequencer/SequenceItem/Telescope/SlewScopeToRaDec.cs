@@ -14,21 +14,21 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Sequencer.Container;
 using NINA.Sequencer.Validations;
 using NINA.Astrometry;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -38,7 +38,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewScopeToRaDec : SequenceItem, IValidatable {
+    [ExpressionObject]
+
+    public partial class SlewScopeToRaDec : SequenceItem, IValidatable, IDisposable {
 
         [ImportingConstructor]
         public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
@@ -51,10 +53,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SlewScopeToRaDec(this) {
-                Coordinates = Coordinates?.Clone()
-            };
+        partial void AfterClone(SlewScopeToRaDec clone, SlewScopeToRaDec cloned) {
+            clone.Coordinates = cloned.Coordinates?.Clone();
+        }
+
+        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            InputCoordinates ic = (InputCoordinates)sender;
+            Coordinates c = ic.Coordinates;
+            RrExpression.Definition = c.RA.ToString();
         }
 
         private ITelescopeMediator telescopeMediator;
@@ -69,6 +75,17 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 inherited = value;
                 RaisePropertyChanged();
             }
+        }
+
+        [IsExpression (Default = 0, Range = [0, 24], HasValidator = true)]
+        private double rr = 0;
+
+        partial void RrExpressionValidator(Expression expr) {
+            InputCoordinates ic = new InputCoordinates();
+            ic.Coordinates.RA = RrExpression.Value;
+            Coordinates.RAHours = ic.RAHours;
+            Coordinates.RAMinutes = ic.RAMinutes;
+            Coordinates.RASeconds = ic.RASeconds;
         }
 
         [JsonProperty]
@@ -105,6 +122,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             } else {
                 Inherited = false;
             }
+            Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+
             Validate();
         }
 
@@ -113,13 +132,18 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
-            } 
+            }
+            Expression.ValidateExpressions(i, RrExpression);
             Issues = i;
             return i.Count == 0;
         }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SlewScopeToRaDec)}, Coordinates: {Coordinates}";
+        }
+
+        public void Dispose() {
+            Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
         }
     }
 }

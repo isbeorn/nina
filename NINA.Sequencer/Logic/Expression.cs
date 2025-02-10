@@ -25,6 +25,15 @@ namespace NINA.Sequencer.Logic {
 
         }
 
+        public Expression (Expression cloneMe) {
+            Definition = cloneMe.Definition;
+            Context = cloneMe.Context;
+            Symbol = cloneMe.Symbol;
+            Validator = cloneMe.Validator;
+            Range = cloneMe.Range;
+            Default = cloneMe.Default;
+        }
+
         public Expression(string definition, ISequenceEntity context) {
             Definition = definition;
             Context = context;
@@ -125,20 +134,17 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        // 0x:- (greater than 0) ; 0:360 ; 0:360x ; -90:90 ; 0:59
-        // split by -; check & remove x
-
         private void CheckRange(double value, double[] range) {
             int r = Convert.ToInt32(Range[2]);
-            double min = Range[0] + (((r & 1) == 1) ? 1e-8 : 0);
-            double max = Range[1] - (((r & 2) == 2) ? 1e-8 : 0);
-            if (value <= min || (max != 0 && value >= max)) {
+            double min = Range[0] + (((r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE) ? 1e-8 : 0);
+            double max = Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
+            if (value < min || (max != 0 && value > max)) {
                 if (r == 0) {
                     if (max == 0) {
                         Error = "Range: >= " + min;
                         //Error = "Value must be " + min + " or greater";
                     } else {
-                        Error = "Range: " + min + "> value < " + max;
+                        Error = "Range: " + min + "< value < " + max;
                         //Error = "Value must be between " + min + " and " + max;
                     }
                 } else {
@@ -297,15 +303,6 @@ namespace NINA.Sequencer.Logic {
                 }
                 Double result;
 
-                if (value.StartsWith('%') && value.EndsWith('%') && value.Length > 2) {
-                    value = "__ENV_" + value.Substring(1, value.Length - 2);
-                }
-
-                if (value.StartsWith("~~")) {
-                    Symbol.DumpSymbols();
-                    value = value.Substring(2);
-                }
-
                 if (value != definition && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
@@ -368,6 +365,8 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
                 RaisePropertyChanged("Definition");
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
                 RaisePropertyChanged("IsAnnotated");
             }
         }
@@ -507,19 +506,6 @@ namespace NINA.Sequencer.Logic {
                                     AddParameter(symReference, Val);
                                     //Volatile = true;
                                 }
-                                if (!found && symReference.StartsWith("__ENV_")) {
-                                    string env = Environment.GetEnvironmentVariable(symReference.Substring(6), EnvironmentVariableTarget.User);
-                                    UInt32 val;
-                                    if (env == null || !UInt32.TryParse(env, out val)) {
-                                        val = 0;
-                                    }
-                                    // We don't want these resolved, just added to Parameters
-                                    Resolved.Remove(symReference);
-                                    Resolved.Add(symReference, null);
-                                    Parameters.Remove(symReference);
-                                    AddParameter(symReference, val);
-                                    //Volatile = true;
-                                }
                             }
                         }
                     }
@@ -540,22 +526,6 @@ namespace NINA.Sequencer.Logic {
                                 string symReference = r;
                                 if (symReference.StartsWith('_') || symReference.StartsWith('@')) {
                                     symReference = symReference.Substring(1);
-                                }
-                                if (!Parameters.ContainsKey(symReference)) {
-                                    // Not defined or evaluated
-                                    Symbol s = FindSymbol(symReference, Context.Parent);
-                                    if (s is DefineVariable sv && !sv.Executed) {
-                                        AddError("Not evaluated: " + r);
-                                    } else 
-                                    if (r.StartsWith("_")) {
-                                        AddError("Reference: " + r);
-                                    } else {
-                                        if (r.StartsWith('$') && ext && validateOnly) {
-                                            AddError("External: " + symReference);
-                                        } else {
-                                            AddError("Undefined: " + r);
-                                        }
-                                    }
                                 }
                             }
                             RaisePropertyChanged("Error");
