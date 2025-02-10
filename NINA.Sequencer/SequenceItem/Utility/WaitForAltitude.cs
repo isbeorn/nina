@@ -25,6 +25,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -34,7 +36,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForAltitude : WaitForAltitudeBase, IValidatable {
+    [ExpressionObject]
+
+    public partial class WaitForAltitude : WaitForAltitudeBase, IValidatable {
         private bool hasDsoParent;
         private string aboveOrBelow;
  
@@ -47,12 +51,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForAltitude(WaitForAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
-        
-        public override object Clone() {
-            return new WaitForAltitude(this) {
-                AboveOrBelow = AboveOrBelow,
-                Data = Data.Clone()
-            };
+
+        partial void AfterClone(WaitForAltitude clone, WaitForAltitude cloned) {
+            clone.AboveOrBelow = cloned.AboveOrBelow;
+            clone.Data = cloned.Data.Clone();
         }
         
         [JsonProperty]
@@ -70,6 +72,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 else Data.Comparator = ComparisonOperatorEnum.LESS_THAN_OR_EQUAL;
                 CalculateExpectedTime();
                 RaisePropertyChanged();
+            }
+        }
+
+        [IsExpression (Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
+        private string offset;
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                Data.Offset = expr.Value;
             }
         }
 
@@ -145,6 +156,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             if (issues.Count == 0) {
                 CalculateExpectedTime();
             }
+
+            Expression.ValidateExpressions(Issues, OffsetExpression);
 
             Issues = issues;
             return issues.Count == 0;

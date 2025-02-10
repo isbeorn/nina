@@ -137,7 +137,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             CalculateExpectedTime();
             Expression.ValidateExpressions(Issues, OffsetExpression);
             return Issues.Count == 0;
-            return true;
         }
     }
 }
