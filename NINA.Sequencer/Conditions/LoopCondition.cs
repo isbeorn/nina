@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -31,25 +32,19 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LoopCondition : SequenceCondition {
+    [ExpressionObject]
+
+    public partial class LoopCondition : SequenceCondition {
 
         [ImportingConstructor]
         public LoopCondition() {
-            Iterations = 2;
         }
 
         private LoopCondition(LoopCondition cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new LoopCondition(this) {
-                Iterations = Iterations
-            };
-        }
-
         private int completedIterations;
-        private int iterations;
 
         [JsonProperty]
         public int CompletedIterations {
@@ -60,14 +55,8 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
-        [JsonProperty]
-        public int Iterations {
-            get => iterations;
-            set {
-                iterations = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression (Default = 2, Range = [1, 0])]
+        private int iterations;
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             var check = CompletedIterations < Iterations;

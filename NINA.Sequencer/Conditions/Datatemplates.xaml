@@ -275,14 +275,7 @@
     <DataTemplate DataType="{x:Type local:LoopCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Iterations, Mode=TwoWay}" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIterations}" />
-                </StackPanel>
+                <logic:ExprControl Label="" Unit="Iterations" Exp="{Binding IterationsExpression}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
