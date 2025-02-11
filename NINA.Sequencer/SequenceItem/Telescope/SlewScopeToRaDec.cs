@@ -67,7 +67,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             if (e.PropertyName.StartsWith("RA")) {
                 RaExpression.Definition = Math.Round(c.RA, 5).ToString();
-            } else if (e.PropertyName.StartsWith("DEC")) {
+            } else if (e.PropertyName.StartsWith("Dec")) {
                 DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
             }
         }
