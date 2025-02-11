@@ -105,6 +105,7 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock VerticalAlignment="Center">s</TextBlock>
+        <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding DecExpression, Mode=TwoWay}" />
     </StackPanel>
 
 

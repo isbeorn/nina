@@ -64,6 +64,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 Coordinates c = ic.Coordinates;
                 // I think 5 decimals is ok for this...
                 RaExpression.Definition = Math.Round(c.RA, 5).ToString();
+                DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
             }
         }
 
@@ -81,7 +82,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression (Default = 0, Range = [0, 24], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
         private double ra = 0;
 
         partial void RaExpressionValidator(Expression expr) {
@@ -91,6 +92,18 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Coordinates.RAHours = ic.RAHours;
             Coordinates.RAMinutes = ic.RAMinutes;
             Coordinates.RASeconds = ic.RASeconds;
+        }
+ 
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        private double dec = 0;
+
+        partial void DecExpressionValidator(Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputCoordinates ic = new InputCoordinates();
+            ic.Coordinates.Dec = DecExpression.Value;
+            Coordinates.DecDegrees = ic.DecDegrees;
+            Coordinates.DecMinutes = ic.DecMinutes;
+            Coordinates.DecSeconds = ic.DecSeconds;
         }
 
         [JsonProperty]
@@ -139,7 +152,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
-            Expression.ValidateExpressions(i, RaExpression);
+            Expression.ValidateExpressions(i, RaExpression, DecExpression);
             Issues = i;
             return i.Count == 0;
         }
