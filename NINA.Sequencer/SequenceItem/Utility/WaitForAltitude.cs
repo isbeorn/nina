@@ -78,9 +78,30 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         [IsExpression (Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
         private string offset;
 
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
+        private double ra = 0;
+        partial void RaExpressionValidator(Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputCoordinates ic = new InputCoordinates();
+            ic.Coordinates.RA = RaExpression.Value;
+            Data.Coordinates.RAHours = ic.RAHours;
+            Data.Coordinates.RAMinutes = ic.RAMinutes;
+            Data.Coordinates.RASeconds = ic.RASeconds;
+        }
+
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {
                 Data.Offset = expr.Value;
+            }
+        }
+
+        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            // When coordinates change, we change the decimal value
+            if (e.PropertyName == "Coordinates") {
+                InputCoordinates ic = (InputCoordinates)sender;
+                Coordinates c = ic.Coordinates;
+                // I think 5 decimals is ok for this...
+                RaExpression.Definition = Math.Round(c.RA, 5).ToString();
             }
         }
 
@@ -130,6 +151,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             } else {
                 HasDsoParent = false;
             }
+            Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             Validate();
         }
 
@@ -157,10 +179,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 CalculateExpectedTime();
             }
 
-            Expression.ValidateExpressions(Issues, OffsetExpression);
+            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression);
 
             Issues = issues;
             return issues.Count == 0;
+        }
+        public void Dispose() {
+            Data.Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
         }
     }
 }

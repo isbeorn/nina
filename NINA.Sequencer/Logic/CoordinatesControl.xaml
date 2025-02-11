@@ -15,7 +15,7 @@
     <StackPanel
          DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:CoordinatesControl}}}"
          Orientation="Horizontal"
-         Visibility="{Binding Path=HasDsoParent, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+         Visibility="{Binding Path=Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
         <TextBox
              MinWidth="40"
