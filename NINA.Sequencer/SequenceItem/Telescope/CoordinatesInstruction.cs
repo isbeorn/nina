@@ -35,6 +35,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         //[JsonProperty]
         public InputCoordinates Coordinates { get; set; } = new InputCoordinates();
 
+        public void UpdateExpressions(CoordinatesInstruction clone, CoordinatesInstruction cloned) {
+            clone.RaExpression = new Expression(RaExpression);
+            clone.DecExpression = new Expression(DecExpression);
+            clone.Coordinates = cloned.Coordinates?.Clone();
+        }
 
         partial void RaExpressionValidator(Expression expr) {
             // When the decimal value changes, we update the HMS values

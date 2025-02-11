@@ -55,9 +55,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public override SlewScopeToRaDec Clone() {
             SlewScopeToRaDec clone = new SlewScopeToRaDec(this);
-            clone.RaExpression = new Expression(RaExpression);
-            clone.DecExpression = new Expression(DecExpression);
-            clone.Coordinates = Coordinates?.Clone();
+            UpdateExpressions(clone, this);
             return clone;
         }
 
