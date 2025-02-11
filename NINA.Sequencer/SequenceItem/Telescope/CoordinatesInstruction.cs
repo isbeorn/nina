@@ -4,6 +4,7 @@ using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,16 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Protect = false;
         }
 
+        private bool hasDsoParent;
+
+        [JsonProperty]
+        public bool HasDsoParent {
+            get => hasDsoParent;
+            set {
+                hasDsoParent = value;
+                RaisePropertyChanged();
+            }
+        }
 
         protected void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // When coordinates change, we change the decimal value
@@ -73,6 +84,25 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             } else if (e.PropertyName.StartsWith("Dec")) {
                 DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
             }
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+
+            var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
+            if (coordinates != null) {
+                Coordinates.Coordinates = coordinates.Coordinates;
+                HasDsoParent = true;
+            } else {
+                HasDsoParent = false;
+            }
+
+            // Is this needed?
+            if (Coordinates != null) {
+                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            }
+            RaExpression.Context = this;
+            DecExpression.Context = this;
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {

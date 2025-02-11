@@ -64,17 +64,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
 
-        private bool hasDsoParent;
-
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if(telescopeMediator.GetInfo().AtPark) {
                 Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
@@ -91,20 +80,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         public IList<string> Issues = new List<string>();
 
         public override void AfterParentChanged() {
-            var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (coordinates != null) {
-                Coordinates.Coordinates = coordinates.Coordinates;
-                HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
-
-            // Is this needed?
-            if (Coordinates != null) {
-                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
-            }
-            RaExpression.Context = Parent;
-            DecExpression.Context = Parent;
+            base.AfterParentChanged();
             Validate();
         }
 

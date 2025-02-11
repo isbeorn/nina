@@ -533,15 +533,14 @@ namespace NINA.Sequencer.Logic {
                             RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("Value");
                         } else {
+                            Error = null;
                             object eval = e.Evaluate();
                             // We got an actual value
                             if (eval is Boolean b) {
                                 Value = b ? 1 : 0;
-                                Error = null;
                             } else {
                                 try {
                                     Value = Convert.ToDouble(eval);
-                                    Error = null;
                                 } catch (Exception) {
                                     //string str = (string)eval;
                                     //StringValue = str;
