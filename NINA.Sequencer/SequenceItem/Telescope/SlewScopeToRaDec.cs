@@ -30,6 +30,7 @@ using NINA.Sequencer.Logic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Core.Utility;
 using Parlot.Fluent;
+using System.Runtime.InteropServices;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -39,37 +40,25 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
 
-    public partial class SlewScopeToRaDec : SequenceItem, IValidatable, IDisposable {
+    public class SlewScopeToRaDec : CoordinatesInstruction, IValidatable, IDisposable {
 
         [ImportingConstructor]
-        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
+        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) :base(null) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
-            Coordinates = new InputCoordinates();
         }
 
         private SlewScopeToRaDec(SlewScopeToRaDec cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator) {
             CopyMetaData(cloneMe);
         }
 
-        partial void AfterClone(SlewScopeToRaDec clone, SlewScopeToRaDec cloned) {
-            clone.Coordinates = cloned.Coordinates?.Clone();
-        }
-
-        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            // When coordinates change, we change the decimal value
-            InputCoordinates ic = (InputCoordinates)sender;
-            Coordinates c = ic.Coordinates;
-
-            if (Protect) return;
-
-            if (e.PropertyName.StartsWith("RA")) {
-                RaExpression.Definition = Math.Round(c.RA, 5).ToString();
-            } else if (e.PropertyName.StartsWith("Dec")) {
-                DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
-            }
+        public override SlewScopeToRaDec Clone() {
+            SlewScopeToRaDec clone = new SlewScopeToRaDec(this);
+            clone.RaExpression = new Expression(RaExpression);
+            clone.DecExpression = new Expression(DecExpression);
+            clone.Coordinates = Coordinates?.Clone();
+            return clone;
         }
 
         private ITelescopeMediator telescopeMediator;
@@ -82,49 +71,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             get => hasDsoParent;
             set {
                 hasDsoParent = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
-        private double ra = 0;
-
-        private bool Protect = false;
-
-        partial void RaExpressionValidator(Expression expr) {
-            // When the decimal value changes, we update the HMS values
-            InputCoordinates ic = new InputCoordinates();
-            Protect = true;
-            ic.Coordinates.RA = RaExpression.Value;
-            Coordinates.RAHours = ic.RAHours;
-            Coordinates.RAMinutes = ic.RAMinutes;
-            Coordinates.RASeconds = ic.RASeconds;
-            Protect = false;
-        }
- 
-        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
-        private double dec = 0;
-
-        partial void DecExpressionValidator(Expression expr) {
-            // When the decimal value changes, we update the HMS values
-            InputCoordinates ic = new InputCoordinates();
-            Protect = true;
-            ic.Coordinates.Dec = DecExpression.Value;
-            Coordinates.DecDegrees = ic.DecDegrees;
-            Coordinates.DecMinutes = ic.DecMinutes;
-            Coordinates.DecSeconds = ic.DecSeconds;
-            Protect = false;
-        }
-
-        //[JsonProperty]
-        public InputCoordinates Coordinates { get; set; }
-
-        private IList<string> issues = new List<string>();
-
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
                 RaisePropertyChanged();
             }
         }
@@ -142,6 +88,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        public IList<string> Issues = new List<string>();
+
         public override void AfterParentChanged() {
             var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
@@ -152,7 +100,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
 
             // Is this needed?
-            Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            if (Coordinates != null) {
+                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            }
+            RaExpression.Context = Parent;
+            DecExpression.Context = Parent;
             Validate();
         }
 
