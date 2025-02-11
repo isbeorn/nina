@@ -109,6 +109,13 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             throw new NotImplementedException();
         }
 
-        public IList<string> Issues => new List<string>();
+        private IList<string> issues = new List<string>();
+
+        public IList<string> Issues {
+            get { return issues; }
+            set {
+                Issues = value;
+            }
+        }
     }
 }

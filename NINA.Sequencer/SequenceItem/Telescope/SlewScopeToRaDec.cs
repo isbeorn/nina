@@ -77,22 +77,20 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        public IList<string> Issues = new List<string>();
-
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Validate();
         }
 
         public bool Validate() {
-            var i = new List<string>();
+            Issues.Clear();
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {
-                i.Add(Loc.Instance["LblTelescopeNotConnected"]);
+                Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
-            Expression.ValidateExpressions(i, RaExpression, DecExpression);
-            Issues = i;
-            return i.Count == 0;
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         public override string ToString() {
