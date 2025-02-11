@@ -325,6 +325,7 @@
             </mini:MiniSequenceItem.SequenceItemContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:WaitForAltitude}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -332,9 +333,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
                         <ComboBox
-                            Margin="5,0,0,0"
-                            SelectedValue="{Binding AboveOrBelow}"
-                            SelectedValuePath="Content">
+                           Margin="5,0,0,0"
+                           SelectedValue="{Binding AboveOrBelow}"
+                           SelectedValuePath="Content">
                             <ComboBoxItem>
                                 <s:String>&lt;</s:String>
                             </ComboBoxItem>
@@ -345,15 +346,15 @@
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
                     <StackPanel
-                        DataContext="{Binding Data.Coordinates}"
-                        Orientation="Horizontal"
-                        Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext.HasDsoParent, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                       DataContext="{Binding Data.Coordinates}"
+                       Orientation="Horizontal"
+                       Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext.HasDsoParent, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                         <TextBlock Margin="5,0,5,0" VerticalAlignment="Center">|</TextBlock>
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -364,9 +365,9 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">h</TextBlock>
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -377,14 +378,14 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">m</TextBlock>
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <Binding
-                                    Path="RASeconds"
-                                    StringFormat="N1"
-                                    UpdateSourceTrigger="LostFocus">
+                                   Path="RASeconds"
+                                   StringFormat="N1"
+                                   UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:SecondsRule />
                                     </Binding.ValidationRules>
@@ -393,15 +394,15 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">s</TextBlock>
                         <TextBlock
-                            Margin="7.5,0,7.5,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="|" />
+                           Margin="7.5,0,7.5,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="|" />
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
                                     <Binding Path="NegativeDec" />
@@ -415,9 +416,9 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">d</TextBlock>
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -428,14 +429,14 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">m</TextBlock>
                         <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           TextAlignment="Right">
                             <TextBox.Text>
                                 <Binding
-                                    Path="DecSeconds"
-                                    StringFormat="N1"
-                                    UpdateSourceTrigger="LostFocus">
+                                   Path="DecSeconds"
+                                   StringFormat="N1"
+                                   UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:SecondsRule />
                                     </Binding.ValidationRules>
@@ -444,6 +445,34 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">s</TextBlock>
                     </StackPanel>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+            <view:SequenceBlockView.SequenceItemProgressContent>
+                <ContentPresenter Content="{StaticResource WaitProgress}" />
+            </view:SequenceBlockView.SequenceItemProgressContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type local:TestAltitude}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
+                        <ComboBox
+                           Margin="5,0,0,0"
+                           SelectedValue="{Binding AboveOrBelow}"
+                           SelectedValuePath="Content">
+                            <ComboBoxItem>
+                                <s:String>&lt;</s:String>
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <s:String>&gt;</s:String>
+                            </ComboBoxItem>
+                        </ComboBox>
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" />
+                    </StackPanel>
+                    <logic:CoordinatesControl DataContext="{Binding Data.Coordinates}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>

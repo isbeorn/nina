@@ -70,13 +70,13 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
 
-        private bool inherited;
+        private bool hasDsoParent;
 
         [JsonProperty]
-        public bool Inherited {
-            get => inherited;
+        public bool HasDsoParent {
+            get => hasDsoParent;
             set {
-                inherited = value;
+                hasDsoParent = value;
                 RaisePropertyChanged();
             }
         }
@@ -123,9 +123,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
                 Coordinates.Coordinates = coordinates.Coordinates;
-                Inherited = true;
+                HasDsoParent = true;
             } else {
-                Inherited = false;
+                HasDsoParent = false;
             }
 
             // Is this needed?
