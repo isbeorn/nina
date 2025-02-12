@@ -119,7 +119,6 @@ namespace NINA.Sequencer.Generators {
             var cloneSource = string.Empty;
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
-            bool hasValidator = false;
 
             foreach (var prop in properties) {
                 if (prop is null) continue;
@@ -134,6 +133,7 @@ namespace NINA.Sequencer.Generators {
                 string fieldName = propName.Substring(0, 1).ToLower() + propName.Substring(1);
                 string fieldNameExpression = fieldName + "Expression";
                 string propNameExpression = propName + "Expression";
+                bool hasValidator = false;
                 string? proxy = null;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
