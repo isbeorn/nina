@@ -77,6 +77,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        private double lastRA;
+        private double lastDec;
+
         protected void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // When coordinates change, we change the decimal value
             InputCoordinates ic = (InputCoordinates)sender;
@@ -84,11 +87,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
             if (Protect) return;
 
-            if (e.PropertyName.StartsWith("RA")) {
+            if (c.RA != lastRA) {
                 RaExpression.Definition = Math.Round(c.RA, 5).ToString();
-            } else if (e.PropertyName.StartsWith("Dec")) {
+            } else if (c.Dec != lastDec) {
                 DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
             }
+
+            lastRA = c.RA;
+            lastDec = c.Dec;
         }
 
         public override void AfterParentChanged() {
