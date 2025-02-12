@@ -88,9 +88,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (Protect) return;
 
             if (c.RA != lastRA) {
-                RaExpression.Definition = Math.Round(c.RA, 5).ToString();
+                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
             } else if (c.Dec != lastDec) {
-                DecExpression.Definition = Math.Round(c.Dec, 5).ToString();
+                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
             }
 
             lastRA = c.RA;
