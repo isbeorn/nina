@@ -6,6 +6,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
@@ -39,6 +40,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.DecExpression = new Expression(DecExpression);
             clone.PositionAngleExpression = new Expression(PositionAngleExpression);
             clone.Coordinates = cloned.Coordinates?.Clone();
+            clone.OffsetExpression = new Expression(OffsetExpression);
         }
 
         [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
@@ -85,6 +87,17 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        [IsExpression(Default = 30, Range = [-90, 90], HasValidator = true)]
+        private double offset;
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                //Data.Offset = expr.Value;
+            }
+        }
+
+        public WaitLoopData Data { get; set; }
+
         private bool hasDsoParent;
 
         [JsonProperty]
@@ -128,13 +141,17 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 HasDsoParent = false;
             }
 
-            // Is this needed?
             if (Coordinates != null) {
+                //if (Data == null) {
                 Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+                //} else {
+                    //Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+                //}
             }
             RaExpression.Context = this;
             DecExpression.Context = this;
             PositionAngleExpression.Context = this;
+            OffsetExpression.Context = this;
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {

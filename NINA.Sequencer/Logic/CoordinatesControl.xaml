@@ -18,7 +18,7 @@
          Visibility="{Binding Path=Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
         <TextBox
-             MinWidth="40"
+             MinWidth="30"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>
@@ -31,7 +31,7 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">h</TextBlock>
         <TextBox
-             MinWidth="40"
+             MinWidth="30"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>
@@ -44,7 +44,7 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">m</TextBlock>
         <TextBox
-             MinWidth="40"
+             MinWidth="35"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>
@@ -64,7 +64,7 @@
              Text="|" />
         <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
         <TextBox
-             MinWidth="40"
+             MinWidth="30"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>
@@ -80,7 +80,7 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">d</TextBlock>
         <TextBox
-             MinWidth="40"
+             MinWidth="30"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>
@@ -93,7 +93,7 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">m</TextBlock>
         <TextBox
-             MinWidth="40"
+             MinWidth="35"
              Margin="5,4,0,0"
              TextAlignment="Right">
             <TextBox.Text>

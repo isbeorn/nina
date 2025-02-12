@@ -344,7 +344,12 @@
                             </ComboBoxItem>
                         </ComboBox>
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
-                        <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>

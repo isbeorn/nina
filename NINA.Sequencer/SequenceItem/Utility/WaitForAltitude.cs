@@ -27,6 +27,7 @@ using NINA.Core.Locale;
 using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Telescope;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -36,26 +37,35 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
 
-    public partial class WaitForAltitude : WaitForAltitudeBase, IValidatable {
+    public partial class WaitForAltitude : CoordinatesInstruction, IValidatable {
         private bool hasDsoParent;
         private string aboveOrBelow;
  
         [ImportingConstructor]
-        public WaitForAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            AboveOrBelow = ">";
+        public WaitForAltitude(IProfileService profileService) :base(null) {
+            Data = new WaitLoopData(profileService, false, CalculateExpectedTime, GetType().Name);
             Data.Offset = 30;
+            AboveOrBelow = ">";
+            ProfileService = profileService;
         }
 
         private WaitForAltitude(WaitForAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
 
-        partial void AfterClone(WaitForAltitude clone, WaitForAltitude cloned) {
-            clone.AboveOrBelow = cloned.AboveOrBelow;
-            clone.Data = cloned.Data.Clone();
+        public override object Clone() {
+            WaitForAltitude clone = new WaitForAltitude(this);
+            UpdateExpressions(clone, this);
+            return clone;
         }
+
+        public IProfileService ProfileService { get; set; }
+
+        //partial void AfterClone(WaitForAltitude clone, WaitForAltitude cloned) {
+        //    clone.AboveOrBelow = cloned.AboveOrBelow;
+        //    clone.Data = cloned.Data.Clone();
+        //}
         
         [JsonProperty]
         public string AboveOrBelow {
@@ -75,35 +85,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        [IsExpression (Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private string offset;
-
-        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
-        private double ra = 0;
-        partial void RaExpressionValidator(Expression expr) {
-            // When the decimal value changes, we update the HMS values
-            InputCoordinates ic = new InputCoordinates();
-            ic.Coordinates.RA = RaExpression.Value;
-            Data.Coordinates.RAHours = ic.RAHours;
-            Data.Coordinates.RAMinutes = ic.RAMinutes;
-            Data.Coordinates.RASeconds = ic.RASeconds;
-        }
-
-        partial void OffsetExpressionValidator(Expression expr) {
-            if (expr.Error == null) {
-                Data.Offset = expr.Value;
-            }
-        }
-
-        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            // When coordinates change, we change the decimal value
-            if (e.PropertyName == "Coordinates") {
-                InputCoordinates ic = (InputCoordinates)sender;
-                Coordinates c = ic.Coordinates;
-                // I think 5 decimals is ok for this...
-                RaExpression.Definition = Math.Round(c.RA, 5).ToString();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
@@ -128,64 +109,44 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return altaz.Altitude.Degree;
         }
 
-        public override void CalculateExpectedTime() {
+        public void CalculateExpectedTime() {
             Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: true, 30, GetCurrentAltitude);
         }
 
-
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public override void AfterParentChanged() {
-            var contextCoordinates = RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
-                HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
-            Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            base.AfterParentChanged();
+            Coordinates = Data.Coordinates;
             Validate();
         }
 
-        public override string ToString() {
+        public override string ToString() { 
             return $"Category: {Category}, Item: {nameof(WaitForAltitude)}, Altitude: {AboveOrBelow}{Data.TargetAltitude}";
         }
 
         public bool Validate() {
-            List<string> issues = new List<string>();
+            Issues.Clear();
 
             double maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.DecDegrees);
             double minAlt = AstroUtil.GetAltitude(180, Data.Latitude, Data.Coordinates.DecDegrees);
 
             if (aboveOrBelow == ">") {
                 if (maxAlt < Data.TargetAltitude) {
-                    issues.Add(Loc.Instance["LblUnreachableAltitude"]);
+                    Issues.Add(Loc.Instance["LblUnreachableAltitude"]);
                 }
             } else {
                 if (minAlt > Data.TargetAltitude) {
-                    issues.Add(Loc.Instance["LblUnreachableAltitude"]);
+                    Issues.Add(Loc.Instance["LblUnreachableAltitude"]);
                 }
             }
 
-            if (issues.Count == 0) {
+            if (Issues.Count == 0) {
                 CalculateExpectedTime();
             }
 
-            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression);
+            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression, DecExpression);
 
-            Issues = issues;
-            return issues.Count == 0;
-        }
-        public void Dispose() {
-            Data.Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
+            return Issues.Count == 0;
         }
     }
 }
