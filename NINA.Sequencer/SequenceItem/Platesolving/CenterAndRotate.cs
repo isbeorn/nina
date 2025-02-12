@@ -225,18 +225,11 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override void AfterParentChanged() {
-            var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Coordinates.Coordinates = contextCoordinates.Coordinates;
-                PositionAngle = contextCoordinates.PositionAngle;
-                //Inherited = true;
-            } else {
-                //Inherited = false;
-            }
+            base.AfterParentChanged();
             Validate();
         }
 
-        public bool Validate() {
+        public new bool Validate() {
             Issues.Clear();
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {

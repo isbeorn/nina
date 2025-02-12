@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
