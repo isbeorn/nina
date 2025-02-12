@@ -38,6 +38,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility.Notification;
 using NINA.PlateSolving.Interfaces;
 using NINA.Equipment.Interfaces;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Platesolving {
 
@@ -86,10 +87,11 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override object Clone() {
-            return new CenterAndRotate(this) {
-                Coordinates = Coordinates?.Clone(),
-                PositionAngle = PositionAngle
-            };
+            CenterAndRotate clone = new CenterAndRotate(this);
+            clone.Coordinates = Coordinates?.Clone();
+            clone.PositionAngle = PositionAngle;
+            UpdateExpressions(clone, this);
+            return clone;
         }
 
         /// <summary>
@@ -235,24 +237,27 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             if (contextCoordinates != null) {
                 Coordinates.Coordinates = contextCoordinates.Coordinates;
                 PositionAngle = contextCoordinates.PositionAngle;
-                Inherited = true;
+                //Inherited = true;
             } else {
-                Inherited = false;
+                //Inherited = false;
             }
             Validate();
         }
 
-        public override bool Validate() {
-            var i = new List<string>();
-            if (!telescopeMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblTelescopeNotConnected"]);
+        public bool Validate() {
+            Issues.Clear();
+            var info = telescopeMediator.GetInfo();
+            if (!info.Connected) {
+                Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
             if (!rotatorMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblRotatorNotConnected"]);
+                Issues.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
-            Issues = i;
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }
+
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(CenterAndRotate)}, Coordinates {Coordinates?.Coordinates}, Position Angle: {PositionAngle}°";

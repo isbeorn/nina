@@ -39,6 +39,8 @@ using NINA.PlateSolving.Interfaces;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces;
+using NINA.Sequencer.SequenceItem.Telescope;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Platesolving {
 
@@ -48,7 +50,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class Center : SequenceItem, IValidatable {
+    public class Center : CoordinatesInstruction, IValidatable {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
         protected IImagingMediator imagingMediator;
@@ -69,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                       IDomeMediator domeMediator,
                       IDomeFollower domeFollower,
                       IPlateSolverFactory plateSolverFactory,
-                      IWindowServiceFactory windowServiceFactory) {
+                      IWindowServiceFactory windowServiceFactory) :base(null) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.imagingMediator = imagingMediator;
@@ -95,33 +97,9 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override object Clone() {
-            return new Center(this) {
-                Coordinates = Coordinates?.Clone()
-            };
-        }
-
-        private bool inherited;
-
-        [JsonProperty]
-        public bool Inherited {
-            get => inherited;
-            set {
-                inherited = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public InputCoordinates Coordinates { get; set; }
-
-        private IList<string> issues = new List<string>();
-
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
-                RaisePropertyChanged();
-            }
+            Center clone = new Center(this);
+            UpdateExpressions(clone, this);
+            return clone;
         }
 
         protected virtual async Task<PlateSolveResult> DoCenter(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -193,23 +171,19 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         }
 
         public override void AfterParentChanged() {
-            var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Coordinates.Coordinates = contextCoordinates.Coordinates;
-                Inherited = true;
-            } else {
-                Inherited = false;
-            }
+            base.AfterParentChanged();
             Validate();
         }
 
-        public virtual bool Validate() {
-            var i = new List<string>();
-            if (!telescopeMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblTelescopeNotConnected"]);
+        public bool Validate() {
+            Issues.Clear();
+            var info = telescopeMediator.GetInfo();
+            if (!info.Connected) {
+                Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
-            Issues = i;
-            return i.Count == 0;
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         public override string ToString() {
