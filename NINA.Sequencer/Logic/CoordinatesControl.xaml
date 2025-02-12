@@ -106,6 +106,17 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center">s</TextBlock>
         <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding DecExpression, Mode=TwoWay}" />
+        <StackPanel 
+            Orientation="Horizontal" 
+            DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+            Visibility="{Binding UsesRotation, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <TextBlock
+                Margin="10,0,10,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="|" />
+            <logic:ExprControl Label="{ns:Loc LblRotation}" Unit="°"  Exp="{Binding PositionAngleExpression, Mode=TwoWay}" />
+        </StackPanel>
     </StackPanel>
 
 

@@ -65,12 +65,13 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                         telescopeMediator,
                                                                         imagingMediator,
                                                                         filterWheelMediator,
-                                                                        guiderMediator,
+                                                                       guiderMediator,
                                                                         domeMediator,
                                                                         domeFollower,
                                                                         plateSolverFactory,
                                                                         windowServiceFactory) {
             this.rotatorMediator = rotatorMediator;
+            this.UsesRotation = true;
         }
 
         private CenterAndRotate(CenterAndRotate cloneMe) : this(cloneMe.profileService,
@@ -90,6 +91,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             CenterAndRotate clone = new CenterAndRotate(this);
             clone.Coordinates = Coordinates?.Clone();
             clone.PositionAngle = PositionAngle;
+            clone.UsesRotation = true;
             UpdateExpressions(clone, this);
             return clone;
         }
@@ -99,16 +101,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         /// </summary>
         [JsonProperty(propertyName: "Rotation")]
         public double DeprecatedRotation { set => PositionAngle = 360 - value; }
-
-        private double positionAngle = 0;
-        [JsonProperty]
-        public double PositionAngle {
-            get => positionAngle;
-            set {
-                positionAngle = AstroUtil.EuclidianModulus(value, 360);
-                RaisePropertyChanged();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (telescopeMediator.GetInfo().AtPark) {
@@ -253,7 +245,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             if (!rotatorMediator.GetInfo().Connected) {
                 Issues.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
-            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression);
             RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
@@ -27,9 +28,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.Coordinates = cloned.Coordinates?.Clone();
         }
 
-        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
-        private double ra = 0;
-
         protected bool Protect = false;
 
         //[JsonProperty]
@@ -38,8 +36,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         public void UpdateExpressions(CoordinatesInstruction clone, CoordinatesInstruction cloned) {
             clone.RaExpression = new Expression(RaExpression);
             clone.DecExpression = new Expression(DecExpression);
+            clone.PositionAngleExpression = new Expression(PositionAngleExpression);
             clone.Coordinates = cloned.Coordinates?.Clone();
         }
+
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
+        private double ra = 0;
 
         partial void RaExpressionValidator(Expression expr) {
             // When the decimal value changes, we update the HMS values
@@ -64,6 +66,22 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Coordinates.DecMinutes = ic.DecMinutes;
             Coordinates.DecSeconds = ic.DecSeconds;
             Protect = false;
+        }
+
+        [JsonProperty]
+        private bool usesRotation = false;
+        public bool UsesRotation {
+            get { return usesRotation; }
+            set { usesRotation = value; }
+        }
+
+        [IsExpression(Default = 0, Range = [0, 360], HasValidator = true)]
+        private double positionAngle = 0;
+
+        partial void PositionAngleExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                expr.Value = AstroUtil.EuclidianModulus(expr.Value, 360);
+            }
         }
 
         private bool hasDsoParent;
@@ -103,6 +121,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
             if (coordinates != null) {
                 Coordinates.Coordinates = coordinates.Coordinates;
+                PositionAngle = coordinates.PositionAngle;
                 HasDsoParent = true;
             } else {
                 HasDsoParent = false;
@@ -114,6 +133,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
             RaExpression.Context = this;
             DecExpression.Context = this;
+            PositionAngleExpression.Context = this;
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
