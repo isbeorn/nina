@@ -205,6 +205,7 @@ namespace NINA.Sequencer.Generators {
                 return ({fieldType}){propNameExpression}.Value;
             }}
             set {{
+                {propNameExpression}.Definition = value.ToString();
                 RaisePropertyChanged();
             }}
         }}
