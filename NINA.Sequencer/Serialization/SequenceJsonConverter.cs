@@ -43,20 +43,20 @@ namespace NINA.Sequencer.Serialization {
             };
         }
 
-        //public class ConsoleTraceWriter : ITraceWriter {
-        //    public TraceLevel LevelFilter {
-        //        // trace all messages (Verbose and above)
-        //        get { return TraceLevel.Verbose; }
-        //    }
+        public class ConsoleTraceWriter : ITraceWriter {
+            public TraceLevel LevelFilter {
+                // trace all messages (Verbose and above)
+                get { return TraceLevel.Verbose; }
+            }
 
-        //    public void Trace(TraceLevel level, string message, Exception ex) {
-        //        if (ex != null) {
-        //            Console.WriteLine(level.ToString() + ": " + message + " Ex: " + ex.Message);
-        //        } else {
-        //            System.Diagnostics.Debug.WriteLine(level.ToString() + ": " + message);
-        //        }
-        //    }
-        //}
+            public void Trace(TraceLevel level, string message, Exception ex) {
+                if (ex != null) {
+                    Console.WriteLine(level.ToString() + ": " + message + " Ex: " + ex.Message);
+                } else {
+                    System.Diagnostics.Debug.WriteLine(level.ToString() + ": " + message);
+                }
+            }
+        }
 
         public string Serialize(ISequenceContainer container) {
             var json = JsonConvert.SerializeObject(container, Formatting.Indented, new JsonSerializerSettings {
@@ -69,7 +69,7 @@ namespace NINA.Sequencer.Serialization {
         public ISequenceContainer Deserialize(string sequenceJSON) {
             var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
                 Converters = converters,
-                //TraceWriter = new ConsoleTraceWriter()
+                TraceWriter = new ConsoleTraceWriter()
             });
 
             return container;

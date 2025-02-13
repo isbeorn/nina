@@ -114,7 +114,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {
-                //Data.Offset = expr.Value;
             }
         }
 

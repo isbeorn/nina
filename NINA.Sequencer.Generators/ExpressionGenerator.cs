@@ -200,6 +200,7 @@ namespace NINA.Sequencer.Generators {
                 if (proxy == null) {
                     propertiesSource += $@"
 
+        [JsonProperty]
         public {fieldType} {propName} {{
             get {{
                 return ({fieldType}){propNameExpression}.Value;
