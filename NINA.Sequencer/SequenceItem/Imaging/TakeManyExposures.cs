@@ -91,7 +91,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int iterations;
         partial void IterationsExpressionValidator(Expression expr) {
             if (Conditions.Count > 0) {
-                GetLoopCondition().Iterations = (int)expr.Value;
+                LoopCondition lc = GetLoopCondition();
+                // Update the Expression in LoopCondition so the getter has the right value
+                lc.IterationsExpression.Definition = expr.Value.ToString();
+                // Kick the property so that RaisePropertyChanged() is called so that the UI is updated in progress
+                lc.Iterations = (int)expr.Value;
             }
         }
 

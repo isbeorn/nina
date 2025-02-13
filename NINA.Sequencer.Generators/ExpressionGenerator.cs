@@ -201,8 +201,11 @@ namespace NINA.Sequencer.Generators {
                     propertiesSource += $@"
 
         public {fieldType} {propName} {{
-            get => ({fieldType}){propNameExpression}.Value;
+            get {{
+                return ({fieldType}){propNameExpression}.Value;
+            }}
             set {{
+                RaisePropertyChanged();
             }}
         }}
 ";

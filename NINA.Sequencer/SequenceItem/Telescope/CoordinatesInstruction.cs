@@ -142,11 +142,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
 
             if (Coordinates != null) {
-                //if (Data == null) {
                 Coordinates.PropertyChanged += Coordinates_PropertyChanged;
-                //} else {
-                    //Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
-                //}
             }
             RaExpression.Context = this;
             DecExpression.Context = this;

@@ -30,6 +30,11 @@ using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
+using System.DirectoryServices.ActiveDirectory;
+using Accord;
+using System.Reflection;
+using NINA.Core.Utility;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -163,11 +168,13 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int iterations;
         partial void IterationsExpressionValidator(Logic.Expression expr) {
             if (Conditions.Count > 0) {
-                GetLoopCondition().Iterations = (int)expr.Value;
+                LoopCondition lc = GetLoopCondition();
+                // Update the Expression in LoopCondition so the getter has the right value
+                lc.IterationsExpression.Definition = expr.Value.ToString();
+                // Kick the property so that RaisePropertyChanged() is called so that the UI is updated in progress
+                lc.Iterations = (int)expr.Value;
             }
         }
-
-
 
         public SwitchFilter GetSwitchFilter() {
             return Items[0] as SwitchFilter;
