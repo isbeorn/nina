@@ -16,6 +16,7 @@
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
+    
     <DataTemplate DataType="{x:Type local:Center}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -38,24 +39,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                    <TextBlock
-                        Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblRotation}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        TextAlignment="Right"
-                        Unit="°">
-                        <ninactrl:UnitTextBox.Text>
-                            <Binding Path="PositionAngle" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:FullCircleDegreesRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ninactrl:UnitTextBox.Text>
-                    </ninactrl:UnitTextBox>
+                    <logic:ExprControl Label="{ns:Loc LblRotation}" Exp="{Binding PositionAngleExpression}" Unit="°" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
