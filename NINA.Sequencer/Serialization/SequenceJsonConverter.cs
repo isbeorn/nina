@@ -13,11 +13,13 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,17 +43,33 @@ namespace NINA.Sequencer.Serialization {
             };
         }
 
+        //public class ConsoleTraceWriter : ITraceWriter {
+        //    public TraceLevel LevelFilter {
+        //        // trace all messages (Verbose and above)
+        //        get { return TraceLevel.Verbose; }
+        //    }
+
+        //    public void Trace(TraceLevel level, string message, Exception ex) {
+        //        if (ex != null) {
+        //            Console.WriteLine(level.ToString() + ": " + message + " Ex: " + ex.Message);
+        //        } else {
+        //            System.Diagnostics.Debug.WriteLine(level.ToString() + ": " + message);
+        //        }
+        //    }
+        //}
+
         public string Serialize(ISequenceContainer container) {
             var json = JsonConvert.SerializeObject(container, Formatting.Indented, new JsonSerializerSettings {
                 TypeNameHandling = TypeNameHandling.All,
-                PreserveReferencesHandling = PreserveReferencesHandling.All
+                PreserveReferencesHandling = PreserveReferencesHandling.All,
             });
             return json;
         }
 
         public ISequenceContainer Deserialize(string sequenceJSON) {
             var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
-                Converters = converters
+                Converters = converters,
+                //TraceWriter = new ConsoleTraceWriter()
             });
 
             return container;

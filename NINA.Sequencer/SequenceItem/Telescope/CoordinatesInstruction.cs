@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Generators;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,8 +34,28 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         protected bool Protect = false;
 
-        //[JsonProperty]
-        public InputCoordinates Coordinates { get; set; } = new InputCoordinates();
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            // Fix up Ra and Dec Expressions (auto-update to existing sequences)
+            Coordinates c = Coordinates.Coordinates;
+            if (c.RA != 0 || c.Dec != 0) {
+                // Fix up decimals
+                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
+                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+            }
+        }
+
+        private InputCoordinates coordinates = new InputCoordinates();
+        
+        [JsonProperty]
+        public InputCoordinates Coordinates {
+            get {
+                return coordinates;
+            }
+            set {
+                coordinates = value;
+            }
+        }
 
         public void UpdateExpressions(CoordinatesInstruction clone, CoordinatesInstruction cloned) {
             clone.RaExpression = new Expression(RaExpression);
