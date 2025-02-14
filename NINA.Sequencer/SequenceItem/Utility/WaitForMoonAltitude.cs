@@ -28,6 +28,7 @@ using NINA.Astrometry.RiseAndSet;
 using Nito.AsyncEx;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -42,8 +43,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [ImportingConstructor]
         public WaitForMoonAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            Data.Offset = 0d;
+            //Data.Offset = 0d;
             Name = Name;
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
         }
 
         private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService) {
@@ -83,7 +91,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private string offset;
+        private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {

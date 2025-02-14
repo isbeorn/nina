@@ -31,6 +31,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NINA.Core.Utility;
 using Parlot.Fluent;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 

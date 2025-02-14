@@ -30,6 +30,7 @@ using Nikon;
 using NINA.Sequencer.Generators;
 using Microsoft.Extensions.Options;
 using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -48,6 +49,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
         }
 
         partial void AfterClone(WaitForSunAltitude clone, WaitForSunAltitude cloned) {
@@ -84,7 +92,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         [IsExpression (Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
-        private string offset;
+        private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {

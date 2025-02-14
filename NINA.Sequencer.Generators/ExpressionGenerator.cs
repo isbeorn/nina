@@ -136,7 +136,7 @@ namespace NINA.Sequencer.Generators {
                 bool hasValidator = false;
                 string? proxy = null;
                 bool jsonIgnore = false;
-                bool jsonDontSerialize = false;
+                bool jsonDontSerialize = true;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
@@ -201,7 +201,21 @@ namespace NINA.Sequencer.Generators {
                 }
 
                 
-                if (jsonDontSerialize) {
+                if (proxy != null) {
+                    propertiesSource += $@"
+
+        [Json";
+                    propertiesSource += jsonIgnore ? "Ignore" : "Property";
+                    propertiesSource += $@"]
+        public {fieldType} {propName} {{
+            get => {proxy};
+            set {{
+                {propNameExpression}.Definition = value.ToString();
+                {proxy} = {propNameExpression}.Value;
+            }}
+        }}
+";
+                } else if (jsonDontSerialize) {
                     propertiesSource += $@"
         
         [JsonProperty(propertyName: ""{propName}"")]
@@ -214,7 +228,7 @@ namespace NINA.Sequencer.Generators {
             }}
         }}
 ";
-                } else if (proxy == null) {
+                } else {
                     propertiesSource += $@"
 
         [Json";
@@ -225,22 +239,8 @@ namespace NINA.Sequencer.Generators {
                 return ({fieldType}){propNameExpression}.Value;
             }}
             set {{
-                {propNameExpression}.Definition = value.ToString();
+                {propNameExpression}.Definition = value.ToString ();
                 RaisePropertyChanged();
-            }}
-        }}
-";
-                } else {
-                    propertiesSource += $@"
-
-        [Json";
-                    propertiesSource += jsonIgnore ? "Ignore" : "Property";
-                    propertiesSource += $@"]
-        public {fieldType} {propName} {{
-            get => {propNameExpression}.Definition;
-            set {{
-                {propNameExpression}.Definition = value;
-                {proxy} = {propNameExpression}.Value;
             }}
         }}
 ";
