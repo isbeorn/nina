@@ -45,9 +45,16 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+
+        [JsonProperty(propertyName: "Coordinates")]
+        private InputCoordinates DeprecatedCoordinates {
+            set => coordinates = value;
+        }
+
+
         private InputCoordinates coordinates = new InputCoordinates();
-        
-        [JsonProperty]
+
+        [JsonIgnore]
         public InputCoordinates Coordinates {
             get {
                 return coordinates;
@@ -117,6 +124,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        //[JsonProperty(propertyName: "UserMoonAltitude")]
+        //private double DeprecatedUserMoonAltitude { set => Data.Offset = value; }
+        //[Obsolete]
+        //[JsonIgnore]
+        //public double UserMoonAltitude { get; set; }
+        
         public WaitLoopData Data { get; set; }
 
         private bool hasDsoParent;
