@@ -13,11 +13,11 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-//#if DEBUG
-//            if (!Debugger.IsAttached) {//
-//                Debugger.Launch();
-//            }
-//#endif 
+#if DEBUG
+            if (!Debugger.IsAttached) {//
+                Debugger.Launch();
+            }
+#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),

@@ -191,7 +191,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding IterationsExpression}" />
+                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -250,7 +250,7 @@
             <view:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding IterationsExpression}" />
+                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
