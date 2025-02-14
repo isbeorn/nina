@@ -34,6 +34,8 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
 using NINA.Sequencer.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger.Guider {
 
@@ -43,7 +45,9 @@ namespace NINA.Sequencer.Trigger.Guider {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Guider")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class DitherAfterExposures : SequenceTrigger, IValidatable {
+    [ExpressionObject]
+
+    public partial class DitherAfterExposures : SequenceTrigger, IValidatable {
         private IGuiderMediator guiderMediator;
         private IImageHistoryVM history;
         private IProfileService profileService;
@@ -61,24 +65,26 @@ namespace NINA.Sequencer.Trigger.Guider {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new DitherAfterExposures(this) {
-                AfterExposures = AfterExposures,
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone()
-            };
+        partial void AfterClone(DitherAfterExposures clone, DitherAfterExposures cloned) {
+            //AfterExposures = AfterExposures,
+            clone.TriggerRunner = (SequentialContainer)cloned.TriggerRunner.Clone();
         }
 
         private int lastTriggerId = 0;
+
+
+        [IsExpression (Default = 3, Range = [0, 32], JsonDontSerialize = true)]
         private int afterExposures;
 
-        [JsonProperty]
-        public int AfterExposures {
-            get => afterExposures;
-            set {
-                afterExposures = value;
-                RaisePropertyChanged();
-            }
-        }
+
+        //[JsonProperty]
+        //public int AfterExposures {
+        //    get => afterExposures;
+        //    set {
+        //        afterExposures = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         private IList<string> issues = new List<string>();
 
@@ -135,6 +141,7 @@ namespace NINA.Sequencer.Trigger.Guider {
                 i.Add(Loc.Instance["LblGuiderNotConnected"]);
             }
 
+            Expression.ValidateExpressions(i, AfterExposuresExpression);
             Issues = i;
             return i.Count == 0;
         }

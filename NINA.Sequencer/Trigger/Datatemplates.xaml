@@ -14,6 +14,7 @@
     xmlns:d="clr-namespace:NINA.Sequencer.Trigger.Dome"
     xmlns:g="clr-namespace:NINA.Sequencer.Trigger.Guider"
     xmlns:local="clr-namespace:NINA.Sequencer.Trigger"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mf="clr-namespace:NINA.Sequencer.Trigger.MeridianFlip"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
@@ -347,15 +348,7 @@
     <DataTemplate DataType="{x:Type g:DitherAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
