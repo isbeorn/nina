@@ -23,6 +23,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using NINA.Sequencer.Generators;
+using NINA.Sequencer.Validations;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -34,7 +36,7 @@ namespace NINA.Sequencer.Conditions {
     [JsonObject(MemberSerialization.OptIn)]
     [ExpressionObject]
 
-    public partial class LoopCondition : SequenceCondition {
+    public partial class LoopCondition : SequenceCondition, IValidatable {
 
         [ImportingConstructor]
         public LoopCondition() {
@@ -55,7 +57,9 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
-        [IsExpression (Default = 2, Range = [1, 0])]
+        public IList<string> Issues { get; private set; }
+
+        [IsExpression (Default = 2, Range = [1, 0], JsonDontSerialize = true)]
         private int iterations;
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -77,6 +81,13 @@ namespace NINA.Sequencer.Conditions {
 
         public override string ToString() {
             return $"Condition: {nameof(LoopCondition)}, Iterations: {CompletedIterations}/{Iterations}";
+        }
+
+        public bool Validate() {
+            IList<string> issues = new List<string>();
+            Expression.ValidateExpressions(issues, IterationsExpression);
+            Issues = issues;
+            return Issues.Count == 0;
         }
     }
 }

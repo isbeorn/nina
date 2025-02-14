@@ -275,7 +275,7 @@
     <DataTemplate DataType="{x:Type local:LoopCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="" Unit="Iterations" Exp="{Binding IterationsExpression}" />
+                <logic:ExprControl Label="" Unit=" Iterations" Exp="{Binding IterationsExpression}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -288,7 +288,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center">/</TextBlock>
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding IterationsExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
