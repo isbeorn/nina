@@ -107,7 +107,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             set { usesRotation = value; }
         }
 
-        [IsExpression(Default = 0, Range = [0, 360], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 360], HasValidator = true, JsonDontSerialize = true)]
         private double positionAngle = 0;
 
         partial void PositionAngleExpressionValidator(Expression expr) {
@@ -124,12 +124,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        //[JsonProperty(propertyName: "UserMoonAltitude")]
-        //private double DeprecatedUserMoonAltitude { set => Data.Offset = value; }
-        //[Obsolete]
-        //[JsonIgnore]
-        //public double UserMoonAltitude { get; set; }
-        
         public WaitLoopData Data { get; set; }
 
         private bool hasDsoParent;

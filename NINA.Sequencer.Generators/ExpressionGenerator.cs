@@ -201,7 +201,20 @@ namespace NINA.Sequencer.Generators {
                 }
 
                 
-                if (proxy == null) {
+                if (jsonDontSerialize) {
+                    propertiesSource += $@"
+        
+        [JsonProperty(propertyName: ""{propName}"")]
+        private {fieldType} Deprecated{propName} {{ set => {propNameExpression}.Definition = value.ToString(); }}
+        [JsonIgnore]
+        public {fieldType} {propName} {{
+            get => {propNameExpression}.Value;
+            set {{
+                {propNameExpression}.Definition = value.ToString();
+            }}
+        }}
+";
+                } else if (proxy == null) {
                     propertiesSource += $@"
 
         [Json";

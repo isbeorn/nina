@@ -69,7 +69,7 @@ namespace NINA.Sequencer.Serialization {
         public ISequenceContainer Deserialize(string sequenceJSON) {
             var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
                 Converters = converters,
-                TraceWriter = new ConsoleTraceWriter()
+                //TraceWriter = new ConsoleTraceWriter()
             });
 
             return container;
