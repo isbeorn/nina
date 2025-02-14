@@ -48,7 +48,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        [IsExpression(Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
+        [IsExpression(Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM], JsonDontSerialize = true)]
         private double time;
 
         private IList<string> issues = new List<string>();
