@@ -287,7 +287,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <logic:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DitherExpression}" />
+                    <logic:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding Triggers[0].DitherExpression}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
