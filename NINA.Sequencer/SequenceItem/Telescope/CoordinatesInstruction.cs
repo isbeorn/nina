@@ -72,7 +72,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.OffsetExpression = new Expression(OffsetExpression);
         }
 
-        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true, JsonIgnore = true)]
         private double ra = 0;
 
         partial void RaExpressionValidator(Expression expr) {
@@ -86,7 +86,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Protect = false;
         }
 
-        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true, JsonIgnore = true)]
         private double dec = 0;
 
         partial void DecExpressionValidator(Expression expr) {
@@ -116,7 +116,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression(Default = 30, Range = [-90, 90], HasValidator = true)]
+        [IsExpression(Default = 30, Range = [-90, 90], HasValidator = true, JsonDontSerialize = true )]
         private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {

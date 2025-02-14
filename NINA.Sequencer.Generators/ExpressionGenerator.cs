@@ -135,6 +135,8 @@ namespace NINA.Sequencer.Generators {
                 string propNameExpression = propName + "Expression";
                 bool hasValidator = false;
                 string? proxy = null;
+                bool jsonIgnore = false;
+                bool jsonDontSerialize = false;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
@@ -160,9 +162,10 @@ namespace NINA.Sequencer.Generators {
                         hasValidator = true;
                     } else if (kvp.Key == "Proxy") {
                         proxy = (string)kvp.Value.Value;
-//                        propertiesSource += $@"
-//                {propNameExpression}.Definition = {kvp.Value.Value}.ToString();";
-
+                    } else if (kvp.Key == "JsonIgnore") {
+                        jsonIgnore = (bool)kvp.Value.Value;
+                    } else if (kvp.Key == "JsonDontSerialize") {
+                        jsonDontSerialize = (bool)kvp.Value.Value;
                     } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
@@ -197,10 +200,13 @@ namespace NINA.Sequencer.Generators {
         partial void {propNameExpression}Validator(Expression expr);";
                 }
 
+                
                 if (proxy == null) {
                     propertiesSource += $@"
 
-        [JsonProperty]
+        [Json";
+                    propertiesSource += jsonIgnore ? "Ignore" : "Property";
+                    propertiesSource += $@"]
         public {fieldType} {propName} {{
             get {{
                 return ({fieldType}){propNameExpression}.Value;
@@ -214,7 +220,9 @@ namespace NINA.Sequencer.Generators {
                 } else {
                     propertiesSource += $@"
 
-        [JsonProperty]
+        [Json";
+                    propertiesSource += jsonIgnore ? "Ignore" : "Property";
+                    propertiesSource += $@"]
         public {fieldType} {propName} {{
             get => {propNameExpression}.Definition;
             set {{
@@ -294,6 +302,19 @@ namespace {namespaceName}
         public bool HasValidator {
             get { return _hasValidator; }
             set { _hasValidator = value; }
+        }
+
+
+        public bool _jsonIgnore = false;
+        public bool JsonIgnore {
+            get { return _jsonIgnore; }
+            set { _jsonIgnore = value; }
+        }
+
+        public bool _jsonDontSerialize = false;
+        public bool JsonDontSerialize {
+            get { return _jsonDontSerialize; }
+            set { _jsonDontSerialize = value; }
         }
 
         public string _proxy = "";
