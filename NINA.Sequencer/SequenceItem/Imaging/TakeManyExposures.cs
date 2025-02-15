@@ -112,9 +112,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        partial void AfterClone(TakeManyExposures clone, TakeManyExposures cloned) {
-            clone.Add((TakeExposure)cloned.GetTakeExposure().Clone());
-            clone.Add((LoopCondition)cloned.GetLoopCondition().Clone());
+        partial void AfterClone(TakeManyExposures clone) {
+            clone.Add((TakeExposure)GetTakeExposure().Clone());
+            clone.Add((LoopCondition)GetLoopCondition().Clone());
         }
 
         private TakeManyExposures(TakeManyExposures cloneMe) {

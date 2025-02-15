@@ -28,8 +28,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public CoordinatesInstruction(CoordinatesInstruction ci) { }
 
-        partial void AfterClone(CoordinatesInstruction clone, CoordinatesInstruction cloned) {
-            clone.Coordinates = cloned.Coordinates?.Clone();
+        partial void AfterClone(CoordinatesInstruction clone) {
+            clone.Coordinates = Coordinates?.Clone();
         }
 
         protected bool Protect = false;

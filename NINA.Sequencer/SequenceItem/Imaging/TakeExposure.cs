@@ -73,7 +73,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CopyMetaData(cloneMe);
         }
 
-        partial void AfterClone(TakeExposure clone, TakeExposure cloned) {
+        partial void AfterClone(TakeExposure clone) {
             ExposureTime = ExposureTime;
             ExposureCount = 0;
             Binning = Binning;

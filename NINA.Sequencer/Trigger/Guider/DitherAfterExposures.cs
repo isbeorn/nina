@@ -65,9 +65,9 @@ namespace NINA.Sequencer.Trigger.Guider {
             CopyMetaData(cloneMe);
         }
 
-        partial void AfterClone(DitherAfterExposures clone, DitherAfterExposures cloned) {
+        partial void AfterClone(DitherAfterExposures clone) {
             //AfterExposures = AfterExposures,
-            clone.TriggerRunner = (SequentialContainer)cloned.TriggerRunner.Clone();
+            clone.TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
         }
 
         private int lastTriggerId = 0;

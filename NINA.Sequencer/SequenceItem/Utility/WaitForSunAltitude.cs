@@ -58,8 +58,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        partial void AfterClone(WaitForSunAltitude clone, WaitForSunAltitude cloned) {
-            clone.Data = cloned.Data.Clone();
+        partial void AfterClone(WaitForSunAltitude clone) {
+            clone.Data = Data.Clone();
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {

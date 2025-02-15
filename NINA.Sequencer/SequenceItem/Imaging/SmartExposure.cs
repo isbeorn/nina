@@ -105,12 +105,12 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        partial void AfterClone(SmartExposure clone, SmartExposure cloned) {
+        partial void AfterClone(SmartExposure clone) {
             // The order of these matters!
-            clone.Add((SwitchFilter)cloned.GetSwitchFilter().Clone());
-            clone.Add((TakeExposure)cloned.GetTakeExposure().Clone());
-            clone.Add((LoopCondition)cloned.GetLoopCondition().Clone());
-            clone.Add((DitherAfterExposures)cloned.GetDitherAfterExposures().Clone());
+            clone.Add((SwitchFilter)GetSwitchFilter().Clone());
+            clone.Add((TakeExposure)GetTakeExposure().Clone());
+            clone.Add((LoopCondition)GetLoopCondition().Clone());
+            clone.Add((DitherAfterExposures)GetDitherAfterExposures().Clone());
             // Weak thing...
         }
 
