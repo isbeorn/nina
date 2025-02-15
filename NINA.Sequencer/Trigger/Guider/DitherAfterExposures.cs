@@ -66,7 +66,6 @@ namespace NINA.Sequencer.Trigger.Guider {
         }
 
         partial void AfterClone(DitherAfterExposures clone) {
-            //AfterExposures = AfterExposures,
             clone.TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
         }
 
@@ -75,16 +74,6 @@ namespace NINA.Sequencer.Trigger.Guider {
 
         [IsExpression (Default = 3, Range = [0, 32])]
         private int afterExposures;
-
-
-        //[JsonProperty]
-        //public int AfterExposures {
-        //    get => afterExposures;
-        //    set {
-        //        afterExposures = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
 
         private IList<string> issues = new List<string>();
 

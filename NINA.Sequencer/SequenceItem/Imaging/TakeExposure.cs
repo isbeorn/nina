@@ -74,11 +74,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         partial void AfterClone(TakeExposure clone) {
-            ExposureTime = ExposureTime;
             ExposureCount = 0;
             Binning = Binning;
-            Gain = Gain;
-            Offset = Offset;
             ImageType = ImageType;
 
             if (clone.Binning == null) {
