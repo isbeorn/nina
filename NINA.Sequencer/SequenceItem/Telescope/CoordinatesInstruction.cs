@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
+    [UsesExpressions]
 
     public partial class CoordinatesInstruction : SequenceItem {
 

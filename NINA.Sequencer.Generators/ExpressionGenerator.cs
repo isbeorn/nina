@@ -40,17 +40,17 @@ namespace NINA.Sequencer.Generators {
                 var className = classSymbol.Name;
                 var ns = classSymbol.ContainingNamespace?.ToDisplayString() ?? "";
 
-                bool hasExpressionObject = classSymbol
+                bool hasUsesExpressions = classSymbol
                         .GetAttributes()
-                        .Any(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.ExpressionObjectAttribute");
+                        .Any(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.UsesExpressionsAttribute");
 
-                // If the class is missing [ExpressionObject], emit a diagnostic and skip generating code
-                if (!hasExpressionObject) {
+                // If the class is missing [UsesExpressions], emit a diagnostic and skip generating code
+                if (!hasUsesExpressions) {
                     // Create a diagnostic
                     var descriptor = new DiagnosticDescriptor(
                         id: "EXP0001",
                         title: "IsExpression usage error",
-                        messageFormat: "Property '{0}' is marked with [IsExpression], but the containing class '{1}' is missing [ExpressionObject].",
+                        messageFormat: "Property '{0}' is marked with [IsExpression], but the containing class '{1}' is missing [UsesExpressions].",
                         category: "Usage",
                         DiagnosticSeverity.Hidden,
                         isEnabledByDefault: true);
@@ -339,8 +339,8 @@ namespace {namespaceName}
     }
 
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ExpressionObjectAttribute : Attribute {
-        public ExpressionObjectAttribute() {
+    public sealed class UsesExpressionsAttribute : Attribute {
+        public UsesExpressionsAttribute() {
         }
     }
 }

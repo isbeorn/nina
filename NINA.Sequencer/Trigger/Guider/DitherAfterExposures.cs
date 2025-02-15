@@ -45,7 +45,7 @@ namespace NINA.Sequencer.Trigger.Guider {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Guider")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
+    [UsesExpressions]
 
     public partial class DitherAfterExposures : SequenceTrigger, IValidatable {
         private IGuiderMediator guiderMediator;

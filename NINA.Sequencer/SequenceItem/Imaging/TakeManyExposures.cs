@@ -43,7 +43,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
+    [UsesExpressions]
     public partial class TakeManyExposures : SequentialContainer, IImmutableContainer {
 
         [OnDeserializing]

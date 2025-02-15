@@ -34,7 +34,7 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
+    [UsesExpressions]
 
     public partial class LoopCondition : SequenceCondition, IValidatable {
 

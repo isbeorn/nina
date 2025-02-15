@@ -30,11 +30,6 @@ using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
-using System.DirectoryServices.ActiveDirectory;
-using Accord;
-using System.Reflection;
-using NINA.Core.Utility;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -45,7 +40,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    [ExpressionObject]
+    [UsesExpressions]
 
     public partial class SmartExposure : SequentialContainer, IImmutableContainer {
 
