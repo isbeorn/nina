@@ -358,7 +358,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <!--Must be expression.Value below because we're not bound to an Expression and changing the definition won't trigger PropertyChanged on the old AfterExposures property-->
+                    <!--Because we're not bound to an Expression, changing the Definition won't trigger PropertyChanged on the old AfterExposures property-->
                     <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
