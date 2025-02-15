@@ -23,7 +23,7 @@ namespace NINA.Sequencer.Logic {
 
         public static readonly DependencyProperty LabelProperty =
             DependencyProperty.Register("Label", typeof(String), typeof(ExprControl), null);
-
+        
         public String Label { get; set; }
 
         public static readonly DependencyProperty DefaultProperty =
@@ -38,6 +38,7 @@ namespace NINA.Sequencer.Logic {
 
         public void ShowSymbols(object sender, ToolTipEventArgs e) {
             Symbol.ShowSymbols(sender);
+            //e.Handled = true;
         }
 
     }

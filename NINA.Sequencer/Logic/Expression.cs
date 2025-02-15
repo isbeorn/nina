@@ -169,14 +169,14 @@ namespace NINA.Sequencer.Logic {
         }
         public double InfoButtonSize {
             get {
-                if (Error == null) return 24;
+                if (Error == null) return 18;
                 return 18;
             }
             set { }
         }
         public string InfoButtonMargin {
             get {
-                if (Error == null) return "5,-1,0,0";
+                if (Error == null) return "5,4,0,0";
                 return "5,2,0,0";
             }
             set { }
