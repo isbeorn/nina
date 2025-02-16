@@ -438,7 +438,7 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
                     //Debug.WriteLine("Evaluate " + this);
-                    Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+                    Dictionary<string, object> DataSymbols = SymbolBrokerVM.GetEquipmentKeys();
 
                     //if (Volatile || GlobalVolatile) {
                     //    IList<string> volatiles = new List<string>();

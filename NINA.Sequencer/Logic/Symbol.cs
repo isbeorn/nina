@@ -353,7 +353,7 @@ namespace NINA.Sequencer.Logic {
                     Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
                 }
             }
-            foreach (var x in Symbol.GetSwitchWeatherKeys()) {
+            foreach (var x in SymbolBrokerVM.GetEquipmentKeys()) {
                 Logger.Info(x.Key + ": " + x.Value.ToString());
             }
         }
@@ -378,7 +378,7 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+            Dictionary<string, object> DataSymbols = SymbolBrokerVM.GetEquipmentKeys();
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;
@@ -527,25 +527,10 @@ namespace NINA.Sequencer.Logic {
  
         public static Symbol.Keys MessageKeys = new Symbol.Keys();
 
-        public static Symbol.Keys SwitchWeatherKeys { get; set; } = new Symbol.Keys();
-
-        public static Symbol.Keys GetSwitchWeatherKeys() {
-            lock (SYMBOL_LOCK) {
-                return SwitchWeatherKeys;
-            }
-        }
 
         public static IList<string> GetSwitches() {
             lock (SYMBOL_LOCK) {
                 return Switches;
-            }
-        }
-
-        public static Symbol.SymbolDictionary DataSymbols { get; set; } = new Symbol.SymbolDictionary();
-
-        public ConcurrentDictionary<string, Symbol> GetDataSymbols() {
-            lock (SYMBOL_LOCK) {
-                return DataSymbols;
             }
         }
 
