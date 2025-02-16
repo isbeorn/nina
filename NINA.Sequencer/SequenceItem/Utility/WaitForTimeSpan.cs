@@ -37,7 +37,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions]
+    [UsesExpressions ("symbolBroker")]
 
     public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 

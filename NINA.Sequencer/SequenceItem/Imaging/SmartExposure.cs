@@ -41,7 +41,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions]
+    [UsesExpressions ("symbolBroker")]
 
     public partial class SmartExposure : SequentialContainer, IImmutableContainer {
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NINA.Sequencer.Generators;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -13,11 +14,11 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-//#if DEBUG
-//            if (!Debugger.IsAttached) {//
-//                Debugger.Launch();
-//            }
-//#endif 
+#if DEBUG
+            if (!Debugger.IsAttached) {//
+                Debugger.Launch();
+            }
+#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),
@@ -39,12 +40,21 @@ namespace NINA.Sequencer.Generators {
                 var classSymbol = propertySymbol.ContainingType;
                 var className = classSymbol.Name;
                 var ns = classSymbol.ContainingNamespace?.ToDisplayString() ?? "";
+                string broker = null;
 
                 bool hasUsesExpressions = classSymbol
                         .GetAttributes()
                         .Any(a => a.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.UsesExpressionsAttribute");
 
-                // If the class is missing [UsesExpressions], emit a diagnostic and skip generating code
+                foreach (var attribute in classSymbol.GetAttributes()) {
+                    if (attribute.AttributeClass?.ToDisplayString() == "NINA.Sequencer.Generators.UsesExpressionsAttribute") {
+                        if (attribute.ConstructorArguments.Length > 0) {
+                            broker = (string)attribute.ConstructorArguments[0].Value;
+                        }
+                    }
+                }
+
+                // If the class is missing [UsesExpressions ("symbolBroker")], emit a diagnostic and skip generating code
                 if (!hasUsesExpressions) {
                     // Create a diagnostic
                     var descriptor = new DiagnosticDescriptor(
@@ -67,7 +77,7 @@ namespace NINA.Sequencer.Generators {
                 }
 
                 // Generate partial class code
-                var generatedSource = GeneratePartialClass(ns, className, group);
+                var generatedSource = GeneratePartialClass(ns, className, group, broker);
 
                 // Add the source using a stable hint name:
                 var hintName = $"{className}_ExpressionAttribute.g.cs";
@@ -113,15 +123,16 @@ namespace NINA.Sequencer.Generators {
             return new PropertyInfo(symbol.ContainingType, symbol, true, args, extraInfo);
         }
 
-        private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties
-    ) {
+        private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties, string broker) {
             // Build the partial class with one method per property
             var cloneSource = string.Empty;
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
 
-            cloneSource += $@"
-                symbolBroker = symbolBroker,";
+            if (broker != null) {
+                cloneSource += $@"
+                {broker} = {broker},";
+            }
 
             foreach (var prop in properties) {
                 if (prop is null) continue;
@@ -352,7 +363,13 @@ namespace {namespaceName}
 
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class UsesExpressionsAttribute : Attribute {
-        public UsesExpressionsAttribute() {
+        public UsesExpressionsAttribute(string SymbolBroker) {
         }
+        public string _symbolBroker = "";
+        public string SymbolBroker {
+            get { return _symbolBroker; }
+            set { _symbolBroker = value; }
+        }
+
     }
 }

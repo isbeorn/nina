@@ -33,7 +33,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
-    [UsesExpressions]
+    [UsesExpressions ("symbolBroker")]
 
     public partial class WaitUntil : SequenceItem, IValidatable {
         private ISafetyMonitorMediator safetyMonitorMediator;

@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Camera")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions]
+    [UsesExpressions ("symbolBroker")]
 
     public partial class TakeExposure : SequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;

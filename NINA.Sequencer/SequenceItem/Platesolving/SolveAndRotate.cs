@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Rotator")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions]
+    [UsesExpressions ("symbolBroker")]
 
     public partial class SolveAndRotate : SequenceItem, IValidatable {
         protected IProfileService profileService;
