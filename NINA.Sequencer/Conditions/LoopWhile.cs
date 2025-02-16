@@ -40,7 +40,7 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
-        [IsExpression ("symbolBroker")]
+        [IsExpression]
         private double predicate;
 
         public override string ToString() {

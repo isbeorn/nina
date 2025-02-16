@@ -14,11 +14,11 @@ namespace NINA.Sequencer.Generators {
         public void Initialize(IncrementalGeneratorInitializationContext context) {
 
             //Uncomment to attach a debugger for source generation
-#if DEBUG
-            if (!Debugger.IsAttached) {//
-                Debugger.Launch();
-            }
-#endif 
+//#if DEBUG
+//            if (!Debugger.IsAttached) {//
+//                Debugger.Launch();
+//            }
+//#endif 
 
             var propertyDeclarations = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, ct) => IsPropertyWithAttributes(node) || IsCandidateField(node),
@@ -169,7 +169,7 @@ namespace NINA.Sequencer.Generators {
                 {fieldNameExpression} = value;
                 if (value == null) return;
                 {propNameExpression}.Context = this;
-                {propNameExpression}.SymbolBroker = {prop.Broker};";
+                {propNameExpression}.SymbolBroker = {broker};";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
@@ -307,7 +307,7 @@ namespace {namespaceName}
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class IsExpressionAttribute : Attribute {
-        public IsExpressionAttribute(string SymbolBroker) {
+        public IsExpressionAttribute() {
         }
 
         public double _def = 0;
@@ -352,13 +352,6 @@ namespace {namespaceName}
             get { return _proxy; }
             set { _proxy = value; }
         }
-
-        public string _symbolBroker = "";
-        public string SymbolBroker {
-            get { return _symbolBroker; }
-            set { _symbolBroker = value; }
-        }
-
     }
 
     [AttributeUsage(AttributeTargets.Class)]

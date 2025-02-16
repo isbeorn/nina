@@ -90,7 +90,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression("symbolBroker", Default = 1, HasValidator = true)]
+        [IsExpression(Default = 1, HasValidator = true)]
         private int iterations;
         partial void IterationsExpressionValidator(Expression expr) {
             if (Conditions.Count > 0) {

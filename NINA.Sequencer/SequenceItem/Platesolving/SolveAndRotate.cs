@@ -126,7 +126,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         //[JsonProperty(propertyName: "Rotation")]
         //public double DeprecatedRotation { set => PositionAngle = 360 - value; }
 
-        [IsExpression("symbolBroker", Default = 0, Range = [0, 360])]
+        [IsExpression(Default = 0, Range = [0, 360])]
         private double positionAngle = 0;
 
 

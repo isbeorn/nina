@@ -73,7 +73,7 @@ namespace NINA.Sequencer.Trigger.Guider {
         private int lastTriggerId = 0;
 
 
-        [IsExpression("symbolBroker", Default = 3, Range = [0, 32])]
+        [IsExpression(Default = 3, Range = [0, 32])]
         private int afterExposures;
 
         private IList<string> issues = new List<string>();

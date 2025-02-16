@@ -53,7 +53,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             CopyMetaData(cloneMe);
         }
 
-        [IsExpression ("symbolBroker")]
+        [IsExpression]
         private double predicate;
  
         private IList<string> issues = new List<string>();

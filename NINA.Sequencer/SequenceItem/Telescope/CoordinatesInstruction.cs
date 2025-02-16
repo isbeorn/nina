@@ -80,7 +80,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             clone.OffsetExpression = new Expression(OffsetExpression);
         }
 
-        [IsExpression("symbolBroker", Default = 0, Range = [0, 24], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
         private double ra = 0;
 
         partial void RaExpressionValidator(Expression expr) {
@@ -94,7 +94,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             Protect = false;
         }
 
-        [IsExpression("symbolBroker", Default = 0, Range = [-90, 90], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
         private double dec = 0;
 
         partial void DecExpressionValidator(Expression expr) {
@@ -115,7 +115,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             set { usesRotation = value; }
         }
 
-        [IsExpression("symbolBroker", Default = 0, Range = [0, 360], HasValidator = true)]
+        [IsExpression(Default = 0, Range = [0, 360], HasValidator = true)]
         private double positionAngle = 0;
 
         partial void PositionAngleExpressionValidator(Expression expr) {
@@ -124,7 +124,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression("symbolBroker", Default = 30, Range = [-90, 90], HasValidator = true )]
+        [IsExpression(Default = 30, Range = [-90, 90], HasValidator = true )]
         private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {

@@ -62,7 +62,7 @@ namespace NINA.Sequencer.Conditions {
 
         public IList<string> Issues { get; private set; }
 
-        [IsExpression("symbolBroker", Default = 2, Range = [1, 0])]
+        [IsExpression(Default = 2, Range = [1, 0])]
         private int iterations;
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
