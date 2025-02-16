@@ -31,6 +31,7 @@ using NINA.PlateSolving;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Platesolving;
 using NINA.WPF.Base.Behaviors;
 using NINA.WPF.Base.Exceptions;
@@ -73,7 +74,8 @@ namespace NINA.ViewModel.FramingAssistant {
                                   IDomeMediator domeMediator,
                                   IDomeFollower domeFollower,
                                   IImageDataFactory imageDataFactory,
-                                  IWindowServiceFactory windowServiceFactory) : base(profileService) {
+                                  IWindowServiceFactory windowServiceFactory,
+                                  ISymbolBrokerVM symbolBroker) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
@@ -90,6 +92,7 @@ namespace NINA.ViewModel.FramingAssistant {
             this.domeFollower = domeFollower;
             this.imageDataFactory = imageDataFactory;
             this.windowServiceFactory = windowServiceFactory;
+            this.symbolBroker = symbolBroker;
 
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator, profileService);
 
@@ -364,7 +367,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private async Task<bool> Center(Coordinates coordinates, CancellationToken token) {
-            var center = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory());
+            var center = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory(), symbolBroker);
 
             center.Coordinates = new InputCoordinates(coordinates);
             var isValid = center.Validate();
@@ -379,7 +382,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private async Task<bool> CenterAndRotate(Coordinates coordinates, double positionAngle, CancellationToken token) {
-            var centerAndRotate = new CenterAndRotate(profileService, telescopeMediator, imagingMediator, rotatorMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory());
+            var centerAndRotate = new CenterAndRotate(profileService, telescopeMediator, imagingMediator, rotatorMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory(), symbolBroker);
 
             centerAndRotate.Coordinates = new InputCoordinates(coordinates);
             centerAndRotate.PositionAngle = positionAngle;
@@ -704,6 +707,7 @@ namespace NINA.ViewModel.FramingAssistant {
         private NighttimeData nighttimeData;
         private IImageDataFactory imageDataFactory;
         private IWindowServiceFactory windowServiceFactory;
+        private ISymbolBrokerVM symbolBroker;
 
         public NighttimeData NighttimeData {
             get => nighttimeData;

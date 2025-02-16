@@ -71,7 +71,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                       IDomeMediator domeMediator,
                       IDomeFollower domeFollower,
                       IPlateSolverFactory plateSolverFactory,
-                      IWindowServiceFactory windowServiceFactory) :base(null) {
+                      IWindowServiceFactory windowServiceFactory,
+                      ISymbolBrokerVM symbolBroker) :base(symbolBroker) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.imagingMediator = imagingMediator;
@@ -92,7 +93,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                               cloneMe.domeMediator,
                                               cloneMe.domeFollower,
                                               cloneMe.plateSolverFactory,
-                                              cloneMe.windowServiceFactory) {
+                                              cloneMe.windowServiceFactory,
+                                              cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 

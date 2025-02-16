@@ -110,7 +110,7 @@ namespace NINA.Sequencer.Generators {
                 ? myPropAttr.ConstructorArguments[0].Value?.ToString() ?? ""
                 : "";
 
-            return new PropertyInfo(symbol.ContainingType, symbol, true, args);
+            return new PropertyInfo(symbol.ContainingType, symbol, true, args, extraInfo);
         }
 
         private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties
@@ -154,7 +154,8 @@ namespace NINA.Sequencer.Generators {
             set {{
                 {fieldNameExpression} = value;
                 if (value == null) return;
-                {propNameExpression}.Context = this;";
+                {propNameExpression}.Context = this;
+                {propNameExpression}.SymbolBroker = {prop.Broker};";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
@@ -273,17 +274,19 @@ namespace {namespaceName}
         }
 
         private sealed record PropertyInfo {
-            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol, bool isDefinedByField, IEnumerable<KeyValuePair<string, TypedConstant>> args) {
+            public PropertyInfo(INamedTypeSymbol containingType, ISymbol propertySymbol, bool isDefinedByField, IEnumerable<KeyValuePair<string, TypedConstant>> args, string broker) {
                 ContainingType = containingType;
                 PropertySymbol = propertySymbol;
                 IsDefinedByField = isDefinedByField;
                 Args = args;
+                Broker = broker;
             }
 
             public INamedTypeSymbol ContainingType { get; }
             public ISymbol PropertySymbol { get; }
             public bool IsDefinedByField { get; }
             public IEnumerable<KeyValuePair<string, TypedConstant>> Args;
+            public string Broker;
         }
     }
 

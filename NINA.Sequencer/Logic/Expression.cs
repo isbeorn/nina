@@ -43,6 +43,8 @@ namespace NINA.Sequencer.Logic {
             Symbol = symbol;
         }
 
+        public ISymbolBrokerVM SymbolBroker;
+
         public bool HasError => string.IsNullOrEmpty(Error);
  
         private string _error;

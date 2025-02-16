@@ -32,6 +32,7 @@ using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility.DateTimeProvider;
@@ -95,7 +96,8 @@ namespace NINA.Plugin {
                               IOptionsVM optionsVM,
                               IExposureDataFactory exposureDataFactory,
                               ITwilightCalculator twilightCalculator,
-                              IMessageBroker messageBroker) {
+                              IMessageBroker messageBroker,
+                              ISymbolBrokerVM symbolBroker) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.telescopeMediator = telescopeMediator;
@@ -134,6 +136,7 @@ namespace NINA.Plugin {
             this.exposureDataFactory = exposureDataFactory;
             this.twilightCalculator = twilightCalculator;
             this.messageBroker = messageBroker;
+            this.symbolBroker = symbolBroker; 
             DateTimeProviders = new List<IDateTimeProvider>() {
                 new Sequencer.Utility.DateTimeProvider.TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
@@ -512,6 +515,7 @@ namespace NINA.Plugin {
             container.ComposeExportedValue(exposureDataFactory);
             container.ComposeExportedValue(twilightCalculator);
             container.ComposeExportedValue(messageBroker);
+            container.ComposeExportedValue(symbolBroker);
 
             return container;
         }
@@ -566,7 +570,8 @@ namespace NINA.Plugin {
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
-        private readonly IMessageBroker messageBroker; 
+        private readonly IMessageBroker messageBroker;
+        private readonly ISymbolBrokerVM symbolBroker;
         
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways

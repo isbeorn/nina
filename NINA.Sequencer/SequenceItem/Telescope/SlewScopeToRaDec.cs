@@ -45,12 +45,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     public class SlewScopeToRaDec : CoordinatesInstruction, IValidatable, IDisposable {
 
         [ImportingConstructor]
-        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) :base(null) {
+        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, ISymbolBrokerVM symbolBroker) :base(symbolBroker) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
         }
 
-        private SlewScopeToRaDec(SlewScopeToRaDec cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator) {
+        private SlewScopeToRaDec(SlewScopeToRaDec cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator, cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 

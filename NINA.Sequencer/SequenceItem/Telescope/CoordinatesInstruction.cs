@@ -26,7 +26,15 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
     public partial class CoordinatesInstruction : SequenceItem {
 
-        public CoordinatesInstruction(CoordinatesInstruction ci) { }
+        protected ISymbolBrokerVM symbolBroker;
+
+        public CoordinatesInstruction(ISequenceEntity e) {
+
+        }
+
+        public CoordinatesInstruction(ISymbolBrokerVM symbolBroker) {
+            this.symbolBroker = symbolBroker;
+        }
 
         partial void AfterClone(CoordinatesInstruction clone) {
             clone.Coordinates = Coordinates?.Clone();
