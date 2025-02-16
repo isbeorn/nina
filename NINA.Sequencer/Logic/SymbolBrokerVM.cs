@@ -23,6 +23,7 @@ using static NINA.Sequencer.Logic.Symbol;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
+using NINA.Equipment.Equipment.MyWeatherData;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -90,11 +91,11 @@ namespace NINA.Sequencer.Logic {
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
-        private static IList<string> Switches { get; set; } = new List<string>();
+        private static IList<string> EquipmentDataList { get; set; } = new List<string>();
 
         public static IList<string> GetSwitches() {
             lock (SYMBOL_LOCK) {
-                return Switches;
+                return EquipmentDataList;
             }
         }
 
@@ -176,71 +177,11 @@ namespace NINA.Sequencer.Logic {
 
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
-        //private static string LastTargetName = null;
-        //private static InputTarget LastTarget = null;
-
-        private static void NoTarget(List<string> i) {
-            // Always show TargetValid
-            AddSymbol(i, "TargetValid", 0, null, false);
-            AddSymbol(i, "TargetRA", 0, null, true);
-            AddSymbol(i, "TargetDec", 0, null, true);
-            AddSymbol(i, "TargetName", "", null, true);
-        }
-
         public static Task UpdateEquipmentKeys() {
 
             lock (SYMBOL_LOCK) {
                 var i = new List<string>();
                 EquipmentKeys = new Keys();
-
-                //string targetName = null;
-                //ISequenceItem runningItem = WhenPlugin.GetRunningItem();
-                //InputTarget foundTarget = null;
-                //if (runningItem != null && runningItem.Parent != null) {
-                //    foundTarget = DSOTarget.FindTarget(runningItem.Parent);
-                //    if (foundTarget != null) {
-                //        targetName = foundTarget.TargetName;
-                //        LastTarget = foundTarget;
-                //        LastTargetName = targetName;
-                //    }
-                //}
-                //if (targetName == null) {
-                //    targetName = LastTargetName;
-                //    foundTarget = LastTarget;
-                //}
-
-                //if (targetName != null && targetName.Length > 0) {
-                //    if (foundTarget != null && foundTarget.InputCoordinates != null) {
-                //        Coordinates c = foundTarget.InputCoordinates.Coordinates;
-                //        if (c.RA != 0 && c.Dec != 0) {
-                //            AddSymbol(i, "TargetRA", c.RA);
-                //            AddSymbol(i, "TargetDec", c.Dec);
-                //            AddSymbol(i, "TargetValid", 1);
-                //            AddSymbol(i, "TargetName", targetName);
-                //        } else {
-                //            NoTarget(i);
-                //        }
-                //    } else {
-                //        NoTarget(i);
-                //    }
-                //} else {
-                //    NoTarget(i);
-                //}
-
-                //List<string> toDelete = new List<string>();
-                //foreach (var kvp in MessageKeys) {
-                //    VariableMessage vm = (VariableMessage)kvp.Value;
-                //    if (DateTimeOffset.Now >= vm.expiration) {
-                //        Logger.Info("TS message expired: " + vm.value);
-                //        toDelete.Add(kvp.Key);
-                //        continue;
-                //    }
-                //    AddSymbol(i, kvp.Key, vm.value);
-                //}
-
-                //foreach (string td in toDelete) {
-                //    MessageKeys.Remove(td);
-                //}
 
                 if (Observer == null) {
                     Observer = new ObserverInfo() {
@@ -268,8 +209,6 @@ namespace NINA.Sequencer.Logic {
                 double timeSeconds = Math.Floor(time.TotalSeconds);
                 AddSymbol(i, "TIME", timeSeconds);
 
-                //AddSymbol(i, "EXITCODE", LastExitCode);
-
                 TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
                 TelescopeConnected = telescopeInfo.Connected;
                 if (TelescopeConnected) {
@@ -289,23 +228,6 @@ namespace NINA.Sequencer.Logic {
                 if (SafetyConnected) {
                     AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
                 }
-
-                //string roofStatus = WhenPluginObject.RoofStatus;
-                //string roofOpenString = WhenPluginObject.RoofOpenString;
-                //if (roofStatus?.Length > 0 && roofOpenString?.Length > 0) {
-                //    // It's actually a file name..
-                //    int status = 0;
-                //    try {
-                //        var lastLine = File.ReadLines(roofStatus).Last();
-                //        if (lastLine.ToLower().Contains(roofOpenString.ToLower())) {
-                //            status = 1;
-                //        }
-                //    } catch (Exception e) {
-                //        LogOnce("Roof status, error: " + e.Message);
-                //        status = 2;
-                //    }
-                //    AddSymbol(i, "RoofStatus", status, RoofConstants);
-                //}
 
                 FocuserInfo fInfo = FocuserMediator.GetInfo();
                 FocuserConnected = fInfo.Connected;
@@ -382,7 +304,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
 
-                //// Get weather values
+                // Get weather values
                 //WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
                 //WeatherConnected = weatherInfo.Connected;
                 //if (WeatherConnected) {
@@ -391,33 +313,13 @@ namespace NINA.Sequencer.Logic {
                 //        if (!Double.IsNaN(t)) {
                 //            t = Math.Round(t, 2);
                 //            string key = RemoveSpecialCharacters(dataName);
-                //            SwitchWeatherKeys.TryAdd(key, t);
+                //            EquipmentKeys.TryAdd(key, t);
                 //            i.Add("W: " + key + ": " + t);
                 //        }
                 //    }
                 //}
 
-                //Keys imageKeys = TakeExposure.LastImageResults;
-                //if (imageKeys != null) {
-                //    foreach (KeyValuePair<string, object> kvp in imageKeys) {
-                //        SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
-                //        var v = kvp.Value;
-                //        if (v is double d) {
-                //            v = Math.Round(d, 2);
-                //        }
-                //        if (!kvp.Key.Contains("__")) {
-                //            i.Add(kvp.Key + ": " + v);
-                //        }
-                //    }
-                //} else {
-                //    SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
-                //    SwitchWeatherKeys.TryAdd("StarCount", Double.NaN);
-                //    SwitchWeatherKeys.TryAdd("FWHM", Double.NaN);
-                //    SwitchWeatherKeys.TryAdd("Eccentricity", Double.NaN);
-                //    //i.Add(" No image data");
-                //}
-
-                Switches = i;
+                EquipmentDataList = i;
 
             }
             return Task.CompletedTask;

@@ -4,22 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NCalc;
-using Google.Protobuf.WellKnownTypes;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.Symbol;
 using System.Threading;
-using Newtonsoft.Json.Linq;
-using System.Windows;
-using System.Runtime.CompilerServices;
-using NINA.Sequencer.SequenceItem.Expressions;
+using NCalc.Handlers;
+using NINA.Astrometry;
+using NINA.Sequencer.SequenceItem;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-
-        /*
-         * HasSetter attribute?
-         */
 
         public Expression() {
 
@@ -425,7 +419,6 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
                     if (Definition.Length == 0) {
-                        // How the hell to clear the Expr
                         IsExpression = false;
                         RaisePropertyChanged("Value");
                         RaisePropertyChanged("ValueString");
@@ -437,7 +430,7 @@ namespace NINA.Sequencer.Logic {
                     if (!Symbol.IsAttachedToRoot(Context)) {
                         return;
                     }
-                    //Debug.WriteLine("Evaluate " + this);
+
                     Dictionary<string, object> DataSymbols = SymbolBrokerVM.GetEquipmentKeys();
 
                     //if (Volatile || GlobalVolatile) {
@@ -479,7 +472,7 @@ namespace NINA.Sequencer.Logic {
                         if (!found || sym == null) {
                             // !found -> couldn't find it; sym == null -> it's a DataSymbol
                             if (!found) {
-                                sym = Symbol.FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                                sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             }
                             if (sym != null) {
                                 // Link Expression to the Symbol
@@ -488,14 +481,6 @@ namespace NINA.Sequencer.Logic {
                             } else {
                                 SymbolDictionary cached;
                                 found = false;
-                                //if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
-                                //    Symbol global;
-                                //    if (cached != null && cached.TryGetValue(symReference, out global)) {
-                                //        Resolve(symReference, global);
-                                //        global.AddConsumer(this);
-                                //        found = true;
-                                //    }
-                                //}
                                 // Try in the old Switch/Weather keys
                                 object Val;
                                 if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
@@ -511,7 +496,7 @@ namespace NINA.Sequencer.Logic {
                     }
 
                     NCalc.Expression e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
-                    //e.EvaluateFunction += ExtensionFunction;
+                    e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
 
                     if (e.HasErrors()) {
@@ -577,6 +562,67 @@ namespace NINA.Sequencer.Logic {
                 //    Notification.ShowError("Evaluate could not get SYMBOL_LOCK; see log for info");
                 //}
                 //LOCK_ERROR = true;
+            }
+        }
+        public static DateTime ConvertFromUnixTimestamp(double timestamp) {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return origin.AddSeconds(timestamp);
+        }
+        public long UnixTimeNow() {
+            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+            return (long)timeSpan.TotalSeconds;
+        }
+
+        public static Random RNG = new Random();
+
+        public void ExtensionFunction(string name, FunctionArgs args) {
+            DateTime dt;
+            try {
+                if (args.Parameters.Length > 0) {
+                    try {
+                        var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                        dt = utc.ToLocalTime();
+                    } catch (Exception) {
+                        dt = DateTime.MinValue;
+                    }
+                } else {
+                    dt = DateTime.Now;
+                }
+                if (name == "now") {
+                    args.Result = UnixTimeNow();
+                } else if (name == "hour") {
+                    args.Result = (int)dt.Hour;
+                } else if (name == "minute") {
+                    args.Result = (int)dt.Minute;
+                } else if (name == "day") {
+                    args.Result = (int)dt.Day;
+                } else if (name == "month") {
+                    args.Result = (int)dt.Month;
+                } else if (name == "year") {
+                    args.Result = (int)dt.Year;
+                } else if (name == "dow") {
+                    args.Result = (int)dt.DayOfWeek;
+                } else if (name == "dateTime") {
+                    args.Result = 0;
+                } else if (name == "CtoF") {
+                    args.Result = 32 + (Convert.ToDouble(args.Parameters[0].Evaluate()) * 9 / 5);
+                } else if (name == "MStoMPH") {
+                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * 2.237);
+                } else if (name == "KPHtoMPH") {
+                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * .621);
+                } else if (name == "dateString") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "defined") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    args.Result = FindSymbol(str, Context.Parent) != null;
+                } else if (name == "random") {
+                    args.Result = RNG.NextDouble();
+                }
+            } catch (Exception ex) {
+                Logger.Error("Error evaluating function " + name + ": " + ex.Message);
             }
         }
 
