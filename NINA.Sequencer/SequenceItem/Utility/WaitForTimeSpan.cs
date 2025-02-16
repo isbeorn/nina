@@ -41,14 +41,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
     public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 
+        private ISymbolBrokerVM symbolBroker;
+
         [ImportingConstructor]
-        public WaitForTimeSpan() {
+        public WaitForTimeSpan(ISymbolBrokerVM symbolBroker) {
+            this.symbolBroker = symbolBroker;
         }
 
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        [IsExpression(Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
+        [IsExpression("symbolBroker", Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
         private double time;
 
         private IList<string> issues = new List<string>();

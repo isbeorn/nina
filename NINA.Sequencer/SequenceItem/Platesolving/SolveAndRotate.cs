@@ -55,6 +55,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         protected IPlateSolverFactory plateSolverFactory;
         protected IWindowServiceFactory windowServiceFactory;
         private IRotatorMediator rotatorMediator;
+        private ISymbolBrokerVM symbolBroker;
         public PlateSolvingStatusVM PlateSolveStatusVM { get; } = new PlateSolvingStatusVM();
 
         [ImportingConstructor]
@@ -65,7 +66,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                IFilterWheelMediator filterWheelMediator,
                                IGuiderMediator guiderMediator,
                                IPlateSolverFactory plateSolverFactory,
-                               IWindowServiceFactory windowServiceFactory) {
+                               IWindowServiceFactory windowServiceFactory,
+                               ISymbolBrokerVM symbolBroker) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.imagingMediator = imagingMediator;
@@ -74,6 +76,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             this.plateSolverFactory = plateSolverFactory;
             this.windowServiceFactory = windowServiceFactory;
             this.rotatorMediator = rotatorMediator;
+            this.symbolBroker = symbolBroker;
         }
 
         private SolveAndRotate(SolveAndRotate cloneMe) : this(cloneMe.profileService,
@@ -83,7 +86,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                 cloneMe.filterWheelMediator,
                                                                 cloneMe.guiderMediator,
                                                                 cloneMe.plateSolverFactory,
-                                                                cloneMe.windowServiceFactory) {
+                                                                cloneMe.windowServiceFactory,
+                                                                cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -122,7 +126,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         //[JsonProperty(propertyName: "Rotation")]
         //public double DeprecatedRotation { set => PositionAngle = 360 - value; }
 
-        [IsExpression (Default = 0, Range = [0, 360])]
+        [IsExpression("symbolBroker", Default = 0, Range = [0, 360])]
         private double positionAngle = 0;
 
 

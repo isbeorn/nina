@@ -290,7 +290,7 @@ namespace {namespaceName}
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class IsExpressionAttribute : Attribute {
-        public IsExpressionAttribute() {
+        public IsExpressionAttribute(string SymbolBroker) {
         }
 
         public double _def = 0;
@@ -334,6 +334,12 @@ namespace {namespaceName}
         public string Proxy {
             get { return _proxy; }
             set { _proxy = value; }
+        }
+
+        public string _symbolBroker = "";
+        public string SymbolBroker {
+            get { return _symbolBroker; }
+            set { _symbolBroker = value; }
         }
 
     }

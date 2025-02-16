@@ -51,9 +51,10 @@ namespace NINA.Sequencer.Trigger.Guider {
         private IGuiderMediator guiderMediator;
         private IImageHistoryVM history;
         private IProfileService profileService;
+        private ISymbolBrokerVM symbolBroker;
 
         [ImportingConstructor]
-        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService) : base() {
+        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService, ISymbolBrokerVM symbolBroker) : base() {
             this.guiderMediator = guiderMediator;
             this.history = history;
             this.profileService = profileService;
@@ -61,7 +62,7 @@ namespace NINA.Sequencer.Trigger.Guider {
             TriggerRunner.Add(new Dither(guiderMediator, profileService));
         }
 
-        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService) {
+        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService, cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -72,7 +73,7 @@ namespace NINA.Sequencer.Trigger.Guider {
         private int lastTriggerId = 0;
 
 
-        [IsExpression (Default = 3, Range = [0, 32])]
+        [IsExpression("symbolBroker", Default = 3, Range = [0, 32])]
         private int afterExposures;
 
         private IList<string> issues = new List<string>();

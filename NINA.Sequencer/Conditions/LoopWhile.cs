@@ -26,18 +26,21 @@ namespace NINA.Sequencer.Conditions {
 
     public partial class LoopWhile : SequenceCondition, IValidatable, ITrueFalse {
 
+        ISymbolBrokerVM symbolBroker;
+
         [ImportingConstructor]
-        public LoopWhile() {
+        public LoopWhile(ISymbolBrokerVM symbolBroker) {
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
+            this.symbolBroker = symbolBroker;
         }
 
-        public LoopWhile(LoopWhile copyMe) : this() {
+        public LoopWhile(LoopWhile copyMe) : this(copyMe.symbolBroker) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
             }
         }
 
-        [IsExpression]
+        [IsExpression ("symbolBroker")]
         private double predicate;
 
         public override string ToString() {

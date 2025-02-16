@@ -58,6 +58,7 @@ using NINA.WPF.Base.Mediator;
 using System.Reflection;
 using NINA.Sequencer.Container;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Sequencer.Logic;
 
 namespace NINA.ViewModel.FlatWizard {
     
@@ -74,6 +75,7 @@ namespace NINA.ViewModel.FlatWizard {
         private readonly ITwilightCalculator twilightCalculator;
         private readonly INighttimeCalculator nighttimeCalculator;
         private ObserveAllCollection<FilterInfo> watchedFilterList;
+        private readonly ISymbolBrokerVM symbolBroker;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
@@ -86,7 +88,8 @@ namespace NINA.ViewModel.FlatWizard {
                             IMyMessageBoxVM messageBox,
                             INighttimeCalculator nighttimeCalculator,
                             ITwilightCalculator twilightCalculator,
-                            IImageSaveMediator imageSaveMediator) : base(profileService) {
+                            IImageSaveMediator imageSaveMediator,
+                            ISymbolBrokerVM symbolBroker) : base(profileService) {
             Title = Loc.Instance["LblFlatWizard"];
             ImageGeometry = imageGeometryProvider.GetImageGeometry("FlatWizardSVG");
 
@@ -131,6 +134,7 @@ namespace NINA.ViewModel.FlatWizard {
             this.flatDeviceMediator = flatDeviceMediator;
             this.flatDeviceMediator.RegisterConsumer(this);
             this.imageSaveMediator = imageSaveMediator;
+            this.symbolBroker = symbolBroker;
 
             this.applicationStatusMediator = applicationStatusMediator;
             this.imagingVM = imagingVM;
@@ -445,7 +449,7 @@ namespace NINA.ViewModel.FlatWizard {
             SequenceContainer sequenceItem;
             switch (FlatWizardMode) {
                 case FlatWizardMode.DYNAMICBRIGHTNESS:
-                    sequenceItem = new AutoBrightnessFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem = new AutoBrightnessFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator, symbolBroker);
                     var autoBrightnessFlat = sequenceItem as AutoBrightnessFlat;
                     autoBrightnessFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoBrightnessFlat.MaxBrightness = settings.Settings.MaxAbsoluteFlatDeviceBrightness;
@@ -459,7 +463,7 @@ namespace NINA.ViewModel.FlatWizard {
                     autoBrightnessFlat.GetIterations().Iterations = FlatCount;
                     break;
                 case FlatWizardMode.SKYFLAT:
-                    sequenceItem = new SkyFlat(profileService, cameraMediator, telescopeMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, twilightCalculator);
+                    sequenceItem = new SkyFlat(profileService, cameraMediator, telescopeMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, twilightCalculator, symbolBroker);
                     var skyflat = sequenceItem as SkyFlat;
                     skyflat.GetSwitchFilterItem().Filter = settings.Filter;
                     skyflat.GetExposureItem().Binning = settings.Settings.Binning;
@@ -473,7 +477,7 @@ namespace NINA.ViewModel.FlatWizard {
                     break;
                 case FlatWizardMode.DYNAMICEXPOSURE:
                 default:
-                    sequenceItem = new AutoExposureFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator);
+                    sequenceItem = new AutoExposureFlat(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, filterWheelMediator, flatDeviceMediator, symbolBroker);
                     var autoExposureFlat = sequenceItem as AutoExposureFlat;
                     autoExposureFlat.GetSwitchFilterItem().Filter = settings.Filter;
                     autoExposureFlat.GetExposureItem().Binning = settings.Settings.Binning;

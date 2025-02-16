@@ -39,19 +39,21 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private ISafetyMonitorMediator safetyMonitorMediator;
         protected ISequenceMediator sequenceMediator;
         private IProfileService profileService;
+        private ISymbolBrokerVM symbolBroker;
 
         [ImportingConstructor]
-        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService) {
+        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService, ISymbolBrokerVM symbolBroker) {
             this.safetyMonitorMediator = safetyMonitorMediator;
             this.sequenceMediator = seqMediator;
             this.profileService = pService;
+            this.symbolBroker = symbolBroker;
         }
 
-        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService) {
+        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService, cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
-        [IsExpression]
+        [IsExpression ("symbolBroker")]
         private double predicate;
  
         private IList<string> issues = new List<string>();

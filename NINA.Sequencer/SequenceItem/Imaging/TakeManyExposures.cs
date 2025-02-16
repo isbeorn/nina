@@ -46,6 +46,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [UsesExpressions]
     public partial class TakeManyExposures : SequentialContainer, IImmutableContainer {
 
+        private ISymbolBrokerVM symbolBroker;
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             this.Items.Clear();
@@ -54,11 +56,12 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [ImportingConstructor]
-        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) :
+        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM,
+            ISymbolBrokerVM symbolBroker) :
                 this(
                     null,
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
-                    new LoopCondition() { Iterations = 1 }) {
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
+                    new LoopCondition(symbolBroker) { Iterations = 1 }) {
         }
 
         private TakeManyExposures(
@@ -87,7 +90,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(Default = 1, HasValidator = true)]
+        [IsExpression("symbolBroker", Default = 1, HasValidator = true)]
         private int iterations;
         partial void IterationsExpressionValidator(Expression expr) {
             if (Conditions.Count > 0) {

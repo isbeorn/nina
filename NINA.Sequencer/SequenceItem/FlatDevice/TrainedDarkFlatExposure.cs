@@ -38,6 +38,7 @@ using NINA.Profile;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -50,6 +51,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     public class TrainedDarkFlatExposure : SequentialContainer, IImmutableContainer {
 
+        private ISymbolBrokerVM symbolBroker;
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             this.Items.Clear();
@@ -61,7 +64,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private bool keepPanelClosed;
 
         [ImportingConstructor]
-        public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+        public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator, ISymbolBrokerVM symbolBroker) :
             this(
                 null,
                 profileService,
@@ -69,8 +73,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new SwitchFilter(profileService, filterWheelMediator),
                 new SetBrightness(flatDeviceMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARK },
-                new LoopCondition() { Iterations = 1 },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.DARK },
+                new LoopCondition(symbolBroker) { Iterations = 1 },
                 new OpenCover(flatDeviceMediator)
 
             ) {

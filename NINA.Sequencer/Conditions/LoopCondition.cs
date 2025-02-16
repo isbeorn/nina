@@ -38,11 +38,14 @@ namespace NINA.Sequencer.Conditions {
 
     public partial class LoopCondition : SequenceCondition, IValidatable {
 
+        ISymbolBrokerVM symbolBroker;
+
         [ImportingConstructor]
-        public LoopCondition() {
+        public LoopCondition(ISymbolBrokerVM symbolBroker) {
+            this.symbolBroker = symbolBroker;
         }
 
-        private LoopCondition(LoopCondition cloneMe) : this() {
+        private LoopCondition(LoopCondition cloneMe) : this(cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -59,7 +62,7 @@ namespace NINA.Sequencer.Conditions {
 
         public IList<string> Issues { get; private set; }
 
-        [IsExpression (Default = 2, Range = [1, 0])]
+        [IsExpression("symbolBroker", Default = 2, Range = [1, 0])]
         private int iterations;
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {

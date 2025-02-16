@@ -30,6 +30,7 @@ using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -43,6 +44,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [UsesExpressions]
 
     public partial class SmartExposure : SequentialContainer, IImmutableContainer {
+
+        ISymbolBrokerVM symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -59,13 +62,15 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 IImageSaveMediator imageSaveMediator,
                 IImageHistoryVM imageHistoryVM,
                 IFilterWheelMediator filterWheelMediator,
-                IGuiderMediator guiderMediator) : this(
+                IGuiderMediator guiderMediator,
+                ISymbolBrokerVM symbolBroker) : this(
                     null,
                     new SwitchFilter(profileService, filterWheelMediator),
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
-                    new LoopCondition(),
-                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService)
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
+                    new LoopCondition(symbolBroker),
+                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService, symbolBroker)
                 ) {
+            this.symbolBroker = symbolBroker;
         }
 
         /// <summary>
@@ -150,7 +155,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(HasValidator = true)]
+        [IsExpression("symbolBroker", HasValidator = true)]
         private int dither;
         partial void DitherExpressionValidator(Logic.Expression expr) {
             DitherAfterExposures dae = GetDitherAfterExposures();
@@ -159,7 +164,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(HasValidator = true)]
+        [IsExpression("symbolBroker", HasValidator = true)]
         private int iterations;
         partial void IterationsExpressionValidator(Logic.Expression expr) {
             if (Conditions.Count > 0) {

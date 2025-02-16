@@ -43,11 +43,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [UsesExpressions]
     public partial class WaitForSunAltitude : WaitForAltitudeBase, IValidatable {
 
+        private ISymbolBrokerVM symbolBroker;
+
         [ImportingConstructor]
-        public WaitForSunAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
+        public WaitForSunAltitude(IProfileService profileService, ISymbolBrokerVM symbolBroker) : base(profileService, useCustomHorizon: false) {
         }
 
-        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService) {
+        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -91,7 +93,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        [IsExpression (Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true, JsonIgnore = true)]
+        [IsExpression("symbolBroker", Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true, JsonIgnore = true)]
         private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {

@@ -55,9 +55,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private IImageHistoryVM imageHistoryVM;
         private IProfileService profileService;
         Task imageProcessingTask;
+        private ISymbolBrokerVM symbolBroker;
 
         [ImportingConstructor]
-        public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
+        public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM,
+            ISymbolBrokerVM symbolBroker) {
             Gain = -1;
             Offset = -1;
             ImageType = CaptureSequence.ImageTypes.LIGHT;
@@ -69,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CameraInfo = this.cameraMediator.GetInfo();
         }
 
-        private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
+        private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM, cloneMe.symbolBroker) {
             CopyMetaData(cloneMe);
         }
 
@@ -93,11 +95,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(Default = 60, Range = [0, 3600, ExpressionRange.MIN_EXCLUSIVE])]
+        [IsExpression("symbolBroker", Default = 60, Range = [0, 3600, ExpressionRange.MIN_EXCLUSIVE])]
         private double exposureTime;
 
 
-        [IsExpression (Default = -1, DefaultString = "{Camera}", HasValidator = true)]
+        [IsExpression("symbolBroker", Default = -1, DefaultString = "{Camera}", HasValidator = true)]
         private int gain;
 
         partial void GainExpressionValidator(Expression expr) {
@@ -106,7 +108,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression (DefaultString = "{Camera}", HasValidator = true)]
+        [IsExpression("symbolBroker", DefaultString = "{Camera}", HasValidator = true)]
         private int offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
