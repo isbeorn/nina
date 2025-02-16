@@ -120,6 +120,9 @@ namespace NINA.Sequencer.Generators {
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
 
+            cloneSource += $@"
+                symbolBroker = symbolBroker,";
+
             foreach (var prop in properties) {
                 if (prop is null) continue;
                 string propName = prop.PropertySymbol.Name;
