@@ -62,6 +62,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                     null,
                     new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
                     new LoopCondition(symbolBroker) { Iterations = 1 }) {
+            this.symbolBroker = symbolBroker;
         }
 
         private TakeManyExposures(
