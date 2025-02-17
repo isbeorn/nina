@@ -66,6 +66,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             this.imageSaveMediator = imageSaveMediator;
             this.imageHistoryVM = imageHistoryVM;
             this.profileService = profileService;
+            this.symbolBroker = symbolBroker;
             CameraInfo = this.cameraMediator.GetInfo();
         }
 
