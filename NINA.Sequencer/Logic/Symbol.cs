@@ -52,8 +52,6 @@ namespace NINA.Sequencer.Logic {
 
         public bool isDataSymbol { get; set; } = false;
 
-        public class Keys : Dictionary<string, object>;
-
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
         public bool IsDuplicate { get; private set; } = false;
@@ -377,7 +375,9 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            Dictionary<string, object> DataSymbols = exp.SymbolBroker?.GetEquipmentKeys() ?? new Keys() ;
+            //var DataSymbols = exp.SymbolBroker?.GetEquipmentKeys();
+
+            //if (DataSymbols == null) return;
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;
@@ -413,7 +413,7 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     // We're a data value
                     sb.Append(" (Data) = ");
-                    sb.Append(DataSymbols.GetValueOrDefault(kvp.Key, "??"));
+                    //sb.Append(DataSymbols.TryGetValue(kvp.Key, "??"));
                 }
                 if (--cnt > 0) sb.Append("; ");
             }
@@ -524,9 +524,6 @@ namespace NINA.Sequencer.Logic {
             }
         }
  
-        public static Symbol.Keys MessageKeys = new Symbol.Keys();
-
-
         public static IList<string> GetSwitches() {
             lock (SYMBOL_LOCK) {
                 return Switches;

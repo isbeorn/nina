@@ -25,6 +25,10 @@ using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
+using System.Windows.Input;
+using System.Windows.Navigation;
+using NINA.Sequencer.Container;
+using System.Runtime.InteropServices;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -49,12 +53,10 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        public Keys EquipmentKeys { get; set; } = new Keys();
+        private static ConcurrentDictionary<string, object> EquipmentKeys = new ConcurrentDictionary<string, object>();
 
-        public Keys GetEquipmentKeys() {
-            lock (SYMBOL_LOCK) {
-                return EquipmentKeys;
-            }
+        public bool TryGetValue(string key, out object value) {
+            return EquipmentKeys.TryGetValue(key, out value);
         }
 
         // DATA SYMBOLS
@@ -89,19 +91,12 @@ namespace NINA.Sequencer.Logic {
         private static ITelescopeMediator TelescopeMediator { get; set; }
         private static IGuiderMediator GuiderMediator { get; set; }
 
-
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> EquipmentDataList { get; set; } = new List<string>();
 
         public static IList<string> GetSwitches() {
             lock (SYMBOL_LOCK) {
                 return EquipmentDataList;
-            }
-        }
-
-        public void AddSymbolData(string id, double value) {
-            if (GetEquipmentKeys().ContainsKey(id)) {
-
             }
         }
 
@@ -135,7 +130,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
-            EquipmentKeys.TryAdd(token, value);
+            EquipmentKeys[token] = value;
             if (silent) {
                 return;
             }
@@ -146,8 +141,8 @@ namespace NINA.Sequencer.Logic {
                     sb.Append(values[(int)value + 1]);
                 } else if (value is double d) {
                     sb.Append(Math.Round(d, 2));
-                //} else if (value is long l) {
-                //    sb.Append(Expression.ExprValueString(l));
+                    //} else if (value is long l) {
+                    //    sb.Append(Expression.ExprValueString(l));
                 } else if (value is int n) {
                     sb.Append(n);
                 } else {
@@ -159,7 +154,7 @@ namespace NINA.Sequencer.Logic {
                 if (values != null) {
                     for (int v = 0; v < values.Length; v++) {
                         if (values[v] != null) {
-                            EquipmentKeys.TryAdd(values[v], v - 1);
+                            EquipmentKeys[values[v]] = v - 1;
                         }
                     }
                 }
@@ -177,157 +172,155 @@ namespace NINA.Sequencer.Logic {
 
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
-        public Task UpdateEquipmentKeys() {
+        public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
+            return (IEnumerable<ConcurrentDictionary<string, object>>)EquipmentKeys;
+        }
+        
+        private Task UpdateEquipmentKeys() {
 
-            lock (SYMBOL_LOCK) {
-                var i = new List<string>();
-                EquipmentKeys = new Keys();
+            var i = new List<string>();
 
-                if (Observer == null) {
-                    Observer = new ObserverInfo() {
-                        Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
-                        Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
-                        Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
-                    };
-                }
-
-                NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
-                Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
-                TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
-
-                AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
-                AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-                AddSymbol(i, "SunAltitude", tc.Altitude.Degree);
-                AddSymbol(i, "SunAzimuth", tc.Azimuth.Degree);
-
-                double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
-                if (lst < 0) {
-                    lst = AstroUtil.EuclidianModulus(lst, 24);
-                }
-                AddSymbol(i, "LocalSiderealTime", lst);
-
-                TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
-                double timeSeconds = Math.Floor(time.TotalSeconds);
-                AddSymbol(i, "TIME", timeSeconds);
-
-                TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
-                TelescopeConnected = telescopeInfo.Connected;
-                if (TelescopeConnected) {
-                    AddSymbol(i, "Altitude", telescopeInfo.Altitude);
-                    AddSymbol(i, "Azimuth", telescopeInfo.Azimuth);
-                    AddSymbol(i, "AtPark", telescopeInfo.AtPark);
-
-                    Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
-                    AddSymbol(i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                    AddSymbol(i, "Declination", c.Dec); // telescopeInfo.Declination);
-
-                    AddSymbol(i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
-                }
-
-                SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
-                SafetyConnected = safetyInfo.Connected;
-                if (SafetyConnected) {
-                    AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
-                }
-
-                FocuserInfo fInfo = FocuserMediator.GetInfo();
-                FocuserConnected = fInfo.Connected;
-                if (fInfo != null && FocuserConnected) {
-                    AddSymbol(i, "FocuserPosition", fInfo.Position);
-                    AddSymbol(i, "FocuserTemperature", fInfo.Temperature);
-                }
-
-                // Get SensorTemp
-                CameraInfo cameraInfo = CameraMediator.GetInfo();
-                CameraConnected = cameraInfo.Connected;
-                if (CameraConnected) {
-                    AddSymbol(i, "SensorTemp", cameraInfo.Temperature);
-
-                    // Hidden
-                    EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
-                    EquipmentKeys.Add("camera__XSize", cameraInfo.XSize);
-                    EquipmentKeys.Add("camera__YSize", cameraInfo.YSize);
-                    EquipmentKeys.Add("camera__CoolerPower", cameraInfo.CoolerPower);
-                    EquipmentKeys.Add("camera__CoolerOn", cameraInfo.CoolerOn);
-                    EquipmentKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
-                }
-
-                DomeInfo domeInfo = DomeMediator.GetInfo();
-                DomeConnected = domeInfo.Connected;
-                if (DomeConnected) {
-                    AddSymbol(i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
-                    AddSymbol(i, "DomeAzimuth", domeInfo.Azimuth);
-                }
-
-                FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
-                FlatConnected = flatInfo.Connected;
-                if (FlatConnected) {
-                    AddSymbol(i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
-                }
-
-                RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
-                RotatorConnected = rotatorInfo.Connected;
-                if (RotatorConnected) {
-                    AddSymbol(i, "RotatorPosition", rotatorInfo.MechanicalPosition);
-                }
-
-                FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-                FilterWheelConnected = filterWheelInfo.Connected;
-                if (FilterWheelConnected) {
-                    var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                    foreach (FilterInfo filterInfo in f) {
-                        try {
-                            EquipmentKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
-                        } catch (Exception) {
-                            LogOnce("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
-                        }
-                    }
-
-                    if (filterWheelInfo.SelectedFilter != null) {
-                        EquipmentKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                        i.Add("CurrentFilter: Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name));
-                    }
-                }
-
-                // Get switch values
-                SwitchInfo switchInfo = SwitchMediator.GetInfo();
-                SwitchConnected = switchInfo.Connected;
-                if (SwitchConnected) {
-                    foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-                        string key = RemoveSpecialCharacters(sw.Name);
-                        EquipmentKeys.TryAdd(key, sw.Value);
-                        i.Add("G: " + key + ": " + sw.Value);
-                    }
-                    foreach (ISwitch sw in switchInfo.WritableSwitches) {
-                        string key = RemoveSpecialCharacters(sw.Name);
-                        EquipmentKeys.TryAdd(key, sw.Value);
-                        i.Add("S: " + key + ": " + sw.Value);
-                    }
-                }
-
-                // Get weather values
-                WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
-                WeatherConnected = weatherInfo.Connected;
-                if (WeatherConnected) {
-                    foreach (string dataName in WeatherData) {
-                        PropertyInfo info = weatherInfo.GetType().GetProperty(dataName);
-                        if (info != null) {
-                            object val = info.GetValue(weatherInfo);
-                            if (val is double t && !Double.IsNaN(t)) {
-                                t = Math.Round(t, 2);
-                                string key = RemoveSpecialCharacters(dataName);
-                                EquipmentKeys.TryAdd(key, t);
-                                i.Add("W: " + key + ": " + t);
-                            }
-                        }
-                    }
-                }
-
-                EquipmentDataList = i;
-
+            if (Observer == null) {
+                Observer = new ObserverInfo() {
+                    Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
+                    Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
+                    Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
+                };
             }
+
+            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
+            Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
+            TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
+
+            AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
+            AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
+            AddSymbol(i, "SunAltitude", tc.Altitude.Degree);
+            AddSymbol(i, "SunAzimuth", tc.Azimuth.Degree);
+
+            double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
+            if (lst < 0) {
+                lst = AstroUtil.EuclidianModulus(lst, 24);
+            }
+            AddSymbol(i, "LocalSiderealTime", lst);
+
+            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+            double timeSeconds = Math.Floor(time.TotalSeconds);
+            AddSymbol(i, "TIME", timeSeconds);
+
+            TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
+            TelescopeConnected = telescopeInfo.Connected;
+            if (TelescopeConnected) {
+                AddSymbol(i, "Altitude", telescopeInfo.Altitude);
+                AddSymbol(i, "Azimuth", telescopeInfo.Azimuth);
+                AddSymbol(i, "AtPark", telescopeInfo.AtPark);
+
+                Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
+                AddSymbol(i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                AddSymbol(i, "Declination", c.Dec); // telescopeInfo.Declination);
+
+                AddSymbol(i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
+            }
+
+            SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
+            SafetyConnected = safetyInfo.Connected;
+            if (SafetyConnected) {
+                AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
+            }
+
+            FocuserInfo fInfo = FocuserMediator.GetInfo();
+            FocuserConnected = fInfo.Connected;
+            if (fInfo != null && FocuserConnected) {
+                AddSymbol(i, "FocuserPosition", fInfo.Position);
+                AddSymbol(i, "FocuserTemperature", fInfo.Temperature);
+            }
+
+            // Get SensorTemp
+            CameraInfo cameraInfo = CameraMediator.GetInfo();
+            CameraConnected = cameraInfo.Connected;
+            if (CameraConnected) {
+                AddSymbol(i, "SensorTemp", cameraInfo.Temperature);
+
+                // Hidden
+                //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
+                //EquipmentKeys.Add("camera__XSize", cameraInfo.XSize);
+                //EquipmentKeys.Add("camera__YSize", cameraInfo.YSize);
+                //EquipmentKeys.Add("camera__CoolerPower", cameraInfo.CoolerPower);
+                //EquipmentKeys.Add("camera__CoolerOn", cameraInfo.CoolerOn);
+                //EquipmentKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
+            }
+
+            DomeInfo domeInfo = DomeMediator.GetInfo();
+            DomeConnected = domeInfo.Connected;
+            if (DomeConnected) {
+                AddSymbol(i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
+                AddSymbol(i, "DomeAzimuth", domeInfo.Azimuth);
+            }
+
+            FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
+            FlatConnected = flatInfo.Connected;
+            if (FlatConnected) {
+                AddSymbol(i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
+            }
+
+            RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
+            RotatorConnected = rotatorInfo.Connected;
+            if (RotatorConnected) {
+                AddSymbol(i, "RotatorPosition", rotatorInfo.MechanicalPosition);
+            }
+
+            FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+            FilterWheelConnected = filterWheelInfo.Connected;
+            if (FilterWheelConnected) {
+                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (FilterInfo filterInfo in f) {
+                    try {
+                        //EquipmentKeys.AddOrUpdate("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                    } catch (Exception) {
+                        LogOnce("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
+                    }
+                }
+
+                if (filterWheelInfo.SelectedFilter != null) {
+                    //EquipmentKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
+                    //i.Add("CurrentFilter: Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name));
+                }
+            }
+
+            // Get switch values
+            SwitchInfo switchInfo = SwitchMediator.GetInfo();
+            SwitchConnected = switchInfo.Connected;
+            if (SwitchConnected) {
+                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    EquipmentKeys.TryAdd(key, sw.Value);
+                    i.Add("G: " + key + ": " + sw.Value);
+                }
+                foreach (ISwitch sw in switchInfo.WritableSwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    EquipmentKeys.TryAdd(key, sw.Value);
+                    i.Add("S: " + key + ": " + sw.Value);
+                }
+            }
+
+            // Get weather values
+            WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
+            WeatherConnected = weatherInfo.Connected;
+            if (WeatherConnected) {
+                foreach (string dataName in WeatherData) {
+                    PropertyInfo info = weatherInfo.GetType().GetProperty(dataName);
+                    if (info != null) {
+                        object val = info.GetValue(weatherInfo);
+                        if (val is double t && !Double.IsNaN(t)) {
+                            t = Math.Round(t, 2);
+                            string key = RemoveSpecialCharacters(dataName);
+                            EquipmentKeys[key] = t;
+                            i.Add("W: " + key + ": " + t);
+                        }
+                    }
+                }
+            }
+
             return Task.CompletedTask;
         }
-
     }
 }

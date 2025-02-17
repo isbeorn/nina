@@ -24,6 +24,7 @@ namespace NINA.Sequencer.Logic {
         public Expression (Expression cloneMe) {
             Definition = cloneMe.Definition;
             Context = cloneMe.Context;
+            SymbolBroker = cloneMe.SymbolBroker;
             Symbol = cloneMe.Symbol;
             Validator = cloneMe.Validator;
             Range = cloneMe.Range;
@@ -446,8 +447,6 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
 
-                    Keys DataSymbols = SymbolBroker?.GetEquipmentKeys() ?? new Keys();
-
                     //if (Volatile || GlobalVolatile) {
                     //    IList<string> volatiles = new List<string>();
                     //    foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
@@ -493,12 +492,11 @@ namespace NINA.Sequencer.Logic {
                                 // Link Expression to the Symbol
                                 Resolve(symReference, sym);
                                 sym.AddConsumer(this);
-                            } else {
-                                SymbolDictionary cached;
+                            } else if (SymbolBroker != null) {
                                 found = false;
                                 // Try in the old Switch/Weather keys
                                 object Val;
-                                if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
+                                if (!found && SymbolBroker.TryGetValue(symReference, out Val)) {
                                     // We don't want these resolved, just added to Parameters
                                     Resolved.Remove(symReference);
                                     Resolved.Add(symReference, null);
@@ -632,7 +630,7 @@ namespace NINA.Sequencer.Logic {
                     args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
-                    args.Result = FindSymbol(str, Context.Parent) != null;
+                    args.Result = SymbolBroker.TryGetValue(str, out _);
                 } else if (name == "random") {
                     args.Result = RNG.NextDouble();
                 }
