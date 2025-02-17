@@ -60,8 +60,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         [ImportingConstructor]
         public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM,
             ISymbolBrokerVM symbolBroker) {
-            Gain = -1;
-            Offset = -1;
             ImageType = CaptureSequence.ImageTypes.LIGHT;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;

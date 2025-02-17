@@ -311,6 +311,7 @@ namespace NINA.Sequencer.Logic {
                     Error = null;
                     return;
                 }
+
                 Double result;
 
                 if (value != definition && IsExpression) {

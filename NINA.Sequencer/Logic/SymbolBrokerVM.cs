@@ -31,7 +31,7 @@ using NINA.Sequencer.Container;
 using System.Runtime.InteropServices;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
+    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, IFocuserConsumer {
 
         public SymbolBrokerVM(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
@@ -48,6 +48,7 @@ namespace NINA.Sequencer.Logic {
             FocuserMediator = focuserMediator;
             TelescopeMediator = telescopeMediator;
             GuiderMediator = guiderMediator;
+
 
             ConditionWatchdog = new ConditionWatchdog(UpdateEquipmentKeys, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
@@ -321,6 +322,22 @@ namespace NINA.Sequencer.Logic {
             }
 
             return Task.CompletedTask;
+        }
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+        }
+
+        public void Dispose() {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
+        }
+
+        public void UpdateUserFocused(FocuserInfo info) {
+        }
+
+        public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
         }
     }
 }
