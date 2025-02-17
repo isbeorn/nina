@@ -361,7 +361,18 @@ namespace NINA.Sequencer.Logic {
         public static Symbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             Symbol global = null;
+
             if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
+
+                // Prune orphaned global symbols
+                foreach (var kvp in cached) {
+                    Symbol sym = kvp.Value;
+                    ISequenceEntity context = sym.Expr.Context;
+                    if (context == null || !IsAttachedToRoot(context)) {
+                        cached.TryRemove(kvp.Key, out global);
+                    }
+                }
+
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
                     // Don't find symbols that aren't part of the current sequence

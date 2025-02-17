@@ -10,6 +10,8 @@ using System.Threading;
 using NCalc.Handlers;
 using NINA.Astrometry;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Container;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -205,6 +207,17 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void Validate(IList<string> issues) {
+            if (Context == null) {
+                return;
+            } else if (!IsAttachedToRoot(Context)) {
+                // Remove orphaned entries from SymbolCache
+                ISequenceContainer p = Context.Parent;
+                while (p != null) {
+                    SymbolCache.Remove(p, out _);
+                    p = p.Parent;
+                }
+                return;
+            }
             if (Error != null) {  // || Volatile) {
                 if (Definition != null && Definition.Length == 0 && Value == Default) {
                     Error = null;
