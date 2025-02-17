@@ -377,7 +377,7 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            Dictionary<string, object> DataSymbols = exp.SymbolBroker.GetEquipmentKeys();
+            Dictionary<string, object> DataSymbols = exp.SymbolBroker?.GetEquipmentKeys() ?? new Keys() ;
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;

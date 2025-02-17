@@ -210,13 +210,13 @@ namespace NINA.Sequencer.Logic {
             if (Context == null) {
                 return;
             } else if (!IsAttachedToRoot(Context)) {
-                // Remove orphaned entries from SymbolCache
-                ISequenceContainer p = Context.Parent;
-                while (p != null) {
-                    SymbolCache.Remove(p, out _);
-                    p = p.Parent;
-                }
-                return;
+                //// Remove orphaned entries from SymbolCache
+                //ISequenceContainer p = Context.Parent;
+                //while (p != null) {
+                //    SymbolCache.Remove(p, out _);
+                //    p = p.Parent;
+                //}
+                //return;
             }
             if (Error != null) {  // || Volatile) {
                 if (Definition != null && Definition.Length == 0 && Value == Default) {
@@ -446,7 +446,7 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
 
-                    Keys DataSymbols = SymbolBroker.GetEquipmentKeys();
+                    Keys DataSymbols = SymbolBroker?.GetEquipmentKeys() ?? new Keys();
 
                     //if (Volatile || GlobalVolatile) {
                     //    IList<string> volatiles = new List<string>();
