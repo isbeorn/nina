@@ -24,6 +24,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
+using System.Reflection;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -305,19 +306,22 @@ namespace NINA.Sequencer.Logic {
                 }
 
                 // Get weather values
-                //WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
-                //WeatherConnected = weatherInfo.Connected;
-                //if (WeatherConnected) {
-                //    foreach (string dataName in WeatherData) {
-                //        double t = weatherInfo.TryGetPropertyValue(dataName, Double.NaN);
-                //        if (!Double.IsNaN(t)) {
-                //            t = Math.Round(t, 2);
-                //            string key = RemoveSpecialCharacters(dataName);
-                //            EquipmentKeys.TryAdd(key, t);
-                //            i.Add("W: " + key + ": " + t);
-                //        }
-                //    }
-                //}
+                WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
+                WeatherConnected = weatherInfo.Connected;
+                if (WeatherConnected) {
+                    foreach (string dataName in WeatherData) {
+                        PropertyInfo info = weatherInfo.GetType().GetProperty(dataName);
+                        if (info != null) {
+                            object val = info.GetValue(weatherInfo);
+                            if (val is double t && !Double.IsNaN(t)) {
+                                t = Math.Round(t, 2);
+                                string key = RemoveSpecialCharacters(dataName);
+                                EquipmentKeys.TryAdd(key, t);
+                                i.Add("W: " + key + ": " + t);
+                            }
+                        }
+                    }
+                }
 
                 EquipmentDataList = i;
 
