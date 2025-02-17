@@ -54,10 +54,27 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        private static ConcurrentDictionary<string, object> EquipmentKeys = new ConcurrentDictionary<string, object>();
+        private static ConcurrentDictionary<string, List<DataSource>> DataKeys = new ConcurrentDictionary<string, List<DataSource>>();
+
+        public class DataSource {
+            public string source;
+            public object data;
+
+            public DataSource(string source, object data) {
+                this.source = source;
+                this.data = data;
+            }
+        }
 
         public bool TryGetValue(string key, out object value) {
-            return EquipmentKeys.TryGetValue(key, out value);
+            List<DataSource> list;
+            if (!DataKeys.TryGetValue(key, out list)) {
+                value = null;
+                return false;
+            }
+            // For now, just one of each
+            value = list[0].data;
+            return true;
         }
 
         // DATA SYMBOLS
@@ -124,14 +141,37 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddSymbol(List<string> i, string token, object value) {
-            AddSymbol(i, token, value, null, false);
+            AddSymbol("NINA", i, token, value, null, false);
         }
-        private void AddSymbol(List<string> i, string token, object value, string[] values) {
-            AddSymbol(i, token, value, values, false);
+        private void AddSymbol(string source, List<string> i, string token, object value) {
+            AddSymbol(source, i, token, value, null, false);
+        }
+        private void AddSymbol(string source, List<string> i, string token, object value, string[] values) {
+            AddSymbol(source, i, token, value, values, false);
         }
 
-        private void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
-            EquipmentKeys[token] = value;
+        private void AddSymbol(string source, List<string> i, string token, object value, string[] values, bool silent) {
+            List<DataSource> list;
+            if (!DataKeys.ContainsKey(token)) {
+                list = new List<DataSource>();
+                DataKeys[token] = list;
+                list.Add(new DataSource(source, value));
+            } else {
+                list = DataKeys[token];
+                bool found = false;
+                for (int idx = 0; idx < list.Count; idx++) {
+                    DataSource s = list[idx];
+                    if (s.source == source) {
+                        s.data = value;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    list.Add(new DataSource(source, value));
+                }
+            }
+
             if (silent) {
                 return;
             }
@@ -155,7 +195,8 @@ namespace NINA.Sequencer.Logic {
                 if (values != null) {
                     for (int v = 0; v < values.Length; v++) {
                         if (values[v] != null) {
-                            EquipmentKeys[values[v]] = v - 1;
+                            // Need to add these constants!
+                            //DataKeys[values[v]] = v - 1;
                         }
                     }
                 }
@@ -174,7 +215,7 @@ namespace NINA.Sequencer.Logic {
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
-            return (IEnumerable<ConcurrentDictionary<string, object>>)EquipmentKeys;
+            return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
         }
         
         private Task UpdateEquipmentKeys() {
@@ -211,35 +252,35 @@ namespace NINA.Sequencer.Logic {
             TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
             TelescopeConnected = telescopeInfo.Connected;
             if (TelescopeConnected) {
-                AddSymbol(i, "Altitude", telescopeInfo.Altitude);
-                AddSymbol(i, "Azimuth", telescopeInfo.Azimuth);
-                AddSymbol(i, "AtPark", telescopeInfo.AtPark);
+                AddSymbol("Telescope", i, "Altitude", telescopeInfo.Altitude);
+                AddSymbol("Telescope", i, "Azimuth", telescopeInfo.Azimuth);
+                AddSymbol("Telescope", i, "AtPark", telescopeInfo.AtPark);
 
                 Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
-                AddSymbol(i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                AddSymbol(i, "Declination", c.Dec); // telescopeInfo.Declination);
+                AddSymbol("Telescope", i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                AddSymbol("Telescope", i, "Declination", c.Dec); // telescopeInfo.Declination);
 
-                AddSymbol(i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
+                AddSymbol("Telescope", i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
             }
 
             SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
             SafetyConnected = safetyInfo.Connected;
             if (SafetyConnected) {
-                AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
+                AddSymbol("Safety", i, "IsSafe", safetyInfo.IsSafe);
             }
 
             FocuserInfo fInfo = FocuserMediator.GetInfo();
             FocuserConnected = fInfo.Connected;
             if (fInfo != null && FocuserConnected) {
-                AddSymbol(i, "FocuserPosition", fInfo.Position);
-                AddSymbol(i, "FocuserTemperature", fInfo.Temperature);
+                AddSymbol("Focuser", i, "FocuserPosition", fInfo.Position);
+                AddSymbol("Focuser", i, "FocuserTemperature", fInfo.Temperature);
             }
 
             // Get SensorTemp
             CameraInfo cameraInfo = CameraMediator.GetInfo();
             CameraConnected = cameraInfo.Connected;
             if (CameraConnected) {
-                AddSymbol(i, "SensorTemp", cameraInfo.Temperature);
+                AddSymbol("Camera", i, "SensorTemp", cameraInfo.Temperature);
 
                 // Hidden
                 //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
@@ -253,20 +294,20 @@ namespace NINA.Sequencer.Logic {
             DomeInfo domeInfo = DomeMediator.GetInfo();
             DomeConnected = domeInfo.Connected;
             if (DomeConnected) {
-                AddSymbol(i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
-                AddSymbol(i, "DomeAzimuth", domeInfo.Azimuth);
+                AddSymbol("Dome", i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
+                AddSymbol("Dome", i, "DomeAzimuth", domeInfo.Azimuth);
             }
 
             FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
             FlatConnected = flatInfo.Connected;
             if (FlatConnected) {
-                AddSymbol(i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
+                AddSymbol("Flat Panel", i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
             }
 
             RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
             RotatorConnected = rotatorInfo.Connected;
             if (RotatorConnected) {
-                AddSymbol(i, "RotatorPosition", rotatorInfo.MechanicalPosition);
+                AddSymbol("Rotator", i, "RotatorPosition", rotatorInfo.MechanicalPosition);
             }
 
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
@@ -290,18 +331,18 @@ namespace NINA.Sequencer.Logic {
             // Get switch values
             SwitchInfo switchInfo = SwitchMediator.GetInfo();
             SwitchConnected = switchInfo.Connected;
-            if (SwitchConnected) {
-                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    EquipmentKeys.TryAdd(key, sw.Value);
-                    i.Add("G: " + key + ": " + sw.Value);
-                }
-                foreach (ISwitch sw in switchInfo.WritableSwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    EquipmentKeys.TryAdd(key, sw.Value);
-                    i.Add("S: " + key + ": " + sw.Value);
-                }
-            }
+            //if (SwitchConnected) {
+            //    foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
+            //        string key = RemoveSpecialCharacters(sw.Name);
+            //        DataKeys.TryAdd(key, sw.Value);
+            //        i.Add("G: " + key + ": " + sw.Value);
+            //    }
+            //    foreach (ISwitch sw in switchInfo.WritableSwitches) {
+            //        string key = RemoveSpecialCharacters(sw.Name);
+            //        DataKeys.TryAdd(key, sw.Value);
+            //        i.Add("S: " + key + ": " + sw.Value);
+            //    }
+            //}
 
             // Get weather values
             WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
@@ -314,8 +355,8 @@ namespace NINA.Sequencer.Logic {
                         if (val is double t && !Double.IsNaN(t)) {
                             t = Math.Round(t, 2);
                             string key = RemoveSpecialCharacters(dataName);
-                            EquipmentKeys[key] = t;
-                            i.Add("W: " + key + ": " + t);
+                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName), t);
+                            //i.Add("W: " + key + ": " + t);
                         }
                     }
                 }
