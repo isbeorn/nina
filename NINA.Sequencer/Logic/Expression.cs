@@ -446,7 +446,7 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
 
-                    Dictionary<string, object> DataSymbols = SymbolBrokerVM.GetEquipmentKeys();
+                    Keys DataSymbols = SymbolBroker.GetEquipmentKeys();
 
                     //if (Volatile || GlobalVolatile) {
                     //    IList<string> volatiles = new List<string>();

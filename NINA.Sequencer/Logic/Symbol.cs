@@ -346,18 +346,6 @@ namespace NINA.Sequencer.Logic {
             return FindGlobalSymbol(identifier);
         }
 
-        public static void DumpSymbols() {
-            foreach (var c in SymbolCache) {
-                Logger.Info("\r\nIn SymbolCache for " + c.Key.Name);
-                foreach (var d in c.Value) {
-                    Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
-                }
-            }
-            foreach (var x in SymbolBrokerVM.GetEquipmentKeys()) {
-                Logger.Info(x.Key + ": " + x.Value.ToString());
-            }
-        }
-
         public static Symbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             Symbol global = null;
@@ -389,7 +377,7 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            Dictionary<string, object> DataSymbols = SymbolBrokerVM.GetEquipmentKeys();
+            Dictionary<string, object> DataSymbols = exp.SymbolBroker.GetEquipmentKeys();
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;

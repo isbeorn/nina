@@ -48,16 +48,15 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        public static Keys EquipmentKeys { get; set; } = new Keys();
+        public Keys EquipmentKeys { get; set; } = new Keys();
 
-        public static Keys GetEquipmentKeys() {
+        public Keys GetEquipmentKeys() {
             lock (SYMBOL_LOCK) {
                 return EquipmentKeys;
             }
         }
 
         // DATA SYMBOLS
-
 
         private static string[] WeatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
             "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
@@ -99,8 +98,8 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public static void AddSymbolData(string id, double value) {
-            if (SymbolBrokerVM.GetEquipmentKeys().ContainsKey(id)) {
+        public void AddSymbolData(string id, double value) {
+            if (GetEquipmentKeys().ContainsKey(id)) {
 
             }
         }
@@ -127,14 +126,14 @@ namespace NINA.Sequencer.Logic {
             LoggedOnce.Add(message);
         }
 
-        private static void AddSymbol(List<string> i, string token, object value) {
+        private void AddSymbol(List<string> i, string token, object value) {
             AddSymbol(i, token, value, null, false);
         }
-        private static void AddSymbol(List<string> i, string token, object value, string[] values) {
+        private void AddSymbol(List<string> i, string token, object value, string[] values) {
             AddSymbol(i, token, value, values, false);
         }
 
-        private static void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
+        private void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
             EquipmentKeys.TryAdd(token, value);
             if (silent) {
                 return;
@@ -177,7 +176,7 @@ namespace NINA.Sequencer.Logic {
 
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
-        public static Task UpdateEquipmentKeys() {
+        public Task UpdateEquipmentKeys() {
 
             lock (SYMBOL_LOCK) {
                 var i = new List<string>();
@@ -186,13 +185,14 @@ namespace NINA.Sequencer.Logic {
                 if (Observer == null) {
                     Observer = new ObserverInfo() {
                         Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
-                        Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude
+                        Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
+                        Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
                     };
                 }
 
-                var sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
+                NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
                 Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
-                var tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude));
+                TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
 
                 AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
                 AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));

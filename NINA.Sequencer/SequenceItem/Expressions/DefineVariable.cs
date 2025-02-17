@@ -152,10 +152,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            if (Debugging) {
-                Logger.Info("Executing Vx");
-                DumpSymbols();
-            }
             Expr.Definition = OriginalExpr.Definition;
             Executed = true;
             Expr.Evaluate();
