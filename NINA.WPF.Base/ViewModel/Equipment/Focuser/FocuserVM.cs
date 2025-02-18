@@ -129,7 +129,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         private Task<int> MoveFocuserRelativeInternal(int position) {
             moveCts?.Dispose();
             moveCts = new CancellationTokenSource();
-            return MoveFocuserRelative(position, moveCts.Token);
+            var result = MoveFocuserRelative(position, moveCts.Token);
+            BroadcastUserFocused();
+            return result;
         }
 
         public void SetFocusedTemperature(double temp) {

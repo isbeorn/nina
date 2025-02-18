@@ -35,7 +35,7 @@ namespace NINA.Profile {
             focalLength = double.NaN;
             focalRatio = double.NaN;
             snapPortStart = ":SNAP1,1#";
-            snapPortStop = "SNAP1,0#";
+            snapPortStop = ":SNAP1,0#";
             settleTime = 5;
             noSync = false;
             timeSync = true;

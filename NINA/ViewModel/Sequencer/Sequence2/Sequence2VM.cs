@@ -66,7 +66,8 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private IApplicationMediator applicationMediator;
         private ICameraMediator cameraMediator;
-        private DispatcherTimer validationTimer;
+        private CancellationTokenSource backgroundValidationCts;
+        private Task backgroundValidationTask;
 
         public Sequence2VM(
             IProfileService profileService,
@@ -222,11 +223,8 @@ namespace NINA.ViewModel.Sequencer {
                         rootContainer
                     );
 
-                    validationTimer = new DispatcherTimer(DispatcherPriority.Background);
-                    validationTimer.Interval = TimeSpan.FromSeconds(5);
-                    validationTimer.IsEnabled = true;
-                    validationTimer.Tick += (sender, args) => Sequencer.MainContainer.Validate();
-                    validationTimer.Start();
+                    backgroundValidationCts = new CancellationTokenSource();
+                    backgroundValidationTask = RunBackgroundValidationTimer(backgroundValidationCts.Token);
 
                     if (commandLineOptions.SequenceFile == null && File.Exists(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate)) {
                         try {
@@ -242,6 +240,26 @@ namespace NINA.ViewModel.Sequencer {
                         TryLoadSequenceFile();
                     }
                 }));
+            });
+        }
+
+        private Task RunBackgroundValidationTimer(CancellationToken token) {
+            return Task.Run(async () => {
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+                try {
+                    while (await timer.WaitForNextTickAsync(token)) {
+                        try {
+                            using (MyStopWatch.Measure()) { 
+                                Sequencer.MainContainer.Validate();
+                            }
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error("BackgroundValidationTimer ran into unexpected exception", ex);
+                }
             });
         }
 

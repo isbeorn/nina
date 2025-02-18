@@ -126,33 +126,45 @@ namespace NINA.Equipment.Equipment {
             }
         }
 
+        private bool TryReconnect() {
+            Connected = true;
+            if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
+                getmemory.InvalidateCache();
+            }
+            if (!device.Connected) {
+                throw new NotConnectedException();
+            }            
+            Logger.Info($"{Name} reconnection successful");
+            return true;
+        }
+
         public bool Connected {
             get {
                 lock (lockObj) {
                     if (connectedExpectation && device != null) {
                         bool val = false;
+                        bool expected = connectedExpectation;
                         try {
-                            bool expected;
                             val = GetProperty(nameof(Connected), defaultValue: false, cacheInterval: TimeSpan.FromSeconds(1), rethrow: true);
-                            expected = connectedExpectation;
                             if (expected != val) {
                                 Logger.Error($"{Name} should be connected but reports to be disconnected. Trying to reconnect...");
                                 try {
-                                    Connected = true;
-                                    if (propertyGETMemory.TryGetValue(nameof(Connected), out var getmemory)) {
-                                        getmemory.InvalidateCache();
-                                    }
-                                    if (!device.Connected) {
-                                        throw new NotConnectedException();
-                                    }
-                                    val = true;
-                                    Logger.Info($"{Name} reconnection successful");
+                                    val = TryReconnect();
                                 } catch (Exception ex) {
-                                    Logger.Error("Reconnection failed. The device might be disconnected! - ", ex);
+                                    Logger.Error("Reconnection failed. The device might be disconnected! - ", ex.InnerException ?? ex);
                                     DisconnectOnConnectionError();
                                 }
                             }
                         } catch (Exception ex) {
+                            if (IsAlpacaDevice() && expected != val) {
+                                Logger.Error($"{Name} should be connected but reports to be disconnected. Trying to reconnect...");
+                                try {
+                                    val = TryReconnect();
+                                } catch (Exception ex2) {
+                                    Logger.Error("Reconnection failed. The device might be disconnected! - ", ex2.InnerException ?? ex2);
+                                    ex = ex2;
+                                }
+                            }
                             Logger.Error(ex.InnerException ?? ex);
                             DisconnectOnConnectionError();
                         }

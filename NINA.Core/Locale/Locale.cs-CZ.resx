@@ -1200,9 +1200,6 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>Ve výchozí pozici</value>
   </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Kopule sleduje dalekohled</value>
-  </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Přejíždění</value>
   </data>
@@ -7091,5 +7088,73 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblObserver" xml:space="preserve">
     <value>Pozorovatel</value>
     <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Sleduje</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Sledování kopule přes N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>přes Ovladač</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapa Světa</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Připojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Pro vybrané zařízení bude připojeno zařízení uložené v profilu.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Připojit</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Odpojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Odpojí vybrané zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Připojit Všechna Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Připojit se ke všem zařízením, která jsou uložena v profilu</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Odpojit Veškerá Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Odpojí všechna aktuálně připojená zařízení</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Znovu Připojit Kameru Při Selhání Stahování</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>Spouštěč, který se aktivuje, když se kameře nepodaří stáhnout expozici, a pokusí se ji znovu připojit. Při opětovném připojení bude také obnoven stav chladiče a rosného ohřívače.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Znovu Připojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Spouštěč, který se aktivuje, když je vybrané zařízení odpojeno, a pokusí se k němu znovu připojit.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Přepnout Profil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Odpojí všechna zařízení, která jsou momentálně připojena, přepne na určený profil a znovu připojí všechna zařízení tohoto profilu.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
   </data>
 </root>

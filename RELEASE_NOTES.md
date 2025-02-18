@@ -35,6 +35,12 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Altitude if available
     - Info if following is off, following via N.I.N.A. or following via driver to differentiate the different dome following mechanisms
 - Options > Astrometry can now show a world map with a pin of your entered latitude and longitude
+- "Center And Rotate" as well as "Solve And Rotate" will now give up after 10 unsuccessful rotation attempts
+- Added a lock/unlock button to the imaging tab to prevent panels from being closed or rearranged. Unlocking allows adjustments again.
+    - Resizing panels remains possible, as no method to disable this has been found.
+    - Switching tabs is allowed while locked, but rearranging them is prevented.
+    - Undocked floating windows are unaffected and can still be re-docked even when the layout is locked.
+
 
 ## Commandline Options
 The following command line options have been added
@@ -42,12 +48,19 @@ The following command line options have been added
 -g, --disable-hardware-acceleration        Disables UI hardware acceleration
 ```
 
+## Plugin Merge
+
+### Connector
+- All instructions and triggers that the connector plugin offered are now merged into the core application
+- Existing templates and sequences will automatically migrate to the core instructions and triggers
+
 ## Plugin Development
 
 ### AssemblyLoadContext
 - Plugins are now loaded within separate [AssemblyLoadContexts](https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext)
     - This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues
     - No changes to existing plugins are required
+
 
 # Version 3.1 Hotfix 2
 

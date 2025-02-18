@@ -46,10 +46,11 @@ using NINA.Plugin.Interfaces;
 using System.Diagnostics;
 using System.Threading;
 using NINA.Core.Utility.Notification;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.ViewModel {
 
-    internal class DockManagerVM : BaseVM, IDockManagerVM {
+    internal partial class DockManagerVM : BaseVM, IDockManagerVM {
 
         public DockManagerVM(IProfileService profileService,
                              ICameraVM cameraVM,
@@ -242,6 +243,9 @@ namespace NINA.ViewModel {
                 }
             }
         }
+
+        [ObservableProperty]
+        private bool isLocked = false;
 
         private List<IDockableVM> _anchorables;
 
