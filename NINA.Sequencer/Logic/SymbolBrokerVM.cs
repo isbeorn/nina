@@ -29,6 +29,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using NINA.Sequencer.Container;
 using System.Runtime.InteropServices;
+using Google.Protobuf.WellKnownTypes;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, IFocuserConsumer {
@@ -75,6 +76,15 @@ namespace NINA.Sequencer.Logic {
             // For now, just one of each
             value = list[0].data;
             return true;
+        }
+
+        public DataSource GetDataSource(string key) {
+            List<DataSource> list;
+            if (!DataKeys.TryGetValue(key, out list)) {
+                return null;
+            }
+            // For now, just one of each
+            return new DataSource(list[0].source, list[0].data);
         }
 
         // DATA SYMBOLS

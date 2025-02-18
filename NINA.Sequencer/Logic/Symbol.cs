@@ -375,9 +375,7 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            //var DataSymbols = exp.SymbolBroker?.GetEquipmentKeys();
-
-            //if (DataSymbols == null) return;
+            ISymbolBrokerVM broker = exp.SymbolBroker;
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;
@@ -412,8 +410,18 @@ namespace NINA.Sequencer.Logic {
                     sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.ValueString);
                 } else {
                     // We're a data value
-                    sb.Append(" (Data) = ");
-                    //sb.Append(DataSymbols.TryGetValue(kvp.Key, "??"));
+                    SymbolBrokerVM.DataSource ds = broker.GetDataSource(kvp.Key);
+                    if (ds != null) {
+                        sb.Append(" (" + ds.source + ") = ");
+                        if (ds.data is double d) {
+                            sb.Append(Math.Round(d, 3));
+
+                        } else {
+                            sb.Append(ds.data);
+                        }
+                    } else {
+                        sb.Append( "??");
+                    }
                 }
                 if (--cnt > 0) sb.Append("; ");
             }

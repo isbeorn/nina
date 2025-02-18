@@ -13,5 +13,7 @@ namespace NINA.Sequencer.Logic {
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys();
 
+        public SymbolBrokerVM.DataSource GetDataSource(string key);
+
     }
 }
