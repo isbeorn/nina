@@ -104,7 +104,7 @@
         </WrapPanel>
 
         <!--  Free Gain  -->
-        <WrapPanel Orientation="Horizontal">
+        <WrapPanel Orientation="Horizontal" MinWidth="40">
             <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding

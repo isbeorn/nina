@@ -129,7 +129,7 @@
         </local:WhenTextBox>
  
         <TextBlock VerticalAlignment="Center"
-                   Margin="0,2,0,0"
+                   Margin="2,2,0,0"
                    Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">

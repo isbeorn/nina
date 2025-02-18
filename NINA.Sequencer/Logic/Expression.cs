@@ -119,7 +119,7 @@ namespace NINA.Sequencer.Logic {
                         //    Error = "Value must be an Integer";
                         //}
                         ForceAnnotated = false;
-                        if (Double.Floor(value) != value) {
+                        if (Definition.Length > 0 && Double.Floor(value) != value) {
                             value = Double.Floor(value);
                             ForceAnnotated = true;
                         }
@@ -309,6 +309,9 @@ namespace NINA.Sequencer.Logic {
                     Resolved.Clear();
                     References.Clear();
                     Error = null;
+                    ForceAnnotated = false;
+                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("IsAnnotated");
                     return;
                 }
 
