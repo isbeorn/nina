@@ -411,6 +411,7 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     // We're a data value
                     SymbolBrokerVM.DataSource ds = broker.GetDataSource(kvp.Key);
+                    // Get the source of the data, and the data itself
                     if (ds != null) {
                         sb.Append(" (" + ds.source + ") = ");
                         if (ds.data is double d) {
