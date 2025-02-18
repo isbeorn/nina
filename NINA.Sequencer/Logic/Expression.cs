@@ -12,6 +12,7 @@ using NINA.Astrometry;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Container;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -523,8 +524,20 @@ namespace NINA.Sequencer.Logic {
                         if (Parameters.Count != References.Count) {
                             foreach (string r in References) {
                                 string symReference = r;
-                                if (symReference.StartsWith('_') || symReference.StartsWith('@')) {
-                                    symReference = symReference.Substring(1);
+                                if (!Parameters.ContainsKey(symReference)) {
+                                    // Not defined or evaluated
+                                    Symbol s = FindSymbol(symReference, Context.Parent);
+                                    if (s is DefineVariable sv && !sv.Executed) {
+                                        AddError("Not evaluated: " + r);
+                                    } else if (r.StartsWith("_")) {
+                                        AddError("Reference: " + r);
+                                    } else {
+                                        if (r.StartsWith('$') && ext && validateOnly) {
+                                            AddError("External: " + symReference);
+                                        } else {
+                                            AddError("Undefined: " + r);
+                                        }
+                                    }
                                 }
                             }
                             RaisePropertyChanged("Error");
@@ -629,6 +642,16 @@ namespace NINA.Sequencer.Logic {
                         throw new ArgumentException();
                     }
                     args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "valueOf") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    Expression x = new Expression(str, Context);
+                    x.SymbolBroker = SymbolBroker;
+                    x.Evaluate();
+                    if (x.Error != null || x.Value == double.NaN) {
+                        args.Result = args.Parameters[1].Evaluate();
+                    } else {
+                        args.Result = x.Value;
+                    }
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     args.Result = SymbolBroker.TryGetValue(str, out _);
