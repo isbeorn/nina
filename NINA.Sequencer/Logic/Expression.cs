@@ -73,6 +73,9 @@ namespace NINA.Sequencer.Logic {
 
         public double Default { get; set; } = double.NaN;
 
+        public bool Volatile { get; set; } = false;
+        public bool GlobalVolatile { get; set; } = false;
+
         private string defaultString = null;
         public string DefaultString {
             get {
@@ -207,25 +210,17 @@ namespace NINA.Sequencer.Logic {
         public void Validate(IList<string> issues) {
             if (Context == null) {
                 return;
-            } else if (!IsAttachedToRoot(Context)) {
-                //// Remove orphaned entries from SymbolCache
-                //ISequenceContainer p = Context.Parent;
-                //while (p != null) {
-                //    SymbolCache.Remove(p, out _);
-                //    p = p.Parent;
-                //}
-                //return;
             }
-            if (Error != null) {  // || Volatile) {
+            if (Error != null || Volatile) {
                 if (Definition != null && Definition.Length == 0 && Value == Default) {
                     Error = null;
                 }
                 Evaluate(true);
-                ///foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
-                //    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
-                //        GlobalVolatile = true;
-                //    }
-                //}
+                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                        GlobalVolatile = true;
+                    }
+                }
             } else if (double.IsNaN(Value) && Definition?.Length > 0) {
                 Error = "Not evaluated";
             } else if (Resolved.Count != References.Count) {
@@ -445,20 +440,20 @@ namespace NINA.Sequencer.Logic {
                         return;
                     }
 
-                    //if (Volatile || GlobalVolatile) {
-                    //    IList<string> volatiles = new List<string>();
-                    //    foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
-                    //        if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
-                    //            volatiles.Add(kvp.Key);
-                    //        }
-                    //    }
-                    //    foreach (string key in volatiles) {
-                    //        Resolved.Remove(key);
-                    //        Parameters.Remove(key);
-                    //    }
-                    //}
+                    if (Volatile || GlobalVolatile) {
+                        IList<string> volatiles = new List<string>();
+                        foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                            if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                                volatiles.Add(kvp.Key);
+                            }
+                        }
+                        foreach (string key in volatiles) {
+                            Resolved.Remove(key);
+                            Parameters.Remove(key);
+                        }
+                    }
 
-                    //Volatile = GlobalVolatile;
+                    Volatile = GlobalVolatile;
 
                     //ImageVolatile = false;
 
@@ -500,7 +495,7 @@ namespace NINA.Sequencer.Logic {
                                     Resolved.Add(symReference, null);
                                     Parameters.Remove(symReference);
                                     AddParameter(symReference, Val);
-                                    //Volatile = true;
+                                    Volatile = true;
                                 }
                             } else {
                                 Logger.Warning("SymbolBroker not found in " + Context.Name);
