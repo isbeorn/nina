@@ -70,8 +70,8 @@ namespace NINA.Sequencer.Logic {
         public ISequenceEntity Context { get; set; }
 
         public Action<Expression>? Validator;
-
         public double Default { get; set; } = double.NaN;
+        public string Type { get; set; } = "double";
 
         public bool Volatile { get; set; } = false;
         public bool GlobalVolatile { get; set; } = false;
@@ -96,9 +96,12 @@ namespace NINA.Sequencer.Logic {
         public bool IsExpression { get; set; } = false;
         public bool IsSyntaxError { get; set; } = false;
         public bool IsAnnotated {
-            get => IsExpression || Error != null;
+            get => IsExpression || ForceAnnotated || Error != null;
             set { }
         }
+
+        public bool ForceAnnotated { get; set; } = false;
+
         private double _value = Double.NaN;
         public virtual double Value {
             get {
@@ -111,12 +114,17 @@ namespace NINA.Sequencer.Logic {
             }
             set {
                 if (value != _value) {
-                    //if ("Integer".Equals(Type)) {
-                    //    if (StringValue != null) {
-                    //        Error = "Value must be an Integer";
-                    //    }
-                    //    value = Double.Floor(value);
-                    //}
+                    if ("int".Equals(Type)) {
+                        //if (StringValue != null) {
+                        //    Error = "Value must be an Integer";
+                        //}
+                        ForceAnnotated = false;
+                        if (Double.Floor(value) != value) {
+                            value = Double.Floor(value);
+                            ForceAnnotated = true;
+                        }
+                        RaisePropertyChanged("IsAnnotated");
+                    }
                     _value = value;
                     if (Range != null) {
                         CheckRange((double)value, Range);

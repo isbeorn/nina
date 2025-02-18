@@ -169,6 +169,7 @@ namespace NINA.Sequencer.Generators {
                 {fieldNameExpression} = value;
                 if (value == null) return;
                 {propNameExpression}.Context = this;
+                {propNameExpression}.Type = ""{fieldType}"";
                 {propNameExpression}.SymbolBroker = SymbolBroker;";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
