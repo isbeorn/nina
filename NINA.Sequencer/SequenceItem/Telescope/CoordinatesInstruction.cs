@@ -22,18 +22,14 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class CoordinatesInstruction : SequenceItem {
 
-        protected ISymbolBrokerVM symbolBroker;
-
         public CoordinatesInstruction(ISequenceEntity e) {
-
         }
 
-        public CoordinatesInstruction(ISymbolBrokerVM symbolBroker) {
-            this.symbolBroker = symbolBroker;
+        public CoordinatesInstruction() {
         }
 
         partial void AfterClone(CoordinatesInstruction clone) {

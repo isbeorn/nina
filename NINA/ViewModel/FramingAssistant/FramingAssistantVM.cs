@@ -74,8 +74,7 @@ namespace NINA.ViewModel.FramingAssistant {
                                   IDomeMediator domeMediator,
                                   IDomeFollower domeFollower,
                                   IImageDataFactory imageDataFactory,
-                                  IWindowServiceFactory windowServiceFactory,
-                                  ISymbolBrokerVM symbolBroker) : base(profileService) {
+                                  IWindowServiceFactory windowServiceFactory) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
@@ -92,7 +91,6 @@ namespace NINA.ViewModel.FramingAssistant {
             this.domeFollower = domeFollower;
             this.imageDataFactory = imageDataFactory;
             this.windowServiceFactory = windowServiceFactory;
-            this.symbolBroker = symbolBroker;
 
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator, profileService);
 
@@ -367,7 +365,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private async Task<bool> Center(Coordinates coordinates, CancellationToken token) {
-            var center = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory(), symbolBroker);
+            var center = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory());
 
             center.Coordinates = new InputCoordinates(coordinates);
             var isValid = center.Validate();
@@ -382,7 +380,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private async Task<bool> CenterAndRotate(Coordinates coordinates, double positionAngle, CancellationToken token) {
-            var centerAndRotate = new CenterAndRotate(profileService, telescopeMediator, imagingMediator, rotatorMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory(), symbolBroker);
+            var centerAndRotate = new CenterAndRotate(profileService, telescopeMediator, imagingMediator, rotatorMediator, filterWheelMediator, guiderMediator, domeMediator, domeFollower, new PlateSolverFactoryProxy(), new WindowServiceFactory());
 
             centerAndRotate.Coordinates = new InputCoordinates(coordinates);
             centerAndRotate.PositionAngle = positionAngle;

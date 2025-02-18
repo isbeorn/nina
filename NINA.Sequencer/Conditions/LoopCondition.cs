@@ -34,18 +34,15 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class LoopCondition : SequenceCondition, IValidatable {
 
-        ISymbolBrokerVM symbolBroker;
-
         [ImportingConstructor]
-        public LoopCondition(ISymbolBrokerVM symbolBroker) {
-            this.symbolBroker = symbolBroker;
+        public LoopCondition() {
         }
 
-        private LoopCondition(LoopCondition cloneMe) : this(cloneMe.symbolBroker) {
+        private LoopCondition(LoopCondition cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 

@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Rotator")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class SolveAndRotate : SequenceItem, IValidatable {
         protected IProfileService profileService;
@@ -55,7 +55,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
         protected IPlateSolverFactory plateSolverFactory;
         protected IWindowServiceFactory windowServiceFactory;
         private IRotatorMediator rotatorMediator;
-        private ISymbolBrokerVM symbolBroker;
         public PlateSolvingStatusVM PlateSolveStatusVM { get; } = new PlateSolvingStatusVM();
 
         [ImportingConstructor]
@@ -66,8 +65,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                IFilterWheelMediator filterWheelMediator,
                                IGuiderMediator guiderMediator,
                                IPlateSolverFactory plateSolverFactory,
-                               IWindowServiceFactory windowServiceFactory,
-                               ISymbolBrokerVM symbolBroker) {
+                               IWindowServiceFactory windowServiceFactory) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.imagingMediator = imagingMediator;
@@ -76,7 +74,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             this.plateSolverFactory = plateSolverFactory;
             this.windowServiceFactory = windowServiceFactory;
             this.rotatorMediator = rotatorMediator;
-            this.symbolBroker = symbolBroker;
         }
 
         private SolveAndRotate(SolveAndRotate cloneMe) : this(cloneMe.profileService,
@@ -86,8 +83,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                 cloneMe.filterWheelMediator,
                                                                 cloneMe.guiderMediator,
                                                                 cloneMe.plateSolverFactory,
-                                                                cloneMe.windowServiceFactory,
-                                                                cloneMe.symbolBroker) {
+                                                                cloneMe.windowServiceFactory) {
             CopyMetaData(cloneMe);
         }
 

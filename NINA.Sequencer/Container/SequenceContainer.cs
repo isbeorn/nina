@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Container {
 
@@ -54,6 +55,15 @@ namespace NINA.Sequencer.Container {
 
         public SequenceContainer(IExecutionStrategy strategy) {
             this.Strategy = strategy;
+        }
+
+
+        public ISymbolBrokerVM SymbolBroker {
+            get => base.SymbolBroker;
+            set {
+                base.SymbolBroker = value;
+                RaisePropertyChanged();
+            }
         }
 
         [JsonProperty]

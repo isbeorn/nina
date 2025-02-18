@@ -37,15 +37,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 
-        private ISymbolBrokerVM symbolBroker;
-
         [ImportingConstructor]
-        public WaitForTimeSpan(ISymbolBrokerVM symbolBroker) {
-            this.symbolBroker = symbolBroker;
+        public WaitForTimeSpan() {
         }
 
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {

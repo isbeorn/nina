@@ -28,6 +28,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -46,9 +47,12 @@ namespace NINA.Sequencer.Conditions {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
+            SymbolBroker = cloneMe.SymbolBroker;
         }
 
         public string Name { get; set; }
+
+        public ISymbolBrokerVM SymbolBroker { get; set; }
         public virtual bool AllowMultiplePerSet => false;
 
         public string Description { get; set; }

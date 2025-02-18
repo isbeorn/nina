@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger {
 
@@ -48,6 +49,7 @@ namespace NINA.Sequencer.Trigger {
             Name = cloneMe.Name;
             Category = cloneMe.Category;
             Description = cloneMe.Description;
+            SymbolBroker = cloneMe.SymbolBroker;
         }
 
         [OnDeserializing]
@@ -56,6 +58,9 @@ namespace NINA.Sequencer.Trigger {
             this.TriggerRunner?.Conditions.Clear();
             this.TriggerRunner?.Triggers.Clear();
         }
+
+
+        public ISymbolBrokerVM SymbolBroker { get; set; }
 
         public string Name { get; set; }
 

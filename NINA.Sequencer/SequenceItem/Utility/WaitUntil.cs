@@ -33,23 +33,21 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class WaitUntil : SequenceItem, IValidatable {
         private ISafetyMonitorMediator safetyMonitorMediator;
         protected ISequenceMediator sequenceMediator;
         private IProfileService profileService;
-        private ISymbolBrokerVM symbolBroker;
 
         [ImportingConstructor]
-        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService, ISymbolBrokerVM symbolBroker) {
+        public WaitUntil(ISafetyMonitorMediator safetyMonitorMediator, ISequenceMediator seqMediator, IProfileService pService) {
             this.safetyMonitorMediator = safetyMonitorMediator;
             this.sequenceMediator = seqMediator;
             this.profileService = pService;
-            this.symbolBroker = symbolBroker;
         }
 
-        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService, cloneMe.symbolBroker) {
+        private WaitUntil(WaitUntil cloneMe) : this(cloneMe.safetyMonitorMediator, cloneMe.sequenceMediator, cloneMe.profileService) {
             CopyMetaData(cloneMe);
         }
 

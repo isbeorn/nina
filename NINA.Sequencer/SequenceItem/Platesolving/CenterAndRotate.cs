@@ -61,8 +61,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                IDomeMediator domeMediator,
                                IDomeFollower domeFollower,
                                IPlateSolverFactory plateSolverFactory,
-                               IWindowServiceFactory windowServiceFactory,
-                               ISymbolBrokerVM symbolBroker) : base(profileService,
+                               IWindowServiceFactory windowServiceFactory) : base(profileService,
                                                                         telescopeMediator,
                                                                         imagingMediator,
                                                                         filterWheelMediator,
@@ -70,8 +69,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                         domeMediator,
                                                                         domeFollower,
                                                                         plateSolverFactory,
-                                                                        windowServiceFactory,
-                                                                        symbolBroker) {
+                                                                        windowServiceFactory) {
             this.rotatorMediator = rotatorMediator;
             this.UsesRotation = true;
         }
@@ -85,8 +83,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                                                                 cloneMe.domeMediator,
                                                                 cloneMe.domeFollower,
                                                                 cloneMe.plateSolverFactory,
-                                                                cloneMe.windowServiceFactory,
-                                                                cloneMe.symbolBroker) {
+                                                                cloneMe.windowServiceFactory) {
             CopyMetaData(cloneMe);
         }
 

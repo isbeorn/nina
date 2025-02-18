@@ -169,7 +169,7 @@ namespace NINA.Sequencer.Generators {
                 {fieldNameExpression} = value;
                 if (value == null) return;
                 {propNameExpression}.Context = this;
-                {propNameExpression}.SymbolBroker = {broker};";
+                {propNameExpression}.SymbolBroker = SymbolBroker;";
 
                 foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
@@ -356,13 +356,7 @@ namespace {namespaceName}
 
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class UsesExpressionsAttribute : Attribute {
-        public UsesExpressionsAttribute(string SymbolBroker) {
+        public UsesExpressionsAttribute() {
         }
-        public string _symbolBroker = "";
-        public string SymbolBroker {
-            get { return _symbolBroker; }
-            set { _symbolBroker = value; }
-        }
-
     }
 }

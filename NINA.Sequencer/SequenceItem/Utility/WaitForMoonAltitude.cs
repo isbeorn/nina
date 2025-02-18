@@ -38,13 +38,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
     public partial class WaitForMoonAltitude : WaitForAltitudeBase, IValidatable {
 
-        private ISymbolBrokerVM symbolBroker;
-
         [ImportingConstructor]
-        public WaitForMoonAltitude(IProfileService profileService, ISymbolBrokerVM symbolBroker) : base(profileService, useCustomHorizon: false) {
+        public WaitForMoonAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
             Name = Name;
         }
 
@@ -55,7 +53,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
         }
 
-        private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.symbolBroker) {
+        private WaitForMoonAltitude(WaitForMoonAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
 

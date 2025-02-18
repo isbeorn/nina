@@ -41,11 +41,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class SmartExposure : SequentialContainer, IImmutableContainer {
-
-        ISymbolBrokerVM symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -62,15 +60,13 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 IImageSaveMediator imageSaveMediator,
                 IImageHistoryVM imageHistoryVM,
                 IFilterWheelMediator filterWheelMediator,
-                IGuiderMediator guiderMediator,
-                ISymbolBrokerVM symbolBroker) : this(
+                IGuiderMediator guiderMediator) : this(
                     null,
                     new SwitchFilter(profileService, filterWheelMediator),
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
-                    new LoopCondition(symbolBroker),
-                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService, symbolBroker)
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
+                    new LoopCondition(),
+                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService)
                 ) {
-            this.symbolBroker = symbolBroker;
         }
 
         /// <summary>

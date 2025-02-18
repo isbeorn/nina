@@ -40,16 +40,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
     public partial class WaitForSunAltitude : WaitForAltitudeBase, IValidatable {
 
-        private ISymbolBrokerVM symbolBroker;
-
         [ImportingConstructor]
-        public WaitForSunAltitude(IProfileService profileService, ISymbolBrokerVM symbolBroker) : base(profileService, useCustomHorizon: false) {
+        public WaitForSunAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
         }
 
-        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService, cloneMe.symbolBroker) {
+        private WaitForSunAltitude(WaitForSunAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
 

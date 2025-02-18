@@ -65,7 +65,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         [ImportingConstructor]
         public TrainedDarkFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
-            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator, ISymbolBrokerVM symbolBroker) :
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -73,8 +73,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new SwitchFilter(profileService, filterWheelMediator),
                 new SetBrightness(flatDeviceMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.DARK },
-                new LoopCondition(symbolBroker) { Iterations = 1 },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARK },
+                new LoopCondition() { Iterations = 1 },
                 new OpenCover(flatDeviceMediator)
 
             ) {

@@ -22,19 +22,17 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
 
     public partial class LoopWhile : SequenceCondition, IValidatable, ITrueFalse {
 
-        ISymbolBrokerVM symbolBroker;
 
         [ImportingConstructor]
-        public LoopWhile(ISymbolBrokerVM symbolBroker) {
+        public LoopWhile() {
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
-            this.symbolBroker = symbolBroker;
         }
 
-        public LoopWhile(LoopWhile copyMe) : this(copyMe.symbolBroker) {
+        public LoopWhile(LoopWhile copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
             }

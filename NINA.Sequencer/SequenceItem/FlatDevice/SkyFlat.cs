@@ -74,8 +74,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                        IImageSaveMediator imageSaveMediator,
                        IImageHistoryVM imageHistoryVM,
                        IFilterWheelMediator filterWheelMediator,
-                       ITwilightCalculator twilightCalculator,
-                       ISymbolBrokerVM symbolBroker) :
+                       ITwilightCalculator twilightCalculator) :
             this(
                 null,
                 profileService,
@@ -84,8 +83,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 imageSaveMediator,
                 twilightCalculator,
                 new SwitchFilter(profileService, filterWheelMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.FLAT },
-                new LoopCondition(symbolBroker) { Iterations = 1 }
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
+                new LoopCondition() { Iterations = 1 }
             ) {
 
             HistogramTargetPercentage = 0.5;

@@ -56,7 +56,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         [ImportingConstructor]
         public AutoExposureFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
-            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator, ISymbolBrokerVM symbolBroker) :
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -66,8 +66,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 new ToggleLight(flatDeviceMediator) { OnOff = true },
                 new SwitchFilter(profileService, filterWheelMediator),
                 new SetBrightness(flatDeviceMediator) { Brightness = 50 },
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker) { ImageType = CaptureSequence.ImageTypes.FLAT },
-                new LoopCondition(symbolBroker) { Iterations = 1 },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
+                new LoopCondition() { Iterations = 1 },
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new OpenCover(flatDeviceMediator)
 

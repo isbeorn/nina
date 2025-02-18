@@ -43,10 +43,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions ("symbolBroker")]
+    [UsesExpressions]
     public partial class TakeManyExposures : SequentialContainer, IImmutableContainer {
-
-        private ISymbolBrokerVM symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -56,13 +54,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         [ImportingConstructor]
-        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM,
-            ISymbolBrokerVM symbolBroker) :
+        public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) :
                 this(
                     null,
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM, symbolBroker),
-                    new LoopCondition(symbolBroker) { Iterations = 1 }) {
-            this.symbolBroker = symbolBroker;
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
+                    new LoopCondition() { Iterations = 1 }) {
         }
 
         private TakeManyExposures(
