@@ -9,27 +9,19 @@ using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static NINA.Sequencer.Logic.Symbol;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
-using System.Windows.Input;
-using System.Windows.Navigation;
-using NINA.Sequencer.Container;
-using System.Runtime.InteropServices;
-using Google.Protobuf.WellKnownTypes;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, IFocuserConsumer {

@@ -8,10 +8,6 @@ using System.Windows.Media;
 using static NINA.Sequencer.Logic.Symbol;
 using System.Threading;
 using NCalc.Handlers;
-using NINA.Astrometry;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Container;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace NINA.Sequencer.Logic {
@@ -506,6 +502,8 @@ namespace NINA.Sequencer.Logic {
                                     AddParameter(symReference, Val);
                                     //Volatile = true;
                                 }
+                            } else {
+                                Logger.Warning("SymbolBroker not found in " + Context.Name);
                             }
                         }
                     }
