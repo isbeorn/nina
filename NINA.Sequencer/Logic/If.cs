@@ -20,7 +20,7 @@ namespace NINA.Sequencer.Logic {
     [ExportMetadata("Name", "If")]
     [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
     [ExportMetadata("Icon", "IfSVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
+    [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
