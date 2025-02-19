@@ -151,7 +151,7 @@ namespace NINA.Sequencer.Logic {
                         Error = "Range: >= " + min;
                         //Error = "Value must be " + min + " or greater";
                     } else {
-                        Error = "Range: " + min + "< value < " + max;
+                        Error = "Range: " + min + " < value < " + max;
                         //Error = "Value must be between " + min + " and " + max;
                     }
                 } else {
