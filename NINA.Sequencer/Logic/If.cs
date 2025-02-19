@@ -42,13 +42,14 @@ namespace NINA.Sequencer.Logic {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("Predicate: " + HeaderExpression.Definition);
+            Logger.Info("Expression: " + HeaderExpression.Definition);
             if (string.IsNullOrEmpty(HeaderExpression.Definition)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
             }
 
             try {
+                // This code is for Image data
                 //if (IfExpr.ImageVolatile) {
                 //    Logger.Info("ImageVolatile");
                 //    while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
@@ -63,10 +64,10 @@ namespace NINA.Sequencer.Logic {
                 HeaderExpression.Evaluate();
 
                 if (!string.Equals(HeaderExpression.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (HeaderExpression.Error == null)) {
-                    Logger.Info("Predicate is true, " + HeaderExpression);
-                    //await Items.Run(progress, token);
+                    Logger.Info("Expression is true, " + HeaderExpression);
+                    await base.Execute(progress, token);
                 } else {
-                    Logger.Info("Predicate is false, " + HeaderExpression);
+                    Logger.Info("Expression is false, " + HeaderExpression);
                     return;
                 }
             } catch (ArgumentException ex) {
