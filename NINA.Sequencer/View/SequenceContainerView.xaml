@@ -18,6 +18,7 @@
     xmlns:dragdrop="clr-namespace:NINA.Sequencer.DragDrop"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -314,19 +315,22 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBox
-                                Grid.Column="0"
-                                MinWidth="200"
-                                Padding="5"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource SecondaryBackgroundBrush}"
-                                DockPanel.Dock="Left"
-                                FontSize="10pt"
-                                Foreground="{StaticResource ButtonForegroundBrush}"
-                                IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
-                                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox
+                                    Grid.Column="0"
+                                    MinWidth="50"
+                                    Padding="5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Background="{StaticResource SecondaryBackgroundBrush}"
+                                    DockPanel.Dock="Left"
+                                    FontSize="10pt"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
+                                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                    TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
+                                <logic:ExprControl Margin="15,0,0,0" Visibility="{Binding HeaderExpression, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Label="Expression:" Exp="{Binding HeaderExpression}" />
+                            </StackPanel>
                             <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                                 <ContentPresenter
                                     Margin="2,0,10,0"

@@ -238,7 +238,13 @@ namespace NINA.Sequencer.Generators {
         private {fieldType} Deprecated{propName} {{ set => {propNameExpression}.Definition = value.ToString(); }}
         [JsonIgnore]
         public {fieldType} {propName} {{
-            get => ({fieldType}) {propNameExpression}.Value;
+            get => ({fieldType}) {propNameExpression}.";
+                    if (fieldType == "String") {
+                        propertiesSource += "Definition";
+                    } else {
+                        propertiesSource += "Value";
+                    }
+                    propertiesSource += $@";
             set {{
                 {propNameExpression}.Definition = value.ToString();
             }}

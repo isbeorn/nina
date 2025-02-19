@@ -36,6 +36,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using NINA.Sequencer.Logic;
+using Expression = NINA.Sequencer.Logic.Expression;
 
 namespace NINA.Sequencer.Container {
 
@@ -57,15 +58,6 @@ namespace NINA.Sequencer.Container {
             this.Strategy = strategy;
         }
 
-
-        public ISymbolBrokerVM SymbolBroker {
-            get => base.SymbolBroker;
-            set {
-                base.SymbolBroker = value;
-                RaisePropertyChanged();
-            }
-        }
-
         [JsonProperty]
         public new string Name {
             get => base.Name;
@@ -74,6 +66,8 @@ namespace NINA.Sequencer.Container {
                 RaisePropertyChanged();
             }
         }
+
+        public Expression HeaderExpression { get; set; } = null;
 
         [JsonProperty]
         public IList<ISequenceCondition> Conditions { get; protected set; } = new ObservableCollection<ISequenceCondition>();
