@@ -61,11 +61,28 @@ namespace NINA.Sequencer.Logic {
 
         public bool TryGetValue(string key, out object value) {
             List<DataSource> list;
+            string prefix = null;
+
+            if (key.IndexOf('_') > 0) {
+                string[] parts = key.Split('_');
+                if (parts.Length == 2) {
+                    key = parts[1];
+                    prefix = parts[0];
+                }
+            }
+
             if (!DataKeys.TryGetValue(key, out list)) {
                 value = null;
                 return false;
             }
-            // For now, just one of each
+
+            if (prefix != null) {
+                if (list[0].source != prefix) {
+                    value = null;
+                    return false;
+                }
+            }
+
             value = list[0].data;
             return true;
         }
@@ -317,16 +334,11 @@ namespace NINA.Sequencer.Logic {
             if (FilterWheelConnected) {
                 var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
-                    try {
-                        //EquipmentKeys.AddOrUpdate("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
-                    } catch (Exception) {
-                        LogOnce("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
-                    }
+                    AddSymbol("Filter", i, RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                 }
 
                 if (filterWheelInfo.SelectedFilter != null) {
-                    //EquipmentKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                    //i.Add("CurrentFilter: Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name));
+                    AddSymbol("Wheel", i, "CurrentFilter", filterWheelInfo.SelectedFilter.Position);
                 }
             }
 

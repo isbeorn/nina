@@ -284,6 +284,7 @@ namespace NINA.Sequencer.Logic {
             get => _expr;
             set {
                 _expr = value;
+                _expr.SymbolBroker = SymbolBroker;
                 RaisePropertyChanged();
             }
         }
