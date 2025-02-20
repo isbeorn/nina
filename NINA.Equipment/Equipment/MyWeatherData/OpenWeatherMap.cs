@@ -204,10 +204,10 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             try {
                 ValidateInputs();
 
-                var resposne = await QueryOwm(ct).ConfigureAwait(false);
-                SetOwmResponse(resposne);
+                var response = await QueryOwm(ct).ConfigureAwait(false);
+                SetOwmResponse(response);
 
-                Logger.Debug($"OWM: Connected to OpenWeatherMap. API data location: {resposne.Name}, {resposne.Sys.Country} (ID: {resposne.Id}");
+                Logger.Debug($"OWM: Connected to OpenWeatherMap. API data location: {response.Name}, {response.Sys.Country} (ID: {response.Id}");
             } catch (Exception ex) {
                 Logger.Error("OWM: Failed to connect to OpenWeatherMap", ex);
                 throw;

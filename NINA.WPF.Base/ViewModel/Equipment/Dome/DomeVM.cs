@@ -414,7 +414,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         }
                     }
 
-                    // 3. Refuse to open the shutter/roof if RefuseUnsafeShutterMove is enabled and the mount is not parked. A disconnected mount is considered a failure of this test because mount state cannot be deterined.
+                    // 3. Refuse to open the shutter/roof if RefuseUnsafeShutterMove is enabled and the mount is not parked. A disconnected mount is considered a failure of this test because mount state cannot be determined.
                     // We do not proactively park the mount because doing so might drive the OTA into a closed roof. The user will need to sort out this situation.
                     if (profileService.ActiveProfile.DomeSettings.RefuseUnsafeShutterMove) {
                         if (TelescopeInfo.Connected) {
@@ -510,7 +510,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                         }
                     }
 
-                    // 3. If RefuseUnsafeShutterMove is enabled, refuse to close the shutter/roof if the mount is not parked A disconnected mount is considered a failure of this test because mount state cannot be deterined.
+                    // 3. If RefuseUnsafeShutterMove is enabled, refuse to close the shutter/roof if the mount is not parked A disconnected mount is considered a failure of this test because mount state cannot be determined.
                     // This is a fail-safe for any cases where we reach this point and the mount is not, or not yet, parked. This can be a driver bug or something else causing the mount to unpark.
                     if (profileService.ActiveProfile.DomeSettings.RefuseUnsafeShutterMove) {
                         if (TelescopeInfo.Connected) {
