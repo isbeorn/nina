@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.FilterWheel"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
@@ -32,6 +33,8 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
                     <ComboBox
                         Margin="5,0,0,0"
+                        IsEditable="True"
+                        Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                         DisplayMemberPath="Name"
                         SelectedItem="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
                         SelectedValuePath="Name">
@@ -45,6 +48,11 @@
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
                     </ComboBox>
+                    <logic:ExprComboControl
+                        Exp="{Binding Path=XfilterExpression, Mode=TwoWay}" 
+                        Combo="{Binding Path=FilterNames}"
+                        Visibility="{Binding FilterText, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                        />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

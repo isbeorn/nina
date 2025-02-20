@@ -78,7 +78,7 @@ namespace NINA.Sequencer.Logic {
                                     IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                     int i = (int)expr.Value;
                                     if (i >= 0 && i < combo.Count) {
-                                        txt = combo[i];
+                                        txt = "Filter: " + combo[i];
                                     }
                                 }
                             }

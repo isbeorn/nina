@@ -30,6 +30,8 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using System.Windows;
 using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Profile;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -39,7 +41,9 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
     [ExportMetadata("Category", "Lbl_SequenceCategory_FilterWheel")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SwitchFilter : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SwitchFilter : SequenceItem, IValidatable {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
@@ -74,11 +78,12 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SwitchFilter(this) {
-                Filter = Filter
-            };
+        partial void AfterClone(SwitchFilter clone) {
+            clone.Filter = Filter;
         }
+
+        [IsExpression]
+        private int xfilter;
 
         private IProfileService profileService;
         private IFilterWheelMediator filterWheelMediator;
@@ -101,6 +106,52 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 filter = value;
                 RaisePropertyChanged();
+                filterText = null;
+            }
+        }
+
+
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
+            }
+        }
+
+        private string filterText;
+
+        public string FilterText {
+            get => filterText;
+            set {
+
+                if (value == "{Current}") {
+                    filterText = null;
+                    return;
+                }
+
+                var filters = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+
+                filterText = value;
+
+                Logger.Info("FilterText: " + value);
+
+                // Reset filter here to proper thing
+                XfilterExpression.Definition = value;
+                if (xfilterExpression.Error == null) {
+                    if (xfilterExpression.Value < filters.Count) {
+                        filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                    } else {
+                        filter = null;
+                    }
+                } else {
+                    filter = null;
+                }
+
+                // Show the value or error?
+                RaisePropertyChanged("Filter");
+                RaisePropertyChanged();
+                Validate();
             }
         }
 
@@ -112,9 +163,27 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         public bool Validate() {
             var i = new List<string>();
+
+            if (FilterNames.Count == 0) {
+                var fwi = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (var fw in fwi) {
+                    FilterNames.Add(fw.Name);
+                }
+                RaisePropertyChanged("FilterNames");
+            }
+
             if (filter != null && !filterWheelMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             }
+
+            if (FilterText != null) {
+                Logic.Expression.ValidateExpressions(i, xfilterExpression);
+                if (XfilterExpression.Error == null && XfilterExpression.Value < profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count) {
+                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                    RaisePropertyChanged("Filter");
+                }
+            }
+
             Issues = i;
             return i.Count == 0;
         }
