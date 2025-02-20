@@ -190,15 +190,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
 
+            te.Validate();
             issues.AddRange(te.Issues);
 
-            if (sw.Filter != null) {
-                issues.AddRange(sw.Issues);
-            }
+            sw.Validate();
+            issues.AddRange(sw.Issues);
 
-            if (dither.AfterExposures > 0) {
-                issues.AddRange(dither.Issues);
-            }
+            dither.Validate();
+            issues.AddRange(dither.Issues);
 
             Issues = issues;
 

@@ -356,7 +356,7 @@ namespace NINA.Sequencer.Logic {
                     Symbol sym = kvp.Value;
                     ISequenceEntity context = sym.Expr.Context;
                     if (context == null || !IsAttachedToRoot(context)) {
-                        cached.TryRemove(kvp.Key, out global);
+                        cached.TryRemove(kvp.Key, out _);
                     }
                 }
 
