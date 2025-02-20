@@ -270,6 +270,8 @@
                     <ComboBox
                         Margin="5,0,0,0"
                         DisplayMemberPath="Name"
+                        IsEditable="True"
+                        Text="{Binding Items[0].FilterText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                         SelectedItem="{Binding Items[0].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
                         SelectedValuePath="Name">
                         <ComboBox.Resources>
@@ -282,6 +284,11 @@
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
                     </ComboBox>
+                    <logic:ExprComboControl
+                        Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" 
+                        Combo="{Binding Path=Items[0].FilterNames}"
+                        Visibility="{Binding Items[0].FilterText, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                        />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
