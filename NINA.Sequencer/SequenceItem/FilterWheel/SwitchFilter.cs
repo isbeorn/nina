@@ -48,7 +48,19 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             MatchFilter();
+            if (FilterText != null) {
+                RaisePropertyChanged("FilterText");
+            }
         }
+
+        [OnSerialized]
+        public void Serialized(StreamingContext context) {
+        }
+
+        [OnSerializing]
+        public void Serializing(StreamingContext context) {
+        }
+
 
         [ImportingConstructor]
         public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator) {
@@ -61,9 +73,9 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         private void MatchFilter() {
             try {
                 var idx = this.Filter?.Position ?? -1;
-                this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
+                this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
                 if (this.Filter == null && idx >= 0) {
-                    this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
+                    this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -79,7 +91,8 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         partial void AfterClone(SwitchFilter clone) {
-            clone.Filter = Filter;
+            clone.FilterText = FilterText;
+            clone.filter = filter;
         }
 
         [IsExpression]
@@ -121,6 +134,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         private string filterText;
 
+        [JsonProperty]
         public string FilterText {
             get => filterText;
             set {
@@ -149,7 +163,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 }
 
                 // Show the value or error?
-                RaisePropertyChanged("Filter");
                 RaisePropertyChanged();
                 Validate();
             }
@@ -180,7 +193,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 Logic.Expression.ValidateExpressions(i, xfilterExpression);
                 if (XfilterExpression.Error == null && XfilterExpression.Value < profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count) {
                     filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-                    RaisePropertyChanged("Filter");
                 }
             }
 
