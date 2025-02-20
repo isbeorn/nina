@@ -170,7 +170,7 @@
                         Visibility="{Binding WeatherDataInfo.StarFWHM, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblStarFWHM}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.StarFWHM, StringFormat=\{0:0.00\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.StarFWHM, StringFormat='{}{0:0.00} &quot;'}" />
                         </UniformGrid>
                     </Border>
                 </StackPanel>

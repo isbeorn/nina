@@ -227,7 +227,7 @@
                                 <TextBlock Text="{ns:Loc LblStarFWHM}" />
                                 <TextBlock
                                     Margin="5,0,0,0"
-                                    Text="{Binding WeatherDataInfo.StarFWHM, StringFormat=\{0:0.00\}}"
+                                    Text="{Binding WeatherDataInfo.StarFWHM, StringFormat='{}{0:0.00} &quot;'}"
                                     TextWrapping="WrapWithOverflow" />
                             </UniformGrid>
                         </UniformGrid>

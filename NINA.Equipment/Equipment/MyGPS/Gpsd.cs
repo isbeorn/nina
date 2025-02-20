@@ -20,6 +20,7 @@ using NINA.Equipment.Exceptions;
 using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -52,39 +53,47 @@ namespace NINA.Equipment.Equipment.MyGPS {
                 throw new GnssInvalidHostException(ex.Message);
             }
 
+            var schema = await NJsonSchema.JsonSchema.FromJsonAsync(TpvMessage.Schema);
             var location = new Location();
 
             try {
                 using TcpClient client = new();
                 await client.ConnectAsync(gpsdIp, gpsdPort).WaitAsync(TimeSpan.FromSeconds(10), token);
                 using NetworkStream stream = client.GetStream();
+                using StreamReader reader = new(stream, Encoding.ASCII);
 
                 // Send the WATCH command to start receiving JSON data
                 string watchCommand = "?WATCH={\"enable\":true,\"json\":true}\n";
                 byte[] watchCommandBytes = Encoding.ASCII.GetBytes(watchCommand);
                 await stream.WriteAsync(watchCommandBytes, token);
+                await stream.FlushAsync(token);
 
-                byte[] buffer = new byte[4096];
                 int tries = 0;
 
-                while (tries < 5 && !token.IsCancellationRequested) {
-                    int bytesRead = await stream.ReadAsync(buffer, token);
-                    if (bytesRead == 0) break;
+                while (tries < 8 && !token.IsCancellationRequested) {
+                    string? line = await reader.ReadLineAsync(token);
 
-                    string json = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    if (string.IsNullOrEmpty(line)) continue;
 
-                    if (json.Contains("\"class\":\"TPV\"")) {
-                        var tpv = JsonConvert.DeserializeObject<TpvMessage>(json);
+                    var validationErrors = schema.Validate(line);
+                    if (validationErrors.Count > 0) continue;
 
-                        if (tpv != null) {
-                            if (tpv.Mode >= 2) {
-                                location.Latitude = tpv.Latitude ?? 0;
-                                location.Longitude = tpv.Longitude ?? 0;
-                                location.Elevation = tpv.Altitude ?? 0;
+                    var tpv = JsonConvert.DeserializeObject<TpvMessage>(line);
 
-                                return location;
+                    if (tpv.Class.Equals("TPV")) {
+                        Logger.Debug(tpv.ToString());
+
+                        if (tpv.Mode == 3) {
+                            location.Latitude = tpv.Latitude;
+                            location.Longitude = tpv.Longitude;
+                            location.Elevation = tpv.Altitude;
+
+                            return location;
+                        } else {
+                            if (tpv.Mode == 2) {
+                                throw new GnssNoFixException(Loc.Instance["LblGnssFix2D"]);
                             } else {
-                                throw new GnssNoFixException();
+                                throw new GnssNoFixException(string.Empty);
                             }
                         }
                     }
@@ -102,21 +111,132 @@ namespace NINA.Equipment.Equipment.MyGPS {
             return location;
         }
 
-        private class TpvMessage {
-            [JsonProperty("class")]
+        public class TpvMessage {
+            public static string Schema => @"{
+                  '$schema': 'http://json-schema.org/draft-04/schema#',
+                  'type': 'object',
+                  'properties': {
+                    'class': {
+                      'type': 'string'
+                    },
+                    'device': {
+                      'type': 'string'
+                    },
+                    'mode': {
+                      'type': 'integer'
+                    },
+                    'time': {
+                      'type': 'string'
+                    },
+                    'leapseconds': {
+                      'type': 'integer'
+                    },
+                    'ept': {
+                      'type': 'number'
+                    },
+                    'lat': {
+                      'type': 'number'
+                    },
+                    'lon': {
+                      'type': 'number'
+                    },
+                    'altHAE': {
+                      'type': 'number'
+                    },
+                    'altMSL': {
+                      'type': 'number'
+                    },
+                    'alt': {
+                      'type': 'number'
+                    },
+                    'epx': {
+                      'type': 'number'
+                    },
+                    'epy': {
+                      'type': 'number'
+                    },
+                    'epv': {
+                      'type': 'number'
+                    },
+                    'track': {
+                      'type': 'number'
+                    },
+                    'magtrack': {
+                      'type': 'number'
+                    },
+                    'magvar': {
+                      'type': 'number'
+                    },
+                    'speed': {
+                      'type': 'number'
+                    },
+                    'climb': {
+                      'type': 'number'
+                    },
+                    'epd': {
+                      'type': 'number'
+                    },
+                    'eps': {
+                      'type': 'number'
+                    },
+                    'epc': {
+                      'type': 'number'
+                    },
+                    'ecefx': {
+                      'type': 'number'
+                    },
+                    'ecefy': {
+                      'type': 'number'
+                    },
+                    'ecefz': {
+                      'type': 'number'
+                    },
+                    'ecefvx': {
+                      'type': 'number'
+                    },
+                    'ecefvy': {
+                      'type': 'number'
+                    },
+                    'ecefvz': {
+                      'type': 'number'
+                    },
+                    'ecefpAcc': {
+                      'type': 'number'
+                    },
+                    'ecefvAcc': {
+                      'type': 'number'
+                    },
+                    'geoidSep': {
+                      'type': 'number'
+                    },
+                    'eph': {
+                      'type': 'number'
+                    },
+                    'sep': {
+                      'type': 'number'
+                    }
+                  },
+                  'required': ['class', 'mode' ]
+                }";
+
+            [JsonProperty("class", Required = Required.Always)]
             public string Class { get; set; } = string.Empty;
 
             [JsonProperty("lat")]
-            public double? Latitude { get; set; }
+            public double Latitude { get; set; }
 
             [JsonProperty("lon")]
-            public double? Longitude { get; set; }
+            public double Longitude { get; set; }
 
             [JsonProperty("altMSL")]
-            public double? Altitude { get; set; }
+            public double Altitude { get; set; }
 
-            [JsonProperty("mode")]
+            [JsonProperty("mode", Required = Required.Always)]
             public int Mode { get; set; }
+
+            public override string ToString() {
+                return $"Class: {Class}, Mode: {Mode}, Latitude: {Latitude}, Longitude: {Longitude}, Altitude: {Altitude}";
+            }
         }
     }
 }
