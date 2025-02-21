@@ -56,9 +56,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override object Clone() {
             WaitForAltitude clone = new WaitForAltitude(this);
+            clone.Data = Data;
             UpdateExpressions(clone, this);
             return clone;
         }
+
+        [JsonProperty]
+        public new WaitLoopData Data { get; set; }
 
         public IProfileService ProfileService { get; set; }
 
@@ -117,6 +121,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Coordinates = Data.Coordinates;
+            Offset = Data.Offset;
             Validate();
         }
 
