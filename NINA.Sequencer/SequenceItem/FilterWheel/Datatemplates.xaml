@@ -34,10 +34,8 @@
                     <ComboBox
                         Margin="5,0,0,0"
                         IsEditable="True"
-                        Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                        DisplayMemberPath="Name"
-                        SelectedItem="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
-                        SelectedValuePath="Name">
+                        Text="{Binding ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                        SelectionChanged="FilterSelectionChanged">
                         <ComboBox.Resources>
                             <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
                         </ComboBox.Resources>

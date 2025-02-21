@@ -12,13 +12,16 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -27,6 +30,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         public Datatemplates() {
             InitializeComponent();
+        }
+
+        public void FilterSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            Logger.Info("Foo");
+            ComboBox cb = (ComboBox)sender;
+            if (cb.DataContext is SwitchFilter sw && cb.SelectedIndex >= 0) {
+                sw.SelectedFilter = cb.SelectedIndex;
+            }
+        }
+
+        public void ComboBoxLostFocus(object sender, RoutedEventArgs args) {
+
         }
     }
 }

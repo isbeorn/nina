@@ -48,9 +48,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             MatchFilter();
-            if (FilterText != null) {
-                RaisePropertyChanged("FilterText");
-            }
         }
 
         [OnSerialized]
@@ -91,7 +88,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         partial void AfterClone(SwitchFilter clone) {
-            clone.FilterText = FilterText;
+            clone.ComboBoxText = this.ComboBoxText;
             clone.filter = filter;
         }
 
@@ -119,7 +116,21 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 filter = value;
                 RaisePropertyChanged();
-                filterText = null;
+            }
+        }
+
+        private int selectedFilter;
+
+        public int SelectedFilter {
+            get => selectedFilter;
+            set {
+                if (value == 0) {
+                    Filter = null;
+                    ComboBoxText = "{Current}";
+                } else {
+                    Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1];
+                    ComboBoxText = Filter.Name;
+                }
             }
         }
 
@@ -132,41 +143,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
-        private string filterText;
+        private string comboBoxText = "Hiya";
 
-        [JsonProperty]
-        public string FilterText {
-            get => filterText;
+        public string ComboBoxText {
+            get {
+                return comboBoxText;
+            }
             set {
-
-                if (value == "{Current}") {
-                    filterText = null;
-                    return;
-                }
-
-                var filters = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-
-                filterText = value;
-
-                Logger.Info("FilterText: " + value);
-
-                // Reset filter here to proper thing
-                XfilterExpression.Definition = value;
-                if (xfilterExpression.Error == null) {
-                    if (xfilterExpression.Value < filters.Count) {
-                        filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-                    } else {
-                        filter = null;
-                    }
-                } else {
-                    filter = null;
-                }
-
-                // Show the value or error?
+                comboBoxText = value;
                 RaisePropertyChanged();
-                Validate();
             }
         }
+        
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             return Filter == null
@@ -189,12 +177,12 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             }
 
-            if (FilterText != null) {
-                Logic.Expression.ValidateExpressions(i, xfilterExpression);
-                if (XfilterExpression.Error == null && XfilterExpression.Value < profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count) {
-                    filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-                }
-            }
+            //if (FilterText != null) {
+            //    Logic.Expression.ValidateExpressions(i, xfilterExpression);
+            //    if (XfilterExpression.Error == null && XfilterExpression.Value < profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count) {
+            //        filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+            //    }
+            //}
 
             Issues = i;
             return i.Count == 0;
