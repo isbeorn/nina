@@ -32,6 +32,7 @@ using System.Windows;
 using NINA.Core.Utility;
 using NINA.Sequencer.Generators;
 using NINA.Profile;
+using NINA.Equipment.Equipment.MyFilterWheel;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -48,6 +49,11 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             MatchFilter();
+            if (Filter != null) {
+                ComboBoxText = Filter.Name;
+            } else {
+                ComboBoxText = "{Current}";
+            }
         }
 
         [OnSerialized]
@@ -153,15 +159,21 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 comboBoxText = value;
 
-                Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
-                if (Filter == null) {
-                    XfilterExpression.Definition = comboBoxText;
-                    if (xfilterExpression.Error == null) {
-                        Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                if (comboBoxText == "{Current}") {
+                    FilterWheelInfo info = filterWheelMediator.GetInfo();
+                    if (info.Connected) {
+                        Filter = info.SelectedFilter;
                     }
                 } else {
-                    xfilterExpression.Definition = "";
-
+                    Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
+                    if (Filter == null) {
+                        XfilterExpression.Definition = comboBoxText;
+                        if (xfilterExpression.Error == null) {
+                            Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                        }
+                    } else {
+                        xfilterExpression.Definition = "";
+                    }
                 }
 
                 RaisePropertyChanged();

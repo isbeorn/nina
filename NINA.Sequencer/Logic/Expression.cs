@@ -272,7 +272,11 @@ namespace NINA.Sequencer.Logic {
                 //    } else
                 //        return dt.ToShortTimeString();
                 //} else {
-                    return Value.ToString();
+                if (!double.IsNaN(Default) && Value == Default) {
+                    return DefaultString;
+                }    
+                
+                return Value.ToString();
                 //}
             }
             set { }

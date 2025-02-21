@@ -53,7 +53,9 @@ namespace NINA.Sequencer.Logic {
                 if (expr != null) {
                     if (expr.Error != null) {
                         return ""; // "{" + expr.Error + "}";
-                    } else if (!expr.IsExpression && !expr.ForceAnnotated) {
+                    } else if (expr.Definition.Length == 0) {
+                        return "";
+                    }  else if (!expr.IsExpression && !expr.ForceAnnotated) {
                         return "{Not an Expression}";
                     }
                     string txt;
