@@ -71,7 +71,7 @@ namespace NINA.Sequencer.Logic {
                                 // Handle dates
                                 txt = expr.ValueString;
                             } else if (double.IsNaN(expr.Value)) {
-                                txt = "-null-";
+                                return ""; // txt = "-null-";
                             } else {
                                 txt = Math.Round((Double)expr.Value, 2).ToString();
                                 if (values.Length > 2 && values[VALUE_COMBO] != null) {

@@ -80,6 +80,8 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             if (Issues.Count != 0) {
                 throw new SequenceEntityFailedException("The instruction is invalid");
             }
+            Expr.Evaluate();
+
             // Find Symbol, make sure it's valid
             Symbol sym = Symbol.FindSymbol(Variable, Parent);
             if (sym == null || !(sym is DefineVariable)) {
@@ -93,8 +95,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
 
             // Whew!
-            //Symbol.UpdateSwitchWeatherData();
-            Expr.Evaluate();
             string oldDefinition = sym.Expr.Definition;
 
  //           if (Expr.StringValue != null) {

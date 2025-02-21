@@ -143,7 +143,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
-        private string comboBoxText = "Hiya";
+        private string comboBoxText = "";
 
         public string ComboBoxText {
             get {
@@ -151,6 +151,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
             set {
                 comboBoxText = value;
+
+                Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
+                if (Filter == null) {
+                    XfilterExpression.Definition = comboBoxText;
+                    if (xfilterExpression.Error == null) {
+                        Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                    }
+                } else {
+                    xfilterExpression.Definition = "";
+
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -183,6 +195,8 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             //        filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
             //    }
             //}
+
+            Logic.Expression.ValidateExpressions(i, XfilterExpression);
 
             Issues = i;
             return i.Count == 0;
