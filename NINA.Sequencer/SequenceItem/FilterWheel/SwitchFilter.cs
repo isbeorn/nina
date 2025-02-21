@@ -145,6 +145,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         private string comboBoxText = "";
 
+        [JsonProperty]
         public string ComboBoxText {
             get {
                 return comboBoxText;
