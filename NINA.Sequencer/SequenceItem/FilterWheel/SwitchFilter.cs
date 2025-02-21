@@ -190,13 +190,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             }
 
-            //if (FilterText != null) {
-            //    Logic.Expression.ValidateExpressions(i, xfilterExpression);
-            //    if (XfilterExpression.Error == null && XfilterExpression.Value < profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count) {
-            //        filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
-            //    }
-            //}
-
             Logic.Expression.ValidateExpressions(i, XfilterExpression);
 
             Issues = i;

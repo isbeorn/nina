@@ -49,7 +49,6 @@
                     <logic:ExprComboControl
                         Exp="{Binding Path=XfilterExpression, Mode=TwoWay}" 
                         Combo="{Binding Path=FilterNames}"
-                        Visibility="{Binding FilterText, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                         />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>

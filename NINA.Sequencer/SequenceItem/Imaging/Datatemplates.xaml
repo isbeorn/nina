@@ -268,27 +268,24 @@
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
                     <ComboBox
-                        Margin="5,0,0,0"
-                        DisplayMemberPath="Name"
-                        IsEditable="True"
-                        Text="{Binding Items[0].FilterText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                        SelectedItem="{Binding Items[0].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
-                        SelectedValuePath="Name">
-                        <ComboBox.Resources>
-                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
-                        </ComboBox.Resources>
-                        <ComboBox.ItemsSource>
-                            <CompositeCollection>
-                                <x:Static Member="filter:NullFilter.Instance" />
-                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
-                            </CompositeCollection>
-                        </ComboBox.ItemsSource>
-                    </ComboBox>
-                    <logic:ExprComboControl
-                        Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" 
-                        Combo="{Binding Path=Items[0].FilterNames}"
-                        Visibility="{Binding Items[0].FilterText, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
-                        />
+                       Margin="5,0,0,0"
+                       IsEditable="True"
+                       Text="{Binding Items[0].ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                       SelectionChanged="FilterSelectionChanged">
+                       <ComboBox.Resources>
+                           <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                       </ComboBox.Resources>
+                       <ComboBox.ItemsSource>
+                           <CompositeCollection>
+                               <x:Static Member="filter:NullFilter.Instance" />
+                               <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                           </CompositeCollection>
+                       </ComboBox.ItemsSource>
+                   </ComboBox>
+                   <logic:ExprComboControl
+                       Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" 
+                       Combo="{Binding Path=Items[0].FilterNames}"
+                       />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
