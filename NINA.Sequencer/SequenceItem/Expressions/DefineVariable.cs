@@ -48,7 +48,6 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
         protected void PreClone(DefineVariable clone) {
             clone.Identifier = Identifier;
-            clone.Expr = Expr;
             if (Expr != null) {
                 clone.Expr = new Expression(Expr.Definition, clone.Parent, this);
             }
@@ -128,7 +127,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("The name of a Variable must be alphanumeric");
             }
 
-            if (!Executed) {
+            if (Expr == null) {
                 Expression.ValidateExpressions(i, OriginalExpr);
             } else {
                 Expression.ValidateExpressions(i, Expr, OriginalExpr);
