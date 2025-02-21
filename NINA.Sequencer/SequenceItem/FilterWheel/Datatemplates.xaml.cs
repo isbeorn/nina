@@ -33,7 +33,6 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         }
 
         public void FilterSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Logger.Info("Foo");
             ComboBox cb = (ComboBox)sender;
             if (cb.DataContext is SwitchFilter sw && cb.SelectedIndex >= 0) {
                 sw.SelectedFilter = cb.SelectedIndex;
