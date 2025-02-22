@@ -23,6 +23,7 @@ using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.Validations;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -38,7 +39,6 @@ namespace NINA.Sequencer.Conditions {
 
         [ImportingConstructor]
         public AltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            Data.Offset = 30;
             Data.Comparator = Core.Enum.ComparisonOperatorEnum.LESS_THAN;
         }
         private AltitudeCondition(AltitudeCondition cloneMe) : this(cloneMe.ProfileService) {
