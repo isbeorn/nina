@@ -37,6 +37,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             RunWatchdogIfInsideSequenceRoot();
         }
 

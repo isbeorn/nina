@@ -42,7 +42,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class SlewScopeToRaDec : CoordinatesInstruction, IValidatable, IDisposable {
+    public class SlewScopeToRaDec : CoordinatesInstruction, IValidatable {
 
         [ImportingConstructor]
         public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) :base() {
@@ -94,10 +94,6 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SlewScopeToRaDec)}, Coordinates: {Coordinates}";
-        }
-
-        public void Dispose() {
-            Coordinates.PropertyChanged -= Coordinates_PropertyChanged;
         }
     }
 }

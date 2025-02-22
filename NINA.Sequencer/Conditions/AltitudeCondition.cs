@@ -52,11 +52,6 @@ namespace NINA.Sequencer.Conditions {
             return clone;
         }
 
-        private new void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            base.Coordinates_PropertyChanged(sender, e);
-            CalculateExpectedTime();
-        }
-
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Validate();
