@@ -420,25 +420,7 @@
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             Text="&lt;" />
-                        <ninactrl:UnitTextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            TextAlignment="Right"
-                            Unit="°">
-                            <ninactrl:UnitTextBox.Text>
-                                <Binding Path="Data.Offset" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DoubleRangeRule>
-                                            <rules:DoubleRangeRule.ValidRange>
-                                                <rules:DoubleRangeChecker Maximum="90" Minimum="-90" />
-                                            </rules:DoubleRangeRule.ValidRange>
-                                        </rules:DoubleRangeRule>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </ninactrl:UnitTextBox.Text>
-                        </ninactrl:UnitTextBox>
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
                     <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
                 </StackPanel>

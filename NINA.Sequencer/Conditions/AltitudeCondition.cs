@@ -78,7 +78,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         public bool Validate() {
-            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, OffsetExpression);
             RaisePropertyChanged("Issues");
             return true;
         }
