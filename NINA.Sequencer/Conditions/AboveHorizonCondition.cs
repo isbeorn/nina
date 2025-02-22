@@ -38,7 +38,7 @@ namespace NINA.Sequencer.Conditions {
 
         [ImportingConstructor]
         public AboveHorizonCondition(IProfileService profileService) : base(profileService, useCustomHorizon: true) {
-            this.DateTime = new SystemDateTime();
+            DateTime = new SystemDateTime();
             Data.Offset = 0;
             InterruptReason = "Target is below horizon";
         }
@@ -55,7 +55,8 @@ namespace NINA.Sequencer.Conditions {
             };
         }
 
-        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        protected override void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            base.Coordinates_PropertyChanged(sender, e);
             CalculateExpectedTime();
         }
 
