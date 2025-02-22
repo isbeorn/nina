@@ -52,6 +52,11 @@ namespace NINA.Sequencer.Conditions {
             return clone;
         }
 
+        [OnSerializing]
+        public void OnSerializing (StreamingContext context) {
+            Data.Offset = OffsetExpression.Value;
+        }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Validate();
