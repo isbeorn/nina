@@ -47,6 +47,7 @@ namespace NINA.Sequencer.Conditions {
             AltitudeCondition clone = new AltitudeCondition(this);
             UpdateExpressions(clone, this);
             Data = Data.Clone();
+            OffsetExpression.Default = 30;
             return clone;
         }
 

@@ -103,11 +103,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression(Default = 30, Range = [-90, 90], HasValidator = true )]
+        [IsExpression(Range = [-90, 90], HasValidator = true )]
         private double offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
             if (expr.Error == null) {
+                if (Data != null) {
+                    Data.Offset = expr.Value;
+                }
             }
         }
 

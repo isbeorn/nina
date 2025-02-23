@@ -23,6 +23,7 @@ using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
 using System.Runtime.Serialization;
+using NINA.Sequencer.Validations;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -32,7 +33,7 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AboveHorizonCondition : LoopForAltitudeBase {
+    public class AboveHorizonCondition : LoopForAltitudeBase, IValidatable {
 
         [ImportingConstructor]
         public AboveHorizonCondition(IProfileService profileService) : base(profileService, useCustomHorizon: true) {
@@ -50,6 +51,7 @@ namespace NINA.Sequencer.Conditions {
         public override object Clone() {
             AboveHorizonCondition clone = new AboveHorizonCondition(this);
             UpdateExpressions(clone, this);
+            OffsetExpression.Default = 0;
             Data = Data.Clone();
             return clone;
         }

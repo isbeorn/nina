@@ -70,7 +70,16 @@ namespace NINA.Sequencer.Logic {
         public ISequenceEntity Context { get; set; }
 
         public Action<Expression>? Validator;
-        public double Default { get; set; } = double.NaN;
+
+        private double _default = Double.NaN;
+        public double Default {
+            get => _default;
+            set {
+                _default = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string Type { get; set; } = "double";
 
         public bool Volatile { get; set; } = false;

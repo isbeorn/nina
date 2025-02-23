@@ -327,6 +327,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
+  
     <DataTemplate DataType="{x:Type local:LoopWhileUnsafe}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
