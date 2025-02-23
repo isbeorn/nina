@@ -25,6 +25,7 @@ using Nito.AsyncEx;
 using NINA.Sequencer.Generators;
 using System.Runtime.Serialization;
 using NINA.Sequencer.Logic;
+using System.Drawing;
 
 namespace NINA.Sequencer.Conditions {
 

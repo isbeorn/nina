@@ -116,6 +116,7 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource ButtonForegroundBrush}"
+                            FontWeight="{Binding ItemFontWeight, FallbackValue=Normal}"
                             Text="{Binding Name}"
                             TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
 
