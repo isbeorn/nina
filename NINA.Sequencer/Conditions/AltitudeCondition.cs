@@ -35,8 +35,6 @@ namespace NINA.Sequencer.Conditions {
     [JsonObject(MemberSerialization.OptIn)]
     public class AltitudeCondition : LoopForAltitudeBase, IValidatable {
         
-        private bool hasDsoParent;
-
         [ImportingConstructor]
         public AltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
             Data.Comparator = Core.Enum.ComparisonOperatorEnum.LESS_THAN;

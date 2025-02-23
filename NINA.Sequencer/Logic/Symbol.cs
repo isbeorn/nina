@@ -133,6 +133,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
+            // Make sure adler's problem sequence works here (fixed in Powerups)
             if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && !(this is DefineGlobalVariable || this is DefineGlobalConstant)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol

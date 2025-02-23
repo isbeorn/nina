@@ -21,8 +21,8 @@ using System.ComponentModel.Composition;
 using NINA.Sequencer.SequenceItem.Utility;
 using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Core.Utility;
-using NINA.Core.Enum;
-using NINA.Sequencer.Utility;
+using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -33,8 +33,6 @@ namespace NINA.Sequencer.Conditions {
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
     public class AboveHorizonCondition : LoopForAltitudeBase {
-
-        private bool hasDsoParent;
 
         [ImportingConstructor]
         public AboveHorizonCondition(IProfileService profileService) : base(profileService, useCustomHorizon: true) {
@@ -50,9 +48,15 @@ namespace NINA.Sequencer.Conditions {
         public ICustomDateTime DateTime { get; set; }
 
         public override object Clone() {
-            return new AboveHorizonCondition(this) {
-                Data = Data.Clone()
-            };
+            AboveHorizonCondition clone = new AboveHorizonCondition(this);
+            UpdateExpressions(clone, this);
+            Data = Data.Clone();
+            return clone;
+        }
+
+        [OnSerializing]
+        public void OnSerializing(StreamingContext context) {
+            Data.Offset = OffsetExpression.Value;
         }
 
         protected override void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -60,24 +64,9 @@ namespace NINA.Sequencer.Conditions {
             CalculateExpectedTime();
         }
 
-
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public override void AfterParentChanged() {
-            var contextCoordinates = RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
-                HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
+            base.AfterParentChanged();
+            Validate();
             RunWatchdogIfInsideSequenceRoot();
         }
 
@@ -108,6 +97,12 @@ namespace NINA.Sequencer.Conditions {
         public void CalculateExpectedTime(DateTime time) {
             Data.CurrentAltitude = GetCurrentAltitude(time, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: false, 90, GetCurrentAltitude);
+        }
+
+        public bool Validate() {
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, OffsetExpression);
+            RaisePropertyChanged("Issues");
+            return true;
         }
     }
 }
