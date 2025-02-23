@@ -22,6 +22,9 @@ using NINA.Astrometry.RiseAndSet;
 using NINA.Core.Enum;
 using Nito.AsyncEx;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using System.Runtime.Serialization;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -31,7 +34,9 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SunAltitudeCondition : LoopForSunMoonAltitudeBase {
+    [UsesExpressions]   
+    
+    public partial class SunAltitudeCondition : LoopForSunMoonAltitudeBase {
 
         [ImportingConstructor]
         public SunAltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
@@ -41,10 +46,25 @@ namespace NINA.Sequencer.Conditions {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SunAltitudeCondition(this) {
-                Data = Data.Clone()
-           };
+        partial void AfterClone(SunAltitudeCondition clone) {
+            clone.Data = Data.Clone();
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
+        }
+
+        [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true, JsonIgnore = true)]
+        private double offset;
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                Data.Offset = expr.Value;
+            }
         }
 
         private DateTimeOffset lastCalculation = DateTimeOffset.MinValue;
