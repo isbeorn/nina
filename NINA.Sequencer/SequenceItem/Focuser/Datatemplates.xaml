@@ -65,34 +65,17 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSlope}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Slope}"
-                        Unit="steps/°C" />
+                    <logic:ExprControl Label="{ns:Loc LblSlope}" Exp="{Binding SlopeExpression}" Unit="steps/°C" />
                     <TextBlock
                         Margin="20,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblAbsolute}" />
                     <CheckBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,0,8,0"
                         VerticalAlignment="Center"
                         IsChecked="{Binding Absolute}" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        IsEnabled="{Binding Absolute}"
-                        Text="{ns:Loc LblIntercept}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        IsEnabled="{Binding Absolute}"
-                        Text="{Binding Intercept}"
-                        Unit="steps" />
+                    <logic:ExprControl IsEnabled="{Binding Absolute}" Label="{ns:Loc LblIntercept}" Exp="{Binding InterceptExpression}" Unit="steps" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
