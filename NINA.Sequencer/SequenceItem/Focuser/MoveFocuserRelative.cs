@@ -25,6 +25,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Focuser {
 
@@ -34,7 +36,9 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoveFocuserRelative : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class MoveFocuserRelative : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public MoveFocuserRelative(IFocuserMediator focuserMediator) {
@@ -45,24 +49,13 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoveFocuserRelative(this) {
-                RelativePosition = RelativePosition
-            };
+        partial void AfterClone(MoveFocuserRelative clone) {
         }
 
         private IFocuserMediator focuserMediator;
 
+        [IsExpression]
         private int relativePosition = 0;
-
-        [JsonProperty]
-        public int RelativePosition {
-            get => relativePosition;
-            set {
-                relativePosition = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private IList<string> issues = new List<string>();
 
@@ -83,6 +76,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             if (!focuserMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
+            Expression.ValidateExpressions(i, RelativePositionExpression);
             Issues = i;
             return i.Count == 0;
         }
