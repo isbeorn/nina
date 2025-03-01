@@ -42,7 +42,7 @@ namespace NINA.Sequencer.Container {
         bool Remove(ISequenceTrigger item);
 
         void ResetAll();
-
+       
         Task Interrupt();
 
         ICollection<ISequenceItem> GetItemsSnapshot();

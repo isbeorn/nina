@@ -1045,7 +1045,7 @@
                                 <TextBox.Text>
                                     <Binding Path="TemplatePath" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <rules:FileExistsRule />
+                                            <rules:FileExistsOrEmptyRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
@@ -1085,7 +1085,7 @@
                                 <TextBox.Text>
                                     <Binding Path="StartupSequenceTemplate" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <rules:FileExistsRule />
+                                            <rules:FileExistsOrEmptyRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>

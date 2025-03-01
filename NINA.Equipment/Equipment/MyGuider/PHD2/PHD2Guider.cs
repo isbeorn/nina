@@ -40,6 +40,7 @@ using NINA.Astrometry;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Net;
+using ASCOM.Common.Helpers;
 
 namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
@@ -190,6 +191,12 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                 hostEntry = DnsHelper.GetIPHostEntryByName(serverHost);
                 phd2Ip = hostEntry.AddressList.First();
             } catch (Exception ex) {
+                if (ex is SocketException se) {
+                    // Error Code 11001 WSAHOST_NOT_FOUND - https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
+                    if (se.ErrorCode == 11001 && IPAddress.TryParse(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, out var address)) {
+                        phd2Ip = address;
+                    }
+                }
                 Logger.Error($"Failed to resolve PHD2 server {serverHost}: {ex.Message}");
                 Notification.ShowError(string.Format(Loc.Instance["LblPhd2ServerHostNotResolved"], serverHost));
                 return connected;

@@ -793,6 +793,16 @@ namespace NINA.Astrometry {
         }
 
         /// <summary>
+        /// Converts the air pressure for the given elevation from the given mean sea level air pressure using the ISO 2533:1975 Standard Atmospheric Model
+        /// </summary>
+        /// <param name="mslPressure"></param>
+        /// <param name="elevation"></param>
+        /// <returns></returns>
+        public static double MslToLocalPressure(double mslPressure, double elevation) {
+            return mslPressure * Math.Pow(1.0d - 2.25577e-5 * elevation, 5.25588d);
+        }
+
+        /// <summary>
         /// Returns the polar alignment error during a drift in degree for the given measurements
         /// </summary>
         /// <param name="startDeclination">Starting position of drift alignment in degrees</param>
