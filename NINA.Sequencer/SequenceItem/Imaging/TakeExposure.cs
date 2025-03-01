@@ -284,6 +284,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             Expression.ValidateExpressions(i, ExposureTimeExpression, GainExpression, OffsetExpression);
 
+            GainExpression.Range = CameraInfo.CanSetGain ? new double[] { CameraInfo.GainMin, CameraInfo.GainMax, 0 } : null;
+            OffsetExpression.Range = CameraInfo.CanSetOffset ? new double[] { CameraInfo.OffsetMin, CameraInfo.OffsetMax, 0 } : null;
+
             Issues = i;
             return i.Count == 0;
         }

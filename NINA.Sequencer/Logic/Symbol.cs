@@ -389,6 +389,11 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
+            if (exp.Definition?.Length == 0 && exp.Range != null) {
+                tb.ToolTip = "Value must be between " + exp.Range[0] + " and " + exp.Range[1];
+                return;
+            }
+
             Dictionary<string, Symbol> syms = exp.Resolved;
             int cnt = syms.Count;
             if (cnt == 0) {
