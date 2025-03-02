@@ -324,29 +324,12 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" />
-
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROI}">
-                        <TextBlock.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROIPercentageTooltip}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding ROI, Converter={StaticResource PercentageConverter}}"
-                        TextAlignment="Right"
-                        Unit="%">
-                        <ninactrl:UnitTextBox.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROIPercentageTooltip}" />
-                        </ninactrl:UnitTextBox.ToolTip>
-                    </ninactrl:UnitTextBox>
+                    <logic:ExprControl Label="{ns:Loc LblROI}" Exp="{Binding ROIExpression}" Unit="%" ToolTip="{ns:Loc LblROIPercentageTooltip}"/>
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

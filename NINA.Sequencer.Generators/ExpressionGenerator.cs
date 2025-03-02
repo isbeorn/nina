@@ -151,6 +151,7 @@ namespace NINA.Sequencer.Generators {
                 string? proxy = null;
                 bool jsonIgnore = false;
                 bool jsonDontSerialize = true;
+                bool hasDefault = false;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
@@ -195,6 +196,7 @@ namespace NINA.Sequencer.Generators {
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
+                        hasDefault = true;
                     } else if (kvp.Key == "DefaultString") {
                         propertiesSource += $@"
                 {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
@@ -216,7 +218,7 @@ namespace NINA.Sequencer.Generators {
         partial void {propNameExpression}Validator(Expression expr);";
                 }
 
-                
+
                 if (proxy != null) {
                     propertiesSource += $@"
 
@@ -235,7 +237,19 @@ namespace NINA.Sequencer.Generators {
                     propertiesSource += $@"
         
         [JsonProperty(propertyName: ""{propName}"")]
-        private {fieldType} Deprecated{propName} {{ set => {propNameExpression}.Definition = value.ToString(); }}
+        private {fieldType} Deprecated{propName} {{ 
+            set {{
+                ";
+                    if (!hasDefault) {
+                        propertiesSource += $@"{propNameExpression}.Definition = value.ToString(); 
+            }}
+        }}";
+                    } else {
+                        propertiesSource += $@"if (value != {propNameExpression}.Default) {propNameExpression}.Definition = value.ToString(); 
+            }}
+        }}";
+                    }
+                    propertiesSource += $@"
         [JsonIgnore]
         public {fieldType} {propName} {{
             get => ({fieldType}) {propNameExpression}.";

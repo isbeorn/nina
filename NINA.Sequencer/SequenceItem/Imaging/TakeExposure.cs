@@ -72,9 +72,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         partial void AfterClone(TakeExposure clone) {
-            ExposureCount = 0;
-            Binning = Binning;
-            ImageType = ImageType;
+            clone.ExposureCount = 0;
+            clone.Binning = Binning;
+            clone.ImageType = ImageType;
 
             if (clone.Binning == null) {
                 clone.Binning = new BinningMode(1, 1);
@@ -104,7 +104,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(DefaultString = "{Camera}", HasValidator = true)]
+        [IsExpression(Default = -1, DefaultString = "{Camera}", HasValidator = true)]
         private int offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
