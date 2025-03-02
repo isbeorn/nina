@@ -51,7 +51,7 @@ namespace NINA.PlateSolving {
             }
 
             if (result.Success) {
-                Logger.Info($"Platesolve successful: Coordinates: {result.Coordinates}");
+                Logger.Info($"Platesolve successful: Coordinates: {result.Coordinates} - Position Angle: {result.PositionAngle}");
             } else {
                 Logger.Info($"Platesolve failed");
             }
