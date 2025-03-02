@@ -480,6 +480,9 @@ namespace NINA.Image.FileFormat.FITS {
         [DllImport(DLLNAME, EntryPoint = "ffukys", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_update_key_str(IntPtr fptr, string keyname, string value, string comment, out int status);
 
+        [DllImport(DLLNAME, EntryPoint = "ffukyl", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_update_key_log(IntPtr fptr, string keyname, int value, string comment, out int status);
+
         //[DllImport(DLLNAME, EntryPoint = "ffukyd", CallingConvention = CallingConvention.Cdecl)]
         //public static extern int fits_update_key_dbl(IntPtr fptr, string keyname, double value, int decimals, string comment, out int status);
 
