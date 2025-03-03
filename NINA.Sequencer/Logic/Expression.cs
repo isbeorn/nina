@@ -176,27 +176,7 @@ namespace NINA.Sequencer.Logic {
             }
             set { }
         }
-        public string InfoButtonChar {
-            get {
-                if (Error == null) return "\u24D8"; // "?";
-                return "\u26A0";
-            }
-            set { }
-        }
-        public double InfoButtonSize {
-            get {
-                if (Error == null) return 18;
-                return 18;
-            }
-            set { }
-        }
-        public string InfoButtonMargin {
-            get {
-                if (Error == null) return "5,4,0,0";
-                return "5,2,0,0";
-            }
-            set { }
-        }
+
         public static bool JustWarnings(string error) {
             string[] errors = error.Split(";");
             bool red = false;

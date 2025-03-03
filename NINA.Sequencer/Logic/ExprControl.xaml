@@ -65,10 +65,10 @@
                 Height="30"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}">
         <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
-        <TextBlock Margin="{Binding Exp.InfoButtonMargin}" 
-                   Text="{Binding Exp.InfoButtonChar}" 
+        <TextBlock Margin="5,2,0,0"
+                   Text="&#x26A0;" 
                    Foreground="{Binding Exp.InfoButtonColor}"
-                   FontSize="{Binding Exp.InfoButtonSize}"
+                   FontSize="18"
                    Visibility="{Binding Exp.Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                    >
             <TextBlock.ToolTip>
