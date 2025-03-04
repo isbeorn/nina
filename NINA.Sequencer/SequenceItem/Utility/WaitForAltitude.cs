@@ -28,6 +28,7 @@ using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Telescope;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -56,13 +57,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override object Clone() {
             WaitForAltitude clone = new WaitForAltitude(this);
-            clone.Data = Data;
+            clone.Data = Data.Clone();
+            clone.AboveOrBelow = AboveOrBelow;
             UpdateExpressions(clone, this);
             return clone;
         }
 
-        [JsonProperty]
-        public new WaitLoopData Data { get; set; }
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            Coordinates = Data.Coordinates.Clone();
+            base.OnDeserialized(context);
+        }
 
         public IProfileService ProfileService { get; set; }
 

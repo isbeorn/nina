@@ -42,10 +42,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         public void OnDeserialized(StreamingContext context) {
             // Fix up Ra and Dec Expressions (auto-update to existing sequences)
             Coordinates c = Coordinates.Coordinates;
-            if (c.RA != 0 || c.Dec != 0) {
-                // Fix up decimals
-                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
-                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+            if (DecExpression.Definition.Length == 0 && c.Dec != 0) {
+                DecExpression.Definition = c.Dec.ToString();
+            }
+            if (RaExpression.Definition.Length == 0 && c.RA != 0) {
+                RaExpression.Definition = Coordinates.Coordinates.RA.ToString();
             }
         }
 
@@ -128,6 +129,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        [JsonProperty]
         public WaitLoopData Data { get; set; }
 
         private bool hasDsoParent;

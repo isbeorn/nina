@@ -263,7 +263,9 @@ namespace NINA.Sequencer.Logic {
                 //} else {
                 if (!double.IsNaN(Default) && Value == Default) {
                     return DefaultString;
-                }    
+                } else if (Value is double d) {
+                    return Math.Round(d, 6).ToString();
+                }   
                 
                 return Value.ToString();
                 //}
