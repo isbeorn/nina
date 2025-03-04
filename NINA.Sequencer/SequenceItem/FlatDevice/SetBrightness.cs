@@ -22,6 +22,8 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -31,7 +33,9 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [ExportMetadata("Category", "Lbl_SequenceCategory_FlatDevice")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetBrightness : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SetBrightness : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public SetBrightness(IFlatDeviceMediator flatDeviceMediator) {
@@ -40,12 +44,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         private SetBrightness(SetBrightness cloneMe) : this(cloneMe.flatDeviceMediator) {
             CopyMetaData(cloneMe);
-        }
-
-        public override object Clone() {
-            return new SetBrightness(this) {
-                Brightness = Brightness
-            };
         }
 
         private IFlatDeviceMediator flatDeviceMediator;
@@ -59,16 +57,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        [IsExpression]
         private int brightness;
-
-        [JsonProperty]
-        public int Brightness {
-            get => brightness;
-            set {
-                brightness = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await flatDeviceMediator.SetBrightness(Brightness, progress, token);
@@ -101,6 +91,9 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     i.Add(Loc.Instance["LblFlatDeviceCannotControlBrightness"]);
                 }
             }
+
+            Expression.ValidateExpressions(i, BrightnessExpression);
+            
             Issues = i;
             return i.Count == 0;
         }
