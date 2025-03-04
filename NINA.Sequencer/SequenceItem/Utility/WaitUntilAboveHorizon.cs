@@ -27,6 +27,7 @@ using NINA.Core.Utility;
 using static NINA.Sequencer.Utility.ItemUtility;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -58,6 +59,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             UpdateExpressions(clone, this);
             return clone;
         }
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            Coordinates = Data.Coordinates.Clone();
+            base.OnDeserialized(context);
+        }
+
         public int UpdateInterval { get; set; } = 1;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
