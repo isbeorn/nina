@@ -343,7 +343,7 @@
                                 <s:String>&gt;</s:String>
                             </ComboBoxItem>
                         </ComboBox>
-                        <logic:ExprControl Exp="{Binding OffsetExpression}" />
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" Unit="°"/>
                         <TextBlock
                             Margin="7.5,-2,7.5,0"
                             HorizontalAlignment="Center"
@@ -448,127 +448,8 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="Data.Offset">
-                                <Binding.ValidationRules>
-                                    <rules:DoubleRangeRule>
-                                        <rules:DoubleRangeRule.ValidRange>
-                                            <rules:DoubleRangeChecker Maximum="90" Minimum="-90" />
-                                        </rules:DoubleRangeRule.ValidRange>
-                                    </rules:DoubleRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock
-                        Margin="0,0,5,0"
-                        VerticalAlignment="Center"
-                        Text="°" />
-                    <StackPanel
-                        DataContext="{Binding Data.Coordinates}"
-                        Orientation="Horizontal"
-                        Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext.HasDsoParent, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:HoursRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">h</TextBlock>
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:MinutesRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">m</TextBlock>
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding
-                                    Path="RASeconds"
-                                    StringFormat="N1"
-                                    UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:SecondsRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">s</TextBlock>
-                        <TextBlock
-                            Margin="7.5,0,7.5,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="|" />
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
-                                    <Binding Path="NegativeDec" />
-                                    <Binding Path="DecDegrees">
-                                        <Binding.ValidationRules>
-                                            <rules:DegreesRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </MultiBinding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">d</TextBlock>
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:MinutesRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">m</TextBlock>
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding
-                                    Path="DecSeconds"
-                                    StringFormat="N1"
-                                    UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:SecondsRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">s</TextBlock>
-                    </StackPanel>
+                    <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" Unit="°"/>
+                    <logic:CoordinatesControl Margin="10,0,0,0" Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>

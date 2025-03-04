@@ -40,7 +40,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [JsonObject(MemberSerialization.OptIn)]
 
     public partial class WaitForAltitude : CoordinatesInstruction, IValidatable {
-        private bool hasDsoParent;
         private string aboveOrBelow;
  
         [ImportingConstructor]
@@ -70,11 +69,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public IProfileService ProfileService { get; set; }
-
-        //partial void AfterClone(WaitForAltitude clone, WaitForAltitude cloned) {
-        //    clone.AboveOrBelow = cloned.AboveOrBelow;
-        //    clone.Data = cloned.Data.Clone();
-        //}
         
         [JsonProperty]
         public string AboveOrBelow {
@@ -156,6 +150,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
             Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression, DecExpression);
 
+            RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }
     }
