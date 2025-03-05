@@ -30,6 +30,7 @@ using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using System.Windows;
 using NINA.Sequencer.Generators;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -62,7 +63,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         
         partial void AfterClone(SlewScopeToAltAz clone) {
-            Coordinates = Coordinates?.Clone();
+            clone.Coordinates = Coordinates?.Clone();
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized (StreamingContext context) {
+
         }
 
         private IProfileService profileService;

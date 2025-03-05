@@ -294,10 +294,6 @@ namespace {namespaceName}
 {{
     partial class {className}
     {{
-        public System.Windows.FontWeight ItemFontWeight {{
-            get => System.Windows.FontWeights.Bold;
-        }}
-
         public override object Clone() {{
             var clone = new {className}(this) {{{cloneSource}
             }};
