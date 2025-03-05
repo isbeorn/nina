@@ -404,38 +404,18 @@
 
                 <StackPanel Orientation="Vertical">
                     <WrapPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFlatPanelMinBrightness}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding MinBrightness}"
-                            TextAlignment="Right" />
+                        <logic:ExprControl Label="{ns:Loc LblFlatPanelMinBrightness}" Exp="{Binding MinBrightnessExpression}" Unit="s"/>
                         <TextBlock
                             Margin="7.5,0,7.5,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="|" />
-
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFlatPanelMaxBrightness}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding MaxBrightness}"
-                            TextAlignment="Right" />
+                        <logic:ExprControl Label="{ns:Loc LblFlatPanelMaxBrightness}" Exp="{Binding MaxBrightnessExpression}" Unit="s" />
                         <TextBlock
                             Margin="7.5,0,7.5,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="|" />
-
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
