@@ -103,43 +103,14 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="SampleSize">
-                                <Binding.ValidationRules>
-                                    <rules:IntRangeRule>
-                                        <rules:IntRangeRule.ValidRange>
-                                            <rules:IntRangeChecker Maximum="99999" Minimum="3" />
-                                        </rules:IntRangeRule.ValidRange>
-                                    </rules:IntRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                        <TextBox.ToolTip>
+                    <logic:ExprControl Label="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" Exp="{Binding SampleSizeExpression}"/>
+                        <!--<TextBox.ToolTip>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSizeTooltip}"
                                 TextAlignment="Left" />
-                        </TextBox.ToolTip>
-                    </TextBox>
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="%" />
+                        </TextBox.ToolTip>-->
+                    <logic:ExprControl Label="{ns:Loc LblAmount}" Exp="{Binding AmountExpression}" Unit="%"/>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
