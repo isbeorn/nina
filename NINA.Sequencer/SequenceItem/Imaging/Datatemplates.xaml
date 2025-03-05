@@ -267,6 +267,12 @@
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
+                    <TextBlock DataContext="{Binding Items[0].XfilterExpression}" Margin="5,2,0,0"
+                        Text="&#x26A0;" 
+                        Foreground="{Binding InfoButtonColor}"
+                        FontSize="18"
+                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                     />
                     <ComboBox
                        Margin="5,0,0,0"
                        IsEditable="True"

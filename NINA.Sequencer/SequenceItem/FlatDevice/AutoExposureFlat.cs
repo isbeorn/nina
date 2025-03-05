@@ -541,9 +541,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Distinct().ToList();
+            Expression.ValidateExpressions(Issues, MinExposureExpression, MaxExposureExpression);
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
+            return Issues.Count == 0;
         }
     }
 }
