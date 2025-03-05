@@ -390,36 +390,10 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEvaluteAfterExposures}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="AfterExposures">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Label="{ns:Loc LblEvaluteAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMaxArcmin}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="DistanceArcMinutes" StringFormat="{}{0:0.00}">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Label="{ns:Loc LblMaxArcmin}" Exp="{Binding DistanceArcMinutesExpression}"/>
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
