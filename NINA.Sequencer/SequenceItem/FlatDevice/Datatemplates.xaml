@@ -97,7 +97,7 @@
             MinWidth="40"
             Margin="5,0,0,0"
             VerticalAlignment="Center"
-            Text="{Binding Items[4].Conditions[0].Iterations}"
+            Text="{Binding ImagingContainer.Conditions[0].Iterations}"
             TextAlignment="Right" />
         <TextBlock
             Margin="7.5,0,7.5,0"
@@ -133,7 +133,7 @@
             VerticalAlignment="Center"
             Text="|" />
 
-        <StackPanel DataContext="{Binding Items[4].Items[0]}" Orientation="Horizontal">
+        <StackPanel DataContext="{Binding ImagingContainer.Items[0]}" Orientation="Horizontal">
             <StackPanel.Resources>
                 <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
             </StackPanel.Resources>
@@ -262,7 +262,7 @@
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel Orientation="Horizontal" DataContext="{Binding Items[4].Conditions[0]}">
+                <WrapPanel Orientation="Horizontal" DataContext="{Binding ImagingContainer.Conditions[0]}">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -380,11 +380,11 @@
                             IsChecked="{Binding KeepPanelClosed}" />
                     </WrapPanel>
 
-                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[4]}" />
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                <WrapPanel DataContext="{Binding ImagingContainer}" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -493,13 +493,13 @@
                             IsChecked="{Binding KeepPanelClosed}" />
                     </WrapPanel>
 
-                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[4]}" />
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding}" />
 
 
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                <WrapPanel DataContext="{Binding ImagingContainer}" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -639,7 +639,7 @@
                             Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
                     </WrapPanel>
 
-                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding ImagingContainer}" />
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding}" />
 
 
                 </StackPanel>

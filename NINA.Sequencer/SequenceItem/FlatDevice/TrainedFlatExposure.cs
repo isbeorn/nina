@@ -189,6 +189,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             return (Items[6] as OpenCover);
         }
 
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
+        }
+
         public override object Clone() {
             var clone = new TrainedFlatExposure(
                 this,

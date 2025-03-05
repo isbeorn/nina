@@ -206,6 +206,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             return (Items[6] as OpenCover);
         }
 
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             IProgress<ApplicationStatus> localProgress = new Progress<ApplicationStatus>(x => {
                 x.Source = Loc.Instance["Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name"];
