@@ -125,7 +125,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             clone.Add((SetBrightness)GetSetBrightnessItem().Clone());
             clone.Add((SequenceContainer)GetImagingContainer().Clone());
             clone.Add((ToggleLight)GetToggleLightOffItem().Clone());
-            clone.Add(GetOpenCoverItem());
+            clone.Add((OpenCover)GetOpenCoverItem().Clone());
 
             clone.HistogramTargetPercentage = HistogramTargetPercentage;
             clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
