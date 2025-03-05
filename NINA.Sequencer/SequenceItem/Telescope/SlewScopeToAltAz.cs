@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using System.Windows;
+using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -38,7 +39,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewScopeToAltAz : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SlewScopeToAltAz : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public SlewScopeToAltAz(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
@@ -57,10 +60,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SlewScopeToAltAz(this) {
-                Coordinates = Coordinates?.Clone()
-            };
+        
+        partial void AfterClone(SlewScopeToAltAz clone) {
+            Coordinates = Coordinates?.Clone();
         }
 
         private IProfileService profileService;
@@ -79,6 +81,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 RaisePropertyChanged();
             }
         }
+
+        [IsExpression (Range = [-90, 90])]
+        private double alt;
+
+        [IsExpression (Range = [0, 360])]
+        private double az;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (telescopeMediator.GetInfo().AtPark) {
@@ -101,6 +109,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (!telescopeMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
+            Logic.Expression.ValidateExpressions(i, AltExpression, AzExpression);
             Issues = i;
             return i.Count == 0;
         }

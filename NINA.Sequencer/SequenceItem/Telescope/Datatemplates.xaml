@@ -31,7 +31,7 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
@@ -47,7 +47,7 @@
                     <TextBlock VerticalAlignment="Center">d</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AltMinutes" UpdateSourceTrigger="LostFocus">
@@ -60,7 +60,7 @@
                     <TextBlock VerticalAlignment="Center">m</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AltSeconds" UpdateSourceTrigger="LostFocus">
@@ -71,6 +71,7 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AltExpression, Mode=TwoWay}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -79,7 +80,7 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAzimuth}" />
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzDegrees" UpdateSourceTrigger="LostFocus">
@@ -96,7 +97,7 @@
                     <TextBlock VerticalAlignment="Center">d</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzMinutes" UpdateSourceTrigger="LostFocus">
@@ -109,7 +110,7 @@
                     <TextBlock VerticalAlignment="Center">m</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzSeconds" UpdateSourceTrigger="LostFocus">
@@ -120,6 +121,7 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AzExpression, Mode=TwoWay}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
