@@ -306,15 +306,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">

@@ -36,6 +36,8 @@ using NINA.Sequencer.Utility;
 using NINA.Image.ImageAnalysis;
 using NINA.Sequencer.Interfaces;
 using NINA.WPF.Base.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger.Autofocus {
 
@@ -45,7 +47,9 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AutofocusAfterExposures : SequenceTrigger, IValidatable {
+    [UsesExpressions]
+
+    public partial class AutofocusAfterExposures : SequenceTrigger, IValidatable {
         private IProfileService profileService;
 
         private IImageHistoryVM history;
@@ -54,7 +58,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private IFocuserMediator focuserMediator;
         private IAutoFocusVMFactory autoFocusVMFactory;
 
-        private int afterExposures;
 
         [ImportingConstructor]
         public AutofocusAfterExposures(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory) : base() {
@@ -64,7 +67,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             this.filterWheelMediator = filterWheelMediator;
             this.focuserMediator = focuserMediator;
             this.autoFocusVMFactory = autoFocusVMFactory;
-            AfterExposures = 5;
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
@@ -72,11 +74,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new AutofocusAfterExposures(this) {
-                AfterExposures = AfterExposures,
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone()
-            };
+        partial void AfterClone(AutofocusAfterExposures clone) {
+            clone.TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
         }
 
         private IList<string> issues = new List<string>();
@@ -89,14 +88,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
-        [JsonProperty]
-        public int AfterExposures {
-            get => afterExposures;
-            set {
-                afterExposures = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression (Default = 5)]
+        private int afterExposures;
 
         public int ProgressExposures { get; private set; }
 
@@ -146,6 +139,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (!focuserInfo.Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
+
+            Expression.ValidateExpressions(i, AfterExposuresExpression);
 
             Issues = i;
             return i.Count == 0;
