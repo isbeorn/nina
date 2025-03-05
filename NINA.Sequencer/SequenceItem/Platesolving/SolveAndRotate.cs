@@ -87,12 +87,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             CopyMetaData(cloneMe);
         }
 
-        //public override object Clone() {
-        //    return new SolveAndRotate(this) {
-        //        PositionAngle = PositionAngle
-        //    };
-        //}
-
         private bool inherited;
 
         [JsonProperty]
@@ -114,26 +108,8 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             }
         }
 
-        // *****
-
-        /// <summary>
-        /// Backwards compatibility property that will migrate to position angle
-        /// </summary>
-        //[JsonProperty(propertyName: "Rotation")]
-        //public double DeprecatedRotation { set => PositionAngle = 360 - value; }
-
         [IsExpression(Default = 0, Range = [0, 360])]
         private double positionAngle = 0;
-
-
-        //[JsonProperty]
-        //public double PositionAngle {
-        //    get => positionAngle;
-        //    set {
-        //        positionAngle = AstroUtil.EuclidianModulus(value, 360);
-        //        RaisePropertyChanged();
-        //    }
-        //}
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             PositionAngleExpression.Evaluate();
@@ -259,7 +235,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 i.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
 
-            Expression.ValidateExpressions(Issues, PositionAngleExpression);
+            Expression.ValidateExpressions(i, PositionAngleExpression);
             Issues = i;
             RaisePropertyChanged("Issues");
             return Issues.Count == 0;

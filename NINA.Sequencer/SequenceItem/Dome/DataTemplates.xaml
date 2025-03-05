@@ -11,6 +11,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Dome"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -29,28 +30,7 @@
     <DataTemplate DataType="{x:Type local:SlewDomeAzimuth}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeAzimuth}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Unit="°">
-
-                        <ninactrl:UnitTextBox.Text>
-                            <Binding Path="AzimuthDegrees" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:FloatRangeRule>
-                                        <rules:FloatRangeRule.ValidRange>
-                                            <rules:FloatRangeChecker Maximum="359.99" Minimum="0" />
-                                        </rules:FloatRangeRule.ValidRange>
-                                    </rules:FloatRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ninactrl:UnitTextBox.Text>
-                    </ninactrl:UnitTextBox>
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblDomeAzimuth}" Exp="{Binding AzimuthDegreesExpression}"/>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
