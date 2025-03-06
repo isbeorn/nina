@@ -59,12 +59,14 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        private const char DELIMITER = ':';
+
         public bool TryGetValue(string key, out object value) {
             List<DataSource> list;
             string prefix = null;
 
-            if (key.IndexOf('_') > 0) {
-                string[] parts = key.Split('_');
+            if (key.IndexOf(DELIMITER) > 0) {
+                string[] parts = key.Split(DELIMITER);
                 if (parts.Length == 2) {
                     key = parts[1];
                     prefix = parts[0];
