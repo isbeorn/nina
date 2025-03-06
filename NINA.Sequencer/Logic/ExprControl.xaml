@@ -72,41 +72,7 @@
                    Visibility="{Binding Exp.Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                    >
             <TextBlock.ToolTip>
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                     <TextBlock MinHeight="20" Text="{Binding Exp.ExprErrors}" Margin="0,-2,0,0" VerticalAlignment="Center" Foreground="Orange" FontSize="14"  FontStyle="Italic"/>
-                    <!--<Grid Background="{StaticResource ButtonBackgroundBrush}">
-                        <Grid.Resources >
-                            <Style TargetType="ItemsControl" >
-                                <Setter Property="Padding" Value="5,0,5,0" />
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="210" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="140" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
-                        <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
-                        <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
-                    </Grid>
-                    <Grid Background="{StaticResource ButtonBackgroundBrush}">
-                        <Grid.Resources >
-                            <Style TargetType="ItemsControl" >
-                                <Setter Property="Padding" Value="0,0,0,0" />
-                                <Setter Property="TextBlock.TextAlignment" Value="Left" />
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="210" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="140" />
-                        </Grid.ColumnDefinitions>
-                        <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}"/>
-                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
-                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
-                    </Grid>-->
-                </StackPanel>
             </TextBlock.ToolTip>
         </TextBlock>
         
