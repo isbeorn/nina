@@ -263,8 +263,7 @@ namespace NINA.Sequencer.Logic {
                 //} else {
                 if (!double.IsNaN(Default) && Value == Default) {
                     return DefaultString;
-                } else if (Value is double d) {
-                    return string.Format("{0:0.######}", Value);               }   
+                }
                 
                 return Value.ToString();
                 //}
@@ -286,9 +285,6 @@ namespace NINA.Sequencer.Logic {
         [JsonProperty]
         public virtual string Definition {
             get {
-                if (!IsExpression && Error == null && !double.IsNaN(Value)) {
-                    return string.Format("{0:0.######}", Value);
-                }
                 return definition;
             }
             set {
@@ -331,6 +327,7 @@ namespace NINA.Sequencer.Logic {
                 definition = value;
 
                 if (Double.TryParse(value, out result)) {
+                    definition = String.Format("{0:0.#######}", result);
                     Error = null;
                     IsExpression = false;
                     Value = result;

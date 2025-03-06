@@ -90,7 +90,7 @@
                 <Binding Mode="OneWay" Path="Exp.DefaultString" UpdateSourceTrigger="PropertyChanged"/>
             </local:WhenTextBox.HintText>
             <local:WhenTextBox.Text>
-                <Binding Mode="TwoWay" Path="Exp.Definition" />
+                <Binding Mode="TwoWay" Path="Exp.Definition"/>
             </local:WhenTextBox.Text>
         </local:WhenTextBox>
  
