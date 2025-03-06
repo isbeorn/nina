@@ -46,7 +46,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 DecExpression.Definition = c.Dec.ToString();
             }
             if (RaExpression.Definition.Length == 0 && c.RA != 0) {
-                RaExpression.Definition = Coordinates.Coordinates.RA.ToString();
+                RaExpression.Definition = c.RA.ToString();
             }
         }
 

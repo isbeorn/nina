@@ -67,8 +67,15 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         [OnDeserialized]
-        public void OnDeserialized (StreamingContext context) {
-
+        public void OnDeserialized(StreamingContext context) {
+            // Fix up Ra and Dec Expressions (auto-update to existing sequences)
+            TopocentricCoordinates c = Coordinates.Coordinates;
+            if (AltExpression.Definition.Length == 0 && c.Altitude.Degree != 0) {
+                AltExpression.Definition = c.Altitude.Degree.ToString();
+            }
+            if (AzExpression.Definition.Length == 0 && c.Azimuth.Degree != 0) {
+                AzExpression.Definition = c.Azimuth.Degree.ToString();
+            }
         }
 
         private IProfileService profileService;
@@ -130,7 +137,32 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
+        private Angle lastAlt;
+        private Angle lastAz;
+
+        protected void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            // When coordinates change, we change the decimal value
+            InputTopocentricCoordinates ic = (InputTopocentricCoordinates)sender;
+            TopocentricCoordinates c = ic.Coordinates;
+
+            if (Protect) return;
+
+            if (c.Altitude != lastAlt) {
+                AltExpression.Definition = Math.Round(c.Altitude.Degree, 7).ToString();
+            } else if (c.Azimuth != lastAz) {
+                AzExpression.Definition = Math.Round(c.Azimuth.Degree, 7).ToString();
+            }
+
+            lastAlt = c.Altitude;
+            lastAz = c.Azimuth;
+        }
+
         public override void AfterParentChanged() {
+            AltExpression.Context = this;
+            AzExpression.Context = this;
+            if (Coordinates != null) {
+                Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            }
             Validate();
         }
 
