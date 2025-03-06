@@ -32,7 +32,6 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <logic:ExprControl Label="{ns:Loc LblTemperature}" Exp="{Binding TemperatureExpression}" Unit="°C" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"

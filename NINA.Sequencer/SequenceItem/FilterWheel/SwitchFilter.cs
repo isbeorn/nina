@@ -33,6 +33,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Generators;
 using NINA.Profile;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using Accord.Statistics.Models.Regression.Fitting;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -62,6 +63,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         [OnSerializing]
         public void Serializing(StreamingContext context) {
+            Filter = null;
         }
 
 
