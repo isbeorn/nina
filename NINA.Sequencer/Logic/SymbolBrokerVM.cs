@@ -265,8 +265,6 @@ namespace NINA.Sequencer.Logic {
 
             var i = new List<string>();
 
-            AddSymbol("Fooble", i, "Altitude", 222.22);
-
             if (Observer == null) {
                 Observer = new ObserverInfo() {
                     Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
@@ -317,15 +315,15 @@ namespace NINA.Sequencer.Logic {
             FocuserInfo fInfo = FocuserMediator.GetInfo();
             FocuserConnected = fInfo.Connected;
             if (fInfo != null && FocuserConnected) {
-                AddSymbol("Focuser", i, "FocuserPosition", fInfo.Position);
-                AddSymbol("Focuser", i, "FocuserTemperature", fInfo.Temperature);
+                AddSymbol("Focuser", i, "Position", fInfo.Position);
+                AddSymbol("Focuser", i, "Temperature", fInfo.Temperature);
             }
 
             // Get SensorTemp
             CameraInfo cameraInfo = CameraMediator.GetInfo();
             CameraConnected = cameraInfo.Connected;
             if (CameraConnected) {
-                AddSymbol("Camera", i, "SensorTemp", cameraInfo.Temperature);
+                AddSymbol("Camera", i, "Temperature", cameraInfo.Temperature);
 
                 // Hidden
                 //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
@@ -352,7 +350,7 @@ namespace NINA.Sequencer.Logic {
             RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
             RotatorConnected = rotatorInfo.Connected;
             if (RotatorConnected) {
-                AddSymbol("Rotator", i, "RotatorPosition", rotatorInfo.MechanicalPosition);
+                AddSymbol("Rotator", i, "Position", rotatorInfo.MechanicalPosition);
             }
 
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();

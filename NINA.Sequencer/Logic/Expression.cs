@@ -9,6 +9,7 @@ using static NINA.Sequencer.Logic.Symbol;
 using System.Threading;
 using NCalc.Handlers;
 using NINA.Sequencer.SequenceItem.Expressions;
+using System.Text;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -495,14 +496,22 @@ namespace NINA.Sequencer.Logic {
                             } else if (SymbolBroker != null) {
                                 found = false;
                                 // Try in the old Switch/Weather keys
-                                object Val;
-                                if (!found && SymbolBroker.TryGetValue(symReference, out Val)) {
+                                object val = null;
+                                if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
                                     // We don't want these resolved, just added to Parameters
                                     Resolved.Remove(symReference);
                                     Resolved.Add(symReference, null);
                                     Parameters.Remove(symReference);
-                                    AddParameter(symReference, Val);
+                                    AddParameter(symReference, val);
                                     Volatile = true;
+                                }
+                                if (val is SymbolBrokerVM.Ambiguity a) {
+                                    StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
+                                    foreach (var source in a.sources) {
+                                        sb.Append(" [" + source + ':' + symReference + "]");
+                                    }
+                                    Error = sb.ToString();
+                                    return;
                                 }
                             } else {
                                 Logger.Warning("SymbolBroker not found in " + Context.Name);
