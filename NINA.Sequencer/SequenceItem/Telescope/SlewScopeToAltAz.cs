@@ -80,6 +80,8 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         private IList<string> issues = new List<string>();
 
+        private bool Protect = false;
+
         public IList<string> Issues {
             get => issues;
             set {
@@ -88,11 +90,33 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             }
         }
 
-        [IsExpression (Range = [-90, 90])]
+        [IsExpression (Range = [-90, 90], HasValidator = true)]
         private double alt;
 
-        [IsExpression (Range = [0, 360])]
+        partial void AltExpressionValidator(Logic.Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputTopocentricCoordinates ic = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
+            Protect = true;
+            ic.Coordinates.Altitude = Angle.ByDegree(AltExpression.Value);
+            Coordinates.AltDegrees = ic.AltDegrees;
+            Coordinates.AltMinutes = ic.AltMinutes;
+            Coordinates.AltSeconds = ic.AltSeconds;
+            Protect = false;
+        }
+
+        [IsExpression (Range = [0, 360], HasValidator = true)]
         private double az;
+
+        partial void AzExpressionValidator(Logic.Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputTopocentricCoordinates ic = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
+            Protect = true;
+            ic.Coordinates.Azimuth = Angle.ByDegree(AzExpression.Value);
+            Coordinates.AzDegrees = ic.AzDegrees;
+            Coordinates.AzMinutes = ic.AzMinutes;
+            Coordinates.AzSeconds = ic.AzSeconds;
+            Protect = false;
+        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (telescopeMediator.GetInfo().AtPark) {
