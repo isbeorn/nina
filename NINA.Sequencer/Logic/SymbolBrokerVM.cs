@@ -61,6 +61,19 @@ namespace NINA.Sequencer.Logic {
 
         private const char DELIMITER = ':';
 
+        public class Ambiguity {
+            public string name;
+            public List<string> sources;
+
+            public Ambiguity (string name, List<DataSource> dataSources) {
+                this.name = name;
+                sources = new List<string>();
+                foreach (DataSource ds in dataSources) {
+                    sources.Add(ds.source);
+                }
+            }
+        }
+
         public bool TryGetValue(string key, out object value) {
             List<DataSource> list;
             string prefix = null;
@@ -79,14 +92,23 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (prefix != null) {
-                if (list[0].source != prefix) {
-                    value = null;
-                    return false;
+                foreach (var kvp in list) {
+                    if (kvp.source == prefix) {
+                        value = kvp.data;
+                        return true;
+                    }
                 }
             }
 
-            value = list[0].data;
-            return true;
+            // If the list has one item, we're done
+            if (list.Count == 1) {
+                value = list[0].data;
+                return true;
+            }
+
+            // Ambiguous
+            value = new Ambiguity(key, list);
+            return false;
         }
 
         public DataSource GetDataSource(string key) {
@@ -242,6 +264,8 @@ namespace NINA.Sequencer.Logic {
         private Task UpdateEquipmentKeys() {
 
             var i = new List<string>();
+
+            AddSymbol("Fooble", i, "Altitude", 222.22);
 
             if (Observer == null) {
                 Observer = new ObserverInfo() {
