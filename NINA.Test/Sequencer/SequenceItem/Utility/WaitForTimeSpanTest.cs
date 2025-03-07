@@ -37,7 +37,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             item2.Name.Should().BeSameAs(sut.Name);
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Time.Should().Be(sut.Time);
+            item2.Time.Should().Be(60); // TimeExpression.Default
         }
 
         [Test]
