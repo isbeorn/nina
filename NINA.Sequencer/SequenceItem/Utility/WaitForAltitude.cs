@@ -119,8 +119,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            Coordinates = Data.Coordinates;
-            Offset = Data.Offset;
+            Data.Coordinates = Coordinates;
             Validate();
         }
 
