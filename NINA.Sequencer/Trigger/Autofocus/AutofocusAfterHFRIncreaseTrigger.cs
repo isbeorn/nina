@@ -173,7 +173,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 OriginalHFR = lowest.HFR;
 
                 //Take either the last point after AF Position as index or the sample size index, whichever is greater
-                var minimumSampleIndex = Math.Max(0, imageHistory.Count - sampleSize);
+                var minimumSampleIndex = Math.Max(0, imageHistory.Count - SampleSize);  // Note sampleSize isn't used
 
                 if (imageHistory.Count > minimumSampleIndex + 2) {
                     var data = imageHistory

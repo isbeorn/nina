@@ -196,7 +196,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             } else {
                 if (FilterNames.Count == 0) {
-                    var fwi = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters;
+                    var fwi = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
                     if (fwi != null) {
                         foreach (var fw in fwi) {
                             FilterNames.Add(fw.Name);
@@ -209,7 +209,8 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             Logic.Expression.ValidateExpressions(i, XfilterExpression);
 
             Issues = i;
-            return i.Count == 0;
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         public override void AfterParentChanged() {            
