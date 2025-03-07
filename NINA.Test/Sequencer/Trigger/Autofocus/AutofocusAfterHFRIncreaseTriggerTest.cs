@@ -252,7 +252,8 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             filterWheelMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true, SelectedFilter = new FilterInfo() { Name = "TestFilter" } });
 
             var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
-            sut.Amount = changeAmount;
+            sut = (AutofocusAfterHFRIncreaseTrigger)sut.Clone();
+            sut.AmountExpression.Definition = changeAmount.ToString();
 
             var itemMock = new Mock<IExposureItem>();
             itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");

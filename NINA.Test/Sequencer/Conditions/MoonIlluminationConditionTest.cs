@@ -34,7 +34,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             item2.Should().NotBeSameAs(sut);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.UserMoonIllumination.Should().Be(sut.UserMoonIllumination);
+            item2.UserMoonIllumination.Should().Be(0); // UserMoonIlluminationExpression.Default
             item2.Comparator.Should().Be(sut.Comparator);
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Test.Sequencer.Conditions {
         public void MoonIlluminationCondition_NoProviderInConstructor_NoCrash() {
             var sut = new MoonIlluminationCondition();
 
-            sut.UserMoonIllumination.Should().Be(0);
+            // sut.UserMoonIllumination.Should().Be(0); // Won't be defined until cloned
             sut.Comparator.Should().Be(ComparisonOperatorEnum.GREATER_THAN);
         }
 
