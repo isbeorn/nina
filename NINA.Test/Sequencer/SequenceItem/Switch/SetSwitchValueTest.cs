@@ -51,7 +51,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.SwitchIndex.Should().Be(sut.SwitchIndex);
-            item2.Value.Should().Be(sut.Value);
+            item2.Value.Should().Be(1); // ValueExpression.Default
         }
 
         [Test]

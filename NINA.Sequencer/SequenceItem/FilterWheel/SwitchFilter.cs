@@ -167,11 +167,11 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                         Filter = info.SelectedFilter;
                     }
                 } else {
-                    Filter = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
+                    Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
                     if (Filter == null) {
                         XfilterExpression.Definition = comboBoxText;
                         if (xfilterExpression.Error == null) {
-                            Filter = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                            Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
                         }
                     } else {
                         xfilterExpression.Definition = "";
