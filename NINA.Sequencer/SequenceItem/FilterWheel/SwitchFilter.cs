@@ -167,11 +167,11 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
                         Filter = info.SelectedFilter;
                     }
                 } else {
-                    Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
+                    Filter = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
                     if (Filter == null) {
                         XfilterExpression.Definition = comboBoxText;
                         if (xfilterExpression.Error == null) {
-                            Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                            Filter = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
                         }
                     } else {
                         xfilterExpression.Definition = "";
@@ -192,16 +192,18 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         public bool Validate() {
             var i = new List<string>();
 
-            if (FilterNames.Count == 0) {
-                var fwi = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                foreach (var fw in fwi) {
-                    FilterNames.Add(fw.Name);
-                }
-                RaisePropertyChanged("FilterNames");
-            }
-
             if (filter != null && !filterWheelMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
+            } else {
+                if (FilterNames.Count == 0) {
+                    var fwi = profileService.ActiveProfile.FilterWheelSettings?.FilterWheelFilters;
+                    if (fwi != null) {
+                        foreach (var fw in fwi) {
+                            FilterNames.Add(fw.Name);
+                        }
+                        RaisePropertyChanged("FilterNames");
+                    }
+                }
             }
 
             Logic.Expression.ValidateExpressions(i, XfilterExpression);

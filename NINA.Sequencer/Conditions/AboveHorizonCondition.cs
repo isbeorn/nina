@@ -69,7 +69,6 @@ namespace NINA.Sequencer.Conditions {
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Validate();
-            RunWatchdogIfInsideSequenceRoot();
         }
 
         public override string ToString() {

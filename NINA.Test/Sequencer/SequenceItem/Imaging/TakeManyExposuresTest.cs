@@ -74,7 +74,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             clonedExposure.Should().NotBeSameAs(originalExposure);
             clonedExposure.Binning.Should().NotBeNull();
             clonedExposure.ExposureCount.Should().Be(0);
-            clonedExposure.ExposureTime.Should().Be(originalExposure.ExposureCount);
+            clonedExposure.ExposureTime.Should().Be(60); // ExposureTimeExpression.Default
             clonedExposure.Gain.Should().Be(originalExposure.Gain);
             clonedExposure.Offset.Should().Be(originalExposure.Offset);
             clonedExposure.ImageType.Should().Be(originalExposure.ImageType);
