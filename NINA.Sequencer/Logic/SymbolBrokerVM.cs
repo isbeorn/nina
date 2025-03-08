@@ -412,6 +412,10 @@ namespace NINA.Sequencer.Logic {
                 this.key = key;
                 this.value = value;
             }
+
+            public override string ToString() {
+                return $"{key} : {value}";
+            }
         }
 
         public void BuildDataSymbols() {
