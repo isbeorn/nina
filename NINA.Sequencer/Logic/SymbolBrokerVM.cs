@@ -22,6 +22,7 @@ using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
+using NINA.Equipment.Interfaces;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -364,18 +365,16 @@ namespace NINA.Sequencer.Logic {
             // Get switch values
             SwitchInfo switchInfo = SwitchMediator.GetInfo();
             SwitchConnected = switchInfo.Connected;
-            //if (SwitchConnected) {
-            //    foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-            //        string key = RemoveSpecialCharacters(sw.Name);
-            //        DataKeys.TryAdd(key, sw.Value);
-            //        i.Add("G: " + key + ": " + sw.Value);
-            //    }
-            //    foreach (ISwitch sw in switchInfo.WritableSwitches) {
-            //        string key = RemoveSpecialCharacters(sw.Name);
-            //        DataKeys.TryAdd(key, sw.Value);
-            //        i.Add("S: " + key + ": " + sw.Value);
-            //    }
-            //}
+            if (SwitchConnected) {
+                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    AddSymbol("Gauge", i, key, sw.Value);
+                }
+                foreach (ISwitch sw in switchInfo.WritableSwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    AddSymbol("Switch", i, key, sw.Value);
+                }
+            }
 
             // Get weather values
             WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();

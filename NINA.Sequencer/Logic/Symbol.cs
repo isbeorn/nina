@@ -524,42 +524,16 @@ namespace NINA.Sequencer.Logic {
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
-        private static IList<string> Switches { get; set; } = new List<string>();
 
         public class Array : Dictionary<object, object>;
         public static Dictionary<string, Array> Arrays { get; set; } = new Dictionary<string, Array>();
 
-
-        public class VariableMessage {
-            public object value;
-            public DateTimeOffset? expiration;
-
-            public VariableMessage(object value, DateTimeOffset? expiration) {
-                this.value = value;
-                this.expiration = expiration;
-            }
-        }
- 
-        public static IList<string> GetSwitches() {
-            lock (SYMBOL_LOCK) {
-                return Switches;
-            }
-        }
-
-        private static ObserverInfo Observer = null;
-
-        public static Object SYMBOL_LOCK = new object();
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();
         public static void LogOnce(string message) {
             if (LoggedOnce.Contains(message)) return;
             Logger.Warning(message);
             LoggedOnce.Add(message);
-        }
-
- 
-        public static Task UpdateSwitchWeatherData() {
-            return Task.CompletedTask;
         }
     }
 }

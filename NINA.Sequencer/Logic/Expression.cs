@@ -429,177 +429,166 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void Evaluate(bool validateOnly) {
-            if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
-                try {
-                    if (!IsExpression) {
-                        //Error = null;
-                        return;
-                    }
-                    if (Definition.Length == 0) {
-                        IsExpression = false;
-                        RaisePropertyChanged("Value");
-                        RaisePropertyChanged("ValueString");
-                        //RaisePropertyChanged("StringValue");
-                        RaisePropertyChanged("IsExpression");
-                        return;
-                    }
-                    if (Context == null) return;
-                    if (!Symbol.IsAttachedToRoot(Context)) {
-                        return;
-                    }
-
-                    if (Volatile || GlobalVolatile) {
-                        IList<string> volatiles = new List<string>();
-                        foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
-                            if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
-                                volatiles.Add(kvp.Key);
-                            }
-                        }
-                        foreach (string key in volatiles) {
-                            Resolved.Remove(key);
-                            Parameters.Remove(key);
-                        }
-                    }
-
-                    Volatile = GlobalVolatile;
-
-                    //ImageVolatile = false;
-
-                    //StringValue = null;
-
-                    if (Parameters.Count < Resolved.Count) {
-                        Parameters.Clear();
-                        Resolved.Clear();
-                    }
-
-                    // External, don't report error during validation
-                    bool ext = false;
-
-                    // First, validate References
-                    foreach (string sRef in References) {
-                        Symbol sym;
-                        string symReference = sRef;
-                        // Remember if we have any image data
-                        //if (!ImageVolatile && symReference.StartsWith("Image_")) {
-                        //    ImageVolatile = true;
-                        //}
-                        bool found = Resolved.TryGetValue(symReference, out sym);
-                        if (!found || sym == null) {
-                            // !found -> couldn't find it; sym == null -> it's a DataSymbol
-                            if (!found) {
-                                sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
-                            }
-                            if (sym != null) {
-                                // Link Expression to the Symbol
-                                Resolve(symReference, sym);
-                                sym.AddConsumer(this);
-                            } else if (SymbolBroker != null) {
-                                found = false;
-                                // Try in the old Switch/Weather keys
-                                object val = null;
-                                if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
-                                    // We don't want these resolved, just added to Parameters
-                                    Resolved.Remove(symReference);
-                                    Resolved.Add(symReference, null);
-                                    Parameters.Remove(symReference);
-                                    AddParameter(symReference, val);
-                                    Volatile = true;
-                                }
-                                if (val is SymbolBrokerVM.Ambiguity a) {
-                                    StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
-                                    foreach (var source in a.sources) {
-                                        sb.Append(" [" + source + ':' + symReference + "]");
-                                    }
-                                    Error = sb.ToString();
-                                    return;
-                                }
-                            } else {
-                                Logger.Warning("SymbolBroker not found in " + Context.Name);
-                            }
-                        }
-                    }
-
-                    NCalc.Expression e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
-                    e.EvaluateFunction += ExtensionFunction;
-                    e.Parameters = Parameters;
-
-                    if (e.HasErrors()) {
-                        Error = "Syntax Error";
-                        return;
-                    }
-
-                    Error = null;
-                    try {
-                        if (Parameters.Count != References.Count) {
-                            foreach (string r in References) {
-                                string symReference = r;
-                                if (!Parameters.ContainsKey(symReference)) {
-                                    // Not defined or evaluated
-                                    Symbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
-                                    if (s is DefineVariable sv && !sv.Executed) {
-                                        AddError("Not evaluated: " + r);
-                                    } else if (r.StartsWith("_")) {
-                                        AddError("Reference: " + r);
-                                    } else {
-                                        if (r.StartsWith('$') && ext && validateOnly) {
-                                            AddError("External: " + symReference);
-                                        } else {
-                                            AddError("Undefined: " + r);
-                                        }
-                                    }
-                                }
-                            }
-                            RaisePropertyChanged("Error");
-                            RaisePropertyChanged("ValueString");
-                            RaisePropertyChanged("StringValue");
-                            RaisePropertyChanged("Value");
-                        } else {
-                            Error = null;
-                            object eval = e.Evaluate();
-                            // We got an actual value
-                            if (eval is Boolean b) {
-                                Value = b ? 1 : 0;
-                            } else {
-                                try {
-                                    Value = Convert.ToDouble(eval);
-                                } catch (Exception) {
-                                    //string str = (string)eval;
-                                    //StringValue = str;
-                                    //Value = double.NegativeInfinity;
-                                    //if ("Integer".Equals(Type)) {
-                                    //    Error = "Syntax error";
-                                    //}
-                                }
-                            }
-                            RaisePropertyChanged("Error");
-                            //RaisePropertyChanged("StringValue");
-                            RaisePropertyChanged("ValueString");
-                            RaisePropertyChanged("Value");
-                        }
-
-                    } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
-                        Error = "Undefined: " + ex.ParameterName;
-                    } catch (Exception ex) {
-                        if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
-                            Error = "Syntax Error";
-                            return;
-                        } else {
-                            Error = "Unknown Error; see log";
-                            Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
-                        }
-                    }
-                    Dirty = false;
-                } finally {
-                    Monitor.Exit(SYMBOL_LOCK);
-                }
-            } else {
-                Logger.Error("Evaluate could not get SYMBOL_LOCK: " + this);
-                //if (!LOCK_ERROR) {
-                //    Notification.ShowError("Evaluate could not get SYMBOL_LOCK; see log for info");
-                //}
-                //LOCK_ERROR = true;
+            if (!IsExpression) {
+                //Error = null;
+                return;
             }
+            if (Definition.Length == 0) {
+                IsExpression = false;
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
+                //RaisePropertyChanged("StringValue");
+                RaisePropertyChanged("IsExpression");
+                return;
+            }
+            if (Context == null) return;
+            if (!Symbol.IsAttachedToRoot(Context)) {
+                return;
+            }
+
+            if (Volatile || GlobalVolatile) {
+                IList<string> volatiles = new List<string>();
+                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                        volatiles.Add(kvp.Key);
+                    }
+                }
+                foreach (string key in volatiles) {
+                    Resolved.Remove(key);
+                    Parameters.Remove(key);
+                }
+            }
+
+            Volatile = GlobalVolatile;
+
+            //ImageVolatile = false;
+
+            //StringValue = null;
+
+            if (Parameters.Count < Resolved.Count) {
+                Parameters.Clear();
+                Resolved.Clear();
+            }
+
+            // External, don't report error during validation
+            bool ext = false;
+
+            // First, validate References
+            foreach (string sRef in References) {
+                Symbol sym;
+                string symReference = sRef;
+                // Remember if we have any image data
+                //if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                //    ImageVolatile = true;
+                //}
+                bool found = Resolved.TryGetValue(symReference, out sym);
+                if (!found || sym == null) {
+                    // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                    if (!found) {
+                        sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                    }
+                    if (sym != null) {
+                        // Link Expression to the Symbol
+                        Resolve(symReference, sym);
+                        sym.AddConsumer(this);
+                    } else if (SymbolBroker != null) {
+                        found = false;
+                        // Try in the old Switch/Weather keys
+                        object val = null;
+                        if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
+                            // We don't want these resolved, just added to Parameters
+                            Resolved.Remove(symReference);
+                            Resolved.Add(symReference, null);
+                            Parameters.Remove(symReference);
+                            AddParameter(symReference, val);
+                            Volatile = true;
+                        }
+                        if (val is SymbolBrokerVM.Ambiguity a) {
+                            StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
+                            foreach (var source in a.sources) {
+                                sb.Append(" [" + source + ':' + symReference + "]");
+                            }
+                            Error = sb.ToString();
+                            return;
+                        }
+                    } else {
+                        Logger.Warning("SymbolBroker not found in " + Context.Name);
+                    }
+                }
+            }
+
+            NCalc.Expression e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
+            e.EvaluateFunction += ExtensionFunction;
+            e.Parameters = Parameters;
+
+            if (e.HasErrors()) {
+                Error = "Syntax Error";
+                return;
+            }
+
+            Error = null;
+            try {
+                if (Parameters.Count != References.Count) {
+                    foreach (string r in References) {
+                        string symReference = r;
+                        if (!Parameters.ContainsKey(symReference)) {
+                            // Not defined or evaluated
+                            Symbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                            if (s is DefineVariable sv && !sv.Executed) {
+                                AddError("Not evaluated: " + r);
+                            } else if (r.StartsWith("_")) {
+                                AddError("Reference: " + r);
+                            } else {
+                                if (r.StartsWith('$') && ext && validateOnly) {
+                                    AddError("External: " + symReference);
+                                } else {
+                                    AddError("Undefined: " + r);
+                                }
+                            }
+                        }
+                    }
+                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("Value");
+                } else {
+                    Error = null;
+                    object eval = e.Evaluate();
+                    // We got an actual value
+                    if (eval is Boolean b) {
+                        Value = b ? 1 : 0;
+                    } else {
+                        try {
+                            Value = Convert.ToDouble(eval);
+                        } catch (Exception) {
+                            //string str = (string)eval;
+                            //StringValue = str;
+                            //Value = double.NegativeInfinity;
+                            //if ("Integer".Equals(Type)) {
+                            //    Error = "Syntax error";
+                            //}
+                        }
+                    }
+                    RaisePropertyChanged("Error");
+                    //RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Value");
+                }
+
+            } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
+                Error = "Undefined: " + ex.ParameterName;
+            } catch (Exception ex) {
+                if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
+                    Error = "Syntax Error";
+                    return;
+                } else {
+                    Error = "Unknown Error; see log";
+                    Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
+                }
+            }
+            Dirty = false;
         }
+        
         public static DateTime ConvertFromUnixTimestamp(double timestamp) {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return origin.AddSeconds(timestamp);
