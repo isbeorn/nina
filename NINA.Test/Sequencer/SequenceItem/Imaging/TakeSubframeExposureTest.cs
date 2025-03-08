@@ -206,7 +206,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
                             && cs.ImageType == imageType
                             && cs.ProgressExposureCount == 0
                             && cs.TotalExposureCount == 1
-                            && cs.EnableSubSample == (0 < roi && roi < 1)
+                            && cs.EnableSubSample == (0 < roi && roi < 100)
                     ),
                     It.IsAny<CancellationToken>(),
                     It.IsAny<IProgress<ApplicationStatus>>(),
