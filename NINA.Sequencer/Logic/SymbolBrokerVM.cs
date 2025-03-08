@@ -24,7 +24,7 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, IFocuserConsumer {
+    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
 
         public SymbolBrokerVM(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
@@ -65,7 +65,7 @@ namespace NINA.Sequencer.Logic {
             public string name;
             public List<string> sources;
 
-            public Ambiguity (string name, List<DataSource> dataSources) {
+            public Ambiguity(string name, List<DataSource> dataSources) {
                 this.name = name;
                 sources = new List<string>();
                 foreach (DataSource ds in dataSources) {
@@ -153,13 +153,6 @@ namespace NINA.Sequencer.Logic {
         private static IGuiderMediator GuiderMediator { get; set; }
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
-        private static IList<string> EquipmentDataList { get; set; } = new List<string>();
-
-        public static IList<string> GetSwitches() {
-            lock (SYMBOL_LOCK) {
-                return EquipmentDataList;
-            }
-        }
 
         private static bool TelescopeConnected = false;
         private static bool DomeConnected = false;
@@ -215,9 +208,11 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
+            // These are "hidden" (not shown)
             if (silent) {
                 return;
             }
+
             StringBuilder sb = new StringBuilder(token);
             try {
                 sb.Append(": ");
@@ -260,7 +255,7 @@ namespace NINA.Sequencer.Logic {
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
         }
-        
+
         private Task UpdateEquipmentKeys() {
 
             var i = new List<string>();
@@ -400,23 +395,41 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
+            BuildDataSymbols();
+
             return Task.CompletedTask;
         }
 
-        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+        public class SourcedSymbols : SortedDictionary<string, List<Datum>>;
+
+        // Symbol dictionary grouped by source
+        private SourcedSymbols SymbolsBySource { get; set; } = new SourcedSymbols();
+
+        public class Datum {
+            public string key;
+            public object value;
+
+            public Datum(string key, object value) {
+                this.key = key;
+                this.value = value;
+            }
         }
 
-        public void Dispose() {
-            throw new NotImplementedException();
-        }
+        public void BuildDataSymbols() {
+            SymbolsBySource.Clear();
 
-        public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
-        }
-
-        public void UpdateUserFocused(FocuserInfo info) {
-        }
-
-        public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
+            foreach (var kvp in DataKeys) {
+                List<DataSource> sources = kvp.Value;
+                foreach (DataSource ds in sources) {
+                    List<Datum> lds;
+                    Datum newDatum = new Datum(kvp.Key, ds.data);
+                    if (!SymbolsBySource.TryGetValue(ds.source, out lds)) {
+                        SymbolsBySource.Add(ds.source, new List<Datum>() { newDatum });
+                    } else {
+                        lds.Add(newDatum);
+                    }
+                }
+            }
         }
     }
 }
