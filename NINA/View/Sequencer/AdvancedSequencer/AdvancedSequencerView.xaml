@@ -221,6 +221,35 @@
                 Width="80"
                 Margin="15,5,5,5"
                 Command="{Binding ShowDataSymbolsCommand}" >
+
+                <Button.ToolTip>
+
+                    <Grid
+                    Grid.Row="0"
+                    Margin="0,5,0,0">
+                        <ListView
+                        x:Name="ImagePatternList"
+                        ItemsSource="{Binding DataSymbols}"
+                        SelectionMode="Single">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                    Width="200"
+                                    DisplayMemberBinding="{Binding Key}"
+                                    Header="{ns:Loc LblPatternName}" />
+                                    <GridViewColumn
+                                    Width="Auto"
+                                    DisplayMemberBinding="{Binding Value}"
+                                    Header="{ns:Loc LblDescription}" />
+                                </GridView>
+                            </ListView.View>
+
+                        </ListView>
+                    </Grid>
+
+
+                </Button.ToolTip>
+                
                 <Path
                     Margin="5"
                     Data="{StaticResource LightBulbSVG}"

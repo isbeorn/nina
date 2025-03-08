@@ -394,45 +394,45 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
-            BuildDataSymbols();
-
             return Task.CompletedTask;
         }
 
-        public class SourcedSymbols : SortedDictionary<string, List<Datum>>;
+        public class SourcedSymbols : List<Datum>;
 
         // Symbol dictionary grouped by source
-        private SourcedSymbols SymbolsBySource { get; set; } = new SourcedSymbols();
+        public SourcedSymbols SymbolsBySource { get; set; } = new SourcedSymbols();
 
         public class Datum {
             public string key;
             public object value;
+            public string category;
 
-            public Datum(string key, object value) {
+            public Datum(string key, object value, string category) {
                 this.key = key;
                 this.value = value;
+                this.category = category;
             }
+
+            public string Key { get { return key; } }
+            public object Value { get { return value; } }
+            public object Category { get { return category;  } }
 
             public override string ToString() {
                 return $"{key} : {value}";
             }
         }
 
-        public void BuildDataSymbols() {
-            SymbolsBySource.Clear();
+        public static SourcedSymbols BuildDataSymbols() {
+            SourcedSymbols ss = new SourcedSymbols();
 
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    List<Datum> lds;
-                    Datum newDatum = new Datum(kvp.Key, ds.data);
-                    if (!SymbolsBySource.TryGetValue(ds.source, out lds)) {
-                        SymbolsBySource.Add(ds.source, new List<Datum>() { newDatum });
-                    } else {
-                        lds.Add(newDatum);
-                    }
+                    ss.Add(new Datum(ds.source + ":" + kvp.Key, ds.data, ds.source));
                 }
             }
+
+            return ss;
         }
     }
 }

@@ -57,6 +57,7 @@ using System.ComponentModel;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NINA.Sequencer.Logic;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -480,6 +481,15 @@ namespace NINA.ViewModel.Sequencer {
         private void ShowDataSymbols(object arg) {
 
         }
+
+        public SymbolBrokerVM.SourcedSymbols DataSymbols {
+            get => SymbolBrokerVM.BuildDataSymbols(); 
+            set {
+
+            }
+        }
+
+        public string Fooble { get; set; } = "Hello";
 
         public ISequencerFactory SequencerFactory { get; }
 
