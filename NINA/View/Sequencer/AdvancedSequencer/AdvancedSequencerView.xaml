@@ -217,6 +217,17 @@
                     Stretch="Uniform"
                     UseLayoutRounding="True" />
             </Button>
+            <Button
+                Width="80"
+                Margin="15,5,5,5"
+                Command="{Binding ShowDataSymbolsCommand}" >
+                <Path
+                    Margin="5"
+                    Data="{StaticResource LightBulbSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+            </Button>
         </StackPanel>
 
         <Border
