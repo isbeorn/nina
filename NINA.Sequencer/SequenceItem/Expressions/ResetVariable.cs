@@ -94,22 +94,19 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
             }
 
-            // Whew!
             string oldDefinition = sym.Expr.Definition;
 
- //           if (Expr.StringValue != null) {
- //               sym.Expr.Error = null;
- //               sym.Definition = "'" + Expr.StringValue + "'";
- //           } else {
+            if (Expr.StringValue != null) {
+                sym.Expr.Error = null;
+                sym.Expr.Definition = "'" + Expr.StringValue + "'";
+            } else {
                 sym.Expr.Definition = Expr.Value.ToString();
-//            }
+            }
 
-            Logger.Info("ResetVariable: " + Variable + " from " + oldDefinition + " to " + sym.Expr.Definition);
+            Logger.Info("SetVariable: " + Variable + " from " + oldDefinition + " to " + sym.Expr.Definition);
 
             // Make sure references are updated
             Symbol.SymbolDirty(sym);
-
-            //Expr.Refresh();
 
             return Task.CompletedTask;
         }

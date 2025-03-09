@@ -68,6 +68,112 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:ResetVariableToDate}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,1,10,-2"
+                       Text="{Binding Variable}"
+                       TextAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSource}" />
+                        <ComboBox
+                           Margin="5,0,0,0"
+                           VerticalAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           DisplayMemberPath="Name"
+                           ItemsSource="{Binding DateTimeProviders}"
+                           SelectedItem="{Binding SelectedProvider}" />
+                        <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTime}" />
+                        <TextBox
+                               MinWidth="40"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Hours">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="23" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Minutes">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Seconds">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding HasFixedTimeProvider, Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTimeOffset}"
+                               ToolTip="{ns:Loc LblTimeOffsetTooltip}" />
+                            <TextBox
+                               MinWidth="30"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               Text="{Binding MinutesOffset}" />
+                            <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center">m</TextBlock>
+                        </StackPanel>
+                        <TextBlock Margin="10,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}{" />
+                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{Binding TimeString}" />
+                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}}" />
+                    </StackPanel>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
     <!--Temporary Icons-->
     
     <GeometryGroup x:Key="VariableSVG">

@@ -44,6 +44,9 @@ namespace NINA.Sequencer.Logic {
             Symbol = symbol;
         }
 
+        public static readonly bool STRING_VALUES_ALLOWED = true;
+        public static readonly bool DATE_VALUES_ALLOWED = true;
+
         public ISymbolBrokerVM SymbolBroker;
 
         public bool HasError => string.IsNullOrEmpty(Error);
@@ -60,9 +63,6 @@ namespace NINA.Sequencer.Logic {
                     RaisePropertyChanged("Error");
                     RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("InfoButtonColor");
-                    RaisePropertyChanged("InfoButtonChar");
-                    RaisePropertyChanged("InfoButtonSize");
-                    RaisePropertyChanged("InfoButtonMargin");
                 }
             }
         }
@@ -111,23 +111,22 @@ namespace NINA.Sequencer.Logic {
         }
 
         public bool ForceAnnotated { get; set; } = false;
+        public string StringValue { get; set; }
 
         private double _value = Double.NaN;
         public virtual double Value {
             get {
                 if (double.IsNaN(_value) && !double.IsNaN(Default)) {
                     return Default;
-                //} else if (double.IsNaN(_value)) {
-                //    return 0;
                 }
                 return _value;
             }
             set {
                 if (value != _value) {
                     if ("int".Equals(Type)) {
-                        //if (StringValue != null) {
-                        //    Error = "Value must be an Integer";
-                        //}
+                        if (StringValue != null) {
+                            Error = "Value must be an Integer";
+                        }
                         ForceAnnotated = false;
                         if (Definition.Length > 0 && Double.Floor(value) != value) {
                             value = Double.Floor(value);
@@ -142,7 +141,7 @@ namespace NINA.Sequencer.Logic {
                     if (Validator != null) {
                         Validator(this);
                     }
-                    //RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("Value");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
@@ -159,10 +158,8 @@ namespace NINA.Sequencer.Logic {
                 if (r == 0) {
                     if (max == 0) {
                         Error = "Range: >= " + min;
-                        //Error = "Value must be " + min + " or greater";
                     } else {
                         Error = "Range: " + min + " < value < " + max;
-                        //Error = "Value must be between " + min + " and " + max;
                     }
                 } else {
                     Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and less than " + (((r & 2) == 2) ? "" : "or equal to ") + Range[1];
@@ -245,33 +242,35 @@ namespace NINA.Sequencer.Logic {
 
         public Symbol Symbol { get; set; } = null;
 
+        private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
+
         public string ValueString {
             get {
                 if (Error != null) return Error;
-                //if (Value is double.NegativeInfinity) {
-                //    return StringValue;
-                //}
-                //long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
-                //long end = start + (2 * ONE_YEAR);
-                //if (Value > start && Value < end) {
-                //    DateTime dt = ConvertFromUnixTimestamp(Value).ToLocalTime();
-                //    if (dt.Day == DateTime.Now.Day + 1) {
-                //        return dt.ToShortTimeString() + " tomorrow";
-                //    } else if (dt.Day == DateTime.Now.Day - 1) {
-                //        return dt.ToShortTimeString() + " yesterday";
-                //    } else
-                //        return dt.ToShortTimeString();
-                //} else {
-                if (!double.IsNaN(Default) && Value == Default) {
-                    return DefaultString;
+                if (Value is double.NegativeInfinity) {
+                    return StringValue;
                 }
-                
-                return Value.ToString();
-                //}
+                long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+                long end = start + (2 * ONE_YEAR);
+                if (DATE_VALUES_ALLOWED && Value > start && Value < end) {
+                    DateTime dt = ConvertFromUnixTimestamp(Value).ToLocalTime();
+                    if (dt.Day == DateTime.Now.Day + 1) {
+                        return dt.ToShortTimeString() + " tomorrow";
+                    } else if (dt.Day == DateTime.Now.Day - 1) {
+                        return dt.ToShortTimeString() + " yesterday";
+                    } else
+                        return dt.ToShortTimeString();
+                } else {
+                    if (!double.IsNaN(Default) && Value == Default) {
+                        return DefaultString;
+                    }
+
+                    return Value.ToString();
+                }
             }
             set { }
         }
- 
+
         // References are the parsed tokens used in the Expr
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
@@ -314,7 +313,7 @@ namespace NINA.Sequencer.Logic {
                 Double result;
 
                 if (value != definition && IsExpression) {
-                    // The value has changed.  Clear what we had...cle
+                    // The value has changed.  Clear what we had...
                     foreach (var symKvp in Resolved) {
                         Symbol s = symKvp.Value;
                         if (s != null) {
@@ -378,6 +377,7 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged("Definition");
                 RaisePropertyChanged("Value");
                 RaisePropertyChanged("ValueString");
+                RaisePropertyChanged("StringValue");
                 RaisePropertyChanged("IsAnnotated");
             }
         }
@@ -402,9 +402,9 @@ namespace NINA.Sequencer.Logic {
             Resolved.Remove(reference);
             if (sym.Expr.Error == null) {
                 Resolved.Add(reference, sym);
-                //if (sym.Expr.Value == double.NegativeInfinity) {
-                //    AddParameter(reference, sym.Expr.StringValue);
-                //} else
+                if (sym.Expr.Value == double.NegativeInfinity) {
+                    AddParameter(reference, sym.Expr.StringValue);
+                } else
                 if (!Double.IsNaN(sym.Expr.Value)) {
                     AddParameter(reference, sym.Expr.Value);
                 }
@@ -437,7 +437,7 @@ namespace NINA.Sequencer.Logic {
                 IsExpression = false;
                 RaisePropertyChanged("Value");
                 RaisePropertyChanged("ValueString");
-                //RaisePropertyChanged("StringValue");
+                RaisePropertyChanged("StringValue");
                 RaisePropertyChanged("IsExpression");
                 return;
             }
@@ -463,7 +463,7 @@ namespace NINA.Sequencer.Logic {
 
             //ImageVolatile = false;
 
-            //StringValue = null;
+            StringValue = null;
 
             if (Parameters.Count < Resolved.Count) {
                 Parameters.Clear();
@@ -561,16 +561,21 @@ namespace NINA.Sequencer.Logic {
                         try {
                             Value = Convert.ToDouble(eval);
                         } catch (Exception) {
-                            //string str = (string)eval;
-                            //StringValue = str;
-                            //Value = double.NegativeInfinity;
-                            //if ("Integer".Equals(Type)) {
-                            //    Error = "Syntax error";
-                            //}
+                            string str = eval as string;
+                            if (STRING_VALUES_ALLOWED) {
+                                if (str != null) {
+                                    StringValue = str;
+                                    Value = double.NegativeInfinity;
+                                } else {
+                                    Error = "Syntax error";
+                                }
+                            } else {
+                                Error = (str != null) ? "Strings are now allowed as values" : "Syntax error";
+                            }
                         }
                     }
                     RaisePropertyChanged("Error");
-                    //RaisePropertyChanged("StringValue");
+                    RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Value");
                 }
@@ -582,7 +587,7 @@ namespace NINA.Sequencer.Logic {
                     Error = "Syntax Error";
                     return;
                 } else {
-                    Error = "Unknown Error; see log";
+                    Error = "Error: " + ex.Message; // "Unknown Error; see log";
                     Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
                 }
             }
