@@ -61,7 +61,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        private const char DELIMITER = ':';
+        private const char DELIMITER = '_';
 
         public class Ambiguity {
             public string name;
@@ -81,7 +81,7 @@ namespace NINA.Sequencer.Logic {
             string prefix = null;
 
             if (key.IndexOf(DELIMITER) > 0) {
-                string[] parts = key.Split(DELIMITER);
+                string[] parts = key.Split(DELIMITER, 2);
                 if (parts.Length == 2) {
                     key = parts[1];
                     prefix = parts[0];
