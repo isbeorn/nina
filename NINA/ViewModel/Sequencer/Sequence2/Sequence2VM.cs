@@ -98,7 +98,6 @@ namespace NINA.ViewModel.Sequencer {
             AddTargetToControllerCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(AddTargetToController);
             LoadSequenceCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(LoadSequence);
             SwitchToOverviewCommand = new GalaSoft.MvvmLight.Command.RelayCommand(sequenceMediator.SwitchToOverview, IsSimpleSequencerEnabled);
-            ShowDataSymbolsCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(ShowDataSymbols);
 
             DetachCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(Detach);
             SkipCurrentItemCommand = new AsyncCommand<bool>(SkipCurrentItem);
@@ -478,18 +477,12 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        private void ShowDataSymbols(object arg) {
-
-        }
-
         public List<SymbolBrokerVM.Datum> DataSymbols {
             get => SymbolBrokerVM.BuildDataSymbols(); 
             set {
 
             }
         }
-
-        public string Fooble { get; set; } = "Hello";
 
         public ISequencerFactory SequencerFactory { get; }
 
@@ -630,6 +623,5 @@ namespace NINA.ViewModel.Sequencer {
         public ICommand SwitchToOverviewCommand { get; }
         public ICommand SaveSequenceCommand { get; }
         public ICommand SaveAsSequenceCommand { get; }
-        public ICommand ShowDataSymbolsCommand { get; }
     }
 }
