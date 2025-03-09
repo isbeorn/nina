@@ -58,6 +58,7 @@ using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NINA.Sequencer.Logic;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -477,11 +478,29 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        public List<SymbolBrokerVM.Datum> DataSymbols {
-            get => SymbolBrokerVM.BuildDataSymbols(); 
-            set {
-
+        private List<SymbolBrokerVM.Datum> dataSymbols2;
+        public List<SymbolBrokerVM.Datum> DataSymbols2 {
+            get {
+                return dataSymbols2;
             }
+            set {
+                dataSymbols2 = value;
+            }
+        }
+        
+        public List<SymbolBrokerVM.Datum> DataSymbols {
+            get {
+                List<SymbolBrokerVM.Datum> syms = SymbolBrokerVM.BuildDataSymbols();
+                DataSymbols2 = null;
+
+                if (syms.Count > 50) {
+                    DataSymbols2 = syms.GetRange(50, syms.Count - 50);
+                    return syms.GetRange(0, 50);
+                } else {
+                    return syms;
+                }
+            }
+            set { }
         }
 
         public ISequencerFactory SequencerFactory { get; }
