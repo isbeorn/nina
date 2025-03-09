@@ -225,22 +225,39 @@
                 <Button.ToolTip>
 
                     <Grid
-                    Grid.Row="0"
-                    Margin="0,5,0,0">
+                   Grid.Row="6"
+                   Grid.ColumnSpan="3"
+                   Margin="0,5,0,0">
+                        <Grid.Resources>
+                            <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols}">
+                                <CollectionViewSource.GroupDescriptions>
+                                    <PropertyGroupDescription PropertyName="Category" />
+                                </CollectionViewSource.GroupDescriptions>
+                            </CollectionViewSource>
+                        </Grid.Resources>
                         <ListView
-                        x:Name="ImagePatternList"
-                        ItemsSource="{Binding DataSymbols}"
-                        SelectionMode="Single">
+                       x:Name="ImagePatternList"
+                       ItemsSource="{Binding Source={StaticResource GroupedPatterns}}"
+                            >
+                            <ListView.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </ListView.GroupStyle>
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn
-                                    Width="200"
-                                    DisplayMemberBinding="{Binding Key}"
-                                    Header="{ns:Loc LblPatternName}" />
+                                   Width="Auto"
+                                   DisplayMemberBinding="{Binding Key}"
+                                   Header="{ns:Loc LblPatternName}" />
                                     <GridViewColumn
-                                    Width="Auto"
-                                    DisplayMemberBinding="{Binding Value}"
-                                    Header="{ns:Loc LblDescription}" />
+                                   Width="Auto"
+                                   DisplayMemberBinding="{Binding Value}"
+                                   Header="{ns:Loc LblDescription}" />
                                 </GridView>
                             </ListView.View>
 
