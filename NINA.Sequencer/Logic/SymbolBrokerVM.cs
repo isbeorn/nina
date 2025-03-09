@@ -23,6 +23,7 @@ using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
 using NINA.Equipment.Interfaces;
+using System.Linq;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -399,9 +400,6 @@ namespace NINA.Sequencer.Logic {
 
         public class SourcedSymbols : List<Datum>;
 
-        // Symbol dictionary grouped by source
-        public SourcedSymbols SymbolsBySource { get; set; } = new SourcedSymbols();
-
         public class Datum {
             public string key;
             public object value;
@@ -415,6 +413,7 @@ namespace NINA.Sequencer.Logic {
 
             public string Key { get { return key; } }
             public object Value { get { return value; } }
+
             public object Category { get { return category;  } }
 
             public override string ToString() {
@@ -422,17 +421,18 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public static SourcedSymbols BuildDataSymbols() {
+        public static List<Datum> BuildDataSymbols() {
             SourcedSymbols ss = new SourcedSymbols();
 
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    ss.Add(new Datum(ds.source + ":" + kvp.Key, ds.data, ds.source));
+                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source);
+                    ss.Add(newDatum);
                 }
             }
 
-            return ss;
+            return ss.OrderBy(x => x.Key).ToList();
         }
     }
 }

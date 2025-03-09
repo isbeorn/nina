@@ -482,7 +482,7 @@ namespace NINA.ViewModel.Sequencer {
 
         }
 
-        public SymbolBrokerVM.SourcedSymbols DataSymbols {
+        public List<SymbolBrokerVM.Datum> DataSymbols {
             get => SymbolBrokerVM.BuildDataSymbols(); 
             set {
 
