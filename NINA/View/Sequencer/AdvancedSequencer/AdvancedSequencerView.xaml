@@ -221,13 +221,11 @@
                 Width="80"
                 Margin="15,5,5,5"
                 Command="{Binding ShowDataSymbolsCommand}" >
-
                 <Button.ToolTip>
-
                     <Grid
-                   Grid.Row="6"
-                   Grid.ColumnSpan="3"
-                   Margin="0,5,0,0">
+                        Grid.Row="6"
+                        Grid.ColumnSpan="3"
+                        Margin="0,5,0,0">
                         <Grid.Resources>
                             <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols}">
                                 <CollectionViewSource.GroupDescriptions>
@@ -236,9 +234,8 @@
                             </CollectionViewSource>
                         </Grid.Resources>
                         <ListView
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
                             x:Name="ImagePatternList"
-                       ItemsSource="{Binding Source={StaticResource GroupedPatterns}}"
+                            ItemsSource="{Binding Source={StaticResource GroupedPatterns}}"
                             >
                             <ListView.GroupStyle>
                                 <GroupStyle>
@@ -261,13 +258,9 @@
                                    Header="Value" />
                                 </GridView>
                             </ListView.View>
-
                         </ListView>
                     </Grid>
-
-
                 </Button.ToolTip>
-                
                 <Path
                     Margin="5"
                     Data="{StaticResource LightBulbSVG}"
