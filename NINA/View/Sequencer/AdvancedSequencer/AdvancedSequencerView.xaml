@@ -236,7 +236,8 @@
                             </CollectionViewSource>
                         </Grid.Resources>
                         <ListView
-                       x:Name="ImagePatternList"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+                            x:Name="ImagePatternList"
                        ItemsSource="{Binding Source={StaticResource GroupedPatterns}}"
                             >
                             <ListView.GroupStyle>
@@ -251,13 +252,13 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn
-                                   Width="Auto"
+                                   Width="150"
                                    DisplayMemberBinding="{Binding Key}"
-                                   Header="{ns:Loc LblPatternName}" />
+                                   Header="Variable" />
                                     <GridViewColumn
                                    Width="Auto"
-                                   DisplayMemberBinding="{Binding Value}"
-                                   Header="{ns:Loc LblDescription}" />
+                                   DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
+                                   Header="Value" />
                                 </GridView>
                             </ListView.View>
 

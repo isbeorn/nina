@@ -389,6 +389,10 @@ namespace NINA.Sequencer.Logic {
                             t = Math.Round(t, 2);
                             string key = RemoveSpecialCharacters(dataName);
                             AddSymbol("Weather", i, RemoveSpecialCharacters(dataName), t);
+                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName)+"1", t);
+                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName)+"2", t);
+                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName)+"3", t);
+                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName)+"4", t);
                             //i.Add("W: " + key + ": " + t);
                         }
                     }
@@ -431,8 +435,8 @@ namespace NINA.Sequencer.Logic {
                     ss.Add(newDatum);
                 }
             }
-
-            return ss.OrderBy(x => x.Key).ToList();
+            return ss.OrderBy(x => x.Category).ThenByDescending(x => x.Key).ToList();
+            //return ss.OrderBy(x => x.Key).ToList();
         }
     }
 }
