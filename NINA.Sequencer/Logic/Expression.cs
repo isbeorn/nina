@@ -506,7 +506,7 @@ namespace NINA.Sequencer.Logic {
                         if (val is SymbolBrokerVM.Ambiguity a) {
                             StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
                             foreach (var source in a.sources) {
-                                sb.Append(" [" + source + ':' + symReference + "]");
+                                sb.Append(" [" + source + '_' + symReference + "]");
                             }
                             Error = sb.ToString();
                             return;
