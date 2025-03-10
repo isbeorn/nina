@@ -25,4 +25,11 @@
     <DataTemplate DataType="{x:Type local:IfExpression}">
         <view:SequenceContainerView />
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:IfThenElse}">
+        <StackPanel Orientation="Vertical">
+            <view:SequenceContainerView />
+            <view:SequenceContainerView DataContext="{Binding ElseContainer}"/>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>
