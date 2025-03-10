@@ -26,10 +26,70 @@
         <view:SequenceContainerView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:IfThenElse}">
+    <!--<DataTemplate DataType="{x:Type local:IfThenElse}">
         <StackPanel Orientation="Vertical">
             <view:SequenceContainerView />
             <view:SequenceContainerView DataContext="{Binding ElseContainer}"/>
         </StackPanel>
+    </DataTemplate>-->
+
+
+    <DataTemplate DataType="{x:Type local:IfThenElse}">
+        <Border>
+            <ninactrl:DetachingExpander>
+                <ninactrl:DetachingExpander.Header>
+                    <Grid
+                      MinHeight="35"
+                      Margin="0"
+                      HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                      Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock 
+                                 MinHeight="25"
+                                 Foreground="White"
+                                 Margin="10,10,10,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="If/Then/Else" />
+                            <Border
+                               Width="20"
+                               Height="20"
+                               Margin="5,0,5,0"
+                               Background="{StaticResource NotificationErrorBrush}"
+                               BorderBrush="Transparent"
+                               CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                           Converter="{StaticResource ZeroToVisibilityConverter}"
+                                           FallbackValue="Collapsed"
+                                           Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                   HorizontalAlignment="Right"
+                                   Data="{StaticResource ExclamationCircledSVG}"
+                                   Fill="{StaticResource ButtonForegroundBrush}"
+                                   Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <view:SequenceContainerView />
+                    <view:SequenceContainerView DataContext="{Binding ElseContainer}"/>
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
     </DataTemplate>
+
+
 </ResourceDictionary>
