@@ -27,29 +27,31 @@ namespace NINA.Sequencer.Logic {
     public partial class IfThenElse : SequenceContainer, IValidatable, ITrueFalse {
         [ImportingConstructor]
         public IfThenElse() : base(new SequentialStrategy()) {
+            ThenContainer = new SequentialContainer();
             ElseContainer = new SequentialContainer();
-            ElseContainer.AttachNewParent(Parent);
-            ElseContainer.Name = Name;
-            ElseContainer.Icon = Icon;
         }
 
         public IfThenElse(IfThenElse copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
+                ThenContainer = (SequentialContainer)copyMe.ThenContainer.Clone();
+                ThenContainer.Name = "Then";
+                Add(ThenContainer);
                 ElseContainer = (SequentialContainer)copyMe.ElseContainer.Clone();
-                ElseContainer.AttachNewParent(Parent);
                 ElseContainer.Name = "Else";
-                ElseContainer.Icon = Icon;
+                Add(ElseContainer);
             }
         }
 
         [IsExpression]
         private string header;
-        
+
+        [JsonProperty]
+        public SequentialContainer ThenContainer { get; set; }
         [JsonProperty]
         public SequentialContainer ElseContainer { get; set; }
 
-         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
             Logger.Info("Execute, Predicate: " + HeaderExpression.Definition);
             if (string.IsNullOrEmpty(HeaderExpression.Definition)) {
@@ -73,10 +75,10 @@ namespace NINA.Sequencer.Logic {
 
                 if (!string.Equals(HeaderExpression.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (HeaderExpression.Error == null)) {
                     Logger.Info("Predicate is true; running Then");
-                    await base.Execute(progress, token);
+                    await ThenContainer.Execute(progress, token);
                 } else {
                     Logger.Info("Predicate is false; running Else");
-                    //await ElseContainer.Run(progress, token);
+                    await ElseContainer.Execute(progress, token);
                 }
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
@@ -88,22 +90,14 @@ namespace NINA.Sequencer.Logic {
             return $"Category: {Category}, Item: {nameof(IfThenElse)}, Expr: {HeaderExpression}";
         }
 
-        public override void ResetProgress() {
-            base.ResetProgress();
-            //ElseContainer.ResetAll();
-            ////foreach (ISequenceItem item in ElseContainer.Items) {
-            //    item.ResetProgress();
-            //}
-        }
-
-        public override void ResetAll() {
-            base.ResetAll();
-            //ElseContainer.ResetAll();
-        }
-
         public new bool Validate() {
 
             var i = new List<string>();
+
+            ThenContainer.Validate();
+            i.AddRange(ThenContainer.Issues);
+            ElseContainer.Validate();
+            i.AddRange(ElseContainer.Issues);
 
             Expression.ValidateExpressions(i, HeaderExpression);
 
