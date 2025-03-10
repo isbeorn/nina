@@ -21,6 +21,7 @@ namespace NINA.Sequencer.Logic {
     [ExportMetadata("Icon", "IfSVG")]
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
@@ -88,6 +89,11 @@ namespace NINA.Sequencer.Logic {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(IfThenElse)}, Expr: {HeaderExpression}";
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
         public new bool Validate() {

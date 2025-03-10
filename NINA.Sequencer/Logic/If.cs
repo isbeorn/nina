@@ -22,6 +22,7 @@ namespace NINA.Sequencer.Logic {
     [ExportMetadata("Icon", "IfSVG")]
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
