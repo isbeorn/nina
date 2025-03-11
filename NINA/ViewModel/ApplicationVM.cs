@@ -241,6 +241,7 @@ namespace NINA.ViewModel {
                 }
             }
 
+            Logger.Info("Shutting down application - requested by user");
             Application.Current.Shutdown();
         }
 
