@@ -20,6 +20,7 @@
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
     xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base">
 
     <DataTemplate DataType="{x:Type local:IfExpression}">
@@ -30,6 +31,32 @@
         <view:SequenceContainerView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:When}">
+        <StackPanel Orientation="Vertical">
+            <view:SequenceBlockView>
+                <view:SequenceBlockView.SequenceItemContent>
+                    <StackPanel Orientation="Horizontal">
+                        <local:ExprControl Label="Expression:" Exp="{Binding PredicateExpression}"/>
+                        <TextBlock VerticalAlignment="Center" Margin="60,0,0,0" Text="Once Only"  Foreground="White"/>
+                        <CheckBox
+                                  MinWidth="40"
+                                  Margin="10,0,0,0"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding OnceOnly, Mode=TwoWay}"
+                                  ToolTip="If set, this instruction will only run one time and then be disabled.  This can prevent looping behavior that may not be desirable." />
+                        <TextBlock VerticalAlignment="Center" Margin="40,0,0,0" Text="Interrupt"  Foreground="White"/>
+                        <CheckBox
+                                  MinWidth="40"
+                                  Margin="10,0,0,0"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Interrupt, Mode=TwoWay}"
+                                  ToolTip="If set, this instruction will interrupt the currently running instruction when the expression is true (This is the default behavior)" />
+                    </StackPanel>
+                </view:SequenceBlockView.SequenceItemContent>
+            </view:SequenceBlockView>
+            <view:SequenceContainerView DataContext="{Binding TriggerRunner}" />
+        </StackPanel>
+    </DataTemplate>
 
 
 </ResourceDictionary>
