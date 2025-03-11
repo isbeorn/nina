@@ -39,6 +39,7 @@ namespace NINA.Sequencer.Logic
 
         partial void AfterClone(When clone) {
             clone.TriggerRunner = (SequentialContainer)TriggerRunner.Clone();
+            clone.TriggerRunner.Name = "Instructions";
         }
 
         [IsExpression]
