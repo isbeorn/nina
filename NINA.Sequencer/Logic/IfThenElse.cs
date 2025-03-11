@@ -17,7 +17,7 @@ using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.Logic {
     [ExportMetadata("Name", "If/Then/Else")]
-    [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
+    [ExportMetadata("Description", "Executes the first instruction set if the Expression is True (or 1); the second if False (or 0)")]
     [ExportMetadata("Icon", "IfSVG")]
     [ExportMetadata("Category", "Expressions")]
     [Export(typeof(ISequenceItem))]
