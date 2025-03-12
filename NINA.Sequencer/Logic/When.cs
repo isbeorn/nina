@@ -27,7 +27,7 @@ namespace NINA.Sequencer.Logic
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class When : SequenceTrigger, IValidatable {
+    public partial class When : SequenceTrigger, IValidatable, ITrueFalse {
 
         public When() {
             TriggerRunner.Add(new WaitForTimeSpan() { Name = "Wait for Time Span" }); 
@@ -61,6 +61,7 @@ namespace NINA.Sequencer.Logic
 
         public bool Validate() {
 
+            Expression.ValidateExpressions(Issues, PredicateExpression);
             return Issues.Count == 0;
         }
     }
