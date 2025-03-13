@@ -268,7 +268,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var issues = new List<string>();
 
             if (valid) {
-                var filter = switchFilter?.Filter;
+              var filter = switchFilter?.Filter;
                 var binning = takeExposure.Binning;
                 var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
                 var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;

@@ -89,16 +89,7 @@
         x:Shared="false"
         Orientation="Horizontal"
         >
-        <TextBlock
-            Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            Text="{ns:Loc LblAmount}" />
-        <TextBox
-            MinWidth="40"
-            Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            Text="{Binding ImagingContainer.Conditions[0].Iterations}"
-            TextAlignment="Right" />
+        <logic:ExprControl Label="#" Exp="{Binding ImagingContainer.Conditions[0].IterationsExpression}" />
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"

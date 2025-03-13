@@ -59,8 +59,12 @@ namespace NINA.Sequencer.Conditions {
 
         public IList<string> Issues { get; private set; }
 
-        [IsExpression(Default = 2, Range = [1, 0])]
+        [IsExpression(Default = 2, Range = [1, 0], HasValidator = true)]
         private int iterations;
+
+        partial void IterationsExpressionValidator(Expression expr) {
+            RaisePropertyChanged("Iterations");
+        }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             var check = CompletedIterations < Iterations;
