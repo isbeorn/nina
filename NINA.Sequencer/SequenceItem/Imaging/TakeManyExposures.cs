@@ -57,8 +57,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) :
                 this(
                     null,
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
-                    new LoopCondition() { Iterations = 1 }) {
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { Name = "Take Exposure" },
+                    new LoopCondition() { Name = "Loop for Iterations", Iterations = 1 }) {
         }
 
         private TakeManyExposures(
@@ -92,6 +92,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         partial void IterationsExpressionValidator(Expression expr) {
             if (Conditions.Count > 0) {
                 GetLoopCondition().Iterations = (int)expr.Value;
+                RaisePropertyChanged("Iterations");
             }
         }
 

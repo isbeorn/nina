@@ -160,11 +160,12 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(HasValidator = true)]
+        [IsExpression(Default = 1, HasValidator = true)]
         private int iterations;
         partial void IterationsExpressionValidator(Logic.Expression expr) {
             if (Conditions.Count > 0) {
                 GetLoopCondition().Iterations = (int)expr.Value;
+                RaisePropertyChanged("Iterations");
             }
         }
 

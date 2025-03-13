@@ -331,6 +331,9 @@ namespace NINA.Sequencer.Logic {
                     Error = null;
                     IsExpression = false;
                     Value = result;
+
+                    
+
                     // Notify consumers
                     if (Symbol != null) {
                         Symbol.SymbolDirty(Symbol);
@@ -671,7 +674,7 @@ namespace NINA.Sequencer.Logic {
             if (Error != null) {
                 return $"'{Definition}' in {id}, References: {References.Count}, Error: {Error}";
             } else if (Definition.Length == 0) {
-                return "Undefined";
+                return "Undefined" + (Context != null ? " in " + Context.Name : "") + (Validator != null ? " (with Validator)" : "");
             }
             return $"Expression: {Definition} in {id}, References: {References.Count}, Value: {ValueString}";
         }

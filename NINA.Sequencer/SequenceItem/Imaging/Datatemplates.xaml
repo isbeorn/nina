@@ -164,7 +164,7 @@
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                     <TextBlock VerticalAlignment="Center" Text="x" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -181,7 +181,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                 </StackPanel>
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
@@ -191,7 +191,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
+                    <logic:ExprControl Label="#" Exp="{Binding IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -208,7 +208,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
@@ -218,7 +218,7 @@
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                     <TextBlock VerticalAlignment="Center" Text="x" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -239,7 +239,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                 </WrapPanel>
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
@@ -250,7 +250,7 @@
             <view:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
+                    <logic:ExprControl Label="#" Exp="{Binding IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -308,7 +308,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
