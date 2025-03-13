@@ -3,6 +3,7 @@ using NINA.Core.Model;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.SequenceItem.Guider;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
@@ -30,7 +31,7 @@ namespace NINA.Sequencer.Logic
     public partial class When : SequenceTrigger, IValidatable, ITrueFalse {
 
         public When() {
-            TriggerRunner.Add(new WaitForTimeSpan() { Name = "Wait for Time Span" }); 
+            //TriggerRunner.Add(new WaitForTimeSpan() { Name = "Wait for Time Span" }); 
         }
 
         private When(When cloneMe) : this() {
