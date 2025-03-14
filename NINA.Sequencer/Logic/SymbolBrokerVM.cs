@@ -401,7 +401,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public static List<Datum> BuildDataSymbols() {
+        public List<Datum> GetDataSymbols() {
             SourcedSymbols ss = new SourcedSymbols();
 
             foreach (var kvp in DataKeys) {

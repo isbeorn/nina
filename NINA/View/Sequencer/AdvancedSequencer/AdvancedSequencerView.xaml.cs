@@ -46,7 +46,7 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             Sequence2VM vm = ((FrameworkElement)sender).DataContext as Sequence2VM;
             if (vm != null) {
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
-                vm.DataSymbols = SymbolBrokerVM.BuildDataSymbols();
+                vm.DataSymbols = vm.SymbolBroker.GetDataSymbols();
                 SymbolPopup.IsOpen = true;
             }
         }

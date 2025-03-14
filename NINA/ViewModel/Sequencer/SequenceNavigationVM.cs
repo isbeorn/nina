@@ -21,6 +21,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
 using NINA.Utility;
 using NINA.ViewModel.Interfaces;
@@ -42,6 +43,7 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private ISequencerFactory factory;
         private ISimpleSequenceVM simpleSequenceVM;
+        private ISymbolBrokerVM symbolBrokerVM;
 
         /// <summary>
         /// Backwards compatible ContentId due to sequencer replacement
@@ -58,7 +60,8 @@ namespace NINA.ViewModel.Sequencer {
                 INighttimeCalculator nighttimeCalculator,
                 IPlanetariumFactory planetariumFactory,
                 IFramingAssistantVM framingAssistantVM,
-                IApplicationMediator applicationMediator) : base(profileService) {
+                IApplicationMediator applicationMediator,
+                ISymbolBrokerVM symbolBrokerVM) : base(profileService) {
             Title = Loc.Instance["LblSequence"];
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
 
@@ -97,7 +100,7 @@ namespace NINA.ViewModel.Sequencer {
                 this.factory = new SequencerFactory(profileService, pluginProvider.Items, pluginProvider.Conditions, pluginProvider.Triggers, pluginProvider.Container, pluginProvider.DateTimeProviders);
 
                 this.simpleSequenceVM = new SimpleSequenceVM(profileService, sequenceMediator, cameraMediator, applicationStatusMediator, nighttimeCalculator, planetariumFactory, framingAssistantVM, applicationMediator, factory);
-                this.sequence2VM = new Sequence2VM(profileService, commandLineOptions, sequenceMediator, applicationMediator, applicationStatusMediator, cameraMediator, factory);
+                this.sequence2VM = new Sequence2VM(profileService, commandLineOptions, sequenceMediator, applicationMediator, applicationStatusMediator, cameraMediator, factory, symbolBrokerVM);
 
                 await Task.WhenAll(simpleSequenceVM.Initialize(), sequence2VM.Initialize());
 
@@ -109,6 +112,7 @@ namespace NINA.ViewModel.Sequencer {
                     ActiveSequencerVM = this;
                 }
             });
+            this.symbolBrokerVM = symbolBrokerVM;
         }
 
         public object ActiveSequencerVM {

@@ -15,5 +15,7 @@ namespace NINA.Sequencer.Logic {
 
         public SymbolBrokerVM.DataSource GetDataSource(string key);
 
+        public List<SymbolBrokerVM.Datum> GetDataSymbols();
+
     }
 }
