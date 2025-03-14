@@ -12,9 +12,13 @@
 
 #endregion "copyright"
 
+using Castle.Core.Smtp;
+using NINA.Sequencer.Logic;
+using NINA.ViewModel.Sequencer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,6 +40,15 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
 
         public AdvancedSequencerView() {
             InitializeComponent();
+        }
+
+        public void ShowSymbols (object sender, RoutedEventArgs e) {
+            Sequence2VM vm = ((FrameworkElement)sender).DataContext as Sequence2VM;
+            if (vm != null) {
+                // Yeah, this shouldn't reference SymbolBrokerVM directly...
+                vm.DataSymbols = SymbolBrokerVM.BuildDataSymbols();
+                SymbolPopup.IsOpen = true;
+            }
         }
     }
 }

@@ -480,27 +480,27 @@ namespace NINA.ViewModel.Sequencer {
 
         private List<SymbolBrokerVM.Datum> dataSymbols2;
         public List<SymbolBrokerVM.Datum> DataSymbols2 {
-            get {
-                return dataSymbols2;
-            }
+            get => dataSymbols2;
             set {
                 dataSymbols2 = value;
             }
         }
-        
+
+        private List<SymbolBrokerVM.Datum> dataSymbols;
         public List<SymbolBrokerVM.Datum> DataSymbols {
-            get {
-                List<SymbolBrokerVM.Datum> syms = SymbolBrokerVM.BuildDataSymbols();
+            get => dataSymbols;
+            set {
                 DataSymbols2 = null;
 
-                if (syms.Count > 50) {
-                    DataSymbols2 = syms.GetRange(50, syms.Count - 50);
-                    return syms.GetRange(0, 50);
+                if (value.Count > 50) {
+                    DataSymbols2 = value.GetRange(50, value.Count - 50);
+                    dataSymbols = value.GetRange(0, 50);
                 } else {
-                    return syms;
+                    dataSymbols = value;
                 }
+                RaisePropertyChanged("DataSymbols");
+                RaisePropertyChanged("DataSymbols2");
             }
-            set { }
         }
 
         public ISequencerFactory SequencerFactory { get; }
