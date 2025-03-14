@@ -178,17 +178,17 @@ namespace NINA.Sequencer.Logic {
             LoggedOnce.Add(message);
         }
 
-        private void AddSymbol(List<string> i, string token, object value) {
-            AddSymbol("NINA", i, token, value, null, false);
+        private void AddSymbol(string token, object value) {
+            AddSymbol("NINA", token, value, null, false);
         }
-        private void AddSymbol(string source, List<string> i, string token, object value) {
-            AddSymbol(source, i, token, value, null, false);
+        private void AddSymbol(string source, string token, object value) {
+            AddSymbol(source, token, value, null, false);
         }
-        private void AddSymbol(string source, List<string> i, string token, object value, string[] values) {
-            AddSymbol(source, i, token, value, values, false);
+        private void AddSymbol(string source, string token, object value, string[] values) {
+            AddSymbol(source, token, value, values, false);
         }
 
-        private void AddSymbol(string source, List<string> i, string token, object value, string[] values, bool silent) {
+        private void AddSymbol(string source, string token, object value, string[] values, bool silent) {
             List<DataSource> list;
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
@@ -210,39 +210,15 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
-            // These are "hidden" (not shown)
-            if (silent) {
-                return;
-            }
-
-            StringBuilder sb = new StringBuilder(token);
-            try {
-                sb.Append(": ");
-                if (values != null) {
-                    sb.Append(values[(int)value + 1]);
-                } else if (value is double d) {
-                    sb.Append(Math.Round(d, 2));
-                    //} else if (value is long l) {
-                    //    sb.Append(Expression.ExprValueString(l));
-                } else if (value is int n) {
-                    sb.Append(n);
-                } else {
-                    sb.Append("'" + value.ToString() + "'");
-                }
-                //sb.Append(')');
-                i.Add(sb.ToString());
-
-                if (values != null) {
-                    for (int v = 0; v < values.Length; v++) {
-                        if (values[v] != null) {
-                            // Need to add these constants!
-                            //DataKeys[values[v]] = v - 1;
-                        }
+            // Defined constants...
+            // Not sure how to display these for now
+            if (values != null) {
+                for (int v = 0; v < values.Length; v++) {
+                    if (values[v] != null) {
+                        // Need a way to hide these in the list (silent flag not used)
+                        AddSymbol(source, values[v], v - 1, null, true);
                     }
                 }
-            } catch (Exception e) {
-                i.Add("Error adding " + token);
-                Logger.Warning("Exception (" + e.Message + "): " + token + ", " + value + ", " + values);
             }
         }
 
@@ -260,8 +236,6 @@ namespace NINA.Sequencer.Logic {
 
         private Task UpdateEquipmentKeys() {
 
-            var i = new List<string>();
-
             if (Observer == null) {
                 Observer = new ObserverInfo() {
                     Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
@@ -274,53 +248,53 @@ namespace NINA.Sequencer.Logic {
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
             TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
 
-            AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
-            AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-            AddSymbol(i, "SunAltitude", tc.Altitude.Degree);
-            AddSymbol(i, "SunAzimuth", tc.Azimuth.Degree);
+            AddSymbol("MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
+            AddSymbol("MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
+            AddSymbol("SunAltitude", tc.Altitude.Degree);
+            AddSymbol("SunAzimuth", tc.Azimuth.Degree);
 
             double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
             if (lst < 0) {
                 lst = AstroUtil.EuclidianModulus(lst, 24);
             }
-            AddSymbol(i, "LocalSiderealTime", lst);
+            AddSymbol("LocalSiderealTime", lst);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddSymbol(i, "TIME", timeSeconds);
+            AddSymbol("TIME", timeSeconds);
 
             TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
             TelescopeConnected = telescopeInfo.Connected;
             if (TelescopeConnected) {
-                AddSymbol("Telescope", i, "Altitude", telescopeInfo.Altitude);
-                AddSymbol("Telescope", i, "Azimuth", telescopeInfo.Azimuth);
-                AddSymbol("Telescope", i, "AtPark", telescopeInfo.AtPark);
+                AddSymbol("Telescope", "Altitude", telescopeInfo.Altitude);
+                AddSymbol("Telescope", "Azimuth", telescopeInfo.Azimuth);
+                AddSymbol("Telescope", "AtPark", telescopeInfo.AtPark);
 
                 Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
-                AddSymbol("Telescope", i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                AddSymbol("Telescope", i, "Declination", c.Dec); // telescopeInfo.Declination);
+                AddSymbol("Telescope", "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                AddSymbol("Telescope", "Declination", c.Dec); // telescopeInfo.Declination);
 
-                AddSymbol("Telescope", i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
+                AddSymbol("Telescope", "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
             }
 
             SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
             SafetyConnected = safetyInfo.Connected;
             if (SafetyConnected) {
-                AddSymbol("Safety", i, "IsSafe", safetyInfo.IsSafe);
+                AddSymbol("Safety", "IsSafe", safetyInfo.IsSafe);
             }
 
             FocuserInfo fInfo = FocuserMediator.GetInfo();
             FocuserConnected = fInfo.Connected;
             if (fInfo != null && FocuserConnected) {
-                AddSymbol("Focuser", i, "Position", fInfo.Position);
-                AddSymbol("Focuser", i, "Temperature", fInfo.Temperature);
+                AddSymbol("Focuser", "Position", fInfo.Position);
+                AddSymbol("Focuser", "Temperature", fInfo.Temperature);
             }
 
             // Get SensorTemp
             CameraInfo cameraInfo = CameraMediator.GetInfo();
             CameraConnected = cameraInfo.Connected;
             if (CameraConnected) {
-                AddSymbol("Camera", i, "Temperature", cameraInfo.Temperature);
+                AddSymbol("Camera", "Temperature", cameraInfo.Temperature);
 
                 // Hidden
                 //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
@@ -334,20 +308,20 @@ namespace NINA.Sequencer.Logic {
             DomeInfo domeInfo = DomeMediator.GetInfo();
             DomeConnected = domeInfo.Connected;
             if (DomeConnected) {
-                AddSymbol("Dome", i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
-                AddSymbol("Dome", i, "DomeAzimuth", domeInfo.Azimuth);
+                AddSymbol("Dome", "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
+                AddSymbol("Dome", "DomeAzimuth", domeInfo.Azimuth);
             }
 
             FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
             FlatConnected = flatInfo.Connected;
             if (FlatConnected) {
-                AddSymbol("Flat Panel", i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
+                AddSymbol("Flat Panel", "CoverState", (int)flatInfo.CoverState, CoverConstants);
             }
 
             RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
             RotatorConnected = rotatorInfo.Connected;
             if (RotatorConnected) {
-                AddSymbol("Rotator", i, "Position", rotatorInfo.MechanicalPosition);
+                AddSymbol("Rotator", "Position", rotatorInfo.MechanicalPosition);
             }
 
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
@@ -355,11 +329,11 @@ namespace NINA.Sequencer.Logic {
             if (FilterWheelConnected) {
                 var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
-                    AddSymbol("Filter", i, RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                    AddSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                 }
 
                 if (filterWheelInfo.SelectedFilter != null) {
-                    AddSymbol("FilterWheel", i, "CurrentFilter", filterWheelInfo.SelectedFilter.Position);
+                    AddSymbol("FilterWheel", "CurrentFilter", filterWheelInfo.SelectedFilter.Position);
                 }
             }
 
@@ -369,11 +343,11 @@ namespace NINA.Sequencer.Logic {
             if (SwitchConnected) {
                 foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Gauge", i, key, sw.Value);
+                    AddSymbol("Gauge", key, sw.Value);
                 }
                 foreach (ISwitch sw in switchInfo.WritableSwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Switch", i, key, sw.Value);
+                    AddSymbol("Switch", key, sw.Value);
                 }
             }
 
@@ -388,7 +362,7 @@ namespace NINA.Sequencer.Logic {
                         if (val is double t && !Double.IsNaN(t)) {
                             t = Math.Round(t, 2);
                             string key = RemoveSpecialCharacters(dataName);
-                            AddSymbol("Weather", i, RemoveSpecialCharacters(dataName), t);
+                            AddSymbol("Weather", RemoveSpecialCharacters(dataName), t);
                         }
                     }
                 }
@@ -430,7 +404,7 @@ namespace NINA.Sequencer.Logic {
                     ss.Add(newDatum);
                 }
             }
-            return ss.OrderBy(x => x.Category).ThenByDescending(x => x.Key).ToList();
+            return ss.OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
     }
 }
