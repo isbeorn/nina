@@ -54,6 +54,7 @@ namespace NINA.Sequencer.Logic {
         public class DataSource {
             public string source;
             public object data;
+            public bool display = true;
 
             public DataSource(string source, object data) {
                 this.source = source;
@@ -201,6 +202,9 @@ namespace NINA.Sequencer.Logic {
                     DataSource s = list[idx];
                     if (s.source == source) {
                         s.data = value;
+                        if (silent) {
+                            s.display = false;
+                        }
                         found = true;
                         break;
                     }
@@ -374,18 +378,21 @@ namespace NINA.Sequencer.Logic {
         public class SourcedSymbols : List<Datum>;
 
         public class Datum {
-            public string key;
-            public object value;
-            public string category;
+            private string key;
+            private object value;
+            private string category;
+            private bool display;
 
-            public Datum(string key, object value, string category) {
+            public Datum(string key, object value, string category, bool display) {
                 this.key = key;
                 this.value = value;
                 this.category = category;
+                this.display = display;
             }
 
             public string Key { get { return key; } }
             public object Value { get { return value; } }
+            public bool Display {get { return display; } }
 
             public object Category { get { return category;  } }
 
@@ -400,11 +407,11 @@ namespace NINA.Sequencer.Logic {
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source);
+                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.display);
                     ss.Add(newDatum);
                 }
             }
-            return ss.OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+            return ss.Where(x => x.Display == true).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
     }
 }
