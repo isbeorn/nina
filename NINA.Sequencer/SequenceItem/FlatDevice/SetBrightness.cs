@@ -99,6 +99,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

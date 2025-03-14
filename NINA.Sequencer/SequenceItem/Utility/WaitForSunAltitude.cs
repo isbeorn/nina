@@ -142,6 +142,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForSunAltitude)}, TargetAltitude: {Data.TargetAltitude}, Comparator: {Data.Comparator}, CurrentSunAltitude: {Data.CurrentAltitude}";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             CalculateExpectedTime();
             Expression.ValidateExpressions(Issues, OffsetExpression);

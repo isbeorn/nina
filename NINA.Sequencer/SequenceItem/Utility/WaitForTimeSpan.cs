@@ -75,6 +75,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             Issues.Clear();
             Expression.ValidateExpressions(Issues, TimeExpression);

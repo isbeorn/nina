@@ -52,9 +52,6 @@ namespace NINA.Sequencer.Conditions {
 
             var i = new List<string>();
 
-            //Switches = Symbol.GetSwitches();
-            //RaisePropertyChanged("Switches");
-
             Expression.ValidateExpressions(i, PredicateExpression);
 
             Issues = i;

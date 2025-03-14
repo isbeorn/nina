@@ -240,6 +240,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
                     SequenceBlockInitialize();
                 }
             }
+            Validate();
         }
 
         public override string ToString() {

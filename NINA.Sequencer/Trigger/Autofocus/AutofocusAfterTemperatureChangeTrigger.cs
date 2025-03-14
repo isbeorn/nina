@@ -48,8 +48,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions
-        ]
+    [UsesExpressions]
     public partial class AutofocusAfterTemperatureChangeTrigger : SequenceTrigger, IValidatable {
         private IProfileService profileService;
         private IImageHistoryVM history;
@@ -141,6 +140,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
         public override string ToString() {
             return $"Trigger: {nameof(AutofocusAfterTemperatureChangeTrigger)}, Amount: {Amount}°";
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
         public bool Validate() {

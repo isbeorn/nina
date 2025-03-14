@@ -122,6 +122,11 @@ namespace NINA.Sequencer.Trigger.Guider {
             return $"Trigger: {nameof(DitherAfterExposures)}, After Exposures: {AfterExposures}";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             var i = new List<string>();
             var info = guiderMediator.GetInfo();

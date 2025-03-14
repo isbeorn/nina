@@ -109,6 +109,7 @@ namespace NINA.Sequencer.Conditions {
         public IList<string> Issues { get; protected set; } = new ObservableCollection<string>();
 
         public override void AfterParentChanged() {
+            Validate();
             RunWatchdogIfInsideSequenceRoot();
         }
 

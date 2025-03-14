@@ -262,6 +262,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

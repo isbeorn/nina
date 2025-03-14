@@ -52,13 +52,21 @@ namespace NINA.Sequencer.Conditions {
             AboveHorizonCondition clone = new AboveHorizonCondition(this);
             UpdateExpressions(clone, this);
             OffsetExpression.Default = 0;
-            Data = Data.Clone();
+            clone.Data = Data.Clone();
             return clone;
         }
 
         [OnSerializing]
         public void OnSerializing(StreamingContext context) {
             Data.Offset = OffsetExpression.Value;
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
         }
 
         protected override void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

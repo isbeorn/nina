@@ -24,7 +24,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class CoordinatesInstruction : SequenceItem {
+    public partial class CoordinatesInstruction : SequenceItem, IValidatable {
 
         public CoordinatesInstruction(ISequenceEntity e) {
         }
@@ -183,10 +183,17 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             DecExpression.Context = this;
             PositionAngleExpression.Context = this;
             OffsetExpression.Context = this;
+            Validate();
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             throw new NotImplementedException();
+        }
+
+        public bool Validate() {
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression, OffsetExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         private IList<string> issues = new List<string>();

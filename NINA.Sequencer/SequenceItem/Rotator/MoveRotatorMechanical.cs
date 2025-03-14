@@ -79,6 +79,7 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

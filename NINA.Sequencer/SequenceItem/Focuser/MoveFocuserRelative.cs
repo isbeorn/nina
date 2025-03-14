@@ -82,6 +82,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

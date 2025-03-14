@@ -120,6 +120,11 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             return dummySwitches;        
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             try {
                 var i = new List<string>();

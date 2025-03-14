@@ -31,6 +31,7 @@ using System.Windows;
 using System.ComponentModel;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Validations;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -43,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class SmartExposure : SequentialContainer, IImmutableContainer {
+    public partial class SmartExposure : SequentialContainer, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -183,6 +184,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         public LoopCondition GetLoopCondition() {
             return Conditions.Count > 0 ? Conditions[0] as LoopCondition : null;
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
         public override bool Validate() {

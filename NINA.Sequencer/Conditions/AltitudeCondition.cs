@@ -46,14 +46,22 @@ namespace NINA.Sequencer.Conditions {
         public override AltitudeCondition Clone() {
             AltitudeCondition clone = new AltitudeCondition(this);
             UpdateExpressions(clone, this);
-            Data = Data.Clone();
             OffsetExpression.Default = 30;
+            clone.Data = Data.Clone();
             return clone;
         }
 
         [OnSerializing]
         public void OnSerializing (StreamingContext context) {
             Data.Offset = OffsetExpression.Value;
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized (StreamingContext context) {
+            base.OnDeserialized(context);
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
         }
 
         public override void AfterParentChanged() {

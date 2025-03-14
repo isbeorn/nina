@@ -5,6 +5,7 @@ using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -14,7 +15,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class CoordinatesCondition : SequenceCondition {
+    public partial class CoordinatesCondition : SequenceCondition, IValidatable {
 
         public CoordinatesCondition(ISequenceEntity e) {
         }
@@ -167,6 +168,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             DecExpression.Context = this;
             PositionAngleExpression.Context = this;
             OffsetExpression.Context = this;
+            Validate();
         }
 
         //public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -175,6 +177,12 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             throw new NotImplementedException();            
+        }
+
+        public bool Validate() {
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression, OffsetExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         private IList<string> issues = new List<string>();

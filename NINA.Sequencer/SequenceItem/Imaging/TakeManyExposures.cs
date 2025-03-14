@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
-    public partial class TakeManyExposures : SequentialContainer, IImmutableContainer {
+    public partial class TakeManyExposures : SequentialContainer, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -133,6 +133,11 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         public LoopCondition GetLoopCondition() {
             return Conditions[0] as LoopCondition;
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
         public override bool Validate() {

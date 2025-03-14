@@ -102,6 +102,11 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             return result;
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             var i = new List<string>();
             var info = focuserMediator.GetInfo();

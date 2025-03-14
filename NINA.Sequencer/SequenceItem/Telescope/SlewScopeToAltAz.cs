@@ -163,6 +163,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (Coordinates != null) {
                 Coordinates.PropertyChanged += Coordinates_PropertyChanged;
             }
+            base.AfterParentChanged();
             Validate();
         }
 

@@ -128,6 +128,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             return $"Trigger: {nameof(AutofocusAfterExposures)}, AfterExposures: {AfterExposures}";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             var i = new List<string>();
             var cameraInfo = cameraMediator.GetInfo();

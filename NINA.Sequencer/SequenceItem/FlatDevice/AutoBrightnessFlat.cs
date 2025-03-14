@@ -15,6 +15,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
@@ -36,7 +37,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     [UsesExpressions]
 
-    public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer {
+    public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private ISymbolBrokerVM symbolBroker;
@@ -460,6 +461,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 histogramTolerancePercentage = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
 

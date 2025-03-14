@@ -55,17 +55,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override object Clone() {
             WaitUntilAboveHorizon clone = new WaitUntilAboveHorizon(this);
-            clone.Data = Data.Clone();
             UpdateExpressions(clone, this);
+            clone.Data = Data.Clone();
             return clone;
         }
         [OnDeserialized]
         public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
             Coordinates = Data.Coordinates.Clone();
             if (OffsetExpression.Definition.Length == 0) {
                 OffsetExpression.Definition = Data.Offset.ToString();
             }
-            base.OnDeserialized(context);
         }
 
         public int UpdateInterval { get; set; } = 1;
