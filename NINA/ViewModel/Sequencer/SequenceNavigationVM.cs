@@ -43,7 +43,6 @@ namespace NINA.ViewModel.Sequencer {
         private ISequenceMediator sequenceMediator;
         private ISequencerFactory factory;
         private ISimpleSequenceVM simpleSequenceVM;
-        private ISymbolBrokerVM symbolBrokerVM;
 
         /// <summary>
         /// Backwards compatible ContentId due to sequencer replacement
@@ -112,7 +111,6 @@ namespace NINA.ViewModel.Sequencer {
                     ActiveSequencerVM = this;
                 }
             });
-            this.symbolBrokerVM = symbolBrokerVM;
         }
 
         public object ActiveSequencerVM {

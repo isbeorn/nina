@@ -243,8 +243,8 @@
                             </CollectionViewSource>
                         </Grid.Resources>
                         <ListView
-                               x:Name="ImagePatternList"
-                               ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
+                            x:Name="ImagePatternList"
+                            ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
                                     <GroupStyle.HeaderTemplate>
@@ -257,13 +257,13 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn
-                                          Width="150"
-                                          DisplayMemberBinding="{Binding Key}"
-                                          Header="Variable" />
+                                        Width="180"
+                                        DisplayMemberBinding="{Binding Key}"
+                                        Header="Variable" />
                                     <GridViewColumn
-                                          Width="150"
-                                          DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
-                                          Header="Value" />
+                                        Width="150"
+                                        DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
+                                        Header="Value" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -279,9 +279,9 @@
                             </CollectionViewSource>
                         </Grid.Resources>
                         <ListView
-                               Visibility="{Binding DataSymbols2, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
-                               x:Name="ImagePatternList2"
-                               ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
+                            Visibility="{Binding DataSymbols2, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                            x:Name="ImagePatternList2"
+                            ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
                                     <GroupStyle.HeaderTemplate>
@@ -294,13 +294,13 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn
-                                          Width="150"
-                                          DisplayMemberBinding="{Binding Key}"
-                                          Header="Variable" />
+                                        Width="180"
+                                        DisplayMemberBinding="{Binding Key}"
+                                        Header="Variable" />
                                     <GridViewColumn
-                                          Width="150"
-                                          DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
-                                          Header="Value" />
+                                        Width="150"
+                                        DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
+                                        Header="Value" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
