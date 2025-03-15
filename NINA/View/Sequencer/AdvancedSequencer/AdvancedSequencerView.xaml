@@ -249,6 +249,7 @@
                         </Grid.Resources>
                         <ListView
                             x:Name="SymbolList"
+                            MouseLeftButtonUp="MouseUpp"
                             SelectionChanged="SelectSymbol"
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>

@@ -387,13 +387,27 @@ namespace NINA.Sequencer.Logic {
             }
 
             public Datum(string key, object value) {
+
                 this.key = key;
                 this.value = value;
                 this.category = null;
             }
 
             public string Key { get { return key; } }
-            public object Value { get { return value; } }
+            public object Value { 
+                get { 
+                    if (constants == null) {
+                        return value;
+                    } else {
+                        foreach (Datum d in constants) {
+                            if (value is Int32 i1 && d.value is Int32 i2 && i1 == i2) {
+                                return d.key;
+                            }
+                        }
+                        return value; 
+                    }
+                }
+            }
             public object Category { get { return category; } }
             public object Constants { get { return constants; } }
 
