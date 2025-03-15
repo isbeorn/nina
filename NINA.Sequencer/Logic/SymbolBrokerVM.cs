@@ -180,16 +180,12 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddSymbol(string token, object value) {
-            AddSymbol("NINA", token, value, null, false);
+            AddSymbol("NINA", token, value, null);
         }
         private void AddSymbol(string source, string token, object value) {
-            AddSymbol(source, token, value, null, false);
+            AddSymbol(source, token, value, null);
         }
         private void AddSymbol(string source, string token, object value, string[] values) {
-            AddSymbol(source, token, value, values, false);
-        }
-
-        private void AddSymbol(string source, string token, object value, string[] values, bool silent) {
             List<DataSource> list;
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
@@ -202,9 +198,6 @@ namespace NINA.Sequencer.Logic {
                     DataSource s = list[idx];
                     if (s.source == source) {
                         s.data = value;
-                        if (silent) {
-                            s.display = false;
-                        }
                         found = true;
                         break;
                     }
@@ -220,7 +213,7 @@ namespace NINA.Sequencer.Logic {
                 for (int v = 0; v < values.Length; v++) {
                     if (values[v] != null) {
                         // Need a way to hide these in the list (silent flag not used)
-                        AddSymbol(source, values[v], v - 1, null, true);
+                        AddSymbol(source, values[v], v - 1, null);
                     }
                 }
             }
@@ -381,19 +374,15 @@ namespace NINA.Sequencer.Logic {
             private string key;
             private object value;
             private string category;
-            private bool display;
 
-            public Datum(string key, object value, string category, bool display) {
+            public Datum(string key, object value, string category) {
                 this.key = key;
                 this.value = value;
                 this.category = category;
-                this.display = display;
             }
 
             public string Key { get { return key; } }
             public object Value { get { return value; } }
-            public bool Display {get { return display; } }
-
             public object Category { get { return category;  } }
 
             public override string ToString() {
@@ -407,11 +396,11 @@ namespace NINA.Sequencer.Logic {
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.display);
+                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source);
                     ss.Add(newDatum);
                 }
             }
-            return ss.Where(x => x.Display == true).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+            return ss.OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
     }
 }
