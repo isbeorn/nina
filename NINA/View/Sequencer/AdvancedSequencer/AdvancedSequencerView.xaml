@@ -233,8 +233,9 @@
             <Popup x:Name="SymbolPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=SymbolButton}" Placement="Top">
                 <StackPanel Orientation="Horizontal">
                     <Grid
-                           Grid.Row="0"
-                           Margin="0,5,0,0">
+                        Grid.Row="0"
+                        Background="{StaticResource BackgroundBrush}"
+                        Margin="0,5,0,0">
                         <Grid.Resources>
                             <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols}">
                                 <CollectionViewSource.GroupDescriptions>
