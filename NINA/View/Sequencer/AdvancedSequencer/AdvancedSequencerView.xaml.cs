@@ -50,5 +50,8 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 SymbolPopup.IsOpen = true;
             }
         }
+
+        public void SelectSymbol(object sender, SelectionChangedEventArgs e) {
+        }
     }
 }

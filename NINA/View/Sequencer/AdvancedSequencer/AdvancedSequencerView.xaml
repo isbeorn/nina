@@ -244,6 +244,7 @@
                         </Grid.Resources>
                         <ListView
                             x:Name="ImagePatternList"
+                            SelectionChanged="SelectSymbol"
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
