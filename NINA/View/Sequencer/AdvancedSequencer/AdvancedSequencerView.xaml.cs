@@ -12,8 +12,11 @@
 
 #endregion "copyright"
 
+using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 using NINA.ViewModel.Sequencer;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -35,50 +38,31 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             if (vm != null) {
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
                 vm.DataSymbols = vm.SymbolBroker.GetDataSymbols();
-                Logger.Info("ShowSymbols");
                 SymbolPopup.IsOpen = true;
             }
         }
 
         public void HideSymbols(object sender, RoutedEventArgs e) {
             if (SymbolPopup.IsOpen) {
-                Logger.Info("HideSymbols");
                 SymbolPopup.IsOpen = false;
             }
         }
-
-        public void SelectSymbol(object sender, SelectionChangedEventArgs e) {
-            ListView listView = e.Source as ListView;
-            if (listView != null) {
-                Logger.Info("SelectSymbol");
-                DependencyObject dep = (DependencyObject)e.OriginalSource;
-                var foo = listView.ItemContainerGenerator.ItemFromContainer(dep);
-                //ConstantsPopup.PlacementTarget = foo;
-                //ConstantsPopup.Placement = System.Windows.Controls.Primitives.PlacementMode.Top;
-                //ConstantsPopup.IsOpen = true;
-            }
-        }
-
         public void SymbolPopupClosed(object sender, System.EventArgs e) {
-            Logger.Info("SymbolPopupClosed");
             SymbolPopup.IsOpen = false;
-            ConstantsPopup.IsOpen = false;
         }
 
-        public void ConstantsPopupClosed(object sender, System.EventArgs e) {
-            Logger.Info("ConstantsPopupClosed");
-            ConstantsPopup.IsOpen = false;
-        }
-
-        public new void MouseEnter(object sender, MouseEventArgs e) {
-            Logger.Info("MouseEnter");
-        }
-        public new void MouseLeave(object sender, MouseEventArgs e) {
-            Logger.Info("MouseLeave");
-        }
-
-        public void MouseUpp(object sender, MouseButtonEventArgs e) {
-
+        private void ListViewItem_SetToolTip(object sender, ToolTipEventArgs e) {
+            var item = sender as ListViewItem;
+            if (item != null) {
+                if (item.DataContext is SymbolBrokerVM.Datum d && d.Constants != null) {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (SymbolBrokerVM.Datum dd in d.Constants) {
+                        sb.Append(dd.Key);
+                        sb.Append(" ");
+                    }
+                    item.ToolTip = sb.ToString();
+                }
+            }
         }
     }
 }

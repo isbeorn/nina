@@ -408,8 +408,8 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             }
-            public object Category { get { return category; } }
-            public object Constants { get { return constants; } }
+            public string Category { get { return category; } }
+            public Datum[] Constants { get { return constants; } }
 
             public override string ToString() {
                 return $"{key} : {value}";

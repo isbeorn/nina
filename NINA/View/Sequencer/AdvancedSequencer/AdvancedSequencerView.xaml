@@ -231,9 +231,6 @@
                     Stretch="Uniform"
                     UseLayoutRounding="True" />
             </Button>
-            <Popup x:Name="ConstantsPopup" StaysOpen="False" Closed="ConstantsPopupClosed">
-                <TextBlock Text="HI THERE!" />
-            </Popup>
             <Popup x:Name="SymbolPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=SymbolButton}" Placement="Top" Closed="SymbolPopupClosed">
                 <StackPanel Orientation="Horizontal">
                     <Grid
@@ -249,8 +246,6 @@
                         </Grid.Resources>
                         <ListView
                             x:Name="SymbolList"
-                            MouseLeftButtonUp="MouseUpp"
-                            SelectionChanged="SelectSymbol"
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
@@ -273,6 +268,12 @@
                                         Header="Value" />
                                 </GridView>
                             </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                    <Setter Property="ToolTip" Value="no info" />
+                                    <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
                     <Grid
@@ -288,7 +289,6 @@
                         <ListView
                             Visibility="{Binding DataSymbols2, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                             x:Name="SymbolList2"
-                            SelectionChanged="SelectSymbol"
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
