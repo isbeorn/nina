@@ -185,7 +185,7 @@ namespace NINA.Sequencer.Logic {
         private void AddSymbol(string source, string token, object value) {
             AddSymbol(source, token, value, null);
         }
-        private void AddSymbol(string source, string token, object value, string[] values) {
+        private void AddSymbol(string source, string token, object value, Datum[] values) {
             List<DataSource> list;
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
@@ -219,13 +219,15 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        private static string[] PierConstants = new string[] { "PierUnknown", "PierEast", "PierWest" };
+        private static Datum[] PierConstants = new Datum[] { new Datum("PierUnknown", -1), new Datum("PierEast", 0), new Datum("PierWest", 1) };
 
-        private static string[] RoofConstants = new string[] { null, "RoofNotOpen", "RoofOpen", "RoofCannotOpenOrRead" };
+        private static Datum[] RoofConstants = new Datum[] { new Datum("RoofNotOpen", 0), new Datum("RoofOpen", 1), new Datum("RoofCannotOpenOrRead", 2) };
 
-        private static string[] ShutterConstants = new string[] { "ShutterNone", "ShutterOpen", "ShutterClosed", "ShutterOpening", "ShutterClosing", "ShutterError" };
+        private static Datum[] ShutterConstants = new Datum[] { new Datum("ShutterUnknown", -1), new Datum("ShutterOpen", 0), new Datum("ShutterClosed", 1), new Datum("ShutterOpening", 2), new Datum("ShutterClosing", 3),
+            new Datum("ShutterError", 4) };
 
-        private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
+        private static Datum[] CoverConstants = new Datum[] { new Datum("CoverUnknown", 0), new Datum("CoverNeitherOpenNorClosed", 1), new Datum("CoverClosed", 2), new Datum("CoverOpen", 3),
+            new Datum("CoverError", 4), new Datum("CoverNotPresent", 5) };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
@@ -379,6 +381,12 @@ namespace NINA.Sequencer.Logic {
                 this.key = key;
                 this.value = value;
                 this.category = category;
+            }
+
+            public Datum(string key, object value) {
+                this.key = key;
+                this.value = value;
+                this.category = null;
             }
 
             public string Key { get { return key; } }
