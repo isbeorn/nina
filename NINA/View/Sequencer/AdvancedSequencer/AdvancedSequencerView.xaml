@@ -35,6 +35,10 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type ToolTip}">
+                <Setter Property="Background" Value="DarkGreen" />
+                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
@@ -270,7 +274,7 @@
                             </ListView.View>
                             <ListView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
-                                    <Setter Property="ToolTip" Value="no info" />
+                                    <Setter Property="ToolTip" Value="No additional info" />
                                     <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
                                 </Style>
                             </ListView.ItemContainerStyle>
