@@ -12,24 +12,9 @@
 
 #endregion "copyright"
 
-using Castle.Core.Smtp;
-using NINA.Sequencer.Logic;
 using NINA.ViewModel.Sequencer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace NINA.View.Sequencer.AdvancedSequencer {
 
@@ -42,7 +27,7 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             InitializeComponent();
         }
 
-        public void ShowSymbols (object sender, RoutedEventArgs e) {
+        public void ShowSymbols(object sender, RoutedEventArgs e) {
             Sequence2VM vm = ((FrameworkElement)sender).DataContext as Sequence2VM;
             if (vm != null) {
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
@@ -51,7 +36,30 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             }
         }
 
+        public void HideSymbols(object sender, RoutedEventArgs e) {
+            if (SymbolPopup.IsOpen) {
+                SymbolPopup.IsOpen = false;
+            }
+        }
+
         public void SelectSymbol(object sender, SelectionChangedEventArgs e) {
+            ListView listView = e.Source as ListView;
+            if (listView != null) {
+
+                UIElement foo = (UIElement)listView.ItemContainerGenerator.ContainerFromIndex(listView.SelectedIndex);
+                ConstantsPopup.PlacementTarget = foo;
+                ConstantsPopup.Placement = System.Windows.Controls.Primitives.PlacementMode.Top;
+                ConstantsPopup.IsOpen = true;
+            }
+        }
+
+        public void SymbolPopupClosed(object sender, System.EventArgs e) {
+            SymbolPopup.IsOpen = false;
+            ConstantsPopup.IsOpen = false;
+        }
+
+        public void ConstantsPopupClosed(object sender, System.EventArgs e) {
+            ConstantsPopup.IsOpen = false;
         }
     }
 }

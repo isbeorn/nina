@@ -54,11 +54,12 @@ namespace NINA.Sequencer.Logic {
         public class DataSource {
             public string source;
             public object data;
-            public bool display = true;
+            public Datum[] constants;
 
-            public DataSource(string source, object data) {
+            public DataSource(string source, object data, Datum[] constants) {
                 this.source = source;
                 this.data = data;
+                this.constants = constants;
             }
         }
 
@@ -120,7 +121,7 @@ namespace NINA.Sequencer.Logic {
                 return null;
             }
             // For now, just one of each
-            return new DataSource(list[0].source, list[0].data);
+            return new DataSource(list[0].source, list[0].data, null);
         }
 
         // DATA SYMBOLS
@@ -190,7 +191,7 @@ namespace NINA.Sequencer.Logic {
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
                 DataKeys[token] = list;
-                list.Add(new DataSource(source, value));
+                list.Add(new DataSource(source, value, values));
             } else {
                 list = DataKeys[token];
                 bool found = false;
@@ -203,7 +204,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
                 if (!found) {
-                    list.Add(new DataSource(source, value));
+                    list.Add(new DataSource(source, value, values));
                 }
             }
 
@@ -213,7 +214,7 @@ namespace NINA.Sequencer.Logic {
                 for (int v = 0; v < values.Length; v++) {
                     if (values[v] != null) {
                         // Need a way to hide these in the list (silent flag not used)
-                        AddSymbol(source, values[v], v - 1, null);
+                        //AddSymbol(source, values[v], v - 1, null);
                     }
                 }
             }
@@ -376,11 +377,13 @@ namespace NINA.Sequencer.Logic {
             private string key;
             private object value;
             private string category;
+            private Datum[] constants;
 
-            public Datum(string key, object value, string category) {
+            public Datum(string key, object value, string category, Datum[] constants) {
                 this.key = key;
                 this.value = value;
                 this.category = category;
+                this.constants = constants;
             }
 
             public Datum(string key, object value) {
@@ -391,7 +394,8 @@ namespace NINA.Sequencer.Logic {
 
             public string Key { get { return key; } }
             public object Value { get { return value; } }
-            public object Category { get { return category;  } }
+            public object Category { get { return category; } }
+            public object Constants { get { return constants; } }
 
             public override string ToString() {
                 return $"{key} : {value}";
@@ -404,7 +408,7 @@ namespace NINA.Sequencer.Logic {
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source);
+                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.constants);
                     ss.Add(newDatum);
                 }
             }

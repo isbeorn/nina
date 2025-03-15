@@ -222,7 +222,8 @@
                 Width="80"
                 Margin="15,5,5,5"
                 Command="{Binding ShowDataSymbolsCommand}" 
-                MouseEnter="ShowSymbols">
+                MouseEnter="ShowSymbols"
+                >
                  <Path
                     Margin="5"
                     Data="{StaticResource LightBulbSVG}"
@@ -230,7 +231,10 @@
                     Stretch="Uniform"
                     UseLayoutRounding="True" />
             </Button>
-            <Popup x:Name="SymbolPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=SymbolButton}" Placement="Top">
+            <Popup x:Name="ConstantsPopup" StaysOpen="False" Closed="ConstantsPopupClosed">
+                <TextBlock Text="HI THERE!" />
+            </Popup>
+            <Popup x:Name="SymbolPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=SymbolButton}" Placement="Top" Closed="SymbolPopupClosed">
                 <StackPanel Orientation="Horizontal">
                     <Grid
                         Grid.Row="0"
@@ -283,6 +287,7 @@
                         <ListView
                             Visibility="{Binding DataSymbols2, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                             x:Name="SymbolList2"
+                            SelectionChanged="SelectSymbol"
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
