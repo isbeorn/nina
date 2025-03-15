@@ -52,13 +52,17 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
         }
 
         private void ListViewItem_SetToolTip(object sender, ToolTipEventArgs e) {
+            // Display the constants for this Datum
             var item = sender as ListViewItem;
             if (item != null) {
                 if (item.DataContext is SymbolBrokerVM.Datum d && d.Constants != null) {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (SymbolBrokerVM.Datum dd in d.Constants) {
-                        sb.Append(dd.Key);
-                        sb.Append(" ");
+                    StringBuilder sb = new StringBuilder("Options: ");
+                    SymbolBrokerVM.Datum[] cList = d.Constants;
+                    for (int i = 0; i < cList.Length; i++) {
+                        sb.Append(cList[i].Key);
+                        if (i != cList.Length - 1) {
+                            sb.Append("; ");
+                        }
                     }
                     item.ToolTip = sb.ToString();
                 }
