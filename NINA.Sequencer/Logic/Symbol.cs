@@ -187,11 +187,9 @@ namespace NINA.Sequencer.Logic {
                             return;
                         }
                     } catch (ArgumentException) {
-                        if (true) { // ***** (sParent != WhenPluginObject.Globals) {
-                            IsDuplicate = true;
-                            Identifier = GenId(cached, Identifier);
-                            cached.TryAdd(Identifier, this);
-                        }
+                        IsDuplicate = true;
+                        Identifier = GenId(cached, Identifier);
+                        cached.TryAdd(Identifier, this);
                     }
                 } else {
                     SymbolDictionary newSymbols = new SymbolDictionary();
@@ -205,9 +203,6 @@ namespace NINA.Sequencer.Logic {
                     foreach (var consumer in Consumers) {
                         consumer.Key.RemoveParameter(Identifier);
                     }
-
-                    // Can we see if the Parent moves?
-                    // Parent.AfterParentChanged += ??
                 }
             } catch (Exception ex) {
                 Logger.Error("Exception in Symbol evaluation: " + ex.Message);
@@ -271,10 +266,6 @@ namespace NINA.Sequencer.Logic {
                         newSymbols.TryAdd(Identifier, this);
                     }
                 }
-
-                //if (this is SetConstant constant && constant.GlobalName != null) {
-                //    constant.SetGlobalName(Identifier);
-                //}
             }
         }
 
@@ -436,45 +427,6 @@ namespace NINA.Sequencer.Logic {
 
             tb.ToolTip = sb.ToString();
         }
-        public static string ShowSymbols(Expression exp) {
-            //Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
-
-            if (exp == null) {
-                return "??";
-            }
-
-            Dictionary<string, Symbol> syms = exp.Resolved;
-            int cnt = syms.Count;
-            if (cnt == 0) {
-                if (exp.References.Count == 1) {
-                    return "The symbol is not yet defined\r\n";
-                } else {
-                    return "No defined symbols used in this expression\r\n";
-                }
-            }
-            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
-
-            foreach (var kvp in syms) {
-                Symbol sym = kvp.Value as Symbol;
-                sb.Append(kvp.Key.ToString());
-                if (sym != null) {
-                    sb.Append(" (in ");
-                    sb.Append(sym.SParent().Name);
-                    ISequenceContainer sParent = sym.SParent();
-                    sb.Append(") = ");
-                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
-                } else {
-                    // We're a data value
-                    sb.Append(" (Data) = ");
-                    //sb.Append(DataSymbols.GetValueOrDefault(kvp.Key, "??"));
-                }
-                if (--cnt > 0) sb.Append("; ");
-            }
-
-            sb.Append("\r\n");
-            return sb.ToString();
-        }
-
 
         public abstract bool Validate();
 
@@ -486,48 +438,6 @@ namespace NINA.Sequencer.Logic {
                 return "Foo";
             }
         }
-
-
-        // DATA SYMBOLS
-
-
-        private static string[] WeatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
-            "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
-
-        public static string RemoveSpecialCharacters(string str) {
-            if (str == null) {
-                return "__Null__";
-            }
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in str) {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_') {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
-        }
-
-
-        private static ISwitchMediator SwitchMediator { get; set; }
-        private static IWeatherDataMediator WeatherDataMediator { get; set; }
-        private static ICameraMediator CameraMediator { get; set; }
-        private static IDomeMediator DomeMediator { get; set; }
-        private static IFlatDeviceMediator FlatMediator { get; set; }
-        private static IFilterWheelMediator FilterWheelMediator { get; set; }
-        private static IProfileService ProfileService { get; set; }
-        private static IRotatorMediator RotatorMediator { get; set; }
-        private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
-        private static IFocuserMediator FocuserMediator { get; set; }
-        private static ITelescopeMediator TelescopeMediator { get; set; }
-        //private static IMessageBroker MessageBroker { get; set; }
-        private static IGuiderMediator GuiderMediator { get; set; }
-
-
-        private static ConditionWatchdog ConditionWatchdog { get; set; }
-
-        public class Array : Dictionary<object, object>;
-        public static Dictionary<string, Array> Arrays { get; set; } = new Dictionary<string, Array>();
-
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();
         public static void LogOnce(string message) {
