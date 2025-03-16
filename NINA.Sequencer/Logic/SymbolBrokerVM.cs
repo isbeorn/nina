@@ -204,6 +204,7 @@ namespace NINA.Sequencer.Logic {
                     DataSource s = list[idx];
                     if (s.source == source) {
                         s.data = value;
+                        s.silent = silent;
                         found = true;
                         break;
                     }
