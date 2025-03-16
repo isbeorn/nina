@@ -79,7 +79,8 @@ namespace NINA.ViewModel.Plugins {
         private void Restart(object obj) {
             profileService.Release();
             var startInfo = new ProcessStartInfo(Environment.ProcessPath) { UseShellExecute = false };
-            Process.Start(startInfo);
+            Logger.Info("Restarting application for plugin update");
+            Process.Start(startInfo);            
             Application.Current.Shutdown();
         }
 

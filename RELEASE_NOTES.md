@@ -10,6 +10,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - `Autofocus after Time` and `Loop for Timespan` are now using UTC time instead of local time
 - Added support for latest version of SkyGuard (SkySurveyor, SkyGuard, SkyGuide, SkyWave depending on license)
 - In Options > Imaging the sequence startup template can now be set to be empty again
+- FITS keywords with boolean/logical values are now properly rendered as FITS logicals instead of as strings when using CFITSIO
 
 ## Improvements
 - The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
@@ -46,6 +47,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Air pressure is now ajdusted to be the QFE (local) value based on site elevation rather than the received QNH (mean sea level) value. This brings the value in line with the ASCOM convention for air pressure data.
     - Failure to authenticate with the OpenWeatherMap API now results in a hard error.
     - Singular failures to query the OpenWeatherMap API will no longer result in a disconnection of the weather client.
+- External Script execution now runs in a separate context using `UseShellExecute` parameter. This allows scripts to start applications without waiting for them to close before continuing.
+- Enhanced the guiding RMS calculation algorithm to improve numerical stability and prevent long-term floating-point error accumulation
+- Added an option in flat wizard page to "Open cover when done". This allows customization of the desired cover state when the flat wizard is finished
 
 
 ## Commandline Options

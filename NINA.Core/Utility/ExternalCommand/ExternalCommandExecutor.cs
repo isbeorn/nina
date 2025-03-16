@@ -43,9 +43,9 @@ namespace NINA.Core.Utility.ExternalCommand {
 
                 Process process = new Process();
                 process.StartInfo.FileName = executableLocation;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.RedirectStandardOutput = false;
+                process.StartInfo.RedirectStandardError = false;
                 process.EnableRaisingEvents = true;
 
                 DataReceivedEventHandler outputDataReceivedCallback = (object sender, DataReceivedEventArgs e) => {
@@ -65,12 +65,10 @@ namespace NINA.Core.Utility.ExternalCommand {
 
                 if (!string.IsNullOrWhiteSpace(args)) {
                     process.StartInfo.Arguments = args;
-                }                    
+                }
 
                 Logger.Info($"Running - '{executableLocation}' with args '{args}'");
                 process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
 
                 process.OutputDataReceived -= outputDataReceivedCallback;

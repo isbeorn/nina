@@ -193,6 +193,11 @@ namespace NINA.Equipment.Equipment {
                 }
                 CalculateMaximumDurationY();
                 ChangeId++;
+
+                if (ChangeId % (ulong)HistorySize == 0) {
+                    // Prevent accumulation of floating point errors by rebuilding the history occasionally
+                    RebuildGuideHistoryList();
+                }
             }
         }
 

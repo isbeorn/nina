@@ -116,7 +116,8 @@ namespace NINA.ViewModel {
                 info.Arguments = $"/C start \"\" \"{setupPath}\"";
                 Process.Start(info);
             }
-            
+
+            Logger.Info("Shutting down application for update");
             System.Windows.Application.Current.Shutdown();
         }
 

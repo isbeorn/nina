@@ -76,6 +76,11 @@ namespace NINA.Image.FileFormat.FITS {
             LogErrorStatus("fits_update_key_dbl", status);
         }
 
+        public void AddHeader(string keyword, bool value, string comment) {
+            CfitsioNative.fits_update_key_log(filePtr, keyword, value ? 1 : 0, comment, out var status);
+            LogErrorStatus("fits_update_key_log", status);
+        }
+
         public void AddHeader(string keyword, DateTime value, string comment) {
             AddHeader(keyword, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
         }
@@ -374,7 +379,7 @@ namespace NINA.Image.FileFormat.FITS {
                         AddHeader(d.Key, d.Value, d.Comment);
                         break;
                     case BoolMetaDataHeader b:
-                        AddHeader(b.Key, b.Value ? "T" : "F", b.Comment);
+                        AddHeader(b.Key, b.Value, b.Comment);
                         break;
                     case DateTimeMetaDataHeader d:
                         AddHeader(d.Key, d.Value, d.Comment);
