@@ -172,6 +172,37 @@
                     <Border
                         Margin="0,0,0,5"
                         BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{ns:Loc LblFlatDeviceOpenWhenDone}" />
+                            <CheckBox
+                                Grid.Column="1"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FlatWizardSettings.OpenWhenDone, Mode=TwoWay}" />
+                        </Grid>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding FlatWizardMode}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,0">
                         <UniformGrid Margin="0,0,0,5" Columns="2">
                             <ComboBox ItemsSource="{util:EnumBindingSource {x:Type enum:AltitudeSite}}" SelectedItem="{Binding AltitudeSite}" />

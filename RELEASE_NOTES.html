@@ -44,6 +44,11 @@
     local time</li>
     <li>Added support for latest version of SkyGuard (SkySurveyor,
     SkyGuard, SkyGuide, SkyWave depending on license)</li>
+    <li>In Options &gt; Imaging the sequence startup template can now be
+    set to be empty again</li>
+    <li>FITS keywords with boolean/logical values are now properly
+    rendered as FITS logicals instead of as strings when using
+    CFITSIO</li>
     </ul>
     <h2 id="improvements">Improvements</h2>
     <ul>
@@ -92,10 +97,64 @@
     which disable all drag-and-drop when activated</li>
     <li>Hitting the escape key while dragging an item will cancel the
     drag and drop action</li>
+    <li>Added new observation related metadata fields in Options &gt;
+    Astrometry. These fields Observer, Observatory, and Site are also
+    written to the FITS file as OBSERVER, OBSERVAT and SITENAME,
+    respectively.</li>
+    <li>MessageBox and Annotation sequence instructions now accepts
+    return for specifying multiline texts</li>
+    <li>Dome info panels now also include
+    <ul>
+    <li>Altitude if available</li>
+    <li>Info if following is off, following via N.I.N.A. or following
+    via driver to differentiate the different dome following
+    mechanisms</li>
+    </ul></li>
+    <li>Options &gt; Astrometry can now show a world map with a pin of
+    your entered latitude and longitude</li>
+    <li>“Center And Rotate” as well as “Solve And Rotate” will now give
+    up after 10 unsuccessful rotation attempts</li>
+    <li>Added a lock/unlock button to the imaging tab to prevent panels
+    from being closed or rearranged. Unlocking allows adjustments again.
+    <ul>
+    <li>Resizing panels remains possible, as no method to disable this
+    has been found.</li>
+    <li>Switching tabs is allowed while locked, but rearranging them is
+    prevented.</li>
+    <li>Undocked floating windows are unaffected and can still be
+    re-docked even when the layout is locked.</li>
+    </ul></li>
+    <li>OpenWeatherMap client improvements:
+    <ul>
+    <li>Added Wind Gust and Rain Rate metrics</li>
+    <li>Air pressure is now ajdusted to be the QFE (local) value based
+    on site elevation rather than the received QNH (mean sea level)
+    value. This brings the value in line with the ASCOM convention for
+    air pressure data.</li>
+    <li>Failure to authenticate with the OpenWeatherMap API now results
+    in a hard error.</li>
+    <li>Singular failures to query the OpenWeatherMap API will no longer
+    result in a disconnection of the weather client.</li>
+    </ul></li>
+    <li>External Script execution now runs in a separate context using
+    <code>UseShellExecute</code> parameter. This allows scripts to start
+    applications without waiting for them to close before
+    continuing.</li>
+    <li>Enhanced the guiding RMS calculation algorithm to improve
+    numerical stability and prevent long-term floating-point error
+    accumulation</li>
     </ul>
     <h2 id="commandline-options">Commandline Options</h2>
     <p>The following command line options have been added</p>
     <pre><code>-g, --disable-hardware-acceleration        Disables UI hardware acceleration</code></pre>
+    <h2 id="plugin-merge">Plugin Merge</h2>
+    <h3 id="connector">Connector</h3>
+    <ul>
+    <li>All instructions and triggers that the connector plugin offered
+    are now merged into the core application</li>
+    <li>Existing templates and sequences will automatically migrate to
+    the core instructions and triggers</li>
+    </ul>
     <h2 id="plugin-development">Plugin Development</h2>
     <h3 id="assemblyloadcontext">AssemblyLoadContext</h3>
     <ul>
