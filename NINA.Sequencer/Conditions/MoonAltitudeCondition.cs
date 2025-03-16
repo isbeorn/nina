@@ -55,7 +55,7 @@ namespace NINA.Sequencer.Conditions {
         [OnDeserialized]
         public new void OnDeserialized(StreamingContext context) {
             base.OnDeserialized(context);
-            if (OffsetExpression.Definition.Length == 0) {
+            if (OffsetExpression.Definition.Length == 0 && Data.Offset != OffsetExpression.Default) {
                 OffsetExpression.Definition = Data.Offset.ToString();
             }
         }
