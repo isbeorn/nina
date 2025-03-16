@@ -55,11 +55,13 @@ namespace NINA.Sequencer.Logic {
             public string source;
             public object data;
             public Datum[] constants;
+            public bool silent;
 
-            public DataSource(string source, object data, Datum[] constants) {
+            public DataSource(string source, object data, Datum[] constants, bool silent) {
                 this.source = source;
                 this.data = data;
                 this.constants = constants;
+                this.silent = silent;
             }
         }
 
@@ -121,7 +123,7 @@ namespace NINA.Sequencer.Logic {
                 return null;
             }
             // For now, just one of each
-            return new DataSource(list[0].source, list[0].data, null);
+            return new DataSource(list[0].source, list[0].data, null, false);
         }
 
         // DATA SYMBOLS
@@ -181,17 +183,20 @@ namespace NINA.Sequencer.Logic {
         }
 
         private void AddSymbol(string token, object value) {
-            AddSymbol("NINA", token, value, null);
+            AddSymbol("NINA", token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value) {
-            AddSymbol(source, token, value, null);
+            AddSymbol(source, token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value, Datum[] values) {
+            AddSymbol(source, token, value, values, true);
+        }
+        private void AddSymbol(string source, string token, object value, Datum[] values, bool silent) {
             List<DataSource> list;
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
                 DataKeys[token] = list;
-                list.Add(new DataSource(source, value, values));
+                list.Add(new DataSource(source, value, values, false));
             } else {
                 list = DataKeys[token];
                 bool found = false;
@@ -204,18 +209,15 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
                 if (!found) {
-                    list.Add(new DataSource(source, value, values));
+                    list.Add(new DataSource(source, value, values, false));
                 }
             }
 
             // Defined constants...
             // Not sure how to display these for now
             if (values != null) {
-                for (int v = 0; v < values.Length; v++) {
-                    if (values[v] != null) {
-                        // Need a way to hide these in the list (silent flag not used)
-                        //AddSymbol(source, values[v], v - 1, null);
-                    }
+                foreach (Datum d in values) {
+                    AddSymbol(source, d.Key, d.Value, null, true);
                 }
             }
         }
@@ -378,12 +380,14 @@ namespace NINA.Sequencer.Logic {
             private object value;
             private string category;
             private Datum[] constants;
+            private bool silent;
 
-            public Datum(string key, object value, string category, Datum[] constants) {
+            public Datum(string key, object value, string category, Datum[] constants, bool silent) {
                 this.key = key;
                 this.value = value;
                 this.category = category;
                 this.constants = constants;
+                this.silent = silent;
             }
 
             public Datum(string key, object value) {
@@ -408,6 +412,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             }
+            public bool Silent { get { return silent; } }
             public string Category { get { return category; } }
             public Datum[] Constants { get { return constants; } }
 
@@ -422,11 +427,11 @@ namespace NINA.Sequencer.Logic {
             foreach (var kvp in DataKeys) {
                 List<DataSource> sources = kvp.Value;
                 foreach (DataSource ds in sources) {
-                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.constants);
+                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.constants, ds.silent);
                     ss.Add(newDatum);
                 }
             }
-            return ss.OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+            return ss.Where(x => !x.Silent).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
     }
 }

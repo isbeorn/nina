@@ -281,8 +281,9 @@
                         </ListView>
                     </Grid>
                     <Grid
-                       Grid.Row="1"
-                       Margin="0,5,0,0">
+                        Grid.Row="1"
+                        Background="{StaticResource BackgroundBrush}"
+                        Margin="0,5,0,0">
                         <Grid.Resources>
                             <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols2}">
                                 <CollectionViewSource.GroupDescriptions>
@@ -315,6 +316,12 @@
                                         Header="Value" />
                                 </GridView>
                             </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                    <Setter Property="ToolTip" Value="No additional info" />
+                                    <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
                 </StackPanel>
