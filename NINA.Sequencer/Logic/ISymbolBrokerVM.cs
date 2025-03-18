@@ -11,11 +11,12 @@ namespace NINA.Sequencer.Logic {
 
         public bool TryGetValue(string key, out object value);
 
-        public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys();
-
         public SymbolBrokerVM.DataSource GetDataSource(string key);
 
         public List<SymbolBrokerVM.Datum> GetDataSymbols();
+
+        public bool AddSymbol(SymbolBrokerVM.SymbolProvider provider, string name, object value);
+        public bool RemoveSymbol(SymbolBrokerVM.SymbolProvider provider, string name);
 
     }
 }
