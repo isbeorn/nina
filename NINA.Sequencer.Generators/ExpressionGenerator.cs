@@ -28,6 +28,7 @@ namespace NINA.Sequencer.Generators {
             var allProperties = propertyDeclarations.Collect();
 
             context.RegisterSourceOutput(allProperties, Execute);
+
         }
 
         private void Execute(SourceProductionContext context, ImmutableArray<PropertyInfo?> propertyInfos) {
