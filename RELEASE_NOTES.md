@@ -50,6 +50,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - External Script execution now runs in a separate context using `UseShellExecute` parameter. This allows scripts to start applications without waiting for them to close before continuing.
 - Enhanced the guiding RMS calculation algorithm to improve numerical stability and prevent long-term floating-point error accumulation
 - Added an option in flat wizard page to "Open cover when done". This allows customization of the desired cover state when the flat wizard is finished
+- Improved profile saving reliability with atomic journal-based updates and automatic recovery from backups.
 
 
 ## Commandline Options
