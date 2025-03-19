@@ -280,50 +280,6 @@
                             </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
-                    <Grid
-                        Grid.Row="1"
-                        Background="{StaticResource BackgroundBrush}"
-                        Margin="0,5,0,0">
-                        <Grid.Resources>
-                            <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols2}">
-                                <CollectionViewSource.GroupDescriptions>
-                                    <PropertyGroupDescription PropertyName="Category" />
-                                </CollectionViewSource.GroupDescriptions>
-                            </CollectionViewSource>
-                        </Grid.Resources>
-                        <ListView
-                            Visibility="{Binding DataSymbols2, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
-                            x:Name="SymbolList2"
-                            ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
-                            <ListView.GroupStyle>
-                                <GroupStyle>
-                                    <GroupStyle.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock FontWeight="Bold" Text="{Binding Name}" />
-                                        </DataTemplate>
-                                    </GroupStyle.HeaderTemplate>
-                                </GroupStyle>
-                            </ListView.GroupStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn
-                                        Width="180"
-                                        DisplayMemberBinding="{Binding Key}"
-                                        Header="Variable" />
-                                    <GridViewColumn
-                                        Width="150"
-                                        DisplayMemberBinding="{Binding Value, StringFormat={}{0:0.######}}"
-                                        Header="Value" />
-                                </GridView>
-                            </ListView.View>
-                            <ListView.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
-                                    <Setter Property="ToolTip" Value="No additional info" />
-                                    <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
-                    </Grid>
                 </StackPanel>
             </Popup>
 

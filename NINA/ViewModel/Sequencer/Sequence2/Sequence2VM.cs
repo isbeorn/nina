@@ -465,32 +465,15 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        private List<Symbol> dataSymbols2;
-        public List<Symbol> DataSymbols2 {
-            get => dataSymbols2;
-            set {
-                dataSymbols2 = value;
-            }
-        }
-
         private static readonly int MAX_SYMBOLS = 100;
         
         private List<Symbol> dataSymbols;
         
-        // Yes, this is a kludge; need more xaml-fu
         public List<Symbol> DataSymbols {
             get => dataSymbols;
             set {
-                DataSymbols2 = null;
-
-                if (value.Count > MAX_SYMBOLS) {
-                    DataSymbols2 = value.GetRange(MAX_SYMBOLS, value.Count - MAX_SYMBOLS);
-                    dataSymbols = value.GetRange(0, MAX_SYMBOLS);
-                } else {
-                    dataSymbols = value;
-                }
+                dataSymbols = value;
                 RaisePropertyChanged("DataSymbols");
-                RaisePropertyChanged("DataSymbols2");
             }
         }
 
