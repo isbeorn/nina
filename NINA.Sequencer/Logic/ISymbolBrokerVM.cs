@@ -17,12 +17,9 @@ namespace NINA.Sequencer.Logic {
 
         public List<SymbolBrokerVM.Datum> GetDataSymbols();
 
-<<<<<<< Updated upstream
-=======
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code);
 
         public void AddSymbol(ISymbolProvider provider, string token, object value);
         public bool RemoveSymbol(ISymbolProvider provider, string token);
->>>>>>> Stashed changes
     }
 }
