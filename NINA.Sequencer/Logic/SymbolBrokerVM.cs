@@ -24,6 +24,10 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
 using NINA.Equipment.Interfaces;
 using System.Linq;
+using Google.Protobuf.WellKnownTypes;
+using System.Windows.Documents;
+using Newtonsoft.Json.Linq;
+using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -181,16 +185,8 @@ namespace NINA.Sequencer.Logic {
             Logger.Warning(message);
             LoggedOnce.Add(message);
         }
-<<<<<<< Updated upstream
-
-        private void AddSymbol(string token, object value) {
-            AddSymbol("NINA", token, value, null, false);
-        }
-        private void AddSymbol(string source, string token, object value) {
-=======
         
         public void AddSymbol(string source, string token, object value) {
->>>>>>> Stashed changes
             AddSymbol(source, token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value, Datum[] values) {
@@ -198,6 +194,9 @@ namespace NINA.Sequencer.Logic {
         }
         private void AddSymbol(string source, string token, object value, Datum[] values, bool silent) {
             List<DataSource> list;
+            if (!Providers.Contains(source)) {
+                Providers.Add(source);
+            }
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<DataSource>();
                 DataKeys[token] = list;
@@ -227,6 +226,20 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        private bool RemoveSymbol(string key) {
+            List<DataSource> list;
+            string prefix = null;
+
+            if (!DataKeys.TryGetValue(key, out list)) {
+                return false;
+            }
+
+            DataKeys.Remove(key, out _);
+            return true;
+        }
+
+        private IList<string> Providers = new List<string>();
+
         private static Datum[] PierConstants = new Datum[] { new Datum("PierUnknown", -1), new Datum("PierEast", 0), new Datum("PierWest", 1) };
 
         private static Datum[] RoofConstants = new Datum[] { new Datum("RoofNotOpen", 0), new Datum("RoofOpen", 1), new Datum("RoofCannotOpenOrRead", 2) };
@@ -255,20 +268,20 @@ namespace NINA.Sequencer.Logic {
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
             TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
 
-            AddSymbol("MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
-            AddSymbol("MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-            AddSymbol("SunAltitude", tc.Altitude.Degree);
-            AddSymbol("SunAzimuth", tc.Azimuth.Degree);
+            AddSymbol("NINA", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
+            AddSymbol("NINA", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
+            AddSymbol("NINA", "SunAltitude", tc.Altitude.Degree);
+            AddSymbol("NINA", "SunAzimuth", tc.Azimuth.Degree);
 
             double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
             if (lst < 0) {
                 lst = AstroUtil.EuclidianModulus(lst, 24);
             }
-            AddSymbol("LocalSiderealTime", lst);
+            AddSymbol("NINA", "LocalSiderealTime", lst);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddSymbol("TIME", timeSeconds);
+            AddSymbol("NINA", "TIME", timeSeconds);
 
             TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
             TelescopeConnected = telescopeInfo.Connected;
@@ -425,18 +438,11 @@ namespace NINA.Sequencer.Logic {
                 return $"{key} : {value}";
             }
         }
-
-<<<<<<< Updated upstream
-=======
- 
-        public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code) {
-            if (code.Length != 2) {
-                throw new ArgumentException("Symbol Provider code must be two letters");
-            }
-            if (Providers.Contains(code)) {
+        public ISymbolProvider RegisterSymbolProvider(string friendlyName, string prefix) {
+            if (Providers.Contains(prefix)) {
                 throw new ArgumentException("Symbol Provider code is already registered.");
             }
-            return new SymbolProvider(friendlyName, code, this);
+            return new SymbolProvider(friendlyName, prefix, this);
         }
 
         public void AddSymbol(ISymbolProvider provider, string token, object value) {
@@ -452,7 +458,6 @@ namespace NINA.Sequencer.Logic {
             return RemoveSymbol(provider.GetProviderCode() + DELIMITER + token);
         }
 
->>>>>>> Stashed changes
         public List<Datum> GetDataSymbols() {
             SourcedSymbols ss = new SourcedSymbols();
 
