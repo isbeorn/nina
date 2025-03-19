@@ -34,7 +34,7 @@ namespace NINA.Sequencer.Logic
         public IList<string> Combo { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(e);
+            UserSymbol.ShowSymbols(e);
         }
 
     }

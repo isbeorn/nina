@@ -1,24 +1,26 @@
-﻿using NINA.Equipment.Interfaces.ViewModel;
-using System;
-using System.Collections.Concurrent;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Logic {
     public interface ISymbolBrokerVM : IDockableVM {
-
         public bool TryGetValue(string key, out object value);
-
-        public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys();
-
-        public SymbolBrokerVM.DataSource GetDataSource(string key);
-
-        public List<SymbolBrokerVM.Datum> GetDataSymbols();
-
+        public bool GetSymbol(string key, out object symbol);
+        public List<Symbol> GetSymbols();
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code);
-
         public void AddSymbol(ISymbolProvider provider, string token, object value);
         public bool RemoveSymbol(ISymbolProvider provider, string token);
     }

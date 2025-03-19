@@ -63,7 +63,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         public void ShowSymbols(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(sender);
+            UserSymbol.ShowSymbols(sender);
             //e.Handled = true;
         }
 

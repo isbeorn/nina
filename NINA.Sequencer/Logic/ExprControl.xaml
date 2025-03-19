@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:NINA.Sequencer.Logic">
         <UserControl.Resources>
             <local:ExprConverter x:Key="ec" />
-            <local:ValConverter x:Key="vc" />
         <Style TargetType="local:WhenTextBox">
             <Setter Property="Template">
                 <Setter.Value>
@@ -96,6 +95,7 @@
  
         <TextBlock VerticalAlignment="Center"
                    Margin="2,2,0,0"
+                   Foreground="GreenYellow"
                    Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
@@ -103,12 +103,6 @@
                     <Binding Path="Exp.ValueString"  />
                 </MultiBinding>
             </TextBlock.Text>
-            <TextBlock.Foreground>
-                <MultiBinding Converter="{StaticResource vc}">
-                    <Binding Path="Exp"  />
-                    <Binding Path="Exp.ValueString"  />
-                </MultiBinding>
-            </TextBlock.Foreground>
         </TextBlock>
  
         <TextBlock Margin="2,8,0,0" Opacity=".5"  Text="{Binding Unit}" />

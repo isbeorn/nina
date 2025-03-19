@@ -1,4 +1,18 @@
-﻿using NINA.Astrometry;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Astrometry;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
@@ -24,10 +38,6 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
 using NINA.Equipment.Interfaces;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
-using System.Windows.Documents;
-using Newtonsoft.Json.Linq;
-using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -53,43 +63,16 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        private static ConcurrentDictionary<string, List<DataSource>> DataKeys = new ConcurrentDictionary<string, List<DataSource>>();
-
-        public class DataSource {
-            public string source;
-            public object data;
-            public Datum[] constants;
-            public bool silent;
-
-            public DataSource(string source, object data, Datum[] constants, bool silent) {
-                this.source = source;
-                this.data = data;
-                this.constants = constants;
-                this.silent = silent;
-            }
-        }
+        private static ConcurrentDictionary<string, List<Symbol>> DataKeys = new ConcurrentDictionary<string, List<Symbol>>();
 
         private const char DELIMITER = '_';
 
-        public class Ambiguity {
-            public string name;
-            public List<string> sources;
-
-            public Ambiguity(string name, List<DataSource> dataSources) {
-                this.name = name;
-                sources = new List<string>();
-                foreach (DataSource ds in dataSources) {
-                    sources.Add(ds.source);
-                }
-            }
-        }
-
-        public bool TryGetValue(string key, out object value) {
-            List<DataSource> list;
+        public bool GetSymbol(string key, out object symbol) {
+            List<Symbol> list;
             string prefix = null;
 
             if (DataKeys.TryGetValue(key, out list) && list.Count == 1) {
-                value = list[0].data;
+                symbol = list[0];
                 return true;
             }
 
@@ -102,14 +85,14 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (!DataKeys.TryGetValue(key, out list)) {
-                value = null;
+                symbol = null;
                 return false;
             }
 
             if (prefix != null) {
-                foreach (var kvp in list) {
-                    if (kvp.source == prefix) {
-                        value = kvp.data;
+                foreach (Symbol kvp in list) {
+                    if (kvp.Category == prefix) {
+                        symbol = kvp;
                         return true;
                     }
                 }
@@ -117,22 +100,31 @@ namespace NINA.Sequencer.Logic {
 
             // If the list has one item, we're done
             if (list.Count == 1) {
-                value = list[0].data;
+                symbol = list[0];
                 return true;
             }
 
             // Ambiguous
-            value = new Ambiguity(key, list);
+            symbol = new Ambiguity(key, list);
             return false;
         }
 
-        public DataSource GetDataSource(string key) {
-            List<DataSource> list;
-            if (!DataKeys.TryGetValue(key, out list)) {
-                return null;
+        public bool TryGetValue(string key, out object value) {
+            object d;
+            if (GetSymbol(key, out d)) {
+                Symbol sym = d as Symbol;
+                if (sym != null) {
+                    value = sym.Value;
+                    return true;
+                }
+            } else {
+                if (d is Ambiguity a) {
+                    value = a;
+                    return false;
+                }
             }
-            // For now, just one of each
-            return new DataSource(list[0].source, list[0].data, null, false);
+            value = null;
+            return false;
         }
 
         // DATA SYMBOLS
@@ -194,46 +186,44 @@ namespace NINA.Sequencer.Logic {
         public void AddSymbol(string source, string token, object value) {
             AddSymbol(source, token, value, null, false);
         }
-        private void AddSymbol(string source, string token, object value, Datum[] values) {
+        private void AddSymbol(string source, string token, object value, Symbol[] values) {
             AddSymbol(source, token, value, values, true);
         }
-        private void AddSymbol(string source, string token, object value, Datum[] values, bool silent) {
-            List<DataSource> list;
+        private void AddSymbol(string source, string token, object value, Symbol[] values, bool silent) {
+            List<Symbol> list;
             if (!Providers.Contains(source)) {
                 Providers.Add(source);
             }
             if (!DataKeys.ContainsKey(token)) {
-                list = new List<DataSource>();
+                list = new List<Symbol>();
                 DataKeys[token] = list;
-                list.Add(new DataSource(source, value, values, false));
+                list.Add(new Symbol(token, value, source, values, false));
             } else {
                 list = DataKeys[token];
                 bool found = false;
                 for (int idx = 0; idx < list.Count; idx++) {
-                    DataSource s = list[idx];
-                    if (s.source == source) {
-                        s.data = value;
+                    Symbol s = list[idx];
+                    if (s.Category == source) {
+                        s.Value = value;
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    list.Add(new DataSource(source, value, values, false));
+                    list.Add(new Symbol(token, value, source, values, false));
                 }
             }
 
             // Defined constants...
-            // Not sure how to display these for now
             if (values != null) {
-                foreach (Datum d in values) {
+                foreach (Symbol d in values) {
                     AddSymbol(source, d.Key, d.Value, null, true);
                 }
             }
         }
 
         private bool RemoveSymbol(string key) {
-            List<DataSource> list;
-            string prefix = null;
+            List<Symbol> list;
 
             if (!DataKeys.TryGetValue(key, out list)) {
                 return false;
@@ -245,15 +235,15 @@ namespace NINA.Sequencer.Logic {
 
         private IList<string> Providers = new List<string>();
 
-        private static Datum[] PierConstants = new Datum[] { new Datum("PierUnknown", -1), new Datum("PierEast", 0), new Datum("PierWest", 1) };
+        private static Symbol[] PierConstants = new Symbol[] { new Symbol("PierUnknown", -1), new Symbol("PierEast", 0), new Symbol("PierWest", 1) };
 
-        private static Datum[] RoofConstants = new Datum[] { new Datum("RoofNotOpen", 0), new Datum("RoofOpen", 1), new Datum("RoofCannotOpenOrRead", 2) };
+        private static Symbol[] RoofConstants = new Symbol[] { new Symbol("RoofNotOpen", 0), new Symbol("RoofOpen", 1), new Symbol("RoofCannotOpenOrRead", 2) };
 
-        private static Datum[] ShutterConstants = new Datum[] { new Datum("ShutterUnknown", -1), new Datum("ShutterOpen", 0), new Datum("ShutterClosed", 1), new Datum("ShutterOpening", 2), new Datum("ShutterClosing", 3),
-            new Datum("ShutterError", 4) };
+        private static Symbol[] ShutterConstants = new Symbol[] { new Symbol("ShutterUnknown", -1), new Symbol("ShutterOpen", 0), new Symbol("ShutterClosed", 1), new Symbol("ShutterOpening", 2), new Symbol("ShutterClosing", 3),
+            new Symbol("ShutterError", 4) };
 
-        private static Datum[] CoverConstants = new Datum[] { new Datum("CoverUnknown", 0), new Datum("CoverNeitherOpenNorClosed", 1), new Datum("CoverClosed", 2), new Datum("CoverOpen", 3),
-            new Datum("CoverError", 4), new Datum("CoverNotPresent", 5) };
+        private static Symbol[] CoverConstants = new Symbol[] { new Symbol("CoverUnknown", 0), new Symbol("CoverNeitherOpenNorClosed", 1), new Symbol("CoverClosed", 2), new Symbol("CoverOpen", 3),
+            new Symbol("CoverError", 4), new Symbol("CoverNotPresent", 5) };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
@@ -396,53 +386,6 @@ namespace NINA.Sequencer.Logic {
             return Task.CompletedTask;
         }
 
-        public class SourcedSymbols : List<Datum>;
-
-        public class Datum {
-            private string key;
-            private object value;
-            private string category;
-            private Datum[] constants;
-            private bool silent;
-
-            public Datum(string key, object value, string category, Datum[] constants, bool silent) {
-                this.key = key;
-                this.value = value;
-                this.category = category;
-                this.constants = constants;
-                this.silent = silent;
-            }
-
-            public Datum(string key, object value) {
-
-                this.key = key;
-                this.value = value;
-                this.category = null;
-            }
-
-            public string Key { get { return key; } }
-            public object Value { 
-                get { 
-                    if (constants == null) {
-                        return value;
-                    } else {
-                        foreach (Datum d in constants) {
-                            if (value is Int32 i1 && d.value is Int32 i2 && i1 == i2) {
-                                return d.key;
-                            }
-                        }
-                        return value; 
-                    }
-                }
-            }
-            public bool Silent { get { return silent; } }
-            public string Category { get { return category; } }
-            public Datum[] Constants { get { return constants; } }
-
-            public override string ToString() {
-                return $"{key} : {value}";
-            }
-        }
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string prefix) {
             if (Providers.Contains(prefix)) {
                 throw new ArgumentException("Symbol Provider code is already registered.");
@@ -463,14 +406,14 @@ namespace NINA.Sequencer.Logic {
             return RemoveSymbol(provider.GetProviderCode() + DELIMITER + token);
         }
 
-        public List<Datum> GetDataSymbols() {
-            SourcedSymbols ss = new SourcedSymbols();
+        public List<Symbol> GetSymbols() {
+            IList<Symbol> ss = new List<Symbol>();
 
             foreach (var kvp in DataKeys) {
-                List<DataSource> sources = kvp.Value;
-                foreach (DataSource ds in sources) {
-                    Datum newDatum = new Datum(kvp.Key, ds.data, ds.source, ds.constants, ds.silent);
-                    ss.Add(newDatum);
+                List<Symbol> sources = kvp.Value;
+                foreach (Symbol ds in sources) {
+                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Silent);
+                    ss.Add(symCopy);
                 }
             }
             return ss.Where(x => !x.Silent).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();

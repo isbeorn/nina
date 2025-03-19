@@ -24,7 +24,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public partial class DefineVariable : Symbol {
+    public partial class DefineVariable : UserSymbol {
 
         [ImportingConstructor]
         public DefineVariable() : base() {
@@ -157,7 +157,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             if (this is DefineGlobalVariable) {
                 // Find the one in Globals and set it
-                Symbol global = FindGlobalSymbol(Identifier);
+                UserSymbol global = FindGlobalSymbol(Identifier);
                 if (global is DefineGlobalVariable sgv) {
 
                     // Bug fix

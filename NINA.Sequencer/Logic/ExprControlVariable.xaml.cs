@@ -24,7 +24,7 @@ namespace NINA.Sequencer.Logic {
         public Expression Exp { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(sender);
+            UserSymbol.ShowSymbols(sender);
         }
 
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {

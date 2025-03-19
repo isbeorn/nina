@@ -12,15 +12,11 @@
 
 #endregion "copyright"
 
-using NINA.Core.Model;
-using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
 using NINA.ViewModel.Sequencer;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace NINA.View.Sequencer.AdvancedSequencer {
 
@@ -37,7 +33,7 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             Sequence2VM vm = ((FrameworkElement)sender).DataContext as Sequence2VM;
             if (vm != null) {
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
-                vm.DataSymbols = vm.SymbolBroker.GetDataSymbols();
+                vm.DataSymbols = vm.SymbolBroker.GetSymbols();
                 SymbolPopup.IsOpen = true;
             }
         }
@@ -55,9 +51,9 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
             // Display the constants for this Datum
             var item = sender as ListViewItem;
             if (item != null) {
-                if (item.DataContext is SymbolBrokerVM.Datum d && d.Constants != null) {
+                if (item.DataContext is Symbol d && d.Constants != null) {
                     StringBuilder sb = new StringBuilder("Options: ");
-                    SymbolBrokerVM.Datum[] cList = d.Constants;
+                    Symbol[] cList = d.Constants;
                     for (int i = 0; i < cList.Length; i++) {
                         sb.Append(cList[i].Key);
                         if (i != cList.Length - 1) {

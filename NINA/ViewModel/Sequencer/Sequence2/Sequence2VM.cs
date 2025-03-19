@@ -465,16 +465,16 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        private List<SymbolBrokerVM.Datum> dataSymbols2;
-        public List<SymbolBrokerVM.Datum> DataSymbols2 {
+        private List<Symbol> dataSymbols2;
+        public List<Symbol> DataSymbols2 {
             get => dataSymbols2;
             set {
                 dataSymbols2 = value;
             }
         }
 
-        private List<SymbolBrokerVM.Datum> dataSymbols;
-        public List<SymbolBrokerVM.Datum> DataSymbols {
+        private List<Symbol> dataSymbols;
+        public List<Symbol> DataSymbols {
             get => dataSymbols;
             set {
                 DataSymbols2 = null;

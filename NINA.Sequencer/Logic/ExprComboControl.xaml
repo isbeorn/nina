@@ -4,7 +4,6 @@
              xmlns:local="clr-namespace:NINA.Sequencer.Logic">
     <UserControl.Resources>
         <local:ExprConverter x:Key="ec" />
-        <local:ValConverter x:Key="vc" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal"
                 VerticalAlignment="Center" 

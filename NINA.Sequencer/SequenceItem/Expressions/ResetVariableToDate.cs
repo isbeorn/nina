@@ -102,7 +102,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Expr.Evaluate();
 
             // Find Symbol, make sure it's valid
-            Symbol sym = Symbol.FindSymbol(Variable, Parent);
+            UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);
             if (sym == null || !(sym is DefineVariable) && !Expression.JustWarnings(Expr.Error)) {
                 throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
             } else if (Expr.Error != null) {
@@ -125,7 +125,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Logger.Info("SetVariableToDate: " + Variable + " from " + oldDefinition + " to " + sym.Expr.Definition);
 
             // Make sure references are updated
-            Symbol.SymbolDirty(sym);
+            UserSymbol.SymbolDirty(sym);
 
             return Task.CompletedTask;
         }
@@ -248,10 +248,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             var i = new List<string>();
             if (Variable == null || Variable.Length == 0) {
                 i.Add("The variable and new value expression must both be specified");
-            } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, Symbol.VALID_SYMBOL)) {
+            } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, UserSymbol.VALID_SYMBOL)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
             } else {
-                Symbol sym = Symbol.FindSymbol(Variable, Parent);
+                UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);
                 if (sym == null) {
                     i.Add("The Variable '" + Variable + "' is not in scope.");
                 } else if (sym is DefineConstant) {

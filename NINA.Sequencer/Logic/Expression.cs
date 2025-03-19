@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NCalc;
 using System.Windows.Media;
-using static NINA.Sequencer.Logic.Symbol;
+using static NINA.Sequencer.Logic.UserSymbol;
 using System.Threading;
 using NCalc.Handlers;
 using NINA.Sequencer.SequenceItem.Expressions;
@@ -16,7 +16,6 @@ namespace NINA.Sequencer.Logic {
     public class Expression : BaseINPC {
 
         public Expression() {
-
         }
 
         public Expression (Expression cloneMe) {
@@ -34,7 +33,7 @@ namespace NINA.Sequencer.Logic {
             Context = context;
         }
 
-        public Expression(string definition, ISequenceEntity context, Symbol symbol) {
+        public Expression(string definition, ISequenceEntity context, UserSymbol symbol) {
             if (symbol.Expr is Expression expr) {
                 DefaultString = expr.DefaultString;
                 Default = expr.Default;
@@ -211,7 +210,7 @@ namespace NINA.Sequencer.Logic {
                     Error = null;
                 }
                 Evaluate(true);
-                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
                     if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
                         GlobalVolatile = true;
                     }
@@ -240,7 +239,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        public Symbol Symbol { get; set; } = null;
+        public UserSymbol Symbol { get; set; } = null;
 
         private static readonly int ONE_YEAR = 365 * 24 * 60 * 60;
 
@@ -275,7 +274,7 @@ namespace NINA.Sequencer.Logic {
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
         // Resolved are the Symbol's that have been found (from the References)
-        public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
+        public Dictionary<string, UserSymbol> Resolved = new Dictionary<string, UserSymbol>();
 
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
@@ -315,7 +314,7 @@ namespace NINA.Sequencer.Logic {
                 if (value != definition && IsExpression) {
                     // The value has changed.  Clear what we had...
                     foreach (var symKvp in Resolved) {
-                        Symbol s = symKvp.Value;
+                        UserSymbol s = symKvp.Value;
                         if (s != null) {
                             symKvp.Value.RemoveConsumer(this);
                         }
@@ -336,7 +335,7 @@ namespace NINA.Sequencer.Logic {
 
                     // Notify consumers
                     if (Symbol != null) {
-                        Symbol.SymbolDirty(Symbol);
+                        UserSymbol.SymbolDirty(Symbol);
                         Symbol.Validate();
                     } else {
                         // We always want to show the result if not a Symbol
@@ -373,7 +372,7 @@ namespace NINA.Sequencer.Logic {
                     Resolved.Clear();
                     Evaluate();
                     if (Symbol != null) {
-                        Symbol.SymbolDirty(Symbol);
+                        UserSymbol.SymbolDirty(Symbol);
                         Symbol.Validate();
                     }
                 }
@@ -390,7 +389,7 @@ namespace NINA.Sequencer.Logic {
             Evaluate();
         }
 
-        public void ReferenceRemoved(Symbol sym) {
+        public void ReferenceRemoved(UserSymbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
             Parameters.Remove(identifier);
@@ -400,7 +399,7 @@ namespace NINA.Sequencer.Logic {
         private void AddParameter(string reference, object value) {
             Parameters.Add(reference, value);
         }
-        private void Resolve(string reference, Symbol sym) {
+        private void Resolve(string reference, UserSymbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
             if (sym.Expr.Error == null) {
@@ -445,13 +444,13 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             if (Context == null) return;
-            if (!Symbol.IsAttachedToRoot(Context)) {
+            if (!UserSymbol.IsAttachedToRoot(Context)) {
                 return;
             }
 
             if (Volatile || GlobalVolatile) {
                 IList<string> volatiles = new List<string>();
-                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                foreach (KeyValuePair<string, UserSymbol> kvp in Resolved) {
                     if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
                         volatiles.Add(kvp.Key);
                     }
@@ -478,7 +477,7 @@ namespace NINA.Sequencer.Logic {
 
             // First, validate References
             foreach (string sRef in References) {
-                Symbol sym;
+                UserSymbol sym;
                 string symReference = sRef;
                 // Remember if we have any image data
                 //if (!ImageVolatile && symReference.StartsWith("Image_")) {
@@ -506,7 +505,7 @@ namespace NINA.Sequencer.Logic {
                             AddParameter(symReference, val);
                             Volatile = true;
                         }
-                        if (val is SymbolBrokerVM.Ambiguity a) {
+                        if (val is Ambiguity a) {
                             StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
                             foreach (var source in a.sources) {
                                 sb.Append(" " + source + '_' + symReference);
@@ -536,7 +535,7 @@ namespace NINA.Sequencer.Logic {
                         string symReference = r;
                         if (!Parameters.ContainsKey(symReference)) {
                             // Not defined or evaluated
-                            Symbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
+                            UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is DefineVariable sv && !sv.Executed) {
                                 AddError("Not evaluated: " + r);
                             } else if (r.StartsWith("_")) {
