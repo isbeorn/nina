@@ -67,7 +67,20 @@ namespace NINA.Sequencer.Logic {
 
         private const char DELIMITER = '_';
 
-        public bool GetSymbol(string key, out object symbol) {
+        public bool TryGetSymbol(string key, out Symbol symbol) {
+            Symbol sym;
+            if (GetSymbol(key, out sym)) {
+                symbol = sym;
+                return true;
+            } else if (sym is AmbiguousSymbol) {
+                symbol = sym;
+                return false;
+            }
+            symbol = null;
+            return false;
+        }
+
+        private bool GetSymbol(string key, out Symbol symbol) {
             List<Symbol> list;
             string prefix = null;
 
@@ -105,12 +118,12 @@ namespace NINA.Sequencer.Logic {
             }
 
             // Ambiguous
-            symbol = new Ambiguity(key, list);
+            symbol = new AmbiguousSymbol(key, list);
             return false;
         }
 
         public bool TryGetValue(string key, out object value) {
-            object d;
+            Symbol d;
             if (GetSymbol(key, out d)) {
                 Symbol sym = d as Symbol;
                 if (sym != null) {
@@ -118,7 +131,7 @@ namespace NINA.Sequencer.Logic {
                     return true;
                 }
             } else {
-                if (d is Ambiguity a) {
+                if (d is AmbiguousSymbol a) {
                     value = a;
                     return false;
                 }
@@ -182,7 +195,7 @@ namespace NINA.Sequencer.Logic {
             Logger.Warning(message);
             LoggedOnce.Add(message);
         }
-        
+
         public void AddSymbol(string source, string token, object value) {
             AddSymbol(source, token, value, null, false);
         }
@@ -250,6 +263,10 @@ namespace NINA.Sequencer.Logic {
         }
 
         private Task UpdateEquipmentKeys() {
+
+            // For testing ambiguous symbols
+            //AddSymbol("Foo", "Altitude", 0);
+            //AddSymbol("Bar", "Altitude", 1);
 
             if (Observer == null) {
                 Observer = new ObserverInfo() {

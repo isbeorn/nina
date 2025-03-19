@@ -12,8 +12,11 @@
 
 #endregion "copyright"
 
+using Google.Protobuf.WellKnownTypes;
+using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
 
@@ -23,7 +26,6 @@ namespace NINA.Sequencer.Logic {
         private string category;
         private Symbol[] constants;
         private bool silent;
-
 
         public Symbol(string key, object value, string category, Symbol[] constants, bool silent) {
             this.key = key;
@@ -67,17 +69,12 @@ namespace NINA.Sequencer.Logic {
         }
     }
 
-    public class Ambiguity {
-        public string name;
-        public List<string> sources;
+    public class AmbiguousSymbol : Symbol {
 
-        public Ambiguity(string name, List<Symbol> Datums) {
-            this.name = name;
-            sources = new List<string>();
-            foreach (Symbol ds in Datums) {
-                sources.Add(ds.Category);
-            }
+        public AmbiguousSymbol(string key, List<Symbol> symbols) : base(key, null, null, symbols.ToArray(), false) {
         }
+
+        public Symbol[] Symbols => Constants;
     }
 
 }

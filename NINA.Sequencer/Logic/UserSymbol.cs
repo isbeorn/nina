@@ -26,7 +26,6 @@ using System.Windows.Data;
 using System.Collections.Concurrent;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem.Expressions;
-using static NINA.Sequencer.Logic.SymbolBrokerVM;
 
 namespace NINA.Sequencer.Logic {
 
@@ -418,8 +417,8 @@ namespace NINA.Sequencer.Logic {
                     sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.ValueString);
                 } else {
                     // We're a data value
-                    object val;
-                    broker.GetSymbol(kvp.Key, out val);
+                    Symbol val;
+                    broker.TryGetSymbol(kvp.Key, out val);
                     // Get the source of the data, and the data itself
                     if (val is Symbol ds) {
                         sb.Append(" (" + ds.Category + ") = ");

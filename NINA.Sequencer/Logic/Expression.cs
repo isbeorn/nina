@@ -504,11 +504,14 @@ namespace NINA.Sequencer.Logic {
                             Parameters.Remove(symReference);
                             AddParameter(symReference, val);
                             Volatile = true;
-                        }
-                        if (val is Ambiguity a) {
-                            StringBuilder sb = new StringBuilder("The variable '" + a.name + "' is ambiguous, use one of");
-                            foreach (var source in a.sources) {
-                                sb.Append(" " + source + '_' + symReference);
+                        } else if (val is AmbiguousSymbol a) {
+                            StringBuilder sb = new StringBuilder("The variable '" + a.Key + "' is ambiguous, use one of");
+                            Symbol[] symbols = a.Symbols;
+                            for (int i = 0; i < symbols.Length; i++) {
+                                sb.Append(" " + symbols[i].Category + '_' + symReference);
+                                if (i < symbols.Length - 1) {
+                                    sb.Append("; ");
+                                }
                             }
                             Error = sb.ToString();
                             return;
@@ -634,29 +637,11 @@ namespace NINA.Sequencer.Logic {
                     args.Result = (int)dt.Year;
                 } else if (name == "dow") {
                     args.Result = (int)dt.DayOfWeek;
-                } else if (name == "dateTime") {
-                    args.Result = 0;
-                } else if (name == "CtoF") {
-                    args.Result = 32 + (Convert.ToDouble(args.Parameters[0].Evaluate()) * 9 / 5);
-                } else if (name == "MStoMPH") {
-                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * 2.237);
-                } else if (name == "KPHtoMPH") {
-                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * .621);
                 } else if (name == "dateString") {
                     if (args.Parameters.Length < 2) {
                         throw new ArgumentException();
                     }
                     args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
-                } else if (name == "valueOf") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate());
-                    Expression x = new Expression(str, Context);
-                    x.SymbolBroker = SymbolBroker;
-                    x.Evaluate();
-                    if (x.Error != null || x.Value == double.NaN) {
-                        args.Result = args.Parameters[1].Evaluate();
-                    } else {
-                        args.Result = x.Value;
-                    }
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     args.Result = SymbolBroker.TryGetValue(str, out _);

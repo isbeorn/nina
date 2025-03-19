@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace NINA.Sequencer.Logic {
     public interface ISymbolBrokerVM : IDockableVM {
         public bool TryGetValue(string key, out object value);
-        public bool GetSymbol(string key, out object symbol);
+        public bool TryGetSymbol(string key, out Symbol symbol);
         public List<Symbol> GetSymbols();
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code);
         public void AddSymbol(ISymbolProvider provider, string token, object value);
