@@ -181,11 +181,16 @@ namespace NINA.Sequencer.Logic {
             Logger.Warning(message);
             LoggedOnce.Add(message);
         }
+<<<<<<< Updated upstream
 
         private void AddSymbol(string token, object value) {
             AddSymbol("NINA", token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value) {
+=======
+        
+        public void AddSymbol(string source, string token, object value) {
+>>>>>>> Stashed changes
             AddSymbol(source, token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value, Datum[] values) {
@@ -421,6 +426,33 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+<<<<<<< Updated upstream
+=======
+ 
+        public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code) {
+            if (code.Length != 2) {
+                throw new ArgumentException("Symbol Provider code must be two letters");
+            }
+            if (Providers.Contains(code)) {
+                throw new ArgumentException("Symbol Provider code is already registered.");
+            }
+            return new SymbolProvider(friendlyName, code, this);
+        }
+
+        public void AddSymbol(ISymbolProvider provider, string token, object value) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            AddSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value);
+        }
+        public bool RemoveSymbol(ISymbolProvider provider, string token) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            return RemoveSymbol(provider.GetProviderCode() + DELIMITER + token);
+        }
+
+>>>>>>> Stashed changes
         public List<Datum> GetDataSymbols() {
             SourcedSymbols ss = new SourcedSymbols();
 
