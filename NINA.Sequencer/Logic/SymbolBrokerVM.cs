@@ -88,6 +88,11 @@ namespace NINA.Sequencer.Logic {
             List<DataSource> list;
             string prefix = null;
 
+            if (DataKeys.TryGetValue(key, out list) && list.Count == 1) {
+                value = list[0].data;
+                return true;
+            }
+
             if (key.IndexOf(DELIMITER) > 0) {
                 string[] parts = key.Split(DELIMITER, 2);
                 if (parts.Length == 2) {
