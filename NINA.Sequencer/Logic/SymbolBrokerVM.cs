@@ -200,7 +200,7 @@ namespace NINA.Sequencer.Logic {
             AddSymbol(source, token, value, null, false);
         }
         private void AddSymbol(string source, string token, object value, Symbol[] values) {
-            AddSymbol(source, token, value, values, true);
+            AddSymbol(source, token, value, values, false);
         }
         private void AddSymbol(string source, string token, object value, Symbol[] values, bool silent) {
             List<Symbol> list;
@@ -210,7 +210,7 @@ namespace NINA.Sequencer.Logic {
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<Symbol>();
                 DataKeys[token] = list;
-                list.Add(new Symbol(token, value, source, values, false));
+                list.Add(new Symbol(token, value, source, values, silent));
             } else {
                 list = DataKeys[token];
                 bool found = false;
