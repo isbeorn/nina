@@ -253,6 +253,12 @@
                             ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
+                                    <GroupStyle.ContainerStyle>
+                                        <Style TargetType="GroupItem">
+                                            <Setter Property="ToolTip" Value="No additional info" />
+                                            <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
+                                        </Style>
+                                    </GroupStyle.ContainerStyle>
                                     <GroupStyle.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock FontWeight="Bold" Text="{Binding Name}" />
