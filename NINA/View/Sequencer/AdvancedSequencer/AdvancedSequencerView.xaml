@@ -256,7 +256,7 @@
                                     <GroupStyle.ContainerStyle>
                                         <Style TargetType="GroupItem">
                                             <Setter Property="ToolTip" Value="No additional info" />
-                                            <EventSetter Event="ToolTipOpening" Handler="ListViewItem_SetToolTip" />
+                                            <EventSetter Event="ToolTipOpening" Handler="GroupItem_SetToolTip" />
                                         </Style>
                                     </GroupStyle.ContainerStyle>
                                     <GroupStyle.HeaderTemplate>

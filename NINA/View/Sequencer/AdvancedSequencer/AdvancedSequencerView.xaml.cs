@@ -14,9 +14,11 @@
 
 using NINA.Sequencer.Logic;
 using NINA.ViewModel.Sequencer;
+using NJsonSchema.Annotations;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NINA.View.Sequencer.AdvancedSequencer {
 
@@ -62,6 +64,16 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                     }
                     item.ToolTip = sb.ToString();
                 }
+            }
+        }
+ 
+        private void GroupItem_SetToolTip(object sender, ToolTipEventArgs e) {
+            // Display the constants for this Datum
+            var item = sender as GroupItem;
+            if (item != null) {
+                CollectionViewGroup group = (CollectionViewGroup)item.DataContext;
+                string name = (string)group.Name;
+                // Get list of hidden values
             }
         }
     }

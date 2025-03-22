@@ -73,7 +73,7 @@
                 MinHeight="30"
                 x:Shared="false"
                 Background="Transparent">
-                <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
             </Border>
             <Border
                 x:Key="EntityMenuHeader"
@@ -328,7 +328,9 @@
                                     Foreground="{StaticResource ButtonForegroundBrush}"
                                     IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
                                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                    TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
+                                    TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}"
+                                    IsReadOnly="{Binding HeaderExpression, Converter={StaticResource InverseNullToBooleanConverter}}"/>
+                                <!-- IsReadOnly and ExprControl are for If and IfThenElse -->
                                 <logic:ExprControl Margin="15,0,0,0" Visibility="{Binding HeaderExpression, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Label="Expression:" Exp="{Binding HeaderExpression}" />
                             </StackPanel>
                             <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
