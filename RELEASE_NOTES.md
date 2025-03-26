@@ -37,7 +37,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - **Following via Driver**  
 - **Options > Astrometry Enhancements**  
   - Added new metadata fields: **Observer**, **Observatory**, and **Site**, which are written to FITS files as `OBSERVER`, `OBSERVAT`, and `SITENAME`.  
-  - Added a world map displaying a pin for the entered latitude and longitude.  
+  - Added a world map displaying a pin for the entered latitude and longitude.
 
 ### **Sequencer & Imaging**
 - **Sequencer Enhancements**  
@@ -49,6 +49,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - **Resizing panels remains possible** (no method found to disable this).  
   - **Switching tabs is allowed while locked**, but rearranging them is prevented.  
   - **Floating undocked windows remain unaffected** and can still be re-docked even when the layout is locked.  
+- **Metadata & Files**
+  - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  

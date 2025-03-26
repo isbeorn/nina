@@ -90,6 +90,7 @@ TestResult.xml
 !**/[Pp]ackages/build/
 
 # Others
+RELEASE_NOTES.html
 ClientBin/
 ~$*
 *~
