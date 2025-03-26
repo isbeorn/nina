@@ -7150,6 +7150,13 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Nie udało się zdefiniować obrotu po {0} próbach. Czy powrotny tryb rotatora jest ustawiony prawidłowo?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Zablokuj panele, aby uniemożliwić ich zamknięcie lub zmianę ich położenia, albo odblokuj je, aby je dostosować.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Obecna korekta jest dwuwymiarowa. Wymagana jest korekta 3D</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Otwórz przesłonę po zakończeniu</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>
