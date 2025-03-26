@@ -38,6 +38,7 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using System.Reflection;
 using NINA.Equipment.Interfaces;
 using System.Linq;
+using static NINA.Sequencer.Logic.Symbol;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
@@ -63,7 +64,9 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        private static ConcurrentDictionary<string, List<Symbol>> DataKeys = new ConcurrentDictionary<string, List<Symbol>>();
+        private static ConcurrentDictionary<string, IList<Symbol>> DataKeys = new ConcurrentDictionary<string, IList<Symbol>>();
+
+        private static ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
         private const char DELIMITER = '_';
 
@@ -81,7 +84,7 @@ namespace NINA.Sequencer.Logic {
         }
 
         private bool GetSymbol(string key, out Symbol symbol) {
-            List<Symbol> list;
+            IList<Symbol> list;
             string prefix = null;
 
             if (DataKeys.TryGetValue(key, out list) && list.Count == 1) {
@@ -196,21 +199,43 @@ namespace NINA.Sequencer.Logic {
             LoggedOnce.Add(message);
         }
 
+        private void AddHiddenSymbol(string source, Symbol sym) {
+            IList<Symbol> symList;
+            if (!HiddenSymbols.TryGetValue(source, out symList)) {
+                symList = new List<Symbol>();
+                HiddenSymbols.TryAdd(source, symList);
+            }
+            symList.Add(sym);
+        }
+
+        public IList<Symbol> GetHiddenSymbols(string source) {
+            IList<Symbol> syms = null;
+            HiddenSymbols.TryGetValue(source, out syms);
+            return syms;
+        }
+
         public void AddSymbol(string source, string token, object value) {
-            AddSymbol(source, token, value, null, false);
+            AddSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
+        }
+        public void AddSymbol(string source, string token, object value, SymbolType type) {
+            AddSymbol(source, token, value, null, type);
         }
         private void AddSymbol(string source, string token, object value, Symbol[] values) {
-            AddSymbol(source, token, value, values, false);
+            AddSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
-        private void AddSymbol(string source, string token, object value, Symbol[] values, bool silent) {
-            List<Symbol> list;
+        private void AddSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
+            IList<Symbol> list;
             if (!Providers.Contains(source)) {
                 Providers.Add(source);
             }
             if (!DataKeys.ContainsKey(token)) {
                 list = new List<Symbol>();
                 DataKeys[token] = list;
-                list.Add(new Symbol(token, value, source, values, silent));
+                Symbol sym = new Symbol(token, value, source, values, type);
+                if (type == SymbolType.SYMBOL_HIDDEN) {
+                    AddHiddenSymbol(source, sym);
+                }
+                list.Add(sym);
             } else {
                 list = DataKeys[token];
                 bool found = false;
@@ -223,20 +248,21 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
                 if (!found) {
-                    list.Add(new Symbol(token, value, source, values, false));
+                    Symbol sym = new Symbol(token, value, source, values, type);
+                    list.Add(sym);
                 }
             }
 
             // Defined constants...
             if (values != null) {
                 foreach (Symbol d in values) {
-                    AddSymbol(source, d.Key, d.Value, null, true);
+                    AddSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
                 }
             }
         }
 
         private bool RemoveSymbol(string key) {
-            List<Symbol> list;
+            IList<Symbol> list;
 
             if (!DataKeys.TryGetValue(key, out list)) {
                 return false;
@@ -263,10 +289,6 @@ namespace NINA.Sequencer.Logic {
         }
 
         private Task UpdateEquipmentKeys() {
-
-            // For testing ambiguous symbols
-            //AddSymbol("Foo", "Altitude", 0);
-            //AddSymbol("Bar", "Altitude", 1);
 
             if (Observer == null) {
                 Observer = new ObserverInfo() {
@@ -329,6 +351,9 @@ namespace NINA.Sequencer.Logic {
                 AddSymbol("Camera", "Temperature", cameraInfo.Temperature);
 
                 // Hidden
+                AddSymbol("Camera", "PixelSize", cameraInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
+                AddSymbol("Camera", "XSize", cameraInfo.XSize, SymbolType.SYMBOL_HIDDEN);
+                AddSymbol("Camera", "YSize", cameraInfo.YSize, SymbolType.SYMBOL_HIDDEN);
                 //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
                 //EquipmentKeys.Add("camera__XSize", cameraInfo.XSize);
                 //EquipmentKeys.Add("camera__YSize", cameraInfo.YSize);
@@ -427,13 +452,13 @@ namespace NINA.Sequencer.Logic {
             IList<Symbol> ss = new List<Symbol>();
 
             foreach (var kvp in DataKeys) {
-                List<Symbol> sources = kvp.Value;
+                IList<Symbol> sources = kvp.Value;
                 foreach (Symbol ds in sources) {
-                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Silent);
+                    Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Type);
                     ss.Add(symCopy);
                 }
             }
-            return ss.Where(x => !x.Silent).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+            return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
         }
     }
 }

@@ -15,6 +15,7 @@
 using NINA.Sequencer.Logic;
 using NINA.ViewModel.Sequencer;
 using NJsonSchema.Annotations;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,8 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
     /// </summary>
     public partial class AdvancedSequencerView : UserControl {
 
+        private Sequence2VM _sequencer;
+
         public AdvancedSequencerView() {
             InitializeComponent();
         }
@@ -34,11 +37,11 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
         public void ShowSymbols(object sender, RoutedEventArgs e) {
             Sequence2VM vm = ((FrameworkElement)sender).DataContext as Sequence2VM;
             if (vm != null) {
+                _sequencer = vm;
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
                 vm.DataSymbols = vm.SymbolBroker.GetSymbols();
                 SymbolPopup.IsOpen = true;
-            }
-        }
+            }        }
 
         public void HideSymbols(object sender, RoutedEventArgs e) {
             if (SymbolPopup.IsOpen) {
@@ -66,7 +69,7 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 }
             }
         }
- 
+
         private void GroupItem_SetToolTip(object sender, ToolTipEventArgs e) {
             // Display the constants for this Datum
             var item = sender as GroupItem;
@@ -74,6 +77,20 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 CollectionViewGroup group = (CollectionViewGroup)item.DataContext;
                 string name = (string)group.Name;
                 // Get list of hidden values
+                if (_sequencer!= null) {
+                    // Yeah, this shouldn't reference SymbolBrokerVM directly...
+                    IList<Symbol> syms = _sequencer.SymbolBroker.GetHiddenSymbols(name);
+                    StringBuilder sb = new StringBuilder("Also: ");
+                    for (int i = 0; i < syms.Count; i++) {
+                        sb.Append(syms[i].Key);
+                        sb.Append("=");
+                        sb.Append(syms[i].Value);
+                        if (i != syms.Count - 1) {
+                            sb.Append("; ");
+                        }
+                    }
+                    item.ToolTip = sb.ToString();
+                }
             }
         }
     }

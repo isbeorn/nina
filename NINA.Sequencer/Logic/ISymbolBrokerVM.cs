@@ -23,5 +23,6 @@ namespace NINA.Sequencer.Logic {
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code);
         public void AddSymbol(ISymbolProvider provider, string token, object value);
         public bool RemoveSymbol(ISymbolProvider provider, string token);
+        public IList<Symbol> GetHiddenSymbols(string source);
     }
 }

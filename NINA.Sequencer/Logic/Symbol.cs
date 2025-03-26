@@ -21,18 +21,25 @@ using System.Windows.Input;
 namespace NINA.Sequencer.Logic {
 
     public class Symbol {
+        // The name of the Symbol
         private string key;
+        // The Symbol's current value
         private object value;
+        // Category of this Symbol (typically, the source - device - of the data)
         private string category;
+        // Constants used with this Symbol (or null)
         private Symbol[] constants;
-        private bool silent;
+        // The type of the Symbol
+        private SymbolType type;
 
-        public Symbol(string key, object value, string category, Symbol[] constants, bool silent) {
+        public enum SymbolType { SYMBOL_NORMAL, SYMBOL_CONSTANT, SYMBOL_HIDDEN }
+
+        public Symbol(string key, object value, string category, Symbol[] constants, SymbolType type) {
             this.key = key;
             this.value = value;
             this.category = category;
             this.constants = constants;
-            this.silent = silent;
+            this.type = type;
         }
 
         public Symbol(string key, object value) {
@@ -60,7 +67,7 @@ namespace NINA.Sequencer.Logic {
                 this.value = (object)value;
             }
         }
-        public bool Silent { get { return silent; } }
+        public SymbolType Type { get { return type; } }
         public string Category { get { return category; } }
         public Symbol[] Constants { get { return constants; } }
 
@@ -71,7 +78,7 @@ namespace NINA.Sequencer.Logic {
 
     public class AmbiguousSymbol : Symbol {
 
-        public AmbiguousSymbol(string key, List<Symbol> symbols) : base(key, null, null, symbols.ToArray(), false) {
+        public AmbiguousSymbol(string key, IList<Symbol> symbols) : base(key, null, null, ((List<Symbol>)symbols).ToArray(), SymbolType.SYMBOL_NORMAL) {
         }
 
         public Symbol[] Symbols => Constants;
