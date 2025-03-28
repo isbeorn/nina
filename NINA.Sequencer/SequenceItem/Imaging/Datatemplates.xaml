@@ -208,7 +208,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
