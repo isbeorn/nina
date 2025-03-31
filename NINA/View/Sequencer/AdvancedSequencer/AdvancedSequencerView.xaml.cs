@@ -80,6 +80,10 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 if (_sequencer!= null) {
                     // Yeah, this shouldn't reference SymbolBrokerVM directly...
                     IList<Symbol> syms = _sequencer.SymbolBroker.GetHiddenSymbols(name);
+                    if (syms == null || syms.Count == 0) {
+                        item.ToolTip = "No other data for " + name;
+                        return;
+                    }
                     StringBuilder sb = new StringBuilder("Also: ");
                     for (int i = 0; i < syms.Count; i++) {
                         sb.Append(syms[i].Key);

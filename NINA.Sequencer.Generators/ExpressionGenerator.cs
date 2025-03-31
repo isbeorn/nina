@@ -165,7 +165,6 @@ namespace NINA.Sequencer.Generators {
                 bool hasValidator = false;
                 string? proxy = null;
                 bool jsonIgnore = false;
-                bool jsonDontSerialize = true;
                 bool hasDefault = false;
 
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
@@ -196,8 +195,6 @@ namespace NINA.Sequencer.Generators {
                         proxy = (string)kvp.Value.Value;
                     } else if (kvp.Key == "JsonIgnore") {
                         jsonIgnore = (bool)kvp.Value.Value;
-                    } else if (kvp.Key == "JsonDontSerialize") {
-                        jsonDontSerialize = (bool)kvp.Value.Value;
                     } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
@@ -248,7 +245,7 @@ namespace NINA.Sequencer.Generators {
             }}
         }}
 ";
-                } else if (jsonDontSerialize) {
+                } else {
                     propertiesSource += $@"
         
         [JsonProperty(propertyName: ""{propName}"")]
@@ -276,22 +273,6 @@ namespace NINA.Sequencer.Generators {
                     propertiesSource += $@";
             set {{
                 {propNameExpression}.Definition = value.ToString();
-            }}
-        }}
-";
-                } else {
-                    propertiesSource += $@"
-
-        [Json";
-                    propertiesSource += jsonIgnore ? "Ignore" : "Property";
-                    propertiesSource += $@"]
-        public {fieldType} {propName} {{
-            get {{
-                return ({fieldType}){propNameExpression}.Value;
-            }}
-            set {{
-                {propNameExpression}.Definition = value.ToString ();
-                RaisePropertyChanged();
             }}
         }}
 ";
@@ -375,12 +356,6 @@ namespace {namespaceName}
         public bool JsonIgnore {
             get { return _jsonIgnore; }
             set { _jsonIgnore = value; }
-        }
-
-        public bool _jsonDontSerialize = false;
-        public bool JsonDontSerialize {
-            get { return _jsonDontSerialize; }
-            set { _jsonDontSerialize = value; }
         }
 
         public string _proxy = "";
