@@ -37,14 +37,12 @@ namespace NINA.Core.Utility {
 
     public interface IDeviceUpdateTimer {
         Func<Dictionary<string, object>> GetValuesFunc { get; }
-        IProgress<Dictionary<string, object>> Progress { get; }
+        public Action<Dictionary<string, object>> UpdateValuesFunc { get; }
         double Interval { get; set; }
 
         Task Stop();
         Task Run();
         Task WaitForNextUpdate(CancellationToken ct);
-        [Obsolete("Superseded by \"Run\"")]
-        void Start();
     }
 
     public class DeviceUpdateTimer : IDeviceUpdateTimer {
@@ -52,13 +50,13 @@ namespace NINA.Core.Utility {
         public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
             GetValuesFunc = getValuesFunc;
             Interval = interval;
-            Progress = new Progress<Dictionary<string, object>>(updateValuesFunc);
+            UpdateValuesFunc = updateValuesFunc;
         }
 
         private CancellationTokenSource cts;
         private Task task;
         public Func<Dictionary<string, object>> GetValuesFunc { get; private set; }
-        public IProgress<Dictionary<string, object>> Progress { get; private set; }
+        public Action<Dictionary<string, object>> UpdateValuesFunc { get; private set; }
         public DateTimeOffset LastUpdate { get; private set; } = DateTimeOffset.MinValue;
         public double Interval { get; set; }
 
@@ -77,11 +75,6 @@ namespace NINA.Core.Utility {
             }
         }
 
-        [Obsolete("Superseded by \"Run\"")]
-        public void Start() {
-            _ = Run();
-        }
-
         public async Task Run() {
             task = Task.Run(async () => {
                 try { cts?.Dispose(); } catch { }
@@ -95,7 +88,7 @@ namespace NINA.Core.Utility {
                     while (await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
                         values = GetValuesFunc();
 
-                        Progress.Report(values);
+                        UpdateValuesFunc(values);
 
                         LastUpdate = DateTimeOffset.UtcNow;
                     }
@@ -105,7 +98,7 @@ namespace NINA.Core.Utility {
                 } finally {
                     values.Clear();
                     values.Add("Connected", false);
-                    Progress.Report(values);
+                    UpdateValuesFunc(values);
                 }
             });
             await task;
