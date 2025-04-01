@@ -13,8 +13,11 @@
 #endregion "copyright"
 
 using System;
+using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -50,11 +53,24 @@ namespace NINA.Sequencer.Serialization {
                     string id = (jObject["$ref"] as JValue).Value as string;
                     target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
                 } else {
+
                     // Create target object based on JObject
                     target = Create(objectType, jObject);
 
                     // Populate the object properties
                     serializer.Populate(jObject.CreateReader(), target);
+
+
+                    JToken token;
+                    if (jObject.TryGetValue("$type", out token)) {
+                        string ts = token.ToString();
+                        if (ts.EndsWith(", WhenPlugin")) {
+                            JsonCreationConverter<ISequenceItem> itemConverter = this as JsonCreationConverter<ISequenceItem>;
+                            if (itemConverter != null) {
+                                target = (T)PowerupsUpgrader.UpgradeIntruction(itemConverter, target);
+                            }
+                        }
+                    }
                 }
             }
 
