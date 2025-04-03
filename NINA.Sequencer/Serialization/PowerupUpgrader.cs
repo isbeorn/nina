@@ -1,26 +1,41 @@
-﻿using CsvHelper;
+﻿using Accord.Statistics.Kernels;
+using CsvHelper;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Nikon;
 using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
 using NINA.Equipment.Model;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
+using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace NINA.Sequencer.Serialization {
     public class PowerupsUpgrader {
 
-        private static ISequencerFactory sequencerFactory = null;
+        private static ISequencerFactory itemFactory = null;
+        private static ISequencerFactory containerFactory = null;
 
         private static T CreateNewInstruction<T>(string oldName) {
-            var method = sequencerFactory.GetType().GetMethod(nameof(sequencerFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
-            T newObj = (T)method.Invoke(sequencerFactory, null);
+            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
+            T newObj = (T)method.Invoke(itemFactory, null);
+            // For now...
+            ((ISequenceItem)newObj).Name += " [SP: " + oldName;
+            return newObj;
+        }
+        private static T CreateNewContainer<T>(string oldName) {
+            var method = containerFactory.GetType().GetMethod(nameof(itemFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
+            T newObj = (T)method.Invoke(containerFactory, null);
             // For now...
             ((ISequenceItem)newObj).Name += " [SP: " + oldName;
             return newObj;
@@ -34,63 +49,119 @@ namespace NINA.Sequencer.Serialization {
 
         }
 
-        public static object UpgradeIntruction(JsonCreationConverter<ISequenceItem> conv, object obj) {
-
-            if (sequencerFactory == null) {
+        public static void RegisterContainerConverter(JsonCreationConverter<ISequenceContainer> conv) {
+            if (containerFactory == null) {
                 FieldInfo fi = conv.GetType().GetField("factory", BindingFlags.Instance | BindingFlags.NonPublic);
-                sequencerFactory = (ISequencerFactory)fi.GetValue(conv);
+                containerFactory = (ISequencerFactory)fi.GetValue(conv);
             }
+        }
 
-            ISequenceItem item = obj as ISequenceItem;
-            Type t = item.GetType();
-            switch (t.Name) {
-                case "TakeExposure": {
-                        TakeExposure newObj = CreateNewInstruction<TakeExposure>(item.Name);
-                        newObj.ExposureTimeExpression.Definition = GetExpr(t, item, "EExpr");
-                        newObj.GainExpression.Definition = GetExpr(t, item, "GExpr");
-                        newObj.OffsetExpression.Definition = GetExpr(t, item, "OExpr");
+        public static void RegisterItemConverter(JsonCreationConverter<ISequenceItem> conv) {
+            if (itemFactory == null) {
+                FieldInfo fi = conv.GetType().GetField("factory", BindingFlags.Instance | BindingFlags.NonPublic);
+                itemFactory = (ISequencerFactory)fi.GetValue(conv);
+            }
+        }
 
-                        PropertyInfo pi = t.GetProperty("Binning");
-                        newObj.Binning = (BinningMode)pi.GetValue(item);
-                        pi = t.GetProperty("ImageType");
-                        newObj.ImageType = (string)pi.GetValue(item);
-                        return newObj;
-                    }
-                case "SetConstant": {
-                        DefineConstant newObj = CreateNewInstruction<DefineConstant>(item.Name);
-                        PropertyInfo pi = t.GetProperty("Definition");
-                        newObj.Expr.Definition = (string)pi.GetValue(item);
-                        pi = t.GetProperty("Identifier");
-                        newObj.Identifier = (string)pi.GetValue(item);
-                        return newObj;
-                    }
-                case "SetVariable": {
-                        DefineVariable newObj = CreateNewInstruction<DefineVariable>(item.Name);
-                        PropertyInfo pi = t.GetProperty("OriginalDefinition");
-                        newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
-                        pi = t.GetProperty("Identifier");
-                        newObj.Identifier = (string)pi.GetValue(item);
-                        return newObj;
-                    }
-                case "ResetVariable": {
-                        ResetVariable newObj = CreateNewInstruction<ResetVariable>(item.Name);
-                        PropertyInfo pi = t.GetProperty("Variable");
-                        newObj.Variable = (string)pi.GetValue(item);
-                        pi = t.GetProperty("Expr");
-                        object expr = pi.GetValue(item);
-                        pi = expr.GetType().GetProperty("Expression");
-                        string exp = pi.GetValue(expr) as string;
-                        if (exp != null) {
-                            newObj.Expr.Definition = exp;
+        public static object UpgradeInstruction(object obj) {
+
+            try {
+                ISequenceItem item = obj as ISequenceItem;
+                if (item == null) {
+                    // Trigger (for now)
+                    return obj;
+                }
+                Type t = item.GetType();
+                Logger.Info("Upgrade: " + t);
+                switch (t.Name) {
+                    case "SwitchFilter": {
+                            SwitchFilter newObj = CreateNewInstruction<SwitchFilter>(item.Name);
+                            PropertyInfo pi = t.GetProperty("FilterExpr");
+                            newObj.ComboBoxText = (string)pi.GetValue(item);
+                            return newObj;
                         }
-                        return newObj;
-                    }
-                default: {
-                        item.Name += " [Powerups";
-                        break;
-                    }
+                    case "SmartExposure": {
+                            SmartExposure newObj = CreateNewContainer<SmartExposure>(item.Name);
+                            ((LoopCondition)newObj.Conditions[0]).IterationsExpression.Definition = GetExpr(t, item, "IterExpr");
+                            ISequenceContainer smart = item as ISequenceContainer;
+                            TakeExposure oldTe = (TakeExposure)smart.Items[1];
+                            TakeExposure newTe = (TakeExposure)newObj.Items[1];
+                            newTe.ExposureTimeExpression.Definition = oldTe?.ExposureTimeExpression.Definition;
+                            newTe.GainExpression.Definition = oldTe?.GainExpression.Definition;
+                            newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
+                            newTe.Binning = oldTe?.Binning;
+                            newTe.ImageType = oldTe?.ImageType;
+                            // Filter?   Need to update SwitchFilter first...
+                            SwitchFilter oldSf = (SwitchFilter)smart.Items[0];
+                            SwitchFilter newSf = (SwitchFilter)newObj.Items[0];
+                            newSf.ComboBoxText = oldSf.ComboBoxText;
+                            // Dither?
+                            return newObj;
+                        }
+                    case "TakeManyExposures": {
+                            TakeManyExposures newObj = CreateNewContainer<TakeManyExposures>(item.Name);
+                            ((LoopCondition)newObj.Conditions[0]).IterationsExpression.Definition = GetExpr(t, item, "IterExpr");
+                            ISequenceContainer smart = item as ISequenceContainer;
+                            TakeExposure oldTe = (TakeExposure)smart.Items[0];
+                            TakeExposure newTe = (TakeExposure)newObj.Items[0];
+                            newTe.ExposureTimeExpression.Definition = oldTe?.ExposureTimeExpression.Definition;
+                            newTe.GainExpression.Definition = oldTe?.GainExpression.Definition;
+                            newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
+                            newTe.Binning = oldTe?.Binning;
+                            newTe.ImageType = oldTe?.ImageType;
+                            return newObj;
+                        }
+                    case "TakeExposure": {
+                            TakeExposure newObj = CreateNewInstruction<TakeExposure>(item.Name);
+                            newObj.ExposureTimeExpression.Definition = GetExpr(t, item, "EExpr");
+                            newObj.GainExpression.Definition = GetExpr(t, item, "GExpr");
+                            newObj.OffsetExpression.Definition = GetExpr(t, item, "OExpr");
+
+                            PropertyInfo pi = t.GetProperty("Binning");
+                            newObj.Binning = (BinningMode)pi.GetValue(item);
+                            pi = t.GetProperty("ImageType");
+                            newObj.ImageType = (string)pi.GetValue(item);
+                            return newObj;
+                        }
+                    case "SetConstant": {
+                            DefineConstant newObj = CreateNewInstruction<DefineConstant>(item.Name);
+                            PropertyInfo pi = t.GetProperty("Definition");
+                            newObj.Expr.Definition = (string)pi.GetValue(item);
+                            pi = t.GetProperty("Identifier");
+                            newObj.Identifier = (string)pi.GetValue(item);
+                            return newObj;
+                        }
+                    case "SetVariable": {
+                            DefineVariable newObj = CreateNewInstruction<DefineVariable>(item.Name);
+                            PropertyInfo pi = t.GetProperty("OriginalDefinition");
+                            newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
+                            pi = t.GetProperty("Identifier");
+                            newObj.Identifier = (string)pi.GetValue(item);
+                            return newObj;
+                        }
+                    case "ResetVariable": {
+                            ResetVariable newObj = CreateNewInstruction<ResetVariable>(item.Name);
+                            PropertyInfo pi = t.GetProperty("Variable");
+                            newObj.Variable = (string)pi.GetValue(item);
+                            pi = t.GetProperty("Expr");
+                            object expr = pi.GetValue(item);
+                            pi = expr.GetType().GetProperty("Expression");
+                            string exp = pi.GetValue(expr) as string;
+                            if (exp != null) {
+                                newObj.Expr.Definition = exp;
+                            }
+                            return newObj;
+                        }
+                    default: {
+                            item.Name += " [Powerups";
+                            break;
+                        }
+                }
+                return obj;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return obj;
             }
-            return obj;
         }
     }
 }

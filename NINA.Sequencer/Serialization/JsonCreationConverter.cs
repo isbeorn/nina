@@ -13,11 +13,14 @@
 #endregion "copyright"
 
 using System;
+using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using Parlot.Fluent;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -45,6 +48,12 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
+            if (this is JsonCreationConverter<ISequenceContainer> c) {
+                PowerupsUpgrader.RegisterContainerConverter(c);
+            } else if (this is JsonCreationConverter<ISequenceItem> i) {
+                PowerupsUpgrader.RegisterItemConverter(i);
+            }
+
             // Load JObject from stream
             JObject jObject = JObject.Load(reader);
             T target = default(T);
@@ -53,6 +62,9 @@ namespace NINA.Sequencer.Serialization {
                     string id = (jObject["$ref"] as JValue).Value as string;
                     target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
                 } else {
+                    JToken token;
+                    jObject.TryGetValue("$type", out token);
+                    Logger.Info("Creating " + objectType);
 
                     // Create target object based on JObject
                     target = Create(objectType, jObject);
@@ -60,15 +72,10 @@ namespace NINA.Sequencer.Serialization {
                     // Populate the object properties
                     serializer.Populate(jObject.CreateReader(), target);
 
-
-                    JToken token;
                     if (jObject.TryGetValue("$type", out token)) {
                         string ts = token.ToString();
                         if (ts.EndsWith(", WhenPlugin")) {
-                            JsonCreationConverter<ISequenceItem> itemConverter = this as JsonCreationConverter<ISequenceItem>;
-                            if (itemConverter != null) {
-                                target = (T)PowerupsUpgrader.UpgradeIntruction(itemConverter, target);
-                            }
+                            target = (T)PowerupsUpgrader.UpgradeInstruction(target);
                         }
                     }
                 }
