@@ -11,6 +11,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
+using NINA.Sequencer.SequenceItem.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,6 +26,7 @@ namespace NINA.Sequencer.Serialization {
 
         private static ISequencerFactory itemFactory = null;
         private static ISequencerFactory containerFactory = null;
+        private static ISequencerFactory conditionFactory = null;
 
         private static T CreateNewInstruction<T>(string oldName) {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
@@ -34,14 +36,22 @@ namespace NINA.Sequencer.Serialization {
             return newObj;
         }
         private static T CreateNewContainer<T>(string oldName) {
-            var method = containerFactory.GetType().GetMethod(nameof(itemFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
+            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
             // For now...
-            ((ISequenceItem)newObj).Name += " [SP: " + oldName;
+            ((ISequenceContainer)newObj).Name += " [SP: " + oldName;
             return newObj;
         }
 
-        private static string GetExpr (Type t, ISequenceItem item, string name) {
+        private static T CreateNewCondition<T>(string oldName) {
+            var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
+            T newObj = (T)method.Invoke(conditionFactory, null);
+            // For now...
+            ((ISequenceCondition)newObj).Name += " [SP: " + oldName;
+            return newObj;
+        }
+
+        private static string GetExpr (Type t, ISequenceEntity item, string name) {
             PropertyInfo pi = t.GetProperty(name);
             object expr = pi.GetValue(item);
             pi = expr.GetType().GetProperty("Expression");
@@ -62,18 +72,40 @@ namespace NINA.Sequencer.Serialization {
                 itemFactory = (ISequencerFactory)fi.GetValue(conv);
             }
         }
+        public static void RegisterConditionConverter(JsonCreationConverter<ISequenceCondition> conv) {
+            if (conditionFactory == null) {
+                FieldInfo fi = conv.GetType().GetField("factory", BindingFlags.Instance | BindingFlags.NonPublic);
+                conditionFactory = (ISequencerFactory)fi.GetValue(conv);
+            }
+        }
 
         public static object UpgradeInstruction(object obj) {
 
             try {
                 ISequenceItem item = obj as ISequenceItem;
-                if (item == null) {
+                ISequenceCondition condition = obj as ISequenceCondition;
+                if (item == null && condition == null) {
                     // Trigger (for now)
                     return obj;
                 }
-                Type t = item.GetType();
+                Type t;
+                if (condition != null) {
+                    t = condition.GetType();
+                } else {
+                    t = item.GetType();
+                }
                 Logger.Info("Upgrade: " + t);
                 switch (t.Name) {
+                    case "LoopWhile": {
+                            LoopWhile newObj = CreateNewCondition<LoopWhile>(condition.Name);
+                            newObj.PredicateExpression.Definition = GetExpr(t, condition, "PredicateExpr");
+                            return newObj;
+                        }
+                    case "WaitUntil": {
+                            WaitUntil newObj = CreateNewInstruction<WaitUntil>(item.Name);
+                            newObj.PredicateExpression.Definition = GetExpr(t, item, "PredicateExpr");
+                            return newObj;
+                        }
                     case "SwitchFilter": {
                             SwitchFilter newObj = CreateNewInstruction<SwitchFilter>(item.Name);
                             PropertyInfo pi = t.GetProperty("FilterExpr");

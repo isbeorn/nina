@@ -18,6 +18,7 @@ using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
+using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using Parlot.Fluent;
@@ -50,6 +51,8 @@ namespace NINA.Sequencer.Serialization {
 
             if (this is JsonCreationConverter<ISequenceContainer> c) {
                 PowerupsUpgrader.RegisterContainerConverter(c);
+            } else if (this is JsonCreationConverter<ISequenceCondition> q) {
+                PowerupsUpgrader.RegisterConditionConverter(q);
             } else if (this is JsonCreationConverter<ISequenceItem> i) {
                 PowerupsUpgrader.RegisterItemConverter(i);
             }
