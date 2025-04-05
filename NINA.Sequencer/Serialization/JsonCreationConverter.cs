@@ -81,6 +81,7 @@ namespace NINA.Sequencer.Serialization {
                     target = Create(objectType, jObject);
 
                     if (lite) {
+                        // Fix up name of the upgraded instruction (this doesn't persist)
                         ((ISequenceEntity)target).Name += "[SP->Lite";
                     }
 
@@ -106,15 +107,17 @@ namespace NINA.Sequencer.Serialization {
         // When all that's needed is changing the $type
         private (bool, string) PowerupsLiteSimpleMigration(string token) => token switch {
             "WhenPlugin.When.DIYMeridianFlipTrigger, WhenPlugin" => (true, "PowerupsLite.When.DIYMeridianFlipTrigger, PowerupsLite"),
+            "WhenPlugin.When.AssignVariables, WhenPlugin" => (true, "PowerupsLite.When.AssignVariables, PowerupsLite"),
             "WhenPlugin.When.AutofocusTrigger, WhenPlugin" => (true, "PowerupsLite.When.AutofocusTrigger, PowerupsLite"),
             "WhenPlugin.When.Break, WhenPlugin" => (true, "PowerupsLite.When.Break, PowerupsLite"),
             "WhenPlugin.When.RotateImage, WhenPlugin" => (true, "PowerupsLite.When.RotateImage, PowerupsLite"),
             "WhenPlugin.When.DIYTrigger, WhenPlugin" => (true, "PowerupsLite.When.DIYTrigger, PowerupsLite"),
+            "WhenPlugin.When.DoFlip, WhenPlugin" => (true, "PowerupsLite.When.DoFlip, PowerupsLite"),
             "WhenPlugin.When.EndInstructionSet, WhenPlugin" => (true, "PowerupsLite.When.EndInstructionSet, PowerupsLite"),
             "WhenPlugin.When.EndSequence, WhenPlugin" => (true, "PowerupsLite.When.EndSequence, PowerupsLite"),
             "WhenPlugin.When.ExternalScript, WhenPlugin" => (true, "PowerupsLite.When.ExternalScript, PowerupsLite"),
             "WhenPlugin.When.FlipRotator, WhenPlugin" => (true, "PowerupsLite.When.FlipRotator, PowerupsLite"),
-            "WhenPlugin.When.DoFlip, WhenPlugin" => (true, "PowerupsLite.When.DoFlip, PowerupsLite"),
+            "WhenPlugin.When.GSSend, WhenPlugin" => (true, "PowerupsLite.When.GSSend, PowerupsLite"),
             "WhenPlugin.When.ForEachList, WhenPlugin" => (true, "PowerupsLite.When.ForEachList, PowerupsLite"),
             "WhenPlugin.When.IfFailed, WhenPlugin" => (true, "PowerupsLite.When.IfFailed, PowerupsLite"),
             "WhenPlugin.When.IfTimeout, WhenPlugin" => (true, "PowerupsLite.When.IfTimeout, PowerupsLite"),
