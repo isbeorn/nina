@@ -87,7 +87,7 @@ namespace NINA.Sequencer.Serialization {
 
                     if (lite != Upgrade.NINA) {
                         // Fix up name of the upgraded instruction (this doesn't persist)
-                        ((ISequenceEntity)target).Name += "[SP->Lite";
+                        ((ISequenceEntity)target).Name += " [SP->Lite";
                     }
 
                     // Populate the object properties
