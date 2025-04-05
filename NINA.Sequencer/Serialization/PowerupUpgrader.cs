@@ -190,7 +190,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     default: {
-                            item.Name += " [Powerups";
+                            item.Name += " [MANUAL UPGRADE REQUIRED";
                             break;
                         }
                 }

@@ -93,9 +93,7 @@ namespace NINA.Sequencer.Serialization {
                     // Populate the object properties
                     serializer.Populate(jObject.CreateReader(), target);
 
-                    if (lite == Upgrade.LiteComplex) {
-                        target = (T)PowerupsLiteComplexMigration(target, originalType, objectType, jObject);
-                    } else if (jObject.TryGetValue("$type", out token)) {
+                    if (jObject.TryGetValue("$type", out token)) {
                         string ts = token.ToString();
                         if (ts.EndsWith(", WhenPlugin")) {
                             target = (T)PowerupsUpgrader.UpgradeInstruction(target);
@@ -144,30 +142,6 @@ namespace NINA.Sequencer.Serialization {
 
             _ => (Upgrade.NINA, token)
         };
-
-        private object PowerupsLiteComplexMigration(object oldObj, string originalType, Type objectType, JObject jObject) {
-
-            switch (originalType) {
-                case "WhenPlugin.When.AddImagePattern, WhenPlugin": {
-                        object oldExpr = oldObj.GetType().GetProperty("Expr").GetValue(oldObj, null);
-                        string oldDef = oldExpr.GetType().GetProperty("Expression").GetValue(oldExpr, null) as string;
-                        JObject dupe = new JObject(jObject);
-                        dupe["$type"] = "PowerupsLite.When.AddImagePattern, PowerupsLite";
-                        object newObj = Create(objectType, dupe);
-                        Expression expr = newObj.GetType().GetProperty("ExprExpression").GetValue(newObj, null) as Expression;
-                        if (oldDef != null && expr != null) {
-                            expr.Definition = oldDef;
-                        }
-                        ((ISequenceEntity)newObj).Name += " [SP->Lite";
-                        string identifier = oldObj.GetType().GetProperty("Identifier").GetValue(oldObj, null) as string;
-                        newObj.GetType().GetProperty("Identifier").SetValue(newObj, identifier);
-                        string desc = oldObj.GetType().GetProperty("PatternDescription").GetValue(oldObj, null) as string;
-                        newObj.GetType().GetProperty("PatternDescription").SetValue(newObj, desc);
-                        return newObj;
-                    }
-            }
-            return oldObj;
-        }
 
         protected Type GetType(string typeString) {
             var t = Type.GetType(typeString);
