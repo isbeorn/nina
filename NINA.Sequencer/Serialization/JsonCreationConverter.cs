@@ -149,7 +149,8 @@ namespace NINA.Sequencer.Serialization {
 
             switch (originalType) {
                 case "WhenPlugin.When.AddImagePattern, WhenPlugin": {
-                        string oldDef = oldObj.GetType().GetProperty("Expr").GetValue(oldObj, null) as string;
+                        object oldExpr = oldObj.GetType().GetProperty("Expr").GetValue(oldObj, null);
+                        string oldDef = oldExpr.GetType().GetProperty("Expression").GetValue(oldExpr, null) as string;
                         JObject dupe = new JObject(jObject);
                         dupe["$type"] = "PowerupsLite.When.AddImagePattern, PowerupsLite";
                         object newObj = Create(objectType, dupe);
@@ -157,6 +158,11 @@ namespace NINA.Sequencer.Serialization {
                         if (oldDef != null && expr != null) {
                             expr.Definition = oldDef;
                         }
+                        ((ISequenceEntity)newObj).Name += " [SP->Lite";
+                        string identifier = oldObj.GetType().GetProperty("Identifier").GetValue(oldObj, null) as string;
+                        newObj.GetType().GetProperty("Identifier").SetValue(newObj, identifier);
+                        string desc = oldObj.GetType().GetProperty("PatternDescription").GetValue(oldObj, null) as string;
+                        newObj.GetType().GetProperty("PatternDescription").SetValue(newObj, desc);
                         return newObj;
                     }
             }
