@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using System;
+using System.Reflection;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Xaml.Behaviors;
 using Newtonsoft.Json;
@@ -20,8 +21,11 @@ using Newtonsoft.Json.Linq;
 using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using Parlot.Fluent;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using static NINA.Astrometry.NOVAS;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -67,20 +71,21 @@ namespace NINA.Sequencer.Serialization {
                 } else {
                     JToken token;
                     jObject.TryGetValue("$type", out token);
+                    string originalType = token.ToString();
 
-                    bool lite = false;
+                    Upgrade lite = Upgrade.NINA;
                     (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
-                    if (lite) {
+                    if (lite == Upgrade.Lite) {
+                        // Substitute with Powerups Lite class
                         jObject["$type"] = token;
                     }
-
-                    Logger.Info("Creating " + objectType);
 
                     // Create target object based on JObject
                     target = Create(objectType, jObject);
 
-                    if (lite) {
+
+                    if (lite != Upgrade.NINA) {
                         // Fix up name of the upgraded instruction (this doesn't persist)
                         ((ISequenceEntity)target).Name += "[SP->Lite";
                     }
@@ -88,7 +93,9 @@ namespace NINA.Sequencer.Serialization {
                     // Populate the object properties
                     serializer.Populate(jObject.CreateReader(), target);
 
-                    if (jObject.TryGetValue("$type", out token)) {
+                    if (lite == Upgrade.LiteComplex) {
+                        target = (T)PowerupsLiteComplexMigration(target, originalType, objectType, jObject);
+                    } else if (jObject.TryGetValue("$type", out token)) {
                         string ts = token.ToString();
                         if (ts.EndsWith(", WhenPlugin")) {
                             target = (T)PowerupsUpgrader.UpgradeInstruction(target);
@@ -104,34 +111,57 @@ namespace NINA.Sequencer.Serialization {
             throw new NotImplementedException();
         }
 
+        private enum Upgrade { NINA, Lite, LiteComplex }
+
         // When all that's needed is changing the $type
-        private (bool, string) PowerupsLiteSimpleMigration(string token) => token switch {
-            "WhenPlugin.When.DIYMeridianFlipTrigger, WhenPlugin" => (true, "PowerupsLite.When.DIYMeridianFlipTrigger, PowerupsLite"),
-            "WhenPlugin.When.AssignVariables, WhenPlugin" => (true, "PowerupsLite.When.AssignVariables, PowerupsLite"),
-            "WhenPlugin.When.AutofocusTrigger, WhenPlugin" => (true, "PowerupsLite.When.AutofocusTrigger, PowerupsLite"),
-            "WhenPlugin.When.Break, WhenPlugin" => (true, "PowerupsLite.When.Break, PowerupsLite"),
-            "WhenPlugin.When.RotateImage, WhenPlugin" => (true, "PowerupsLite.When.RotateImage, PowerupsLite"),
-            "WhenPlugin.When.DIYTrigger, WhenPlugin" => (true, "PowerupsLite.When.DIYTrigger, PowerupsLite"),
-            "WhenPlugin.When.DoFlip, WhenPlugin" => (true, "PowerupsLite.When.DoFlip, PowerupsLite"),
-            "WhenPlugin.When.EndInstructionSet, WhenPlugin" => (true, "PowerupsLite.When.EndInstructionSet, PowerupsLite"),
-            "WhenPlugin.When.EndSequence, WhenPlugin" => (true, "PowerupsLite.When.EndSequence, PowerupsLite"),
-            "WhenPlugin.When.ExternalScript, WhenPlugin" => (true, "PowerupsLite.When.ExternalScript, PowerupsLite"),
-            "WhenPlugin.When.FlipRotator, WhenPlugin" => (true, "PowerupsLite.When.FlipRotator, PowerupsLite"),
-            "WhenPlugin.When.GSSend, WhenPlugin" => (true, "PowerupsLite.When.GSSend, PowerupsLite"),
-            "WhenPlugin.When.ForEachList, WhenPlugin" => (true, "PowerupsLite.When.ForEachList, PowerupsLite"),
-            "WhenPlugin.When.IfFailed, WhenPlugin" => (true, "PowerupsLite.When.IfFailed, PowerupsLite"),
-            "WhenPlugin.When.IfTimeout, WhenPlugin" => (true, "PowerupsLite.When.IfTimeout, PowerupsLite"),
-            "WhenPlugin.When.InterruptTrigger, WhenPlugin" => (true, "PowerupsLite.When.InterruptTrigger, PowerupsLite"),
-            "WhenPlugin.When.LogThis, WhenPlugin" => (true, "PowerupsLite.When.LogThis, PowerupsLite"),
-            "WhenPlugin.When.OnceSafe, WhenPlugin" => (true, "PowerupsLite.When.OnceSafe, PowerupsLite"),
-            "WhenPlugin.When.PassMeridian, WhenPlugin" => (true, "PowerupsLite.When.PassMeridian, PowerupsLite"),
-            "WhenPlugin.When.SafeTrigger, WhenPlugin" => (true, "PowerupsLite.When.SafeTrigger, PowerupsLite"),
-            "WhenPlugin.When.TemplateByReference, WhenPlugin" => (true, "PowerupsLite.When.TemplateByReference, PowerupsLite"),
-            "WhenPlugin.When.WaitIndefinitely, WhenPlugin" => (true, "PowerupsLite.When.WaitIndefinitely, PowerupsLite"),
-            "WhenPlugin.When.WaitUntilSafe, WhenPlugin" => (true, "PowerupsLite.When.WaitUntilSafe, PowerupsLite"),
-            "WhenPlugin.When.WhenUnsafe, WhenPlugin" => (true, "PowerupsLite.When.WhenUnsafe, PowerupsLite"),
-            _ => (false, token)
+        private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
+            "WhenPlugin.When.DIYMeridianFlipTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.DIYMeridianFlipTrigger, PowerupsLite"),
+            "WhenPlugin.When.AssignVariables, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.AssignVariables, PowerupsLite"),
+            "WhenPlugin.When.AutofocusTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.AutofocusTrigger, PowerupsLite"),
+            "WhenPlugin.When.Break, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.Break, PowerupsLite"),
+            "WhenPlugin.When.RotateImage, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.RotateImage, PowerupsLite"),
+            "WhenPlugin.When.DIYTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.DIYTrigger, PowerupsLite"),
+            "WhenPlugin.When.DoFlip, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.DoFlip, PowerupsLite"),
+            "WhenPlugin.When.EndInstructionSet, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.EndInstructionSet, PowerupsLite"),
+            "WhenPlugin.When.EndSequence, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.EndSequence, PowerupsLite"),
+            "WhenPlugin.When.ExternalScript, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ExternalScript, PowerupsLite"),
+            "WhenPlugin.When.FlipRotator, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.FlipRotator, PowerupsLite"),
+            "WhenPlugin.When.GSSend, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.GSSend, PowerupsLite"),
+            "WhenPlugin.When.ForEachList, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ForEachList, PowerupsLite"),
+            "WhenPlugin.When.IfFailed, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfFailed, PowerupsLite"),
+            "WhenPlugin.When.IfTimeout, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfTimeout, PowerupsLite"),
+            "WhenPlugin.When.InterruptTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.InterruptTrigger, PowerupsLite"),
+            "WhenPlugin.When.LogThis, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.LogThis, PowerupsLite"),
+            "WhenPlugin.When.OnceSafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.OnceSafe, PowerupsLite"),
+            "WhenPlugin.When.PassMeridian, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.PassMeridian, PowerupsLite"),
+            "WhenPlugin.When.SafeTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.SafeTrigger, PowerupsLite"),
+            "WhenPlugin.When.TemplateByReference, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.TemplateByReference, PowerupsLite"),
+            "WhenPlugin.When.WaitIndefinitely, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WaitIndefinitely, PowerupsLite"),
+            "WhenPlugin.When.WaitUntilSafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WaitUntilSafe, PowerupsLite"),
+            "WhenPlugin.When.WhenUnsafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WhenUnsafe, PowerupsLite"),
+            // Complex types
+            "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.LiteComplex, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
+
+            _ => (Upgrade.NINA, token)
         };
+
+        private object PowerupsLiteComplexMigration(object oldObj, string originalType, Type objectType, JObject jObject) {
+
+            switch (originalType) {
+                case "WhenPlugin.When.AddImagePattern, WhenPlugin": {
+                        string oldDef = oldObj.GetType().GetProperty("Expr").GetValue(oldObj, null) as string;
+                        JObject dupe = new JObject(jObject);
+                        dupe["$type"] = "PowerupsLite.When.AddImagePattern, PowerupsLite";
+                        object newObj = Create(objectType, dupe);
+                        Expression expr = newObj.GetType().GetProperty("ExprExpression").GetValue(newObj, null) as Expression;
+                        if (oldDef != null && expr != null) {
+                            expr.Definition = oldDef;
+                        }
+                        return newObj;
+                    }
+            }
+            return oldObj;
+        }
 
         protected Type GetType(string typeString) {
             var t = Type.GetType(typeString);
