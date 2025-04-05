@@ -94,8 +94,14 @@ namespace NINA.Sequencer.Serialization {
                 } else {
                     t = item.GetType();
                 }
+
                 Logger.Info("Upgrade: " + t);
                 switch (t.Name) {
+                    case "WaitForTimeSpan": {
+                            WaitForTimeSpan newObj = CreateNewInstruction<WaitForTimeSpan>(item.Name);
+                            newObj.TimeExpression.Definition = GetExpr(t, item, "WaitExpr");
+                            return newObj;
+                        }
                     case "LoopWhile": {
                             LoopWhile newObj = CreateNewCondition<LoopWhile>(condition.Name);
                             newObj.PredicateExpression.Definition = GetExpr(t, condition, "PredicateExpr");
@@ -123,7 +129,6 @@ namespace NINA.Sequencer.Serialization {
                             newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
                             newTe.Binning = oldTe?.Binning;
                             newTe.ImageType = oldTe?.ImageType;
-                            // Filter?   Need to update SwitchFilter first...
                             SwitchFilter oldSf = (SwitchFilter)smart.Items[0];
                             SwitchFilter newSf = (SwitchFilter)newObj.Items[0];
                             newSf.ComboBoxText = oldSf.ComboBoxText;

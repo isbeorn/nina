@@ -67,10 +67,22 @@ namespace NINA.Sequencer.Serialization {
                 } else {
                     JToken token;
                     jObject.TryGetValue("$type", out token);
+
+                    bool lite = false;
+                    (lite, token) = PowerupsLiteMigration(token?.ToString());
+
+                    if (lite) {
+                        jObject["$type"] = token;
+                    }
+
                     Logger.Info("Creating " + objectType);
 
                     // Create target object based on JObject
                     target = Create(objectType, jObject);
+
+                    if (lite) {
+                        ((ISequenceEntity)target).Name += "[SP->Lite";
+                    }
 
                     // Populate the object properties
                     serializer.Populate(jObject.CreateReader(), target);
@@ -90,6 +102,11 @@ namespace NINA.Sequencer.Serialization {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             throw new NotImplementedException();
         }
+
+        private (bool, string) PowerupsLiteMigration(string token) => token switch {
+            "WhenPlugin.When.DIYMeridianFlipTrigger, WhenPlugin" => (true, "PowerupsLite.When.DIYMeridianFlipTrigger, PowerupsLite"),
+            _ => (false, token)
+        };
 
         protected Type GetType(string typeString) {
             var t = Type.GetType(typeString);
