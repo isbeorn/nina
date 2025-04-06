@@ -13,6 +13,7 @@ using NINA.Sequencer.SequenceItem.Camera;
 using NINA.Sequencer.SequenceItem.Dome;
 using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.SequenceItem.FilterWheel;
+using NINA.Sequencer.SequenceItem.Focuser;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.SequenceItem.Rotator;
 using NINA.Sequencer.SequenceItem.Utility;
@@ -35,11 +36,13 @@ namespace NINA.Sequencer.Serialization {
         private static ISequencerFactory conditionFactory = null;
         private static ISequencerFactory triggerFactory = null;
 
-        private static T CreateNewItem<T>(string oldName) {
+        private static T CreateNewItem<T>(ISequenceItem item) {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
-            // For now...
-            ((ISequenceItem)newObj).Name += " [SP: " + oldName;
+            ISequenceItem newItem = (ISequenceItem)newObj;
+            newItem.Name += " [SP: " + item.Name;
+            newItem.Attempts = item.Attempts;
+            newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
         }
         private static T CreateNewContainer<T>(string oldName) {
@@ -123,25 +126,33 @@ namespace NINA.Sequencer.Serialization {
                             return newObj; 
                         }
                     case "CoolCamera": {
-                            CoolCamera newObj = CreateNewItem<CoolCamera>(item.Name);
+                            CoolCamera newObj = CreateNewItem<CoolCamera>(item);
                             newObj.TemperatureExpression.Definition = GetExpr(t, item, "TempExpr");
                             newObj.DurationExpression.Definition = GetExpr(t, item, "DurExpr");
-                            newObj.Attempts = item.Attempts;
-                            newObj.ErrorBehavior = item.ErrorBehavior;
                             return newObj;
                         }
                     case "MoveRotatorMechanical": {
-                            MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item.Name);
+                            MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item);
                             newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
                             return newObj;
                         }
+                    case "MoveFocuserAbsolute": {
+                            MoveFocuserAbsolute newObj = CreateNewItem<MoveFocuserAbsolute>(item);
+                            newObj.PositionExpression.Definition = GetExpr(t, item, "PExpr");
+                            return newObj;
+                        }
+                    case "MoveFocuserRelative": {
+                            MoveFocuserRelative newObj = CreateNewItem<MoveFocuserRelative>(item);
+                            newObj.RelativePositionExpression.Definition = GetExpr(t, item, "PExpr");
+                            return newObj;
+                        }
                     case "SlewDomeAzimuth": {
-                            SlewDomeAzimuth newObj = CreateNewItem<SlewDomeAzimuth>(item.Name);
+                            SlewDomeAzimuth newObj = CreateNewItem<SlewDomeAzimuth>(item);
                             newObj.AzimuthDegreesExpression.Definition = GetExpr(t, item, "AzExpr");
                             return newObj;
                         }
                     case "WaitForTimeSpan": {
-                            WaitForTimeSpan newObj = CreateNewItem<WaitForTimeSpan>(item.Name);
+                            WaitForTimeSpan newObj = CreateNewItem<WaitForTimeSpan>(item);
                             newObj.TimeExpression.Definition = GetExpr(t, item, "WaitExpr");
                             return newObj;
                         }
@@ -151,12 +162,12 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "WaitUntil": {
-                            WaitUntil newObj = CreateNewItem<WaitUntil>(item.Name);
+                            WaitUntil newObj = CreateNewItem<WaitUntil>(item);
                             newObj.PredicateExpression.Definition = GetExpr(t, item, "PredicateExpr");
                             return newObj;
                         }
                     case "SwitchFilter": {
-                            SwitchFilter newObj = CreateNewItem<SwitchFilter>(item.Name);
+                            SwitchFilter newObj = CreateNewItem<SwitchFilter>(item);
                             PropertyInfo pi = t.GetProperty("FilterExpr");
                             newObj.ComboBoxText = (string)pi.GetValue(item);
                             return newObj;
@@ -192,7 +203,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "TakeExposure": {
-                            TakeExposure newObj = CreateNewItem<TakeExposure>(item.Name);
+                            TakeExposure newObj = CreateNewItem<TakeExposure>(item);
                             newObj.ExposureTimeExpression.Definition = GetExpr(t, item, "EExpr");
                             newObj.GainExpression.Definition = GetExpr(t, item, "GExpr");
                             newObj.OffsetExpression.Definition = GetExpr(t, item, "OExpr");
@@ -204,7 +215,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetConstant": {
-                            DefineConstant newObj = CreateNewItem<DefineConstant>(item.Name);
+                            DefineConstant newObj = CreateNewItem<DefineConstant>(item);
                             PropertyInfo pi = t.GetProperty("Definition");
                             newObj.Expr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
@@ -212,7 +223,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetVariable": {
-                            DefineVariable newObj = CreateNewItem<DefineVariable>(item.Name);
+                            DefineVariable newObj = CreateNewItem<DefineVariable>(item);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
                             newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
@@ -220,7 +231,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "ResetVariable": {
-                            ResetVariable newObj = CreateNewItem<ResetVariable>(item.Name);
+                            ResetVariable newObj = CreateNewItem<ResetVariable>(item);
                             PropertyInfo pi = t.GetProperty("Variable");
                             newObj.Variable = (string)pi.GetValue(item);
                             pi = t.GetProperty("Expr");
