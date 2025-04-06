@@ -17,6 +17,7 @@ using NINA.Sequencer.SequenceItem.Focuser;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.SequenceItem.Platesolving;
 using NINA.Sequencer.SequenceItem.Rotator;
+using NINA.Sequencer.SequenceItem.Switch;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
@@ -136,6 +137,11 @@ namespace NINA.Sequencer.Serialization {
                     case "MoveRotatorMechanical": {
                             MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item);
                             newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
+                            return newObj;
+                        }
+                    case "SetSwitchValue": {
+                            SetSwitchValue newObj = CreateNewItem<SetSwitchValue>(item);
+                            newObj.ValueExpression.Definition = GetExpr(t, item, "ValueExpr");
                             return newObj;
                         }
                     case "SlewToAltAz": {
