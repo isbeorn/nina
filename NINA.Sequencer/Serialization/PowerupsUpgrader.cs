@@ -1,5 +1,6 @@
 ﻿using Accord.Statistics.Kernels;
 using CsvHelper;
+using CsvHelper.Configuration.Attributes;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Nikon;
 using NINA.Core.Model.Equipment;
@@ -8,10 +9,15 @@ using NINA.Equipment.Model;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Camera;
+using NINA.Sequencer.SequenceItem.Dome;
 using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
+using NINA.Sequencer.SequenceItem.Rotator;
 using NINA.Sequencer.SequenceItem.Utility;
+using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Trigger.Guider;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +33,7 @@ namespace NINA.Sequencer.Serialization {
         private static ISequencerFactory itemFactory = null;
         private static ISequencerFactory containerFactory = null;
         private static ISequencerFactory conditionFactory = null;
+        private static ISequencerFactory triggerFactory = null;
 
         private static T CreateNewInstruction<T>(string oldName) {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
@@ -51,12 +58,12 @@ namespace NINA.Sequencer.Serialization {
             return newObj;
         }
 
-        private static string GetExpr (Type t, ISequenceEntity item, string name) {
-            PropertyInfo pi = t.GetProperty(name);
-            object expr = pi.GetValue(item);
-            pi = expr.GetType().GetProperty("Expression");
-            return pi.GetValue(expr) as string;
-
+        private static T CreateNewTrigger<T>(string oldName) {
+            var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
+            T newObj = (T)method.Invoke(triggerFactory, null);
+            // For now...
+            ((ISequenceTrigger)newObj).Name += " [SP: " + oldName;
+            return newObj;
         }
 
         public static void RegisterContainerConverter(JsonCreationConverter<ISequenceContainer> conv) {
@@ -78,14 +85,28 @@ namespace NINA.Sequencer.Serialization {
                 conditionFactory = (ISequencerFactory)fi.GetValue(conv);
             }
         }
+        public static void RegisterTriggerConverter(JsonCreationConverter<ISequenceTrigger> conv) {
+            if (triggerFactory == null) {
+                FieldInfo fi = conv.GetType().GetField("factory", BindingFlags.Instance | BindingFlags.NonPublic);
+                triggerFactory = (ISequencerFactory)fi.GetValue(conv);
+            }
+        }
+
+        private static string GetExpr(Type t, ISequenceEntity item, string name) {
+            PropertyInfo pi = t.GetProperty(name);
+            object expr = pi.GetValue(item);
+            pi = expr.GetType().GetProperty("Expression");
+            return pi.GetValue(expr) as string;
+
+        }
 
         public static object UpgradeInstruction(object obj) {
 
             try {
                 ISequenceItem item = obj as ISequenceItem;
                 ISequenceCondition condition = obj as ISequenceCondition;
-                if (item == null && condition == null) {
-                    // Trigger (for now)
+                ISequenceTrigger trigger = obj as ISequenceTrigger;
+                if (item == null && condition == null && trigger == null) {
                     return obj;
                 }
                 Type t;
@@ -97,6 +118,27 @@ namespace NINA.Sequencer.Serialization {
 
                 Logger.Info("Upgrade: " + t);
                 switch (t.Name) {
+                    case "DitherAfterExposures": {
+                            DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
+                            newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
+                            return 
+                        }
+                    case "CoolCamera": {
+                            CoolCamera newObj = CreateNewInstruction<CoolCamera>(item.Name);
+                            newObj.TemperatureExpression.Definition = GetExpr(t, item, "TempExpr");
+                            newObj.DurationExpression.Definition = GetExpr(t, item, "DurExpr");
+                            return newObj;
+                        }
+                    case "MoveRotatorMechanical": {
+                            MoveRotatorMechanical newObj = CreateNewInstruction<MoveRotatorMechanical>(item.Name);
+                            newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
+                            return newObj;
+                        }
+                    case "SlewDomeAzimuth": {
+                            SlewDomeAzimuth newObj = CreateNewInstruction<SlewDomeAzimuth>(item.Name);
+                            newObj.AzimuthDegreesExpression.Definition = GetExpr(t, item, "AzExpr");
+                            return newObj;
+                        }
                     case "WaitForTimeSpan": {
                             WaitForTimeSpan newObj = CreateNewInstruction<WaitForTimeSpan>(item.Name);
                             newObj.TimeExpression.Definition = GetExpr(t, item, "WaitExpr");
@@ -190,7 +232,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     default: {
-                            item.Name += " [MANUAL UPGRADE REQUIRED";
+                            item.Name += " MANUAL UPGRADE REQUIRED";
                             break;
                         }
                 }
