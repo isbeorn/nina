@@ -116,7 +116,7 @@ namespace NINA.Sequencer.Serialization {
                     t = item.GetType();
                 }
 
-                Logger.Info("Upgrade: " + t);
+                Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
@@ -232,7 +232,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     default: {
-                            item.Name += " MANUAL UPGRADE REQUIRED";
+                            item.Name += " *MANUAL UPGRADE REQUIRED*";
                             break;
                         }
                 }

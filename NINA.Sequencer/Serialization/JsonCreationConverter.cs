@@ -23,6 +23,7 @@ using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using Parlot.Fluent;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using static NINA.Astrometry.NOVAS;
@@ -53,12 +54,15 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
+            // There's got to be a better way to do this...
             if (this is JsonCreationConverter<ISequenceContainer> c) {
                 PowerupsUpgrader.RegisterContainerConverter(c);
             } else if (this is JsonCreationConverter<ISequenceCondition> q) {
                 PowerupsUpgrader.RegisterConditionConverter(q);
             } else if (this is JsonCreationConverter<ISequenceItem> i) {
                 PowerupsUpgrader.RegisterItemConverter(i);
+            } else if (this is JsonCreationConverter<ISequenceTrigger> t) {
+                PowerupsUpgrader.RegisterTriggerConverter(t);
             }
 
             // Load JObject from stream
