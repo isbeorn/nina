@@ -35,7 +35,7 @@ namespace NINA.Sequencer.Serialization {
         private static ISequencerFactory conditionFactory = null;
         private static ISequencerFactory triggerFactory = null;
 
-        private static T CreateNewInstruction<T>(string oldName) {
+        private static T CreateNewItem<T>(string oldName) {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             // For now...
@@ -97,7 +97,6 @@ namespace NINA.Sequencer.Serialization {
             object expr = pi.GetValue(item);
             pi = expr.GetType().GetProperty("Expression");
             return pi.GetValue(expr) as string;
-
         }
 
         public static object UpgradeInstruction(object obj) {
@@ -121,26 +120,28 @@ namespace NINA.Sequencer.Serialization {
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
                             newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
-                            return 
+                            return newObj; 
                         }
                     case "CoolCamera": {
-                            CoolCamera newObj = CreateNewInstruction<CoolCamera>(item.Name);
+                            CoolCamera newObj = CreateNewItem<CoolCamera>(item.Name);
                             newObj.TemperatureExpression.Definition = GetExpr(t, item, "TempExpr");
                             newObj.DurationExpression.Definition = GetExpr(t, item, "DurExpr");
+                            newObj.Attempts = item.Attempts;
+                            newObj.ErrorBehavior = item.ErrorBehavior;
                             return newObj;
                         }
                     case "MoveRotatorMechanical": {
-                            MoveRotatorMechanical newObj = CreateNewInstruction<MoveRotatorMechanical>(item.Name);
+                            MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item.Name);
                             newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
                             return newObj;
                         }
                     case "SlewDomeAzimuth": {
-                            SlewDomeAzimuth newObj = CreateNewInstruction<SlewDomeAzimuth>(item.Name);
+                            SlewDomeAzimuth newObj = CreateNewItem<SlewDomeAzimuth>(item.Name);
                             newObj.AzimuthDegreesExpression.Definition = GetExpr(t, item, "AzExpr");
                             return newObj;
                         }
                     case "WaitForTimeSpan": {
-                            WaitForTimeSpan newObj = CreateNewInstruction<WaitForTimeSpan>(item.Name);
+                            WaitForTimeSpan newObj = CreateNewItem<WaitForTimeSpan>(item.Name);
                             newObj.TimeExpression.Definition = GetExpr(t, item, "WaitExpr");
                             return newObj;
                         }
@@ -150,12 +151,12 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "WaitUntil": {
-                            WaitUntil newObj = CreateNewInstruction<WaitUntil>(item.Name);
+                            WaitUntil newObj = CreateNewItem<WaitUntil>(item.Name);
                             newObj.PredicateExpression.Definition = GetExpr(t, item, "PredicateExpr");
                             return newObj;
                         }
                     case "SwitchFilter": {
-                            SwitchFilter newObj = CreateNewInstruction<SwitchFilter>(item.Name);
+                            SwitchFilter newObj = CreateNewItem<SwitchFilter>(item.Name);
                             PropertyInfo pi = t.GetProperty("FilterExpr");
                             newObj.ComboBoxText = (string)pi.GetValue(item);
                             return newObj;
@@ -191,7 +192,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "TakeExposure": {
-                            TakeExposure newObj = CreateNewInstruction<TakeExposure>(item.Name);
+                            TakeExposure newObj = CreateNewItem<TakeExposure>(item.Name);
                             newObj.ExposureTimeExpression.Definition = GetExpr(t, item, "EExpr");
                             newObj.GainExpression.Definition = GetExpr(t, item, "GExpr");
                             newObj.OffsetExpression.Definition = GetExpr(t, item, "OExpr");
@@ -203,7 +204,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetConstant": {
-                            DefineConstant newObj = CreateNewInstruction<DefineConstant>(item.Name);
+                            DefineConstant newObj = CreateNewItem<DefineConstant>(item.Name);
                             PropertyInfo pi = t.GetProperty("Definition");
                             newObj.Expr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
@@ -211,7 +212,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetVariable": {
-                            DefineVariable newObj = CreateNewInstruction<DefineVariable>(item.Name);
+                            DefineVariable newObj = CreateNewItem<DefineVariable>(item.Name);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
                             newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
@@ -219,7 +220,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "ResetVariable": {
-                            ResetVariable newObj = CreateNewInstruction<ResetVariable>(item.Name);
+                            ResetVariable newObj = CreateNewItem<ResetVariable>(item.Name);
                             PropertyInfo pi = t.GetProperty("Variable");
                             newObj.Variable = (string)pi.GetValue(item);
                             pi = t.GetProperty("Expr");
