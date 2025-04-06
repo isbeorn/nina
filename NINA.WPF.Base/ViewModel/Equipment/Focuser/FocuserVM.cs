@@ -75,7 +75,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             updateTimer = new DeviceUpdateTimer(
                 GetFocuserValues,
                 UpdateFocuserValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Focuser"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

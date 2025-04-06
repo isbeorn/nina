@@ -89,7 +89,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             this.updateTimer = deviceUpdateTimerFactory.Create(
                 GetDomeValues,
                 UpdateDomeValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Dome"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

@@ -65,7 +65,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
             updateTimer = new DeviceUpdateTimer(
                  GetSwitchValues,
                  UpdateSwitchValues,
-                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                 "Switch"
              );
 
             SetSwitchValueCommand = new AsyncCommand<bool>((p) => Task.Run(() => SetSwitchValue(p)));

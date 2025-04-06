@@ -64,7 +64,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             updateTimer = new DeviceUpdateTimer(
                 GetMonitorValues,
                 UpdateMonitorValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "SafetyMonitor"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

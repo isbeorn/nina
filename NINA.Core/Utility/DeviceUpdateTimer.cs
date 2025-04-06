@@ -23,6 +23,7 @@ namespace NINA.Core.Utility {
     public interface IDeviceUpdateTimerFactory {
 
         IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval);
+        IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context);
     }
 
     public class DefaultDeviceUpateTimerFactory : IDeviceUpdateTimerFactory {
@@ -32,6 +33,10 @@ namespace NINA.Core.Utility {
 
         public IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
             return new DeviceUpdateTimer(getValuesFunc, updateValuesFunc, interval);
+        }
+
+        public IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context) {
+            return new DeviceUpdateTimer(getValuesFunc, updateValuesFunc, interval, context);
         }
     }
 
@@ -46,17 +51,21 @@ namespace NINA.Core.Utility {
     }
 
     public class DeviceUpdateTimer : IDeviceUpdateTimer {
+        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) : this(getValuesFunc, updateValuesFunc, interval, "Device") {
+        }
 
-        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
+        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context) {
             GetValuesFunc = getValuesFunc;
             Interval = interval;
             UpdateValuesFunc = updateValuesFunc;
+            Context = context;
         }
 
         private CancellationTokenSource cts;
         private Task task;
         public Func<Dictionary<string, object>> GetValuesFunc { get; private set; }
         public Action<Dictionary<string, object>> UpdateValuesFunc { get; private set; }
+        public string Context { get; }
         public DateTimeOffset LastUpdate { get; private set; } = DateTimeOffset.MinValue;
         public double Interval { get; set; }
 
@@ -86,11 +95,17 @@ namespace NINA.Core.Utility {
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 try {
                     while (await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
+                        var getStart = DateTimeOffset.UtcNow;                        
                         values = GetValuesFunc();
 
+                        var updateStart = DateTimeOffset.UtcNow;                        
                         UpdateValuesFunc(values);
 
-                        LastUpdate = DateTimeOffset.UtcNow;
+                        var updateEnd = DateTimeOffset.UtcNow;
+                        if (Logger.IsEnabled(Enum.LogLevelEnum.TRACE)) {
+                            Logger.Trace($"{Context} values have been updated. Poll start: {getStart:o}; Update start: {updateStart:o}; Update end: {updateEnd:o}; Poll duration {updateStart - getStart}; Update duration {updateEnd - updateStart}; Overall duration {updateEnd - getStart}");
+                        }                        
+                        LastUpdate = updateEnd;
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {

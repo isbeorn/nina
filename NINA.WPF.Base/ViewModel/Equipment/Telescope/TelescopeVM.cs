@@ -91,7 +91,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             updateTimer = new DeviceUpdateTimer(
                 GetTelescopeValues,
                 UpdateTelescopeValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Mount"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
