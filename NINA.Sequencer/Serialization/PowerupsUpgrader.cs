@@ -16,6 +16,7 @@ using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Focuser;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.SequenceItem.Rotator;
+using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Guider;
@@ -134,6 +135,18 @@ namespace NINA.Sequencer.Serialization {
                     case "MoveRotatorMechanical": {
                             MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item);
                             newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
+                            return newObj;
+                        }
+                    case "SlewToAltAz": {
+                            SlewScopeToAltAz newObj = CreateNewItem<SlewScopeToAltAz>(item);
+                            newObj.AzExpression.Definition = GetExpr(t, item, "AzExpr");
+                            newObj.AltExpression.Definition = GetExpr(t, item, "AltExpr");
+                            return newObj;
+                        }
+                    case "SlewToRADec": {
+                            SlewScopeToRaDec newObj = CreateNewItem<SlewScopeToRaDec>(item);
+                            newObj.RaExpression.Definition = GetExpr(t, item, "RAExpr");
+                            newObj.DecExpression.Definition = GetExpr(t, item, "DecExpr");
                             return newObj;
                         }
                     case "MoveFocuserAbsolute": {
