@@ -15,6 +15,7 @@ using NINA.Sequencer.SequenceItem.Expressions;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Focuser;
 using NINA.Sequencer.SequenceItem.Imaging;
+using NINA.Sequencer.SequenceItem.Platesolving;
 using NINA.Sequencer.SequenceItem.Rotator;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
@@ -145,6 +146,12 @@ namespace NINA.Sequencer.Serialization {
                         }
                     case "SlewToRADec": {
                             SlewScopeToRaDec newObj = CreateNewItem<SlewScopeToRaDec>(item);
+                            newObj.RaExpression.Definition = GetExpr(t, item, "RAExpr");
+                            newObj.DecExpression.Definition = GetExpr(t, item, "DecExpr");
+                            return newObj;
+                        }
+                    case "Center": {
+                            Center newObj = CreateNewItem<Center>(item);
                             newObj.RaExpression.Definition = GetExpr(t, item, "RAExpr");
                             newObj.DecExpression.Definition = GetExpr(t, item, "DecExpr");
                             return newObj;
