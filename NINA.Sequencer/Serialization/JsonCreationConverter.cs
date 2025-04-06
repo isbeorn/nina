@@ -134,6 +134,7 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.IfTimeout, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfTimeout, PowerupsLite"),
             "WhenPlugin.When.InterruptTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.InterruptTrigger, PowerupsLite"),
             "WhenPlugin.When.LogThis, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.LogThis, PowerupsLite"),
+            "WhenPlugin.When.Log, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.Log, PowerupsLite"),
             "WhenPlugin.When.OnceSafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.OnceSafe, PowerupsLite"),
             "WhenPlugin.When.PassMeridian, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.PassMeridian, PowerupsLite"),
             "WhenPlugin.When.SafeTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.SafeTrigger, PowerupsLite"),
