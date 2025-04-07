@@ -126,76 +126,90 @@ namespace NINA.Sequencer.Serialization {
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
                             newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
+                            newObj.AttachNewParent(trigger.Parent);
                             return newObj; 
                         }
                     case "CoolCamera": {
                             CoolCamera newObj = CreateNewItem<CoolCamera>(item);
                             newObj.TemperatureExpression.Definition = GetExpr(t, item, "TempExpr");
                             newObj.DurationExpression.Definition = GetExpr(t, item, "DurExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "MoveRotatorMechanical": {
                             MoveRotatorMechanical newObj = CreateNewItem<MoveRotatorMechanical>(item);
                             newObj.MechanicalPositionExpression.Definition = GetExpr(t, item, "RExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SetSwitchValue": {
                             SetSwitchValue newObj = CreateNewItem<SetSwitchValue>(item);
                             newObj.ValueExpression.Definition = GetExpr(t, item, "ValueExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SlewToAltAz": {
                             SlewScopeToAltAz newObj = CreateNewItem<SlewScopeToAltAz>(item);
                             newObj.AzExpression.Definition = GetExpr(t, item, "AzExpr");
                             newObj.AltExpression.Definition = GetExpr(t, item, "AltExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SlewToRADec": {
                             SlewScopeToRaDec newObj = CreateNewItem<SlewScopeToRaDec>(item);
                             newObj.RaExpression.Definition = GetExpr(t, item, "RAExpr");
                             newObj.DecExpression.Definition = GetExpr(t, item, "DecExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "Center": {
                             Center newObj = CreateNewItem<Center>(item);
                             newObj.RaExpression.Definition = GetExpr(t, item, "RAExpr");
                             newObj.DecExpression.Definition = GetExpr(t, item, "DecExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "MoveFocuserAbsolute": {
                             MoveFocuserAbsolute newObj = CreateNewItem<MoveFocuserAbsolute>(item);
                             newObj.PositionExpression.Definition = GetExpr(t, item, "PExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "MoveFocuserRelative": {
                             MoveFocuserRelative newObj = CreateNewItem<MoveFocuserRelative>(item);
                             newObj.RelativePositionExpression.Definition = GetExpr(t, item, "PExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SlewDomeAzimuth": {
                             SlewDomeAzimuth newObj = CreateNewItem<SlewDomeAzimuth>(item);
                             newObj.AzimuthDegreesExpression.Definition = GetExpr(t, item, "AzExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "WaitForTimeSpan": {
                             WaitForTimeSpan newObj = CreateNewItem<WaitForTimeSpan>(item);
                             newObj.TimeExpression.Definition = GetExpr(t, item, "WaitExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "LoopWhile": {
                             LoopWhile newObj = CreateNewCondition<LoopWhile>(condition.Name);
                             newObj.PredicateExpression.Definition = GetExpr(t, condition, "PredicateExpr");
+                            newObj.AttachNewParent(condition.Parent);
                             return newObj;
                         }
                     case "WaitUntil": {
                             WaitUntil newObj = CreateNewItem<WaitUntil>(item);
                             newObj.PredicateExpression.Definition = GetExpr(t, item, "PredicateExpr");
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SwitchFilter": {
                             SwitchFilter newObj = CreateNewItem<SwitchFilter>(item);
                             PropertyInfo pi = t.GetProperty("FilterExpr");
                             newObj.ComboBoxText = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SmartExposure": {
@@ -213,6 +227,7 @@ namespace NINA.Sequencer.Serialization {
                             SwitchFilter newSf = (SwitchFilter)newObj.Items[0];
                             newSf.ComboBoxText = oldSf.ComboBoxText;
                             // Dither?
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "TakeManyExposures": {
@@ -226,6 +241,7 @@ namespace NINA.Sequencer.Serialization {
                             newTe.OffsetExpression.Definition = oldTe?.OffsetExpression.Definition;
                             newTe.Binning = oldTe?.Binning;
                             newTe.ImageType = oldTe?.ImageType;
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "TakeExposure": {
@@ -238,6 +254,7 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Binning = (BinningMode)pi.GetValue(item);
                             pi = t.GetProperty("ImageType");
                             newObj.ImageType = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SetConstant": {
@@ -246,6 +263,7 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Expr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "SetVariable": {
@@ -254,6 +272,7 @@ namespace NINA.Sequencer.Serialization {
                             newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
                             newObj.Identifier = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     case "ResetVariable": {
@@ -267,6 +286,7 @@ namespace NINA.Sequencer.Serialization {
                             if (exp != null) {
                                 newObj.Expr.Definition = exp;
                             }
+                            newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
                     default: {
