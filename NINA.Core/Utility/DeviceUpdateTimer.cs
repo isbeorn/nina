@@ -69,6 +69,8 @@ namespace NINA.Core.Utility {
         public DateTimeOffset LastUpdate { get; private set; } = DateTimeOffset.MinValue;
         public double Interval { get; set; }
 
+        private DateTimeOffset? lastSlowLogTime = null;
+
         public async Task Stop() {
             try { cts?.Cancel(); } catch { }
             while (!task?.IsCompleted == true) {
@@ -102,9 +104,18 @@ namespace NINA.Core.Utility {
                         UpdateValuesFunc(values);
 
                         var updateEnd = DateTimeOffset.UtcNow;
+                        var totalDuration = updateEnd - getStart;
                         if (Logger.IsEnabled(Enum.LogLevelEnum.TRACE)) {
-                            Logger.Trace($"{Context} values have been updated. Poll start: {getStart:o}; Update start: {updateStart:o}; Update end: {updateEnd:o}; Poll duration {updateStart - getStart}; Update duration {updateEnd - updateStart}; Overall duration {updateEnd - getStart}");
-                        }                        
+                            Logger.Trace($"{Context} values have been updated. Poll start: {getStart:o}; Update start: {updateStart:o}; Update end: {updateEnd:o}; Poll duration {updateStart - getStart}; Update duration {updateEnd - updateStart}; Overall duration {totalDuration}");
+                        }
+
+                        if (totalDuration.TotalSeconds > Interval) {
+                            var now = DateTimeOffset.UtcNow;
+                            if (!lastSlowLogTime.HasValue || now - lastSlowLogTime > TimeSpan.FromMinutes(5)) {
+                                Logger.Warning($"{Context} value update cycle took longer than the device poll interval ({totalDuration.TotalSeconds:F2}s > {Interval}s)");
+                                lastSlowLogTime = now;
+                            }
+                        }
                         LastUpdate = updateEnd;
                     }
                 } catch (OperationCanceledException) {
