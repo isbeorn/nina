@@ -117,6 +117,8 @@ namespace NINA.Sequencer.Serialization {
                 Type t;
                 if (condition != null) {
                     t = condition.GetType();
+                } else if (trigger != null) {
+                    t = trigger.GetType();
                 } else {
                     t = item.GetType();
                 }

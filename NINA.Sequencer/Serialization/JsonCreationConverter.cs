@@ -117,6 +117,7 @@ namespace NINA.Sequencer.Serialization {
 
         // When all that's needed is changing the $type
         private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
+            "WhenPlugin.When.CVContainer, WhenPlugin" => (Upgrade.Lite, "NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer"),
             "WhenPlugin.When.DIYMeridianFlipTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.DIYMeridianFlipTrigger, PowerupsLite"),
             "WhenPlugin.When.AssignVariables, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.AssignVariables, PowerupsLite"),
             "WhenPlugin.When.AutofocusTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.AutofocusTrigger, PowerupsLite"),
