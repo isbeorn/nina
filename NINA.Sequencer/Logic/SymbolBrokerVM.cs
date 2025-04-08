@@ -70,7 +70,7 @@ namespace NINA.Sequencer.Logic {
             ConditionWatchdog.Start();
         }
 
-        private static ConcurrentDictionary<string, IList<Symbol>> DataKeys = new ConcurrentDictionary<string, IList<Symbol>>();
+        private static ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
         private static ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
@@ -93,7 +93,7 @@ namespace NINA.Sequencer.Logic {
             IList<Symbol> list;
             string prefix = null;
 
-            if (DataKeys.TryGetValue(key, out list) && list.Count == 1) {
+            if (DataSymbols.TryGetValue(key, out list) && list.Count == 1) {
                 symbol = list[0];
                 return true;
             }
@@ -106,7 +106,7 @@ namespace NINA.Sequencer.Logic {
                 }
             }
 
-            if (!DataKeys.TryGetValue(key, out list)) {
+            if (!DataSymbols.TryGetValue(key, out list)) {
                 symbol = null;
                 return false;
             }
@@ -167,7 +167,6 @@ namespace NINA.Sequencer.Logic {
             return sb.ToString();
         }
 
-
         private static ISwitchMediator SwitchMediator { get; set; }
         private static IWeatherDataMediator WeatherDataMediator { get; set; }
         private static ICameraMediator CameraMediator { get; set; }
@@ -183,17 +182,6 @@ namespace NINA.Sequencer.Logic {
         private static IImagingMediator ImagingMediator { get; set; }
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
-
-        private static bool TelescopeConnected = false;
-        private static bool DomeConnected = false;
-        private static bool SafetyConnected = false;
-        private static bool FocuserConnected = false;
-        private static bool CameraConnected = false;
-        private static bool FlatConnected = false;
-        private static bool FilterWheelConnected = false;
-        private static bool RotatorConnected = false;
-        private static bool SwitchConnected = false;
-        private static bool WeatherConnected = false;
 
         private static ObserverInfo Observer = null;
 
@@ -235,16 +223,16 @@ namespace NINA.Sequencer.Logic {
             if (!Providers.Contains(source)) {
                 Providers.Add(source);
             }
-            if (!DataKeys.ContainsKey(token)) {
+            if (!DataSymbols.ContainsKey(token)) {
                 list = new List<Symbol>();
-                DataKeys[token] = list;
+                DataSymbols[token] = list;
                 Symbol sym = new Symbol(token, value, source, values, type);
                 if (type == SymbolType.SYMBOL_HIDDEN) {
                     AddHiddenSymbol(source, sym);
                 }
                 list.Add(sym);
             } else {
-                list = DataKeys[token];
+                list = DataSymbols[token];
                 bool found = false;
                 for (int idx = 0; idx < list.Count; idx++) {
                     Symbol s = list[idx];
@@ -271,11 +259,11 @@ namespace NINA.Sequencer.Logic {
         private bool RemoveSymbol(string key) {
             IList<Symbol> list;
 
-            if (!DataKeys.TryGetValue(key, out list)) {
+            if (!DataSymbols.TryGetValue(key, out list)) {
                 return false;
             }
 
-            DataKeys.Remove(key, out _);
+            DataSymbols.Remove(key, out _);
             return true;
         }
 
@@ -292,7 +280,7 @@ namespace NINA.Sequencer.Logic {
             new Symbol("CoverError", 4), new Symbol("CoverNotPresent", 5) };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
-            return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
+            return (IEnumerable<ConcurrentDictionary<string, object>>)DataSymbols;
         }
 
         private void AddOptionalImageSymbol(StarDetectionAnalysis a, string name) {
@@ -364,8 +352,7 @@ namespace NINA.Sequencer.Logic {
             AddSymbol("NINA", "TIME", timeSeconds);
 
             TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
-            TelescopeConnected = telescopeInfo.Connected;
-            if (TelescopeConnected) {
+            if (telescopeInfo.Connected) {
                 AddSymbol("Telescope", "Altitude", telescopeInfo.Altitude);
                 AddSymbol("Telescope", "Azimuth", telescopeInfo.Azimuth);
                 AddSymbol("Telescope", "AtPark", telescopeInfo.AtPark);
@@ -378,55 +365,45 @@ namespace NINA.Sequencer.Logic {
             }
 
             SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
-            SafetyConnected = safetyInfo.Connected;
-            if (SafetyConnected) {
+            if (safetyInfo.Connected) {
                 AddSymbol("Safety", "IsSafe", safetyInfo.IsSafe);
             }
 
             FocuserInfo fInfo = FocuserMediator.GetInfo();
-            FocuserConnected = fInfo.Connected;
-            if (fInfo != null && FocuserConnected) {
+            if (fInfo != null && fInfo.Connected) {
                 AddSymbol("Focuser", "Position", fInfo.Position);
                 AddSymbol("Focuser", "Temperature", fInfo.Temperature);
             }
 
             // Get SensorTemp
             CameraInfo cameraInfo = CameraMediator.GetInfo();
-            CameraConnected = cameraInfo.Connected;
-            if (CameraConnected) {
+            if (cameraInfo.Connected) {
                 AddSymbol("Camera", "Temperature", cameraInfo.Temperature);
 
                 // Hidden
                 AddSymbol("Camera", "PixelSize", cameraInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "XSize", cameraInfo.XSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "YSize", cameraInfo.YSize, SymbolType.SYMBOL_HIDDEN);
-                //EquipmentKeys.Add("camera__CoolerPower", cameraInfo.CoolerPower);
-                //EquipmentKeys.Add("camera__CoolerOn", cameraInfo.CoolerOn);
-                //EquipmentKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
             }
 
             DomeInfo domeInfo = DomeMediator.GetInfo();
-            DomeConnected = domeInfo.Connected;
-            if (DomeConnected) {
+            if (domeInfo.Connected) {
                 AddSymbol("Dome", "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
                 AddSymbol("Dome", "DomeAzimuth", domeInfo.Azimuth);
             }
 
             FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
-            FlatConnected = flatInfo.Connected;
-            if (FlatConnected) {
+            if (flatInfo.Connected) {
                 AddSymbol("Flat Panel", "CoverState", (int)flatInfo.CoverState, CoverConstants);
             }
 
             RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
-            RotatorConnected = rotatorInfo.Connected;
-            if (RotatorConnected) {
+            if (rotatorInfo.Connected) {
                 AddSymbol("Rotator", "Position", rotatorInfo.MechanicalPosition);
             }
 
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-            FilterWheelConnected = filterWheelInfo.Connected;
-            if (FilterWheelConnected) {
+            if (filterWheelInfo.Connected) {
                 var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
                     AddSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
@@ -439,8 +416,7 @@ namespace NINA.Sequencer.Logic {
 
             // Get switch values
             SwitchInfo switchInfo = SwitchMediator.GetInfo();
-            SwitchConnected = switchInfo.Connected;
-            if (SwitchConnected) {
+            if (switchInfo.Connected) {
                 foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
                     AddSymbol("Gauge", key, sw.Value);
@@ -453,8 +429,7 @@ namespace NINA.Sequencer.Logic {
 
             // Get weather values
             WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
-            WeatherConnected = weatherInfo.Connected;
-            if (WeatherConnected) {
+            if (weatherInfo.Connected) {
                 foreach (string dataName in WeatherData) {
                     PropertyInfo info = weatherInfo.GetType().GetProperty(dataName);
                     if (info != null) {
@@ -470,7 +445,7 @@ namespace NINA.Sequencer.Logic {
 
             return Task.CompletedTask;
         }
-
+        
         public ISymbolProvider RegisterSymbolProvider(string friendlyName, string prefix) {
             if (Providers.Contains(prefix)) {
                 throw new ArgumentException("Symbol Provider code is already registered.");
@@ -494,7 +469,7 @@ namespace NINA.Sequencer.Logic {
         public List<Symbol> GetSymbols() {
             IList<Symbol> ss = new List<Symbol>();
 
-            foreach (var kvp in DataKeys) {
+            foreach (var kvp in DataSymbols) {
                 IList<Symbol> sources = kvp.Value;
                 foreach (Symbol ds in sources) {
                     Symbol symCopy = new Symbol(kvp.Key, ds.Value, ds.Category, ds.Constants, ds.Type);
