@@ -67,8 +67,6 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public Expression HeaderExpression { get; set; } = null;
-
         [JsonProperty]
         public IList<ISequenceCondition> Conditions { get; protected set; } = new ObservableCollection<ISequenceCondition>();
 

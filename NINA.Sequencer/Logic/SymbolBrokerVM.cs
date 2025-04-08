@@ -334,7 +334,6 @@ namespace NINA.Sequencer.Logic {
             AddOptionalImageSymbol(a, "FWHM");
         }
 
-
         private Task UpdateEquipmentKeys() {
 
             if (Observer == null) {

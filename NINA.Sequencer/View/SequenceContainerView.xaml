@@ -328,10 +328,7 @@
                                     Foreground="{StaticResource ButtonForegroundBrush}"
                                     IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
                                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                    TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}"
-                                    IsReadOnly="{Binding HeaderExpression, Converter={StaticResource InverseNullToBooleanConverter}}"/>
-                                <!-- IsReadOnly and ExprControl are for If and IfThenElse -->
-                                <logic:ExprControl Margin="15,0,0,0" Visibility="{Binding HeaderExpression, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Label="Expression:" Exp="{Binding HeaderExpression}" />
+                                    TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
                             </StackPanel>
                             <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                                 <ContentPresenter
