@@ -39,13 +39,17 @@ using System.Reflection;
 using NINA.Equipment.Interfaces;
 using System.Linq;
 using static NINA.Sequencer.Logic.Symbol;
+using NINA.Core.Model;
+using NINA.Image.ImageData;
+using NINA.Sequencer.SequenceItem.Imaging;
+using Namotion.Reflection;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
 
         public SymbolBrokerVM(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) : base(profileService) {
+            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -58,7 +62,9 @@ namespace NINA.Sequencer.Logic {
             FocuserMediator = focuserMediator;
             TelescopeMediator = telescopeMediator;
             GuiderMediator = guiderMediator;
+            ImagingMediator = imagingMediator;
 
+            imagingMediator.ImagePrepared += SetImageSymbols;
 
             ConditionWatchdog = new ConditionWatchdog(UpdateEquipmentKeys, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
@@ -174,6 +180,7 @@ namespace NINA.Sequencer.Logic {
         private static IFocuserMediator FocuserMediator { get; set; }
         private static ITelescopeMediator TelescopeMediator { get; set; }
         private static IGuiderMediator GuiderMediator { get; set; }
+        private static IImagingMediator ImagingMediator { get; set; }
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
 
@@ -288,6 +295,46 @@ namespace NINA.Sequencer.Logic {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataKeys;
         }
 
+        private void AddOptionalImageSymbol(StarDetectionAnalysis a, string name) {
+            if (a.HasProperty(name)) {
+                var v = a.GetType().GetProperty(name).GetValue(a, null);
+                if (v is double vDouble) {
+                    AddSymbol("Image", name, Math.Round(vDouble, 2));
+                }
+            }
+        }
+
+        public void SetImageSymbols(object sender, ImagePreparedEventArgs e) {
+            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+
+            StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
+            if (double.IsNaN(a.HFR)) {
+                a.HFR = 0;
+            }
+
+            var imageMetaData = e.RenderedImage.RawImageData.MetaData;
+
+            double rms = 0;
+            RMS recordedRMS = imageMetaData.Image.RecordedRMS;
+            if (recordedRMS != null) {
+                rms = recordedRMS.Total;
+            }
+
+            AddSymbol("Image", "HFR", Math.Round(a.HFR, 3));
+            AddSymbol("Image", "StarCount", a.DetectedStars);
+            AddSymbol("Image", "ImageId", imageMetaData.Image.Id);
+            AddSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
+            AddSymbol("Image", "RMS", rms);
+            AddSymbol("Image", "Gain", imageMetaData.Camera.Gain);
+            AddSymbol("Image", "Offset", imageMetaData.Camera.Offset);
+            AddSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
+
+            // Add these if they exist (from Hocus Focus at this time)
+            AddOptionalImageSymbol(a, "Eccentricity");
+            AddOptionalImageSymbol(a, "FWHM");
+        }
+
+
         private Task UpdateEquipmentKeys() {
 
             if (Observer == null) {
@@ -354,9 +401,6 @@ namespace NINA.Sequencer.Logic {
                 AddSymbol("Camera", "PixelSize", cameraInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "XSize", cameraInfo.XSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "YSize", cameraInfo.YSize, SymbolType.SYMBOL_HIDDEN);
-                //EquipmentKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
-                //EquipmentKeys.Add("camera__XSize", cameraInfo.XSize);
-                //EquipmentKeys.Add("camera__YSize", cameraInfo.YSize);
                 //EquipmentKeys.Add("camera__CoolerPower", cameraInfo.CoolerPower);
                 //EquipmentKeys.Add("camera__CoolerOn", cameraInfo.CoolerOn);
                 //EquipmentKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
