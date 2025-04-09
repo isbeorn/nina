@@ -253,7 +253,7 @@ namespace NINA.Sequencer.Generators {
             set {{
                 ";
                     if (!hasDefault) {
-                        propertiesSource += $@"{propNameExpression}.Definition = value.ToString(); 
+                        propertiesSource += $@"{propNameExpression}.Definition = (value == null) ? """" : value.ToString(); 
             }}
         }}";
                     } else {

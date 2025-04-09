@@ -143,6 +143,11 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.WaitIndefinitely, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WaitIndefinitely, PowerupsLite"),
             "WhenPlugin.When.WaitUntilSafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WaitUntilSafe, PowerupsLite"),
             "WhenPlugin.When.WhenUnsafe, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WhenUnsafe, PowerupsLite"),
+
+            "WhenPlugin.When.IfConstant, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfConstant, PowerupsLite"),
+            "WhenPlugin.When.IfThenElse, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfThenElse, PowerupsLite"),
+
+
             // Complex types
             "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.LiteComplex, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
 

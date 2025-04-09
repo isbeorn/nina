@@ -214,6 +214,16 @@ namespace NINA.Sequencer.Serialization {
                             newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
+                    case "IfContainer": {
+                            Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
+                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
+                            ISequenceContainer ifc = (ISequenceContainer)obj;
+                            foreach (ISequenceItem i in ifc.Items) {
+                                newObj.Items.Add((ISequenceItem)i.Clone());
+                            }
+                            return newObj;
+                        }
                     case "SmartExposure": {
                             SmartExposure newObj = CreateNewContainer<SmartExposure>(item.Name);
                             ((LoopCondition)newObj.Conditions[0]).IterationsExpression.Definition = GetExpr(t, item, "IterExpr");
