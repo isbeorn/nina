@@ -8,6 +8,7 @@ using NINA.Core.Utility;
 using NINA.Equipment.Model;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Camera;
 using NINA.Sequencer.SequenceItem.Dome;
@@ -212,6 +213,16 @@ namespace NINA.Sequencer.Serialization {
                             PropertyInfo pi = t.GetProperty("FilterExpr");
                             newObj.ComboBoxText = (string)pi.GetValue(item);
                             newObj.AttachNewParent(item.Parent);
+                            return newObj;
+                        }
+                    case "IfConstant": {
+                            Type tt = Type.GetType("PowerupsLite.When.IfConstant, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            var i = t.GetProperty("IfExpr").GetValue(item, null);
+                            string s = (string)i.GetType().GetProperty("Expression").GetValue(i, null);
+                            Expression x = (Expression)tt.GetProperty("PredicateExpression").GetValue(newObj, null);
+                            x.Definition = s;
                             return newObj;
                         }
                     case "IfContainer": {

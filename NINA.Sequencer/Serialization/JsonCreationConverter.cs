@@ -101,6 +101,9 @@ namespace NINA.Sequencer.Serialization {
                         string ts = token.ToString();
                         if (ts.EndsWith(", WhenPlugin")) {
                             target = (T)PowerupsUpgrader.UpgradeInstruction(target);
+                        } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite") {
+                            Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
+                            expr.Definition = jObject["IfExpr"]["Expression"].ToString();
                         }
                     }
                 }
