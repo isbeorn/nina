@@ -102,6 +102,8 @@ namespace NINA.Sequencer.Serialization {
                         if (ts.EndsWith(", WhenPlugin")) {
                             target = (T)PowerupsUpgrader.UpgradeInstruction(target);
                         } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite") {
+                            // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
+                            // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
                             Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
                             expr.Definition = jObject["IfExpr"]["Expression"].ToString();
                         }

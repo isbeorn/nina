@@ -215,16 +215,6 @@ namespace NINA.Sequencer.Serialization {
                             newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
-                    case "IfConstant": {
-                            Type tt = Type.GetType("PowerupsLite.When.IfConstant, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            var i = t.GetProperty("IfExpr").GetValue(item, null);
-                            string s = (string)i.GetType().GetProperty("Expression").GetValue(i, null);
-                            Expression x = (Expression)tt.GetProperty("PredicateExpression").GetValue(newObj, null);
-                            x.Definition = s;
-                            return newObj;
-                        }
                     case "IfContainer": {
                             Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
                             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
