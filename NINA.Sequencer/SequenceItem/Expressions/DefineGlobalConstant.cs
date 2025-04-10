@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.Composition;
-using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Define Global Constant")]
+    [ExportMetadata("Name", "Define Constant")]
     [ExportMetadata("Description", "Creates a Global Constant whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Expressions")]

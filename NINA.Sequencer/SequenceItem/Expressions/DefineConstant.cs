@@ -25,11 +25,11 @@ using NINA.Sequencer.Validations;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Define Constant")]
+    [ExportMetadata("Name", "Define Local Constant")]
     [ExportMetadata("Description", "Creates a Constant whose value can be used in Expressions")]
     [ExportMetadata("Icon", "ConstantSVG")]
     [ExportMetadata("Category", "Expressions")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public partial class DefineConstant : UserSymbol, IValidatable {

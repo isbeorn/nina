@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Sequencer.SequenceItem;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading;
@@ -8,20 +7,14 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NINA.Sequencer.Container;
-using NINA.Core.Utility;
-using System.Data;
 using NINA.Sequencer.Logic;
-using System.Drawing;
-using System.Xml.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Define Variable")]
+    [ExportMetadata("Name", "Define Local Variable")]
     [ExportMetadata("Description", "Creates a Variable whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Expressions")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public partial class DefineVariable : UserSymbol {

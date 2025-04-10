@@ -3,7 +3,7 @@ using System.ComponentModel.Composition;
 using NINA.Sequencer.Container;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Define Global Variable")]
+    [ExportMetadata("Name", "Define Variable")]
     [ExportMetadata("Description", "Creates a Global Variable whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Expressions")]
