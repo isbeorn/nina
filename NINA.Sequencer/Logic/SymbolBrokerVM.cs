@@ -31,7 +31,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Core.Utility;
 using NINA.WPF.Base.ViewModel;
 using NINA.Equipment.Equipment.MyWeatherData;
@@ -41,11 +40,11 @@ using System.Linq;
 using static NINA.Sequencer.Logic.Symbol;
 using NINA.Core.Model;
 using NINA.Image.ImageData;
-using NINA.Sequencer.SequenceItem.Imaging;
 using Namotion.Reflection;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM {
+    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
+        IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
 
         public SymbolBrokerVM(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
@@ -66,8 +65,19 @@ namespace NINA.Sequencer.Logic {
 
             imagingMediator.ImagePrepared += SetImageSymbols;
 
-            ConditionWatchdog = new ConditionWatchdog(UpdateEquipmentKeys, TimeSpan.FromSeconds(5));
+            ConditionWatchdog = new ConditionWatchdog(UpdateNINASymbols, TimeSpan.FromSeconds(3));
             ConditionWatchdog.Start();
+
+            TelescopeMediator.RegisterConsumer(this);
+            SwitchMediator.RegisterConsumer(this);
+            WeatherDataMediator.RegisterConsumer(this);
+            FocuserMediator.RegisterConsumer(this);
+            DomeMediator.RegisterConsumer(this);
+            SafetyMonitorMediator.RegisterConsumer(this);
+            FilterWheelMediator.RegisterConsumer(this);
+            CameraMediator.RegisterConsumer(this);
+            FlatMediator.RegisterConsumer(this);
+            RotatorMediator.RegisterConsumer(this);
         }
 
         private static ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
@@ -322,7 +332,7 @@ namespace NINA.Sequencer.Logic {
             AddOptionalImageSymbol(a, "FWHM");
         }
 
-        private Task UpdateEquipmentKeys() {
+        private Task UpdateNINASymbols() {
 
             if (Observer == null) {
                 Observer = new ObserverInfo() {
@@ -350,98 +360,6 @@ namespace NINA.Sequencer.Logic {
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
             AddSymbol("NINA", "TIME", timeSeconds);
-
-            TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
-            if (telescopeInfo.Connected) {
-                AddSymbol("Telescope", "Altitude", telescopeInfo.Altitude);
-                AddSymbol("Telescope", "Azimuth", telescopeInfo.Azimuth);
-                AddSymbol("Telescope", "AtPark", telescopeInfo.AtPark);
-
-                Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
-                AddSymbol("Telescope", "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                AddSymbol("Telescope", "Declination", c.Dec); // telescopeInfo.Declination);
-
-                AddSymbol("Telescope", "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
-            }
-
-            SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
-            if (safetyInfo.Connected) {
-                AddSymbol("Safety", "IsSafe", safetyInfo.IsSafe);
-            }
-
-            FocuserInfo fInfo = FocuserMediator.GetInfo();
-            if (fInfo != null && fInfo.Connected) {
-                AddSymbol("Focuser", "Position", fInfo.Position);
-                AddSymbol("Focuser", "Temperature", fInfo.Temperature);
-            }
-
-            // Get SensorTemp
-            CameraInfo cameraInfo = CameraMediator.GetInfo();
-            if (cameraInfo.Connected) {
-                AddSymbol("Camera", "Temperature", cameraInfo.Temperature);
-
-                // Hidden
-                AddSymbol("Camera", "PixelSize", cameraInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
-                AddSymbol("Camera", "XSize", cameraInfo.XSize, SymbolType.SYMBOL_HIDDEN);
-                AddSymbol("Camera", "YSize", cameraInfo.YSize, SymbolType.SYMBOL_HIDDEN);
-            }
-
-            DomeInfo domeInfo = DomeMediator.GetInfo();
-            if (domeInfo.Connected) {
-                AddSymbol("Dome", "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
-                AddSymbol("Dome", "DomeAzimuth", domeInfo.Azimuth);
-            }
-
-            FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
-            if (flatInfo.Connected) {
-                AddSymbol("Flat Panel", "CoverState", (int)flatInfo.CoverState, CoverConstants);
-            }
-
-            RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
-            if (rotatorInfo.Connected) {
-                AddSymbol("Rotator", "Position", rotatorInfo.MechanicalPosition);
-            }
-
-            FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-            if (filterWheelInfo.Connected) {
-                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                foreach (FilterInfo filterInfo in f) {
-                    AddSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
-                }
-
-                if (filterWheelInfo.SelectedFilter != null) {
-                    AddSymbol("FilterWheel", "CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                }
-            }
-
-            // Get switch values
-            SwitchInfo switchInfo = SwitchMediator.GetInfo();
-            if (switchInfo.Connected) {
-                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Gauge", key, sw.Value);
-                }
-                foreach (ISwitch sw in switchInfo.WritableSwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Switch", key, sw.Value);
-                }
-            }
-
-            // Get weather values
-            WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
-            if (weatherInfo.Connected) {
-                foreach (string dataName in WeatherData) {
-                    PropertyInfo info = weatherInfo.GetType().GetProperty(dataName);
-                    if (info != null) {
-                        object val = info.GetValue(weatherInfo);
-                        if (val is double t && !Double.IsNaN(t)) {
-                            t = Math.Round(t, 2);
-                            string key = RemoveSpecialCharacters(dataName);
-                            AddSymbol("Weather", RemoveSpecialCharacters(dataName), t);
-                        }
-                    }
-                }
-            }
 
             return Task.CompletedTask;
         }
@@ -477,6 +395,113 @@ namespace NINA.Sequencer.Logic {
                 }
             }
             return ss.Where(x => x.Type == SymbolType.SYMBOL_NORMAL).OrderBy(x => x.Category).ThenBy(x => x.Key).ToList();
+        }
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Telescope", "Altitude", deviceInfo.Altitude);
+                AddSymbol("Telescope", "Azimuth", deviceInfo.Azimuth);
+                AddSymbol("Telescope", "AtPark", deviceInfo.AtPark);
+
+                Coordinates c = deviceInfo.Coordinates.Transform(Epoch.J2000);
+                AddSymbol("Telescope", "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                AddSymbol("Telescope", "Declination", c.Dec); // telescopeInfo.Declination);
+
+                AddSymbol("Telescope", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
+            }
+        }
+
+        public void Dispose() {
+            //throw new NotImplementedException();
+        }
+
+        public void UpdateDeviceInfo(SwitchInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                foreach (ISwitch sw in deviceInfo.ReadonlySwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    AddSymbol("Gauge", key, sw.Value);
+                }
+                foreach (ISwitch sw in deviceInfo.WritableSwitches) {
+                    string key = RemoveSpecialCharacters(sw.Name);
+                    AddSymbol("Switch", key, sw.Value);
+                }
+            }
+        }
+
+        public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                foreach (string dataName in WeatherData) {
+                    PropertyInfo info = deviceInfo.GetType().GetProperty(dataName);
+                    if (info != null) {
+                        object val = info.GetValue(deviceInfo);
+                        if (val is double t && !Double.IsNaN(t)) {
+                            t = Math.Round(t, 2);
+                            string key = RemoveSpecialCharacters(dataName);
+                            AddSymbol("Weather", RemoveSpecialCharacters(dataName), t);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
+        }
+
+        public void UpdateUserFocused(FocuserInfo info) {
+        }
+
+        public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Focuser", "Position", deviceInfo.Position);
+                AddSymbol("Focuser", "Temperature", deviceInfo.Temperature);
+            }
+
+        }
+
+        public void UpdateDeviceInfo(Equipment.Equipment.MyFilterWheel.FilterWheelInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (FilterInfo filterInfo in f) {
+                    AddSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                }
+
+                if (deviceInfo.SelectedFilter != null) {
+                    AddSymbol("FilterWheel", "CurrentFilter", deviceInfo.SelectedFilter.Position);
+                }
+            }
+        }
+
+        public void UpdateDeviceInfo(DomeInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
+                AddSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth);
+            }
+        }
+
+        public void UpdateDeviceInfo(SafetyMonitorInfo deviceInfo) {
+            AddSymbol("Safety", "IsSafe", deviceInfo.Connected && deviceInfo.IsSafe);
+        }
+
+        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Camera", "Temperature", deviceInfo.Temperature);
+                // Hidden
+                AddSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
+                AddSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
+                AddSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
+            }
+        }
+
+        public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Flat Panel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
+            }
+        }
+
+        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                AddSymbol("Rotator", "Position", deviceInfo.MechanicalPosition);
+            }
         }
     }
 }
