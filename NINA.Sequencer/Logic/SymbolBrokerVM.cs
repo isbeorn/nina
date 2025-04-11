@@ -266,6 +266,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
+        // This is wrong, because it doesn't include source information
         private bool RemoveSymbol(string key) {
             IList<Symbol> list;
 
@@ -274,6 +275,32 @@ namespace NINA.Sequencer.Logic {
             }
 
             DataSymbols.Remove(key, out _);
+            return true;
+        }
+
+        private bool RemoveSymbol(string source, string key) {
+            IList<Symbol> list;
+
+            if (!DataSymbols.TryGetValue(key, out list)) {
+                return false;
+            }
+
+            if (list.Count == 1) {
+                DataSymbols.Remove(key, out _);
+            }
+
+            Symbol toRemove = null;
+            foreach (var sym in list) {
+                if (sym.Category == source) {
+                    toRemove = sym;
+                    break;
+                }
+            }
+
+            if (toRemove != null) {
+                list.Remove(toRemove);
+            }
+
             return true;
         }
 
@@ -408,6 +435,13 @@ namespace NINA.Sequencer.Logic {
                 AddSymbol("Telescope", "Declination", c.Dec); // telescopeInfo.Declination);
 
                 AddSymbol("Telescope", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
+            } else {
+                RemoveSymbol("Telescope", "Altitude");
+                RemoveSymbol("Telescope", "Azimuth");
+                RemoveSymbol("Telescope", "AtPark");
+                RemoveSymbol("Telescope", "RightAscension");
+                RemoveSymbol("Telescope", "Declination");
+                RemoveSymbol("Telescope", "SideOfPier");
             }
         }
 
