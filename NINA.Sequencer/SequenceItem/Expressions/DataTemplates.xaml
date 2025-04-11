@@ -18,7 +18,7 @@
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
     
-    <DataTemplate DataType="{x:Type local:DefineConstant}">
+    <DataTemplate DataType="{x:Type local:Constant}">
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -35,7 +35,7 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:DefineVariable}">
+    <DataTemplate DataType="{x:Type local:Variable}">
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">

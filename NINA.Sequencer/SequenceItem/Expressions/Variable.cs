@@ -17,14 +17,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public partial class DefineVariable : UserSymbol {
+    public partial class Variable : UserSymbol {
 
         [ImportingConstructor]
-        public DefineVariable() : base() {
+        public Variable() : base() {
             Name = Name;
             Icon = Icon;
         }
-        public DefineVariable(DefineVariable copyMe) : base(copyMe) {
+        public Variable(Variable copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
@@ -32,14 +32,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        public DefineVariable(string id, string def, ISequenceContainer parent) {
-            DefineVariable sv = new DefineVariable();
+        public Variable(string id, string def, ISequenceContainer parent) {
+            Variable sv = new Variable();
             sv.AttachNewParent(parent);
             sv.Identifier = id;
             sv.Executed = true;
         }
 
-        protected void PreClone(DefineVariable clone) {
+        protected void PreClone(Variable clone) {
             clone.Identifier = Identifier;
             if (Expr != null) {
                 clone.Expr = new Expression(Expr.Definition, clone.Parent, this);
@@ -56,7 +56,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override object Clone() {
-            DefineVariable clone = new DefineVariable(this);
+            Variable clone = new Variable(this);
             PreClone(clone);
             return clone;
         }
@@ -148,10 +148,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Executed = true;
             Expr.Evaluate();
 
-            if (this is DefineGlobalVariable) {
+            if (this is GlobalVariable) {
                 // Find the one in Globals and set it
                 UserSymbol global = FindGlobalSymbol(Identifier);
-                if (global is DefineGlobalVariable sgv) {
+                if (global is GlobalVariable sgv) {
 
                     // Bug fix
                     foreach (var res in Expr.Resolved) {

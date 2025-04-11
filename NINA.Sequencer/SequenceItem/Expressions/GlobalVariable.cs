@@ -10,20 +10,20 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class DefineGlobalVariable : DefineVariable {
+    public class GlobalVariable : Variable {
 
         [ImportingConstructor]
-        public DefineGlobalVariable() : base() {
+        public GlobalVariable() : base() {
         }
 
-        public DefineGlobalVariable(DefineGlobalVariable copyMe) : base(copyMe) {
+        public GlobalVariable(GlobalVariable copyMe) : base(copyMe) {
         }
 
-        public DefineGlobalVariable(string id, string def, ISequenceContainer parent) : base(id, def, parent) {
+        public GlobalVariable(string id, string def, ISequenceContainer parent) : base(id, def, parent) {
         }
 
         public override object Clone() {
-            DefineGlobalVariable clone = new DefineGlobalVariable(this);
+            GlobalVariable clone = new GlobalVariable(this);
             PreClone(clone);
             return clone;
         }

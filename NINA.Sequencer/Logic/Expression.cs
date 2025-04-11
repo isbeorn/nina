@@ -539,7 +539,7 @@ namespace NINA.Sequencer.Logic {
                         if (!Parameters.ContainsKey(symReference)) {
                             // Not defined or evaluated
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
-                            if (s is DefineVariable sv && !sv.Executed) {
+                            if (s is Variable sv && !sv.Executed) {
                                 AddError("Not evaluated: " + r);
                             } else if (r.StartsWith("_")) {
                                 AddError("Reference: " + r);

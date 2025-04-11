@@ -10,15 +10,15 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class DefineGlobalConstant : DefineConstant {
+    public class GlobalConstant : Constant {
 
         [ImportingConstructor]
-        public DefineGlobalConstant() : base() {
+        public GlobalConstant() : base() {
             Name = Name;
             Icon = Icon;
         }
 
-        public DefineGlobalConstant(DefineGlobalConstant copyMe) : base() {
+        public GlobalConstant(GlobalConstant copyMe) : base() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
@@ -27,7 +27,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override object Clone() {
-            DefineGlobalConstant clone = new DefineGlobalConstant(this);
+            GlobalConstant clone = new GlobalConstant(this);
             clone.Identifier = Identifier;
             clone.Expr = new Expression(Expr != null ? Expr.Definition : "", clone.Parent, this);
             return clone;

@@ -103,12 +103,12 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             // Find Symbol, make sure it's valid
             UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);
-            if (sym == null || !(sym is DefineVariable) && !Expression.JustWarnings(Expr.Error)) {
+            if (sym == null || !(sym is Variable) && !Expression.JustWarnings(Expr.Error)) {
                 throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
             } else if (Expr.Error != null) {
                 throw new SequenceEntityFailedException("The value of the expression '" + Expr.Definition + "' was invalid");
             }
-            DefineVariable sv = sym as DefineVariable;
+            Variable sv = sym as Variable;
             if (sv == null || sv.Executed == false) {
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
             }
@@ -254,7 +254,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 UserSymbol sym = UserSymbol.FindSymbol(Variable, Parent);
                 if (sym == null) {
                     i.Add("The Variable '" + Variable + "' is not in scope.");
-                } else if (sym is DefineConstant) {
+                } else if (sym is Constant) {
                     i.Add("The symbol '" + Variable + "' is a Constant and may not be used with this instruction");
                 }
             }

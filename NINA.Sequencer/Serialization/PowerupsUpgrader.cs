@@ -271,7 +271,7 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "SetConstant": {
-                            DefineGlobalConstant newObj = CreateNewItem<DefineGlobalConstant>(item);
+                            GlobalConstant newObj = CreateNewItem<GlobalConstant>(item);
                             PropertyInfo pi = t.GetProperty("Definition");
                             newObj.Expr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
@@ -281,7 +281,7 @@ namespace NINA.Sequencer.Serialization {
                         }
                     case "SetGlobalVariable":
                     case "SetVariable": {
-                            DefineGlobalVariable newObj = CreateNewItem<DefineGlobalVariable>(item);
+                            GlobalVariable newObj = CreateNewItem<GlobalVariable>(item);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
                             newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");

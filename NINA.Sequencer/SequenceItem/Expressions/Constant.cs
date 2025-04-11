@@ -32,14 +32,14 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public partial class DefineConstant : UserSymbol, IValidatable {
+    public partial class Constant : UserSymbol, IValidatable {
 
         [ImportingConstructor]
-        public DefineConstant() : base() {
+        public Constant() : base() {
             Name = Name;
             Icon = Icon;
         }
-        public DefineConstant(DefineConstant copyMe) : base(copyMe) {
+        public Constant(Constant copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
@@ -48,7 +48,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override object Clone() {
-            DefineConstant clone = new DefineConstant(this);
+            Constant clone = new Constant(this);
 
             clone.Identifier = Identifier;
             clone.Expr = new Expression(Expr != null ? Expr.Definition : "", clone.Parent, this);
@@ -79,7 +79,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             Expression.ValidateExpressions(Issues, Expr);
 
             foreach (var kvp in Expr.Resolved) {
-                if (kvp.Value is DefineVariable) {
+                if (kvp.Value is Variable) {
                     i.Add("Constant definitions may not include Variables");
                     break;
                 }

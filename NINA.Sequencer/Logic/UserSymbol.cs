@@ -88,11 +88,11 @@ namespace NINA.Sequencer.Logic {
             return IsAttachedToRoot(item.Parent);
         }
 
-        // Must prevent cycles
         public static void SymbolDirty(UserSymbol sym) {
             if (Debugging) {
                 Logger.Info("SymbolDirty: " + sym);
             }
+            // Prevent cycles
             List<UserSymbol> dirtyList = new List<UserSymbol>();
             iSymbolDirty(sym, dirtyList);
         }
@@ -119,7 +119,7 @@ namespace NINA.Sequencer.Logic {
 
             UserSymbol sym;
             _ = dict.TryGetValue(id, out sym);
-            if ((sym is DefineGlobalVariable || sym is DefineGlobalConstant) && !IsAttachedToRoot(sym.Parent)) {
+            if ((sym is GlobalVariable || sym is GlobalConstant) && !IsAttachedToRoot(sym.Parent)) {
                 // This is an orphaned definition; allow it to be redefined
                 dict[id] = this;
                 return id;
@@ -143,7 +143,7 @@ namespace NINA.Sequencer.Logic {
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             // Make sure adler's problem sequence works here (fixed in Powerups)
-            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && !(this is DefineGlobalVariable || this is DefineGlobalConstant)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != GlobalSymbols) && !(this is GlobalVariable || this is GlobalConstant)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -310,7 +310,7 @@ namespace NINA.Sequencer.Logic {
         public ISequenceContainer SParent() {
             if (Parent == null) {
                 return null;
-            } else if (this is DefineGlobalVariable || this is DefineGlobalConstant) {
+            } else if (this is GlobalVariable || this is GlobalConstant) {
                 return GlobalSymbols;
             } else {
                 return Parent;
@@ -369,7 +369,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             }
-            if (global is DefineGlobalVariable || global is DefineGlobalConstant) return global;
+            if (global is GlobalVariable || global is GlobalConstant) return global;
             return null;
         }
 
