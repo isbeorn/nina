@@ -266,7 +266,7 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-        // This is wrong, because it doesn't include source information
+        // For use with registered providers
         private bool RemoveSymbol(string key) {
             IList<Symbol> list;
 
@@ -276,6 +276,24 @@ namespace NINA.Sequencer.Logic {
 
             DataSymbols.Remove(key, out _);
             return true;
+        }
+
+        private void RemoveAllSymbols(string source) {
+            int count = 0;
+            foreach (KeyValuePair<string, IList<Symbol>> kvp in DataSymbols) {
+                Symbol toRemove = null;
+                foreach (Symbol sym in kvp.Value) {
+                    if (sym.Category == source) {
+                        toRemove = sym;
+                        break;
+                    }
+                }
+                if (toRemove != null) {
+                    kvp.Value.Remove(toRemove);
+                    count++;
+                }
+            }
+            Logger.Info("Removing all symbols from: " + source + " (" + count + ")");
         }
 
         private bool RemoveSymbol(string source, string key) {
@@ -459,6 +477,9 @@ namespace NINA.Sequencer.Logic {
                     string key = RemoveSpecialCharacters(sw.Name);
                     AddSymbol("Switch", key, sw.Value);
                 }
+            } else {
+                RemoveAllSymbols("Gauge");
+                RemoveAllSymbols("Switch");
             }
         }
 
@@ -475,6 +496,8 @@ namespace NINA.Sequencer.Logic {
                         }
                     }
                 }
+            } else {
+                RemoveAllSymbols("Weather");
             }
         }
 
