@@ -488,6 +488,9 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 AddSymbol("Focuser", "Position", deviceInfo.Position);
                 AddSymbol("Focuser", "Temperature", deviceInfo.Temperature);
+            } else {
+                RemoveSymbol("Focuser", "Position");
+                RemoveSymbol("Focuser", "Temperature");
             }
 
         }
@@ -509,6 +512,9 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 AddSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
                 AddSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth);
+            } else {
+                RemoveSymbol("Dome", "ShutterStatus");
+                RemoveSymbol("Dome", "DomeAzimuth");
             }
         }
 
@@ -523,18 +529,24 @@ namespace NINA.Sequencer.Logic {
                 AddSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
                 AddSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
+            } else {
+                RemoveSymbol("Camera", "Temperature");
             }
         }
 
         public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Flat Panel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
+                AddSymbol("FlatPanel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
+            } else {
+                RemoveSymbol("FlatPanel", "CoverState");
             }
         }
 
         public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
             if (deviceInfo.Connected) {
                 AddSymbol("Rotator", "Position", deviceInfo.MechanicalPosition);
+            } else {
+                RemoveSymbol("Rotator", "Position");
             }
         }
     }
