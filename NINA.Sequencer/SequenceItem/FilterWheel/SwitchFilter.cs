@@ -53,7 +53,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             if (Filter != null) {
                 ComboBoxText = Filter.Name;
             } else {
-                ComboBoxText = "{Current}";
+                ComboBoxText = "(Current)";
             }
         }
 
@@ -134,7 +134,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 if (value == 0) {
                     Filter = null;
-                    ComboBoxText = "{Current}";
+                    ComboBoxText = "(Current)";
                 } else {
                     Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1];
                     ComboBoxText = Filter.Name;
@@ -161,7 +161,7 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             set {
                 comboBoxText = value;
 
-                if (comboBoxText == "{Current}") {
+                if (comboBoxText == "(Current)") {
                     FilterWheelInfo info = filterWheelMediator.GetInfo();
                     if (info.Connected) {
                         Filter = info.SelectedFilter;
