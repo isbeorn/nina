@@ -103,7 +103,6 @@ namespace NINA.Sequencer.Serialization {
                             target = (T)PowerupsUpgrader.UpgradeInstruction(target);
                         } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
                             // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
-                            // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
                             Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
                             expr.Definition = jObject["IfExpr"]["Expression"].ToString();
                         }
@@ -152,7 +151,6 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.IfConstant, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfConstant, PowerupsLite"),
             "WhenPlugin.When.IfThenElse, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfThenElse, PowerupsLite"),
             "WhenPlugin.When.WhenSwitch, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WhenSwitch, PowerupsLite"),
-
 
             // Complex types
             "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.LiteComplex, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),

@@ -99,11 +99,17 @@ namespace NINA.Sequencer.Serialization {
             }
         }
 
-        private static string GetExpr(Type t, ISequenceEntity item, string name) {
-            PropertyInfo pi = t.GetProperty(name);
+        private static string GetExpr(Type t, ISequenceEntity item, string propertyName) {
+            PropertyInfo pi = t.GetProperty(propertyName);
             object expr = pi.GetValue(item);
             pi = expr.GetType().GetProperty("Expression");
             return pi.GetValue(expr) as string;
+        }
+
+        private static void PutExpr(Type t, ISequenceEntity item, string propertyName, string value) {
+            PropertyInfo pi = t.GetProperty(propertyName);
+            Expression expr = pi.GetValue(item) as Expression;
+            expr.Definition = value;
         }
 
         public static object UpgradeInstruction(object obj) {
@@ -215,16 +221,6 @@ namespace NINA.Sequencer.Serialization {
                             newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
-                    case "IfContainer": {
-                            Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
-                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
-                            ISequenceContainer ifc = (ISequenceContainer)obj;
-                            foreach (ISequenceItem i in ifc.Items) {
-                                newObj.Items.Add((ISequenceItem)i.Clone());
-                            }
-                            return newObj;
-                        }
                     case "SmartExposure": {
                             SmartExposure newObj = CreateNewContainer<SmartExposure>(item.Name);
                             ((LoopCondition)newObj.Conditions[0]).IterationsExpression.Definition = GetExpr(t, item, "IterExpr");
@@ -301,6 +297,54 @@ namespace NINA.Sequencer.Serialization {
                                 newObj.Expr.Definition = exp;
                             }
                             newObj.AttachNewParent(item.Parent);
+                            return newObj;
+                        }
+                    case "IfContainer": {
+                            Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
+                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
+                            ISequenceContainer ifc = (ISequenceContainer)obj;
+                            foreach (ISequenceItem i in ifc.Items) {
+                                newObj.Items.Add((ISequenceItem)i.Clone());
+                            }
+                            return newObj;
+                        }
+                    case "TemplateContainer": {
+                            Type tt = Type.GetType("PowerupsLite.When.TemplateContainer, PowerupsLite");
+                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
+                            ISequenceContainer ifc = (ISequenceContainer)obj;
+                            foreach (ISequenceItem i in ifc.Items) {
+                                newObj.Items.Add((ISequenceItem)i.Clone());
+                            }
+                            return newObj;
+                        }
+                    case "InitializeArray": {
+                            Type tt = Type.GetType("PowerupsLite.When.InitializeArray, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
+                            newObj.Name += " [SP->Lite";
+                            return newObj;
+                        }
+                    case "GetArray": {
+                            Type tt = Type.GetType("PowerupsLite.When.GetArray, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
+                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
+                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
+                            newObj.Name += " [SP->Lite";
+                            return newObj;
+                        }
+                    case "PutArray": {
+                            Type tt = Type.GetType("PowerupsLite.When.PutArray, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
+                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
+                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
+                            newObj.Name += " [SP->Lite";
                             return newObj;
                         }
                     default: {
