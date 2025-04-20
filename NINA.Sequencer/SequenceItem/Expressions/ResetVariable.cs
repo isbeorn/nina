@@ -19,9 +19,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetVariable : SequenceItem, IValidatable {
+
+        
+
         [ImportingConstructor]
-
-
         public ResetVariable() {
             Icon = Icon;
             Expr = new Expression("", Parent);

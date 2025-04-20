@@ -489,6 +489,10 @@ namespace NINA.Sequencer.Logic {
                     if (!found) {
                         sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                     }
+                    if (SymbolBroker == null) {
+                        // Not critical, but I'm unclear why this happens
+                        SymbolBroker = Context.SymbolBroker;
+                    }
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolve(symReference, sym);

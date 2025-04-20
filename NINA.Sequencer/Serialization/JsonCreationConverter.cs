@@ -89,9 +89,14 @@ namespace NINA.Sequencer.Serialization {
                     target = Create(objectType, jObject);
 
 
-                    if (lite != Upgrade.NINA) {
+                    if (lite == Upgrade.Lite) {
                         // Fix up name of the upgraded instruction (this doesn't persist)
                         ((ISequenceEntity)target).Name += " [SP->Lite";
+                    }
+
+                    if (lite == Upgrade.None) {
+                        ((ISequenceEntity)target).Name += " [CANNOT UPGRDE";
+                        return target;
                     }
 
                     // Populate the object properties
@@ -117,7 +122,7 @@ namespace NINA.Sequencer.Serialization {
             throw new NotImplementedException();
         }
 
-        private enum Upgrade { NINA, Lite, LiteComplex }
+        private enum Upgrade { NINA, Lite, None }
 
         // When all that's needed is changing the $type
         private (Upgrade, string) PowerupsLiteSimpleMigration(string token) => token switch {
@@ -153,7 +158,10 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.WhenSwitch, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WhenSwitch, PowerupsLite"),
 
             // Complex types
-            "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.LiteComplex, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
+            "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
+            "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
+            "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
+            "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin"), // No change),
 
             _ => (Upgrade.NINA, token)
         };

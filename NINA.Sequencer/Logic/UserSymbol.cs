@@ -182,6 +182,8 @@ namespace NINA.Sequencer.Logic {
                         }
                         bool added = cached.TryAdd(Identifier, this);
 
+                        Logger.Info("Entries for " + sParent.Name + ": " + cached.Count);
+
                         if (!added && sParent == GlobalSymbols) {
                             UserSymbol gv;
                             cached.TryGetValue(Identifier, out gv);
@@ -220,7 +222,7 @@ namespace NINA.Sequencer.Logic {
             LastParent = Parent;
         }
 
-        protected static bool Debugging = false;
+        protected static bool Debugging = true;
 
         private string _identifier = "";
 
@@ -358,6 +360,7 @@ namespace NINA.Sequencer.Logic {
                     ISequenceEntity context = sym.Expr.Context;
                     if (context == null || !IsAttachedToRoot(context)) {
                         cached.TryRemove(kvp.Key, out _);
+                        Logger.Info("Removing " + kvp.Key + " from GlobalSymbols");
                     }
                 }
 
