@@ -144,7 +144,11 @@ namespace NINA.Core.Model {
             return false;
         }
 
-        public bool Set(string key, double value, int precision = 2) {
+        public bool Set(string key, double value) {
+            return this.Set(key, value, 2);
+        }
+
+        public bool Set(string key, double value, int precision) {
             if (!double.IsNaN(value)) {
                 return this.Set(key, value.ToString($"F{precision}", CultureInfo.InvariantCulture));
             }
