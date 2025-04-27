@@ -82,7 +82,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - **Air pressure is now adjusted to QFE (local)** based on site elevation rather than QNH (mean sea level), aligning with ASCOM conventions.  
   - **Authentication failures** with OpenWeatherMap API now result in a hard error.  
   - **Singular query failures** no longer disconnect the weather client.  
-
+- **Added OpenMeteo device**
+    - Supports temperature, pressure, wind direction/gusts/speed, humidity
+    
 ### **Automation & Scripting**
 - **Sky Flat Instructions**  
   - Added separate options for **dither pixel size** and **dither settle time** parameters.  
