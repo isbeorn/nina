@@ -522,7 +522,7 @@ able to compensate for ambient temperature variations</value>
     <value>Camera options</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera parameter</value>
+    <value>Camera parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Camera state</value>

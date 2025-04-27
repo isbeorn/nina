@@ -268,8 +268,11 @@ namespace NINA.ViewModel.FramingAssistant {
                 slewTokenSource?.Dispose();
                 slewTokenSource = new CancellationTokenSource();
                 bool result;
+                bool requiresCaptureBlock = o?.ToString() == "Center" || o?.ToString() == "Rotate";
                 try {
-                    cameraMediator.RegisterCaptureBlock(this);
+                    if (requiresCaptureBlock) {
+                        cameraMediator.RegisterCaptureBlock(this);
+                    }
                     switch (o.ToString()) {
                         case "Center":
                             Logger.Info($"Centering from framing assistant to {Rectangle.Coordinates}");
@@ -294,7 +297,9 @@ namespace NINA.ViewModel.FramingAssistant {
                     Logger.Error($"Failed to {o} from the framing wizard", e);
                     result = false;
                 } finally {
-                    cameraMediator.ReleaseCaptureBlock(this);
+                    if (requiresCaptureBlock) {
+                        cameraMediator.ReleaseCaptureBlock(this);
+                    }
                 }
 
                 if (!result) {
