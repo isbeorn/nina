@@ -2195,6 +2195,9 @@
       <Component Id="External_x64_SVBony_SVBCameraSDK.dll" Guid="964cd499-e6e4-4e2c-bc29-58b6aa3f6fc0" Bitness="$(var.Win64)">
         <File Id="External_x64_SVBony_SVBCameraSDK.dll" Name="SVBCameraSDK.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\SVBCameraSDK.dll" />
       </Component>
+      <Component Id="External_x64_SVBony_svbonycam.dll" Guid="6CFF53A9-CFB6-4D1F-9097-CE79837F4DD5" Bitness="$(var.Win64)">
+        <File Id="External_x64_SVBony_svbonycam.dll" Name="svbonycam.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\svbonycam.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 

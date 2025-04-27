@@ -98,6 +98,7 @@
     <None Remove="External\x64\Cfitsio\pthreadVC2.dll" />
     <None Remove="External\x64\Cfitsio\zlib.dll" />
     <None Remove="External\x64\PlayerOne\PlayerOnePW.dll" />
+    <None Remove="External\x64\SVBony\svbonycam.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
@@ -169,6 +170,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SBIG\SBIGUDrv.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\SVBony\svbonycam.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <ContentWithTargetPath Include="External\x64\VCRedis\msvcp100.dll">

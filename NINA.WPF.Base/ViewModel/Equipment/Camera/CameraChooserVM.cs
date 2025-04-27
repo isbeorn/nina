@@ -227,7 +227,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     Logger.Error(ex);
                 }
 
-                ///* SVBony */
+                ///* SVBony -- old sdk loaded via plugin loader */
                 //try {
                 //    var provider = new SVBonyProvider(profileService, exposureDataFactory);
                 //    var svBonyCameras = provider.GetEquipment();
@@ -236,6 +236,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 //} catch (Exception ex) {
                 //    Logger.Error(ex);
                 //}
+
+                /* SVBony - new touptek based sdk */
+                try {
+                    var svBonyCameras = Svbonycam.EnumV2();
+                    Logger.Info($"Found {svBonyCameras?.Length} SVBony Cameras");
+                    foreach (var instance in svBonyCameras) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new SVBonySDKWrapper(), profileService, exposureDataFactory);
+                        devices.Add(cam);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
 
                 /* SBIG */
                 try {
