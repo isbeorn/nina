@@ -7160,6 +7160,9 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="LblGnssFix2D" xml:space="preserve">
     <value>Aktuální oprava je ve 2D. Je nutná oprava ve 3D</value>
   </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Upravené Juliánské Datum</value>
+  </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Po dokončení otevřete kryt</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>

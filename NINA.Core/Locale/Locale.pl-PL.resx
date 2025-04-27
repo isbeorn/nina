@@ -7155,6 +7155,9 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
   <data name="LblGnssFix2D" xml:space="preserve">
     <value>Obecna korekta jest dwuwymiarowa. Wymagana jest korekta 3D</value>
   </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Ustawienia daty juliańskiej</value>
+  </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Otwórz przesłonę po zakończeniu</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>

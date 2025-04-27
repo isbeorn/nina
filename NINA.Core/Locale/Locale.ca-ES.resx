@@ -7159,6 +7159,9 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
   <data name="LblGnssFix2D" xml:space="preserve">
     <value>La coordenada actual està en 2D. És necessari en 3D</value>
   </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Data Juliana modificada</value>
+  </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Obre la tapa quan estigui</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>

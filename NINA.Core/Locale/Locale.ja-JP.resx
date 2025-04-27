@@ -7132,6 +7132,9 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   <data name="LblGnssFix2D" xml:space="preserve">
     <value>Current fix is 2D. A 3D fix is required</value>
   </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>修正ユリウス日</value>
+  </data>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>終了したらカバーを開ける</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
