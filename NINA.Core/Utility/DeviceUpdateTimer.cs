@@ -112,7 +112,7 @@ namespace NINA.Core.Utility {
                         if (totalDuration.TotalSeconds > Interval) {
                             var now = DateTimeOffset.UtcNow;
                             if (!lastSlowLogTime.HasValue || now - lastSlowLogTime > TimeSpan.FromMinutes(5)) {
-                                Logger.Warning($"{Context} value update cycle took longer than the device poll interval ({totalDuration.TotalSeconds:F2}s > {Interval}s)");
+                                Logger.Warning($"{Context} value update cycle took longer than the device poll interval (Total: {totalDuration.TotalSeconds:F2}s > {Interval}s; Poll: {updateStart - getStart}; Update: {updateEnd - updateStart})");
                                 lastSlowLogTime = now;
                             }
                         }
