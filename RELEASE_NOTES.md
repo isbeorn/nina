@@ -12,6 +12,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In Options > Imaging the sequence startup template can now be set to be empty again
 - FITS keywords with boolean/logical values are now properly rendered as FITS logicals instead of as strings when using CFITSIO
 - Imaging is now possible during slewing to a target, but not centering, from the framing wizard
+- PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
 
 ## Improvements
 
