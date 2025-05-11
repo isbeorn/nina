@@ -513,7 +513,7 @@
     <value>カメラオプション</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>カメラパラメーター</value>
+    <value>カメラのパラメーター</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>カメラステータス</value>
@@ -2261,6 +2261,12 @@
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA内部OpenWeatherMap APIクライアント</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>OpenMeteoの天気予報APIを使用します。天気データは10分毎に更新されます。</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA内部のOpenMeteo用APIクライアント</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>オプション</value>

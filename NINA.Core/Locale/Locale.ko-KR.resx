@@ -512,7 +512,7 @@ Dec: {1}</value>
     <value>카메라 옵션</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>카메라 매개변수</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>카메라 상태</value>
@@ -2265,6 +2265,12 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA내부 OpenWeatherMap API 클라이언트</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>옵션</value>

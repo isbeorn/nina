@@ -514,7 +514,7 @@ varyasyonları için eşitlemeyi sağlayamayabilir</value>
     <value>Kamera opsiyonları</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Kamera parametreleri</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Kamera durumu</value>
@@ -2268,6 +2268,12 @@ Hesaplanan HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA dahili OpenWeatherMap API istemcisi</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Seçenekler</value>

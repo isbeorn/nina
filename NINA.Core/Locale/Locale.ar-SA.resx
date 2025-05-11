@@ -534,13 +534,13 @@ Dec: {1}</value>
     <value>Camera Y Size</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>Camera Info</value>
+    <value>معلومات الكاميرا</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>Camera Settings</value>
+    <value>إعدادات الكاميرا</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>إلغاء</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>A Canon error occored: {0}</value>
@@ -2276,6 +2276,12 @@ Calculated HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA internal OpenWeatherMap API client</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Options</value>

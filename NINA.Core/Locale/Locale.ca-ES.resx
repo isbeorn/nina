@@ -518,7 +518,7 @@ capaç de compensar les variacions de la temperatura ambient</value>
     <value>Opcions de la càmera</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Paràmetre de la càmera</value>
+    <value>Paràmetres de la Càmera</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Estat de la Càmera</value>
@@ -2271,6 +2271,12 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Client intern de NINA per a l'API de OpenWeatherMap</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Utilitza l'API de previsió meteorològica d'OpenMeteo. Les dades meteorològiques s'actualitzen cada 10 minuts.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Client intern de l'API d'OpenMeteo de NINA</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opcions</value>

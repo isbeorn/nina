@@ -2268,6 +2268,12 @@ HFR calculada: {2}
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Cliente interno de NINA para el API de OpenWeatherMap</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Usa el API actual de Forecast Weather. La infomación del clima se actualiza cada 10 minutos.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Cliente interno de NINA para el API de OpenMeteo</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opciones</value>
   </data>
