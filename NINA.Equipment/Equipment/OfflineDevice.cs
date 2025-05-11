@@ -510,5 +510,9 @@ namespace NINA.Equipment.Equipment {
         public PierSide DestinationSideOfPier(Coordinates coordinates) {
             throw new NotImplementedException();
         }
+
+        public Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
+            throw new NotImplementedException();
+        }
     }
 }

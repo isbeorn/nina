@@ -121,6 +121,8 @@ namespace NINA.Equipment.Interfaces {
 
         Task<bool> SlewToCoordinates(Coordinates coordinates, CancellationToken token);
 
+        Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token);
+
         void StopSlew();
 
         bool Sync(Coordinates coordinates);

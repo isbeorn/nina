@@ -86,7 +86,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
+            await telescopeMediator.SlewToTopocentricCoordinates(Coordinates.Coordinates, token);
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
             }
