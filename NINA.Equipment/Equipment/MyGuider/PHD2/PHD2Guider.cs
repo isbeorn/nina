@@ -174,28 +174,6 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         private bool initialized = false;
 
-        private async Task<bool> CheckPortAccessible(IPAddress ipAddress, int port) {
-            try {
-                using (var tcpClient = new TcpClient()) {
-                    var connectTask = tcpClient.ConnectAsync(ipAddress, port);
-
-                    // Set a timeout for the connection attempt
-                    if (await Task.WhenAny(connectTask, Task.Delay(3000)) == connectTask) {
-                        // Successfully connected
-                        Logger.Info($"PHD2 server is already accessible at {ipAddress}:{port}");
-                        return true;
-                    } else {
-                        // Connection timed out
-                        Logger.Info($"No existing PHD2 server detected at {ipAddress}:{port}");
-                        return false;
-                    }
-                }
-            } catch (Exception ex) {
-                Logger.Debug($"Failed to connect to PHD2 port {port}: {ex.Message}");
-                return false;
-            }
-        }
-
         public async Task<bool> Connect(CancellationToken token) {
             bool connected = false;
             IPHostEntry hostEntry;
@@ -226,11 +204,8 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
             Logger.Info($"Connecting to PHD2 server at {phd2Ip}:{serverPort}");
 
-            // Check if PHD2 is already running and accessible on the specified port
-            bool canConnectToPort = await CheckPortAccessible(phd2Ip, serverPort);
-
             // Start PHD2 if we are connecting to an instance on this machine
-            if (IPAddress.IsLoopback(phd2Ip) && !canConnectToPort) {
+            if (IPAddress.IsLoopback(phd2Ip)) {
                 var startedPHD2 = await StartPHD2Process();
 
                 if (!startedPHD2) {
