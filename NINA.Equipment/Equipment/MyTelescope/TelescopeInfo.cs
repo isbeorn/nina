@@ -574,6 +574,18 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             }
         }
 
+        private bool canSlewAltAz;
+
+        public bool CanSlewAltAz {
+            get => canSlewAltAz;
+            set {
+                if (canSlewAltAz != value) {
+                    canSlewAltAz = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private System.DateTime uTCDate;
 
         public System.DateTime UTCDate {

@@ -505,6 +505,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 IsPulseGuiding = Telescope.IsPulseGuiding,
                                 CanSetPierSide = Telescope.CanSetPierSide,
                                 CanSlew = Telescope.CanSlew,
+                                CanSlewAltAz = Telescope.CanSlewAltAz,
                                 UTCDate = Telescope.UTCDate,
                             });
 

@@ -105,6 +105,7 @@ namespace NINA.Equipment.Interfaces {
         bool IsPulseGuiding { get; }
         bool CanSetPierSide { get; }
         bool CanSlew { get; }
+        bool CanSlewAltAz { get; }
         System.DateTime UTCDate { get; }
 
         IList<(double, double)> GetAxisRates(TelescopeAxes axis);
