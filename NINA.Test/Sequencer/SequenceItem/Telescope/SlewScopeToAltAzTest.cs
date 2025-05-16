@@ -101,7 +101,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             guiderMediatorMock.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
             telescopeMediatorMock
                 .Verify(
-                x => x.SlewToTopocentricCoordinates(
+                x => x.SlewToCoordinatesAsync(
                     It.Is<TopocentricCoordinates>(c =>
                         c.Altitude == topo.Altitude
                         && c.Azimuth == topo.Azimuth),
@@ -130,7 +130,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             guiderMediatorMock.Verify(x => x.StopGuiding(It.IsAny<CancellationToken>()), Times.Once);
             telescopeMediatorMock
                 .Verify(
-                x => x.SlewToTopocentricCoordinates(
+                x => x.SlewToCoordinatesAsync(
                     It.Is<TopocentricCoordinates>(c =>
                         c.Altitude == topo.Altitude
                         && c.Azimuth == topo.Azimuth),
