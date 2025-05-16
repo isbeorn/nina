@@ -65,57 +65,64 @@ namespace NINA.Sequencer.Serialization {
                 PowerupsUpgrader.RegisterTriggerConverter(t);
             }
 
-            // Load JObject from stream
-            JObject jObject = JObject.Load(reader);
             T target = default(T);
-            if (jObject != null) {
-                if (jObject["$ref"] != null) {
-                    string id = (jObject["$ref"] as JValue).Value as string;
-                    target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
-                } else {
-                    JToken token;
-                    jObject.TryGetValue("$type", out token);
-                    string originalType = token.ToString();
 
-                    Upgrade lite = Upgrade.NINA;
-                    (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
+            try {
+                // Load JObject from stream
+                JObject jObject = JObject.Load(reader);
+                if (jObject != null) {
+                    if (jObject["$ref"] != null) {
+                        string id = (jObject["$ref"] as JValue).Value as string;
+                        target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
+                    } else {
+                        JToken token;
+                        jObject.TryGetValue("$type", out token);
+                        string originalType = token.ToString();
 
-                    if (lite == Upgrade.Lite) {
-                        // Substitute with Powerups Lite class
-                        jObject["$type"] = token;
-                    }
+                        Upgrade lite = Upgrade.NINA;
+                        (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
-                    // Create target object based on JObject
-                    target = Create(objectType, jObject);
+                        if (lite == Upgrade.Lite) {
+                            // Substitute with Powerups Lite class
+                            jObject["$type"] = token;
+                        }
+
+                        // Create target object based on JObject
+                        target = Create(objectType, jObject);
 
 
-                    if (lite == Upgrade.Lite) {
-                        // Fix up name of the upgraded instruction (this doesn't persist)
-                        ((ISequenceEntity)target).Name += " [SP->Lite";
-                    }
+                        if (lite == Upgrade.Lite) {
+                            // Fix up name of the upgraded instruction (this doesn't persist)
+                            ((ISequenceEntity)target).Name += " [SP->Lite";
+                        }
 
-                    if (lite == Upgrade.None) {
-                        ((ISequenceEntity)target).Name += " [CANNOT UPGRDE";
-                        return target;
-                    }
+                        if (lite == Upgrade.None) {
+                            ((ISequenceEntity)target).Name += " [CANNOT UPGRDE";
+                            return target;
+                        }
 
-                    // Populate the object properties
-                    serializer.Populate(jObject.CreateReader(), target);
+                        // Populate the object properties
+                        serializer.Populate(jObject.CreateReader(), target);
 
-                    if (jObject.TryGetValue("$type", out token)) {
-                        string ts = token.ToString();
-                        if (ts.EndsWith(", WhenPlugin")) {
-                            target = (T)PowerupsUpgrader.UpgradeInstruction(target);
-                        } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
-                            // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
-                            Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
-                            expr.Definition = jObject["IfExpr"]["Expression"].ToString();
+                        if (jObject.TryGetValue("$type", out token)) {
+                            string ts = token.ToString();
+                            if (ts.EndsWith(", WhenPlugin")) {
+                                target = (T)PowerupsUpgrader.UpgradeInstruction(target);
+                            } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
+                                // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
+                                Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
+                                if (jObject["IfExpr"] != null) {
+                                    expr.Definition = jObject["IfExpr"]["Expression"].ToString();
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-            return target;
+                return target;
+            } catch (Exception ex) {
+                return target;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
