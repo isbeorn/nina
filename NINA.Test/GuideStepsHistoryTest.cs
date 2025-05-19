@@ -37,7 +37,7 @@ namespace NINA.Test {
             ClassicAssert.AreEqual(historySize, gsh.HistorySize);
             ClassicAssert.AreEqual(1, gsh.PixelScale);
             ClassicAssert.AreEqual(GuiderScaleEnum.PIXELS, gsh.Scale);
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
             ClassicAssert.AreEqual(1, gsh.RMS.Scale);
             ClassicAssert.AreEqual(0, gsh.RMS.RA);
             ClassicAssert.AreEqual(0, gsh.RMS.Dec);
@@ -154,7 +154,7 @@ namespace NINA.Test {
 
             gsh.Clear();
 
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
             ClassicAssert.AreEqual(0, gsh.RMS.RA);
             ClassicAssert.AreEqual(0, gsh.RMS.Dec);
             ClassicAssert.AreEqual(0, gsh.RMS.Total);
