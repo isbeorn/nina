@@ -89,7 +89,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override void AfterParentChanged() {
-            base.AfterParentChanged();
+            // Don't remove a global variable if we're upgrading, or it will get removed inside Expression.FindGlobalSymbol()
+            //if (!(this is GlobalVariable)) {
+                base.AfterParentChanged();
+            //}
             Expr = new Expression(Expr?.Definition ?? "", Parent, this);
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
@@ -166,6 +169,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                     sgv.Executed = true;
                 }
             }
+
             return Task.CompletedTask;
         }
     }

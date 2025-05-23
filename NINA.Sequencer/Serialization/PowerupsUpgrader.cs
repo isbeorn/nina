@@ -305,7 +305,9 @@ namespace NINA.Sequencer.Serialization {
                             ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
                             ISequenceContainer ifc = (ISequenceContainer)obj;
                             foreach (ISequenceItem i in ifc.Items) {
-                                newObj.Items.Add((ISequenceItem)i.Clone());
+                                ISequenceItem newItem = (ISequenceItem)i.Clone();
+                                newObj.Items.Add(newItem);
+                                newItem.AttachNewParent(newObj);
                             }
                             return newObj;
                         }
@@ -315,7 +317,9 @@ namespace NINA.Sequencer.Serialization {
                             ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
                             ISequenceContainer ifc = (ISequenceContainer)obj;
                             foreach (ISequenceItem i in ifc.Items) {
-                                newObj.Items.Add((ISequenceItem)i.Clone());
+                                ISequenceItem newItem = (ISequenceItem)i.Clone();
+                                newObj.Items.Add(newItem);
+                                newItem.AttachNewParent(newObj);
                             }
                             return newObj;
                         }

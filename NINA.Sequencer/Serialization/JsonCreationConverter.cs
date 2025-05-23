@@ -97,7 +97,7 @@ namespace NINA.Sequencer.Serialization {
                         }
 
                         if (lite == Upgrade.None) {
-                            ((ISequenceEntity)target).Name += " [CANNOT UPGRDE";
+                            ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
                             return target;
                         }
 
@@ -107,7 +107,12 @@ namespace NINA.Sequencer.Serialization {
                         if (jObject.TryGetValue("$type", out token)) {
                             string ts = token.ToString();
                             if (ts.EndsWith(", WhenPlugin")) {
-                                target = (T)PowerupsUpgrader.UpgradeInstruction(target);
+                                ISequenceEntity oldTarget = target as ISequenceEntity;
+                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target) as ISequenceEntity;
+                                if (newTarget.Parent == null) {
+                                    newTarget.AttachNewParent(oldTarget.Parent);
+                                }
+                                target = (T)newTarget;
                             } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
                                 // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
                                 Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
@@ -147,6 +152,7 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.FlipRotator, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.FlipRotator, PowerupsLite"),
             "WhenPlugin.When.GSSend, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.GSSend, PowerupsLite"),
             "WhenPlugin.When.ForEachList, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ForEachList, PowerupsLite"),
+            "WhenPlugin.When.ForEachInArray, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ForEachInArray, PowerupsLite"),
             "WhenPlugin.When.IfFailed, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfFailed, PowerupsLite"),
             "WhenPlugin.When.IfTimeout, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfTimeout, PowerupsLite"),
             "WhenPlugin.When.InterruptTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.InterruptTrigger, PowerupsLite"),
@@ -163,12 +169,12 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.IfConstant, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfConstant, PowerupsLite"),
             "WhenPlugin.When.IfThenElse, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfThenElse, PowerupsLite"),
             "WhenPlugin.When.WhenSwitch, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.WhenSwitch, PowerupsLite"),
+            "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.RepeatUntilAllSucceed, PowerupsLite"),
 
             // Complex types
             "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
             "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
             "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
-            "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin"), // No change),
 
             _ => (Upgrade.NINA, token)
         };
