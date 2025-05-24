@@ -80,7 +80,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* Altair */
                 try {
-                    var altairCameras = Altair.AltairCam.EnumV2();
+                    var altairCameras = Altair.Altaircam.EnumV2();
                     Logger.Info($"Found {altairCameras?.Length} Altair Cameras");
                     foreach (var instance in altairCameras) {
                         var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new AltairSDKWrapper(), profileService, exposureDataFactory);
@@ -214,7 +214,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* MallinCam */
                 try {
-                    var mallinCamCameras = MallinCam.MallinCam.EnumV2();
+                    var mallinCamCameras = MallinCam.Mallincam.EnumV2();
                     Logger.Info($"Found {mallinCamCameras?.Length} MallinCam Cameras");
                     foreach (var instance in mallinCamCameras) {
                         var info = instance.ToDeviceInfo();

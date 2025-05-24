@@ -82,7 +82,7 @@ namespace NINA.Image.FileFormat.FITS {
         }
 
         public void AddHeader(string keyword, DateTime value, string comment) {
-            AddHeader(keyword, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
+            AddHeader(keyword, value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture), comment);
         }
 
         public void Close() {

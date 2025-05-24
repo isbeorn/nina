@@ -79,7 +79,7 @@ namespace NINA.Image.FileFormat.FITS {
 
         public FITSHeaderCard(string key, DateTime value, string comment) {
             this.Key = key;
-            this.Value = @"'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'";
+            this.Value = @"'" + value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + @"'";
             if (comment?.Length > 40) {
                 comment = comment.Substring(0, 40);
             }

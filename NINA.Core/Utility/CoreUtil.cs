@@ -31,6 +31,8 @@ namespace NINA.Core.Utility {
         public static string APPLICATIONDIRECTORY = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
         public static DateTime ApplicationStartDate = DateTime.Now;
+        public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static long UnixEpochTicks = UnixEpoch.Ticks;
 
         public static string Version {
             get {

@@ -1476,6 +1476,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_EXP", actualExposureTime / 1e6, "[s] Actual exposure time"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_PP", pixelPeriod, "[ps] pixelPeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_LP", linePeriod, "[ns] linePeriod"));
+                metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LP", linePeriod, "[ns] linePeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_FP", framePeriod, "[us] framePeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_CPL", clocksPerLine, "clocksPerLine"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_LPF", linesPerFrame, "linesPerFrame"));

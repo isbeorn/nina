@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
 
         public AboutSDKsVM() {
             try {
-                AltairSDKVersion = Altair.AltairCam.Version();
+                AltairSDKVersion = Altair.Altaircam.Version();
             } catch (Exception) {
                 AltairSDKVersion = Loc.Instance["LblNotInstalled"];
             }
@@ -105,7 +105,7 @@ namespace NINA.ViewModel {
             }
 
             try {
-                MallinCamSDKVersion = MallinCam.MallinCam.Version();
+                MallinCamSDKVersion = MallinCam.Mallincam.Version();
             } catch (Exception) {
                 MallinCamSDKVersion = Loc.Instance["LblNotInstalled"];
             }
