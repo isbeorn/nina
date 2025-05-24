@@ -14,8 +14,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Imaging is now possible during slewing to a target, but not centering, from the framing wizard
 - PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
 
-## Improvements
-
 ### **Device Management**
 - **Device Chooser Enhancements**  
   - A stored device ID that is currently unavailable will now appear as an "Offline Device" instead of "No Device," differentiating between having no device selected and an unavailable saved device.  
@@ -100,7 +98,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ### **Data Integrity & Reliability**
 - **Profile Saving Reliability**  
   - Improved with **atomic journal-based updates** and **automatic recovery from backups**.  
-
+- Profiles on startup now load much quicker by only reading essential information upfront. Full details are only loaded when a profile is actually used.
 
 ## Commandline Options
 The following command line options have been added

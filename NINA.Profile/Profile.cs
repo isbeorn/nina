@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 using NINA.Core.Model.Equipment;
 using System.Text;
 using NINA.Core.Locale;
+using System.Xml;
 
 namespace NINA.Profile {
 
@@ -329,19 +330,71 @@ namespace NINA.Profile {
         /// <returns>loaded Profile instance</returns>
         public static IProfile Load(string path) {
             using (MyStopWatch.Measure()) {
-                var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
-                var serializer = new DataContractSerializer(typeof(Profile));
-                var obj = serializer.ReadObject(fs);
+                var journal = path + ".journal";
+                var backup = path + ".bkp";
 
-                var p = (Profile)obj;
-                p.MatchFilterSettingsWithFilterList();
-                p.fs = fs;
+                static IProfile LoadProfile(string filePath) {
+                    FileStream fs = null;
+                    try {
+                        fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
+                        var serializer = new DataContractSerializer(typeof(Profile));
+                        var obj = serializer.ReadObject(fs);
 
-                p.LastUsed = DateTime.Now;
-                p.Save();
+                        var p = (Profile)obj;
+                        p.MatchFilterSettingsWithFilterList();
+                        p.fs = fs;
 
-                return p;
+                        p.LastUsed = DateTime.Now;
+                        p.Save();
+
+                        return p;
+                    } catch (Exception) {
+                        fs?.Dispose();
+                        throw;
+                    }
+                }
+
+                try {
+                    return LoadProfile(path);
+                } catch (IOException ex) when (IsFileInUse(ex)) {
+                    throw;
+                } catch (Exception ex) {
+                    Logger.Error($"Profile failed to load at {path} ", ex);
+
+                    // Try to restore profile from journal file first
+                    if (File.Exists(journal)) {
+                        try {
+                            Logger.Info($"Restoring profile from journal {journal}");
+                            File.Move(journal, path, true);
+                            return LoadProfile(path);
+                        } catch (Exception journalEx) {
+                            Logger.Error("Profile restore from journal failed", journalEx);
+                        }
+                    }
+
+                    // If journal file did not work, try to restore from backup
+                    if (File.Exists(backup)) {
+                        try {
+                            Logger.Info($"Restoring profile from backup {backup}");
+                            File.Copy(backup, path, true);
+                            return LoadProfile(path);
+                        } catch (Exception backupEx) {
+                            Logger.Error("Profile restore from backup failed", backupEx);
+                        }
+                    }
+
+                    throw;
+                }
             }
+        }
+
+        private static bool IsFileInUse(IOException ex) {
+            const int ERROR_SHARING_VIOLATION = 32;
+            const int ERROR_LOCK_VIOLATION = 33;
+
+            int hresult = ex.HResult & 0xFFFF;
+
+            return hresult == ERROR_SHARING_VIOLATION || hresult == ERROR_LOCK_VIOLATION;
         }
 
         /// <summary>
@@ -413,14 +466,17 @@ namespace NINA.Profile {
 
                 static ProfileMeta LoadProfileMeta(string filePath) {
                     using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                        var serializer = new DataContractSerializer(typeof(Profile));
+                        var serializer = new DataContractSerializer(typeof(ProfileMetaProxy), new DataContractSerializerSettings {
+                            RootName = new XmlDictionary().Add("Profile"),
+                            RootNamespace = new XmlDictionary().Add("http://schemas.datacontract.org/2004/07/NINA.Profile")
+                        });
                         var obj = serializer.ReadObject(fs);
-                        var p = (Profile)obj;
+                        var p = (ProfileMetaProxy)obj;
                         return new ProfileMeta() {
                             Id = p.Id,
                             Name = p.Name,
                             Description = p.Description,
-                            Location = p.Location,
+                            Location = filePath,
                             LastUsed = p.LastUsed
                         };
                     }
