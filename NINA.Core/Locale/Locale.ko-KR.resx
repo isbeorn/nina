@@ -1872,7 +1872,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>불러오기</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>프로필을 불러올 수 없습니다. 이미 다른 N.I.N.A 인스턴스가 실행 중입니다.</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>시퀀스 불러오기</value>

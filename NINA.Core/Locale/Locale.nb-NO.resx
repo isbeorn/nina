@@ -1876,7 +1876,7 @@ Forventet HFR: {2}</value>
     <value>Åpne profil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Kan ikke åpne profil, den er allerede i bruk av en annen N.I.N.A.-instans!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Åpne sekvens</value>

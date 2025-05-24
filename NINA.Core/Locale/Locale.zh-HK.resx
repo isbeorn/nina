@@ -1883,7 +1883,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>加载配置文件</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>冇辦法加载個人資料。 佢正被另一個 NINA 使用!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>加载序列</value>

@@ -1875,7 +1875,7 @@ Hesaplanan HFR: {2}
     <value>Profil yükle</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Profil yüklenemiyor. Başka bir N.I.N.A oluşumunca kullanılıyor!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Sekans yükle</value>
