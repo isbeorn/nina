@@ -725,7 +725,7 @@ namespace NINA.Test {
 
             var expectedProperties = new[] {
                 new { Id = "Instrument:ExposureTime", Type = "Float32", Value = $"{metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture)}", Comment = "[s] Exposure duration"},
-                new { Id = "Observation:Time:Start", Type = "TimePoint", Value = $"{metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture)}", Comment = "Time of observation (UTC)"}
+                new { Id = "Observation:Time:Start", Type = "TimePoint", Value = $"{metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture)}", Comment = "Time of observation (UTC)"}
             };
 
             //Act
