@@ -53,6 +53,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - **Floating undocked windows remain unaffected** and can still be re-docked even when the layout is locked.  
 - **Metadata & Files**
   - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
+- **Time sources**
+    - Civil dawn and dusk can now be selected for time based conditions
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  

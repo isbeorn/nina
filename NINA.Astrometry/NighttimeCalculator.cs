@@ -64,6 +64,7 @@ namespace NINA.Astrometry {
                     return nighttimeData;
                 } else {
                     var twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude);
+                    var civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude);
                     var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude);
                     var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude);
                     var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude);
@@ -71,7 +72,7 @@ namespace NINA.Astrometry {
                     var illumination = AstroUtil.GetMoonIllumination(referenceDate);
 
                     var data = new NighttimeData(date: selectedDate, referenceDate: referenceDate, moonPhase: moonPhase, moonIllumination: illumination, twilightRiseAndSet: twilightRiseAndSet, nauticalTwilightRiseAndSet: nauticalTwilightRiseAndSet,
-                        sunRiseAndSet: sunRiseAndSet, moonRiseAndSet: moonRiseAndSet);
+                        sunRiseAndSet: sunRiseAndSet, moonRiseAndSet: moonRiseAndSet, civilTwilightRiseAndSet: civilTwilightRiseAndSet);
                     Cache[key] = data;
                     return data;
                 }

@@ -32,18 +32,21 @@ namespace NINA.Astrometry {
             RiseAndSetEvent twilightRiseAndSet,
             RiseAndSetEvent nauticalTwilightRiseAndSet,
             RiseAndSetEvent sunRiseAndSet,
-            RiseAndSetEvent moonRiseAndSet) {
+            RiseAndSetEvent moonRiseAndSet,
+            RiseAndSetEvent civilTwilightRiseAndSet) {
             this.Date = date;
             this.ReferenceDate = referenceDate;
             this.MoonPhase = moonPhase;
             this.Illumination = moonIllumination;
             this.TwilightRiseAndSet = twilightRiseAndSet;
             this.NauticalTwilightRiseAndSet = nauticalTwilightRiseAndSet;
+            this.CivilTwilightRiseAndSet = civilTwilightRiseAndSet;
             this.SunRiseAndSet = sunRiseAndSet;
             this.MoonRiseAndSet = moonRiseAndSet;
             this.NightDuration = new AsyncObservableCollection<DataPoint>(CalculateNightDuration(twilightRiseAndSet));
             this.TwilightDuration = new AsyncObservableCollection<DataPoint>(CalculateTwilightDuration(twilightRiseAndSet, sunRiseAndSet));
             this.NauticalTwilightDuration = new AsyncObservableCollection<DataPoint>(CalculateNauticalTwilightDuration(nauticalTwilightRiseAndSet, sunRiseAndSet));
+            this.CivilTwilightDuration = new AsyncObservableCollection<DataPoint>(CalculateNauticalTwilightDuration(civilTwilightRiseAndSet, sunRiseAndSet));
             this.Ticker = new Ticker(TimeSpan.FromSeconds(30));
         }
 
@@ -126,10 +129,12 @@ namespace NINA.Astrometry {
         public double? Illumination { get; set; }
         public RiseAndSetEvent TwilightRiseAndSet { get; set; }
         public RiseAndSetEvent NauticalTwilightRiseAndSet { get; set; }
+        public RiseAndSetEvent CivilTwilightRiseAndSet { get; set; }
         public RiseAndSetEvent SunRiseAndSet { get; set; }
         public RiseAndSetEvent MoonRiseAndSet { get; set; }
         public AsyncObservableCollection<DataPoint> TwilightDuration { get; set; }
         public AsyncObservableCollection<DataPoint> NauticalTwilightDuration { get; set; }
+        public AsyncObservableCollection<DataPoint> CivilTwilightDuration { get; set; }
         public AsyncObservableCollection<DataPoint> NightDuration { get; set; }
     }
 }

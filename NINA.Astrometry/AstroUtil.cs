@@ -344,6 +344,13 @@ namespace NINA.Astrometry {
             return riseAndSet;
         }
 
+        public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude) {
+            var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude);
+            var t = riseAndSet.Calculate().Result;
+
+            return riseAndSet;
+        }
+
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
             var riseAndSet = new MoonRiseAndSet(date, latitude, longitude);
             var t = riseAndSet.Calculate().Result;

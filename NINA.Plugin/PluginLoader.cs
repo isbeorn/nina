@@ -137,10 +137,12 @@ namespace NINA.Plugin {
             DateTimeProviders = new List<IDateTimeProvider>() {
                 new Sequencer.Utility.DateTimeProvider.TimeProvider(nighttimeCalculator),
                 new SunsetProvider(nighttimeCalculator),
+                new CivilDuskProvider(nighttimeCalculator),
                 new NauticalDuskProvider(nighttimeCalculator),
                 new DuskProvider(nighttimeCalculator),
                 new DawnProvider(nighttimeCalculator),
                 new NauticalDawnProvider(nighttimeCalculator),
+                new CivilDawnProvider(nighttimeCalculator),
                 new SunriseProvider(nighttimeCalculator),
                 new MeridianProvider(profileService)
             };
