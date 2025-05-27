@@ -33,6 +33,10 @@ namespace NINA.Sequencer.Logic {
             broker.AddSymbol(this, name, value);
         }
 
+        public void AddSymbol(string name, object value, Symbol[] values) {
+            broker.AddSymbol(this, name, value, values);
+        }
+
         public bool RemoveSymbol(string name) {
             return broker.RemoveSymbol(this, name);
         }

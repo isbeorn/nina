@@ -152,7 +152,6 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.FlipRotator, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.FlipRotator, PowerupsLite"),
             "WhenPlugin.When.GSSend, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.GSSend, PowerupsLite"),
             "WhenPlugin.When.ForEachList, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ForEachList, PowerupsLite"),
-            "WhenPlugin.When.ForEachInArray, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.ForEachInArray, PowerupsLite"),
             "WhenPlugin.When.IfFailed, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfFailed, PowerupsLite"),
             "WhenPlugin.When.IfTimeout, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.IfTimeout, PowerupsLite"),
             "WhenPlugin.When.InterruptTrigger, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.InterruptTrigger, PowerupsLite"),

@@ -2,6 +2,7 @@
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using Namotion.Reflection;
 using Nikon;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
@@ -327,6 +328,20 @@ namespace NINA.Sequencer.Serialization {
                             Type tt = Type.GetType("PowerupsLite.When.InitializeArray, PowerupsLite");
                             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
                             ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
+                            newObj.Name += " [SP->Lite";
+                            return newObj;
+                        }
+                    case "ForEachInArray": {
+                            Type tt = Type.GetType("PowerupsLite.When.ForEachInArray, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PropertyInfo pi = t.GetProperty("ValueVariable");
+                            PropertyInfo npi = newObj.GetType().GetProperty("ValueVariable");
+                            npi.SetValue(newObj, (string)pi.GetValue(item));
+                            pi = t.GetProperty("IndexVariable");
+                            npi = newObj.GetType().GetProperty("IndexVariable");
+                            npi.SetValue(newObj, (string)pi.GetValue(item));
                             PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
                             newObj.Name += " [SP->Lite";
                             return newObj;

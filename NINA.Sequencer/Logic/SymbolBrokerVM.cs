@@ -326,8 +326,6 @@ namespace NINA.Sequencer.Logic {
 
         private static Symbol[] PierConstants = new Symbol[] { new Symbol("PierUnknown", -1), new Symbol("PierEast", 0), new Symbol("PierWest", 1) };
 
-        private static Symbol[] RoofConstants = new Symbol[] { new Symbol("RoofNotOpen", 0), new Symbol("RoofOpen", 1), new Symbol("RoofCannotOpenOrRead", 2) };
-
         private static Symbol[] ShutterConstants = new Symbol[] { new Symbol("ShutterUnknown", -1), new Symbol("ShutterOpen", 0), new Symbol("ShutterClosed", 1), new Symbol("ShutterOpening", 2), new Symbol("ShutterClosing", 3),
             new Symbol("ShutterError", 4) };
 
@@ -422,6 +420,14 @@ namespace NINA.Sequencer.Logic {
             }
             AddSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value);
         }
+
+        public void AddSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+            if (provider == null) {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            AddSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value, values);
+        }
+        
         public bool RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));

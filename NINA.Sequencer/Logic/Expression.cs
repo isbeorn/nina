@@ -10,6 +10,8 @@ using System.Threading;
 using NCalc.Handlers;
 using NINA.Sequencer.SequenceItem.Expressions;
 using System.Text;
+using NINA.Sequencer.SequenceItem;
+using OxyPlot;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -649,6 +651,38 @@ namespace NINA.Sequencer.Logic {
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     args.Result = SymbolBroker.TryGetValue(str, out _);
+                } else if (name == "dateString") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "startsWith") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    string f = Convert.ToString(args.Parameters[1].Evaluate());
+                    args.Result = str.StartsWith(f);
+                } else if (name == "strLength") {
+                    var e = args.Parameters[0].Evaluate();
+                    if (e is string es) {
+                        args.Result = es.Length;
+                    } else {
+                        args.Result = -1;
+                    }
+                } else if (name == "strConcat") {
+                    var e = args.Parameters[0].Evaluate();
+                    var i = args.Parameters[1].Evaluate();
+                    if (e is string es && i is string iss) {
+                        args.Result = String.Concat(es, iss);
+                    } else {
+                        args.Result = "";
+                    }
+                } else if (name == "strAtPos") {
+                    var e = args.Parameters[0].Evaluate();
+                    var i = args.Parameters[1].Evaluate();
+                    if (e is string es && i is int iint && iint >= 0 && iint < es.Length) {
+                        args.Result = Convert.ToString(es[iint]);
+                    } else {
+                        args.Result = "";
+                    }
                 } else if (name == "random") {
                     args.Result = RNG.NextDouble();
                 }
