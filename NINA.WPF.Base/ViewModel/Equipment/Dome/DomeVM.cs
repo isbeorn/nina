@@ -89,7 +89,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             this.updateTimer = deviceUpdateTimerFactory.Create(
                 GetDomeValues,
                 UpdateDomeValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Dome"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -645,7 +646,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     var from = DomeInfo.Azimuth;
                     Logger.Info($"Slewing dome to azimuth {degrees}°");
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
-                    await Dome?.SlewToAzimuth(degrees, token); 
+                    await Dome?.SlewToAzimuth(degrees, token);
                     var waitForUpdate = updateTimer.WaitForNextUpdate(token);
                     await CoreUtil.Wait(TimeSpan.FromSeconds(this.profileService.ActiveProfile.DomeSettings.SettleTimeSeconds), true, token, progress, Loc.Instance["LblSettle"]);
                     await waitForUpdate;

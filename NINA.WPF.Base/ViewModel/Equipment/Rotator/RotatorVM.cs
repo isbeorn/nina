@@ -65,7 +65,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             updateTimer = new DeviceUpdateTimer(
                 GetRotatorValues,
                 UpdateRotatorValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Rotator"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

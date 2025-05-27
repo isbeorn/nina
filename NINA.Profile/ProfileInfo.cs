@@ -14,6 +14,7 @@
 
 using NINA.Core.Utility;
 using System;
+using System.Runtime.Serialization;
 
 namespace NINA.Profile {
 
@@ -49,5 +50,20 @@ namespace NINA.Profile {
                 RaisePropertyChanged();
             }
         }
+    }
+
+    [DataContract]
+    public class ProfileMetaProxy {
+        [DataMember]
+        public Guid Id { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
+        public string Description { get; set; }
+
+        [DataMember]
+        public DateTime LastUsed { get; set; }
     }
 }

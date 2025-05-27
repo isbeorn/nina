@@ -58,7 +58,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
             updateTimer = new DeviceUpdateTimer(
                 GetWeatherDataValues,
                 UpdateWeatherDataValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "WeatherData"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

@@ -766,8 +766,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.1425.11118.dll" Guid="4426e275-ef7e-4a2c-9b1c-cd960d7b53f1">
-        <File Id="mscordaccore_amd64_amd64_8.0.1425.11118.dll" Name="mscordaccore_amd64_amd64_8.0.1425.11118.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1425.11118.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Guid="a0d56131-9dfd-4488-b60f-5b0a9be46971">
+        <File Id="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Name="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1625.21506.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -2194,6 +2194,9 @@
     <ComponentGroup Id="External_x64_SVBony_files" Directory="External_x64_SVBony">
       <Component Id="External_x64_SVBony_SVBCameraSDK.dll" Guid="964cd499-e6e4-4e2c-bc29-58b6aa3f6fc0" Bitness="$(var.Win64)">
         <File Id="External_x64_SVBony_SVBCameraSDK.dll" Name="SVBCameraSDK.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\SVBCameraSDK.dll" />
+      </Component>
+      <Component Id="External_x64_SVBony_svbonycam.dll" Guid="6CFF53A9-CFB6-4D1F-9097-CE79837F4DD5" Bitness="$(var.Win64)">
+        <File Id="External_x64_SVBony_svbonycam.dll" Name="svbonycam.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\svbonycam.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

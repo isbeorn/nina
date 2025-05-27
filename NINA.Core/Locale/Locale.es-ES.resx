@@ -1874,7 +1874,7 @@ HFR calculada: {2}
     <value>Cargar Perfil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>No puede cargar perfil. ¡Está siendo usado por otra instancia de N.I.N.A!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Cargar Secuencia</value>
@@ -2267,6 +2267,12 @@ HFR calculada: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Cliente interno de NINA para el API de OpenWeatherMap</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Usa el API actual de Forecast Weather. La infomación del clima se actualiza cada 10 minutos.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Cliente interno de NINA para el API de OpenMeteo</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opciones</value>
@@ -7011,28 +7017,28 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>La ruta es inválida</value>
   </data>
   <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
-    <value>There is no Weather Underground API key configured.</value>
+    <value>No hay ninguna clave API configurada para Weather Underground.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
-    <value>There is no Weather Underground station configured.</value>
+    <value>No hay ninguna estación de Weather Underground configurada.</value>
   </data>
   <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
-    <value>Weather Underground API did not respond.</value>
+    <value>La API de Weather Underground no ha respondido.</value>
   </data>
   <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
-    <value>Weather Underground API request failed: {0}</value>
+    <value>La solicitud de la API de Weather Underground ha fallado: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>Establecer posición actual como cero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Invertir</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>Establecer paso máx.</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>¿Establecer posición actual como cero?</value>
   </data>
   <data name="LblCrosshair" xml:space="preserve">
     <value>Punto de mira</value>
@@ -7047,7 +7053,7 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>No se ha especificado ningún host en la configuración</value>
   </data>
   <data name="LblBlindSolveSettings" xml:space="preserve">
-    <value>Blind Solver Settings</value>
+    <value>Ajustes de solución ciega (platesolve)</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
     <value>Aviso: "Usar el lado del pie del telescopior" en la configuración del cambio de meridiano está desactivado y puede causar problemas de alineación en monturas ecuatoriales con cúpulas cerca del meridiano. La cúpula asumirá que un cambio de meridiano se produce precisamente en el meridiano, lo que potencialmente conducirá a un mal alineamiento si la montura aún no se ha dado la vuelta.</value>
@@ -7056,16 +7062,16 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Duración total</value>
   </data>
   <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
-    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+    <value>Bloquea el secuenciador para evitar cualquier edición manual o de arrastrar y soltar</value>
   </data>
   <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
     <value>Desbloquea el secuenciador para permitir editar manualmente o mediante arrastrar y soltar</value>
   </data>
   <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Disable all drag and drop in the sequencer and sidebar</value>
+    <value>Deshabilita todas las acciones de arrastrar y soltar en el secuenciador y la barra lateral</value>
   </data>
   <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
-    <value>Enable all drag and drop in the sequencer and sidebar</value>
+    <value>Habilita las acciones de arrastrar y soltar en el secuenciador y la barra lateral</value>
   </data>
   <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
     <value>¡Longitud focal no válida!</value>
@@ -7120,16 +7126,16 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Conectar todos los dispositivos guardados en el perfil</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
-    <value>Disconnect All Equipment</value>
+    <value>Desconectar todo el equipo</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
-    <value>Disconnects all currently connected devices</value>
+    <value>Desconecta todos los dispositivos conectados actualmente</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
-    <value>Reconnect Camera On Download Failure</value>
+    <value>Reconectar la cámara tras fallo en la descarga</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>Un activador se accionará cuando la cámara no haya podido descargar una exposición e intentará volver a conectar la cámara. Cuando se reconecte, también se reconectará tanto el enfriador de la cámara como la cinta calentadora antirrocío al mismo estado en el que estaban.</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
     <value>Reconectar el equipo</value>
@@ -7150,6 +7156,16 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>No se pudo encontrar la rotación tras {0} intentos . ¿Has establecido correctamente la marca de reverso del rotador?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Bloquea los paneles para evitar su cierre o reorganización, o los desbloquea para ajustarlos.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>La coordenada actual está en 2D. Se requiere en 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Fecha Juliana Modificada</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Descubre el telescopio cuando acabes</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

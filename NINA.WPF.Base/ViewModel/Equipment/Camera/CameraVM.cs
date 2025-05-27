@@ -86,7 +86,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
                 UpdateCameraValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Camera"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {

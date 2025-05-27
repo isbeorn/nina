@@ -518,7 +518,7 @@ capaç de compensar les variacions de la temperatura ambient</value>
     <value>Opcions de la càmera</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Paràmetre de la càmera</value>
+    <value>Paràmetres de la Càmera</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Estat de la Càmera</value>
@@ -1878,7 +1878,7 @@ HFR calculat: {2}    </value>
     <value>Carregar Perfil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>No es pot carregar el perfil. Ja l’utilitza un altre instància de N.I.N.A.!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Carregar Seqüència</value>
@@ -2271,6 +2271,12 @@ HFR calculat: {2}    </value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Client intern de NINA per a l'API de OpenWeatherMap</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Utilitza l'API de previsió meteorològica d'OpenMeteo. Les dades meteorològiques s'actualitzen cada 10 minuts.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Client intern de l'API d'OpenMeteo de NINA</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opcions</value>
@@ -7089,71 +7095,81 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <comment>The person who is doing the observations</comment>
   </data>
   <data name="LblDomeFollowingShort" xml:space="preserve">
-    <value>Following</value>
+    <value>Seguint</value>
     <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
   </data>
   <data name="LblDomeFollowingViaNINA" xml:space="preserve">
-    <value>Dome following via N.I.N.A.</value>
+    <value>Cúpula seguint via N.I.N.A.</value>
   </data>
   <data name="LblDomeFollowingViaDriver" xml:space="preserve">
     <value>via Driver</value>
     <comment>If the dome following logic is managed by the driver</comment>
   </data>
   <data name="LblWorldMap" xml:space="preserve">
-    <value>World Map</value>
+    <value>Mapa del món</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
-    <value>Connect Equipment</value>
+    <value>Connecta equip</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
-    <value>For the selected device, the device save in the profile will be connected.</value>
+    <value>Per al dispositiu seleccionat, es connectarà el dispositiu desat al perfil.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Connectar</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
-    <value>Disconnect Equipment</value>
+    <value>Desconnecta equip</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
-    <value>Disconnects the selected device</value>
+    <value>Desconnecta el dispositiu seleccionat</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
-    <value>Connect All Equipment</value>
+    <value>Connecta tot l'equip</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
-    <value>Connect to all devices that are saved in the profile</value>
+    <value>Connecta tots els dispositius desats en el perfil</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
-    <value>Disconnect All Equipment</value>
+    <value>Desconnecta tot l'equip</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
-    <value>Disconnects all currently connected devices</value>
+    <value>Desconnecta tots els dispositius connectats actualment</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
-    <value>Reconnect Camera On Download Failure</value>
+    <value>Desconnecta la Càmera després d'una fallada en la descàrrega</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
-    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+    <value>Un activador s'accionarà quan la càmera no pugui descarregar una exposició i intentarà tornar a connectar la càmera. Quan es reconnecti, també es reconnectarà el refrigerador de la càmera i la cinta escalfadora antirosada al mateix estat en el qual estaven.</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
-    <value>Reconnect Equipment</value>
+    <value>Reconnecta l'equip</value>
   </data>
   <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
-    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+    <value>Un activador que s'executarà quan el dispositiu seleccionat es desconnecti i intentarà reconnectar-ho.</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
-    <value>Switch Profile</value>
+    <value>Canvia el perfil</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
-    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+    <value>Desconnecta tots els dispositius que estiguin connectats actualment, canvia el perfil especificat i reconnecta tots els dispositius del perfil especificat.</value>
   </data>
   <data name="LblDomeDriverFollowing" xml:space="preserve">
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>No es pot trobar la rotació després de {0} intentos. Has determinat correctament la marca de revers del rotador?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Bloqueja els panells per evitar el tancament o la reordenació, o els desbloqueja per ajustar-los.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>La coordenada actual està en 2D. És necessari en 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Data Juliana modificada</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Obre la tapa quan estigui</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

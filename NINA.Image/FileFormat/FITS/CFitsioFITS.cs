@@ -82,7 +82,7 @@ namespace NINA.Image.FileFormat.FITS {
         }
 
         public void AddHeader(string keyword, DateTime value, string comment) {
-            AddHeader(keyword, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
+            AddHeader(keyword, value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture), comment);
         }
 
         public void Close() {
@@ -110,12 +110,14 @@ namespace NINA.Image.FileFormat.FITS {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 AddHeader("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
                 AddHeader("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+                AddHeader("MJD-OBS", metaData.Image.ExposureStart.ToMJD(), "Modified Julian Date of observation");
             }
 
             if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
                 // Section 8.4.1 https://fits.gsfc.nasa.gov/standard40/fits_standard40aa-le.pdf
                 // Calendar date of the midpoint of the observation, expressed in the same way as the DATE-OBS keyword.
                 AddHeader("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
+                AddHeader("MJD-AVG", metaData.Image.ExposureMidPoint.ToMJD(), "Modified Julian Date of averaged midpoint time");
             }
 
             /* Camera */

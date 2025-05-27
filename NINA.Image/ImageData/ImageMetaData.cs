@@ -97,6 +97,18 @@ namespace NINA.Image.ImageData {
         }
     }
 
+    public class UIntMetaDataHeader : IGenericMetaDataHeader<uint> {
+        public string Key { get; }
+        public uint Value { get; }
+        public string Comment { get; }
+
+        public UIntMetaDataHeader(string key, uint value, string comment = "") {
+            Key = key;
+            Value = value;
+            Comment = comment;
+        }
+    }
+
     public class DoubleMetaDataHeader : IGenericMetaDataHeader<double> {
         public string Key { get; }
         public double Value { get; }

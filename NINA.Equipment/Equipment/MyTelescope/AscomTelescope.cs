@@ -587,6 +587,36 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             return false;
         }
 
+        public async Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
+            if (Connected && !AtPark && CanSlewAltAz) {
+                try {
+                    TrackingEnabled = false;
+                    TargetCoordinates = coordinates.Transform(EquatorialSystem);
+
+                    if (CanSlewAltAzAsync) {
+                        await device.SlewToAltAzTaskAsync(azimuth: coordinates.Azimuth.Degree, altitude: coordinates.Altitude.Degree, cancellationToken: token);
+                        InvalidatePropertyCache();
+                    } else {
+                        device.SlewToAltAz(Azimuth: coordinates.Azimuth.Degree, Altitude: coordinates.Altitude.Degree);
+                        await Task.Delay(200, token);
+                        while (Slewing) {
+                            await CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval), token);
+                        }
+                    }
+
+                    return true;
+                } catch (OperationCanceledException) {
+                    throw;
+                } catch (Exception e) {
+                    Logger.Error(e);
+                    Notification.ShowExternalError(e.Message, Loc.Instance["LblASCOMDriverError"]);
+                } finally {
+                    TargetCoordinates = null;
+                }
+            }
+            return false;
+        }
+
         public void StopSlew() {
             if (CanSlew) {
                 device.AbortSlew();

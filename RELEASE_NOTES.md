@@ -11,46 +11,94 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added support for latest version of SkyGuard (SkySurveyor, SkyGuard, SkyGuide, SkyWave depending on license)
 - In Options > Imaging the sequence startup template can now be set to be empty again
 - FITS keywords with boolean/logical values are now properly rendered as FITS logicals instead of as strings when using CFITSIO
+- Imaging is now possible during slewing to a target, but not centering, from the framing wizard
+- PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
 
-## Improvements
-- The device chooser will now show a stored device id that is currently not available as an "Offline device" instead of showing "No Device" to differentiate having no device selected versus a saved device that is currently unavailable
-- ZWO EAF is now available as a native driver
-- Framing assistant sky annotation options are now saved to the active profile
-- Looping mode is no longer started when NINA connects to PHD2.
-- GPSD support added as a GNSS source for getting site location information
-- Renamed "Direct Guider" to "Mount Dither" 
-  - The device type has been renamed to better reflect its purpose. The "Mount Dither" driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface. This change ensures clarity and better alignment with the feature's intended functionality.
-- Plate solver specific settings are now shown for the selected Plate Solver and Blind Solver only. This makes it simpler to see at a glance that everything is set up correctly.
-- N.I.N.A. Star Detector now properly calculates the centroid of stars
-  - The centroid is now also annotated in the N.I.N.A. Star Annotator
-- Autofocus report now displays the determined step number as an integer instead of a floating point number
-- N.I.N.A. will now query the ASCOM device name after connecting to the driver.
-- Added separate options for dither pixel and dither settle time parameters to Sky Flat instructions
-- Improved rendering performance of guider chart
-- Introduced a new "Complete duration" filter option for altitude filters in the sky atlas search, filtering for objects that remain above the horizon or the specified altitude for the entire specified duration.
-- Added lock and unlock buttons to the sequencer, which disable manual input and drag-and-drop when activated
-- Added drag-and-drop disable and enable buttons to the sequencer, which disable all drag-and-drop when activated
-- Hitting the escape key while dragging an item will cancel the drag and drop action
-- Added new observation related metadata fields in Options > Astrometry. These fields Observer, Observatory, and Site are also written to the FITS file as OBSERVER, OBSERVAT  and SITENAME, respectively.
-- MessageBox and Annotation sequence instructions now accepts return for specifying multiline texts
-- Dome info panels now also include 
-    - Altitude if available
-    - Info if following is off, following via N.I.N.A. or following via driver to differentiate the different dome following mechanisms
-- Options > Astrometry can now show a world map with a pin of your entered latitude and longitude
-- "Center And Rotate" as well as "Solve And Rotate" will now give up after 10 unsuccessful rotation attempts
-- Added a lock/unlock button to the imaging tab to prevent panels from being closed or rearranged. Unlocking allows adjustments again.
-    - Resizing panels remains possible, as no method to disable this has been found.
-    - Switching tabs is allowed while locked, but rearranging them is prevented.
-    - Undocked floating windows are unaffected and can still be re-docked even when the layout is locked.
-- OpenWeatherMap client improvements:
-    - Added Wind Gust and Rain Rate metrics
-    - Air pressure is now ajdusted to be the QFE (local) value based on site elevation rather than the received QNH (mean sea level) value. This brings the value in line with the ASCOM convention for air pressure data.
-    - Failure to authenticate with the OpenWeatherMap API now results in a hard error.
-    - Singular failures to query the OpenWeatherMap API will no longer result in a disconnection of the weather client.
-- External Script execution now runs in a separate context using `UseShellExecute` parameter. This allows scripts to start applications without waiting for them to close before continuing.
-- Enhanced the guiding RMS calculation algorithm to improve numerical stability and prevent long-term floating-point error accumulation
-- Added an option in flat wizard page to "Open cover when done". This allows customization of the desired cover state when the flat wizard is finished
+### **Device Management**
+- **Device Chooser Enhancements**  
+  - A stored device ID that is currently unavailable will now appear as an "Offline Device" instead of "No Device," differentiating between having no device selected and an unavailable saved device.  
+- **ZWO EAF Native Driver**  
+  - The ZWO EAF is now available as a native driver.  
+- **New SVBony Camera Driver**
+  - Added native support for the new SVBony camera series 
+- **ASCOM Device Name Query**  
+  - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
 
+### **User Interface & Usability**
+- **Framing Assistant Improvements**  
+  - Sky annotation options are now saved to the active profile.  
+- **Plate Solver UI Improvements**  
+  - Settings for the selected Plate Solver and Blind Solver are now displayed exclusively, making setup verification more intuitive.  
+- **Message Box and Annotation Instructions**  
+  - Now accept **Enter** for specifying multiline texts.  
+- **Dome Info Panel Enhancements**  
+  - Now includes **Altitude**, if available.  
+  - Improved differentiation of dome following mechanisms:  
+    - **Following Off**  
+    - **Following via N.I.N.A.**  
+    - **Following via Driver**  
+- **Options > Astrometry Enhancements**  
+  - Added new metadata fields: **Observer**, **Observatory**, and **Site**, which are written to FITS files as `OBSERVER`, `OBSERVAT`, and `SITENAME`.  
+  - Added a world map displaying a pin for the entered latitude and longitude.
+
+### **Sequencer & Imaging**
+- **Sequencer Enhancements**  
+  - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
+  - Added **drag-and-drop disable and enable buttons**.  
+  - Pressing the **Escape** key while dragging an item cancels the action.  
+- **Imaging Tab Locking**  
+  - Added a **lock/unlock button** to prevent panels from being closed or rearranged.  
+  - **Resizing panels remains possible** (no method found to disable this).  
+  - **Switching tabs is allowed while locked**, but rearranging them is prevented.  
+  - **Floating undocked windows remain unaffected** and can still be re-docked even when the layout is locked.  
+- **Metadata & Files**
+  - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
+
+### **Guiding & Tracking**
+- **Looping Mode Behavior**  
+  - Looping mode will no longer start automatically when N.I.N.A. connects to PHD2.  
+- **"Mount Dither" Renaming**  
+  - "Direct Guider" has been renamed to "Mount Dither" to better reflect its purpose.  
+  - The "Mount Dither" driver does not perform guiding but is specifically designed to initiate dithering commands directly through the mount interface.  
+- **Guider Chart Performance**  
+  - Improved rendering performance of the guider chart.  
+- **Guiding RMS Calculation Improvements**  
+  - Enhanced numerical stability and **prevented long-term floating-point error accumulation**.  
+
+### **Astrometry & Plate Solving**
+- **GNSS Support**  
+  - Added support for **GPSD** as a GNSS source to obtain site location information.  
+- **Center and Rotate Improvements**  
+  - "Center and Rotate" and "Solve and Rotate" will now give up after **10 unsuccessful rotation attempts**.  
+
+### **Autofocus & Star Detection**
+- **Star Detector Enhancements**  
+  - The N.I.N.A. Star Detector now properly calculates star centroids.  
+  - Centroids are now annotated in the N.I.N.A. Star Annotator.  
+- **Autofocus Report Enhancements**  
+  - The determined step number is now displayed as an integer instead of a floating-point number.  
+
+### **Weather & Environmental Data**
+- **OpenWeatherMap Client Improvements**  
+  - Added **Wind Gust** and **Rain Rate** metrics.  
+  - **Air pressure is now adjusted to QFE (local)** based on site elevation rather than QNH (mean sea level), aligning with ASCOM conventions.  
+  - **Authentication failures** with OpenWeatherMap API now result in a hard error.  
+  - **Singular query failures** no longer disconnect the weather client.  
+- **Added OpenMeteo device**
+    - Supports temperature, pressure, wind direction/gusts/speed, humidity
+    
+### **Automation & Scripting**
+- **Sky Flat Instructions**  
+  - Added separate options for **dither pixel size** and **dither settle time** parameters.  
+- **Flat Wizard Customization**  
+  - Added an **"Open Cover When Done"** option to set the desired cover state after completing the flat wizard.  
+- **External Script Execution**  
+  - Now runs in a separate context using `UseShellExecute`, allowing scripts to start applications without waiting for them to close.  
+
+### **Data Integrity & Reliability**
+- **Profile Saving Reliability**  
+  - Improved with **atomic journal-based updates** and **automatic recovery from backups**.  
+- Profiles on startup now load much quicker by only reading essential information upfront. Full details are only loaded when a profile is actually used.
 
 ## Commandline Options
 The following command line options have been added

@@ -310,6 +310,7 @@ namespace NINA.Equipment.Equipment {
         public bool CanSetPierSide => throw new NotImplementedException();
 
         public bool CanSlew => throw new NotImplementedException();
+        public bool CanSlewAltAz => throw new NotImplementedException();
 
         public DateTime UTCDate => throw new NotImplementedException();
 
@@ -508,6 +509,10 @@ namespace NINA.Equipment.Equipment {
         }
 
         public PierSide DestinationSideOfPier(Coordinates coordinates) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
             throw new NotImplementedException();
         }
     }

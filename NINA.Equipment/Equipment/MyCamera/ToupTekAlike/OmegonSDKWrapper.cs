@@ -121,7 +121,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             sdk.get_Temperature(out temp);
         }
 
-        public bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+        public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
             Omegonprocam.FrameInfoV2 OmegonprocampInfo;
             var result = sdk.PullImageV2(data, bitDepth, out OmegonprocampInfo);
             info = OmegonprocampInfo.ToFrameInfo();

@@ -517,7 +517,7 @@ Filtr: {3}</value>
     <value>Možnosti Kamery</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Parametry Kamery</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Stav Kamery</value>
@@ -1877,7 +1877,7 @@ Přeskočit.</value>
     <value>Načíst Profil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Profil nelze načíst. Je již používán jinou spuštěnou N.I.N.A. aplikací!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Načíst Sekvenci</value>
@@ -2270,6 +2270,12 @@ Přeskočit.</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Interní klient NINA OpenWeatherMap API</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Možnosti</value>
@@ -7152,9 +7158,19 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value></value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
-    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+    <value>Rotaci se nepodařilo zjistit po {0} pokusech. Je parametr obrácení směru nastaven správně?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Uzamkne panely, aby nedošlo k jejich zavření nebo přesunutí, případně je odemkne pro úpravy.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Aktuální oprava je ve 2D. Je nutná oprava ve 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Upravené Juliánské Datum</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Po dokončení otevřete kryt</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

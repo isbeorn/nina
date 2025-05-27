@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Interfaces;
 using NINA.Core.Model;
@@ -238,6 +239,7 @@ namespace NINA.Image.ImageData {
             p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToLocalTime().ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.TimeUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.MJD, metadata.Image.ExposureStart.ToMJD(), precision: 8);
             p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber.ToString("0000"));
             p.Set(ImagePatternKeys.ImageType, metadata.Image.ImageType);
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);

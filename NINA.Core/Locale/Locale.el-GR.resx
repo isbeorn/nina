@@ -514,7 +514,7 @@
     <value>Ρυθμίσεις Κάμερας</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Παράμετρος Κάμερας</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Κατάσταση Κάμερας</value>
@@ -1873,7 +1873,7 @@
     <value>Φόρτωση Προφίλ</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η φόρτωση του προφίλ. Χρησιμοποιείται ήδη από μια άλλη περίπτωση Ν.Ι.Ν.Α.!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Φόρτωση Αλληλουχίας</value>
@@ -2266,6 +2266,12 @@
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>OpenWeatherMap API client του NINA</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Επιλογές</value>
@@ -7152,5 +7158,15 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
     <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Current fix is 2D. A 3D fix is required</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Modified Julian Date</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Open cover when done</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

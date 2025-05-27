@@ -97,7 +97,7 @@ namespace NINA.Test.Dome {
             mockDeviceUpdateTimer = new Mock<IDeviceUpdateTimer>();
             mockDeviceUpdateTimerFactory = new Mock<IDeviceUpdateTimerFactory>();
             mockDeviceUpdateTimerFactory
-                .Setup(x => x.Create(It.IsAny<Func<Dictionary<string, object>>>(), It.IsAny<Action<Dictionary<string, object>>>(), It.IsAny<double>()))
+                .Setup(x => x.Create(It.IsAny<Func<Dictionary<string, object>>>(), It.IsAny<Action<Dictionary<string, object>>>(), It.IsAny<double>(), It.IsAny<string>()))
                 .Returns(mockDeviceUpdateTimer.Object);
             mockResourceDictionary = new Mock<IApplicationResourceDictionary>();
             mockProfileService.SetupProperty(p => p.ActiveProfile.DomeSettings.Id);

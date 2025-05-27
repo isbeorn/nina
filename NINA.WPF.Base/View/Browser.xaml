@@ -23,6 +23,5 @@
         x:FieldModifier="public"
         AllowExternalDrop="{Binding AllowExternalDrop, ElementName=UC}"
         DefaultBackgroundColor="{Binding DefaultBackgroundColor, ElementName=UC}"
-        Source="{Binding Source, ElementName=UC}"
         ZoomFactor="{Binding ZoomFactor, ElementName=UC}" />
 </UserControl>
