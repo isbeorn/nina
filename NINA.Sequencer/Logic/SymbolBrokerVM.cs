@@ -104,40 +104,8 @@ namespace NINA.Sequencer.Logic {
             return false;
         }
 
-<<<<<<< HEAD
         private bool GetSymbol(string key, out Symbol symbol) {
             IList<Symbol> list;
-=======
-        // Must be fully qualified key
-        private bool RemoveSymbol(string key) {
-            List<DataSource> list;
-            string prefix = null;
-
-            if (key.IndexOf(DELIMITER) > 0) {
-                string[] parts = key.Split(DELIMITER, 2);
-                if (parts.Length == 2) {
-                    key = parts[1];
-                    prefix = parts[0];
- 
-                    if (!DataKeys.TryGetValue(key, out list)) {
-                        return false;
-                    }
-
-                    foreach (DataSource kvp in list) {
-                        if (kvp.source == prefix) {
-                            list.Remove(kvp);
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryGetValue(string key, out object value) {
-            List<DataSource> list;
->>>>>>> develop
             string prefix = null;
 
             if (DataSymbols.TryGetValue(key, out list) && list.Count == 1) {
@@ -159,15 +127,9 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (prefix != null) {
-<<<<<<< HEAD
                 foreach (Symbol kvp in list) {
                     if (kvp.Category == prefix) {
                         symbol = kvp;
-=======
-                foreach (DataSource kvp in list) {
-                    if (kvp.source == prefix) {
-                        value = kvp.data;
->>>>>>> develop
                         return true;
                     }
                 }
@@ -247,7 +209,6 @@ namespace NINA.Sequencer.Logic {
             LoggedOnce.Add(message);
         }
 
-<<<<<<< HEAD
         private void AddHiddenSymbol(string source, Symbol sym) {
             IList<Symbol> symList;
             if (!HiddenSymbols.TryGetValue(source, out symList)) {
@@ -261,16 +222,11 @@ namespace NINA.Sequencer.Logic {
             IList<Symbol> syms = null;
             HiddenSymbols.TryGetValue(source, out syms);
             return syms;
-=======
-        private void AddSymbol(string source, string token, object value) {
-            AddSymbol(source, token, value, null, false);
->>>>>>> develop
         }
 
         public void AddSymbol(string source, string token, object value) {
             AddSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
-<<<<<<< HEAD
         public void AddSymbol(string source, string token, object value, SymbolType type) {
             AddSymbol(source, token, value, null, type);
         }
@@ -290,17 +246,6 @@ namespace NINA.Sequencer.Logic {
                     AddHiddenSymbol(source, sym);
                 }
                 list.Add(sym);
-=======
-        private void AddSymbol(string source, string token, object value, Datum[] values, bool silent) {
-            if (!Providers.Contains(source)) {
-                Providers.Add(source);
-            }
-            List<DataSource> list;
-            if (!DataKeys.ContainsKey(token)) {
-                list = new List<DataSource>();
-                DataKeys[token] = list;
-                list.Add(new DataSource(source, value, values, false));
->>>>>>> develop
             } else {
                 list = DataSymbols[token];
                 bool found = false;
@@ -326,21 +271,14 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-<<<<<<< HEAD
         // For use with registered providers
         private bool RemoveSymbol(string key) {
             IList<Symbol> list;
-=======
-        private static List<string> Providers = new List<string>();
-        
-        private static Datum[] PierConstants = new Datum[] { new Datum("PierUnknown", -1), new Datum("PierEast", 0), new Datum("PierWest", 1) };
->>>>>>> develop
 
             if (!DataSymbols.TryGetValue(key, out list)) {
                 return false;
             }
 
-<<<<<<< HEAD
             DataSymbols.Remove(key, out _);
             return true;
         }
@@ -443,15 +381,6 @@ namespace NINA.Sequencer.Logic {
         }
 
         private Task UpdateNINASymbols() {
-=======
-        private static Datum[] ShutterConstants = new Datum[] { new Datum("ShutterUnknown", -1), new Datum("ShutterOpen", 0), new Datum("ShutterClosed", 1), new Datum("ShutterOpening", 2), new Datum("ShutterClosing", 3),
-            new Datum("ShutterError", 4) };
-
-        private static Datum[] CoverConstants = new Datum[] { new Datum("CoverUnknown", 0), new Datum("CoverNeitherOpenNorClosed", 1), new Datum("CoverClosed", 2), new Datum("CoverOpen", 3),
-            new Datum("CoverError", 4), new Datum("CoverNotPresent", 5) };
-
-        private Task UpdateEquipmentKeys() {
->>>>>>> develop
 
             if (Observer == null) {
                 Observer = new ObserverInfo() {
@@ -583,48 +512,8 @@ namespace NINA.Sequencer.Logic {
             }
         }
 
-<<<<<<< HEAD
         public void UpdateEndAutoFocusRun(AutoFocusInfo info) {
         }
-=======
-        public class SymbolProvider {
-
-            private string friendlyName;
-            private string code;
-
-            public SymbolProvider(string friendlyName, string code) {
-                this.friendlyName = friendlyName;
-                this.code = code;
-            }
-
-            public string FriendlyName => friendlyName;
-
-            public string Code => code;
-
-            // Allow constants to be added at some point (like CoverStatus, PierSide)
-            public void AddSymbol(string name, object value) {
-                INSTANCE.AddSymbol(code, name, value);
-            }
-
-            public bool RemoveSymbol(string name) {
-                return INSTANCE.RemoveSymbol(code + DELIMITER + name);
-            }
-        }
-
-        public SymbolProvider RegisterProvider(string friendlyName, string code) {
-            if (code.Length != 2) {
-                throw new ArgumentException("Symbol Provider code must be two letters");
-            }
-            if (Providers.Contains(code)) {
-                throw new ArgumentException("Symbol Provider code is already registered.");
-            }
-            return new SymbolProvider(friendlyName, code);
-        }
-
-        public List<Datum> GetDataSymbols() {
-            SourcedSymbols ss = new SourcedSymbols();
->>>>>>> develop
-
         public void UpdateUserFocused(FocuserInfo info) {
         }
 
