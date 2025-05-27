@@ -114,6 +114,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override bool Validate() {
+            SymbolDictionary cached = null;
             if (!IsAttachedToRoot()) return true;
             IList<string> i = new List<string>();
 
@@ -121,6 +122,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Variable must be alphanumeric");
+            }
+
+            if (this is GlobalVariable && SymbolCache.TryGetValue(SParent(), out cached) && !cached.ContainsKey(Identifier)) {
+                LastSParent = null;
+                AfterParentChanged();
             }
 
             if (Expr == null) {

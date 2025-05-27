@@ -1,4 +1,6 @@
-﻿#region "copyright"
+﻿#define _upgrade
+
+#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -54,6 +56,7 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
+#if _upgrade
             // There's got to be a better way to do this...
             if (this is JsonCreationConverter<ISequenceContainer> c) {
                 PowerupsUpgrader.RegisterContainerConverter(c);
@@ -64,6 +67,7 @@ namespace NINA.Sequencer.Serialization {
             } else if (this is JsonCreationConverter<ISequenceTrigger> t) {
                 PowerupsUpgrader.RegisterTriggerConverter(t);
             }
+#endif
 
             T target = default(T);
 
@@ -79,6 +83,7 @@ namespace NINA.Sequencer.Serialization {
                         jObject.TryGetValue("$type", out token);
                         string originalType = token.ToString();
 
+#if _upgrade
                         Upgrade lite = Upgrade.NINA;
                         (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
@@ -86,24 +91,27 @@ namespace NINA.Sequencer.Serialization {
                             // Substitute with Powerups Lite class
                             jObject["$type"] = token;
                         }
+#endif
 
                         // Create target object based on JObject
                         target = Create(objectType, jObject);
 
 
+#if _upgrade
                         if (lite == Upgrade.Lite) {
                             // Fix up name of the upgraded instruction (this doesn't persist)
-                            ((ISequenceEntity)target).Name += " [SP->Lite";
+                            ((ISequenceEntity)target).Name += " [Lite";
                         }
 
                         if (lite == Upgrade.None) {
                             ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
                             return target;
                         }
-
+#endif
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
+#if _upgrade
                         if (jObject.TryGetValue("$type", out token)) {
                             string ts = token.ToString();
                             if (ts.EndsWith(", WhenPlugin")) {
@@ -121,8 +129,16 @@ namespace NINA.Sequencer.Serialization {
                                 }
                             }
                         }
-                    }
-                }
+#else
+                        if (jObject.TryGetValue("$type", out token)) {
+                            string ts = token.ToString();
+                            if (ts.EndsWith(", WhenPlugin")) {
+                                ((ISequenceEntity)target).Name += " [Powerups";
+                            }
+                        }
+#endif
+                            }
+                        }
 
                 return target;
             } catch (Exception ex) {

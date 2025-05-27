@@ -45,7 +45,7 @@ namespace NINA.Sequencer.Serialization {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             ISequenceItem newItem = (ISequenceItem)newObj;
-            newItem.Name += " [SP: " + item.Name;
+            newItem.Name += " [Was " + item.Name;
             newItem.Attempts = item.Attempts;
             newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
@@ -54,7 +54,7 @@ namespace NINA.Sequencer.Serialization {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
             // For now...
-            ((ISequenceContainer)newObj).Name += " [SP: " + oldName;
+            ((ISequenceContainer)newObj).Name += " [Was " + oldName;
             return newObj;
         }
 
@@ -62,7 +62,7 @@ namespace NINA.Sequencer.Serialization {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
             // For now...
-            ((ISequenceCondition)newObj).Name += " [SP: " + oldName;
+            ((ISequenceCondition)newObj).Name += " [Was " + oldName;
             return newObj;
         }
 
@@ -70,7 +70,7 @@ namespace NINA.Sequencer.Serialization {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
             // For now...
-            ((ISequenceTrigger)newObj).Name += " [SP: " + oldName;
+            ((ISequenceTrigger)newObj).Name += " [Was " + oldName;
             return newObj;
         }
 
@@ -329,7 +329,7 @@ namespace NINA.Sequencer.Serialization {
                             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
                             ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
                             PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [SP->Lite";
+                            newObj.Name += " [Lite";
                             return newObj;
                         }
                     case "ForEachInArray": {
@@ -343,7 +343,7 @@ namespace NINA.Sequencer.Serialization {
                             npi = newObj.GetType().GetProperty("IndexVariable");
                             npi.SetValue(newObj, (string)pi.GetValue(item));
                             PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [SP->Lite";
+                            newObj.Name += " [Lite";
                             return newObj;
                         }
                     case "GetArray": {
@@ -353,7 +353,7 @@ namespace NINA.Sequencer.Serialization {
                             PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
                             PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
                             PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [SP->Lite";
+                            newObj.Name += " [Lite";
                             return newObj;
                         }
                     case "PutArray": {
@@ -363,7 +363,7 @@ namespace NINA.Sequencer.Serialization {
                             PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
                             PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
                             PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [SP->Lite";
+                            newObj.Name += " [Lite";
                             return newObj;
                         }
                     default: {
