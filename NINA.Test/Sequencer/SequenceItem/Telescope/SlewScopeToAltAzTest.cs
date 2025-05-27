@@ -16,19 +16,11 @@ using FluentAssertions;
 using Moq;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Profile.Interfaces;
-using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Astrometry;
 using NINA.Equipment.Interfaces.Mediator;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NINA.Test.Sequencer.SequenceItem.Telescope {
 

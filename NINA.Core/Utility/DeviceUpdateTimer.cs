@@ -23,6 +23,7 @@ namespace NINA.Core.Utility {
     public interface IDeviceUpdateTimerFactory {
 
         IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval);
+        IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context);
     }
 
     public class DefaultDeviceUpateTimerFactory : IDeviceUpdateTimerFactory {
@@ -33,34 +34,42 @@ namespace NINA.Core.Utility {
         public IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
             return new DeviceUpdateTimer(getValuesFunc, updateValuesFunc, interval);
         }
+
+        public IDeviceUpdateTimer Create(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context) {
+            return new DeviceUpdateTimer(getValuesFunc, updateValuesFunc, interval, context);
+        }
     }
 
     public interface IDeviceUpdateTimer {
         Func<Dictionary<string, object>> GetValuesFunc { get; }
-        IProgress<Dictionary<string, object>> Progress { get; }
+        public Action<Dictionary<string, object>> UpdateValuesFunc { get; }
         double Interval { get; set; }
 
         Task Stop();
         Task Run();
         Task WaitForNextUpdate(CancellationToken ct);
-        [Obsolete("Superseded by \"Run\"")]
-        void Start();
     }
 
     public class DeviceUpdateTimer : IDeviceUpdateTimer {
+        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) : this(getValuesFunc, updateValuesFunc, interval, "Device") {
+        }
 
-        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
+        public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval, string context) {
             GetValuesFunc = getValuesFunc;
             Interval = interval;
-            Progress = new Progress<Dictionary<string, object>>(updateValuesFunc);
+            UpdateValuesFunc = updateValuesFunc;
+            Context = context;
         }
 
         private CancellationTokenSource cts;
         private Task task;
         public Func<Dictionary<string, object>> GetValuesFunc { get; private set; }
-        public IProgress<Dictionary<string, object>> Progress { get; private set; }
+        public Action<Dictionary<string, object>> UpdateValuesFunc { get; private set; }
+        public string Context { get; }
         public DateTimeOffset LastUpdate { get; private set; } = DateTimeOffset.MinValue;
         public double Interval { get; set; }
+
+        private DateTimeOffset? lastSlowLogTime = null;
 
         public async Task Stop() {
             try { cts?.Cancel(); } catch { }
@@ -77,11 +86,6 @@ namespace NINA.Core.Utility {
             }
         }
 
-        [Obsolete("Superseded by \"Run\"")]
-        public void Start() {
-            _ = Run();
-        }
-
         public async Task Run() {
             task = Task.Run(async () => {
                 try { cts?.Dispose(); } catch { }
@@ -93,11 +97,26 @@ namespace NINA.Core.Utility {
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 try {
                     while (await timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested) {
+                        var getStart = DateTimeOffset.UtcNow;                        
                         values = GetValuesFunc();
 
-                        Progress.Report(values);
+                        var updateStart = DateTimeOffset.UtcNow;                        
+                        UpdateValuesFunc(values);
 
-                        LastUpdate = DateTimeOffset.UtcNow;
+                        var updateEnd = DateTimeOffset.UtcNow;
+                        var totalDuration = updateEnd - getStart;
+                        if (Logger.IsEnabled(Enum.LogLevelEnum.TRACE)) {
+                            Logger.Trace($"{Context} values have been updated. Poll start: {getStart:o}; Update start: {updateStart:o}; Update end: {updateEnd:o}; Poll duration {updateStart - getStart}; Update duration {updateEnd - updateStart}; Overall duration {totalDuration}");
+                        }
+
+                        if (totalDuration.TotalSeconds > Interval) {
+                            var now = DateTimeOffset.UtcNow;
+                            if (!lastSlowLogTime.HasValue || now - lastSlowLogTime > TimeSpan.FromMinutes(5)) {
+                                Logger.Warning($"{Context} value update cycle took longer than the device poll interval (Total: {totalDuration.TotalSeconds:F2}s > {Interval}s; Poll: {updateStart - getStart}; Update: {updateEnd - updateStart})");
+                                lastSlowLogTime = now;
+                            }
+                        }
+                        LastUpdate = updateEnd;
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -105,7 +124,7 @@ namespace NINA.Core.Utility {
                 } finally {
                     values.Clear();
                     values.Add("Connected", false);
-                    Progress.Report(values);
+                    UpdateValuesFunc(values);
                 }
             });
             await task;

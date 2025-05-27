@@ -33,7 +33,10 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords, CancellationToken token);
 
+        [Obsolete]
         Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords, CancellationToken token);
+
+        Task<bool> SlewToTopocentricCoordinates(TopocentricCoordinates coords, CancellationToken token);
 
         Task<bool> MeridianFlip(Coordinates targetCoordinates, CancellationToken token);
 

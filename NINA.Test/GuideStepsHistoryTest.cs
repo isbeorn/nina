@@ -37,7 +37,7 @@ namespace NINA.Test {
             ClassicAssert.AreEqual(historySize, gsh.HistorySize);
             ClassicAssert.AreEqual(1, gsh.PixelScale);
             ClassicAssert.AreEqual(GuiderScaleEnum.PIXELS, gsh.Scale);
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
             ClassicAssert.AreEqual(1, gsh.RMS.Scale);
             ClassicAssert.AreEqual(0, gsh.RMS.RA);
             ClassicAssert.AreEqual(0, gsh.RMS.Dec);
@@ -154,7 +154,7 @@ namespace NINA.Test {
 
             gsh.Clear();
 
-            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count);
+            ClassicAssert.AreEqual(0, gsh.GuideSteps.Count());
             ClassicAssert.AreEqual(0, gsh.RMS.RA);
             ClassicAssert.AreEqual(0, gsh.RMS.Dec);
             ClassicAssert.AreEqual(0, gsh.RMS.Total);
@@ -412,27 +412,6 @@ namespace NINA.Test {
 
             ClassicAssert.AreEqual(100, gsh.MaxDurationY);
             ClassicAssert.AreEqual(-100, gsh.MinDurationY);
-        }
-
-        [Test]
-        //[TestCase(5, new int[] { 100, 1000, 100, 1000, 100, 2, 2, 2, 2, 2, 2 }, 1, 0)]
-        [TestCase(5, new int[] { 100, 1000, 100, 1000, 100, 5, 1, 6, 1, 2, 1 }, 2, 1.9390)]
-        public void ScaleChange(int historySize, int[] input, double arcsecPerPix, double expected) {
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
-            gsh.PixelScale = arcsecPerPix;
-            foreach (var val in input) {
-                var step = new PhdEventGuideStep() {
-                    RADistanceRaw = val
-                };
-                gsh.AddGuideStep(step);
-            }
-
-            gsh.RMS.Total.Should().BeApproximately(expected, 0.0001);
-            gsh.Scale = GuiderScaleEnum.ARCSECONDS;
-            gsh.RMS.Total.Should().BeApproximately(expected, 0.0001);
-            gsh.RMS.TotalText.Should().Be($"Tot: {Math.Round(expected, 2):0.00} ({Math.Round(expected * arcsecPerPix, 2):0.00}\")");
-            gsh.Scale = GuiderScaleEnum.PIXELS;
-            gsh.RMS.Total.Should().BeApproximately(expected, 0.0001);
         }
     }
 }

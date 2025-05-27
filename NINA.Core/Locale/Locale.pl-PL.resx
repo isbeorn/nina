@@ -515,7 +515,7 @@ w stanie zrekompensować zmiany temperatury otoczenia</value>
     <value>Opcje kamery</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Parametry kamery</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Stan kamery</value>
@@ -1874,7 +1874,7 @@ Obliczone HFR: {2}</value>
     <value>Załaduj profil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Nie można załadować profilu. Jest on używany przez inną instancję N.I.N.A!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Załaduj sekwencję</value>
@@ -2267,6 +2267,12 @@ Obliczone HFR: {2}</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Wewnętrzny klient API OpenWeatherMap</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opcje</value>
@@ -7150,6 +7156,16 @@ Ponadto ważne jest, aby sterownik ASCOM również wspierał 32-bitową głębi�
     <value>Nie udało się zdefiniować obrotu po {0} próbach. Czy powrotny tryb rotatora jest ustawiony prawidłowo?</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>Zablokuj panele, aby uniemożliwić ich zamknięcie lub zmianę ich położenia, albo odblokuj je, aby je dostosować.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Obecna korekta jest dwuwymiarowa. Wymagana jest korekta 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Ustawienia daty juliańskiej</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Otwórz przesłonę po zakończeniu</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

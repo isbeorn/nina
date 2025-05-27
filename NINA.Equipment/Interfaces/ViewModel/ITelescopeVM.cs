@@ -26,8 +26,11 @@ namespace NINA.Equipment.Interfaces.ViewModel {
     public interface ITelescopeVM : IDeviceVM<TelescopeInfo>, IDockableVM {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords, CancellationToken token);
-
+        
+        [Obsolete]
         Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates, CancellationToken token);
+
+        Task<bool> SlewToTopocentricCoordinates(TopocentricCoordinates coordinates, CancellationToken token);
 
         void MoveAxis(TelescopeAxes axis, double rate);
 

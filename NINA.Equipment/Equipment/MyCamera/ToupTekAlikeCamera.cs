@@ -863,7 +863,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var size = width * height;
             var data = new ushort[size];
 
-            if (!sdk.PullImageV2(data, nativeBitDepth, out var info)) {
+            if (!sdk.PullImage(data, nativeBitDepth, out var info)) {
                 Logger.Error($"{Category} - Failed to pull image");
                 return null;
             }
@@ -883,6 +883,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var metaData = new ImageMetaData();
             metaData.FromCamera(this);
             metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
+            if (info.hasgps) {
+                var locked = info.gps.satellite >= 4;
+                metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_EST", locked ? "locked and valid" : "not locked", "GPS status"));
+
+                if (locked) {
+                    var startTime = new DateTime(CoreUtil.UnixEpochTicks + (long)(info.gps.utcstart / 100L), DateTimeKind.Utc);
+                    var endTime = new DateTime(CoreUtil.UnixEpochTicks + (long)(info.gps.utcend / 100L), DateTimeKind.Utc);
+                    metaData.Image.SetExposureTimes(startTime, endTime);
+
+                    metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_STAT", $"{info.gps.satellite} sats", "GPS status"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_ALT", info.gps.altitude / 1000d, "Altitude (m)"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_EUTC", endTime, "End shutter time"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_ET", endTime, "End shutter time"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LAT", info.gps.latitude / 1000000d, "Latitude"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LON", info.gps.longitude / 1000000d, "Longitude"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_SUTC", startTime, "Start shutter time"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_ST", startTime, "Start shutter time"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SEQ", (int)info.seq, "Sequence number"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_W", width, "Width"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_H", height, "Height"));
+                    if (info.hasexpotime) { 
+                        metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EXPU", (int)info.expotime, "Exposure (microseconds)"));
+                    }
+                    sdk.get_Option(ToupTekAlikeOption.OPTION_LINE_TIME, out int lineTime);
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_LP", lineTime, "[ns] linePeriod"));
+                }
+            }  
             var imageData = exposureDataFactory.CreateImageArrayExposureData(
                     input: data,
                     width: width,

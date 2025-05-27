@@ -30,21 +30,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Protobuf">
-      <Version>3.29.0</Version>
+      <Version>3.31.0</Version>
     </PackageReference>
     <PackageReference Include="Google.Protobuf.Tools">
-      <Version>3.29.0</Version>
+      <Version>3.31.0</Version>
     </PackageReference>
     <PackageReference Include="Grpc.Core.Api">
-      <Version>2.67.0</Version>
+      <Version>2.71.0</Version>
     </PackageReference>
     <PackageReference Include="Grpc.Tools">
-      <Version>2.67.0</Version>
+      <Version>2.72.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -58,10 +58,10 @@
       <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.File">
-      <Version>6.0.0</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.119</Version>
     </PackageReference>
@@ -82,7 +82,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>N.I.N.A. Core Library</Title>
-    <Version>3.2.0.1018-nightly</Version>
+    <Version>3.2.0.1029-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the core components of N.I.N.A.</Description>

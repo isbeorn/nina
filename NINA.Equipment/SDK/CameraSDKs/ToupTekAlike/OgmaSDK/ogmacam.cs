@@ -23,10 +23,10 @@ using System.Runtime.ConstrainedExecution;
        (2) hans.html, Simplified Chinese
 */
 public class Ogmacam : IDisposable {
+    private const string DLLNAME = "ogmacam.dll";
     static Ogmacam() {
         DllLoader.LoadDll(Path.Combine("OGMA", DLLNAME));
     }
-    private const string DLLNAME = "ogmacam.dll";
     [Flags]
     public enum eFLAG : ulong {
         /* cmos sensor */
@@ -253,7 +253,10 @@ public class Ogmacam : IDisposable {
         OPTION_AUTOEXP_POLICY = 0x10,
         /* limit the frame rate, range=[0, 63], the default value 0 means no limit */
         OPTION_FRAMERATE = 0x11,
-        /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing, default value: 0 */
+        /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing
+            In terms of CPU usage, EA is the lowest, followed by BILINEAR, and the others are higher.
+            default value: 0
+        */
         OPTION_DEMOSAIC = 0x12,
         /* demosaic method for video */
         OPTION_DEMOSAIC_VIDEO = 0x13,
@@ -276,8 +279,8 @@ public class Ogmacam : IDisposable {
         /* Conversion Gain:
                 0 = LCG
                 1 = HCG
-                2 = HDR (for camera with flag OGMACAM_FLAG_CGHDR)
-                2 = MCG (for camera with flag OGMACAM_FLAG_GHOPTO)
+                2 = HDR (for camera with flag FLAG_CGHDR)
+                2 = MCG (for camera with flag FLAG_GHOPTO)
         */
         OPTION_CG = 0x19,
         /* pixel format */
@@ -356,7 +359,7 @@ public class Ogmacam : IDisposable {
         OPTION_NOPACKET_TIMEOUT = 0x2b,
         /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
         OPTION_MAX_PRECISE_FRAMERATE = 0x2c,
-        /* precise frame rate current value in 0.1 fps, range:[1~maximum] */
+        /* precise frame rate current value in 0.1 fps. use OPTION_MAX_PRECISE_FRAMERATE, OPTION_MIN_PRECISE_FRAMERATE to get the range. if the set value is out of range, E_INVALIDARG will be returned */
         OPTION_PRECISE_FRAMERATE = 0x2d,
         /* bandwidth, [1-100]% */
         OPTION_BANDWIDTH = 0x2e,
@@ -368,7 +371,7 @@ public class Ogmacam : IDisposable {
             All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
         */
         OPTION_FRONTEND_DEQUE_LENGTH = 0x31,
-        /* alias of OGMACAM_OPTION_FRONTEND_DEQUE_LENGTH */
+        /* alias of OPTION_FRONTEND_DEQUE_LENGTH */
         OPTION_FRAME_DEQUE_LENGTH = 0x31,
         /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
         OPTION_MIN_PRECISE_FRAMERATE = 0x32,
@@ -378,7 +381,7 @@ public class Ogmacam : IDisposable {
         OPTION_SEQUENCER_NUMBER = 0x34,
         /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
             For example, to set the exposure time of the third group to 50ms, call:
-            Ogmacam_put_Option(OGMACAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
+            put_Option(OPTION_SEQUENCER_EXPOTIME | 3, 50000)
         */
         OPTION_SEQUENCER_EXPOTIME = 0x01000000,
         /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
@@ -429,8 +432,8 @@ public class Ogmacam : IDisposable {
         /* get the current number in backend deque */
         OPTION_BACKEND_DEQUE_CURRENT = 0x46,
         /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
-                (1) iOption = OGMACAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
-                (2) iOption = OGMACAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
+                (1) iOption = OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
+                (2) iOption = OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
             Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
         */
         OPTION_EVENT_HARDWARE = 0x04000000,
@@ -482,8 +485,8 @@ public class Ogmacam : IDisposable {
         /* high fullwell capacity: 0 => disable, 1 => enable */
         OPTION_HIGH_FULLWELL = 0x55,
         /* dynamic defect pixel correction:
-            threshold, t1: (high 16 bits): [10, 100], means: [1.0, 10.0]
-            value, t2: (low 16 bits): [0, 100], means: [0.00, 1.00]
+            dead pixel ratio, t1: (high 16 bits): [0, 100], means: [0.0, 1.0]
+            hot pixel ratio, t2: (low 16 bits): [0, 100], means: [0.0, 1.0]
         */
         OPTION_DYNAMIC_DEFECT = 0x56,
         /* HDR synthesize
@@ -499,8 +502,8 @@ public class Ogmacam : IDisposable {
         OPTION_HDR_THRESHOLD = 0x58,
         /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
             If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
-            When the application is stopped by the debugger, the application cannot create the heartbeat signals
-                0 => auto: when the camera is opened, disable if debugger is present or enable if no debugger is present
+            When the application is stopped by the debugger, the application cannot send the heartbeat signals
+                0 => auto: when the camera is opened, enable if no debugger is present or disable if debugger is present
                 1 => enable
                 2 => disable
                 default: auto
@@ -516,9 +519,9 @@ public class Ogmacam : IDisposable {
         OPTION_RESET_SENSOR = 0x5e,
         /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
         OPTION_ISP = 0x5f,
-        /* Auto exposure damp: time (thousandths) */
+        /* Auto exposure damp: time (thousandths). The larger the damping coefficient, the smoother and slower the exposure time changes */
         OPTION_AUTOEXP_EXPOTIME_DAMP = 0x60,
-        /* Auto exposure damp: gain (thousandths) */
+        /* Auto exposure damp: gain (thousandths). The larger the damping coefficient, the smoother and slower the gain changes */
         OPTION_AUTOEXP_GAIN_DAMP = 0x61,
         /* range: [1, 20] */
         OPTION_MOTOR_NUMBER = 0x62,
@@ -528,7 +531,7 @@ public class Ogmacam : IDisposable {
         OPTION_PSEUDO_COLOR_START = 0x63,
         /* Pseudo: end color, BGR format */
         OPTION_PSEUDO_COLOR_END = 0x64,
-        /*  Pseudo: 
+        /*  Pseudo:
             -1 => custom: use startcolor & endcolor to generate the colormap
             0 => disable
             1 => spot
@@ -554,6 +557,9 @@ public class Ogmacam : IDisposable {
             21 => twilight
             22 => twilight_shifted
             23 => turbo
+            24 => red
+            25 => green
+            26 => blue
         */
         OPTION_PSEUDO_COLOR_ENABLE = 0x65,
         /* Low Power Consumption: 0 => disable, 1 => enable */
@@ -573,44 +579,87 @@ public class Ogmacam : IDisposable {
         /* Auto exposure over exposure policy: when overexposed,
                 0 => directly reduce the exposure time/gain to the minimum value; or
                 1 => reduce exposure time/gain in proportion to current and target brightness.
+                n(n>1) => first adjust the exposure time to (maximum automatic exposure time * maximum automatic exposure gain) * n / 1000, and then adjust according to the strategy of 1
             The advantage of policy 0 is that the convergence speed is faster, but there is black screen.
             Policy 1 avoids the black screen, but the convergence speed is slower.
             Default: 0
         */
         OPTION_OVEREXP_POLICY = 0x68,
-        /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read) */
+        /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read)
+           The working modes of the detector readout circuit can be divided into two types: ITR and IWR. Using the IWR readout mode can greatly increase the frame rate. In the ITR mode, the integration of the (n+1)th frame starts after all the data of the nth frame are read out, while in the IWR mode, the data of the nth frame is read out at the same time when the (n+1)th frame is integrated
+        */
         OPTION_READOUT_MODE = 0x69,
         /* Turn on/off tail Led light: 0 => off, 1 => on; default: on */
-        OPTION_TAILLIGHT = 0x6a
+        OPTION_TAILLIGHT = 0x6a,
+        /* Load/Save lens state to EEPROM: 0 => load, 1 => save */
+        OPTION_LENSSTATE = 0x6b,
+        /* Auto White Balance: continuous mode
+               0:  disable (default)
+               n>0: every n millisecond(s)
+               n<0: every -n frame
+        */
+        OPTION_AWB_CONTINUOUS = 0x6c,
+        /* TEC target range: min(low 16 bits) = (short)(val & 0xffff), max(high 16 bits) = (short)((val >> 16) & 0xffff) */
+        OPTION_TECTARGET_RANGE = 0x6d,
+        /* Correlated Double Sampling */
+        OPTION_CDS = 0x6e,
+        /* Low Power Consumption: Enable if exposure time is greater than the set value */
+        OPTION_LOW_POWER_EXPOTIME = 0x6f,
+        /* Sensor output offset to zero: 0 => disable, 1 => eanble; default: 0 */
+        OPTION_ZERO_OFFSET = 0x70,
+        /* GVCP Timeout: millisecond, range = [3, 75], default: 15
+             Unless in very special circumstances, generally no modification is required, just use the default value
+        */
+        OPTION_GVCP_TIMEOUT = 0x71,
+        /* GVCP Retry: range = [2, 8], default: 4
+             Unless in very special circumstances, generally no modification is required, just use the default value
+        */
+        OPTION_GVCP_RETRY = 0x72,
+        /* GVSP wait percent: range = [0, 100], default = (trigger mode: 100, realtime: 0, other: 1) */
+        OPTION_GVSP_WAIT_PERCENT = 0x73,
+        /* Reset to 0: 1 => seq; 2 => timestamp; 3 => both */
+        OPTION_RESET_SEQ_TIMESTAMP = 0x74,
+        /* Trigger cancel mode: 0 => no frame, 1 => output frame; default: 0 */
+        OPTION_TRIGGER_CANCEL_MODE = 0x75,
+        /* Mechanical shutter: 0 => open, 1 => close; default: 0 */
+        OPTION_MECHANICALSHUTTER = 0x76,
+        /* Line-time of sensor in nanosecond */
+        OPTION_LINE_TIME = 0x77,
+        /* Zero padding: 0 => high, 1 => low; default: 0 */
+        OPTION_ZERO_PADDING = 0x78,
+        /* device uptime in millisecond */
+        OPTION_UPTIME = 0x79,
+        /* Bit range: [0, 8] */
+        OPTION_BITRANGE = 0x7a
     };
 
     /* HRESULT: error code */
     /* Success */
     public const int S_OK = 0x00000000;
-    /* Yet another success */
+    /* Yet another success */ /* Remark: Different from S_OK, such as internal values and user-set values have coincided, equivalent to noop */
     public const int S_FALSE = 0x00000001;
-    /* Catastrophic failure */
+    /* Catastrophic failure */ /* Remark: Generally indicates that the conditions are not met, such as calling put_Option setting some options that do not support modification when the camera is running, and so on */
     public const int E_UNEXPECTED = unchecked((int)0x8000ffff);
-    /* Not supported or not implemented */
+    /* Not supported or not implemented */ /* Remark: This feature is not supported on this model of camera */
     public const int E_NOTIMPL = unchecked((int)0x80004001);
     public const int E_NOINTERFACE = unchecked((int)0x80004002);
-    /* Permission denied */
+    /* Permission denied */ /* Remark: The program on Linux does not have permission to open the USB device, please enable udev rules file or run as root */
     public const int E_ACCESSDENIED = unchecked((int)0x80070005);
     /* Out of memory */
     public const int E_OUTOFMEMORY = unchecked((int)0x8007000e);
     /* One or more arguments are not valid */
     public const int E_INVALIDARG = unchecked((int)0x80070057);
-    /* Pointer that is not valid */
+    /* Pointer that is not valid */ /* Remark: Pointer is NULL */
     public const int E_POINTER = unchecked((int)0x80004003);
     /* Generic failure */
     public const int E_FAIL = unchecked((int)0x80004005);
     /* Call function in the wrong thread */
     public const int E_WRONG_THREAD = unchecked((int)0x8001010e);
-    /* Device not functioning */
+    /* Device not functioning */ /* Remark: It is generally caused by hardware errors, such as cable problems, USB port problems, poor contact, camera hardware damage, etc */
     public const int E_GEN_FAILURE = unchecked((int)0x8007001f);
-    /* The requested resource is in use */
+    /* The requested resource is in use */ /* Remark: The camera is already in use, such as duplicated opening/starting the camera, or being used by other application, etc */
     public const int E_BUSY = unchecked((int)0x800700aa);
-    /* The data necessary to complete this operation is not yet available */
+    /* The data necessary to complete this operation is not yet available */ /* Remark: No data is available at this time */
     public const int E_PENDING = unchecked((int)0x8000000a);
     /* This operation returned because the timeout period expired */
     public const int E_TIMEOUT = unchecked((int)0x8001011f);
@@ -618,10 +667,10 @@ public class Ogmacam : IDisposable {
     public const int EXPOGAIN_DEF = 100;      /* exposure gain, default value */
     public const int EXPOGAIN_MIN = 100;      /* exposure gain, minimum value */
     public const int TEMP_DEF = 6503;     /* color temperature, default value */
-    public const int TEMP_MIN = 1000;     /* color temperature, minimum value */
-    public const int TEMP_MAX = 25000;    /* color temperature, maximum value */
+    public const int TEMP_MIN = 2000;     /* color temperature, minimum value */
+    public const int TEMP_MAX = 15000;    /* color temperature, maximum value */
     public const int TINT_DEF = 1000;     /* tint */
-    public const int TINT_MIN = 100;      /* tint */
+    public const int TINT_MIN = 200;      /* tint */
     public const int TINT_MAX = 2500;     /* tint */
     public const int HUE_DEF = 0;        /* hue */
     public const int HUE_MIN = -180;     /* hue */
@@ -630,11 +679,11 @@ public class Ogmacam : IDisposable {
     public const int SATURATION_MIN = 0;        /* saturation */
     public const int SATURATION_MAX = 255;      /* saturation */
     public const int BRIGHTNESS_DEF = 0;        /* brightness */
-    public const int BRIGHTNESS_MIN = -128;     /* brightness */
-    public const int BRIGHTNESS_MAX = 128;      /* brightness */
+    public const int BRIGHTNESS_MIN = -255;     /* brightness */
+    public const int BRIGHTNESS_MAX = 255;      /* brightness */
     public const int CONTRAST_DEF = 0;        /* contrast */
-    public const int CONTRAST_MIN = -150;     /* contrast */
-    public const int CONTRAST_MAX = 150;      /* contrast */
+    public const int CONTRAST_MIN = -255;     /* contrast */
+    public const int CONTRAST_MAX = 255;      /* contrast */
     public const int GAMMA_DEF = 100;      /* gamma */
     public const int GAMMA_MIN = 20;       /* gamma */
     public const int GAMMA_MAX = 180;      /* gamma */
@@ -663,18 +712,15 @@ public class Ogmacam : IDisposable {
     public const int AUTOEXPO_THRESHOLD_DEF = 5;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MIN = 2;        /* auto exposure threshold */
     public const int AUTOEXPO_THRESHOLD_MAX = 15;       /* auto exposure threshold */
-    public const int AUTOEXPO_DAMP_DEF = 0;        /* auto exposure damp: thousandths */
-    public const int AUTOEXPO_DAMP_MIN = 0;        /* auto exposure damp: thousandths */
-    public const int AUTOEXPO_DAMP_MAX = 1000;     /* auto exposure damp: thousandths */
+    public const int AUTOEXPO_DAMP_DEF = 0;        /* auto exposure damping coefficient: thousandths */
+    public const int AUTOEXPO_DAMP_MIN = 0;        /* auto exposure damping coefficient: thousandths */
+    public const int AUTOEXPO_DAMP_MAX = 1000;     /* auto exposure damping coefficient: thousandths */
     public const int BANDWIDTH_DEF = 100;      /* bandwidth */
     public const int BANDWIDTH_MIN = 1;        /* bandwidth */
     public const int BANDWIDTH_MAX = 100;      /* bandwidth */
     public const int DENOISE_DEF = 0;        /* denoise */
     public const int DENOISE_MIN = 0;        /* denoise */
     public const int DENOISE_MAX = 100;      /* denoise */
-    public const int TEC_TARGET_MIN = -500;     /* TEC target: -50.0 degrees Celsius */
-    public const int TEC_TARGET_DEF = 100;      /* TEC target: 10.0 degrees Celsius */
-    public const int TEC_TARGET_MAX = 400;      /* TEC target: 40.0 degrees Celsius */
     public const int HEARTBEAT_MIN = 100;      /* millisecond */
     public const int HEARTBEAT_MAX = 10000;    /* millisecond */
     public const int AE_PERCENT_MIN = 0;        /* auto exposure percent; 0 or 100 => full roi average, means "disabled" */
@@ -682,18 +728,20 @@ public class Ogmacam : IDisposable {
     public const int AE_PERCENT_DEF = 10;       /* auto exposure percent: enabled, percentage = 10% */
     public const int NOPACKET_TIMEOUT_MIN = 500;      /* no packet timeout minimum: 500ms */
     public const int NOFRAME_TIMEOUT_MIN = 500;       /* no frame timeout minimum: 500ms */
-    public const int DYNAMIC_DEFECT_T1_MIN = 10;       /* dynamic defect pixel correction, threshold, means: 1.0 */
-    public const int DYNAMIC_DEFECT_T1_MAX = 100;      /* means: 10.0 */
-    public const int DYNAMIC_DEFECT_T1_DEF = 13;       /* means: 1.3 */
-    public const int DYNAMIC_DEFECT_T2_MIN = 0;        /* dynamic defect pixel correction, value, means: 0.00 */
-    public const int DYNAMIC_DEFECT_T2_MAX = 100;      /* means: 1.00 */
-    public const int DYNAMIC_DEFECT_T2_DEF = 100;
+    public const int DYNAMIC_DEFECT_T1_MIN = 0;       /* dynamic defect pixel correction, dead pixel ratio: the smaller the dead ratio is, the more stringent the conditions for processing dead pixels are, and fewer pixels will be processed */
+    public const int DYNAMIC_DEFECT_T1_MAX = 100;     /* means: 1.0 */
+    public const int DYNAMIC_DEFECT_T1_DEF = 90;      /* means: 0.9 */
+    public const int DYNAMIC_DEFECT_T2_MIN = 0;       /* dynamic defect pixel correction, hot pixel ratio: the smaller the hot ratio is, the more stringent the conditions for processing hot pixels are, and fewer pixels will be processed */
+    public const int DYNAMIC_DEFECT_T2_MAX = 100;
+    public const int DYNAMIC_DEFECT_T2_DEF = 90;
     public const int HDR_K_MIN = 1;        /* HDR synthesize */
     public const int HDR_K_MAX = 25500;
     public const int HDR_B_MIN = 0;
     public const int HDR_B_MAX = 65535;
     public const int HDR_THRESHOLD_MIN = 0;
     public const int HDR_THRESHOLD_MAX = 4094;
+    public const int CDS_MIN = 0;        /* Correlated Double Sampling */
+    public const int CDS_MAX = 100;
 
     public enum ePIXELFORMAT : uint {
         PIXELFORMAT_RAW8 = 0x00,
@@ -724,6 +772,7 @@ public class Ogmacam : IDisposable {
         PIXELFORMAT_HDR14HL = 0x12
     };
 
+    [Flags]
     public enum eFRAMEINFO_FLAG : uint {
         /* frame sequence number */
         FRAMEINFO_FLAG_SEQ = 0x00000001,
@@ -737,8 +786,18 @@ public class Ogmacam : IDisposable {
         FRAMEINFO_FLAG_BLACKLEVEL = 0x00000010,
         /* sequence shutter counter */
         FRAMEINFO_FLAG_SHUTTERSEQ = 0x00000020,
+        /* GPS */
+        FRAMEINFO_FLAG_GPS = 0x00000040,
+        /* auto focus: uLum & uFV */
+        FRAMEINFO_FLAG_AUTOFOCUS = 0x00000080,
+        /* timecount, framecount, tricount */
+        FRAMEINFO_FLAG_COUNT = 0x00000100,
+        /* Mechanical shutter: closed */
+        FRAMEINFO_FLAG_MECHANICALSHUTTER = 0x00000200,
         /* still image */
-        FRAMEINFO_FLAG_STILL = 0x00008000
+        FRAMEINFO_FLAG_STILL = 0x00008000,
+        /* Conversion Gain: High */
+        FRAMEINFO_FLAG_CG = 0x00010000
     };
 
     public enum eIoControType : uint {
@@ -787,11 +846,13 @@ public class Ogmacam : IDisposable {
         IOCONTROLTYPE_GET_COUNTERVALUE = 0x15,
         IOCONTROLTYPE_SET_COUNTERVALUE = 0x16,
         IOCONTROLTYPE_SET_RESETCOUNTER = 0x18,
+        /* PWM Frequency */
         IOCONTROLTYPE_GET_PWM_FREQ = 0x19,
         IOCONTROLTYPE_SET_PWM_FREQ = 0x1a,
+        /* PWM Duty Ratio */
         IOCONTROLTYPE_GET_PWM_DUTYRATIO = 0x1b,
         IOCONTROLTYPE_SET_PWM_DUTYRATIO = 0x1c,
-        /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
+        /* PWM Source: 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
         IOCONTROLTYPE_GET_PWMSOURCE = 0x1d,
         IOCONTROLTYPE_SET_PWMSOURCE = 0x1e,
         /*  0x00 => Frame Trigger Wait
@@ -847,7 +908,22 @@ public class Ogmacam : IDisposable {
         /* Output pause: 1 => puase, 0 => unpause */
         IOCONTROLTYPE_SET_OUTPUT_PAUSE = 0x3a,
         /* Input state: 0 (low level) or 1 (high level) */
-        IOCONTROLTYPE_GET_INPUT_STATE = 0x3c
+        IOCONTROLTYPE_GET_INPUT_STATE = 0x3b,
+        /* User pulse high level time: us */
+        IOCONTROLTYPE_GET_USER_PULSE_HIGH = 0x3d,
+        IOCONTROLTYPE_SET_USER_PULSE_HIGH = 0x3e,
+        /* User pulse low level time: us */
+        IOCONTROLTYPE_GET_USER_PULSE_LOW = 0x3f,
+        IOCONTROLTYPE_SET_USER_PULSE_LOW = 0x40,
+        /* User pulse number: default 0 */
+        IOCONTROLTYPE_GET_USER_PULSE_NUMBER = 0x41,
+        IOCONTROLTYPE_SET_USER_PULSE_NUMBER = 0x42,
+        /* External trigger number */
+        IOCONTROLTYPE_GET_EXTERNAL_TRIGGER_NUMBER = 0x43,
+        /* Trigger signal number after debounce */
+        IOCONTROLTYPE_GET_DEBOUNCER_TRIGGER_NUMBER = 0x45,
+        /* Effective trigger signal number */
+        IOCONTROLTYPE_GET_EFFECTIVE_TRIGGER_NUMBER = 0x47
     };
 
     public const int IOCONTROL_DELAYTIME_MAX = 5 * 1000 * 1000;
@@ -903,7 +979,7 @@ public class Ogmacam : IDisposable {
     };
     public struct ModelV2 {
         public string name;         /* model name */
-        public ulong flag;          /* OGMACAM_FLAG_xxx, 64 bits */
+        public ulong flag;          /* FLAG_xxx, 64 bits */
         public uint maxspeed;       /* number of speed level, same as get_MaxSpeed(), the speed range = [0, maxspeed], closed interval */
         public uint preview;        /* number of preview resolution, same as get_ResolutionNumber() */
         public uint still;          /* number of still resolution, same as get_StillResolutionNumber() */
@@ -931,6 +1007,26 @@ public class Ogmacam : IDisposable {
         public ushort blacklevel;  /* black level */
     };
     [StructLayout(LayoutKind.Sequential)]
+    public struct Gps {
+        public ulong utcstart;    /* exposure start time: nanosecond since epoch (00:00:00 UTC on Thursday, 1 January 1970, see https://en.wikipedia.org/wiki/Unix_time) */
+        public ulong utcend;      /* exposure end time */
+        public int longitude;     /* millionth of a degree, 0.000001 degree */
+        public int latitude;
+        public int altitude;      /* millimeter */
+        public ushort satellite;  /* number of satellite */
+        public ushort reserved;   /* not used */
+    };
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FrameInfoV4 {
+        public FrameInfoV3 v3;
+        public uint reserved; /* not used */
+        public uint uLum;
+        public ulong uFV;
+        public ulong timecount;
+        public uint framecount, tricount;
+        public Gps gps;
+    };
+    [StructLayout(LayoutKind.Sequential), Obsolete("Use FrameInfoV4")]
     public struct FrameInfoV2 {
         public uint width;
         public uint height;
@@ -980,6 +1076,7 @@ public class Ogmacam : IDisposable {
         AFMode_IDLE = 0x5
     };
     public enum eAFStatus : uint {
+        AFStatus_NA = 0x0,           /* Not available */
         AFStatus_PEAKPOINT = 0x1,    /* Focus completed, find the focus position */
         AFStatus_DEFOCUS = 0x2,      /* End of focus, defocus */
         AFStatus_NEAR = 0x3,         /* Focusing ended, object too close */
@@ -1052,7 +1149,7 @@ public class Ogmacam : IDisposable {
         GC.SuppressFinalize(this);
     }
 
-    /* get the version of this dll/so, which is: 55.25159.20240404 */
+    /* get the version of this dll/so, which is: 57.27650.20250209 */
     public static string Version() {
         return Marshal.PtrToStringUni(Ogmacam_Version());
     }
@@ -1249,6 +1346,28 @@ public class Ogmacam : IDisposable {
         }
     }
 
+    public short TecTargetMax {
+        get {
+            if (handle_ != null && !handle_.IsInvalid && !handle_.IsClosed) {
+                int range = 0;
+                if (CheckHResult(Ogmacam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
+                    return unchecked((short)((range >> 16) & 0xffff));
+            }
+            return short.MaxValue;
+        }
+    }
+
+    public short TecTargetMin {
+        get {
+            if (handle_ != null && !handle_.IsInvalid && !handle_.IsClosed) {
+                int range = 0;
+                if (CheckHResult(Ogmacam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
+                    return unchecked((short)(range & 0xffff));
+            }
+            return short.MinValue;
+        }
+    }
+
     /* get the revision */
     public ushort Revision {
         get {
@@ -1359,6 +1478,7 @@ public class Ogmacam : IDisposable {
     }
 
     /*  bits: 24 (RGB24), 32 (RGB32), 8 (Grey), 16 (Grey), 48(RGB48), 64(RGB64) */
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImage(IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1367,6 +1487,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImage(byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1375,6 +1496,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImage(ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1383,6 +1505,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV2(IntPtr pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1392,6 +1515,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImageV2(handle_, pImageData, bits, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV2(byte[] pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1401,6 +1525,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImageV2(handle_, pImageData, bits, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV2(ushort[] pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1411,6 +1536,7 @@ public class Ogmacam : IDisposable {
     }
 
     /*  bits: 24 (RGB24), 32 (RGB32), 8 (Grey), 16 (Grey), 48(RGB48), 64(RGB64) */
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImage(IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1419,6 +1545,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImage(byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1427,6 +1554,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImage(ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1435,28 +1563,28 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageV2(IntPtr pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
-            pInfo.timestamp = 0;
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageV2(byte[] pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
-            pInfo.timestamp = 0;
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageV2(ushort[] pImageData, int bits, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
-            pInfo.timestamp = 0;
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
@@ -1464,15 +1592,15 @@ public class Ogmacam : IDisposable {
 
     /*
        nWaitMS: The timeout interval, in milliseconds. If a non-zero value is specified, the function either successfully fetches the image or waits for a timeout.
-                If nWaitMS is zero, the function does not wait when there are no images to fetch; It always returns immediately; this is equal to PullImageV3.
+                If nWaitMS is zero, the function does not wait when there are no images to fetch; It always returns immediately; this is equal to PullImage.
        bStill: to pull still image, set to 1, otherwise 0
        bits: 24 (RGB24), 32 (RGB32), 48 (RGB48), 8 (Grey), 16 (Grey), 64 (RGB64).
              In RAW mode, this parameter is ignored.
-             bits = 0 means using default bits base on OGMACAM_OPTION_RGB.
-             When bits and OGMACAM_OPTION_RGB are inconsistent, format conversion will have to be performed, resulting in loss of efficiency.
-             See the following bits and OGMACAM_OPTION_RGB correspondence table:
+             bits = 0 means using default bits base on OPTION_RGB.
+             When bits and OPTION_RGB are inconsistent, format conversion will have to be performed, resulting in loss of efficiency.
+             See the following bits and OPTION_RGB correspondence table:
                ----------------------------------------------------------------------------------------------------------------------
-               | OGMACAM_OPTION_RGB |   0 (RGB24)   |   1 (RGB48)   |   2 (RGB32)   |   3 (Grey8)   |  4 (Grey16)   |   5 (RGB64)   |
+               | OPTION_RGB         |   0 (RGB24)   |   1 (RGB48)   |   2 (RGB32)   |   3 (Grey8)   |  4 (Grey16)   |   5 (RGB64)   |
                |--------------------|---------------|---------------|---------------|---------------|---------------|---------------|
                | bits = 0           |      24       |       48      |      32       |       8       |       16      |       64      |
                |--------------------|---------------|---------------|---------------|---------------|---------------|---------------|
@@ -1503,54 +1631,109 @@ public class Ogmacam : IDisposable {
                |           | 10/12/14/16bits Mode   | Width * 2                     | Width * 2             |
                |-----------|------------------------|-------------------------------|-----------------------|
     */
+    public bool PullImage(IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    public bool PullImage(byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    public bool PullImage(ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV3(IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV3(byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageV3(ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    public bool WaitImage(uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    public bool WaitImage(uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    public bool WaitImage(uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+    }
+
+    [Obsolete("Use FrameInfoV4")]
     public bool WaitImageV3(uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool WaitImageV3(uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool WaitImageV3(uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitch(IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1559,6 +1742,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitch(byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1567,6 +1751,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitch(ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1575,30 +1760,34 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitchV2(IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitchV2(byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullImageWithRowPitchV2(ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV2();
             return false;
         }
         return CheckHResult(Ogmacam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitch(IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1607,6 +1796,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitch(byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1615,6 +1805,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitch(ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pnWidth = pnHeight = 0;
@@ -1623,6 +1814,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitchV2(IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1632,6 +1824,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitchV2(byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1641,6 +1834,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool PullStillImageWithRowPitchV2(ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
@@ -1668,6 +1862,7 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_StartPushModeV4(handle_, pDataV4_, id_, pEvent_, id_));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool StartPushModeV3(DelegateDataCallbackV3 funData, DelegateEventCallback funEvent) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
@@ -1738,25 +1933,52 @@ public class Ogmacam : IDisposable {
                     0xffffffff:     wait infinite
                     other:          milliseconds to wait
     */
+    public bool TriggerSync(uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+    }
+
+    public bool TriggerSync(uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+    }
+
+    public bool TriggerSync(uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            pInfo = new FrameInfoV4();
+            return false;
+        }
+        return CheckHResult(Ogmacam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+    }
+
+    [Obsolete("Use FrameInfoV4")]
     public bool TriggerSync(uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool TriggerSync(uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
+    [Obsolete("Use FrameInfoV4")]
     public bool TriggerSync(uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            zeroInfo(out pInfo);
+            pInfo = new FrameInfoV3();
             return false;
         }
         return CheckHResult(Ogmacam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
@@ -1863,7 +2085,8 @@ public class Ogmacam : IDisposable {
     }
 
     /*
-        0: stop grab frame when frame buffer deque is full, until the frames in the queue are pulled away and the queue is not full
+        0: no realtime
+              stop grab frame when frame buffer deque is full, until the frames in the queue are pulled away and the queue is not full
         1: realtime
               use minimum frame buffer. When new frame arrive, drop all the pending frame regardless of whether the frame buffer is full.
               If DDR present, also limit the DDR frame buffer to only one frame.
@@ -2000,6 +2223,15 @@ public class Ogmacam : IDisposable {
             return false;
         }
         return CheckHResult(Ogmacam_get_ExpoTime(handle_, out Time));
+    }
+
+    public bool get_RealExpoTime(out uint Time)/* actual exposure time */
+    {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
+            Time = 0;
+            return false;
+        }
+        return CheckHResult(Ogmacam_get_RealExpoTime(handle_, out Time));
     }
 
     public bool put_ExpoTime(uint Time)/* in microseconds */
@@ -2585,16 +2817,68 @@ public class Ogmacam : IDisposable {
 
     /*
     * cmd: input
-    *   -1:         query the number
-    *   0~number:   query the nth pixel format
-    * iValue: output, OGMACAM_PIXELFORMAT_xxxx
+    *    -1:       query the number
+    *    0~number: query the nth pixel format
+    * pixelFormat: output, PIXELFORMAT_xxxx
     */
-    public bool get_PixelFormatSupport(sbyte cmd, out int iValue) {
+    public bool get_PixelFormatSupport(sbyte cmd, out int pixelFormat) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
-            iValue = 0;
+            pixelFormat = 0;
             return false;
         }
-        return CheckHResult(Ogmacam_get_PixelFormatSupport(handle_, cmd, out iValue));
+        return CheckHResult(Ogmacam_get_PixelFormatSupport(handle_, cmd, out pixelFormat));
+    }
+
+    /* Hardware Binning
+    * Value: 1x1, 2x2, etc
+    * Method: Average, Add, Skip
+    */
+    public bool put_Binning(string Value, string Method) {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        return CheckHResult(Ogmacam_put_Binning(handle_, Value, Method));
+    }
+
+    public bool get_Binning(out string Value, out string Method) {
+        Value = Method = null;
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        IntPtr valuePtr = new IntPtr(0);
+        IntPtr methodPtr = new IntPtr(0);
+        bool ret = CheckHResult(Ogmacam_get_Binning(handle_, out valuePtr, out methodPtr));
+        if (ret) {
+            Value = Marshal.PtrToStringAnsi(valuePtr);
+            Method = Marshal.PtrToStringAnsi(methodPtr);
+        }
+        return ret;
+    }
+
+    public int get_BinningNumber() {
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return 0;
+        return Ogmacam_get_BinningNumber(handle_);
+    }
+
+    public bool get_BinningValue(uint index, out string Value) {
+        Value = null;
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        IntPtr valuePtr = new IntPtr(0);
+        bool ret = CheckHResult(Ogmacam_get_BinningValue(handle_, index, out valuePtr));
+        if (ret)
+            Value = Marshal.PtrToStringAnsi(valuePtr);
+        return ret;
+    }
+
+    public bool get_BinningMethod(uint index, out string Method) {
+        Method = null;
+        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
+            return false;
+        IntPtr methodPtr = new IntPtr(0);
+        bool ret = CheckHResult(Ogmacam_get_BinningMethod(handle_, index, out methodPtr));
+        if (ret)
+            Method = Marshal.PtrToStringAnsi(methodPtr);
+        return ret;
     }
 
     public bool put_SelfTrigger(ref SelfTrigger pSt) {
@@ -2671,6 +2955,8 @@ public class Ogmacam : IDisposable {
 
     /* multiple Roi */
     public bool put_RoiN(uint[] xOffset, uint[] yOffset, uint[] xWidth, uint[] yHeight) {
+        if (xOffset.Length != yOffset.Length || xOffset.Length != xWidth.Length || xOffset.Length != yHeight.Length)
+            return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         return CheckHResult(Ogmacam_put_RoiN(handle_, xOffset, yOffset, xWidth, yHeight, (uint)(xOffset.Length)));
@@ -2683,7 +2969,8 @@ public class Ogmacam : IDisposable {
     }
 
     /*
-        get the frame rate: framerate (fps) = Frame * 1000.0 / nTime
+        get the actual frame rate of the camera at the most recent time (about a few seconds):
+        framerate (fps) = nFrame * 1000.0 / nTime
     */
     public bool get_FrameRate(out uint nFrame, out uint nTime, out uint nTotalFrame) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
@@ -2793,18 +3080,18 @@ public class Ogmacam : IDisposable {
         return CheckHResult(Ogmacam_FpncImport(handle_, filePath));
     }
 
-    public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal, out int inVal) {
+    public bool IoControl(uint ioLine, eIoControType eType, int outVal, out int inVal) {
         inVal = 0;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Ogmacam_IoControl(handle_, ioLineNumber, eType, outVal, out inVal));
+        return CheckHResult(Ogmacam_IoControl(handle_, ioLine, eType, outVal, out inVal));
     }
 
-    public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal) {
+    public bool IoControl(uint ioLine, eIoControType eType, int outVal) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         int inVal = 0;
-        return CheckHResult(Ogmacam_IoControl(handle_, ioLineNumber, eType, outVal, out inVal));
+        return CheckHResult(Ogmacam_IoControl(handle_, ioLine, eType, outVal, out inVal));
     }
 
     public bool AAF(eAAF action, int outVal, out int inVal) {
@@ -3109,8 +3396,8 @@ public class Ogmacam : IDisposable {
         return a.ToArray();
     }
 
-    public static string PixelFormatName(ePIXELFORMAT val) {
-        IntPtr ptr = Ogmacam_get_PixelFormatName(val);
+    public static string PixelFormatName(ePIXELFORMAT pixelFormat) {
+        IntPtr ptr = Ogmacam_get_PixelFormatName(pixelFormat);
         if (IntPtr.Zero == ptr)
             return null;
         return Marshal.PtrToStringAnsi(ptr);
@@ -3120,27 +3407,27 @@ public class Ogmacam : IDisposable {
         switch (hResult) {
             case S_OK:
                 return "Success";
-            case S_FALSE:
+            case S_FALSE: /* Remark: Different from S_OK, such as internal values and user-set values have coincided, equivalent to noop */
                 return "Yet another success";
             case E_INVALIDARG:
                 return "One or more arguments are not valid";
-            case E_NOTIMPL:
+            case E_NOTIMPL: /* Remark: This feature is not supported on this model of camera */
                 return "Not supported or not implemented";
-            case E_POINTER:
+            case E_POINTER: /* Remark: Pointer is NULL */
                 return "Pointer that is not valid";
-            case E_UNEXPECTED:
+            case E_UNEXPECTED:/* Remark: Generally indicates that the conditions are not met, such as calling put_Option setting some options that do not support modification when the camera is running, and so on */
                 return "Catastrophic failure";
-            case E_ACCESSDENIED:
+            case E_ACCESSDENIED: /* Remark: The program on Linux does not have permission to open the USB device, please enable udev rules file or run as root */
                 return "General access denied error";
             case E_OUTOFMEMORY:
                 return "Out of memory";
             case E_WRONG_THREAD:
                 return "Call function in the wrong thread";
-            case E_GEN_FAILURE:
+            case E_GEN_FAILURE: /* Remark: It is generally caused by hardware errors, such as cable problems, USB port problems, poor contact, camera hardware damage, etc */
                 return "Device not functioning";
-            case E_BUSY:
+            case E_BUSY: /* Remark: The camera is already in use, such as duplicated opening/starting the camera, or being used by other application, etc */
                 return "The requested resource is in use";
-            case E_PENDING:
+            case E_PENDING: /* Remark: No data is available at this time */
                 return "The data necessary to complete this operation is not yet available";
             case E_TIMEOUT:
                 return "This operation returned because the timeout period expired";
@@ -3155,11 +3442,13 @@ public class Ogmacam : IDisposable {
     private SafeCamHandle handle_;
     private IntPtr id_;
     private DelegateDataCallbackV4 funDataV4_;
+    [Obsolete]
     private DelegateDataCallbackV3 funDataV3_;
     private DelegateEventCallback funEvent_;
     private DelegateHistogramCallback funHistogramV1_;
     private DelegateHistogramCallbackV2 funHistogramV2_;
     private DATA_CALLBACK_V4 pDataV4_;
+    [Obsolete]
     private DATA_CALLBACK_V3 pDataV3_;
     private EVENT_CALLBACK pEvent_;
     private HISTOGRAM_CALLBACKV1 pHistogramV1_;
@@ -3219,6 +3508,7 @@ public class Ogmacam : IDisposable {
         }
     }
 
+    [Obsolete]
     private void DataCallbackV3(IntPtr pData, IntPtr pInfo, bool bSnap) {
         if (pData == IntPtr.Zero || pInfo == IntPtr.Zero) /* pData == 0 means that something error, we callback to tell the application */
         {
@@ -3244,17 +3534,6 @@ public class Ogmacam : IDisposable {
             if ((pthis != null) && (pthis.funEvent_ != null))
                 pthis.funEvent_(nEvent);
         }
-    }
-
-    private static void zeroInfo(out FrameInfoV3 pInfo) {
-        pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = pInfo.shutterseq = pInfo.expotime = 0;
-        pInfo.expogain = pInfo.blacklevel = 0;
-        pInfo.timestamp = 0;
-    }
-
-    private static void zeroInfo(out FrameInfoV2 pInfo) {
-        pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
-        pInfo.timestamp = 0;
     }
 
     private static bool IsUnicode() {
@@ -3309,12 +3588,12 @@ public class Ogmacam : IDisposable {
     private const string dll = "libogmacam.so";
     private const UnmanagedType ut = UnmanagedType.LPStr;
 #else
-    private const string dll = "ogmacam.dll";
     private const UnmanagedType ut = UnmanagedType.LPWStr;
 #endif
 
     public delegate void DelegateEventCallback(eEVENT nEvent);
     public delegate void DelegateDataCallbackV4(IntPtr pData, ref FrameInfoV3 info, bool bSnap);
+    [Obsolete]
     public delegate void DelegateDataCallbackV3(IntPtr pData, ref FrameInfoV2 info, bool bSnap);
     public delegate void DelegateHistogramCallback(float[] aHistY, float[] aHistR, float[] aHistG, float[] aHistB);
     public delegate void DelegateHistogramCallbackV2(int[] aHist);
@@ -3323,7 +3602,7 @@ public class Ogmacam : IDisposable {
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     private delegate void DATA_CALLBACK_V4(IntPtr pData, IntPtr pInfo, bool bSnap, IntPtr ctxData);
-    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    [UnmanagedFunctionPointer(CallingConvention.Winapi), Obsolete]
     private delegate void DATA_CALLBACK_V3(IntPtr pData, IntPtr pInfo, bool bSnap, IntPtr ctxData);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     private delegate void EVENT_CALLBACK(eEVENT nEvent, IntPtr ctxEvent);
@@ -3345,7 +3624,7 @@ public class Ogmacam : IDisposable {
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern IntPtr Ogmacam_Version();
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete("Use Ogmacam_EnumV2")]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern uint Ogmacam_Enum(IntPtr ptr);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern uint Ogmacam_EnumV2(IntPtr ptr);
@@ -3362,68 +3641,80 @@ public class Ogmacam : IDisposable {
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_StartPullModeWithCallback(SafeCamHandle h, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_PullImageV4(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_PullImageV4(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_PullImageV4(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_WaitImageV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_WaitImageV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_WaitImageV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_PullImageV3(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageV3(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageV3(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_WaitImageV3(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_WaitImageV3(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_WaitImageV3(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_PullStillImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_StartPushModeV4(SafeCamHandle h, DATA_CALLBACK_V4 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_StartPushModeV3(SafeCamHandle h, DATA_CALLBACK_V3 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_Stop(SafeCamHandle h);
@@ -3441,10 +3732,16 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_Trigger(SafeCamHandle h, ushort nNumber);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
     private static extern int Ogmacam_TriggerSync(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
@@ -3499,10 +3796,10 @@ public class Ogmacam : IDisposable {
         | Temp                    |   1000~25000  |   6503                |
         | Tint                    |   100~2500    |   1000                |
         | LevelRange              |   0~255       |   Low = 0, High = 255 |
-        | Contrast                |   -150~150    |   0                   |
+        | Contrast                |   -255~255    |   0                   |
         | Hue                     |   -180~180    |   0                   |
         | Saturation              |   0~255       |   128                 |
-        | Brightness              |   -128~128    |   0                   |
+        | Brightness              |   -255~255    |   0                   |
         | Gamma                   |   20~180      |   100                 |
         | WBGain                  |   -127~127    |   0                   |
         ------------------------------------------------------------------|
@@ -3532,6 +3829,8 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_get_ExpoTime(SafeCamHandle h, out uint Time)/* in microseconds */;
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_ExpoTime(SafeCamHandle h, uint Time)/* inmicroseconds */;
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_RealExpoTime(SafeCamHandle h, out uint Time)/* actual exposure time */;
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_get_ExpTimeRange(SafeCamHandle h, out uint nMin, out uint nMax, out uint nDef);
 
@@ -3739,6 +4038,21 @@ public class Ogmacam : IDisposable {
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern IntPtr Ogmacam_get_PixelFormatName(ePIXELFORMAT val);
 
+    /* Hardware Binning
+    * Value: 1x1, 2x2, etc
+    * Method: Average, Add
+    */
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_put_Binning(SafeCamHandle h, [MarshalAs(UnmanagedType.LPStr)] string Value, [MarshalAs(UnmanagedType.LPStr)] string Method);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_Binning(SafeCamHandle h, out IntPtr Value, out IntPtr Method);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_BinningNumber(SafeCamHandle h);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_BinningValue(SafeCamHandle h, uint index, out IntPtr Value);
+    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+    private static extern int Ogmacam_get_BinningMethod(SafeCamHandle h, uint index, out IntPtr Value);
+
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_put_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
@@ -3776,7 +4090,7 @@ public class Ogmacam : IDisposable {
     private static extern int Ogmacam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Ogmacam_IoControl(SafeCamHandle h, uint ioLineNumber, eIoControType eType, int outVal, out int inVal);
+    private static extern int Ogmacam_IoControl(SafeCamHandle h, uint ioLine, eIoControType eType, int outVal, out int inVal);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
     private static extern int Ogmacam_AAF(SafeCamHandle h, eAAF action, int outVal, out int inVal);
 

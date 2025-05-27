@@ -121,6 +121,19 @@ namespace NINA.Core.Utility {
             };
         }
 
+        public static bool IsEnabled(LogLevelEnum level) {
+            var serilogLevel = level switch {
+                LogLevelEnum.TRACE => LogEventLevel.Verbose,
+                LogLevelEnum.DEBUG => LogEventLevel.Debug,
+                LogLevelEnum.INFO => LogEventLevel.Information,
+                LogLevelEnum.WARNING => LogEventLevel.Warning,
+                LogLevelEnum.ERROR => LogEventLevel.Error,
+                _ => LogEventLevel.Information,
+            };
+
+            return Log.IsEnabled(serilogLevel);
+        }
+
         public static void CloseAndFlush() {
             Log.CloseAndFlush();
         }

@@ -81,7 +81,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
                 UpdateFlatDeviceValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "FlatDevice"
             );
 
             flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;

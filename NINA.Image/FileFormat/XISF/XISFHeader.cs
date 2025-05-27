@@ -752,7 +752,7 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void AddImageProperty(string[] property, DateTime value, string comment = "", bool autoaddfits = true) {
-            AddImagePropertyInternal(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment, autoaddfits, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'");
+            AddImagePropertyInternal(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture), comment, autoaddfits, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'");
         }
 
         public void AddImageProperty(string[] property, int value, string comment = "", bool autoaddfits = true) {
@@ -787,7 +787,7 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void AddImageFITSKeyword(string name, DateTime value, string comment = "") {
-            AddImageFITSKeywordInternal(name, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'", comment);
+            AddImageFITSKeywordInternal(name, "'" + value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'", comment);
         }
 
         public void AddImageFITSKeyword(string name, int value, string comment = "") {

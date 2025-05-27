@@ -71,20 +71,7 @@ namespace NINA.Equipment.Equipment {
         public string Id { get; }
 
         private string name;
-        public string Name {
-            get {
-                if(name == null && !IsAlpacaDevice() && Connected) {
-                    try {
-                        // Update name of ASCOM after connection
-                        name = string.IsNullOrEmpty(device?.Name) ? ascomRegistrationName : device?.Name;
-                        DisplayName = $"{name} (ASCOM)";
-                    } catch {
-                        name = ascomRegistrationName;
-                    }
-                }
-                return name ?? ascomRegistrationName;
-            }
-        }
+        public string Name => name ?? ascomRegistrationName;
 
         public string DisplayName { get; private set; }
 
@@ -279,6 +266,17 @@ namespace NINA.Equipment.Equipment {
 
                     if (Connected) {
                         Logger.Trace($"{Name} - Calling PostConnect");
+
+                        if (name == null && !IsAlpacaDevice()) {
+                            try {
+                                // Update name of ASCOM after connection
+                                name = string.IsNullOrEmpty(device?.Name) ? ascomRegistrationName : device?.Name;
+                                DisplayName = $"{name} (ASCOM)";
+                            } catch {
+                                name = ascomRegistrationName;
+                            }
+                        }
+
                         await PostConnect();
                         RaiseAllPropertiesChanged();
                     }

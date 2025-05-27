@@ -1,18 +1,4 @@
-﻿#region "copyright"
-
-/*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
-
-    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
-
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.
-*/
-
-#endregion "copyright"
-
-using MallinCam;
+﻿using Altair;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,18 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
+    public static class SVBonyEnumExtensions {
 
-    public static class MallinCamEnumExtensions {
-
-        public static Mallincam.eOPTION ToMallinCam(this ToupTekAlikeOption option) {
-            return (Mallincam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
+        public static Svbonycam.eOPTION ToSVBony(this ToupTekAlikeOption option) {
+            return (Svbonycam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
         }
 
-        public static ToupTekAlikeEvent ToEvent(this Mallincam.eEVENT info) {
-            return (ToupTekAlikeEvent)Enum.Parse(typeof(Mallincam.eEVENT), info.ToString());
+        public static ToupTekAlikeEvent ToEvent(this Svbonycam.eEVENT info) {
+            return (ToupTekAlikeEvent)Enum.Parse(typeof(Svbonycam.eEVENT), info.ToString());
         }
 
-        public static ToupTekAlikeFrameInfo ToFrameInfo(this Mallincam.FrameInfoV4 info) {
+        public static ToupTekAlikeFrameInfo ToFrameInfo(this Svbonycam.FrameInfoV4 info) {
             var ttInfo = new ToupTekAlikeFrameInfo();
             ttInfo.flag = info.v3.flag;
             ttInfo.height = info.v3.height;
@@ -40,7 +25,8 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             ttInfo.timestamp = info.v3.timestamp;
             ttInfo.seq = info.v3.seq;
             ttInfo.expotime = info.v3.expotime;
-            ttInfo.hasgps = (info.v3.flag & (uint)Mallincam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.hasgps = (info.v3.flag & (uint)Svbonycam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.hasexpotime = (info.v3.flag & (uint)Svbonycam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_EXPOTIME) != 0;
             ttInfo.gps.utcstart = info.gps.utcstart;
             ttInfo.gps.utcend = info.gps.utcend;
             ttInfo.gps.longitude = info.gps.longitude;
@@ -50,7 +36,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return ttInfo;
         }
 
-        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this Mallincam.DeviceV2 info) {
+        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this Svbonycam.DeviceV2 info) {
             var ttInfo = new ToupTekAlikeDeviceInfo();
             ttInfo.displayname = info.displayname;
             ttInfo.id = info.id;
@@ -59,7 +45,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return ttInfo;
         }
 
-        public static ToupTekAlikeModel ToModel(this Mallincam.ModelV2 modelV2) {
+        public static ToupTekAlikeModel ToModel(this Svbonycam.ModelV2 modelV2) {
             var ttModel = new ToupTekAlikeModel();
             ttModel.flag = modelV2.flag;
             ttModel.ioctrol = modelV2.ioctrol;
@@ -77,14 +63,13 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return ttModel;
         }
     }
+    public class SVBonySDKWrapper : IToupTekAlikeCameraSDK {
+        private Svbonycam sdk;
 
-    public class MallinCamSDKWrapper : IToupTekAlikeCameraSDK {
-        private Mallincam sdk;
-
-        public string Category => "MallinCam";
+        public string Category => "SVBony";
 
         public IToupTekAlikeCameraSDK Open(string id) {
-            this.sdk = Mallincam.Open(id);
+            this.sdk = Svbonycam.Open(id);
             return this;
         }
 
@@ -110,7 +95,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public void get_Option(ToupTekAlikeOption option, out int target) {
-            sdk.get_Option(option.ToMallinCam(), out target);
+            sdk.get_Option(option.ToSVBony(), out target);
         }
 
         public bool get_RawFormat(out uint fourCC, out uint bitDepth) {
@@ -130,9 +115,9 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            Mallincam.FrameInfoV4 frameInfoV4;
-            var result = sdk.PullImage(data, 0, bitDepth, 0, out frameInfoV4);
-            info = frameInfoV4.ToFrameInfo();
+            Svbonycam.FrameInfoV4 svbonyInfo;
+            var result = sdk.PullImage(data, 0, bitDepth, 0, out svbonyInfo);
+            info = svbonyInfo.ToFrameInfo();
             return result;
         }
 
@@ -153,7 +138,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public bool put_Option(ToupTekAlikeOption option, int v) {
-            return sdk.put_Option(option.ToMallinCam(), v);
+            return sdk.put_Option(option.ToSVBony(), v);
         }
 
         public bool put_Speed(ushort value) {
@@ -164,12 +149,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
         public bool StartPullModeWithCallback(ToupTekAlikeCallback toupTekAlikeCallback) {
             this.toupTekAlikeCallback = toupTekAlikeCallback;
-            var delegateCb = new Mallincam.DelegateEventCallback(EventCallback);
+            var delegateCb = new Svbonycam.DelegateEventCallback(EventCallback);
 
             return sdk.StartPullModeWithCallback(delegateCb);
         }
 
-        private void EventCallback(Mallincam.eEVENT nEvent) {
+        private void EventCallback(Svbonycam.eEVENT nEvent) {
             toupTekAlikeCallback(nEvent.ToEvent());
         }
 
@@ -178,7 +163,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public string Version() {
-            return Mallincam.Version();
+            return Svbonycam.Version();
         }
     }
 }

@@ -513,7 +513,7 @@
     <value>カメラオプション</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>カメラパラメーター</value>
+    <value>カメラのパラメーター</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>カメラステータス</value>
@@ -1868,7 +1868,7 @@
     <value>プロファイルの読み込み</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>プロファイルを読み込みできませんでした。他のN.I.N.A.セッションで使用中です。</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>シーケンスの読み込み</value>
@@ -2261,6 +2261,12 @@
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA内部OpenWeatherMap APIクライアント</value>
+  </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>OpenMeteoの天気予報APIを使用します。天気データは10分毎に更新されます。</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA内部のOpenMeteo用APIクライアント</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>オプション</value>
@@ -7128,5 +7134,15 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
     <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Current fix is 2D. A 3D fix is required</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>修正ユリウス日</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>終了したらカバーを開ける</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
 </root>

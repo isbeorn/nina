@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
-
-#if !(NETFX_CORE || WINDOWS_UWP)
-
+#if !(NETFX_CORE || NETCOREAPP || WINDOWS_UWP)
 using System.Security.Permissions;
 using System.Runtime.ConstrainedExecution;
-
 #endif
-
 using System.Collections.Generic;
 using System.Threading;
-using System.IO;
+using System.Runtime.ConstrainedExecution;
 using NINA.Core.Utility;
+using System.IO;
 
 /*
-    Version: 57.27650.20250209
+    Version: 57.27022.20241119
 
-    For Microsoft dotNET Framework & dotNet Core
+    For .NET Framework & .NET Core
 
-    We use P/Invoke to call into the nncam.dll API, the c# class Nncam is a thin wrapper class to the native api of nncam.dll.
-    So the manual en.html(English) and hans.html(Simplified Chinese) are also applicable for programming with nncam.cs.
+    We use P/Invoke to call into the svbonycam.dll API, the c# class Svbonycam is a thin wrapper class to the native API of svbonycam.dll.
+    So the manual en.html(English) and hans.html(Simplified Chinese) are also applicable for programming with svbonycam.cs.
     See them in the 'doc' directory:
        (1) en.html, English
        (2) hans.html, Simplified Chinese
 */
+public class Svbonycam : IDisposable {
+    private const string DLLNAME = "svbonycam.dll";
 
-public class Nncam : IDisposable {
-    private const string DLLNAME = "nncam.dll";
-
-    static Nncam() {
-        DllLoader.LoadDll(Path.Combine("Risingcam", DLLNAME));
+    static Svbonycam() {
+        DllLoader.LoadDll(Path.Combine("SVBony", DLLNAME));
     }
+
     [Flags]
     public enum eFLAG : ulong {
         /* cmos sensor */
@@ -406,9 +403,9 @@ public class Nncam : IDisposable {
         /* get the open camera error code */
         OPTION_OPEN_ERRORCODE = 0x3b,
         /*  1 = hard flush, discard frames cached by camera DDR (if any)
-            2 = soft flush, discard frames cached by nncam.dll (if any)
+            2 = soft flush, discard frames cached by svbonycam.dll (if any)
             3 = both flush
-            Nncam_Flush means 'both flush'
+            Svbonycam_Flush means 'both flush'
             return the number of soft flushed frames if successful, HRESULT if failed
         */
         OPTION_FLUSH = 0x3d,
@@ -624,18 +621,10 @@ public class Nncam : IDisposable {
         OPTION_GVSP_WAIT_PERCENT = 0x73,
         /* Reset to 0: 1 => seq; 2 => timestamp; 3 => both */
         OPTION_RESET_SEQ_TIMESTAMP = 0x74,
-        /* Trigger cancel mode: 0 => no frame, 1 => output frame; default: 0 */
+        /* Trigger cancel mode: 0 => no frame, 1 => output frame ; default: 0 */
         OPTION_TRIGGER_CANCEL_MODE = 0x75,
         /* Mechanical shutter: 0 => open, 1 => close; default: 0 */
-        OPTION_MECHANICALSHUTTER = 0x76,
-        /* Line-time of sensor in nanosecond */
-        OPTION_LINE_TIME = 0x77,
-        /* Zero padding: 0 => high, 1 => low; default: 0 */
-        OPTION_ZERO_PADDING = 0x78,
-        /* device uptime in millisecond */
-        OPTION_UPTIME = 0x79,
-        /* Bit range: [0, 8] */
-        OPTION_BITRANGE = 0x7a
+        OPTION_MECHANICALSHUTTER = 0x76
     };
 
     /* HRESULT: error code */
@@ -800,9 +789,7 @@ public class Nncam : IDisposable {
         /* Mechanical shutter: closed */
         FRAMEINFO_FLAG_MECHANICALSHUTTER = 0x00000200,
         /* still image */
-        FRAMEINFO_FLAG_STILL = 0x00008000,
-        /* Conversion Gain: High */
-        FRAMEINFO_FLAG_CG = 0x00010000
+        FRAMEINFO_FLAG_STILL = 0x00008000
     };
 
     public enum eIoControType : uint {
@@ -851,13 +838,11 @@ public class Nncam : IDisposable {
         IOCONTROLTYPE_GET_COUNTERVALUE = 0x15,
         IOCONTROLTYPE_SET_COUNTERVALUE = 0x16,
         IOCONTROLTYPE_SET_RESETCOUNTER = 0x18,
-        /* PWM Frequency */
         IOCONTROLTYPE_GET_PWM_FREQ = 0x19,
         IOCONTROLTYPE_SET_PWM_FREQ = 0x1a,
-        /* PWM Duty Ratio */
         IOCONTROLTYPE_GET_PWM_DUTYRATIO = 0x1b,
         IOCONTROLTYPE_SET_PWM_DUTYRATIO = 0x1c,
-        /* PWM Source: 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
+        /* 0x00 => Opto-isolated input, 0x01 => GPIO0, 0x02 => GPIO1 */
         IOCONTROLTYPE_GET_PWMSOURCE = 0x1d,
         IOCONTROLTYPE_SET_PWMSOURCE = 0x1e,
         /*  0x00 => Frame Trigger Wait
@@ -1154,9 +1139,9 @@ public class Nncam : IDisposable {
         GC.SuppressFinalize(this);
     }
 
-    /* get the version of this dll/so, which is: 57.27650.20250209 */
+    /* get the version of this dll/so, which is: 57.27022.20241119 */
     public static string Version() {
-        return Marshal.PtrToStringUni(Nncam_Version());
+        return Marshal.PtrToStringUni(Svbonycam_Version());
     }
 
     private static DeviceV2[] Ptr2Device(IntPtr p, uint cnt) {
@@ -1185,15 +1170,15 @@ public class Nncam : IDisposable {
         return arr;
     }
 
-    /* enumerate Nncam cameras that are currently connected to computer */
+    /* enumerate Svbonycam cameras that are currently connected to computer */
     public static DeviceV2[] EnumV2() {
         IntPtr p = Marshal.AllocHGlobal(512 * 128);
-        return Ptr2Device(p, Nncam_EnumV2(p));
+        return Ptr2Device(p, Svbonycam_EnumV2(p));
     }
 
     public static DeviceV2[] EnumWithName() {
         IntPtr p = Marshal.AllocHGlobal(512 * 128);
-        return Ptr2Device(p, Nncam_EnumWithName(p));
+        return Ptr2Device(p, Svbonycam_EnumWithName(p));
     }
 
     /* Initialize support for GigE cameras. If online/offline notifications are not required, the callback function can be set to null */
@@ -1208,14 +1193,14 @@ public class Nncam : IDisposable {
         };
         IntPtr id = new IntPtr(Interlocked.Increment(ref sid_));
         map_.Add(id.ToInt32(), funHotplug);
-        return Nncam_GigeEnable(pHotplug, id);
+        return Svbonycam_GigeEnable(pHotplug, id);
     }
 
     [Obsolete("Use EnumV2")]
     public static Device[] Enum() {
         IntPtr p = Marshal.AllocHGlobal(512 * 128);
         IntPtr ti = p;
-        uint cnt = Nncam_Enum(p);
+        uint cnt = Svbonycam_Enum(p);
         Device[] arr = new Device[cnt];
         if (cnt > 0) {
             for (uint i = 0; i < cnt; ++i) {
@@ -1261,18 +1246,18 @@ public class Nncam : IDisposable {
     }
 
     /*
-        the object of Nncam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Nncam (The constructor is private on purpose)
+        the object of Svbonycam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Svbonycam (The constructor is private on purpose)
     */
     // camId: enumerated by EnumV2, null means the first enumerated camera
-    public static Nncam Open(string camId) {
-        SafeCamHandle tmphandle = Nncam_Open(camId);
+    public static Svbonycam Open(string camId) {
+        SafeCamHandle tmphandle = Svbonycam_Open(camId);
         if (tmphandle == null || tmphandle.IsInvalid || tmphandle.IsClosed)
             return null;
-        return new Nncam(tmphandle);
+        return new Svbonycam(tmphandle);
     }
 
     /*
-        the object of Nncam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Nncam (The constructor is private on purpose)
+        the object of Svbonycam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Svbonycam (The constructor is private on purpose)
     */
     /*
         the same with Open, but use the index as the parameter. such as:
@@ -1280,11 +1265,11 @@ public class Nncam : IDisposable {
         index == 1, open the second camera,
         etc
     */
-    public static Nncam OpenByIndex(uint index) {
-        SafeCamHandle tmphandle = Nncam_OpenByIndex(index);
+    public static Svbonycam OpenByIndex(uint index) {
+        SafeCamHandle tmphandle = Svbonycam_OpenByIndex(index);
         if (tmphandle == null || tmphandle.IsInvalid || tmphandle.IsClosed)
             return null;
-        return new Nncam(tmphandle);
+        return new Svbonycam(tmphandle);
     }
 
     public SafeCamHandle Handle {
@@ -1304,7 +1289,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return Nncam_get_ResolutionNumber(handle_);
+            return Svbonycam_get_ResolutionNumber(handle_);
         }
     }
 
@@ -1312,7 +1297,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return Nncam_get_StillResolutionNumber(handle_);
+            return Svbonycam_get_StillResolutionNumber(handle_);
         }
     }
 
@@ -1320,7 +1305,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return false;
-            return (0 == Nncam_get_MonoMode(handle_));
+            return (0 == Svbonycam_get_MonoMode(handle_));
         }
     }
 
@@ -1329,7 +1314,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return Nncam_get_MaxSpeed(handle_);
+            return Svbonycam_get_MaxSpeed(handle_);
         }
     }
 
@@ -1338,7 +1323,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return Nncam_get_MaxBitDepth(handle_);
+            return Svbonycam_get_MaxBitDepth(handle_);
         }
     }
 
@@ -1347,7 +1332,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return Nncam_get_FanMaxSpeed(handle_);
+            return Svbonycam_get_FanMaxSpeed(handle_);
         }
     }
 
@@ -1355,7 +1340,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ != null && !handle_.IsInvalid && !handle_.IsClosed) {
                 int range = 0;
-                if (CheckHResult(Nncam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
+                if (CheckHResult(Svbonycam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
                     return unchecked((short)((range >> 16) & 0xffff));
             }
             return short.MaxValue;
@@ -1366,7 +1351,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ != null && !handle_.IsInvalid && !handle_.IsClosed) {
                 int range = 0;
-                if (CheckHResult(Nncam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
+                if (CheckHResult(Svbonycam_get_Option(handle_, eOPTION.OPTION_TECTARGET_RANGE, out range)))
                     return unchecked((short)(range & 0xffff));
             }
             return short.MinValue;
@@ -1379,7 +1364,7 @@ public class Nncam : IDisposable {
             ushort rev = 0;
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return rev;
-            Nncam_get_Revision(handle_, out rev);
+            Svbonycam_get_Revision(handle_, out rev);
             return rev;
         }
     }
@@ -1391,7 +1376,7 @@ public class Nncam : IDisposable {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return str;
             IntPtr ptr = Marshal.AllocHGlobal(64);
-            if (Nncam_get_SerialNumber(handle_, ptr) >= 0)
+            if (Svbonycam_get_SerialNumber(handle_, ptr) >= 0)
                 str = Marshal.PtrToStringAnsi(ptr);
             Marshal.FreeHGlobal(ptr);
             return str;
@@ -1405,7 +1390,7 @@ public class Nncam : IDisposable {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return str;
             IntPtr ptr = Marshal.AllocHGlobal(32);
-            if (Nncam_get_FwVersion(handle_, ptr) >= 0)
+            if (Svbonycam_get_FwVersion(handle_, ptr) >= 0)
                 str = Marshal.PtrToStringAnsi(ptr);
             Marshal.FreeHGlobal(ptr);
             return str;
@@ -1419,7 +1404,7 @@ public class Nncam : IDisposable {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return str;
             IntPtr ptr = Marshal.AllocHGlobal(32);
-            if (Nncam_get_HwVersion(handle_, ptr) >= 0)
+            if (Svbonycam_get_HwVersion(handle_, ptr) >= 0)
                 str = Marshal.PtrToStringAnsi(ptr);
             Marshal.FreeHGlobal(ptr);
             return str;
@@ -1433,7 +1418,7 @@ public class Nncam : IDisposable {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return str;
             IntPtr ptr = Marshal.AllocHGlobal(32);
-            if (Nncam_get_ProductionDate(handle_, ptr) >= 0)
+            if (Svbonycam_get_ProductionDate(handle_, ptr) >= 0)
                 str = Marshal.PtrToStringAnsi(ptr);
             Marshal.FreeHGlobal(ptr);
             return str;
@@ -1447,7 +1432,7 @@ public class Nncam : IDisposable {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return str;
             IntPtr ptr = Marshal.AllocHGlobal(32);
-            if (Nncam_get_FpgaVersion(handle_, ptr) >= 0)
+            if (Svbonycam_get_FpgaVersion(handle_, ptr) >= 0)
                 str = Marshal.PtrToStringAnsi(ptr);
             Marshal.FreeHGlobal(ptr);
             return str;
@@ -1458,7 +1443,7 @@ public class Nncam : IDisposable {
         get {
             if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
                 return 0;
-            return (uint)Nncam_get_Field(handle_);
+            return (uint)Svbonycam_get_Field(handle_);
         }
     }
 
@@ -1466,7 +1451,7 @@ public class Nncam : IDisposable {
     public bool StartPullModeWithWndMsg(IntPtr hWnd, uint nMsg) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_StartPullModeWithWndMsg(handle_, hWnd, nMsg));
+        return CheckHResult(Svbonycam_StartPullModeWithWndMsg(handle_, hWnd, nMsg));
     }
 #endif
 
@@ -1476,9 +1461,9 @@ public class Nncam : IDisposable {
         funEvent_ = funEvent;
         if (funEvent != null) {
             pEvent_ = new EVENT_CALLBACK(EventCallback);
-            return CheckHResult(Nncam_StartPullModeWithCallback(handle_, pEvent_, id_));
+            return CheckHResult(Svbonycam_StartPullModeWithCallback(handle_, pEvent_, id_));
         } else {
-            return CheckHResult(Nncam_StartPullModeWithCallback(handle_, null, IntPtr.Zero));
+            return CheckHResult(Svbonycam_StartPullModeWithCallback(handle_, null, IntPtr.Zero));
         }
     }
 
@@ -1489,7 +1474,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1498,7 +1483,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1507,7 +1492,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1517,7 +1502,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1527,7 +1512,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1537,7 +1522,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     /*  bits: 24 (RGB24), 32 (RGB32), 8 (Grey), 16 (Grey), 48(RGB48), 64(RGB64) */
@@ -1547,7 +1532,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1556,7 +1541,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1565,7 +1550,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImage(handle_, pImageData, bits, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1574,7 +1559,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1583,7 +1568,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1592,7 +1577,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageV2(handle_, pImageData, bits, out pInfo));
     }
 
     /*
@@ -1641,7 +1626,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     public bool PullImage(byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1649,7 +1634,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     public bool PullImage(ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1657,7 +1642,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV4(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1666,7 +1651,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1675,7 +1660,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1684,7 +1669,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageV3(handle_, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     public bool WaitImage(uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1692,7 +1677,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     public bool WaitImage(uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1700,7 +1685,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     public bool WaitImage(uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1708,7 +1693,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV4(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1717,7 +1702,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1726,7 +1711,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1735,7 +1720,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_WaitImageV3(handle_, nWaitMS, pImageData, bStill, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1744,7 +1729,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1753,7 +1738,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1762,7 +1747,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1771,7 +1756,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1780,7 +1765,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1789,7 +1774,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV2();
             return false;
         }
-        return CheckHResult(Nncam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1798,7 +1783,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1807,7 +1792,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1816,7 +1801,7 @@ public class Nncam : IDisposable {
             pnWidth = pnHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitch(handle_, pImageData, bits, rowPitch, out pnWidth, out pnHeight));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1826,7 +1811,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1836,7 +1821,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1846,7 +1831,7 @@ public class Nncam : IDisposable {
             pInfo.timestamp = 0;
             return false;
         }
-        return CheckHResult(Nncam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_PullStillImageWithRowPitchV2(handle_, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool StartPushModeV4(DelegateDataCallbackV4 funData, DelegateEventCallback funEvent) {
@@ -1858,13 +1843,13 @@ public class Nncam : IDisposable {
         pDataV4_ = delegate (IntPtr pData, IntPtr pInfo, bool bSnap, IntPtr ctxData) {
             Object obj = null;
             if (map_.TryGetValue(ctxData.ToInt32(), out obj) && (obj != null)) {
-                Nncam pthis = obj as Nncam;
+                Svbonycam pthis = obj as Svbonycam;
                 if (pthis != null)
                     pthis.DataCallbackV4(pData, pInfo, bSnap);
             }
         };
         pEvent_ = new EVENT_CALLBACK(EventCallback);
-        return CheckHResult(Nncam_StartPushModeV4(handle_, pDataV4_, id_, pEvent_, id_));
+        return CheckHResult(Svbonycam_StartPushModeV4(handle_, pDataV4_, id_, pEvent_, id_));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1877,47 +1862,47 @@ public class Nncam : IDisposable {
         pDataV3_ = delegate (IntPtr pData, IntPtr pInfo, bool bSnap, IntPtr ctxData) {
             Object obj = null;
             if (map_.TryGetValue(ctxData.ToInt32(), out obj) && (obj != null)) {
-                Nncam pthis = obj as Nncam;
+                Svbonycam pthis = obj as Svbonycam;
                 if (pthis != null)
                     pthis.DataCallbackV3(pData, pInfo, bSnap);
             }
         };
         pEvent_ = new EVENT_CALLBACK(EventCallback);
-        return CheckHResult(Nncam_StartPushModeV3(handle_, pDataV3_, id_, pEvent_, id_));
+        return CheckHResult(Svbonycam_StartPushModeV3(handle_, pDataV3_, id_, pEvent_, id_));
     }
 
     public bool Stop() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_Stop(handle_));
+        return CheckHResult(Svbonycam_Stop(handle_));
     }
 
     /* 1 => pause, 0 => continue */
     public bool Pause(bool bPause) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_Pause(handle_, bPause ? 1 : 0));
+        return CheckHResult(Svbonycam_Pause(handle_, bPause ? 1 : 0));
     }
 
     /* nResolutionIndex = 0xffffffff means use the cureent preview resolution */
     public bool Snap(uint nResolutionIndex) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_Snap(handle_, nResolutionIndex));
+        return CheckHResult(Svbonycam_Snap(handle_, nResolutionIndex));
     }
 
     /* multiple still image snap, nResolutionIndex = 0xffffffff means use the cureent preview resolution */
     public bool SnapN(uint nResolutionIndex, uint nNumber) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_SnapN(handle_, nResolutionIndex, nNumber));
+        return CheckHResult(Svbonycam_SnapN(handle_, nResolutionIndex, nNumber));
     }
 
     /* multiple RAW still image snap, nResolutionIndex = 0xffffffff means use the cureent preview resolution */
     public bool SnapR(uint nResolutionIndex, uint nNumber) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_SnapR(handle_, nResolutionIndex, nNumber));
+        return CheckHResult(Svbonycam_SnapR(handle_, nResolutionIndex, nNumber));
     }
 
     /*
@@ -1929,7 +1914,7 @@ public class Nncam : IDisposable {
     public bool Trigger(ushort nNumber) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_Trigger(handle_, nNumber));
+        return CheckHResult(Svbonycam_Trigger(handle_, nNumber));
     }
 
     /*
@@ -1943,7 +1928,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool TriggerSync(uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1951,7 +1936,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool TriggerSync(uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo) {
@@ -1959,7 +1944,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV4();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSyncV4(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1968,7 +1953,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1977,7 +1962,7 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     [Obsolete("Use FrameInfoV4")]
@@ -1986,13 +1971,13 @@ public class Nncam : IDisposable {
             pInfo = new FrameInfoV3();
             return false;
         }
-        return CheckHResult(Nncam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
+        return CheckHResult(Svbonycam_TriggerSync(handle_, nWaitMS, pImageData, bits, rowPitch, out pInfo));
     }
 
     public bool put_Size(int nWidth, int nHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Size(handle_, nWidth, nHeight));
+        return CheckHResult(Svbonycam_put_Size(handle_, nWidth, nHeight));
     }
 
     public bool get_Size(out int nWidth, out int nHeight) {
@@ -2000,7 +1985,7 @@ public class Nncam : IDisposable {
             nWidth = nHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_Size(handle_, out nWidth, out nHeight));
+        return CheckHResult(Svbonycam_get_Size(handle_, out nWidth, out nHeight));
     }
 
     /*
@@ -2015,7 +2000,7 @@ public class Nncam : IDisposable {
     public bool put_eSize(uint nResolutionIndex) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_eSize(handle_, nResolutionIndex));
+        return CheckHResult(Svbonycam_put_eSize(handle_, nResolutionIndex));
     }
 
     public bool get_eSize(out uint nResolutionIndex) {
@@ -2023,7 +2008,7 @@ public class Nncam : IDisposable {
             nResolutionIndex = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_eSize(handle_, out nResolutionIndex));
+        return CheckHResult(Svbonycam_get_eSize(handle_, out nResolutionIndex));
     }
 
     /*
@@ -2034,7 +2019,7 @@ public class Nncam : IDisposable {
             nWidth = nHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_FinalSize(handle_, out nWidth, out nHeight));
+        return CheckHResult(Svbonycam_get_FinalSize(handle_, out nWidth, out nHeight));
     }
 
     public bool get_Resolution(uint nResolutionIndex, out int pWidth, out int pHeight) {
@@ -2042,7 +2027,7 @@ public class Nncam : IDisposable {
             pWidth = pHeight = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_Resolution(handle_, nResolutionIndex, out pWidth, out pHeight));
+        return CheckHResult(Svbonycam_get_Resolution(handle_, nResolutionIndex, out pWidth, out pHeight));
     }
 
     /*
@@ -2053,7 +2038,7 @@ public class Nncam : IDisposable {
             x = y = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_PixelSize(handle_, nResolutionIndex, out x, out y));
+        return CheckHResult(Svbonycam_get_PixelSize(handle_, nResolutionIndex, out x, out y));
     }
 
     /*
@@ -2064,7 +2049,7 @@ public class Nncam : IDisposable {
             pNumerator = pDenominator = 1;
             return false;
         }
-        return CheckHResult(Nncam_get_ResolutionRatio(handle_, nResolutionIndex, out pNumerator, out pDenominator));
+        return CheckHResult(Svbonycam_get_ResolutionRatio(handle_, nResolutionIndex, out pNumerator, out pDenominator));
     }
 
     /*
@@ -2086,7 +2071,7 @@ public class Nncam : IDisposable {
             nFourCC = bitdepth = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_RawFormat(handle_, out nFourCC, out bitdepth));
+        return CheckHResult(Svbonycam_get_RawFormat(handle_, out nFourCC, out bitdepth));
     }
 
     /*
@@ -2102,7 +2087,7 @@ public class Nncam : IDisposable {
     public bool put_RealTime(int val) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_RealTime(handle_, val));
+        return CheckHResult(Svbonycam_put_RealTime(handle_, val));
     }
 
     public bool get_RealTime(out int val) {
@@ -2111,14 +2096,14 @@ public class Nncam : IDisposable {
             return false;
         }
 
-        return CheckHResult(Nncam_get_RealTime(handle_, out val));
+        return CheckHResult(Svbonycam_get_RealTime(handle_, out val));
     }
 
     /* Flush is obsolete, recommend using put_Option(OPTION_FLUSH, 3) */
     public bool Flush() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_Flush(handle_));
+        return CheckHResult(Svbonycam_Flush(handle_));
     }
 
     /*
@@ -2133,13 +2118,13 @@ public class Nncam : IDisposable {
             return false;
         }
 
-        return CheckHResult(Nncam_get_AutoExpoEnable(handle_, out bAutoExposure));
+        return CheckHResult(Svbonycam_get_AutoExpoEnable(handle_, out bAutoExposure));
     }
 
     public bool put_AutoExpoEnable(int bAutoExposure) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AutoExpoEnable(handle_, bAutoExposure));
+        return CheckHResult(Svbonycam_put_AutoExpoEnable(handle_, bAutoExposure));
     }
 
     public bool get_AutoExpoEnable(out bool bAutoExposure) {
@@ -2148,7 +2133,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iEnable = 0;
-        if (!CheckHResult(Nncam_get_AutoExpoEnable(handle_, out iEnable)))
+        if (!CheckHResult(Svbonycam_get_AutoExpoEnable(handle_, out iEnable)))
             return false;
 
         bAutoExposure = (iEnable != 0);
@@ -2158,7 +2143,7 @@ public class Nncam : IDisposable {
     public bool put_AutoExpoEnable(bool bAutoExposure) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AutoExpoEnable(handle_, bAutoExposure ? 1 : 0));
+        return CheckHResult(Svbonycam_put_AutoExpoEnable(handle_, bAutoExposure ? 1 : 0));
     }
 
     public bool get_AutoExpoTarget(out ushort Target) {
@@ -2166,20 +2151,20 @@ public class Nncam : IDisposable {
             Target = AETARGET_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_AutoExpoTarget(handle_, out Target));
+        return CheckHResult(Svbonycam_get_AutoExpoTarget(handle_, out Target));
     }
 
     public bool put_AutoExpoTarget(ushort Target) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AutoExpoTarget(handle_, Target));
+        return CheckHResult(Svbonycam_put_AutoExpoTarget(handle_, Target));
     }
 
     /* set the maximum/minimal auto exposure time and agin. The default maximum auto exposure time is 350ms */
     public bool put_AutoExpoRange(uint maxTime, uint minTime, ushort maxGain, ushort minGain) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AutoExpoRange(handle_, maxTime, minTime, maxGain, minGain));
+        return CheckHResult(Svbonycam_put_AutoExpoRange(handle_, maxTime, minTime, maxGain, minGain));
     }
 
     public bool get_AutoExpoRange(out uint maxTime, out uint minTime, out ushort maxGain, out ushort minGain) {
@@ -2188,13 +2173,13 @@ public class Nncam : IDisposable {
             maxGain = minGain = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_AutoExpoRange(handle_, out maxTime, out minTime, out maxGain, out minGain));
+        return CheckHResult(Svbonycam_get_AutoExpoRange(handle_, out maxTime, out minTime, out maxGain, out minGain));
     }
 
     public bool put_MaxAutoExpoTimeAGain(uint maxTime, ushort maxGain) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_MaxAutoExpoTimeAGain(handle_, maxTime, maxGain));
+        return CheckHResult(Svbonycam_put_MaxAutoExpoTimeAGain(handle_, maxTime, maxGain));
     }
 
     public bool get_MaxAutoExpoTimeAGain(out uint maxTime, out ushort maxGain) {
@@ -2203,13 +2188,13 @@ public class Nncam : IDisposable {
             maxGain = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_MaxAutoExpoTimeAGain(handle_, out maxTime, out maxGain));
+        return CheckHResult(Svbonycam_get_MaxAutoExpoTimeAGain(handle_, out maxTime, out maxGain));
     }
 
     public bool put_MinAutoExpoTimeAGain(uint minTime, ushort minGain) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_MinAutoExpoTimeAGain(handle_, minTime, minGain));
+        return CheckHResult(Svbonycam_put_MinAutoExpoTimeAGain(handle_, minTime, minGain));
     }
 
     public bool get_MinAutoExpoTimeAGain(out uint minTime, out ushort minGain) {
@@ -2218,7 +2203,7 @@ public class Nncam : IDisposable {
             minGain = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_MinAutoExpoTimeAGain(handle_, out minTime, out minGain));
+        return CheckHResult(Svbonycam_get_MinAutoExpoTimeAGain(handle_, out minTime, out minGain));
     }
 
     public bool get_ExpoTime(out uint Time)/* in microseconds */
@@ -2227,23 +2212,23 @@ public class Nncam : IDisposable {
             Time = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_ExpoTime(handle_, out Time));
+        return CheckHResult(Svbonycam_get_ExpoTime(handle_, out Time));
     }
 
-    public bool get_RealExpoTime(out uint Time)/* actual exposure time */
+    public bool get_RealExpoTime(out uint Time)/* in microseconds */
     {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             Time = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_RealExpoTime(handle_, out Time));
+        return CheckHResult(Svbonycam_get_RealExpoTime(handle_, out Time));
     }
 
     public bool put_ExpoTime(uint Time)/* in microseconds */
     {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_ExpoTime(handle_, Time));
+        return CheckHResult(Svbonycam_put_ExpoTime(handle_, Time));
     }
 
     public bool get_ExpTimeRange(out uint nMin, out uint nMax, out uint nDef) {
@@ -2251,7 +2236,7 @@ public class Nncam : IDisposable {
             nMin = nMax = nDef = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_ExpTimeRange(handle_, out nMin, out nMax, out nDef));
+        return CheckHResult(Svbonycam_get_ExpTimeRange(handle_, out nMin, out nMax, out nDef));
     }
 
     public bool get_ExpoAGain(out ushort Gain)/* percent, such as 300 */
@@ -2260,14 +2245,14 @@ public class Nncam : IDisposable {
             Gain = EXPOGAIN_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_ExpoAGain(handle_, out Gain));
+        return CheckHResult(Svbonycam_get_ExpoAGain(handle_, out Gain));
     }
 
     public bool put_ExpoAGain(ushort Gain)/* percent */
     {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_ExpoAGain(handle_, Gain));
+        return CheckHResult(Svbonycam_put_ExpoAGain(handle_, Gain));
     }
 
     public bool get_ExpoAGainRange(out ushort nMin, out ushort nMax, out ushort nDef) {
@@ -2275,7 +2260,7 @@ public class Nncam : IDisposable {
             nMin = nMax = nDef = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_ExpoAGainRange(handle_, out nMin, out nMax, out nDef));
+        return CheckHResult(Svbonycam_get_ExpoAGainRange(handle_, out nMin, out nMax, out nDef));
     }
 
     public bool put_LevelRange(ushort[] aLow, ushort[] aHigh) {
@@ -2283,7 +2268,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_LevelRange(handle_, aLow, aHigh));
+        return CheckHResult(Svbonycam_put_LevelRange(handle_, aLow, aHigh));
     }
 
     public bool get_LevelRange(ushort[] aLow, ushort[] aHigh) {
@@ -2291,7 +2276,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_LevelRange(handle_, aLow, aHigh));
+        return CheckHResult(Svbonycam_get_LevelRange(handle_, aLow, aHigh));
     }
 
     public bool put_LevelRangeV2(ushort mode, int roiX, int roiY, int roiWidth, int roiHeight, ushort[] aLow, ushort[] aHigh) {
@@ -2304,7 +2289,7 @@ public class Nncam : IDisposable {
         rc.right = roiX + roiWidth;
         rc.top = roiY;
         rc.bottom = roiY + roiHeight;
-        return CheckHResult(Nncam_put_LevelRangeV2(handle_, mode, ref rc, aLow, aHigh));
+        return CheckHResult(Svbonycam_put_LevelRangeV2(handle_, mode, ref rc, aLow, aHigh));
     }
 
     public bool get_LevelRangeV2(out ushort mode, out int roiX, out int roiY, out int roiWidth, out int roiHeight, ushort[] aLow, ushort[] aHigh) {
@@ -2315,7 +2300,7 @@ public class Nncam : IDisposable {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         RECT rc = new RECT();
-        if (!CheckHResult(Nncam_get_LevelRangeV2(handle_, out mode, out rc, aLow, aHigh)))
+        if (!CheckHResult(Svbonycam_get_LevelRangeV2(handle_, out mode, out rc, aLow, aHigh)))
             return false;
         roiX = rc.left;
         roiY = rc.top;
@@ -2327,7 +2312,7 @@ public class Nncam : IDisposable {
     public bool put_Hue(int Hue) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Hue(handle_, Hue));
+        return CheckHResult(Svbonycam_put_Hue(handle_, Hue));
     }
 
     public bool get_Hue(out int Hue) {
@@ -2335,13 +2320,13 @@ public class Nncam : IDisposable {
             Hue = HUE_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_Hue(handle_, out Hue));
+        return CheckHResult(Svbonycam_get_Hue(handle_, out Hue));
     }
 
     public bool put_Saturation(int Saturation) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Saturation(handle_, Saturation));
+        return CheckHResult(Svbonycam_put_Saturation(handle_, Saturation));
     }
 
     public bool get_Saturation(out int Saturation) {
@@ -2349,13 +2334,13 @@ public class Nncam : IDisposable {
             Saturation = SATURATION_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_Saturation(handle_, out Saturation));
+        return CheckHResult(Svbonycam_get_Saturation(handle_, out Saturation));
     }
 
     public bool put_Brightness(int Brightness) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Brightness(handle_, Brightness));
+        return CheckHResult(Svbonycam_put_Brightness(handle_, Brightness));
     }
 
     public bool get_Brightness(out int Brightness) {
@@ -2363,7 +2348,7 @@ public class Nncam : IDisposable {
             Brightness = BRIGHTNESS_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_Brightness(handle_, out Brightness));
+        return CheckHResult(Svbonycam_get_Brightness(handle_, out Brightness));
     }
 
     public bool get_Contrast(out int Contrast) {
@@ -2371,13 +2356,13 @@ public class Nncam : IDisposable {
             Contrast = CONTRAST_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_Contrast(handle_, out Contrast));
+        return CheckHResult(Svbonycam_get_Contrast(handle_, out Contrast));
     }
 
     public bool put_Contrast(int Contrast) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Contrast(handle_, Contrast));
+        return CheckHResult(Svbonycam_put_Contrast(handle_, Contrast));
     }
 
     public bool get_Gamma(out int Gamma) {
@@ -2385,13 +2370,13 @@ public class Nncam : IDisposable {
             Gamma = GAMMA_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_Gamma(handle_, out Gamma));
+        return CheckHResult(Svbonycam_get_Gamma(handle_, out Gamma));
     }
 
     public bool put_Gamma(int Gamma) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Gamma(handle_, Gamma));
+        return CheckHResult(Svbonycam_put_Gamma(handle_, Gamma));
     }
 
     public bool get_Chrome(out bool bChrome)    /* monochromatic mode */
@@ -2401,7 +2386,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iEnable = 0;
-        if (!CheckHResult(Nncam_get_Chrome(handle_, out iEnable)))
+        if (!CheckHResult(Svbonycam_get_Chrome(handle_, out iEnable)))
             return false;
 
         bChrome = (iEnable != 0);
@@ -2411,7 +2396,7 @@ public class Nncam : IDisposable {
     public bool put_Chrome(bool bChrome) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Chrome(handle_, bChrome ? 1 : 0));
+        return CheckHResult(Svbonycam_put_Chrome(handle_, bChrome ? 1 : 0));
     }
 
     public bool get_VFlip(out bool bVFlip) /* vertical flip */
@@ -2421,7 +2406,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iVFlip = 0;
-        if (!CheckHResult(Nncam_get_VFlip(handle_, out iVFlip)))
+        if (!CheckHResult(Svbonycam_get_VFlip(handle_, out iVFlip)))
             return false;
 
         bVFlip = (iVFlip != 0);
@@ -2431,7 +2416,7 @@ public class Nncam : IDisposable {
     public bool put_VFlip(bool bVFlip) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_VFlip(handle_, bVFlip ? 1 : 0));
+        return CheckHResult(Svbonycam_put_VFlip(handle_, bVFlip ? 1 : 0));
     }
 
     public bool get_HFlip(out bool bHFlip) {
@@ -2440,7 +2425,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iHFlip = 0;
-        if (!CheckHResult(Nncam_get_HFlip(handle_, out iHFlip)))
+        if (!CheckHResult(Svbonycam_get_HFlip(handle_, out iHFlip)))
             return false;
 
         bHFlip = (iHFlip != 0);
@@ -2451,7 +2436,7 @@ public class Nncam : IDisposable {
     {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_HFlip(handle_, bHFlip ? 1 : 0));
+        return CheckHResult(Svbonycam_put_HFlip(handle_, bHFlip ? 1 : 0));
     }
 
     /* negative film */
@@ -2461,7 +2446,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iNegative = 0;
-        if (!CheckHResult(Nncam_get_Negative(handle_, out iNegative)))
+        if (!CheckHResult(Svbonycam_get_Negative(handle_, out iNegative)))
             return false;
 
         bNegative = (iNegative != 0);
@@ -2472,13 +2457,13 @@ public class Nncam : IDisposable {
     public bool put_Negative(bool bNegative) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Negative(handle_, bNegative ? 1 : 0));
+        return CheckHResult(Svbonycam_put_Negative(handle_, bNegative ? 1 : 0));
     }
 
     public bool put_Speed(ushort nSpeed) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Speed(handle_, nSpeed));
+        return CheckHResult(Svbonycam_put_Speed(handle_, nSpeed));
     }
 
     public bool get_Speed(out ushort pSpeed) {
@@ -2486,7 +2471,7 @@ public class Nncam : IDisposable {
             pSpeed = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_Speed(handle_, out pSpeed));
+        return CheckHResult(Svbonycam_get_Speed(handle_, out pSpeed));
     }
 
     /* power supply:
@@ -2497,7 +2482,7 @@ public class Nncam : IDisposable {
     public bool put_HZ(int nHZ) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_HZ(handle_, nHZ));
+        return CheckHResult(Svbonycam_put_HZ(handle_, nHZ));
     }
 
     public bool get_HZ(out int nHZ) {
@@ -2505,14 +2490,14 @@ public class Nncam : IDisposable {
             nHZ = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_HZ(handle_, out nHZ));
+        return CheckHResult(Svbonycam_get_HZ(handle_, out nHZ));
     }
 
     public bool put_Mode(bool bSkip) /* skip or bin */
     {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Mode(handle_, bSkip ? 1 : 0));
+        return CheckHResult(Svbonycam_put_Mode(handle_, bSkip ? 1 : 0));
     }
 
     public bool get_Mode(out bool bSkip) {
@@ -2521,7 +2506,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iSkip = 0;
-        if (!CheckHResult(Nncam_get_Mode(handle_, out iSkip)))
+        if (!CheckHResult(Svbonycam_get_Mode(handle_, out iSkip)))
             return false;
 
         bSkip = (iSkip != 0);
@@ -2532,7 +2517,7 @@ public class Nncam : IDisposable {
     public bool put_TempTint(int nTemp, int nTint) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_TempTint(handle_, nTemp, nTint));
+        return CheckHResult(Svbonycam_put_TempTint(handle_, nTemp, nTint));
     }
 
     /* White Balance, Temp/Tint mode */
@@ -2542,7 +2527,7 @@ public class Nncam : IDisposable {
             nTint = TINT_DEF;
             return false;
         }
-        return CheckHResult(Nncam_get_TempTint(handle_, out nTemp, out nTint));
+        return CheckHResult(Svbonycam_get_TempTint(handle_, out nTemp, out nTint));
     }
 
     /* White Balance, RGB Gain Mode */
@@ -2551,7 +2536,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_WhiteBalanceGain(handle_, aGain));
+        return CheckHResult(Svbonycam_put_WhiteBalanceGain(handle_, aGain));
     }
 
     /* White Balance, RGB Gain Mode */
@@ -2560,7 +2545,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_WhiteBalanceGain(handle_, aGain));
+        return CheckHResult(Svbonycam_get_WhiteBalanceGain(handle_, aGain));
     }
 
     public bool put_AWBAuxRect(int X, int Y, int Width, int Height) {
@@ -2572,7 +2557,7 @@ public class Nncam : IDisposable {
         rc.right = X + Width;
         rc.top = Y;
         rc.bottom = Y + Height;
-        return CheckHResult(Nncam_put_AWBAuxRect(handle_, ref rc));
+        return CheckHResult(Svbonycam_put_AWBAuxRect(handle_, ref rc));
     }
 
     public bool get_AWBAuxRect(out int X, out int Y, out int Width, out int Height) {
@@ -2581,7 +2566,7 @@ public class Nncam : IDisposable {
             return false;
 
         RECT rc = new RECT();
-        if (!CheckHResult(Nncam_get_AWBAuxRect(handle_, out rc)))
+        if (!CheckHResult(Svbonycam_get_AWBAuxRect(handle_, out rc)))
             return false;
 
         X = rc.left;
@@ -2600,7 +2585,7 @@ public class Nncam : IDisposable {
         rc.right = X + Width;
         rc.top = Y;
         rc.bottom = Y + Height;
-        return CheckHResult(Nncam_put_AEAuxRect(handle_, ref rc));
+        return CheckHResult(Svbonycam_put_AEAuxRect(handle_, ref rc));
     }
 
     public bool get_AEAuxRect(out int X, out int Y, out int Width, out int Height) {
@@ -2609,7 +2594,7 @@ public class Nncam : IDisposable {
             return false;
 
         RECT rc = new RECT();
-        if (!CheckHResult(Nncam_get_AEAuxRect(handle_, out rc)))
+        if (!CheckHResult(Svbonycam_get_AEAuxRect(handle_, out rc)))
             return false;
 
         X = rc.left;
@@ -2624,7 +2609,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_BlackBalance(handle_, aSub));
+        return CheckHResult(Svbonycam_put_BlackBalance(handle_, aSub));
     }
 
     public bool get_BlackBalance(ushort[] aSub) {
@@ -2632,7 +2617,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_BlackBalance(handle_, aSub));
+        return CheckHResult(Svbonycam_get_BlackBalance(handle_, aSub));
     }
 
     public bool put_ABBAuxRect(int X, int Y, int Width, int Height) {
@@ -2644,7 +2629,7 @@ public class Nncam : IDisposable {
         rc.right = X + Width;
         rc.top = Y;
         rc.bottom = Y + Height;
-        return CheckHResult(Nncam_put_ABBAuxRect(handle_, ref rc));
+        return CheckHResult(Svbonycam_put_ABBAuxRect(handle_, ref rc));
     }
 
     public bool get_ABBAuxRect(out int X, out int Y, out int Width, out int Height) {
@@ -2653,7 +2638,7 @@ public class Nncam : IDisposable {
             return false;
 
         RECT rc = new RECT();
-        if (!CheckHResult(Nncam_get_ABBAuxRect(handle_, out rc)))
+        if (!CheckHResult(Svbonycam_get_ABBAuxRect(handle_, out rc)))
             return false;
 
         X = rc.left;
@@ -2667,13 +2652,13 @@ public class Nncam : IDisposable {
         pWidth = pHeight = 0;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_StillResolution(handle_, nResolutionIndex, out pWidth, out pHeight));
+        return CheckHResult(Svbonycam_get_StillResolution(handle_, nResolutionIndex, out pWidth, out pHeight));
     }
 
     public bool put_VignetEnable(bool bEnable) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_VignetEnable(handle_, bEnable ? 1 : 0));
+        return CheckHResult(Svbonycam_put_VignetEnable(handle_, bEnable ? 1 : 0));
     }
 
     public bool get_VignetEnable(out bool bEnable) {
@@ -2682,7 +2667,7 @@ public class Nncam : IDisposable {
             return false;
 
         int iEanble = 0;
-        if (!CheckHResult(Nncam_get_VignetEnable(handle_, out iEanble)))
+        if (!CheckHResult(Svbonycam_get_VignetEnable(handle_, out iEanble)))
             return false;
 
         bEnable = (iEanble != 0);
@@ -2692,7 +2677,7 @@ public class Nncam : IDisposable {
     public bool put_VignetAmountInt(int nAmount) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_VignetAmountInt(handle_, nAmount));
+        return CheckHResult(Svbonycam_put_VignetAmountInt(handle_, nAmount));
     }
 
     public bool get_VignetAmountInt(out int nAmount) {
@@ -2700,13 +2685,13 @@ public class Nncam : IDisposable {
             nAmount = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_VignetAmountInt(handle_, out nAmount));
+        return CheckHResult(Svbonycam_get_VignetAmountInt(handle_, out nAmount));
     }
 
     public bool put_VignetMidPointInt(int nMidPoint) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_VignetMidPointInt(handle_, nMidPoint));
+        return CheckHResult(Svbonycam_put_VignetMidPointInt(handle_, nMidPoint));
     }
 
     public bool get_VignetMidPointInt(out int nMidPoint) {
@@ -2714,7 +2699,7 @@ public class Nncam : IDisposable {
             nMidPoint = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_VignetMidPointInt(handle_, out nMidPoint));
+        return CheckHResult(Svbonycam_get_VignetMidPointInt(handle_, out nMidPoint));
     }
 
     /* led state:
@@ -2725,31 +2710,31 @@ public class Nncam : IDisposable {
     public bool put_LEDState(ushort iLed, ushort iState, ushort iPeriod) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_LEDState(handle_, iLed, iState, iPeriod));
+        return CheckHResult(Svbonycam_put_LEDState(handle_, iLed, iState, iPeriod));
     }
 
     public int write_EEPROM(uint addr, IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_write_EEPROM(handle_, addr, pBuffer, nBufferLen);
+        return Svbonycam_write_EEPROM(handle_, addr, pBuffer, nBufferLen);
     }
 
     public int write_EEPROM(uint addr, byte[] pBuffer) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_write_EEPROM(handle_, addr, pBuffer, pBuffer.Length);
+        return Svbonycam_write_EEPROM(handle_, addr, pBuffer, pBuffer.Length);
     }
 
     public int read_EEPROM(uint addr, IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_read_EEPROM(handle_, addr, pBuffer, nBufferLen);
+        return Svbonycam_read_EEPROM(handle_, addr, pBuffer, nBufferLen);
     }
 
     public int read_EEPROM(uint addr, byte[] pBuffer) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_read_EEPROM(handle_, addr, pBuffer, pBuffer.Length);
+        return Svbonycam_read_EEPROM(handle_, addr, pBuffer, pBuffer.Length);
     }
 
     public const uint FLASH_SIZE = 0x00;    /* query total size */
@@ -2767,49 +2752,49 @@ public class Nncam : IDisposable {
     public int rwc_Flash(uint action, uint addr, uint len, IntPtr pData) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_rwc_Flash(handle_, action, addr, len, pData);
+        return Svbonycam_rwc_Flash(handle_, action, addr, len, pData);
     }
 
     public int rwc_Flash(uint action, uint addr, uint len, byte[] pData) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_rwc_Flash(handle_, action, addr, len, pData);
+        return Svbonycam_rwc_Flash(handle_, action, addr, len, pData);
     }
 
     public int write_Pipe(uint pipeId, IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_write_Pipe(handle_, pipeId, pBuffer, nBufferLen);
+        return Svbonycam_write_Pipe(handle_, pipeId, pBuffer, nBufferLen);
     }
 
     public int read_Pipe(uint pipeId, IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_read_Pipe(handle_, pipeId, pBuffer, nBufferLen);
+        return Svbonycam_read_Pipe(handle_, pipeId, pBuffer, nBufferLen);
     }
 
     public int feed_Pipe(uint pipeId) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_feed_Pipe(handle_, pipeId);
+        return Svbonycam_feed_Pipe(handle_, pipeId);
     }
 
     public int write_UART(IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_write_UART(handle_, pBuffer, nBufferLen);
+        return Svbonycam_write_UART(handle_, pBuffer, nBufferLen);
     }
 
     public int read_UART(IntPtr pBuffer, uint nBufferLen) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return E_UNEXPECTED;
-        return Nncam_read_UART(handle_, pBuffer, nBufferLen);
+        return Svbonycam_read_UART(handle_, pBuffer, nBufferLen);
     }
 
     public bool put_Option(eOPTION iOption, int iValue) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Option(handle_, iOption, iValue));
+        return CheckHResult(Svbonycam_put_Option(handle_, iOption, iValue));
     }
 
     public bool get_Option(eOPTION iOption, out int iValue) {
@@ -2817,7 +2802,7 @@ public class Nncam : IDisposable {
             iValue = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_Option(handle_, iOption, out iValue));
+        return CheckHResult(Svbonycam_get_Option(handle_, iOption, out iValue));
     }
 
     /*
@@ -2831,83 +2816,31 @@ public class Nncam : IDisposable {
             pixelFormat = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_PixelFormatSupport(handle_, cmd, out pixelFormat));
-    }
-
-    /* Hardware Binning
-    * Value: 1x1, 2x2, etc
-    * Method: Average, Add, Skip
-    */
-    public bool put_Binning(string Value, string Method) {
-        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
-            return false;
-        return CheckHResult(Nncam_put_Binning(handle_, Value, Method));
-    }
-
-    public bool get_Binning(out string Value, out string Method) {
-        Value = Method = null;
-        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
-            return false;
-        IntPtr valuePtr = new IntPtr(0);
-        IntPtr methodPtr = new IntPtr(0);
-        bool ret = CheckHResult(Nncam_get_Binning(handle_, out valuePtr, out methodPtr));
-        if (ret) {
-            Value = Marshal.PtrToStringAnsi(valuePtr);
-            Method = Marshal.PtrToStringAnsi(methodPtr);
-        }
-        return ret;
-    }
-
-    public int get_BinningNumber() {
-        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
-            return 0;
-        return Nncam_get_BinningNumber(handle_);
-    }
-
-    public bool get_BinningValue(uint index, out string Value) {
-        Value = null;
-        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
-            return false;
-        IntPtr valuePtr = new IntPtr(0);
-        bool ret = CheckHResult(Nncam_get_BinningValue(handle_, index, out valuePtr));
-        if (ret)
-            Value = Marshal.PtrToStringAnsi(valuePtr);
-        return ret;
-    }
-
-    public bool get_BinningMethod(uint index, out string Method) {
-        Method = null;
-        if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
-            return false;
-        IntPtr methodPtr = new IntPtr(0);
-        bool ret = CheckHResult(Nncam_get_BinningMethod(handle_, index, out methodPtr));
-        if (ret)
-            Method = Marshal.PtrToStringAnsi(methodPtr);
-        return ret;
+        return CheckHResult(Svbonycam_get_PixelFormatSupport(handle_, cmd, out pixelFormat));
     }
 
     public bool put_SelfTrigger(ref SelfTrigger pSt) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_SelfTrigger(handle_, ref pSt));
+        return CheckHResult(Svbonycam_put_SelfTrigger(handle_, ref pSt));
     }
 
     public bool get_SelfTrigger(ref SelfTrigger pSt) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_SelfTrigger(handle_, ref pSt));
+        return CheckHResult(Svbonycam_get_SelfTrigger(handle_, ref pSt));
     }
 
     public bool put_Linear(byte[] v8, ushort[] v16) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Linear(handle_, v8, v16));
+        return CheckHResult(Svbonycam_put_Linear(handle_, v8, v16));
     }
 
     public bool put_Curve(byte[] v8, ushort[] v16) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Curve(handle_, v8, v16));
+        return CheckHResult(Svbonycam_put_Curve(handle_, v8, v16));
     }
 
     public bool put_ColorMatrix(double[] v) {
@@ -2915,7 +2848,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_ColorMatrix(handle_, v));
+        return CheckHResult(Svbonycam_put_ColorMatrix(handle_, v));
     }
 
     public bool put_InitWBGain(ushort[] v) {
@@ -2923,7 +2856,7 @@ public class Nncam : IDisposable {
             return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_InitWBGain(handle_, v));
+        return CheckHResult(Svbonycam_put_InitWBGain(handle_, v));
     }
 
     /* get the temperature of the sensor, in 0.1 degrees Celsius (32 means 3.2 degrees Celsius, -35 means -3.5 degree Celsius) */
@@ -2932,7 +2865,7 @@ public class Nncam : IDisposable {
             pTemperature = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_Temperature(handle_, out pTemperature));
+        return CheckHResult(Svbonycam_get_Temperature(handle_, out pTemperature));
     }
 
     /* set the target temperature of the sensor or TEC, in 0.1 degrees Celsius (32 means 3.2 degrees Celsius, -35 means -3.5 degree Celsius)
@@ -2941,61 +2874,58 @@ public class Nncam : IDisposable {
     public bool put_Temperature(short nTemperature) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Temperature(handle_, nTemperature));
+        return CheckHResult(Svbonycam_put_Temperature(handle_, nTemperature));
     }
 
     /* xOffset, yOffset, xWidth, yHeight: must be even numbers */
     public bool put_Roi(uint xOffset, uint yOffset, uint xWidth, uint yHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_Roi(handle_, xOffset, yOffset, xWidth, yHeight));
+        return CheckHResult(Svbonycam_put_Roi(handle_, xOffset, yOffset, xWidth, yHeight));
     }
 
     public bool get_Roi(out uint pxOffset, out uint pyOffset, out uint pxWidth, out uint pyHeight) {
         pxOffset = pyOffset = pxWidth = pyHeight = 0;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_Roi(handle_, out pxOffset, out pyOffset, out pxWidth, out pyHeight));
+        return CheckHResult(Svbonycam_get_Roi(handle_, out pxOffset, out pyOffset, out pxWidth, out pyHeight));
     }
 
     /* multiple Roi */
     public bool put_RoiN(uint[] xOffset, uint[] yOffset, uint[] xWidth, uint[] yHeight) {
-        if (xOffset.Length != yOffset.Length || xOffset.Length != xWidth.Length || xOffset.Length != yHeight.Length)
-            return false;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_RoiN(handle_, xOffset, yOffset, xWidth, yHeight, (uint)(xOffset.Length)));
+        return CheckHResult(Svbonycam_put_RoiN(handle_, xOffset, yOffset, xWidth, yHeight, (uint)(xOffset.Length)));
     }
 
     public bool put_XY(int x, int y) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_XY(handle_, x, y));
+        return CheckHResult(Svbonycam_put_XY(handle_, x, y));
     }
 
     /*
-        get the actual frame rate of the camera at the most recent time (about a few seconds):
-        framerate (fps) = nFrame * 1000.0 / nTime
+        get the frame rate: framerate (fps) = Frame * 1000.0 / nTime
     */
     public bool get_FrameRate(out uint nFrame, out uint nTime, out uint nTotalFrame) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed) {
             nFrame = nTime = nTotalFrame = 0;
             return false;
         }
-        return CheckHResult(Nncam_get_FrameRate(handle_, out nFrame, out nTime, out nTotalFrame));
+        return CheckHResult(Svbonycam_get_FrameRate(handle_, out nFrame, out nTime, out nTotalFrame));
     }
 
     public bool LevelRangeAuto() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_LevelRangeAuto(handle_));
+        return CheckHResult(Svbonycam_LevelRangeAuto(handle_));
     }
 
     /* Auto White Balance "Once", Temp/Tint Mode */
     public bool AwbOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_AwbOnce(handle_, IntPtr.Zero, IntPtr.Zero));
+        return CheckHResult(Svbonycam_AwbOnce(handle_, IntPtr.Zero, IntPtr.Zero));
     }
 
     [Obsolete("Use AwbOnce")]
@@ -3007,13 +2937,13 @@ public class Nncam : IDisposable {
     public bool AwbInit() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_AwbInit(handle_, IntPtr.Zero, IntPtr.Zero));
+        return CheckHResult(Svbonycam_AwbInit(handle_, IntPtr.Zero, IntPtr.Zero));
     }
 
     public bool AbbOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_AbbOnce(handle_, IntPtr.Zero, IntPtr.Zero));
+        return CheckHResult(Svbonycam_AbbOnce(handle_, IntPtr.Zero, IntPtr.Zero));
     }
 
     [Obsolete("Use AbbOnce")]
@@ -3024,7 +2954,7 @@ public class Nncam : IDisposable {
     public bool FfcOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FfcOnce(handle_));
+        return CheckHResult(Svbonycam_FfcOnce(handle_));
     }
 
     [Obsolete("Use FfcOnce")]
@@ -3035,7 +2965,7 @@ public class Nncam : IDisposable {
     public bool DfcOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_DfcOnce(handle_));
+        return CheckHResult(Svbonycam_DfcOnce(handle_));
     }
 
     [Obsolete("Use DfcOnce")]
@@ -3046,57 +2976,57 @@ public class Nncam : IDisposable {
     public bool FpncOnce() {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FpncOnce(handle_));
+        return CheckHResult(Svbonycam_FpncOnce(handle_));
     }
 
     public bool FfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FfcExport(handle_, filePath));
+        return CheckHResult(Svbonycam_FfcExport(handle_, filePath));
     }
 
     public bool FfcImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FfcImport(handle_, filePath));
+        return CheckHResult(Svbonycam_FfcImport(handle_, filePath));
     }
 
     public bool DfcExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_DfcExport(handle_, filePath));
+        return CheckHResult(Svbonycam_DfcExport(handle_, filePath));
     }
 
     public bool DfcImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_DfcImport(handle_, filePath));
+        return CheckHResult(Svbonycam_DfcImport(handle_, filePath));
     }
 
     public bool FpncExport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FpncExport(handle_, filePath));
+        return CheckHResult(Svbonycam_FpncExport(handle_, filePath));
     }
 
     public bool FpncImport(string filePath) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_FpncImport(handle_, filePath));
+        return CheckHResult(Svbonycam_FpncImport(handle_, filePath));
     }
 
-    public bool IoControl(uint ioLine, eIoControType eType, int outVal, out int inVal) {
+    public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal, out int inVal) {
         inVal = 0;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_IoControl(handle_, ioLine, eType, outVal, out inVal));
+        return CheckHResult(Svbonycam_IoControl(handle_, ioLineNumber, eType, outVal, out inVal));
     }
 
-    public bool IoControl(uint ioLine, eIoControType eType, int outVal) {
+    public bool IoControl(uint ioLineNumber, eIoControType eType, int outVal) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         int inVal = 0;
-        return CheckHResult(Nncam_IoControl(handle_, ioLine, eType, outVal, out inVal));
+        return CheckHResult(Svbonycam_IoControl(handle_, ioLineNumber, eType, outVal, out inVal));
     }
 
     public bool AAF(eAAF action, int outVal, out int inVal) {
@@ -3104,14 +3034,14 @@ public class Nncam : IDisposable {
             inVal = 0;
             return false;
         }
-        return CheckHResult(Nncam_AAF(handle_, action, outVal, out inVal));
+        return CheckHResult(Svbonycam_AAF(handle_, action, outVal, out inVal));
     }
 
     public bool AAF(eAAF action, int outVal) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         int inVal = 0;
-        return CheckHResult(Nncam_AAF(handle_, action, outVal, out inVal));
+        return CheckHResult(Svbonycam_AAF(handle_, action, outVal, out inVal));
     }
 
     static private bool Ptr2LensInfo(ref LensInfo pInfo, IntPtr p) {
@@ -3175,7 +3105,7 @@ public class Nncam : IDisposable {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
         IntPtr p = Marshal.AllocHGlobal(128);
-        if (!CheckHResult(Nncam_get_LensInfo(handle_, p))) {
+        if (!CheckHResult(Svbonycam_get_LensInfo(handle_, p))) {
             Marshal.FreeHGlobal(p);
             return false;
         }
@@ -3185,38 +3115,38 @@ public class Nncam : IDisposable {
     public bool get_AFState(ref AFState pState) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_AFState(handle_, ref pState));
+        return CheckHResult(Svbonycam_get_AFState(handle_, ref pState));
     }
 
     public bool put_AFMode(eAFMode mode) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AFMode(handle_, mode));
+        return CheckHResult(Svbonycam_put_AFMode(handle_, mode));
     }
 
     public bool put_AFRoi(uint xOffset, uint yOffset, uint xWidth, uint yHeight) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AFRoi(handle_, xOffset, yOffset, xWidth, yHeight));
+        return CheckHResult(Svbonycam_put_AFRoi(handle_, xOffset, yOffset, xWidth, yHeight));
     }
 
     public bool put_AFAperture(int iAperture) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AFAperture(handle_, iAperture));
+        return CheckHResult(Svbonycam_put_AFAperture(handle_, iAperture));
     }
 
     public bool put_AFFMPos(int iFMPos) {
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_put_AFFMPos(handle_, iFMPos));
+        return CheckHResult(Svbonycam_put_AFFMPos(handle_, iFMPos));
     }
 
     public bool get_FocusMotor(out FocusMotor pFocusMotor) {
         pFocusMotor.idef = pFocusMotor.imax = pFocusMotor.imin = pFocusMotor.imaxabs = pFocusMotor.iminabs = pFocusMotor.zoneh = pFocusMotor.zonev = 0;
         if (handle_ == null || handle_.IsInvalid || handle_.IsClosed)
             return false;
-        return CheckHResult(Nncam_get_FocusMotor(handle_, out pFocusMotor));
+        return CheckHResult(Svbonycam_get_FocusMotor(handle_, out pFocusMotor));
     }
 
     public bool GetHistogram(DelegateHistogramCallback funHistogram) {
@@ -3226,7 +3156,7 @@ public class Nncam : IDisposable {
         pHistogramV1_ = delegate (IntPtr aHistY, IntPtr aHistR, IntPtr aHistG, IntPtr aHistB, IntPtr ctxHistogramV1) {
             Object obj = null;
             if (map_.TryGetValue(ctxHistogramV1.ToInt32(), out obj) && (obj != null)) {
-                Nncam pthis = obj as Nncam;
+                Svbonycam pthis = obj as Svbonycam;
                 if (pthis != null) {
                     if (pthis.funHistogramV1_ != null) {
                         float[] arrHistY = new float[256];
@@ -3245,7 +3175,7 @@ public class Nncam : IDisposable {
                 }
             }
         };
-        return CheckHResult(Nncam_GetHistogram(handle_, pHistogramV1_, id_));
+        return CheckHResult(Svbonycam_GetHistogram(handle_, pHistogramV1_, id_));
     }
 
     public bool GetHistogramV2(DelegateHistogramCallbackV2 funHistogramV2) {
@@ -3255,7 +3185,7 @@ public class Nncam : IDisposable {
         pHistogramV2_ = delegate (IntPtr aHist, uint nFlag, IntPtr ctxHistogramV2) {
             Object obj = null;
             if (map_.TryGetValue(ctxHistogramV2.ToInt32(), out obj) && (obj != null)) {
-                Nncam pthis = obj as Nncam;
+                Svbonycam pthis = obj as Svbonycam;
                 if ((pthis != null) && (pthis.funHistogramV2_ != null)) {
                     int arraySize = 1 << ((int)(nFlag & 0x0f));
                     if ((nFlag & 0x00008000) == 0)
@@ -3266,7 +3196,7 @@ public class Nncam : IDisposable {
                 }
             }
         };
-        return CheckHResult(Nncam_GetHistogramV2(handle_, pHistogramV2_, id_));
+        return CheckHResult(Svbonycam_GetHistogramV2(handle_, pHistogramV2_, id_));
     }
 
     /*
@@ -3278,11 +3208,11 @@ public class Nncam : IDisposable {
         return < 0.0 when error
     */
     public static double calcClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight) {
-        return Nncam_calc_ClarityFactor(pImageData, bits, nImgWidth, nImgHeight);
+        return Svbonycam_calc_ClarityFactor(pImageData, bits, nImgWidth, nImgHeight);
     }
 
     public static double calcClarityFactorV2(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight, uint xOffset, uint yOffset, uint xWidth, uint yHeight) {
-        return Nncam_calc_ClarityFactorV2(pImageData, bits, nImgWidth, nImgHeight, xOffset, yOffset, xWidth, yHeight);
+        return Svbonycam_calc_ClarityFactorV2(pImageData, bits, nImgWidth, nImgHeight, xOffset, yOffset, xWidth, yHeight);
     }
 
     /*
@@ -3296,7 +3226,7 @@ public class Nncam : IDisposable {
                         64 => RGB64
     */
     public static void deBayerV2(uint nBayer, int nW, int nH, IntPtr input, IntPtr output, byte nBitDepth, byte nBitCount) {
-        Nncam_deBayerV2(nBayer, nW, nH, input, output, nBitDepth, nBitCount);
+        Svbonycam_deBayerV2(nBayer, nW, nH, input, output, nBitDepth, nBitCount);
     }
 
     /*
@@ -3307,7 +3237,7 @@ public class Nncam : IDisposable {
         for each device found, it will take about 3 seconds
     */
     public static int Replug(string camId) {
-        return Nncam_Replug(camId);
+        return Svbonycam_Replug(camId);
     }
 
     /* firmware update:
@@ -3328,7 +3258,7 @@ public class Nncam : IDisposable {
         };
         IntPtr id = new IntPtr(Interlocked.Increment(ref sid_));
         map_.Add(id.ToInt32(), funProgress);
-        int ret = Nncam_Update(camId, filePath, pProgress, id);
+        int ret = Svbonycam_Update(camId, filePath, pProgress, id);
         map_.Remove(id.ToInt32());
         return ret;
     }
@@ -3372,7 +3302,7 @@ public class Nncam : IDisposable {
     }
 
     public static ModelV2 getModel(ushort idVendor, ushort idProduct) {
-        return toModelV2(Nncam_get_Model(idVendor, idProduct));
+        return toModelV2(Svbonycam_get_Model(idVendor, idProduct));
     }
 
     public static int Gain2TempTint(int[] gain, out int temp, out int tint) {
@@ -3381,16 +3311,16 @@ public class Nncam : IDisposable {
             tint = TINT_DEF;
             return E_INVALIDARG;
         }
-        return Nncam_Gain2TempTint(gain, out temp, out tint);
+        return Svbonycam_Gain2TempTint(gain, out temp, out tint);
     }
 
     public static void TempTint2Gain(int temp, int tint, int[] gain) {
-        Nncam_TempTint2Gain(temp, tint, gain);
+        Svbonycam_TempTint2Gain(temp, tint, gain);
     }
 
     public static ModelV2[] allModel() {
         List<ModelV2> a = new List<ModelV2>();
-        IntPtr q, p = Nncam_all_Model();
+        IntPtr q, p = Svbonycam_all_Model();
         do {
             q = Marshal.ReadIntPtr(p);
             if (q == IntPtr.Zero)
@@ -3402,7 +3332,7 @@ public class Nncam : IDisposable {
     }
 
     public static string PixelFormatName(ePIXELFORMAT pixelFormat) {
-        IntPtr ptr = Nncam_get_PixelFormatName(pixelFormat);
+        IntPtr ptr = Svbonycam_get_PixelFormatName(pixelFormat);
         if (IntPtr.Zero == ptr)
             return null;
         return Marshal.PtrToStringAnsi(ptr);
@@ -3461,9 +3391,9 @@ public class Nncam : IDisposable {
     private int hResult_;
 
     /*
-        the object of Nncam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Nncam (The constructor is private on purpose)
+        the object of Svbonycam must be obtained by static mothod Open or OpenByIndex, it cannot be obtained by obj = new Svbonycam (The constructor is private on purpose)
     */
-    private Nncam(SafeCamHandle h) {
+    private Svbonycam(SafeCamHandle h) {
         handle_ = h;
         id_ = new IntPtr(Interlocked.Increment(ref sid_));
         map_.Add(id_.ToInt32(), this);
@@ -3474,7 +3404,7 @@ public class Nncam : IDisposable {
         return (hResult_ >= 0);
     }
 
-    ~Nncam() {
+    ~Svbonycam() {
         Dispose(false);
     }
 
@@ -3535,7 +3465,7 @@ public class Nncam : IDisposable {
     private static void EventCallback(eEVENT nEvent, IntPtr ctxEvent) {
         Object obj = null;
         if (map_.TryGetValue(ctxEvent.ToInt32(), out obj) && (obj != null)) {
-            Nncam pthis = obj as Nncam;
+            Svbonycam pthis = obj as Svbonycam;
             if ((pthis != null) && (pthis.funEvent_ != null))
                 pthis.funEvent_(nEvent);
         }
@@ -3552,7 +3482,7 @@ public class Nncam : IDisposable {
 #if !(WINDOWS_UWP)
     public class SafeCamHandle : SafeHandleZeroOrMinusOneIsInvalid {
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-        private static extern void Nncam_Close(IntPtr h);
+        private static extern void Svbonycam_Close(IntPtr h);
 
         public SafeCamHandle()
             : base(true) {
@@ -3561,7 +3491,7 @@ public class Nncam : IDisposable {
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle() {
             // Here, we must obey all rules for constrained execution regions.
-            Nncam_Close(handle);
+            Svbonycam_Close(handle);
             return true;
         }
     };
@@ -3569,7 +3499,7 @@ public class Nncam : IDisposable {
     public class SafeCamHandle : SafeHandle
     {
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-        private static extern void Nncam_Close(IntPtr h);
+        private static extern void Svbonycam_Close(IntPtr h);
         
         public SafeCamHandle()
             : base(IntPtr.Zero, true)
@@ -3578,7 +3508,7 @@ public class Nncam : IDisposable {
         
         override protected bool ReleaseHandle()
         {
-            Nncam_Close(handle);
+            Svbonycam_Close(handle);
             return true;
         }
         
@@ -3590,7 +3520,7 @@ public class Nncam : IDisposable {
 #endif
 
 #if LINUX
-    private const string dll = "libnncam.so";
+    private const string dll = "libsvbonycam.so";
     private const UnmanagedType ut = UnmanagedType.LPStr;
 #else
     private const UnmanagedType ut = UnmanagedType.LPWStr;
@@ -3624,173 +3554,172 @@ public class Nncam : IDisposable {
     private struct RECT {
         public int left, top, right, bottom;
     };
-
     /* FUTURE REF: Original sdk shipped code changed due to app crash */
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern IntPtr Nncam_Version();
+    private static extern IntPtr Svbonycam_Version();
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern uint Nncam_Enum(IntPtr ptr);
+    private static extern uint Svbonycam_Enum(IntPtr ptr);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_EnumV2(IntPtr ptr);
+    private static extern uint Svbonycam_EnumV2(IntPtr ptr);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_EnumWithName(IntPtr ptr);
+    private static extern uint Svbonycam_EnumWithName(IntPtr ptr);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern SafeCamHandle Nncam_Open([MarshalAs(ut)] string camId);
+    private static extern SafeCamHandle Svbonycam_Open([MarshalAs(ut)] string camId);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern SafeCamHandle Nncam_OpenByIndex(uint index);
+    private static extern SafeCamHandle Svbonycam_OpenByIndex(uint index);
 #if !(WINDOWS_UWP)
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_StartPullModeWithWndMsg(SafeCamHandle h, IntPtr hWnd, uint nMsg);
+    private static extern int Svbonycam_StartPullModeWithWndMsg(SafeCamHandle h, IntPtr hWnd, uint nMsg);
 #endif
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_StartPullModeWithCallback(SafeCamHandle h, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
+    private static extern int Svbonycam_StartPullModeWithCallback(SafeCamHandle h, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_PullImageV4(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_PullImageV4(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_PullImageV4(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_PullImageV4(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_PullImageV4(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_PullImageV4(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_WaitImageV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_WaitImageV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_WaitImageV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_WaitImageV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_WaitImageV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_WaitImageV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_PullImageV3(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_PullImageV3(SafeCamHandle h, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageV3(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_PullImageV3(SafeCamHandle h, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageV3(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_PullImageV3(SafeCamHandle h, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_WaitImageV3(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_WaitImageV3(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_WaitImageV3(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_WaitImageV3(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_WaitImageV3(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_WaitImageV3(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bStill, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImage(SafeCamHandle h, byte[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImage(SafeCamHandle h, ushort[] pImageData, int bits, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImageWithRowPitch(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
+    private static extern int Svbonycam_PullStillImageWithRowPitch(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageV2(SafeCamHandle h, byte[] pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageV2(SafeCamHandle h, ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageWithRowPitchV2(SafeCamHandle h, byte[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_PullStillImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
+    private static extern int Svbonycam_PullStillImageWithRowPitchV2(SafeCamHandle h, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_StartPushModeV4(SafeCamHandle h, DATA_CALLBACK_V4 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
+    private static extern int Svbonycam_StartPushModeV4(SafeCamHandle h, DATA_CALLBACK_V4 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_StartPushModeV3(SafeCamHandle h, DATA_CALLBACK_V3 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
+    private static extern int Svbonycam_StartPushModeV3(SafeCamHandle h, DATA_CALLBACK_V3 funData, IntPtr ctxData, EVENT_CALLBACK funEvent, IntPtr ctxEvent);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Stop(SafeCamHandle h);
+    private static extern int Svbonycam_Stop(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Pause(SafeCamHandle h, int bPause);
+    private static extern int Svbonycam_Pause(SafeCamHandle h, int bPause);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Snap(SafeCamHandle h, uint nResolutionIndex);
+    private static extern int Svbonycam_Snap(SafeCamHandle h, uint nResolutionIndex);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_SnapN(SafeCamHandle h, uint nResolutionIndex, uint nNumber);
+    private static extern int Svbonycam_SnapN(SafeCamHandle h, uint nResolutionIndex, uint nNumber);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_SnapR(SafeCamHandle h, uint nResolutionIndex, uint nNumber);
+    private static extern int Svbonycam_SnapR(SafeCamHandle h, uint nResolutionIndex, uint nNumber);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Trigger(SafeCamHandle h, ushort nNumber);
+    private static extern int Svbonycam_Trigger(SafeCamHandle h, ushort nNumber);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
+    private static extern int Svbonycam_TriggerSyncV4(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV4 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_TriggerSync(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_TriggerSync(SafeCamHandle h, uint nWaitMS, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_TriggerSync(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_TriggerSync(SafeCamHandle h, uint nWaitMS, byte[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi), Obsolete]
-    private static extern int Nncam_TriggerSync(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
+    private static extern int Svbonycam_TriggerSync(SafeCamHandle h, uint nWaitMS, ushort[] pImageData, int bits, int rowPitch, out FrameInfoV3 pInfo);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Size(SafeCamHandle h, int nWidth, int nHeight);
+    private static extern int Svbonycam_put_Size(SafeCamHandle h, int nWidth, int nHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Size(SafeCamHandle h, out int nWidth, out int nHeight);
+    private static extern int Svbonycam_get_Size(SafeCamHandle h, out int nWidth, out int nHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_eSize(SafeCamHandle h, uint nResolutionIndex);
+    private static extern int Svbonycam_put_eSize(SafeCamHandle h, uint nResolutionIndex);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_eSize(SafeCamHandle h, out uint nResolutionIndex);
+    private static extern int Svbonycam_get_eSize(SafeCamHandle h, out uint nResolutionIndex);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_FinalSize(SafeCamHandle h, out int nWidth, out int nHeight);
+    private static extern int Svbonycam_get_FinalSize(SafeCamHandle h, out int nWidth, out int nHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_ResolutionNumber(SafeCamHandle h);
+    private static extern uint Svbonycam_get_ResolutionNumber(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Resolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
+    private static extern int Svbonycam_get_Resolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ResolutionRatio(SafeCamHandle h, uint nResolutionIndex, out int pNumerator, out int pDenominator);
+    private static extern int Svbonycam_get_ResolutionRatio(SafeCamHandle h, uint nResolutionIndex, out int pNumerator, out int pDenominator);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_Field(SafeCamHandle h);
+    private static extern uint Svbonycam_get_Field(SafeCamHandle h);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_RawFormat(SafeCamHandle h, out uint nFourCC, out uint bitdepth);
+    private static extern int Svbonycam_get_RawFormat(SafeCamHandle h, out uint nFourCC, out uint bitdepth);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_RealTime(SafeCamHandle h, int val);
+    private static extern int Svbonycam_put_RealTime(SafeCamHandle h, int val);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_RealTime(SafeCamHandle h, out int val);
+    private static extern int Svbonycam_get_RealTime(SafeCamHandle h, out int val);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Flush(SafeCamHandle h);
+    private static extern int Svbonycam_Flush(SafeCamHandle h);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Temperature(SafeCamHandle h, out short pTemperature);
+    private static extern int Svbonycam_get_Temperature(SafeCamHandle h, out short pTemperature);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Temperature(SafeCamHandle h, short nTemperature);
+    private static extern int Svbonycam_put_Temperature(SafeCamHandle h, short nTemperature);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Roi(SafeCamHandle h, out uint pxOffset, out uint pyOffset, out uint pxWidth, out uint pyHeight);
+    private static extern int Svbonycam_get_Roi(SafeCamHandle h, out uint pxOffset, out uint pyOffset, out uint pxWidth, out uint pyHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Roi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
+    private static extern int Svbonycam_put_Roi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_RoiN(SafeCamHandle h, uint[] xoffset, uint[] yoffset, uint[] xWidth, uint[] yHeight, uint Num);
+    private static extern int Svbonycam_put_RoiN(SafeCamHandle h, uint[] xoffset, uint[] yoffset, uint[] xWidth, uint[] yHeight, uint Num);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_XY(SafeCamHandle h, int x, int y);
+    private static extern int Svbonycam_put_XY(SafeCamHandle h, int x, int y);
 
     /*
         ------------------------------------------------------------------|
@@ -3810,166 +3739,166 @@ public class Nncam : IDisposable {
         ------------------------------------------------------------------|
     */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AutoExpoEnable(SafeCamHandle h, out int bAutoExposure);
+    private static extern int Svbonycam_get_AutoExpoEnable(SafeCamHandle h, out int bAutoExposure);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AutoExpoEnable(SafeCamHandle h, int bAutoExposure);
+    private static extern int Svbonycam_put_AutoExpoEnable(SafeCamHandle h, int bAutoExposure);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AutoExpoTarget(SafeCamHandle h, out ushort Target);
+    private static extern int Svbonycam_get_AutoExpoTarget(SafeCamHandle h, out ushort Target);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AutoExpoTarget(SafeCamHandle h, ushort Target);
+    private static extern int Svbonycam_put_AutoExpoTarget(SafeCamHandle h, ushort Target);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AutoExpoRange(SafeCamHandle h, uint maxTime, uint minTime, ushort maxGain, ushort minGain);
+    private static extern int Svbonycam_put_AutoExpoRange(SafeCamHandle h, uint maxTime, uint minTime, ushort maxGain, ushort minGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AutoExpoRange(SafeCamHandle h, out uint maxTime, out uint minTime, out ushort maxGain, out ushort minGain);
+    private static extern int Svbonycam_get_AutoExpoRange(SafeCamHandle h, out uint maxTime, out uint minTime, out ushort maxGain, out ushort minGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_MaxAutoExpoTimeAGain(SafeCamHandle h, uint maxTime, ushort maxGain);
+    private static extern int Svbonycam_put_MaxAutoExpoTimeAGain(SafeCamHandle h, uint maxTime, ushort maxGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_MaxAutoExpoTimeAGain(SafeCamHandle h, out uint maxTime, out ushort maxGain);
+    private static extern int Svbonycam_get_MaxAutoExpoTimeAGain(SafeCamHandle h, out uint maxTime, out ushort maxGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_MinAutoExpoTimeAGain(SafeCamHandle h, uint minTime, ushort minGain);
+    private static extern int Svbonycam_put_MinAutoExpoTimeAGain(SafeCamHandle h, uint minTime, ushort minGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_MinAutoExpoTimeAGain(SafeCamHandle h, out uint minTime, out ushort minGain);
+    private static extern int Svbonycam_get_MinAutoExpoTimeAGain(SafeCamHandle h, out uint minTime, out ushort minGain);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ExpoTime(SafeCamHandle h, out uint Time)/* in microseconds */;
+    private static extern int Svbonycam_get_ExpoTime(SafeCamHandle h, out uint Time)/* in microseconds */;
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_ExpoTime(SafeCamHandle h, uint Time)/* inmicroseconds */;
+    private static extern int Svbonycam_put_ExpoTime(SafeCamHandle h, uint Time)/* inmicroseconds */;
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_RealExpoTime(SafeCamHandle h, out uint Time)/* actual exposure time */;
+    private static extern int Svbonycam_get_RealExpoTime(SafeCamHandle h, out uint Time)/* in microseconds */;
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ExpTimeRange(SafeCamHandle h, out uint nMin, out uint nMax, out uint nDef);
+    private static extern int Svbonycam_get_ExpTimeRange(SafeCamHandle h, out uint nMin, out uint nMax, out uint nDef);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ExpoAGain(SafeCamHandle h, out ushort Gain);/* percent, such as 300 */
+    private static extern int Svbonycam_get_ExpoAGain(SafeCamHandle h, out ushort Gain);/* percent, such as 300 */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_ExpoAGain(SafeCamHandle h, ushort Gain);/* percent */
+    private static extern int Svbonycam_put_ExpoAGain(SafeCamHandle h, ushort Gain);/* percent */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ExpoAGainRange(SafeCamHandle h, out ushort nMin, out ushort nMax, out ushort nDef);
+    private static extern int Svbonycam_get_ExpoAGainRange(SafeCamHandle h, out ushort nMin, out ushort nMax, out ushort nDef);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_LevelRange(SafeCamHandle h, [In] ushort[] aLow, [In] ushort[] aHigh);
+    private static extern int Svbonycam_put_LevelRange(SafeCamHandle h, [In] ushort[] aLow, [In] ushort[] aHigh);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_LevelRange(SafeCamHandle h, [Out] ushort[] aLow, [Out] ushort[] aHigh);
+    private static extern int Svbonycam_get_LevelRange(SafeCamHandle h, [Out] ushort[] aLow, [Out] ushort[] aHigh);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_LevelRangeV2(SafeCamHandle h, ushort mode, ref RECT roiRect, [In] ushort[] aLow, [In] ushort[] aHigh);
+    private static extern int Svbonycam_put_LevelRangeV2(SafeCamHandle h, ushort mode, ref RECT roiRect, [In] ushort[] aLow, [In] ushort[] aHigh);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_LevelRangeV2(SafeCamHandle h, out ushort mode, out RECT pRoiRect, [Out] ushort[] aLow, [Out] ushort[] aHigh);
+    private static extern int Svbonycam_get_LevelRangeV2(SafeCamHandle h, out ushort mode, out RECT pRoiRect, [Out] ushort[] aLow, [Out] ushort[] aHigh);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Hue(SafeCamHandle h, int Hue);
+    private static extern int Svbonycam_put_Hue(SafeCamHandle h, int Hue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Hue(SafeCamHandle h, out int Hue);
+    private static extern int Svbonycam_get_Hue(SafeCamHandle h, out int Hue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Saturation(SafeCamHandle h, int Saturation);
+    private static extern int Svbonycam_put_Saturation(SafeCamHandle h, int Saturation);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Saturation(SafeCamHandle h, out int Saturation);
+    private static extern int Svbonycam_get_Saturation(SafeCamHandle h, out int Saturation);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Brightness(SafeCamHandle h, int Brightness);
+    private static extern int Svbonycam_put_Brightness(SafeCamHandle h, int Brightness);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Brightness(SafeCamHandle h, out int Brightness);
+    private static extern int Svbonycam_get_Brightness(SafeCamHandle h, out int Brightness);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Contrast(SafeCamHandle h, out int Contrast);
+    private static extern int Svbonycam_get_Contrast(SafeCamHandle h, out int Contrast);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Contrast(SafeCamHandle h, int Contrast);
+    private static extern int Svbonycam_put_Contrast(SafeCamHandle h, int Contrast);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Gamma(SafeCamHandle h, out int Gamma);
+    private static extern int Svbonycam_get_Gamma(SafeCamHandle h, out int Gamma);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Gamma(SafeCamHandle h, int Gamma);
+    private static extern int Svbonycam_put_Gamma(SafeCamHandle h, int Gamma);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Chrome(SafeCamHandle h, out int bChrome);    /* monochromatic mode */
+    private static extern int Svbonycam_get_Chrome(SafeCamHandle h, out int bChrome);    /* monochromatic mode */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Chrome(SafeCamHandle h, int bChrome);
+    private static extern int Svbonycam_put_Chrome(SafeCamHandle h, int bChrome);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_VFlip(SafeCamHandle h, out int bVFlip);  /* vertical flip */
+    private static extern int Svbonycam_get_VFlip(SafeCamHandle h, out int bVFlip);  /* vertical flip */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_VFlip(SafeCamHandle h, int bVFlip);
+    private static extern int Svbonycam_put_VFlip(SafeCamHandle h, int bVFlip);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_HFlip(SafeCamHandle h, out int bHFlip);
+    private static extern int Svbonycam_get_HFlip(SafeCamHandle h, out int bHFlip);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_HFlip(SafeCamHandle h, int bHFlip);  /* horizontal flip */
+    private static extern int Svbonycam_put_HFlip(SafeCamHandle h, int bHFlip);  /* horizontal flip */
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Negative(SafeCamHandle h, out int bNegative);
+    private static extern int Svbonycam_get_Negative(SafeCamHandle h, out int bNegative);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Negative(SafeCamHandle h, int bNegative);
+    private static extern int Svbonycam_put_Negative(SafeCamHandle h, int bNegative);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Speed(SafeCamHandle h, ushort nSpeed);
+    private static extern int Svbonycam_put_Speed(SafeCamHandle h, ushort nSpeed);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Speed(SafeCamHandle h, out ushort pSpeed);
+    private static extern int Svbonycam_get_Speed(SafeCamHandle h, out ushort pSpeed);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_MaxSpeed(SafeCamHandle h);/* get the maximum speed, "Frame Speed Level", speed range = [0, max] */
+    private static extern uint Svbonycam_get_MaxSpeed(SafeCamHandle h);/* get the maximum speed, "Frame Speed Level", speed range = [0, max] */
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_MaxBitDepth(SafeCamHandle h);/* get the max bitdepth of this camera, such as 8, 10, 12, 14, 16 */
+    private static extern uint Svbonycam_get_MaxBitDepth(SafeCamHandle h);/* get the max bitdepth of this camera, such as 8, 10, 12, 14, 16 */
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_FanMaxSpeed(SafeCamHandle h);/* get the maximum fan speed, the fan speed range = [0, max], closed interval */
+    private static extern uint Svbonycam_get_FanMaxSpeed(SafeCamHandle h);/* get the maximum fan speed, the fan speed range = [0, max], closed interval */
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_HZ(SafeCamHandle h, int nHZ);
+    private static extern int Svbonycam_put_HZ(SafeCamHandle h, int nHZ);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_HZ(SafeCamHandle h, out int nHZ);
+    private static extern int Svbonycam_get_HZ(SafeCamHandle h, out int nHZ);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Mode(SafeCamHandle h, int bSkip); /* skip or bin */
+    private static extern int Svbonycam_put_Mode(SafeCamHandle h, int bSkip); /* skip or bin */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Mode(SafeCamHandle h, out int bSkip);
+    private static extern int Svbonycam_get_Mode(SafeCamHandle h, out int bSkip);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_TempTint(SafeCamHandle h, int nTemp, int nTint);
+    private static extern int Svbonycam_put_TempTint(SafeCamHandle h, int nTemp, int nTint);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_TempTint(SafeCamHandle h, out int nTemp, out int nTint);
+    private static extern int Svbonycam_get_TempTint(SafeCamHandle h, out int nTemp, out int nTint);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_WhiteBalanceGain(SafeCamHandle h, [In] int[] aGain);
+    private static extern int Svbonycam_put_WhiteBalanceGain(SafeCamHandle h, [In] int[] aGain);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_WhiteBalanceGain(SafeCamHandle h, [Out] int[] aGain);
+    private static extern int Svbonycam_get_WhiteBalanceGain(SafeCamHandle h, [Out] int[] aGain);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_BlackBalance(SafeCamHandle h, [In] ushort[] aSub);
+    private static extern int Svbonycam_put_BlackBalance(SafeCamHandle h, [In] ushort[] aSub);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_BlackBalance(SafeCamHandle h, [Out] ushort[] aSub);
+    private static extern int Svbonycam_get_BlackBalance(SafeCamHandle h, [Out] ushort[] aSub);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AWBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
+    private static extern int Svbonycam_put_AWBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AWBAuxRect(SafeCamHandle h, out RECT pAuxRect);
+    private static extern int Svbonycam_get_AWBAuxRect(SafeCamHandle h, out RECT pAuxRect);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AEAuxRect(SafeCamHandle h, ref RECT pAuxRect);
+    private static extern int Svbonycam_put_AEAuxRect(SafeCamHandle h, ref RECT pAuxRect);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AEAuxRect(SafeCamHandle h, out RECT pAuxRect);
+    private static extern int Svbonycam_get_AEAuxRect(SafeCamHandle h, out RECT pAuxRect);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_ABBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
+    private static extern int Svbonycam_put_ABBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ABBAuxRect(SafeCamHandle h, out RECT pAuxRect);
+    private static extern int Svbonycam_get_ABBAuxRect(SafeCamHandle h, out RECT pAuxRect);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_MonoMode(SafeCamHandle h);
+    private static extern int Svbonycam_get_MonoMode(SafeCamHandle h);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern uint Nncam_get_StillResolutionNumber(SafeCamHandle h);
+    private static extern uint Svbonycam_get_StillResolutionNumber(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_StillResolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
+    private static extern int Svbonycam_get_StillResolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Revision(SafeCamHandle h, out ushort pRevision);
+    private static extern int Svbonycam_get_Revision(SafeCamHandle h, out ushort pRevision);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_SerialNumber(SafeCamHandle h, IntPtr sn);
+    private static extern int Svbonycam_get_SerialNumber(SafeCamHandle h, IntPtr sn);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_FwVersion(SafeCamHandle h, IntPtr fwver);
+    private static extern int Svbonycam_get_FwVersion(SafeCamHandle h, IntPtr fwver);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_HwVersion(SafeCamHandle h, IntPtr hwver);
+    private static extern int Svbonycam_get_HwVersion(SafeCamHandle h, IntPtr hwver);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_FpgaVersion(SafeCamHandle h, IntPtr fpgaver);
+    private static extern int Svbonycam_get_FpgaVersion(SafeCamHandle h, IntPtr fpgaver);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_ProductionDate(SafeCamHandle h, IntPtr pdate);
+    private static extern int Svbonycam_get_ProductionDate(SafeCamHandle h, IntPtr pdate);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_PixelSize(SafeCamHandle h, uint nResolutionIndex, out float x, out float y);
+    private static extern int Svbonycam_get_PixelSize(SafeCamHandle h, uint nResolutionIndex, out float x, out float y);
 
     /*
                 ------------------------------------------------------------|
@@ -3980,165 +3909,150 @@ public class Nncam : IDisposable {
                 -------------------------------------------------------------
     */
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_VignetEnable(SafeCamHandle h, int bEnable);
+    private static extern int Svbonycam_put_VignetEnable(SafeCamHandle h, int bEnable);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_VignetEnable(SafeCamHandle h, out int bEnable);
+    private static extern int Svbonycam_get_VignetEnable(SafeCamHandle h, out int bEnable);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_VignetAmountInt(SafeCamHandle h, int nAmount);
+    private static extern int Svbonycam_put_VignetAmountInt(SafeCamHandle h, int nAmount);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_VignetAmountInt(SafeCamHandle h, out int nAmount);
+    private static extern int Svbonycam_get_VignetAmountInt(SafeCamHandle h, out int nAmount);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_VignetMidPointInt(SafeCamHandle h, int nMidPoint);
+    private static extern int Svbonycam_put_VignetMidPointInt(SafeCamHandle h, int nMidPoint);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_VignetMidPointInt(SafeCamHandle h, out int nMidPoint);
+    private static extern int Svbonycam_get_VignetMidPointInt(SafeCamHandle h, out int nMidPoint);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_AwbOnce(SafeCamHandle h, IntPtr funTT, IntPtr ctxTT);
+    private static extern int Svbonycam_AwbOnce(SafeCamHandle h, IntPtr funTT, IntPtr ctxTT);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_AwbInit(SafeCamHandle h, IntPtr funWB, IntPtr ctxWB);
+    private static extern int Svbonycam_AwbInit(SafeCamHandle h, IntPtr funWB, IntPtr ctxWB);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_LevelRangeAuto(SafeCamHandle h);
+    private static extern int Svbonycam_LevelRangeAuto(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_GetHistogram(SafeCamHandle h, HISTOGRAM_CALLBACKV1 funHistogramV1, IntPtr ctxHistogramV1);
+    private static extern int Svbonycam_GetHistogram(SafeCamHandle h, HISTOGRAM_CALLBACKV1 funHistogramV1, IntPtr ctxHistogramV1);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_GetHistogramV2(SafeCamHandle h, HISTOGRAM_CALLBACKV2 funHistogramV2, IntPtr ctxHistogramV2);
+    private static extern int Svbonycam_GetHistogramV2(SafeCamHandle h, HISTOGRAM_CALLBACKV2 funHistogramV2, IntPtr ctxHistogramV2);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_AbbOnce(SafeCamHandle h, IntPtr funBB, IntPtr ctxBB);
+    private static extern int Svbonycam_AbbOnce(SafeCamHandle h, IntPtr funBB, IntPtr ctxBB);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_LEDState(SafeCamHandle h, ushort iLed, ushort iState, ushort iPeriod);
+    private static extern int Svbonycam_put_LEDState(SafeCamHandle h, ushort iLed, ushort iState, ushort iPeriod);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_write_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_write_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_write_EEPROM(SafeCamHandle h, uint addr, byte[] pBuffer, int nBufferLen);
+    private static extern int Svbonycam_write_EEPROM(SafeCamHandle h, uint addr, byte[] pBuffer, int nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_read_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_read_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_read_EEPROM(SafeCamHandle h, uint addr, byte[] pBuffer, int nBufferLen);
+    private static extern int Svbonycam_read_EEPROM(SafeCamHandle h, uint addr, byte[] pBuffer, int nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_rwc_Flash(SafeCamHandle h, uint action, uint addr, uint len, IntPtr pData);
+    private static extern int Svbonycam_rwc_Flash(SafeCamHandle h, uint action, uint addr, uint len, IntPtr pData);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_rwc_Flash(SafeCamHandle h, uint action, uint addr, uint len, byte[] pData);
+    private static extern int Svbonycam_rwc_Flash(SafeCamHandle h, uint action, uint addr, uint len, byte[] pData);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_write_Pipe(SafeCamHandle h, uint pipeId, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_write_Pipe(SafeCamHandle h, uint pipeId, IntPtr pBuffer, uint nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_read_Pipe(SafeCamHandle h, uint pipeId, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_read_Pipe(SafeCamHandle h, uint pipeId, IntPtr pBuffer, uint nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_feed_Pipe(SafeCamHandle h, uint pipeId);
+    private static extern int Svbonycam_feed_Pipe(SafeCamHandle h, uint pipeId);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_write_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_write_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_read_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
+    private static extern int Svbonycam_read_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Option(SafeCamHandle h, eOPTION iOption, int iValue);
+    private static extern int Svbonycam_put_Option(SafeCamHandle h, eOPTION iOption, int iValue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Option(SafeCamHandle h, eOPTION iOption, out int iValue);
+    private static extern int Svbonycam_get_Option(SafeCamHandle h, eOPTION iOption, out int iValue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_PixelFormatSupport(SafeCamHandle h, sbyte cmd, out int iValue);
+    private static extern int Svbonycam_get_PixelFormatSupport(SafeCamHandle h, sbyte cmd, out int iValue);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern IntPtr Nncam_get_PixelFormatName(ePIXELFORMAT val);
-
-    /* Hardware Binning
-    * Value: 1x1, 2x2, etc
-    * Method: Average, Add
-    */
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Binning(SafeCamHandle h, [MarshalAs(UnmanagedType.LPStr)] string Value, [MarshalAs(UnmanagedType.LPStr)] string Method);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_Binning(SafeCamHandle h, out IntPtr Value, out IntPtr Method);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_BinningNumber(SafeCamHandle h);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_BinningValue(SafeCamHandle h, uint index, out IntPtr Value);
-    [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_BinningMethod(SafeCamHandle h, uint index, out IntPtr Value);
+    private static extern IntPtr Svbonycam_get_PixelFormatName(ePIXELFORMAT val);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
+    private static extern int Svbonycam_put_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
+    private static extern int Svbonycam_get_SelfTrigger(SafeCamHandle h, ref SelfTrigger pSt);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Linear(SafeCamHandle h, byte[] v8, ushort[] v16);
+    private static extern int Svbonycam_put_Linear(SafeCamHandle h, byte[] v8, ushort[] v16);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_Curve(SafeCamHandle h, byte[] v8, ushort[] v16);
+    private static extern int Svbonycam_put_Curve(SafeCamHandle h, byte[] v8, ushort[] v16);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_ColorMatrix(SafeCamHandle h, double[] v);
+    private static extern int Svbonycam_put_ColorMatrix(SafeCamHandle h, double[] v);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_InitWBGain(SafeCamHandle h, ushort[] v);
+    private static extern int Svbonycam_put_InitWBGain(SafeCamHandle h, ushort[] v);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_FrameRate(SafeCamHandle h, out uint nFrame, out uint nTime, out uint nTotalFrame);
+    private static extern int Svbonycam_get_FrameRate(SafeCamHandle h, out uint nFrame, out uint nTime, out uint nTotalFrame);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FfcOnce(SafeCamHandle h);
+    private static extern int Svbonycam_FfcOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_DfcOnce(SafeCamHandle h);
+    private static extern int Svbonycam_DfcOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FpncOnce(SafeCamHandle h);
+    private static extern int Svbonycam_FpncOnce(SafeCamHandle h);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_FfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_FfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_DfcExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_DfcImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FpncExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_FpncExport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
+    private static extern int Svbonycam_FpncImport(SafeCamHandle h, [MarshalAs(ut)] string filePath);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_IoControl(SafeCamHandle h, uint ioLine, eIoControType eType, int outVal, out int inVal);
+    private static extern int Svbonycam_IoControl(SafeCamHandle h, uint ioLineNumber, eIoControType eType, int outVal, out int inVal);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_AAF(SafeCamHandle h, eAAF action, int outVal, out int inVal);
+    private static extern int Svbonycam_AAF(SafeCamHandle h, eAAF action, int outVal, out int inVal);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_LensInfo(SafeCamHandle h, IntPtr pInfo);
+    private static extern int Svbonycam_get_LensInfo(SafeCamHandle h, IntPtr pInfo);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_AFState(SafeCamHandle h, ref AFState pState);
+    private static extern int Svbonycam_get_AFState(SafeCamHandle h, ref AFState pState);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AFMode(SafeCamHandle h, eAFMode mode);
+    private static extern int Svbonycam_put_AFMode(SafeCamHandle h, eAFMode mode);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AFRoi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
+    private static extern int Svbonycam_put_AFRoi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AFAperture(SafeCamHandle h, int iAperture);
+    private static extern int Svbonycam_put_AFAperture(SafeCamHandle h, int iAperture);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_put_AFFMPos(SafeCamHandle h, int iFMPos);
+    private static extern int Svbonycam_put_AFFMPos(SafeCamHandle h, int iFMPos);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_get_FocusMotor(SafeCamHandle h, out FocusMotor pFocusMotor);
+    private static extern int Svbonycam_get_FocusMotor(SafeCamHandle h, out FocusMotor pFocusMotor);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern double Nncam_calc_ClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight);
+    private static extern double Svbonycam_calc_ClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern double Nncam_calc_ClarityFactorV2(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
+    private static extern double Svbonycam_calc_ClarityFactorV2(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern void Nncam_deBayerV2(uint nBayer, int nW, int nH, IntPtr input, IntPtr output, byte nBitDepth, byte nBitCount);
+    private static extern void Svbonycam_deBayerV2(uint nBayer, int nW, int nH, IntPtr input, IntPtr output, byte nBitDepth, byte nBitCount);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Replug([MarshalAs(ut)] string camId);
+    private static extern int Svbonycam_Replug([MarshalAs(ut)] string camId);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Update([MarshalAs(ut)] string camId, [MarshalAs(ut)] string filePath, PROGRESS_CALLBACK funProgress, IntPtr ctxProgress);
+    private static extern int Svbonycam_Update([MarshalAs(ut)] string camId, [MarshalAs(ut)] string filePath, PROGRESS_CALLBACK funProgress, IntPtr ctxProgress);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_GigeEnable(HOTPLUG_CALLBACK funHotplug, IntPtr ctxHotplug);
+    private static extern int Svbonycam_GigeEnable(HOTPLUG_CALLBACK funHotplug, IntPtr ctxHotplug);
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern IntPtr Nncam_get_Model(ushort idVendor, ushort idProduct);
+    private static extern IntPtr Svbonycam_get_Model(ushort idVendor, ushort idProduct);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern IntPtr Nncam_all_Model();
+    private static extern IntPtr Svbonycam_all_Model();
 
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int Nncam_Gain2TempTint(int[] gain, out int temp, out int tint);
+    private static extern int Svbonycam_Gain2TempTint(int[] gain, out int temp, out int tint);
     [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern void Nncam_TempTint2Gain(int temp, int tint, [Out] int[] gain);
+    private static extern void Svbonycam_TempTint2Gain(int temp, int tint, [Out] int[] gain);
 }

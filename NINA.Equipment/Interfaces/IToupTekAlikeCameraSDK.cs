@@ -52,7 +52,7 @@ namespace NINA.Equipment.Interfaces {
 
         bool get_RawFormat(out uint fourCC, out uint bitDepth);
 
-        bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info);
+        bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info);
 
         void Close();
 
@@ -72,6 +72,20 @@ namespace NINA.Equipment.Interfaces {
         public uint flag;         /* FRAMEINFO_FLAG_xxxx */
         public uint seq;          /* sequence number */
         public ulong timestamp;    /* microsecond */
+        public uint expotime;
+        public bool hasgps;
+        public bool hasexpotime;
+        public Gps gps;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Gps {
+        public ulong utcstart;    /* exposure start time: nanosecond since epoch (00:00:00 UTC on Thursday, 1 January 1970, see https://en.wikipedia.org/wiki/Unix_time) */
+        public ulong utcend;      /* exposure end time */
+        public int longitude;     /* millionth of a degree, 0.000001 degree */
+        public int latitude;
+        public int altitude;      /* millimeter */
+        public ushort satellite;  /* number of satellite */
     };
 
     public struct ToupTekAlikeResolution {
@@ -193,227 +207,325 @@ namespace NINA.Equipment.Interfaces {
     };
 
     public enum ToupTekAlikeOption : uint {
-        OPTION_NOFRAME_TIMEOUT = 0x01,       /* no frame timeout: 0 => disable, positive value (>= NOFRAME_TIMEOUT_MIN) => timeout milliseconds. default: disable */
-        OPTION_THREAD_PRIORITY = 0x02,       /* set the priority of the internal thread which grab data from the usb device.
-                                                         Win: iValue: 0 => THREAD_PRIORITY_NORMAL; 1 => THREAD_PRIORITY_ABOVE_NORMAL; 2 => THREAD_PRIORITY_HIGHEST; 3 => THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
-                                                         Linux & macOS: The high 16 bits for the scheduling policy, and the low 16 bits for the priority; see: https://linux.die.net/man/3/pthread_setschedparam
-                                                    */
-        OPTION_RAW = 0x04,       /* raw data mode, read the sensor "raw" data. This can be set only while camea is NOT running. 0 = rgb, 1 = raw, default value: 0 */
-        OPTION_HISTOGRAM = 0x05,       /* 0 = only one, 1 = continue mode */
-        OPTION_BITDEPTH = 0x06,       /* 0 = 8 bits mode, 1 = 16 bits mode */
-        OPTION_FAN = 0x07,       /* 0 = turn off the cooling fan, [1, max] = fan speed */
-        OPTION_TEC = 0x08,       /* 0 = turn off the thermoelectric cooler, 1 = turn on the thermoelectric cooler */
-        OPTION_LINEAR = 0x09,       /* 0 = turn off the builtin linear tone mapping, 1 = turn on the builtin linear tone mapping, default value: 1 */
-        OPTION_CURVE = 0x0a,       /* 0 = turn off the builtin curve tone mapping, 1 = turn on the builtin polynomial curve tone mapping, 2 = logarithmic curve tone mapping, default value: 2 */
-        OPTION_TRIGGER = 0x0b,       /* 0 = video mode, 1 = software or simulated trigger mode, 2 = external trigger mode, 3 = external + software trigger, default value = 0 */
-        OPTION_RGB = 0x0c,       /* 0 => RGB24; 1 => enable RGB48 format when bitdepth > 8; 2 => RGB32; 3 => 8 Bits Grey (only for mono camera); 4 => 16 Bits Grey (only for mono camera when bitdepth > 8); 5 => RGB64 */
-        OPTION_COLORMATIX = 0x0d,       /* enable or disable the builtin color matrix, default value: 1 */
-        OPTION_WBGAIN = 0x0e,       /* enable or disable the builtin white balance gain, default value: 1 */
-        OPTION_TECTARGET = 0x0f,       /* get or set the target temperature of the thermoelectric cooler, in 0.1 degree Celsius. For example, 125 means 12.5 degree Celsius, -35 means -3.5 degree Celsius */
-        OPTION_AUTOEXP_POLICY = 0x10,       /* auto exposure policy:
-                                                            0: Exposure Only
-                                                            1: Exposure Preferred
-                                                            2: Gain Only
-                                                            3: Gain Preferred
-                                                         default value: 1
-                                                    */
-        OPTION_FRAMERATE = 0x11,       /* limit the frame rate, range=[0, 63], the default value 0 means no limit */
-        OPTION_DEMOSAIC = 0x12,       /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing, default value: 0 */
-        OPTION_DEMOSAIC_VIDEO = 0x13,       /* demosaic method for video */
-        OPTION_DEMOSAIC_STILL = 0x14,       /* demosaic method for still image */
-        OPTION_BLACKLEVEL = 0x15,       /* black level */
-        OPTION_MULTITHREAD = 0x16,       /* multithread image processing */
-        OPTION_BINNING = 0x17,       /* binning
-                                                           0x01: (no binning)
-                                                           n: (saturating add, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
-                                                           0x40 | n: (unsaturated add, n*n, works only in RAW mode), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
-                                                           0x80 | n: (average, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
-                                                       The final image size is rounded down to an even number, such as 640/3 to get 212
-                                                    */
-        OPTION_ROTATE = 0x18,       /* rotate clockwise: 0, 90, 180, 270 */
-        OPTION_CG = 0x19,       /* Conversion Gain mode: 0 = LCG, 1 = HCG, 2 = HDR */
-        OPTION_PIXEL_FORMAT = 0x1a,       /* pixel format */
-        OPTION_FFC = 0x1b,       /* flat field correction
-                                                        set:
-                                                            0: disable
-                                                            1: enable
-                                                            -1: reset
-                                                            (0xff000000 | n): set the average number to n, [1~255]
-                                                        get:
-                                                            (val & 0xff): 0 => disable, 1 => enable, 2 => inited
-                                                            ((val & 0xff00) >> 8): sequence
-                                                            ((val & 0xff0000) >> 16): average number
-                                                    */
-        OPTION_DDR_DEPTH = 0x1c,       /* the number of the frames that DDR can cache
-                                                        1: DDR cache only one frame
-                                                        0: Auto:
-                                                            => one for video mode when auto exposure is enabled
-                                                            => full capacity for others
-                                                        1: DDR can cache frames to full capacity
-                                                    */
-        OPTION_DFC = 0x1d,       /* dark field correction
-                                                        set:
-                                                            0: disable
-                                                            1: enable
-                                                            -1: reset
-                                                            (0xff000000 | n): set the average number to n, [1~255]
-                                                        get:
-                                                            (val & 0xff): 0 => disable, 1 => enable, 2 => inited
-                                                            ((val & 0xff00) >> 8): sequence
-                                                            ((val & 0xff0000) >> 16): average number
-                                                    */
-        OPTION_SHARPENING = 0x1e,       /* Sharpening: (threshold << 24) | (radius << 16) | strength)
-                                                        strength: [0, 500], default: 0 (disable)
-                                                        radius: [1, 10]
-                                                        threshold: [0, 255]
-                                                    */
-        OPTION_FACTORY = 0x1f,       /* restore the factory settings */
-        OPTION_TEC_VOLTAGE = 0x20,       /* get the current TEC voltage in 0.1V, 59 mean 5.9V; readonly */
-        OPTION_TEC_VOLTAGE_MAX = 0x21,       /* TEC maximum voltage in 0.1V */
-        OPTION_DEVICE_RESET = 0x22,       /* reset usb device, simulate a replug */
-        OPTION_UPSIDE_DOWN = 0x23,       /* upsize down:
-                                                        1: yes
-                                                        0: no
-                                                        default: 1 (win), 0 (linux/macos)
-                                                    */
-        OPTION_FOCUSPOS = 0x24,       /* focus positon */
-        OPTION_AFMODE = 0x25,       /* auto focus mode (0:manul focus; 1:auto focus; 2:once focus; 3:conjugate calibration) */
-        OPTION_AFZONE = 0x26,       /* auto focus zone */
-        OPTION_AFFEEDBACK = 0x27,       /* auto focus information feedback; 0:unknown; 1:focused; 2:focusing; 3:defocus; 4:up; 5:down */
-        OPTION_TESTPATTERN = 0x28,       /* test pattern:
-                                                        0: off
-                                                        3: monochrome diagonal stripes
-                                                        5: monochrome vertical stripes
-                                                        7: monochrome horizontal stripes
-                                                        9: chromatic diagonal stripes
-                                                    */
-        OPTION_AUTOEXP_THRESHOLD = 0x29,       /* threshold of auto exposure, default value: 5, range = [2, 15] */
-        OPTION_BYTEORDER = 0x2a,       /* Byte order, BGR or RGB: 0 => RGB, 1 => BGR, default value: 1(Win), 0(macOS, Linux, Android) */
-        OPTION_NOPACKET_TIMEOUT = 0x2b,       /* no packet timeout: 0 => disable, positive value (>= NOPACKET_TIMEOUT_MIN) => timeout milliseconds. default: disable */
-        OPTION_MAX_PRECISE_FRAMERATE = 0x2c,       /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
-        OPTION_PRECISE_FRAMERATE = 0x2d,       /* precise frame rate current value in 0.1 fps, range:[1~maximum] */
-        OPTION_BANDWIDTH = 0x2e,       /* bandwidth, [1-100]% */
-        OPTION_RELOAD = 0x2f,       /* reload the last frame in trigger mode */
-        OPTION_CALLBACK_THREAD = 0x30,       /* dedicated thread for callback */
-        OPTION_FRONTEND_DEQUE_LENGTH = 0x31,       /* frontend (raw) frame buffer deque length, range: [2, 1024], default: 4
-                                                        All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
-                                                    */
-        OPTION_FRAME_DEQUE_LENGTH = 0x31,       /* alias of TOUPCAM_OPTION_FRONTEND_DEQUE_LENGTH */
-        OPTION_MIN_PRECISE_FRAMERATE = 0x32,       /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
-        OPTION_SEQUENCER_ONOFF = 0x33,       /* sequencer trigger: on/off */
-        OPTION_SEQUENCER_NUMBER = 0x34,       /* sequencer trigger: number, range = [1, 255] */
-        OPTION_SEQUENCER_EXPOTIME = 0x01000000, /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
-                                                        For example, to set the exposure time of the third group to 50ms, call:
-                                                           Toupcam_put_Option(TOUPCAM_OPTION_SEQUENCER_EXPOTIME | 3, 50000)
-                                                    */
-        OPTION_SEQUENCER_EXPOGAIN = 0x02000000, /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
-        OPTION_DENOISE = 0x35,       /* denoise, strength range: [0, 100], 0 means disable */
-        OPTION_HEAT_MAX = 0x36,       /* get maximum level: heat to prevent fogging up */
-        OPTION_HEAT = 0x37,       /* heat to prevent fogging up */
-        OPTION_LOW_NOISE = 0x38,       /* low noise mode (Higher signal noise ratio, lower frame rate): 1 => enable */
-        OPTION_POWER = 0x39,       /* get power consumption, unit: milliwatt */
-        OPTION_GLOBAL_RESET_MODE = 0x3a,       /* global reset mode */
-        OPTION_OPEN_ERRORCODE = 0x3b,       /* get the open camera error code */
-        OPTION_FLUSH = 0x3d,        /* 1 = hard flush, discard frames cached by camera DDR (if any)
-                                                        2 = soft flush, discard frames cached by toupcam.dll (if any)
-                                                        3 = both flush
-                                                        Toupcam_Flush means 'both flush'
-                                                        return the number of soft flushed frames if successful, HRESULT if failed
-                                                     */
-        OPTION_NUMBER_DROP_FRAME = 0x3e,        /* get the number of frames that have been grabbed from the USB but dropped by the software */
-        OPTION_DUMP_CFG = 0x3f,        /* 0 = when camera is stopped, do not dump configuration automatically
-                                                        1 = when camera is stopped, dump configuration automatically
-                                                        -1 = explicitly dump configuration once
-                                                        default: 1
-                                                     */
-        OPTION_DEFECT_PIXEL = 0x40,        /* Defect Pixel Correction: 0 => disable, 1 => enable; default: 1 */
-        OPTION_BACKEND_DEQUE_LENGTH = 0x41,        /* backend (pipelined) frame buffer deque length (Only available in pull mode), range: [2, 1024], default: 3
-                                                        All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
-                                                     */
-        OPTION_LIGHTSOURCE_MAX = 0x42,        /* get the light source range, [0 ~ max] */
-        OPTION_LIGHTSOURCE = 0x43,        /* light source */
-        OPTION_HEARTBEAT = 0x44,        /* Heartbeat interval in millisecond, range = [HEARTBEAT_MIN, HEARTBEAT_MAX], 0 = disable, default: disable */
-        OPTION_FRONTEND_DEQUE_CURRENT = 0x45,        /* get the current number in frontend deque */
-        OPTION_BACKEND_DEQUE_CURRENT = 0x46,        /* get the current number in backend deque */
-        OPTION_EVENT_HARDWARE = 0x04000000,  /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
-                                                            (1) iOption = TOUPCAM_OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
-                                                            (2) iOption = TOUPCAM_OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
-                                                        Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
-                                                     */
-        OPTION_PACKET_NUMBER = 0x47,        /* get the received packet number */
-        OPTION_FILTERWHEEL_SLOT = 0x48,        /* filter wheel slot number */
-        OPTION_FILTERWHEEL_POSITION = 0x49,        /* filter wheel position:
-                                                             set:
-                                                                 -1: calibrate
-                                                                 val & 0xff: position between 0 and N-1, where N is the number of filter slots
-                                                                 (val >> 8) & 0x1: direction, 0 => clockwise spinning, 1 => auto direction spinning
-                                                             get:
-                                                                -1: in motion
-                                                                val: position arrived
-                                                     */
-        OPTION_AUTOEXPOSURE_PERCENT = 0x4a,        /* auto exposure percent to average:
-                                                             1~99: peak percent average
-                                                             0 or 100: full roi average
-                                                     */
-        OPTION_ANTI_SHUTTER_EFFECT = 0x4b,        /* anti shutter effect: 1 => disable, 0 => disable; default: 1 */
-        OPTION_CHAMBER_HT = 0x4c,        /* get chamber humidity & temperature:
-                                                             high 16 bits: humidity, in 0.1%, such as: 325 means humidity is 32.5%
-                                                             low 16 bits: temperature, in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius
-                                                     */
-        OPTION_ENV_HT = 0x4d,        /* get environment humidity & temperature */
-        OPTION_EXPOSURE_PRE_DELAY = 0x4e,        /* exposure signal pre-delay, microsecond */
-        OPTION_EXPOSURE_POST_DELAY = 0x4f,        /* exposure signal post-delay, microsecond */
-        OPTION_AUTOEXPO_CONV = 0x50,        /* get auto exposure convergence status: 1(YES) or 0(NO), -1(NA) */
-        OPTION_AUTOEXPO_TRIGGER = 0x51,        /* auto exposure on trigger mode: 0 => disable, 1 => enable; default: 0 */
-        OPTION_LINE_PRE_DELAY = 0x52,        /* specified line signal pre-delay, microsecond */
-        OPTION_LINE_POST_DELAY = 0x53,        /* specified line signal post-delay, microsecond */
-        OPTION_TEC_VOLTAGE_MAX_RANGE = 0x54,        /* get the tec maximum voltage range:
-                                                             high 16 bits: max
-                                                             low 16 bits: min
-                                                     */
-        OPTION_HIGH_FULLWELL = 0x55,        /* high fullwell capacity: 0 => disable, 1 => enable */
-        OPTION_DYNAMIC_DEFECT = 0x56,        /* dynamic defect pixel correction:
-                                                             threshold, t1: (high 16 bits): [10, 100], means: [1.0, 10.0]
-                                                             value, t2: (low 16 bits): [0, 100], means: [0.00, 1.00]
-                                                     */
-        OPTION_HDR_KB = 0x57,        /* HDR synthesize
-                                                             K (high 16 bits): [1, 25500]
-                                                             B (low 16 bits): [0, 65535]
-                                                             0xffffffff => set to default
-                                                     */
-        OPTION_HDR_THRESHOLD = 0x58,        /* HDR synthesize
-                                                             threshold: [1, 4094]
-                                                             0xffffffff => set to default
-                                                     */
-        OPTION_GIGETIMEOUT = 0x5a,        /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
-                                                        If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
-                                                        When the application is stopped by the debugger, the application cannot create the heartbeat signals
-                                                             0 => auto: when the camera is opened, disable if debugger is present or enable if no debugger is present
-                                                             1 => enable
-                                                             2 => disable
-                                                             default: auto
-                                                     */
-        OPTION_EEPROM_SIZE = 0x5b,        /* get EEPROM size */
-        OPTION_OVERCLOCK_MAX = 0x5c,        /* get overclock range: [0, max] */
-        OPTION_OVERCLOCK = 0x5d,        /* overclock, default: 0 */
-        OPTION_RESET_SENSOR = 0x5e,        /* reset sensor */
-        OPTION_ADC = 0x08000000,  /* Analog-Digital Conversion:
-                                                            get:
-                                                                (option | 'C'): get the current value
-                                                                (option | 'N'): get the supported ADC number
-                                                                (option | n): get the nth supported ADC value, such as 11bits, 12bits, etc; the first value is the default
-                                                            set: val = ADC value, such as 11bits, 12bits, etc
-                                                     */
-        OPTION_ISP = 0x5f,        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
-        OPTION_AUTOEXP_EXPOTIME_STEP = 0x60,        /* Auto exposure: time step (thousandths) */
-        OPTION_AUTOEXP_GAIN_STEP = 0x61,        /* Auto exposure: gain step (thousandths) */
-        OPTION_MOTOR_NUMBER = 0x62,        /* range: [1, 20] */
-        OPTION_MOTOR_POS = 0x10000000,   /* range: [1, 702] */
+        /* no frame timeout: 0 => disable, positive value (>= NOFRAME_TIMEOUT_MIN) => timeout milliseconds. default: disable */
+        OPTION_NOFRAME_TIMEOUT = 0x01,
+        /* set the priority of the internal thread which grab data from the usb device.
+            Win: iValue: 0 => THREAD_PRIORITY_NORMAL; 1 => THREAD_PRIORITY_ABOVE_NORMAL; 2 => THREAD_PRIORITY_HIGHEST; 3 => THREAD_PRIORITY_TIME_CRITICAL; default: 1; see: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadpriority
+            Linux & macOS: The high 16 bits for the scheduling policy, and the low 16 bits for the priority; see: https://linux.die.net/man/3/pthread_setschedparam
+        */
+        OPTION_THREAD_PRIORITY = 0x02,
+        /* raw data mode, read the sensor "raw" data. This can be set only while camea is NOT running. 0 = rgb, 1 = raw, default value: 0 */
+        OPTION_RAW = 0x04,
+        /* 0 = only one, 1 = continue mode */
+        OPTION_HISTOGRAM = 0x05,
+        /* 0 = 8 bits mode, 1 = 16 bits mode */
+        OPTION_BITDEPTH = 0x06,
+        /* 0 = turn off the cooling fan, [1, max] = fan speed, set to "-1" means to use default fan speed */
+        OPTION_FAN = 0x07,
+        /* 0 = turn off the thermoelectric cooler, 1 = turn on the thermoelectric cooler */
+        OPTION_TEC = 0x08,
+        /* 0 = turn off the builtin linear tone mapping, 1 = turn on the builtin linear tone mapping, default value: 1 */
+        OPTION_LINEAR = 0x09,
+        /* 0 = turn off the builtin curve tone mapping, 1 = turn on the builtin polynomial curve tone mapping, 2 = logarithmic curve tone mapping, default value: 2 */
+        OPTION_CURVE = 0x0a,
+        /* 0 = video mode, 1 = software or simulated trigger mode, 2 = external trigger mode, 3 = external + software trigger, default value = 0 */
+        OPTION_TRIGGER = 0x0b,
+        /* 0 => RGB24; 1 => enable RGB48 format when bitdepth > 8; 2 => RGB32; 3 => 8 Bits Grey (only for mono camera); 4 => 16 Bits Grey (only for mono camera when bitdepth > 8); 5 => RGB64 */
+        OPTION_RGB = 0x0c,
+        /* enable or disable the builtin color matrix, default value: 1 */
+        OPTION_COLORMATIX = 0x0d,
+        /* enable or disable the builtin white balance gain, default value: 1 */
+        OPTION_WBGAIN = 0x0e,
+        OPTION_TECTARGET = 0x0f,
+        /* auto exposure policy:
+                0: Exposure Only
+                1: Exposure Preferred
+                2: Gain Only
+                3: Gain Preferred
+                default value: 1
+        */
+        OPTION_AUTOEXP_POLICY = 0x10,
+        /* limit the frame rate, range=[0, 63], the default value 0 means no limit */
+        OPTION_FRAMERATE = 0x11,
+        /* demosaic method for both video and still image: BILINEAR = 0, VNG(Variable Number of Gradients) = 1, PPG(Patterned Pixel Grouping) = 2, AHD(Adaptive Homogeneity Directed) = 3, EA(Edge Aware) = 4, see https://en.wikipedia.org/wiki/Demosaicing
+            In terms of CPU usage, EA is the lowest, followed by BILINEAR, and the others are higher.
+            default value: 0
+        */
+        OPTION_DEMOSAIC = 0x12,
+        /* demosaic method for video */
+        OPTION_DEMOSAIC_VIDEO = 0x13,
+        /* demosaic method for still image */
+        OPTION_DEMOSAIC_STILL = 0x14,
+        /* black level */
+        OPTION_BLACKLEVEL = 0x15,
+        /* multithread image processing */
+        OPTION_MULTITHREAD = 0x16,
+        /* binning
+                0x01: (no binning)
+                n: (saturating add, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
+                0x40 | n: (unsaturated add, n*n, works only in RAW mode), 0x42(2*2), 0x43(3*3), 0x44(4*4), 0x45(5*5), 0x46(6*6), 0x47(7*7), 0x48(8*8). The Bitdepth of the data is increased. For example, the original data with bitdepth of 12 will increase the bitdepth by 2 bits and become 14 after 2*2 binning.
+                0x80 | n: (average, n*n), 0x02(2*2), 0x03(3*3), 0x04(4*4), 0x05(5*5), 0x06(6*6), 0x07(7*7), 0x08(8*8). The Bitdepth of the data remains unchanged.
+            The final image size is rounded down to an even number, such as 640/3 to get 212
+        */
+        OPTION_BINNING = 0x17,
+        /* rotate clockwise: 0, 90, 180, 270 */
+        OPTION_ROTATE = 0x18,
+        /* Conversion Gain:
+                0 = LCG
+                1 = HCG
+                2 = HDR (for camera with flag FLAG_CGHDR)
+                2 = MCG (for camera with flag FLAG_GHOPTO)
+        */
+        OPTION_CG = 0x19,
+        /* pixel format */
+        OPTION_PIXEL_FORMAT = 0x1a,
+        /* flat field correction
+            set:
+                0: disable
+                1: enable
+                -1: reset
+                (0xff000000 | n): set the average number to n, [1~255]
+            get:
+                (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                ((val & 0xff00) >> 8): sequence
+                ((val & 0xff0000) >> 16): average number
+        */
+        OPTION_FFC = 0x1b,
+        /* the number of the frames that DDR can cache
+                1: DDR cache only one frame
+                0: Auto:
+                    => one for video mode when auto exposure is enabled
+                    => full capacity for others
+                1: DDR can cache frames to full capacity
+        */
+        OPTION_DDR_DEPTH = 0x1c,
+        /* dark field correction
+            set:
+                0: disable
+                1: enable
+                -1: reset
+                (0xff000000 | n): set the average number to n, [1~255]
+            get:
+                (val & 0xff): 0 => disable, 1 => enable, 2 => inited
+                ((val & 0xff00) >> 8): sequence
+                ((val & 0xff0000) >> 16): average number
+        */
+        OPTION_DFC = 0x1d,
+        /* Sharpening: (threshold << 24) | (radius << 16) | strength)
+                strength: [0, 500], default: 0 (disable)
+                radius: [1, 10]
+                threshold: [0, 255]
+        */
+        OPTION_SHARPENING = 0x1e,
+        /* restore the factory settings */
+        OPTION_FACTORY = 0x1f,
+        /* get the current TEC voltage in 0.1V, 59 mean 5.9V; readonly */
+        OPTION_TEC_VOLTAGE = 0x20,
+        /* TEC maximum voltage in 0.1V */
+        OPTION_TEC_VOLTAGE_MAX = 0x21,
+        /* reset usb device, simulate a replug */
+        OPTION_DEVICE_RESET = 0x22,
+        /* upsize down:
+            1: yes
+            0: no
+            default: 1 (win), 0 (linux/macos)
+        */
+        OPTION_UPSIDE_DOWN = 0x23,
+        /* focus positon */
+        OPTION_FOCUSPOS = 0x24,
+        /* auto focus mode, see AFMode */
+        OPTION_AFMODE = 0x25,
+        /* auto focus status, see AFStaus */
+        OPTION_AFSTATUS = 0x27,
+        /* test pattern:
+            0: off
+            3: monochrome diagonal stripes
+            5: monochrome vertical stripes
+            7: monochrome horizontal stripes
+            9: chromatic diagonal stripes
+        */
+        OPTION_TESTPATTERN = 0x28,
+        /* threshold of auto exposure, default value: 5, range = [2, 15] */
+        OPTION_AUTOEXP_THRESHOLD = 0x29,
+        /* Byte order, BGR or RGB: 0 => RGB, 1 => BGR, default value: 1(Win), 0(macOS, Linux, Android) */
+        OPTION_BYTEORDER = 0x2a,
+        /* no packet timeout: 0 => disable, positive value (>= NOPACKET_TIMEOUT_MIN) => timeout milliseconds. default: disable */
+        OPTION_NOPACKET_TIMEOUT = 0x2b,
+        /* get the precise frame rate maximum value in 0.1 fps, such as 115 means 11.5 fps. E_NOTIMPL means not supported */
+        OPTION_MAX_PRECISE_FRAMERATE = 0x2c,
+        /* precise frame rate current value in 0.1 fps. use OPTION_MAX_PRECISE_FRAMERATE, OPTION_MIN_PRECISE_FRAMERATE to get the range. if the set value is out of range, E_INVALIDARG will be returned */
+        OPTION_PRECISE_FRAMERATE = 0x2d,
+        /* bandwidth, [1-100]% */
+        OPTION_BANDWIDTH = 0x2e,
+        /* reload the last frame in trigger mode */
+        OPTION_RELOAD = 0x2f,
+        /* dedicated thread for callback: 0 => disable, 1 => enable, default: 0 */
+        OPTION_CALLBACK_THREAD = 0x30,
+        /* frontend (raw) frame buffer deque length, range: [2, 1024], default: 4
+            All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
+        */
+        OPTION_FRONTEND_DEQUE_LENGTH = 0x31,
+        /* alias of OPTION_FRONTEND_DEQUE_LENGTH */
+        OPTION_FRAME_DEQUE_LENGTH = 0x31,
+        /* get the precise frame rate minimum value in 0.1 fps, such as 15 means 1.5 fps */
+        OPTION_MIN_PRECISE_FRAMERATE = 0x32,
+        /* sequencer trigger: on/off */
+        OPTION_SEQUENCER_ONOFF = 0x33,
+        /* sequencer trigger: number, range = [1, 255] */
+        OPTION_SEQUENCER_NUMBER = 0x34,
+        /* sequencer trigger: exposure time, iOption = OPTION_SEQUENCER_EXPOTIME | index, iValue = exposure time
+            For example, to set the exposure time of the third group to 50ms, call:
+            put_Option(OPTION_SEQUENCER_EXPOTIME | 3, 50000)
+        */
+        OPTION_SEQUENCER_EXPOTIME = 0x01000000,
+        /* sequencer trigger: exposure gain, iOption = OPTION_SEQUENCER_EXPOGAIN | index, iValue = gain */
+        OPTION_SEQUENCER_EXPOGAIN = 0x02000000,
+        /* denoise, strength range: [0, 100], 0 means disable */
+        OPTION_DENOISE = 0x35,
+        /* get maximum level: heat to prevent fogging up */
+        OPTION_HEAT_MAX = 0x36,
+        /* heat to prevent fogging up */
+        OPTION_HEAT = 0x37,
+        /* low noise mode (Higher signal noise ratio, lower frame rate): 1 => enable */
+        OPTION_LOW_NOISE = 0x38,
+        /* get power consumption, unit: milliwatt */
+        OPTION_POWER = 0x39,
+        /* global reset mode */
+        OPTION_GLOBAL_RESET_MODE = 0x3a,
+        /* get the open camera error code */
+        OPTION_OPEN_ERRORCODE = 0x3b,
+        /*  1 = hard flush, discard frames cached by camera DDR (if any)
+            2 = soft flush, discard frames cached by toupcam.dll (if any)
+            3 = both flush
+            Toupcam_Flush means 'both flush'
+            return the number of soft flushed frames if successful, HRESULT if failed
+        */
+        OPTION_FLUSH = 0x3d,
+        /* get the number of frames that have been grabbed from the USB but dropped by the software */
+        OPTION_NUMBER_DROP_FRAME = 0x3e,
+        /*  0 = when camera is stopped, do not dump configuration automatically
+            1 = when camera is stopped, dump configuration automatically
+            -1 = explicitly dump configuration once
+            default: 1
+        */
+        OPTION_DUMP_CFG = 0x3f,
+        /* Defect Pixel Correction: 0 => disable, 1 => enable; default: 1 */
+        OPTION_DEFECT_PIXEL = 0x40,
+        /* backend (pipelined) frame buffer deque length (Only available in pull mode), range: [2, 1024], default: 3
+            All the memory will be pre-allocated when the camera starts, so, please attention to memory usage
+        */
+        OPTION_BACKEND_DEQUE_LENGTH = 0x41,
+        /* get the light source range, [0 ~ max] */
+        OPTION_LIGHTSOURCE_MAX = 0x42,
+        /* light source */
+        OPTION_LIGHTSOURCE = 0x43,
+        /* Heartbeat interval in millisecond, range = [HEARTBEAT_MIN, HEARTBEAT_MAX], 0 = disable, default: disable */
+        OPTION_HEARTBEAT = 0x44,
+        /* get the current number in frontend deque */
+        OPTION_FRONTEND_DEQUE_CURRENT = 0x45,
+        /* get the current number in backend deque */
+        OPTION_BACKEND_DEQUE_CURRENT = 0x46,
+        /* enable or disable hardware event: 0 => disable, 1 => enable; default: disable
+                (1) iOption = OPTION_EVENT_HARDWARE, master switch for notification of all hardware events
+                (2) iOption = OPTION_EVENT_HARDWARE | (event type), a specific type of sub-switch
+            Only if both the master switch and the sub-switch of a particular type remain on are actually enabled for that type of event notification.
+        */
+        OPTION_EVENT_HARDWARE = 0x04000000,
+        /* get the received packet number */
+        OPTION_PACKET_NUMBER = 0x47,
+        /* filter wheel slot number */
+        OPTION_FILTERWHEEL_SLOT = 0x48,
+        /* filter wheel position:
+            set:
+                -1: calibrate
+                val & 0xff: position between 0 and N-1, where N is the number of filter slots
+                (val >> 8) & 0x1: direction, 0 => clockwise spinning, 1 => auto direction spinning
+            get:
+                -1: in motion
+                val: position arrived
+        */
+        OPTION_FILTERWHEEL_POSITION = 0x49,
+        /* auto exposure percent to average:
+            1~99: peak percent average
+            0 or 100: full roi average, means "disabled"
+        */
+        OPTION_AUTOEXPOSURE_PERCENT = 0x4a,
+        /* anti shutter effect: 1 => disable, 0 => disable; default: 0 */
+        OPTION_ANTI_SHUTTER_EFFECT = 0x4b,
+        /* get chamber humidity & temperature:
+            high 16 bits: humidity, in 0.1%, such as: 325 means humidity is 32.5%
+            low 16 bits: temperature, in 0.1 degrees Celsius, such as: 32 means 3.2 degrees Celsius
+        */
+        OPTION_CHAMBER_HT = 0x4c,
+        /* get environment humidity & temperature */
+        OPTION_ENV_HT = 0x4d,
+        /* exposure signal pre-delay, microsecond */
+        OPTION_EXPOSURE_PRE_DELAY = 0x4e,
+        /* exposure signal post-delay, microsecond */
+        OPTION_EXPOSURE_POST_DELAY = 0x4f,
+        /* get auto exposure convergence status: 1(YES) or 0(NO), -1(NA) */
+        OPTION_AUTOEXPO_CONV = 0x50,
+        /* auto exposure on trigger mode: 0 => disable, 1 => enable; default: 0 */
+        OPTION_AUTOEXPO_TRIGGER = 0x51,
+        /* specified line signal pre-delay, microsecond */
+        OPTION_LINE_PRE_DELAY = 0x52,
+        /* specified line signal post-delay, microsecond */
+        OPTION_LINE_POST_DELAY = 0x53,
+        /* get the tec maximum voltage range:
+            high 16 bits: max
+            low 16 bits: min
+        */
+        OPTION_TEC_VOLTAGE_MAX_RANGE = 0x54,
+        /* high fullwell capacity: 0 => disable, 1 => enable */
+        OPTION_HIGH_FULLWELL = 0x55,
+        /* dynamic defect pixel correction:
+            dead pixel ratio, t1: (high 16 bits): [0, 100], means: [0.0, 1.0]
+            hot pixel ratio, t2: (low 16 bits): [0, 100], means: [0.0, 1.0]
+        */
+        OPTION_DYNAMIC_DEFECT = 0x56,
+        /* HDR synthesize
+            K (high 16 bits): [1, 25500]
+            B (low 16 bits): [0, 65535]
+            0xffffffff => set to default
+        */
+        OPTION_HDR_KB = 0x57,
+        /* HDR synthesize
+            threshold: [1, 4094]
+            0xffffffff => set to default
+        */
+        OPTION_HDR_THRESHOLD = 0x58,
+        /* For GigE cameras, the application periodically sends heartbeat signals to the camera to keep the connection to the camera alive.
+            If the camera doesn't receive heartbeat signals within the time period specified by the heartbeat timeout counter, the camera resets the connection.
+            When the application is stopped by the debugger, the application cannot send the heartbeat signals
+                0 => auto: when the camera is opened, enable if no debugger is present or disable if debugger is present
+                1 => enable
+                2 => disable
+                default: auto
+        */
+        OPTION_GIGETIMEOUT = 0x5a,
+        /* get EEPROM size */
+        OPTION_EEPROM_SIZE = 0x5b,
+        /* get overclock range: [0, max] */
+        OPTION_OVERCLOCK_MAX = 0x5c,
+        /* overclock, default: 0 */
+        OPTION_OVERCLOCK = 0x5d,
+        /* reset sensor */
+        OPTION_RESET_SENSOR = 0x5e,
+        /* Enable hardware ISP: 0 => auto (disable in RAW mode, otherwise enable), 1 => enable, -1 => disable; default: 0 */
+        OPTION_ISP = 0x5f,
+        /* Auto exposure damp: time (thousandths). The larger the damping coefficient, the smoother and slower the exposure time changes */
+        OPTION_AUTOEXP_EXPOTIME_DAMP = 0x60,
+        /* Auto exposure damp: gain (thousandths). The larger the damping coefficient, the smoother and slower the gain changes */
+        OPTION_AUTOEXP_GAIN_DAMP = 0x61,
+        /* range: [1, 20] */
+        OPTION_MOTOR_NUMBER = 0x62,
+        /* range: [1, 702] */
+        OPTION_MOTOR_POS = 0x10000000,
         /* Pseudo: start color, BGR format */
         OPTION_PSEUDO_COLOR_START = 0x63,
         /* Pseudo: end color, BGR format */
         OPTION_PSEUDO_COLOR_END = 0x64,
-        /*  Pseudo: 
+        /*  Pseudo:
             -1 => custom: use startcolor & endcolor to generate the colormap
             0 => disable
             1 => spot
@@ -439,6 +551,9 @@ namespace NINA.Equipment.Interfaces {
             21 => twilight
             22 => twilight_shifted
             23 => turbo
+            24 => red
+            25 => green
+            26 => blue
         */
         OPTION_PSEUDO_COLOR_ENABLE = 0x65,
         /* Low Power Consumption: 0 => disable, 1 => enable */
@@ -458,14 +573,57 @@ namespace NINA.Equipment.Interfaces {
         /* Auto exposure over exposure policy: when overexposed,
                 0 => directly reduce the exposure time/gain to the minimum value; or
                 1 => reduce exposure time/gain in proportion to current and target brightness.
+                n(n>1) => first adjust the exposure time to (maximum automatic exposure time * maximum automatic exposure gain) * n / 1000, and then adjust according to the strategy of 1
             The advantage of policy 0 is that the convergence speed is faster, but there is black screen.
             Policy 1 avoids the black screen, but the convergence speed is slower.
             Default: 0
         */
         OPTION_OVEREXP_POLICY = 0x68,
-        /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read) */
+        /* Readout mode: 0 = IWR (Integrate While Read), 1 = ITR (Integrate Then Read)
+           The working modes of the detector readout circuit can be divided into two types: ITR and IWR. Using the IWR readout mode can greatly increase the frame rate. In the ITR mode, the integration of the (n+1)th frame starts after all the data of the nth frame are read out, while in the IWR mode, the data of the nth frame is read out at the same time when the (n+1)th frame is integrated
+        */
         OPTION_READOUT_MODE = 0x69,
         /* Turn on/off tail Led light: 0 => off, 1 => on; default: on */
-        OPTION_TAILLIGHT = 0x6a
+        OPTION_TAILLIGHT = 0x6a,
+        /* Load/Save lens state to EEPROM: 0 => load, 1 => save */
+        OPTION_LENSSTATE = 0x6b,
+        /* Auto White Balance: continuous mode
+               0:  disable (default)
+               n>0: every n millisecond(s)
+               n<0: every -n frame
+        */
+        OPTION_AWB_CONTINUOUS = 0x6c,
+        /* TEC target range: min(low 16 bits) = (short)(val & 0xffff), max(high 16 bits) = (short)((val >> 16) & 0xffff) */
+        OPTION_TECTARGET_RANGE = 0x6d,
+        /* Correlated Double Sampling */
+        OPTION_CDS = 0x6e,
+        /* Low Power Consumption: Enable if exposure time is greater than the set value */
+        OPTION_LOW_POWER_EXPOTIME = 0x6f,
+        /* Sensor output offset to zero: 0 => disable, 1 => eanble; default: 0 */
+        OPTION_ZERO_OFFSET = 0x70,
+        /* GVCP Timeout: millisecond, range = [3, 75], default: 15
+             Unless in very special circumstances, generally no modification is required, just use the default value
+        */
+        OPTION_GVCP_TIMEOUT = 0x71,
+        /* GVCP Retry: range = [2, 8], default: 4
+             Unless in very special circumstances, generally no modification is required, just use the default value
+        */
+        OPTION_GVCP_RETRY = 0x72,
+        /* GVSP wait percent: range = [0, 100], default = (trigger mode: 100, realtime: 0, other: 1) */
+        OPTION_GVSP_WAIT_PERCENT = 0x73,
+        /* Reset to 0: 1 => seq; 2 => timestamp; 3 => both */
+        OPTION_RESET_SEQ_TIMESTAMP = 0x74,
+        /* Trigger cancel mode: 0 => no frame, 1 => output frame; default: 0 */
+        OPTION_TRIGGER_CANCEL_MODE = 0x75,
+        /* Mechanical shutter: 0 => open, 1 => close; default: 0 */
+        OPTION_MECHANICALSHUTTER = 0x76,
+        /* Line-time of sensor in nanosecond */
+        OPTION_LINE_TIME = 0x77,
+        /* Zero padding: 0 => high, 1 => low; default: 0 */
+        OPTION_ZERO_PADDING = 0x78,
+        /* device uptime in millisecond */
+        OPTION_UPTIME = 0x79,
+        /* Bit range: [0, 8] */
+        OPTION_BITRANGE = 0x7a
     };
 }

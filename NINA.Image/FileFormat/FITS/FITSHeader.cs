@@ -21,7 +21,6 @@ using System.IO;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
-using System.Windows.Input;
 
 namespace NINA.Image.FileFormat.FITS {
     public class FITSHeader {
@@ -516,12 +515,14 @@ namespace NINA.Image.FileFormat.FITS {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 Add("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
                 Add("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+                Add("MJD-OBS", metaData.Image.ExposureStart.ToMJD(), "Modified Julian Date of observation");
             }
 
             if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
                 // Section 8.4.1 https://fits.gsfc.nasa.gov/standard40/fits_standard40aa-le.pdf
                 // Calendar date of the midpoint of the observation, expressed in the same way as the DATE-OBS keyword.
                 Add("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
+                Add("MJD-AVG", metaData.Image.ExposureMidPoint.ToMJD(), "Modified Julian Date of averaged midpoint");
             }
 
             /* Camera */

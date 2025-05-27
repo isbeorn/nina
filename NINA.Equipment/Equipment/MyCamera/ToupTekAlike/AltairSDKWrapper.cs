@@ -25,25 +25,34 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
     public static class AltairEnumExtensions {
 
-        public static Altair.AltairCam.eOPTION ToAltair(this ToupTekAlikeOption option) {
-            return (Altair.AltairCam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
+        public static Altaircam.eOPTION ToAltair(this ToupTekAlikeOption option) {
+            return (Altaircam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
         }
 
-        public static ToupTekAlikeEvent ToEvent(this AltairCam.eEVENT info) {
-            return (ToupTekAlikeEvent)Enum.Parse(typeof(AltairCam.eEVENT), info.ToString());
+        public static ToupTekAlikeEvent ToEvent(this Altaircam.eEVENT info) {
+            return (ToupTekAlikeEvent)Enum.Parse(typeof(Altaircam.eEVENT), info.ToString());
         }
 
-        public static ToupTekAlikeFrameInfo ToFrameInfo(this Altair.AltairCam.FrameInfoV2 info) {
+        public static ToupTekAlikeFrameInfo ToFrameInfo(this Altaircam.FrameInfoV4 info) {
             var ttInfo = new ToupTekAlikeFrameInfo();
-            ttInfo.flag = info.flag;
-            ttInfo.height = info.height;
-            ttInfo.width = info.width;
-            ttInfo.timestamp = info.timestamp;
-            ttInfo.seq = info.seq;
+            ttInfo.flag = info.v3.flag;
+            ttInfo.height = info.v3.height;
+            ttInfo.width = info.v3.width;
+            ttInfo.timestamp = info.v3.timestamp;
+            ttInfo.seq = info.v3.seq;
+            ttInfo.expotime = info.v3.expotime;
+            ttInfo.hasgps = (info.v3.flag & (uint)Altaircam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.hasexpotime = (info.v3.flag & (uint)Altaircam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_EXPOTIME) != 0;
+            ttInfo.gps.utcstart = info.gps.utcstart;
+            ttInfo.gps.utcend = info.gps.utcend;
+            ttInfo.gps.longitude = info.gps.longitude;
+            ttInfo.gps.latitude = info.gps.latitude;
+            ttInfo.gps.altitude = info.gps.altitude;
+            ttInfo.gps.satellite = info.gps.satellite;
             return ttInfo;
         }
 
-        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this AltairCam.DeviceV2 info) {
+        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this Altaircam.DeviceV2 info) {
             var ttInfo = new ToupTekAlikeDeviceInfo();
             ttInfo.displayname = info.displayname;
             ttInfo.id = info.id;
@@ -52,7 +61,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return ttInfo;
         }
 
-        public static ToupTekAlikeModel ToModel(this AltairCam.ModelV2 modelV2) {
+        public static ToupTekAlikeModel ToModel(this Altaircam.ModelV2 modelV2) {
             var ttModel = new ToupTekAlikeModel();
             ttModel.flag = modelV2.flag;
             ttModel.ioctrol = modelV2.ioctrol;
@@ -72,12 +81,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
     }
 
     public class AltairSDKWrapper : IToupTekAlikeCameraSDK {
-        private Altair.AltairCam sdk;
+        private Altaircam sdk;
 
         public string Category => "Altair";
 
         public IToupTekAlikeCameraSDK Open(string id) {
-            this.sdk = Altair.AltairCam.Open(id);
+            this.sdk = Altaircam.Open(id);
             return this;
         }
 
@@ -122,9 +131,9 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             sdk.get_Temperature(out temp);
         }
 
-        public bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            Altair.AltairCam.FrameInfoV2 altairInfo;
-            var result = sdk.PullImageV2(data, bitDepth, out altairInfo);
+        public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+            Altaircam.FrameInfoV4 altairInfo;
+            var result = sdk.PullImage(data, 0, bitDepth, 0, out altairInfo);
             info = altairInfo.ToFrameInfo();
             return result;
         }
@@ -157,12 +166,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
         public bool StartPullModeWithCallback(ToupTekAlikeCallback toupTekAlikeCallback) {
             this.toupTekAlikeCallback = toupTekAlikeCallback;
-            var delegateCb = new Altair.AltairCam.DelegateEventCallback(EventCallback);
+            var delegateCb = new Altaircam.DelegateEventCallback(EventCallback);
 
             return sdk.StartPullModeWithCallback(delegateCb);
         }
 
-        private void EventCallback(AltairCam.eEVENT nEvent) {
+        private void EventCallback(Altaircam.eEVENT nEvent) {
             toupTekAlikeCallback(nEvent.ToEvent());
         }
 
@@ -171,7 +180,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public string Version() {
-            return AltairCam.Version();
+            return Altaircam.Version();
         }
     }
 }

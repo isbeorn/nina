@@ -530,12 +530,12 @@ namespace NINA.Test {
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "'2012-01-10T01:20:12.111'";
+            var expectedValue = "'2012-01-10T01:20:12.1110000'";
 
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);
             sut.Comment.Should().Be(comment);
-            sut.GetHeaderString().Should().Be("SOME    = '2012-01-10T01:20:12.111' / some comment                              ");
+            sut.GetHeaderString().Should().Be("SOME    = '2012-01-10T01:20:12.1110000' / some comment                          ");
         }
 
         [Test]
