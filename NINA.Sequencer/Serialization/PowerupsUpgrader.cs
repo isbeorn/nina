@@ -53,7 +53,6 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewContainer<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
-            // For now...
             ((ISequenceContainer)newObj).Name += " [Was " + oldName;
             return newObj;
         }
@@ -61,7 +60,6 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewCondition<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
-            // For now...
             ((ISequenceCondition)newObj).Name += " [Was " + oldName;
             return newObj;
         }
@@ -69,7 +67,6 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewTrigger<T>(string oldName) {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
-            // For now...
             ((ISequenceTrigger)newObj).Name += " [Was " + oldName;
             return newObj;
         }
@@ -298,6 +295,19 @@ namespace NINA.Sequencer.Serialization {
                                 newObj.Expr.Definition = exp;
                             }
                             newObj.AttachNewParent(item.Parent);
+                            return newObj;
+                        }
+                    case "ResetVariableToDate": {
+                            ResetVariableToDate newObj = CreateNewItem<ResetVariableToDate>(item);
+                            PropertyInfo pi = t.GetProperty("Variable");
+                            newObj.Variable = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
+                            pi = t.GetProperty("Hours");
+                            newObj.Hours = (int)(pi.GetValue(item) as Int32?);
+                            pi = t.GetProperty("Minutes");
+                            newObj.Minutes = (int)(pi.GetValue(item) as Int32?);
+                            pi = t.GetProperty("Seconds");
+                            newObj.Seconds = (int)(pi.GetValue(item) as Int32?);
                             return newObj;
                         }
                     case "IfContainer": {
