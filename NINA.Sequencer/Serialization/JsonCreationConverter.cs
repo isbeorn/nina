@@ -187,7 +187,6 @@ namespace NINA.Sequencer.Serialization {
             "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin" => (Upgrade.Lite, "PowerupsLite.When.RepeatUntilAllSucceed, PowerupsLite"),
 
             // Complex types
-            "WhenPlugin.When.AddImagePattern, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.AddImagePattern, WhenPlugin"), // No change),
             "WhenPlugin.When.Call, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Call, WhenPlugin"), // No change),
             "WhenPlugin.When.Return, WhenPlugin" => (Upgrade.None, "WhenPlugin.When.Return, WhenPlugin"), // No change),
 

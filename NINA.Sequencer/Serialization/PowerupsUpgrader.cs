@@ -130,6 +130,7 @@ namespace NINA.Sequencer.Serialization {
 
                 Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
+                    // The following are updates from Powerups + instructions to NINA instructions
                     case "DitherAfterExposures": {
                             DitherAfterExposures newObj = CreateNewTrigger<DitherAfterExposures>(trigger.Name);
                             newObj.AfterExposuresExpression.Definition = GetExpr(t, trigger, "AfterExpr");
@@ -308,6 +309,20 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Minutes = (int)(pi.GetValue(item) as Int32?);
                             pi = t.GetProperty("Seconds");
                             newObj.Seconds = (int)(pi.GetValue(item) as Int32?);
+                            return newObj;
+                        }
+                    // The following are updates from Powerups to Powerups Lite
+                    case "AddImagePattern": {
+                            Type tt = Type.GetType("PowerupsLite.When.AddImagePattern, PowerupsLite");
+                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
+                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
+                            PropertyInfo pi = t.GetProperty("Identifier");
+                            PropertyInfo npi = tt.GetProperty("Identifier");
+                            npi.SetValue(newObj, pi.GetValue(item) as string);
+                            PutExpr(tt, newObj, "ExprExpression", GetExpr(t, item, "Expr"));
+                            pi = t.GetProperty("PatternDescription");
+                            npi = tt.GetProperty("PatternDescription");
+                            npi.SetValue(newObj, pi.GetValue(item) as string);
                             return newObj;
                         }
                     case "IfContainer": {
