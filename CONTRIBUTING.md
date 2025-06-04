@@ -9,7 +9,7 @@ When contributing code or documentation to this repository, please first discuss
 
 # Bug Reporting
 
-If you encounter a bug with N.I.N.A. you can report this via the [issue tracker](https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open)  
+If you encounter a bug with N.I.N.A. you can report this via the [issue tracker](https://github.com/isbeorn/nina/issues)  
 
 ## Checklist
 1. Ensure that the problem still persists on the latest version
@@ -48,8 +48,8 @@ Also attach your log file of that session (if applicable), which can be found in
 
 # Contributing documentation
 
-* Documentation is maintained separately in a different [repository](https://bitbucket.org/Isbeorn/nina.docs/src)
-* For a detailed guide on how to contribute to the documentation go to [N.I.N.A.'s documentation contributing guide](https://bitbucket.org/Isbeorn/nina.docs/src/develop/CONTRIBUTING.md)
+* Documentation is maintained separately in a different [repository](https://github.com/isbeorn/nina.docs)
+* For a detailed guide on how to contribute to the documentation go to [N.I.N.A.'s documentation contributing guide](https://github.com/isbeorn/nina.docs/blob/develop/CONTRIBUTING.md)
 
 # Contributing code
 
@@ -57,11 +57,11 @@ Also attach your log file of that session (if applicable), which can be found in
 1. Fork the repository
 2. **Sync LFS files into the fork**
 ```
-git clone -n -b develop https://<YourUserName>@bitbucket.org/<YourUserName>/<YourForkName>.git
+git clone -n -b develop https://<YourUserName>@github.com/<YourUserName>/<YourForkName>.git
 # NOTE: the -n flag for "don't checkout the branch"
 # Ignore any LFS smudge errors for now. They are not yet synced and will get synced in a later step
 cd <YourForkName>
-git remote add upstream https://bitbucket.org/Isbeorn/nina.git
+git remote add upstream https://github.com/isbeorn/nina.git
 git lfs fetch upstream --all
 git lfs push origin --all
 git checkout <desired branch>
@@ -155,7 +155,7 @@ This database will be automatically created by the EntityFramework based on the 
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
     * Due to not being publicly available, they must not be put into a public repository
 * Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
-* (Optional) The NINA project has a post install action to build the offline documentation via mkdocs from the docs submodule. Follow the steps to be able to build the documentation in the [contributing guide of the docs repository](https://bitbucket.org/Isbeorn/nina.docs/src/master/CONTRIBUTING.md)
+* (Optional) The NINA project has a post install action to build the offline documentation via mkdocs from the docs submodule. Follow the steps to be able to build the documentation in the [contributing guide of the docs repository](https://github.com/isbeorn/nina.docs/blob/develop/CONTRIBUTING.md)
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and the [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=FireGiant.FireGiantHeatWaveDev17)
 
 ## Automated Unit Tests (AUT)

@@ -60,7 +60,7 @@
     <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
-    <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>

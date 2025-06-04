@@ -68,7 +68,7 @@
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the basic WPF components of N.I.N.A.</Description>
     <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
-    <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
