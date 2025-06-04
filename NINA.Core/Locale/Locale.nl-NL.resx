@@ -118,52 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>O</value>
+    <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
     <value>N</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>Z</value>
+    <value>S</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
     <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Controle aberratie</value>
+    <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Actief</value>
+    <value>Active</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Actief filter</value>
+    <value>Active filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Actieve reeks details</value>
+    <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Voeg doel toe aan reeks</value>
+    <value>Add as Sequence Target</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Uitgebreide Instellingen</value>
+    <value>Advanced Settings</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrastdetectie (experimenteel)</value>
+    <value>Contrast Detection (Experimental)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Autofocus staat aan, maar de focuser is niet aangesloten</value>
+    <value>Auto-Focus is enabled, yet focuser is not connected</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Ster HFR</value>
+    <value>Star HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>Na</value>
+    <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Gebruik de helderste n sterren</value>
+    <value>Use brightest n stars</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>AF helderste sterren limiet. 0 betekent geen limiet.</value>
+    <value>Limit AF to brightest stars. 0 means no limit.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
     <value>AllPro Spike-a-Flat Panel</value>
@@ -172,102 +172,103 @@
     <value>Alnitak Flat Panel</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair camera instellingen</value>
+    <value>Altair Camera Setup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternatief UI-kleurenschema</value>
+    <value>Alternative UI Color Schema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Hoogte</value>
+    <value>Altitude</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Meet hoogtefout</value>
+    <value>Measure Altitude Error</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>Hoogtemeting</value>
+    <value>Altitude Measurement</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>Meet de hoogtefout in drie stappen:
-1. Neemt een foto en gebruikt 'plate-solving' voor de actuele coördinaten van de huidige positie
-2. Draait de telescoop 0,5 graden langs de RA-as
-3. Neem nog een foto en gebruikt 'plate-solving' voor de nieuwe positie.
-Beide coördinaten worden gebruikt om de hoogtefout te berekenen en te tonen</value>
+    <value>Measures Altitude Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual altitude error will be calculated and displayed</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>Draai de telescoop naar Oost of West dichtbij declinatie 0 en dichtbij de horizon.</value>
+    <value>Point telescope east or west near declination 0 and near horizon.</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
-    <value>Hoogtemeting zijde</value>
+    <value>Altitude Measurement side</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>Weergave grenzen sterrenbeeld</value>
+    <value>Display Constellation Boundaries</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Geef weer en annoteer sterrenbeelden</value>
+    <value>Display and annotate Constellations</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annoteer Deep Sky Objecten</value>
+    <value>Annotate Deep Sky Objects</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Raster weergeven</value>
+    <value>Display Grid</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annoteer afbeelding</value>
+    <value>Annotate Image</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>Indien aangevinkt en de sterdetectie voor een afbeelding is toegepast zal de afbeelding worden geannoteerd met de gevonden sterren en hun respectievelijke HFR waarde</value>
+    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API sleutel</value>
+    <value>API Key</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>Schijnbare magnitude</value>
+    <value>Apparent Magnitude</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>Schijnbare grootte</value>
+    <value>Apparent Size</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>Het programma ondervindt een onverwerkte uitzondering en zal waarschijnlijk afgesloten moeten worden. De foutmelding is opgeslagen in "%localappdata%\NINA\Logs".
-Moet het programma proberen te herstellen van de fout? (Dit kan tot onverwacht gedrag leiden)</value>
+    <value>The Application ran into an unhandled exception and most likely has to shut down.
+The error has been logged to "%localappdata%\NINA\Logs".
+Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Programma start datum in JJJJ-MM-DD formaat</value>
+    <value>Application start date with format YYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
-    <value>arc minuut</value>
+    <value>arcmin</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
     <value>Max arcmin</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>arc seconde</value>
+    <value>arcsec</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>Oplopend</value>
+    <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Fout tijdens het ontvangen van data van de camera!</value>
+    <value>Error retrieving image data from camera!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Op dit moment worden alleen 16 bit monochrome sensors ondersteund</value>
+    <value>Only 16 bit Monochrome sensors currently supported</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>ASPS locatie</value>
+    <value>ASPS Location</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>ASPS exe niet gevonden</value>
+    <value>ASPS exe not found</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, het Astrometric STAcking Program, solver en FITS viewer</value>
+    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
-    <value>ASTAP locatie</value>
+    <value>ASTAP Location</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>ASTAP exe niet gevonden</value>
+    <value>ASTAP exe not found</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
@@ -279,144 +280,148 @@ Moet het programma proberen te herstellen van de fout? (Dit kan tot onverwacht g
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Autofocus</value>
+    <value>Auto Focus</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>Na HFR toename</value>
+    <value>After HFR increase</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>HFR hoeveelheid</value>
+    <value>HFR amount</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>Na # opnames</value>
+    <value>After # exposures</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
-    <value>Na verlopen tijd</value>
+    <value>After elapsed Time</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
-    <value>Na temperatuurwijziging</value>
+    <value>After temperature change</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>Temperatuurhoeveelheid</value>
+    <value>Temperature amount</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
-    <value>Autofocus belichtingstijd</value>
+    <value>Auto Focus Exposure Time</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Belichtingstijd gebruikt voor automatisch focus wanneer geen filter specifieke tijd is ingesteld of de specifieke tijd nul is</value>
+    <value>Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
-    <value>Autofocusfilter</value>
+    <value>Auto Focus Filter</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Kan Autofocus niet starten. Camera of focuser is niet verbonden!</value>
+    <value>Cannot start Auto Focus. Camera or Focuser is not connected!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
     <value>AF Inner Crop Ratio</value>
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
-    <value>Indien ingesteld op een waarde minder dan één, sterdetectie tijdens autofocus zal alleen
-een gecentraliseerde subframe van de totale sensor gebruiken (indien ondersteund door camera). Indien dit niet wordt ondersteund door de camera, zullen sterren bij de rand genegeerd worden tijdens de sterdetectie. Indien gebruikt in combinatie met een waarde lager dan 1 zal een rechthoekig gedeelte van de afbeelding (tussen de binnenste rechthoek en de buitenste rechthoek) worden gebruikt voor autofocus.</value>
+    <value>If set to a value less than one, star detection during autofocus will only use
+a centered subframe of the total sensor (if supported by camera). If unsupported
+by the camera, stars near the edge will be ignored during star detection. If used in combination
+with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
+outer rectangle) will be used for autofocus.</value>
   </data>
   <data name="LblAutoFocusMethod" xml:space="preserve">
-    <value>AF methode</value>
+    <value>AF Method</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>Wanneer ster HFR is geselecteerd, zal NINA sterren in de FOV,
-hun HFR berekenen op meerdere focuspunten, en de minimale HFR vinden.
-De contrastdetectiemethode gebruikt beeldverwerkingstechnieken om een contrast
-over meerdere richtpunten te bepalen en vindt het hoogste contrast. Deze methode werkt ook voor
-aardse objecten of objecten in het zonnestelsel maar kan gevoelig zijn voor ruis.</value>
+    <value>When Star HFR is selected, NINA will detect stars in the FOV,
+compute their HFR across multiple focus points, and find the minimum HFR.
+The Contrast Detection method uses image processing techniques to estimate contrast
+across multiple focus points, and finds the highest contrast. This method works on
+terrestrial objects or solar system objects as well, but can be sensitive to noise.</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>Nieuw focuspunt HFR {0} is aanzienlijk slechter dan de oorspronkelijke HFR {1}</value>
+    <value>New focus point HFR {0} is significantly worse than original HFR {1}</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>Niet genoeg HFR-verschil voor de verzameling van focuspunten. Ofwel de stapgrootte is te laag of de sterren zijn te onscherp.</value>
+    <value>Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
-    <value># belichtingen</value>
+    <value># exposures</value>
   </data>
   <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
-    <value>AF aantal pogingen</value>
+    <value>AF Number of Attempts</value>
   </data>
   <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
-    <value>Als autofocus faalt omdat HFR slechter was dan het oorspronkelijke focus, hoeveel keer moet er dan opnieuw geprobeerd worden om te komen tot een succesvolle autofocus routine totdat er teruggekeerd wordt naar de oorspronkelijke focuspositie.</value>
+    <value>If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
-    <value>AF aantal frames per punt</value>
+    <value>AF Number of Frames per Point</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>Hoeveel frames je moet nemen voor elk focuspunt. Indien groter dan één zullen er meerdere opnames worden genomen voor een focuspunt en het gemiddelde van hun HFR zal worden gebruikt om de focuspunt te berekenen</value>
+    <value>How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
-    <value>Bij filterwijziging</value>
+    <value>On filter change</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>Bij start</value>
+    <value>On start</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>AF verhouding buitenste bijsnijding</value>
+    <value>AF Outer Crop Ratio</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
-    <value>Autofocus opnieuw proberen</value>
+    <value>Reattempting Autofocus</value>
   </data>
   <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
-    <value>Originele focuspositie herstellen</value>
+    <value>Restoring original focus position</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Tijd</value>
+    <value>Time</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
-    <value>Terug naar originele filter</value>
+    <value>Switching back to original filter</value>
   </data>
   <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
-    <value>Schakelen naar autofocus filter</value>
+    <value>Switching to Auto Focus filter</value>
   </data>
   <data name="LblAutoMeridianFlip" xml:space="preserve">
-    <value>Automatische meridian flip</value>
+    <value>Auto Meridian Flip</value>
   </data>
   <data name="LblAutoStretchFactor" xml:space="preserve">
     <value>Autostretch factor</value>
   </data>
   <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
-    <value>De factor voor het autostretch algoritme dat wordt gebruikt om een afbeelding te tonen en sterren te detecteren. Moet een waarde zijn tussen 0 en 1. Een waarde van 0,2 zou het merendeel van de tijd moeten werken.</value>
+    <value>The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</value>
   </data>
   <data name="LblAutoUpdateSource" xml:space="preserve">
-    <value>Automatische update bron</value>
+    <value>Auto Update Source</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
     <value>Azimuth</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
-    <value>Meet azimuth fout</value>
+    <value>Measure Azimuth Error</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>Azimuth meting</value>
+    <value>Azimuth Measurement</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
-    <value>Meet azimuth fout in drie stappen.
-1. Maakt een opname en platesolves voor actuele coördinaten van de huidige positie
-2. Zwenkt telescoop gebruik makend van de sscensie-as met 0,5 graden
-3. Neem een andere opname op de nieuwe positie, platesolves voor de actuele positie. Gebruikmakend van deze twee punten wordt de werkelijke azimuthfout berekend en weergegeven</value>
+    <value>Measures Azimuth Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual azimuth error will be calculated and displayed</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
-    <value>Richt telescoop naar het zuiden, in de buurt van declinatie 0 en in de buurt van de meridiaan</value>
+    <value>Point Telescope South near declination 0 and near meridian</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Achtergrond</value>
+    <value>Background</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
-    <value>Er is een fout opgetreden tijdens het meten van de backlash. Backlash-waarden kunnen verkeerd zijn.</value>
+    <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>De volgende focusser backlash-waarden zullen worden opgeslagen. IN: {0}, UIT: {1}</value>
+    <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>BIAS gemiddelde waarde (in 16bit)</value>
+    <value>BIAS mean value (in 16bit)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIAS median value (in 16bit)</value>
@@ -428,17 +433,17 @@ aardse objecten of objecten in het zonnestelsel maar kan gevoelig zijn voor ruis
     <value>Camera binning</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>Bit diepte</value>
+    <value>Bit Depth</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>Bit diepte in ADU</value>
+    <value>Bit Depth in ADU</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
-    <value>Zwart clipping</value>
+    <value>Black clipping</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
-    <value>Afbeelding moet worden opgelost om te kaderen.
-Moeten referentiecoördinaten worden genomen?
+    <value>Image has to be solved for framing.
+Should reference coordinates be taken?
 RA: {0}
 Dec: {1}</value>
   </data>
@@ -446,28 +451,28 @@ Dec: {1}</value>
     <value>Blind Solver</value>
   </data>
   <data name="LblBorder" xml:space="preserve">
-    <value>Rand</value>
+    <value>Border</value>
   </data>
   <data name="LblBulbMode" xml:space="preserve">
-    <value>Bulb modus</value>
+    <value>Bulb Mode</value>
   </data>
   <data name="LblBulbSerialPort" xml:space="preserve">
-    <value>Bulb seriële poort</value>
+    <value>Bulb Serial Port</value>
   </data>
   <data name="LblButtonBackground" xml:space="preserve">
-    <value>Achtergrond knop</value>
+    <value>Button Background</value>
   </data>
   <data name="LblButtonForeground" xml:space="preserve">
-    <value>Knop voorgrond</value>
+    <value>Button Foreground</value>
   </data>
   <data name="LblButtonForegroundDisabled" xml:space="preserve">
-    <value>Knop voorgrond uitgeschakeld</value>
+    <value>Button Foreground Disabled</value>
   </data>
   <data name="LblButtonHighlight" xml:space="preserve">
-    <value>Knop accentuering</value>
+    <value>Button Highlight</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte shuffling</value>
+    <value>Byte Shuffling</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>Cache</value>
@@ -485,58 +490,63 @@ Dec: {1}</value>
     <value>Camera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Camera batterij</value>
+    <value>Camera Battery</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Camera is bezig</value>
+    <value>Camera is busy</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Camera verbonden</value>
+    <value>Camera connected</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>Camera verbinding verbroken! Verbind de camera opnieuw!</value>
+    <value>Camera connection lost! Please reconnect camera!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Camera heeft een koeler maar die staat niet aan</value>
+    <value>Camera has cooler, yet it is not enabled</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
-    <value>Camera download mislukt. Belichtingstijd: {0}s Type: {1} Gain: {2} Filter: {3}</value>
+    <value>Camera download failed.
+Exposure time: {0}s
+Type: {1}
+Gain: {2}
+Filter: {3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>Camerakoeler draait op {0}% kracht en kan wellicht niet compenseren voor het verschil met de omgevingstemperatuur</value>
+    <value>Camera cooler is running at {0}% power and may not be
+able to compensate for ambient temperature variations</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
-    <value>Temperatuur van de camera is nu {0}°C maar het doel is {1}°C</value>
+    <value>Camera is at {0}°C yet target temperature is {1}°C</value>
   </data>
   <data name="LblCameraOptions" xml:space="preserve">
-    <value>Camera opties</value>
+    <value>Camera Options</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
     <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
-    <value>Camera status</value>
+    <value>Camera State</value>
   </data>
   <data name="LblCameraXSize" xml:space="preserve">
-    <value>Camera X grootte</value>
+    <value>Camera X Size</value>
   </data>
   <data name="LblCameraYSize" xml:space="preserve">
-    <value>Camera Y grootte</value>
+    <value>Camera Y Size</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>Camera info</value>
+    <value>Camera Info</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>Camera instellingen</value>
+    <value>Camera Settings</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>Annuleer</value>
+    <value>Cancel</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
-    <value>Er is een Canonfout opgetreden: {0}</value>
+    <value>A Canon error occored: {0}</value>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
-    <value>Afbeelding maken foto en platesolve</value>
+    <value>Capture Image and Platesolve</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
     <value>Cover Sensor and Capture Image</value>
@@ -548,45 +558,45 @@ Dec: {1}</value>
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Centreer Dec</value>
+    <value>Center Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Centreer Dec dms</value>
+    <value>Center Dec dms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Centreer RA</value>
+    <value>Center RA</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>Centreer RA hms</value>
+    <value>Center RA hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
-    <value>Doelwit centreren</value>
+    <value>Center target</value>
   </data>
   <data name="LblChange" xml:space="preserve">
-    <value>Wijzig</value>
+    <value>Change</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>De volgorde voor de doel(en) '{0}' zijn gewijzigd sinds het voor het laatst is opgeslagen (of is nog niet opgeslagen).
+    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
         
-Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
+Do you want to close the sequence and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
-    <value>Afsluiten van aangepaste sequentie</value>
+    <value>Closing modified sequence</value>
   </data>
   <data name="LblChangeToBulbMode" xml:space="preserve">
-    <value>Verander de draaischijf naar bulb-modus</value>
+    <value>Please change the mode dial to bulb mode</value>
   </data>
   <data name="LblChangeToManualMode" xml:space="preserve">
-    <value>Verander de draaischijf naar de handmatige modus</value>
+    <value>Please change the mode dial to manual mode</value>
   </data>
   <data name="LblCheckMeridianFlip" xml:space="preserve">
-    <value>Controleer meridian flip</value>
+    <value>Check Meridian Flip</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
     <value>Checksum</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
-    <value>Checksum komt niet overeen met de verwachte waarde. Het gedownloade bestand kan beschadigd zijn!</value>
+    <value>Checksum does not match expected value. Downloaded file may be corrupted!</value>
   </data>
   <data name="LblChecksumSHA3_256" xml:space="preserve">
     <value>SHA3-256</value>
@@ -604,31 +614,31 @@ Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
     <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
-    <value>Chip-temperatuur</value>
+    <value>Chip Temperature</value>
   </data>
   <data name="LblChipTempShort" xml:space="preserve">
-    <value>Chip temp.</value>
+    <value>Chip Temp.</value>
   </data>
   <data name="LblChooseProfile" xml:space="preserve">
-    <value>Kies profiel</value>
+    <value>Choose Profile</value>
   </data>
   <data name="LblClear" xml:space="preserve">
-    <value>Wis</value>
+    <value>Clear</value>
   </data>
   <data name="LblClearCache" xml:space="preserve">
-    <value>Geheugen wissen</value>
+    <value>Clear Cache</value>
   </data>
   <data name="LblClockwise" xml:space="preserve">
-    <value>Met de wijzers van de klok mee</value>
+    <value>Clockwise</value>
   </data>
   <data name="LblCloudCover" xml:space="preserve">
-    <value>Wolkendek</value>
+    <value>Cloud Cover</value>
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
-    <value>Kleurensensor wordt nog niet ondersteund</value>
+    <value>Color sensor is not supported yet</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compressie</value>
+    <value>Compression</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -640,205 +650,205 @@ Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
     <value>LZW</value>
   </data>
   <data name="LblCompressionZIP" xml:space="preserve">
-    <value>Postcode</value>
+    <value>ZIP</value>
   </data>
   <data name="LblCompressionZLib" xml:space="preserve">
     <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
-    <value>Verbinden</value>
+    <value>Connect</value>
   </data>
   <data name="LblConnected" xml:space="preserve">
-    <value>Verbonden</value>
+    <value>Connected</value>
   </data>
   <data name="LblConnecting" xml:space="preserve">
-    <value>Bezig met verbinden</value>
+    <value>Connecting</value>
   </data>
   <data name="LblConstellation" xml:space="preserve">
-    <value>Sterrenbeeld</value>
+    <value>Constellation</value>
   </data>
   <data name="LblConstellation_AND" xml:space="preserve">
     <value>Andromeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>Luchtpomp</value>
+    <value>Antlia</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Paradijsvogel</value>
+    <value>Apus</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
-    <value>Arend</value>
+    <value>Aquila</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>Waterman</value>
+    <value>Aquarius</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Altaar</value>
+    <value>Ara</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
-    <value>Ram</value>
+    <value>Aries</value>
   </data>
   <data name="LblConstellation_AUR" xml:space="preserve">
-    <value>Voerman</value>
+    <value>Auriga</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>Ossenhoeder</value>
+    <value>Bootes</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Graveerstift</value>
+    <value>Caelum</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Giraffe</value>
+    <value>Camelopardalis</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
-    <value>Steenbok</value>
+    <value>Capricornus</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Kiel</value>
+    <value>Carina</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
     <value>Cassiopeia</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
-    <value>Centaur</value>
+    <value>Centaurus</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
     <value>Cepheus</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>Walvis</value>
+    <value>Cetus</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>Kameleon</value>
+    <value>Chamaeleon</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Passer</value>
+    <value>Circinus</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Grote Hond</value>
+    <value>Canis major</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>Kleine Hond</value>
+    <value>Canis minor</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
-    <value>Kreeft</value>
+    <value>Cancer</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>Duif</value>
+    <value>Columba</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>Hoofdhaar</value>
+    <value>Coma berenices</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
-    <value>Zuiderkroon</value>
+    <value>Corona australis</value>
   </data>
   <data name="LblConstellation_CRB" xml:space="preserve">
-    <value>Noorderkroon</value>
+    <value>Corona borealis</value>
   </data>
   <data name="LblConstellation_CRT" xml:space="preserve">
-    <value>Beker</value>
+    <value>Crater</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>Zuiderkruis</value>
+    <value>Crux</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>Raaf</value>
+    <value>Corvus</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Jachthonden</value>
+    <value>Canes venatici</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Zwaan</value>
+    <value>Cygnus</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>Dolfijn</value>
+    <value>Delphinus</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
-    <value>Goudvis</value>
+    <value>Dorado</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Draak</value>
+    <value>Draco</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Veulen</value>
+    <value>Equuleus</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
     <value>Eridanus</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Oven</value>
+    <value>Fornax</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Tweelingen</value>
+    <value>Gemini</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Kraanvogel</value>
+    <value>Grus</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
     <value>Hercules</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Slingeruurwerk</value>
+    <value>Horologium</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Waterslang</value>
+    <value>Hydra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Kleine Waterslang</value>
+    <value>Hydrus</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Indiaan</value>
+    <value>Indus</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Hagedis</value>
+    <value>Lacerta</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
-    <value>Leeuw</value>
+    <value>Leo</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>Haas</value>
+    <value>Lepus</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>Weegschaal</value>
+    <value>Libra</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
-    <value>Kleine Leeuw</value>
+    <value>Leo minor</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Wolf</value>
+    <value>Lupus</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
     <value>Lynx</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>Lier</value>
+    <value>Lyra</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
-    <value>Tafelberg</value>
+    <value>Mensa</value>
   </data>
   <data name="LblConstellation_MIC" xml:space="preserve">
-    <value>Microscoop</value>
+    <value>Microscopium</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>Eenhoorn</value>
+    <value>Monoceros</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>Vlieg</value>
+    <value>Musca</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Winkelhaak</value>
+    <value>Norma</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Octant</value>
+    <value>Octans</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Slangendrager</value>
+    <value>Ophiuchus</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
     <value>Orion</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>Pauw</value>
+    <value>Pavo</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
     <value>Pegasus</value>
@@ -850,88 +860,88 @@ Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
     <value>Phoenix</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Schilder</value>
+    <value>Pictor</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Zuidervis</value>
+    <value>Pisces austrinus</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
-    <value>Vissen</value>
+    <value>Pisces</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Achtersteven</value>
+    <value>Puppis</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>Kompas</value>
+    <value>Pyxis</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
-    <value>Net</value>
+    <value>Reticulum</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>Beeldhouwer</value>
+    <value>Sculptor</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
-    <value>Schorpioen</value>
+    <value>Scorpius</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>Schild</value>
+    <value>Scutum</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
-    <value>Slang</value>
+    <value>Serpens</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>Hoofd van de slang</value>
+    <value>Serpens caput</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>Staart van de slang</value>
+    <value>Serpens cauda</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
-    <value>Sextant</value>
+    <value>Sextans</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Pijl</value>
+    <value>Sagitta</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
-    <value>Boogschutter</value>
+    <value>Sagittarius</value>
   </data>
   <data name="LblConstellation_TAU" xml:space="preserve">
-    <value>Stier</value>
+    <value>Taurus</value>
   </data>
   <data name="LblConstellation_TEL" xml:space="preserve">
-    <value>Telescoop</value>
+    <value>Telescopium</value>
   </data>
   <data name="LblConstellation_TRA" xml:space="preserve">
-    <value>Zuiderdriehoek</value>
+    <value>Triangulum australe</value>
   </data>
   <data name="LblConstellation_TRI" xml:space="preserve">
-    <value>Driehoek</value>
+    <value>Triangulum</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>Toekan</value>
+    <value>Tucana</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
-    <value>Grote Beer</value>
+    <value>Ursa major</value>
   </data>
   <data name="LblConstellation_UMI" xml:space="preserve">
-    <value>Kleine Beer</value>
+    <value>Ursa minor</value>
   </data>
   <data name="LblConstellation_VEL" xml:space="preserve">
-    <value>Zeilen</value>
+    <value>Vela</value>
   </data>
   <data name="LblConstellation_VIR" xml:space="preserve">
-    <value>Maagd</value>
+    <value>Virgo</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>Vliegende Vis</value>
+    <value>Volans</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
-    <value>Vosje</value>
+    <value>Vulpecula</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>Ga door</value>
+    <value>Continue</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
-    <value>Detecteer contrastmethode</value>
+    <value>Contrast Detect Method</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
     <value>Turns the cooler on and cools the camera to the given target temperature.
@@ -939,80 +949,80 @@ A duration is optional. Most camera drivers already regulate the cooler power au
 In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Koeler</value>
+    <value>Cooler</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>Koeler stroomvoorziening</value>
+    <value>Cooler Power</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>Koelen</value>
+    <value>Cooling</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>Coördinaten</value>
+    <value>Coordinates</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>Tegen de wijzers van de klok in</value>
+    <value>Counterclockwise</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
     <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>Dek nu je telescoop af</value>
+    <value>Cover your scope now</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>Huidig gemiddelde</value>
+    <value>Current Mean</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>Huidige positie</value>
+    <value>Current Position</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Est. finish time (this target)</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
-    <value>Huidig UI kleurenschema</value>
+    <value>Current UI Color Schema</value>
   </data>
   <data name="LblCurveFittingMethod" xml:space="preserve">
-    <value>AF curve fitting</value>
+    <value>AF Curve fitting</value>
   </data>
   <data name="LblCygwinBashNotFound" xml:space="preserve">
-    <value>Cygwin bash niet gevonden</value>
+    <value>Cygwin bash not found</value>
   </data>
   <data name="LblCygwinDirectory" xml:space="preserve">
-    <value>Cygwin directory</value>
+    <value>Cygwin Directory</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
     <value>Darks to take</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
-    <value>D.A.R.V. zwenken</value>
+    <value>D.A.R.V. Slew</value>
   </data>
   <data name="LblDARVSlewButtonTooltip" xml:space="preserve">
-    <value>Dit zal een opname maken tijdens het langzaam zwenken van de telescoop naar één kant en terug
-wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijningsfout</value>
+    <value>This will take an exposure while slewing the scope slowly to one side and back
+when the lines are not aligned there is some Polar Alignment error</value>
   </data>
   <data name="LblDARVSlewDescription" xml:space="preserve">
-    <value>Specificeer de duur van de D.A.R.V. procedure. De telescoop zal de helft van de tijd in één richting zwenken op de RA-as en vervolgens terug zwenken. Wanneer er geen sprake is van een polair-uitlijningsfout wordt het weergegeven als een rechte lijn. Anders een V-vormige lijn. Voor azimuth foutmeting zwenk de telescoop in de buurt van meridiaan, anders oost of west.</value>
+    <value>Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</value>
   </data>
   <data name="LblDataProvidedBy" xml:space="preserve">
-    <value>Eerste set DSO gegevens geleverd door</value>
+    <value>Initial set of DSO Data provided by</value>
   </data>
   <data name="LblDataToDownloadRatio" xml:space="preserve">
-    <value>Downloaden naar data ratio</value>
+    <value>Download to Data ratio</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
-    <value>Datum in JJJJ-MM-DD format</value>
+    <value>Date with format YYYY-MM-DD</value>
   </data>
   <data name="LblDateFormatDescription2" xml:space="preserve">
-    <value>Datum verschoven met 12 uur met het formaat JJJJ-MM-DD</value>
+    <value>Date shifted back by 12 hours with format YYYY-MM-DD</value>
   </data>
   <data name="LblDateTimeFormatDescription" xml:space="preserve">
-    <value>Datum met JJJJ-MM-DD_H-mm-ss format</value>
+    <value>Date with format YYYY-MM-DD_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
-    <value>Dageraad</value>
+    <value>Dawn</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Dagen</value>
+    <value>Days</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1021,16 +1031,16 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Debayered HFR</value>
   </data>
   <data name="LblDebayeredHFRTooltip" xml:space="preserve">
-    <value>Gebruik gedebayerde afbeelding om HFR berekening uit te voeren. Preciezer maar meer hulpbronintensief.</value>
+    <value>Use debayered image to perform HFR computation. More precise, but more resource-intensive.</value>
   </data>
   <data name="LblDebayerImage" xml:space="preserve">
-    <value>Debayer afbeelding</value>
+    <value>Debayer Image</value>
   </data>
   <data name="LblDebayerImageTooltip" xml:space="preserve">
-    <value>Debayer afbeelding in voorbeeld (heeft geen invloed op het opgeslagen bestand)</value>
+    <value>Debayer Image on preview (won't affect saved file)</value>
   </data>
   <data name="LblDebayeringImage" xml:space="preserve">
-    <value>Afbeelding debayeren</value>
+    <value>Debayering image</value>
   </data>
   <data name="LblDebug" xml:space="preserve">
     <value>Debug</value>
@@ -1039,58 +1049,58 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Dec</value>
   </data>
   <data name="LblDecCorrections" xml:space="preserve">
-    <value>Dec correcties</value>
+    <value>Dec Corrections</value>
   </data>
   <data name="LblDecError" xml:space="preserve">
-    <value>Dec fout</value>
+    <value>Dec Error</value>
   </data>
   <data name="LblDeclination" xml:space="preserve">
-    <value>Daling</value>
+    <value>Declination</value>
   </data>
   <data name="LblDecPixError" xml:space="preserve">
-    <value>Dec pixel fout</value>
+    <value>Dec Pix Error</value>
   </data>
   <data name="LblDefaultAutoFocusExposureTime" xml:space="preserve">
-    <value>Standaard autofocus belichtingstijd</value>
+    <value>Default Auto Focus Exposure Time</value>
   </data>
   <data name="LblDefaultSequenceFolder" xml:space="preserve">
-    <value>Standaard map voor reeks bestanden</value>
+    <value>Default folder for sequence files</value>
   </data>
   <data name="LblDefaultSequenceFolderTooltip" xml:space="preserve">
-    <value>Reeksen zullen worden geladen en opgeslagen in de hier opgegeven map</value>
+    <value>Sequences will be loaded from and saved to the folder specified here</value>
   </data>
   <data name="LblDegree" xml:space="preserve">
-    <value>graad</value>
+    <value>degree</value>
   </data>
   <data name="LblDegreeShort" xml:space="preserve">
     <value>°</value>
   </data>
   <data name="LblDeleteProfileInUseWarning" xml:space="preserve">
-    <value>Profiel kan niet verwijderd worden. Het is momenteel al in gebruik door een ander NINA sessie!</value>
+    <value>Cannot delete profile. It is already in use by another N.I.N.A. instance!</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
-    <value>Aflopend</value>
+    <value>Descending</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
-    <value>Beschrijving</value>
+    <value>Description</value>
   </data>
   <data name="LblDetails" xml:space="preserve">
     <value>Details</value>
   </data>
   <data name="LblDetectedStars" xml:space="preserve">
-    <value>Gedetecteerde sterren</value>
+    <value>Detected Stars</value>
   </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
-    <value>Apparaat interval</value>
+    <value>Device polling interval</value>
   </data>
   <data name="LblDewHeater" xml:space="preserve">
-    <value>Verwarmingslint</value>
+    <value>Dew Heater</value>
   </data>
   <data name="LblDewHeaterShort" xml:space="preserve">
-    <value>Verwarmingslint</value>
+    <value>Dew Heater</value>
   </data>
   <data name="LblDewpoint" xml:space="preserve">
-    <value>Dauwpunt</value>
+    <value>Dewpoint</value>
   </data>
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
@@ -1120,28 +1130,28 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
-    <value>Map voor opgeslagen afbeeldingen is niet gevonden!</value>
+    <value>Directory to save image to not found!</value>
   </data>
   <data name="LblDirectoryNotWritable" xml:space="preserve">
-    <value>De map waar u de afbeeldingen wilt opslaan heeft geen schrijfrechten!</value>
+    <value>Directory to save image to does not have write permissions!</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
-    <value>AF guiding uitschakelen</value>
+    <value>AF Disable Guiding</value>
   </data>
   <data name="LblDisableAFGuidingTooltip" xml:space="preserve">
-    <value>Guiding uitschakelen tijden auto-focus</value>
+    <value>Disable guiding during auto-focus</value>
   </data>
   <data name="LblDisconnect" xml:space="preserve">
-    <value>Verbreek verbinding</value>
+    <value>Disconnect</value>
   </data>
   <data name="LblDisconnectAll" xml:space="preserve">
-    <value>Alle apparaten loskoppelen?</value>
+    <value>Disconnect all devices?</value>
   </data>
   <data name="LblDistance" xml:space="preserve">
-    <value>Afstand</value>
+    <value>Distance</value>
   </data>
   <data name="LblDither" xml:space="preserve">
     <value>Dither</value>
@@ -1150,7 +1160,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Dither Every #</value>
   </data>
   <data name="LblDitherOnButGuiderNotConnected" xml:space="preserve">
-    <value>Dithering is ingeschakeld, maar volgkijker is niet verbonden</value>
+    <value>Dithering is enabled, yet guider is not connected</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Dither Pixels</value>
@@ -1159,7 +1169,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
-    <value>Dither alleen RA</value>
+    <value>Dither RA Only</value>
   </data>
   <data name="LblDome" xml:space="preserve">
     <value>Dome</value>
@@ -1240,97 +1250,97 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Dome not connected</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
-    <value>Downloaden</value>
+    <value>Download</value>
   </data>
   <data name="LblDownloadImage" xml:space="preserve">
-    <value>Download afbeelding</value>
+    <value>Download Image</value>
   </data>
   <data name="LblDownloadImageTooltip" xml:space="preserve">
-    <value>Download afbeelding van de NASA skysurvey voor de opgegeven coördinaten</value>
+    <value>Download Image from the NASA skysurvey for the given coordinates</value>
   </data>
   <data name="LblDownloading" xml:space="preserve">
-    <value>Downloaden</value>
+    <value>Downloading</value>
   </data>
   <data name="LblDownloadMoreIndexFiles" xml:space="preserve">
-    <value>Download meer indexbestanden</value>
+    <value>Download more index files</value>
   </data>
   <data name="LblDownSampleFactor" xml:space="preserve">
-    <value>Verkleinfactor</value>
+    <value>Downsample factor</value>
   </data>
   <data name="LblDriverInfo" xml:space="preserve">
-    <value>Info stuurprogramma</value>
+    <value>Driver Info</value>
   </data>
   <data name="LblDriverVersion" xml:space="preserve">
-    <value>Versie stuurprogramma</value>
+    <value>Driver Version</value>
   </data>
   <data name="LblDuration" xml:space="preserve">
-    <value>Duur</value>
+    <value>Duration</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
-    <value>Schemer</value>
+    <value>Dusk</value>
   </data>
   <data name="LblEast" xml:space="preserve">
-    <value>Oost</value>
+    <value>East</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is niet ingesteld op handmatig of bulb-modus! Stel het in op handmatig of bulb-modus voordat u verbinding maakt</value>
+    <value>Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
-    <value>Schakel bit schalen in</value>
+    <value>Enable bit scaling</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
     <value>Save 10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Omegon, SVBony, RisingCam and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
-    <value>Ingeschakeld</value>
+    <value>Enabled</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Sluit deksel van het flat device</value>
+    <value>Closing flat device cover</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
-    <value>Eind van de sequentie opties uitvoeren?</value>
+    <value>Run end of sequence options?</value>
   </data>
   <data name="LblEndOfSequenceOptions" xml:space="preserve">
-    <value>Eind van de sequentie opties</value>
+    <value>End of Sequence Options</value>
   </data>
   <data name="LblEndOfSequenceParkTelescope" xml:space="preserve">
-    <value>Telescoop parkeren</value>
+    <value>Park Telescope</value>
   </data>
   <data name="LblEndOfSequenceWarmCamera" xml:space="preserve">
-    <value>Camera opwarmen</value>
+    <value>Warm Camera</value>
   </data>
   <data name="LblEpoch" xml:space="preserve">
-    <value>Tijdperk</value>
+    <value>Epoch</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
-    <value>Uitrusting</value>
+    <value>Equipment</value>
   </data>
   <data name="LblError" xml:space="preserve">
-    <value>Fout</value>
+    <value>Error</value>
   </data>
   <data name="LblErrorDistance" xml:space="preserve">
-    <value>Foutafstand</value>
+    <value>Error Distance</value>
   </data>
   <data name="LblErrorLT" xml:space="preserve">
-    <value>fout &lt;</value>
+    <value>error &lt;</value>
   </data>
   <data name="LblEsoSkySurvey" xml:space="preserve">
     <value>ESO Sky Survey</value>
   </data>
   <data name="LblEstimatedDownloadTime" xml:space="preserve">
-    <value>Geschatte downloadtijd</value>
+    <value>Estimated Download Time</value>
   </data>
   <data name="LblEstimatedExposureTime" xml:space="preserve">
-    <value>Geschatte belichtingstijd</value>
+    <value>Estimated Exposure Time</value>
   </data>
   <data name="LblETA" xml:space="preserve">
-    <value>Geschatte eindtijd</value>
+    <value>Estimated Finish Time</value>
   </data>
   <data name="LblExposing" xml:space="preserve">
-    <value>Belichten</value>
+    <value>Exposing</value>
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
-    <value>Optimale belichtingstijdberekenaar</value>
+    <value>Optimal Exposure Calculator</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
     <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
@@ -1341,305 +1351,305 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
-    <value>Belichtingen</value>
+    <value>Exposures</value>
   </data>
   <data name="LblExposureTime" xml:space="preserve">
-    <value>Belichtingstijd</value>
+    <value>Exposure Time</value>
   </data>
   <data name="LblExposureTimeDescription" xml:space="preserve">
-    <value>Belichtingstijd in seconden</value>
+    <value>Exposure Time in seconds</value>
   </data>
   <data name="LblFieldOfView" xml:space="preserve">
-    <value>Gezichtsveld</value>
+    <value>Field Of View</value>
   </data>
   <data name="LblFile" xml:space="preserve">
-    <value>Bestand</value>
+    <value>File</value>
   </data>
   <data name="LblFileCameraDescription" xml:space="preserve">
-    <value>Deze gesimuleerde camera schakelt het gebruik van camera's die geen SDK hebben, terwijl de hele NINA workflow toch wordt gebruikt.
-Deze gesimuleerde camera zal de opgegeven map voor nieuwe bestanden bekijken. Deze bestanden worden opgeslagen in een interne wachtrij.
-Elke keer dat de applicatie een foto van de camera wil downloaden, wordt het eerste item van deze wachtrij geladen in N.I.N.A.
-Daarnaast kan een handmatige Bulb instelling worden geactiveerd zodat de geselecteerde Bulb instelling wordt gebruikt in Instellingen-&gt;Uitrusting,&gt;Camera bij start.
-Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting overslaan en wacht gewoon tot een ander bestand in de opgegeven map verschijnt</value>
+    <value>This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
+This simulated camera will watch the specified folder for newly created files. These files will be stored inside an internal queue.
+Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
+Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
+When this trigger is deactivated the application will just skip the Start Exposure and just wait for another file to roll into the specified folder</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
-    <value>Voorbeeld bestandsnaam</value>
+    <value>Example File Name</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
-    <value>Bestandsextensie</value>
+    <value>File Extension</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>Opties bestandsformaat</value>
+    <value>File Format Options</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
-    <value>Bestandsinstellingen</value>
+    <value>File Settings</value>
   </data>
   <data name="LblFilter" xml:space="preserve">
     <value>Filter</value>
   </data>
   <data name="LblFilterChangeRequired" xml:space="preserve">
-    <value>Wijziging van filter vereist</value>
+    <value>Filter Change Required</value>
   </data>
   <data name="LblFilterName" xml:space="preserve">
-    <value>Filternaam</value>
+    <value>Filter Name</value>
   </data>
   <data name="LblFilternameDescription" xml:space="preserve">
-    <value>Filternaam</value>
+    <value>Filter Name</value>
   </data>
   <data name="LblFilterNotFoundForPosition" xml:space="preserve">
-    <value>Geen filter gevonden op positie {0}. Gelieve de filters te controleren zodat ze overeenkomen met uw filterwiel!</value>
+    <value>No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</value>
   </data>
   <data name="LblFilterSetButFilterWheelNotConnected" xml:space="preserve">
-    <value>Eén of meer reeks items heeft een filterset, maar er kan geen verbinding met de filterwiel tot stand gebracht worden</value>
+    <value>One or more sequence items have a filter set, but filter wheel is not connected</value>
   </data>
   <data name="LblFilterWheel" xml:space="preserve">
-    <value>Filterwiel</value>
+    <value>Filterwheel</value>
   </data>
   <data name="LblFilterwheelConnected" xml:space="preserve">
-    <value>Filterwiel aangesloten</value>
+    <value>Filterwheel connected</value>
   </data>
   <data name="LblFilterwheelConnectionLost" xml:space="preserve">
-    <value>Verbinding met de filterwiel is verbroken! Gelieve opnieuw de filterwiel aansluiten!</value>
+    <value>Filterwheel connection lost! Please reconnect filterwheel!</value>
   </data>
   <data name="LblFits" xml:space="preserve">
     <value>FITS</value>
   </data>
   <data name="LblFlatCalculatedExposureTime" xml:space="preserve">
-    <value>Berekende doelbelichtingstijd</value>
+    <value>Calculated Target Exposure Time</value>
   </data>
   <data name="LblFlatCalculatedHistogramMean" xml:space="preserve">
-    <value>Berekende gemiddelde doel histogram</value>
+    <value>Calculated Target Histogram Mean</value>
   </data>
   <data name="LblFlatCount" xml:space="preserve">
-    <value>Aantal flats om te nemen</value>
+    <value>Flats to take</value>
   </data>
   <data name="LblFlatDevice" xml:space="preserve">
-    <value>Flat panel</value>
+    <value>Flat Panel</value>
   </data>
   <data name="LblFlatDeviceBrightness" xml:space="preserve">
-    <value>Helderheid</value>
+    <value>Brightness</value>
   </data>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
-    <value>Kies seriële poort</value>
+    <value>Choose serial port</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Wis waardes</value>
+    <value>Clear Values</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
-    <value>Sluiten</value>
+    <value>Close</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
-    <value>Sluit deksel wanneer de reeks eindigt</value>
+    <value>Close cover when sequence ends</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
-    <value>Gesloten</value>
+    <value>Closed</value>
   </data>
   <data name="LblFlatDeviceConnected" xml:space="preserve">
-    <value>Flat panel verbonden.</value>
+    <value>Flat panel connected.</value>
   </data>
   <data name="LblFlatDeviceConnectedButCoverNotOpen" xml:space="preserve">
-    <value>Een plat panel is verbonden, maar de deksel is niet open.</value>
+    <value>A flat panel is connected but the cover is not open.</value>
   </data>
   <data name="LblFlatDeviceCover" xml:space="preserve">
-    <value>Deksel</value>
+    <value>Cover</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
-    <value>Momenteel</value>
+    <value>Currently</value>
   </data>
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
-    <value>Wilt u de verbinding met het flat panel verbreken?</value>
+    <value>Do you want to disconnect the flat panel?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat panel instellingen</value>
+    <value>Flat Panel Settings</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
-    <value>Ongeldige reactie van flat panel.</value>
+    <value>Invalid response from flat panel.</value>
   </data>
   <data name="LblFlatDeviceLight" xml:space="preserve">
-    <value>Flat panel licht</value>
+    <value>Flat panel light</value>
   </data>
   <data name="LblFlatDeviceNeitherOpenNorClosed" xml:space="preserve">
-    <value>Noch open noch gesloten</value>
+    <value>Neither open nor closed</value>
   </data>
   <data name="LblFlatDeviceNoDevice" xml:space="preserve">
-    <value>Geen flat panel</value>
+    <value>No Flat Panel</value>
   </data>
   <data name="LblFlatDeviceOpen" xml:space="preserve">
-    <value>Openen</value>
+    <value>Open</value>
   </data>
   <data name="LblFlatDeviceOpenButton" xml:space="preserve">
-    <value>Openen</value>
+    <value>Open</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
     <value>Open cover for darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
-    <value>Instellen</value>
+    <value>Set</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Uit flat wizard voortgekomen belichtingstijden</value>
+    <value>Flat Wizard Trained Exposure Times</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
-    <value>Onbekend</value>
+    <value>Unknown</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Gebruik de belichtingstijden die uit de flat wizard zijn voortgekomen</value>
+    <value>Use trained exposure times</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
-    <value>ADU gemiddelde was {0}, start de belichtingstijdberekening op {1}</value>
+    <value>Mean ADU was {0}, starting Exposure Time calculation at {1}</value>
   </data>
   <data name="LblFlatExposureCalcFinished" xml:space="preserve">
-    <value>ADU gemiddelde is {0}, doel belichtingstijd is {1}</value>
+    <value>Mean ADU is {0} target Exposure Time is {1}</value>
   </data>
   <data name="LblFlatExposureCalcStart" xml:space="preserve">
-    <value>Start belichtingstijdberekening op {0}</value>
+    <value>Starting Exposure Time calculation at {0}</value>
   </data>
   <data name="LblFlatHistogramMeanTarget" xml:space="preserve">
-    <value>Histogram gemiddelde doel</value>
+    <value>Histogram Mean Target</value>
   </data>
   <data name="LblFlatHistogramTolerance" xml:space="preserve">
-    <value>Gemiddelde tolerantie</value>
+    <value>Mean Tolerance</value>
   </data>
   <data name="LblFlatMaxExposureTime" xml:space="preserve">
-    <value>Flat maximale belichting</value>
+    <value>Flat Max Exposure</value>
   </data>
   <data name="LblFlatMinExposureTime" xml:space="preserve">
-    <value>Minimale belichting flat</value>
+    <value>Flat Min Exposure</value>
   </data>
   <data name="LblFlatSequenceCancelled" xml:space="preserve">
-    <value>Flat volgorde geannuleerd, kon geen flat belichtingstijd bepalen</value>
+    <value>Flat Sequence Cancelled, could not determine a flat exposure time</value>
   </data>
   <data name="LblFlatStepSize" xml:space="preserve">
-    <value>Flat stapgrootte</value>
+    <value>Flat Step Size</value>
   </data>
   <data name="LblFlatUserCurrentExposureCalculation" xml:space="preserve">
-    <value>Huidige belichtingsberekeningen</value>
+    <value>Current Exposure Calculations</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
-    <value>Flat wizardinstellingen</value>
+    <value>Flat Wizard Settings</value>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
-    <value>Annuleer Flat wizard</value>
+    <value>Cancel Flat Wizard</value>
   </data>
   <data name="LblFlatUserPromptFailure" xml:space="preserve">
-    <value>Fout bij het verkrijgen van de juiste flat belichting</value>
+    <value>Failed to get proper Flat Exposure</value>
   </data>
   <data name="LblFlatUserPromptFlatTooBright" xml:space="preserve">
-    <value>Je flats zijn te licht, dim het licht, verander de tolerantie, doelwit gemiddelde of de minimale belichtingstijd</value>
+    <value>Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</value>
   </data>
   <data name="LblFlatUserPromptFlatTooDim" xml:space="preserve">
-    <value>Je flats zijn te donker, verhoog de lichtintensiteit, pas de tolerantie, het doelgemiddelde of de maximale belichtingstijd aan</value>
+    <value>Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</value>
   </data>
   <data name="LblFlatWizard" xml:space="preserve">
-    <value>Flat wizard</value>
+    <value>Flat Wizard</value>
   </data>
   <data name="LblFlatWizardCapture" xml:space="preserve">
-    <value>Flat wizard vastleggen</value>
+    <value>Flat Wizard Capture</value>
   </data>
   <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>FLI Camera instellingen</value>
+    <value>FLI Camera Setup</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flood binning</value>
+    <value>Flood Binning</value>
   </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Flood-duur</value>
+    <value>Flood Duration</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Aantal flushs voor belichting</value>
+    <value>Pre-exposure Flush Count</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
-    <value>Voer meridian flip uit</value>
+    <value>Do the flip</value>
   </data>
   <data name="LblFlippingScope" xml:space="preserve">
-    <value>Meridian flip wordt uitgevoerd</value>
+    <value>Flipping Scope</value>
   </data>
   <data name="LblFLIPreRBIMitigation" xml:space="preserve">
-    <value>RBI mitigation</value>
+    <value>RBI Mitigation</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
-    <value>Flood voor snapshots</value>
+    <value>Flood for snapshots</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
-    <value>Brandpuntlengte</value>
+    <value>Focal Length</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
-    <value>Brandpuntverhouding</value>
+    <value>Focal Ratio</value>
   </data>
   <data name="LblFocuser" xml:space="preserve">
     <value>Focuser</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetSteps" xml:space="preserve">
-    <value>Autofocus initiële offset stappen</value>
+    <value>Auto Focus Initial Offset Steps</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="preserve">
-    <value>De eerste hoeveelheid stappen die de focuser zal maken om de autofocus procedure te starten.</value>
+    <value>Initial amount of steps the focuser will move out to begin auto focus procedure.</value>
   </data>
   <data name="LblFocuserAutoFocusStepSize" xml:space="preserve">
-    <value>Autofocus stapgrootte</value>
+    <value>Auto Focus Step Size</value>
   </data>
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
-    <value>De grootte van één focusstap die gebruikt wordt om automatisch te focussen. Eén stap moet minder zijn dan de kritische focuspunt tolerantie</value>
+    <value>The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
-    <value>Backlash IN/UIT</value>
+    <value>Backlash IN/OUT</value>
   </data>
   <data name="LblFocuserBacklashTooltip" xml:space="preserve">
-    <value>Naar binnen en naar buiten gerichte backlash, in focuserstappen</value>
+    <value>Inwards and outwards focuser backlash, in focuser steps</value>
   </data>
   <data name="LblFocuserConnected" xml:space="preserve">
-    <value>Focuser verbonden</value>
+    <value>Focuser connected</value>
   </data>
   <data name="LblFocuserConnectionLost" xml:space="preserve">
-    <value>Connectie focuser verloren! Sluit de focuser opnieuw aan!</value>
+    <value>Focuser connection lost! Please reconnect focuser!</value>
   </data>
   <data name="LblFocuserPositionDescription" xml:space="preserve">
-    <value>Huidige focuserpositie</value>
+    <value>Current focuser position</value>
   </data>
   <data name="LblFocuserSettleTime" xml:space="preserve">
-    <value>Focuser rusttijd</value>
+    <value>Focuser Settle Time</value>
   </data>
   <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
-    <value>Als door een focusbeweging een verschuiving van het beeld plaatsvindt, stel hier een rusttijd na het bewegen in seconden in.</value>
+    <value>If the focuser introduces image shift when moving, set a settle time in seconds here.</value>
   </data>
   <data name="LblFocuserTempDescription" xml:space="preserve">
-    <value>Focuser temperatuur</value>
+    <value>Focuser Temperature</value>
   </data>
   <data name="LblFocuserUseFilterWheelOffsets" xml:space="preserve">
-    <value>Gebruik filterwiel offsets</value>
+    <value>Use filterwheel offsets</value>
   </data>
   <data name="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="preserve">
-    <value>Bij het overschakelen van het ene filter naar het andere zal de focuser zijn positie veranderen ten opzichte van de opgegeven verschuiving voor dat filter</value>
+    <value>When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</value>
   </data>
   <data name="LblFocusOffset" xml:space="preserve">
-    <value>Focus offset</value>
+    <value>Focus Offset</value>
   </data>
   <data name="LblFocusPointValidationFailed" xml:space="preserve">
-    <value>Berekende HFR voor focus op positie {0} verschilt meer dan 25% van de werkelijke HFR
-Actuele HFR: {1}
-berekende HFR: {2}
+    <value>Calculated HFR for focus at position {0} differs more than 25% from actual HFR
+Actual HFR : {1}
+Calculated HFR: {2}
     </value>
   </data>
   <data name="LblFolderToWatch" xml:space="preserve">
-    <value>Te bekijken map</value>
+    <value>Folder to watch</value>
   </data>
   <data name="LblFrameNFocus" xml:space="preserve">
     <value>Frame &amp; Focus</value>
   </data>
   <data name="LblFrameNrDescription" xml:space="preserve">
-    <value># van het frame met formaat ####</value>
+    <value># of the Frame with format ####</value>
   </data>
   <data name="LblFraming" xml:space="preserve">
     <value>Framing</value>
   </data>
   <data name="LblFramingAssistant" xml:space="preserve">
-    <value>Framing assistent</value>
+    <value>Framing Assistant</value>
   </data>
   <data name="LblFreeImage" xml:space="preserve">
     <value>FreeImage</value>
   </data>
   <data name="LblFrom" xml:space="preserve">
-    <value>Van</value>
+    <value>From</value>
   </data>
   <data name="LblFullWellCapacity" xml:space="preserve">
     <value>Full Well Capacity in e</value>
@@ -1648,10 +1658,10 @@ berekende HFR: {2}
     <value>Gain</value>
   </data>
   <data name="LblGainDescription" xml:space="preserve">
-    <value>Camera gain</value>
+    <value>Camera Gain</value>
   </data>
   <data name="LblGeneral" xml:space="preserve">
-    <value>Algemeen</value>
+    <value>General</value>
   </data>
   <data name="LblGnssConnectFail" xml:space="preserve">
     <value>Failed to connect to {0}</value>
@@ -1672,31 +1682,31 @@ berekende HFR: {2}
     <value>Guider</value>
   </data>
   <data name="LblGuiderConnected" xml:space="preserve">
-    <value>Guider verbonden</value>
+    <value>Guider Connected</value>
   </data>
   <data name="LblGuiderDitherButNotConnected" xml:space="preserve">
-    <value>Guider dither is ingeschakeld, maar de applicatie is niet verbonden met de guider</value>
+    <value>Guider Dither is enabled, but application is not connected to Guider</value>
   </data>
   <data name="LblGuiderNoResume" xml:space="preserve">
-    <value>Guider heeft een hervattingsbericht niet op tijd verzonden. Reeks zal hervat worden, maar zorg ervoor dat de guider weer kan guiden!</value>
+    <value>Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
     <value>Guider did not send SettleDone message after expected time ({0}s + 10s). Skipping.</value>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
-    <value>Guider hervatten mislukt</value>
+    <value>Guider resume failed</value>
   </data>
   <data name="LblGuiderSettings" xml:space="preserve">
-    <value>Guider instellingen</value>
+    <value>Guider Settings</value>
   </data>
   <data name="LblGuiderStatus" xml:space="preserve">
-    <value>Guider status</value>
+    <value>Guider Status</value>
   </data>
   <data name="LblGuidingRMSArcSecDescription" xml:space="preserve">
-    <value>Wortel van de gemiddelde kwadraatfout van het volgen gedurende de opname in boogseconden</value>
+    <value>Root mean square error of guiding during exposure in arc seconds</value>
   </data>
   <data name="LblGuidingRMSDescription" xml:space="preserve">
-    <value>Wortel van de gemiddelde kwadraatsomfout tijdens de belichting in pixels</value>
+    <value>Root mean square error of guiding during exposure in pixels</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
     <value>Peak RA guiding error during exposure in arc seconds</value>
@@ -1714,130 +1724,130 @@ berekende HFR: {2}
     <value>Halt</value>
   </data>
   <data name="LblHeight" xml:space="preserve">
-    <value>Hoogte</value>
+    <value>Height</value>
   </data>
   <data name="LblHemisphere" xml:space="preserve">
-    <value>Hemisfeer</value>
+    <value>Hemisphere</value>
   </data>
   <data name="LblHFR" xml:space="preserve">
     <value>HFR</value>
   </data>
   <data name="LblHFRHistory" xml:space="preserve">
-    <value>HFR geschiedenis</value>
+    <value>HFR History</value>
   </data>
   <data name="LblHFRHistoryAllFilters" xml:space="preserve">
     <value>All</value>
   </data>
   <data name="LblHFRPatternDescription" xml:space="preserve">
-    <value>Berekende HFR van afbeelding (HFR detectie moet worden ingeschakeld)</value>
+    <value>Calculated HFR of image (HFR detection has to be enabled)</value>
   </data>
   <data name="LblHigh" xml:space="preserve">
-    <value>Hoog</value>
+    <value>High</value>
   </data>
   <data name="LblHighest" xml:space="preserve">
-    <value>Hoogste</value>
+    <value>Highest</value>
   </data>
   <data name="LblHistogram" xml:space="preserve">
     <value>Histogram</value>
   </data>
   <data name="LblHistogramResolution" xml:space="preserve">
-    <value>Histogram resolutie</value>
+    <value>Histogram Resolution</value>
   </data>
   <data name="LblHistogramResolutionTooltip" xml:space="preserve">
-    <value>Geef het aantal data points dat gebruikt moet worden voor de histogram</value>
+    <value>Specifies the number of data points that should be used for the histogram</value>
   </data>
   <data name="LblHistory" xml:space="preserve">
-    <value>Geschiedenis</value>
+    <value>History</value>
   </data>
   <data name="LblHNSKY" xml:space="preserve">
     <value>HNSKY</value>
   </data>
   <data name="LblHorizontalPanels" xml:space="preserve">
-    <value>Horizontale panelen</value>
+    <value>Horizontal Panels</value>
   </data>
   <data name="LblHost" xml:space="preserve">
     <value>Host</value>
   </data>
   <data name="LblHour" xml:space="preserve">
-    <value>Uur</value>
+    <value>Hour</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>uren</value>
+    <value>Hours</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
-    <value>Luchtvochtigheid</value>
+    <value>Humidity</value>
   </data>
   <data name="LblHyperbolic" xml:space="preserve">
-    <value>Hyperbolisch</value>
+    <value>Hyperbolic</value>
   </data>
   <data name="LblId" xml:space="preserve">
     <value>ID</value>
   </data>
   <data name="LblIllumination" xml:space="preserve">
-    <value>Verlichting</value>
+    <value>Illumination</value>
   </data>
   <data name="LblImage" xml:space="preserve">
-    <value>Afbeelding</value>
+    <value>Image</value>
   </data>
   <data name="LblImageArea" xml:space="preserve">
-    <value>Afbeeldingsgebied</value>
+    <value>Image Area</value>
   </data>
   <data name="LblImageFileError" xml:space="preserve">
-    <value>Afbeeldingsbestandsfout</value>
+    <value>Image file error</value>
   </data>
   <data name="LblImageFilePath" xml:space="preserve">
-    <value>Afbeelding bestandspad</value>
+    <value>Image File Path</value>
   </data>
   <data name="LblImageFilePattern" xml:space="preserve">
-    <value>Afbeelding bestandspatroon</value>
+    <value>Image File Pattern</value>
   </data>
   <data name="LblImageHistory" xml:space="preserve">
-    <value>Afbeeldingsgeschiedenis</value>
+    <value>Image History</value>
   </data>
   <data name="LblImageOptions" xml:space="preserve">
-    <value>Afbeeldingsopties</value>
+    <value>Image Options</value>
   </data>
   <data name="LblImageSource" xml:space="preserve">
-    <value>Afbeeldingsbron</value>
+    <value>Image source</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
     <value>Light, Flat, Dark, Bias, Snapshot</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
-    <value>Fotograferen</value>
+    <value>Imaging</value>
   </data>
   <data name="LblImportFromFilterWheel" xml:space="preserve">
-    <value>Importeer filters van filterwiel</value>
+    <value>Import Filters from Filterwheel</value>
   </data>
   <data name="LblIndexFile" xml:space="preserve">
-    <value>Index bestand</value>
+    <value>Index File</value>
   </data>
   <data name="LblInfo" xml:space="preserve">
     <value>Info</value>
   </data>
   <data name="LblInitiatePlatesolve" xml:space="preserve">
-    <value>Begin Platesolve</value>
+    <value>Initiate Platesolve</value>
   </data>
   <data name="LblInvalidMode" xml:space="preserve">
-    <value>Ongeldige modus</value>
+    <value>Invalid mode</value>
   </data>
   <data name="LblInvalidModeBulb" xml:space="preserve">
-    <value>Ongeldige modus (bulb) voor belichtingstijd &lt;1s</value>
+    <value>Invalid mode (bulb) for Exposure Time &lt;1s</value>
   </data>
   <data name="LblInvalidModeManual" xml:space="preserve">
-    <value>Ongeldige modus (handmatig) voor belichtingstijd &gt;30s</value>
+    <value>Invalid mode (manual) for Exposure Time &gt;30s</value>
   </data>
   <data name="LblIsBayered" xml:space="preserve">
     <value>Is Bayered</value>
   </data>
   <data name="LblIsMoving" xml:space="preserve">
-    <value>Beweegt</value>
+    <value>Is Moving</value>
   </data>
   <data name="LblIsSettling" xml:space="preserve">
-    <value>Komt tot stilstand</value>
+    <value>Is Settling</value>
   </data>
   <data name="LblItemsPerPage" xml:space="preserve">
-    <value>Items per pagina</value>
+    <value>Items per page</value>
   </data>
   <data name="LblJ2000" xml:space="preserve">
     <value>J2000</value>
@@ -1846,61 +1856,61 @@ berekende HFR: {2}
     <value>JNOW</value>
   </data>
   <data name="LblLanguage" xml:space="preserve">
-    <value>Taal</value>
+    <value>Language</value>
   </data>
   <data name="LblLaplace" xml:space="preserve">
     <value>Laplace</value>
   </data>
   <data name="LblLatitude" xml:space="preserve">
-    <value>Breedtegraad</value>
+    <value>Latitude</value>
   </data>
   <data name="LblLayout" xml:space="preserve">
-    <value>Lay-out</value>
+    <value>Layout</value>
   </data>
   <data name="LblLblBlackClippingTooltip" xml:space="preserve">
-    <value>Zwartpuntfactor in sigma eenheden vanaf de mediaan</value>
+    <value>Black clipping factor in sigma units from the median</value>
   </data>
   <data name="LblLoadImage" xml:space="preserve">
-    <value>Afbeelding laden</value>
+    <value>Load Image</value>
   </data>
   <data name="LblLoadImageFromFile" xml:space="preserve">
-    <value>Afbeelding laden vanuit bestand</value>
+    <value>Load Image from File</value>
   </data>
   <data name="LblLoadImageFromFileTooltip" xml:space="preserve">
-    <value>Download afbeelding van bestand en gebruik de blindsolver om coördinaten te bepalen</value>
+    <value>Download Image from file and use the blindsolver to determine coordinates</value>
   </data>
   <data name="LblLoadProfile" xml:space="preserve">
-    <value>Laad profiel</value>
+    <value>Load Profile</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
     <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
-    <value>Laad sequentie</value>
+    <value>Load Sequence</value>
   </data>
   <data name="LblLoadSequenceFailed" xml:space="preserve">
-    <value>Laden van sequentie mislukt</value>
+    <value>Load sequence failed</value>
   </data>
   <data name="LblLoadSequenceSetFailed" xml:space="preserve">
-    <value>Kan reeks set niet laden</value>
+    <value>Failed to load target set</value>
   </data>
   <data name="LblLoadSequenceToolTip" xml:space="preserve">
-    <value>Laad sequentie van xml bestand</value>
+    <value>Load Sequence from xml file</value>
   </data>
   <data name="LblLoadTargetSet" xml:space="preserve">
-    <value>Laad reeks set</value>
+    <value>Load target set</value>
   </data>
   <data name="LblLocalPlatesolver" xml:space="preserve">
-    <value>Lokale Platesolver</value>
+    <value>Local Platesolver</value>
   </data>
   <data name="LblLocation" xml:space="preserve">
-    <value>Locatie</value>
+    <value>Location</value>
   </data>
   <data name="LblLogLevel" xml:space="preserve">
-    <value>Logniveau</value>
+    <value>Log Level</value>
   </data>
   <data name="LblLongitude" xml:space="preserve">
-    <value>Lengtegraad</value>
+    <value>Longitude</value>
   </data>
   <data name="LblLoop" xml:space="preserve">
     <value>Loop</value>
@@ -1912,70 +1922,70 @@ berekende HFR: {2}
     <value>Magnitude</value>
   </data>
   <data name="LblManualControl" xml:space="preserve">
-    <value>Handmatige controle</value>
+    <value>Manual Control</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
     <value>Manual Coordinates</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
-    <value>Handmatig filterwiel</value>
+    <value>Manual Filterwheel</value>
   </data>
   <data name="LblManualFilterWheelDescription" xml:space="preserve">
-    <value>Spiegelt de filters die zijn ingesteld in de opties. Wanneer een filterwijziging wordt aangevraagd, zal een melding verschijnen om het filter handmatig te wijzigen.</value>
+    <value>Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</value>
   </data>
   <data name="LblManualFocusTargets" xml:space="preserve">
-    <value>Objecten handmatig in focus brengen</value>
+    <value>Manual Focus Targets</value>
   </data>
   <data name="LblManualNotFound" xml:space="preserve">
-    <value>Handleiding niet gevonden</value>
+    <value>Manual not found</value>
   </data>
   <data name="LblManualRotator" xml:space="preserve">
-    <value>Handmatige rotator</value>
+    <value>Manual Rotator</value>
   </data>
   <data name="LblManualRotatorDescription" xml:space="preserve">
-    <value>Wanneer rotatie vereist is zal u genotificeerd worden met een pop-up om handmatig te roteren</value>
+    <value>When rotation is requested a notification will pop up to rotate manually</value>
   </data>
   <data name="LblMax" xml:space="preserve">
     <value>Max</value>
   </data>
   <data name="LblMaxBinX" xml:space="preserve">
-    <value>Max binning X</value>
+    <value>Max Binning X</value>
   </data>
   <data name="LblMaxBinY" xml:space="preserve">
-    <value>Maximale binning Y</value>
+    <value>Max Binning Y</value>
   </data>
   <data name="LblMaxExpTime" xml:space="preserve">
-    <value>Maximale belichtingstijd</value>
+    <value>Maximum Exposure Time</value>
   </data>
   <data name="LblMaxIncrement" xml:space="preserve">
-    <value>Max toename</value>
+    <value>Max Increment</value>
   </data>
   <data name="LblMaxObjects" xml:space="preserve">
-    <value>Maximum objecten</value>
+    <value>Maximum objects</value>
   </data>
   <data name="LblMaxStep" xml:space="preserve">
-    <value>Max. stap</value>
+    <value>Max Step</value>
   </data>
   <data name="LblMean" xml:space="preserve">
-    <value>Gemiddelde</value>
+    <value>Mean</value>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
-    <value>Meet focus backlash</value>
+    <value>Measure Focuser Backlash</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
-    <value>Mediaan</value>
+    <value>Median</value>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
-    <value>Meridian flip is mislukt</value>
+    <value>Meridian Flip failed</value>
   </data>
   <data name="LblMeridianFlipInit" xml:space="preserve">
-    <value>Meridian flip procedure is gestart</value>
+    <value>Meridian flip procedure initiated</value>
   </data>
   <data name="LblMeridianIn" xml:space="preserve">
     <value>Meridian in</value>
   </data>
   <data name="LblMeridianOffset" xml:space="preserve">
-    <value>Meridian offset</value>
+    <value>Meridian Offset</value>
   </data>
   <data name="LblPHD2Setup" xml:space="preserve">
     <value>PHD2 Setup</value>
@@ -1990,49 +2000,49 @@ berekende HFR: {2}
     <value>Min</value>
   </data>
   <data name="LblMinDuration" xml:space="preserve">
-    <value>Min. duur</value>
+    <value>Min. Duration</value>
   </data>
   <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
     <value>Minimum Exposure Time from Download Ratio</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
-    <value>Minimale belichtingstijd</value>
+    <value>Minimum Exposure Time</value>
   </data>
   <data name="LblMinimumAltitude" xml:space="preserve">
-    <value>Minimale hoogte</value>
+    <value>Minimum Altitude</value>
   </data>
   <data name="LblMinimumSettleTime" xml:space="preserve">
-    <value>Minimale rusttijd</value>
+    <value>Minimum Settle Time</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
-    <value>minuten</value>
+    <value>Minutes</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
-    <value>Minuten na meridiaan</value>
+    <value>Minutes after Meridian</value>
   </data>
   <data name="LblMinutesShort" xml:space="preserve">
     <value>min</value>
   </data>
   <data name="LblMode" xml:space="preserve">
-    <value>Modus</value>
+    <value>Mode</value>
   </data>
   <data name="LblMoonRise" xml:space="preserve">
-    <value>Maanopkomst</value>
+    <value>Moonrise</value>
   </data>
   <data name="LblMoonSet" xml:space="preserve">
-    <value>Maanondergang</value>
+    <value>Moonset</value>
   </data>
   <data name="LblMove" xml:space="preserve">
-    <value>Verplaats</value>
+    <value>Move</value>
   </data>
   <data name="LblName" xml:space="preserve">
-    <value>Naam</value>
+    <value>Name</value>
   </data>
   <data name="LblNASASkySurvey" xml:space="preserve">
     <value>NASA Sky Survey</value>
   </data>
   <data name="LblNative" xml:space="preserve">
-    <value>Oorspronkelijk</value>
+    <value>Native</value>
   </data>
   <data name="LblNauticalDawn" xml:space="preserve">
     <value>Nautical Dawn</value>
@@ -2041,17 +2051,17 @@ berekende HFR: {2}
     <value>Nautical Dusk</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>Nieuwe positie</value>
+    <value>New Position</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
-    <value>Er is een nieuwe update beschikbaar ({0})! Wilt u nu bijwerken?</value>
+    <value>New update is available ({0})! Do you want to update now?</value>
   </data>
   <data name="LblNightly" xml:space="preserve">
-    <value>Nachtelijk</value>
+    <value>Nightly</value>
   </data>
   <data name="LblNikonNotFound" xml:space="preserve">
-    <value>Geen Nikon camera gevonden</value>
+    <value>No Nikon camera could be found</value>
   </data>
   <data name="LblNINA" xml:space="preserve">
     <value>N.I.N.A.</value>
@@ -2060,58 +2070,58 @@ berekende HFR: {2}
     <value>From N.I.N.A. to Mount</value>
   </data>
   <data name="LblNo" xml:space="preserve">
-    <value>Nee</value>
+    <value>No</value>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
-    <value>Geen camera</value>
+    <value>No Camera</value>
   </data>
   <data name="LblNoCameraConnected" xml:space="preserve">
-    <value>Geen camera verbonden</value>
+    <value>No camera connected</value>
   </data>
   <data name="LblNoCoordinates" xml:space="preserve">
-    <value>Geen coördinaten beschikbaar</value>
+    <value>No coordinates available</value>
   </data>
   <data name="LblNoCoordinatesForSync" xml:space="preserve">
-    <value>Geen coördinaten beschikbaar om telescoop te synchroniseren met</value>
+    <value>No coordinates available to sync telescope to</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>Er zijn geen opties voor dit bestandsformaat</value>
+    <value>There are no options for this file format</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
-    <value>Geen filterwiel</value>
+    <value>No Filterwheel</value>
   </data>
   <data name="LblNoFocuser" xml:space="preserve">
-    <value>Geen focuser</value>
+    <value>No Focuser</value>
   </data>
   <data name="LblNoGuider" xml:space="preserve">
-    <value>Geen guider</value>
+    <value>No Guider</value>
   </data>
   <data name="LblNoImage" xml:space="preserve">
-    <value>Geen afbeelding beschikbaar</value>
+    <value>No Image available</value>
   </data>
   <data name="LblNoiseReduction" xml:space="preserve">
-    <value>Ruisonderdrukking</value>
+    <value>Noise Reduction</value>
   </data>
   <data name="LblNoiseReductionTooltip" xml:space="preserve">
-    <value>Ruisonderdrukking toegepast voorafgaand aan sterdetectie. Dit kan helpen bij afbeeldingen met veel ruis en korte belichtingstijden.</value>
+    <value>Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</value>
   </data>
   <data name="LblNone" xml:space="preserve">
-    <value>Geen</value>
+    <value>None</value>
   </data>
   <data name="LblNormal" xml:space="preserve">
-    <value>Normaal</value>
+    <value>Normal</value>
   </data>
   <data name="LblNoRotator" xml:space="preserve">
-    <value>Geen rotator</value>
+    <value>No Rotator</value>
   </data>
   <data name="LblNorthern" xml:space="preserve">
-    <value>Noordelijk</value>
+    <value>Northern</value>
   </data>
   <data name="LblNoSwitch" xml:space="preserve">
-    <value>Geen schakelaar</value>
+    <value>No Switch</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>Geen synchronisatie</value>
+    <value>No Sync</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
     <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
@@ -2120,28 +2130,28 @@ berekende HFR: {2}
     <value>No Mount</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
-    <value>Meldingsfout</value>
+    <value>Notification Error</value>
   </data>
   <data name="LblNotificationErrorText" xml:space="preserve">
-    <value>Fouttekst</value>
+    <value>Error Text</value>
   </data>
   <data name="LblNotificationWarning" xml:space="preserve">
-    <value>Notificatie waarschuwing</value>
+    <value>Notification Warning</value>
   </data>
   <data name="LblNotificationWarningText" xml:space="preserve">
-    <value>Waarschuwingstekst</value>
+    <value>Warning Text</value>
   </data>
   <data name="LblNow" xml:space="preserve">
-    <value>Nu</value>
+    <value>Now</value>
   </data>
   <data name="LblNrStars" xml:space="preserve">
-    <value>#Sterren</value>
+    <value>#Stars</value>
   </data>
   <data name="LblObjectNameHint" xml:space="preserve">
-    <value>Objectnaam (bijv. M 31)</value>
+    <value>Object name (e.g. M 31)</value>
   </data>
   <data name="LblObjectType" xml:space="preserve">
-    <value>Objecttype</value>
+    <value>Object Type</value>
   </data>
   <data name="LblObjectType_1STAR" xml:space="preserve">
     <value>1 Star</value>
@@ -2159,113 +2169,113 @@ berekende HFR: {2}
     <value>8 Stars</value>
   </data>
   <data name="LblObjectType_ASTER" xml:space="preserve">
-    <value>Asterisme</value>
+    <value>Asterism</value>
   </data>
   <data name="LblObjectType_BRTNB" xml:space="preserve">
-    <value>Heldere nevel</value>
+    <value>Bright Nebula</value>
   </data>
   <data name="LblObjectType_CL+NB" xml:space="preserve">
-    <value>Cluster met neveligheid</value>
+    <value>Cluster with Nebulosity</value>
   </data>
   <data name="LblObjectType_DRKNB" xml:space="preserve">
-    <value>Donkere nevel</value>
+    <value>Dark Nebula</value>
   </data>
   <data name="LblObjectType_G+C+N" xml:space="preserve">
-    <value>Cluster met neveligheid in een Melkwegstelsel</value>
+    <value>Cluster with Nebulosity in a Galaxy</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Cluster van melkwegstelsels</value>
+    <value>Galaxy Cluster</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
-    <value>Melkwegstelsel</value>
+    <value>Galaxy</value>
   </data>
   <data name="LblObjectType_GLOCL" xml:space="preserve">
-    <value>Bolvormige sterrenhoop</value>
+    <value>Globular Cluster</value>
   </data>
   <data name="LblObjectType_GX+DN" xml:space="preserve">
-    <value>Diffuse nevel in een melkwegstelsel</value>
+    <value>Diffuse Nebula in a Galaxy</value>
   </data>
   <data name="LblObjectType_GX+GC" xml:space="preserve">
-    <value>Bolvormige sterrenhoop in een melkwegstelsel</value>
+    <value>Globular Cluster in a Galaxy</value>
   </data>
   <data name="LblObjectType_LMCCN" xml:space="preserve">
-    <value>Cluster met neveligheid in de LMC</value>
+    <value>Cluster with Nebulosity in the LMC</value>
   </data>
   <data name="LblObjectType_LMCDN" xml:space="preserve">
-    <value>Diffuse nevel in de LMC</value>
+    <value>Diffuse Nebula in the LMC</value>
   </data>
   <data name="LblObjectType_LMCGC" xml:space="preserve">
-    <value>Bolvormige sterrenhoop in de LMC</value>
+    <value>Globular Cluster in the LMC</value>
   </data>
   <data name="LblObjectType_LMCOC" xml:space="preserve">
-    <value>Open sterrenhoop in de LMC</value>
+    <value>Open cluster in the LMC</value>
   </data>
   <data name="LblObjectType_NONEX" xml:space="preserve">
     <value>Nonexistent</value>
   </data>
   <data name="LblObjectType_OPNCL" xml:space="preserve">
-    <value>Open sterrenhoop</value>
+    <value>Open Cluster</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Planetaire nevel</value>
+    <value>Planetary Nebula</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>Quasar</value>
   </data>
   <data name="LblObjectType_SMCCN" xml:space="preserve">
-    <value>Cluster met neveligheid in de SMC</value>
+    <value>Cluster with Nebulosity in the SMC</value>
   </data>
   <data name="LblObjectType_SMCDN" xml:space="preserve">
-    <value>Diffuse nevel in de SMC</value>
+    <value>Diffuse Nebula in the SMC</value>
   </data>
   <data name="LblObjectType_SMCGC" xml:space="preserve">
-    <value>Bolvormige sterrenhoop in de SMC</value>
+    <value>Globular Cluster in the SMC</value>
   </data>
   <data name="LblObjectType_SMCOC" xml:space="preserve">
-    <value>Open sterrenhoop in de SMC</value>
+    <value>Open cluster in the SMC</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>Overblijfsel supernova</value>
+    <value>Supernova Remnant</value>
   </data>
   <data name="LblOf" xml:space="preserve">
-    <value>Van</value>
+    <value>Of</value>
   </data>
   <data name="LblOff" xml:space="preserve">
-    <value>Uit</value>
+    <value>Off</value>
   </data>
   <data name="LblOffset" xml:space="preserve">
     <value>Offset</value>
   </data>
   <data name="LblOffsetDescription" xml:space="preserve">
-    <value>Camera offset</value>
+    <value>Camera Offset</value>
   </data>
   <data name="LblOK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Oude positie</value>
+    <value>Old Position</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
-    <value>Aan</value>
+    <value>On</value>
   </data>
   <data name="LblOneToOne" xml:space="preserve">
-    <value>Schaal afbeelding naar 1:1</value>
+    <value>Scale Image to 1:1</value>
   </data>
   <data name="LblOpacity" xml:space="preserve">
-    <value>Dekking</value>
+    <value>Opacity</value>
   </data>
   <data name="LblOpenManual" xml:space="preserve">
-    <value>Handleiding openen</value>
+    <value>Open Manual</value>
   </data>
   <data name="LblOpenWeatherMapAPIKey" xml:space="preserve">
-    <value>OpenWeatherMap API-sleutel</value>
+    <value>OpenWeatherMap API Key</value>
   </data>
   <data name="LblOpenWeatherMapClientDescription" xml:space="preserve">
-    <value>Gebruikt OpenWeatherMap's Current Weather API. Weergegevens worden elke 10 minuten vernieuwd.</value>
+    <value>Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
-    <value>NINA interne OpenWeatherMap API client</value>
+    <value>NINA internal OpenWeatherMap API client</value>
   </data>
   <data name="LblOpenMeteoClientDescription" xml:space="preserve">
     <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
@@ -2274,43 +2284,43 @@ berekende HFR: {2}
     <value>NINA internal OpenMeteo API client</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
-    <value>Opties</value>
+    <value>Options</value>
   </data>
   <data name="LblOrderBy" xml:space="preserve">
-    <value>Sorteer op</value>
+    <value>Order by</value>
   </data>
   <data name="LblOrientation" xml:space="preserve">
-    <value>Oriëntatie</value>
+    <value>Orientation</value>
   </data>
   <data name="LblPanelOverlap" xml:space="preserve">
     <value>Panel overlap</value>
   </data>
   <data name="LblPanel" xml:space="preserve">
-    <value>Paneel</value>
+    <value>Panel</value>
   </data>
   <data name="LblParabolic" xml:space="preserve">
-    <value>Parabolisch</value>
+    <value>Parabolic</value>
   </data>
   <data name="LblPark" xml:space="preserve">
-    <value>Parkeer</value>
+    <value>Park</value>
   </data>
   <data name="LblParkEnabledButTelescopeCannotPark" xml:space="preserve">
-    <value>Telescoop is ingesteld om te parkeren aan het eind van de sequentie, maar kan dit niet doen</value>
+    <value>Telescope is set to park at sequence end, yet it is unable to do so</value>
   </data>
   <data name="LblParkEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>Telescoop is ingesteld om te parkeren aan het eind van de sequentie, maar is niet verbonden</value>
+    <value>Telescope is set to park at sequence end, yet it is not connected</value>
   </data>
   <data name="LblPassMeridian" xml:space="preserve">
-    <value>Passeert meridiaan</value>
+    <value>Pass Meridian</value>
   </data>
   <data name="LblPatternName" xml:space="preserve">
-    <value>Patroonnaam</value>
+    <value>Pattern Name</value>
   </data>
   <data name="LblPauseBetweenFilters" xml:space="preserve">
-    <value>Pauzeer tussen filters</value>
+    <value>Pause between filters</value>
   </data>
   <data name="LblPaused" xml:space="preserve">
-    <value>Gepauzeerd</value>
+    <value>Paused</value>
   </data>
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>Pause before Meridian</value>
@@ -2325,55 +2335,55 @@ berekende HFR: {2}
     <value>Dec: {0}({1}")</value>
   </data>
   <data name="LblPhd2FailedEquipmentConnection" xml:space="preserve">
-    <value>PHD2 kon geen verbinding maken met de uitrusting</value>
+    <value>PHD2 wasn't able to connect to the equipment</value>
   </data>
   <data name="LblPhd2FailedGetProfiles" xml:space="preserve">
     <value>PHD2 wasn't able to provide profiles</value>
   </data>
   <data name="LblPHD2HistorySize" xml:space="preserve">
-    <value>PHD2 geschiedenisgrootte</value>
+    <value>PHD2 History Size</value>
   </data>
   <data name="LblPHD2MinimalHistorySize" xml:space="preserve">
-    <value>PHD2 geschiedenisgrootte (Imaging)</value>
+    <value>PHD2 History Size (Imaging)</value>
   </data>
   <data name="LblPHD2Path" xml:space="preserve">
-    <value>PHD2 pad</value>
+    <value>PHD2 path</value>
   </data>
   <data name="LblPhd2PathNotFound" xml:space="preserve">
-    <value>PHD2 kan niet worden gestart. Pad niet gevonden</value>
+    <value>Could not start PHD2. Path not found</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
     <value>RA: {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
-    <value>PHD2 server verbinding verloren!</value>
+    <value>PHD2 Server Connection lost!</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
-    <value>PHD2 server poort</value>
+    <value>PHD2 Server Port</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
     <value>PHD2 Server Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
-    <value>PHD2 instellingen</value>
+    <value>PHD2 Settings</value>
   </data>
   <data name="LblPhd2StartProcessError" xml:space="preserve">
-    <value>PHP 2 kan niet worden gestart. Controleer logs voor details.</value>
+    <value>Could not start PHD2. Check logs for details.</value>
   </data>
   <data name="LblPhd2SynchronizedServiceClientConnected" xml:space="preserve">
     <value>
-Client verbonden met gesynchroniseerde PHD2-service.
-Verbonden cliënten: {0}
+        Client connected to synchronized PHD2 service.
+        Connected clients: {0}
     </value>
   </data>
   <data name="LblPhd2SynchronizedServiceClientDisconnected" xml:space="preserve">
     <value>
-Client niet verbonden met gesynchroniseerde PHD2-service.
-Verbonden cliënten: {0}
+        Client disconnected to synchronized PHD2 service.
+        Connected clients: {0}
     </value>
   </data>
   <data name="LblPhd2SynchronizedServiceStarted" xml:space="preserve">
-    <value>Gesynchroniseerde PHD2-service gestart</value>
+    <value>Synchronized PHD2 service started</value>
   </data>
   <data name="LblPHD2TotalRMS" xml:space="preserve">
     <value>Tot: {0}({1}")</value>
@@ -2397,106 +2407,106 @@ Verbonden cliënten: {0}
     <value>Max Pixels</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
-    <value>Pixelschaal</value>
+    <value>Pixel Scale</value>
   </data>
   <data name="LblPixelScaleTooltip" xml:space="preserve">
     <value>Pixel scale in arcseconds per pixel</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
-    <value>Pixelgrootte</value>
+    <value>Pixel Size</value>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
-    <value>Pixelgrootte X</value>
+    <value>Pixel Size X</value>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
-    <value>Pixelgrootte Y</value>
+    <value>Pixel Size Y</value>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
     <value>Planetarium</value>
   </data>
   <data name="LblPlanetariumCoordsError" xml:space="preserve">
-    <value>Niet in staat om coördinaten te verkrijgen van {0}</value>
+    <value>Unable to acquire coordinates from {0}</value>
   </data>
   <data name="LblPlanetariumCoordsOk" xml:space="preserve">
-    <value>Coördinaten verworven van {0}</value>
+    <value>Coordinates acquired from {0}</value>
   </data>
   <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
-    <value>Kan geen verbinding maken met {0}. Zorg ervoor dat het wordt uitgevoerd en geconfigureerd om verzoeken te ontvangen</value>
+    <value>Unable to connect to {0}. Please ensure that it is running and configured to receive requests</value>
   </data>
   <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
-    <value>Er is geen object geselecteerd in {0}</value>
+    <value>There is no object currently selected in {0}</value>
   </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
-    <value>Voorkeuren planetarium</value>
+    <value>Planetarium Preferences</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Haal coördinaten op van de planetarium software</value>
+    <value>Get coordinates from the Planetarium Software</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
-    <value>Coördinaten van geselecteerde object</value>
+    <value>Coordinates from selected object</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>
   </data>
   <data name="LblPlatesolve2Directory" xml:space="preserve">
-    <value>Platesolve2 locatie</value>
+    <value>Platesolve2 Location</value>
   </data>
   <data name="LblPlatesolve2NoCoordinates" xml:space="preserve">
-    <value>Geen coördinaten beschikbaar. Platesolve2 heeft coördinaten nodig om op te platesolven!</value>
+    <value>No coordinates available. Platesolve2 requires coordinates to solve!</value>
   </data>
   <data name="LblPlatesolve2NotFound" xml:space="preserve">
-    <value>Platesolve2 exe niet gevonden</value>
+    <value>Platesolve2 exe not found</value>
   </data>
   <data name="LblPlateSolvedPolarAlignment" xml:space="preserve">
-    <value>Polaruitlijning met behulp van platesolving</value>
+    <value>Plate Solved Polar Alignment</value>
   </data>
   <data name="LblPlateSolveEnding" xml:space="preserve">
-    <value>PlateSolve heeft het maximum aantal pogingen bereikt, of meridian flip noodzakelijk.</value>
+    <value>PlateSolve reached maximum number of attempts, or Meridian Flip necessary.</value>
   </data>
   <data name="LblPlatesolveFailed" xml:space="preserve">
-    <value>Platesolve mislukt</value>
+    <value>Platesolve failed</value>
   </data>
   <data name="LblPlateSolveFailedDelay" xml:space="preserve">
-    <value>Vertraging tussen pogingen</value>
+    <value>Delay between attempts</value>
   </data>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
-    <value>Vertraging in minuten tussen twee plate solve pogingen</value>
+    <value>Delay, in minutes, between two plate solve attempts</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
-    <value>Plate solve huidige afbeelding</value>
+    <value>Plate solve current image</value>
   </data>
   <data name="LblPlateSolveNbOfAttempts" xml:space="preserve">
-    <value>Aantal pogingen</value>
+    <value>Number of Attempts</value>
   </data>
   <data name="LblPlateSolveNbOfAttemptsTooltip" xml:space="preserve">
-    <value>Hoe vaak een gemiddelde sequentie platesolve zal proberen tot het als mislukt wordt beschouwd</value>
+    <value>How many times a mid-sequence platesolve operation will attempt until considered failed</value>
   </data>
   <data name="LblPlatesolveNoCoordinates" xml:space="preserve">
-    <value>Geen referentie coördinaten beschikbaar</value>
+    <value>No reference coordinates available</value>
   </data>
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
-    <value>Plate solve afgebroken. De effectieve focale lengte van de telescoop moet worden gespecificeerd onder Opties &gt; Uitrusting</value>
+    <value>Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescoop niet binnen tolerantie. Herhaal...</value>
+    <value>Telescope not inside tolerance. Repeating...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescoop niet binnen tolerantie. Opnieuw naar doel zwenken...</value>
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescoop niet binnen tolerantie. Telescoop wordt gesynchroniseerd...</value>
+    <value>Telescope not inside tolerance. Syncing scope...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
-    <value>Platesolve service aangeboden door</value>
+    <value>Platesolve service provided by</value>
   </data>
   <data name="LblPlateSolver" xml:space="preserve">
-    <value>Plate solver</value>
+    <value>Plate Solver</value>
   </data>
   <data name="LblPlateSolveReattemptDelay" xml:space="preserve">
-    <value>Wachten op de volgende plate solve poging: {0}</value>
+    <value>Waiting for next plate solve attempt: {0}</value>
   </data>
   <data name="LblPlateSolveSettings" xml:space="preserve">
-    <value>Plate solver instellingen</value>
+    <value>Plate Solver Settings</value>
   </data>
   <data name="LblPlateSolving" xml:space="preserve">
     <value>Plate Solving</value>
@@ -2508,19 +2518,19 @@ Verbonden cliënten: {0}
     <value>No target set</value>
   </data>
   <data name="LblPleaseChangeToFilter" xml:space="preserve">
-    <value>Wijzigen naar filter {0}</value>
+    <value>Please change to filter {0}</value>
   </data>
   <data name="LblPleaseRotate" xml:space="preserve">
-    <value>Draai {0} graden</value>
+    <value>Please rotate by {0} degrees</value>
   </data>
   <data name="LblPolarAlignment" xml:space="preserve">
-    <value>Pooluitlijning</value>
+    <value>Polar Alignment</value>
   </data>
   <data name="LblPort" xml:space="preserve">
-    <value>Poort</value>
+    <value>Port</value>
   </data>
   <data name="LblPosition" xml:space="preserve">
-    <value>Positie</value>
+    <value>Position</value>
   </data>
   <data name="LblRelativePosition" xml:space="preserve">
     <value>Relative Position</value>
@@ -2529,40 +2539,40 @@ Verbonden cliënten: {0}
     <value>Clear calibration</value>
   </data>
   <data name="LblPreferredPlanetarium" xml:space="preserve">
-    <value>Voorkeurssoftware voor planetarium</value>
+    <value>Preferred Planetatium software</value>
   </data>
   <data name="LblPrepareExposure" xml:space="preserve">
-    <value>Belichting voorbereiden</value>
+    <value>Prepare Exposure</value>
   </data>
   <data name="LblPrepareImage" xml:space="preserve">
-    <value>Afbeelding voorbereiden</value>
+    <value>Preparing image</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
     <value>Preparing Dark Sequence</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
-    <value>Flats voor filter: {0}</value>
+    <value>Flats for filter: {0}</value>
   </data>
   <data name="LblPreSequenceChecklist" xml:space="preserve">
     <value>The following potential issues have been found with the sequence:</value>
   </data>
   <data name="LblPreSequenceChecklistHeader" xml:space="preserve">
-    <value>Pre-sequence checklist</value>
+    <value>Pre-Sequence Checklist</value>
   </data>
   <data name="LblPressure" xml:space="preserve">
-    <value>Druk</value>
+    <value>Pressure</value>
   </data>
   <data name="LblPrimary" xml:space="preserve">
-    <value>Primair</value>
+    <value>Primary</value>
   </data>
   <data name="LblProfiles" xml:space="preserve">
-    <value>Profielen</value>
+    <value>Profiles</value>
   </data>
   <data name="LblProgress" xml:space="preserve">
-    <value>Voortgang</value>
+    <value>Progress</value>
   </data>
   <data name="LblPull" xml:space="preserve">
-    <value>Trek</value>
+    <value>Pull</value>
   </data>
   <data name="LblPush" xml:space="preserve">
     <value>Push</value>
@@ -2574,181 +2584,181 @@ Verbonden cliënten: {0}
     <value>RA</value>
   </data>
   <data name="LblRACorrections" xml:space="preserve">
-    <value>RA correcties</value>
+    <value>RA Corrections</value>
   </data>
   <data name="LblRadius" xml:space="preserve">
     <value>Radius</value>
   </data>
   <data name="LblRAError" xml:space="preserve">
-    <value>RA fout</value>
+    <value>RA Error</value>
   </data>
   <data name="LblRainRate" xml:space="preserve">
-    <value>Regenfrequentie</value>
+    <value>Rain Rate</value>
   </data>
   <data name="LblRAPixError" xml:space="preserve">
-    <value>RA pix error</value>
+    <value>RA Pix Error</value>
   </data>
   <data name="LblRate" xml:space="preserve">
-    <value>Tarief</value>
+    <value>Rate</value>
   </data>
   <data name="LblRawConverter" xml:space="preserve">
     <value>Raw converter</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Geeft aan welk gereedschap moet worden gebruikt voor de DSLR raw bestandsconversie</value>
+    <value>Specifies which tool should be used for DSLR raw file conversion</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Read noise in e</value>
   </data>
   <data name="LblReadoutMode" xml:space="preserve">
-    <value>Modus</value>
+    <value>Mode</value>
   </data>
   <data name="LblReadoutModeTooltip" xml:space="preserve">
     <value>A numeric value corresponding to your camera's readout mode</value>
   </data>
   <data name="LblReadoutForNormalImages" xml:space="preserve">
-    <value>Readout mode voor reeksen</value>
+    <value>Readout mode for sequences</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
     <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
-    <value>Readout mode voor snapshots</value>
+    <value>Readout mode for snapshots</value>
   </data>
   <data name="LblReadoutForSnapImagesToolTip" xml:space="preserve">
-    <value>Deze readout modus van uw camera zal worden gebruikt voor platesolving, het kaderen en het automatische focus</value>
+    <value>This readout mode of your camera will be used for plate solving, framing and autofocus</value>
   </data>
   <data name="LblRecenter" xml:space="preserve">
-    <value>Centreer</value>
+    <value>Recenter</value>
   </data>
   <data name="LblRecenterAfterFlip" xml:space="preserve">
-    <value>Centreer telescoop na meridian flip</value>
+    <value>Recenter after Flip</value>
   </data>
   <data name="LblRecenterImage" xml:space="preserve">
-    <value>Centreer afbeelding</value>
+    <value>Recenter Image</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
     <value>Recommended Exposure Time</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
-    <value>Alle apparaten opnieuw verbinden?</value>
+    <value>Reconnect all devices?</value>
   </data>
   <data name="LblReconnectCamera" xml:space="preserve">
-    <value>Gelieve uw camera opnieuw verbinden!</value>
+    <value>Please reconnect camera!</value>
   </data>
   <data name="LblReconnectFilterwheel" xml:space="preserve">
-    <value>Gelieve uw filterwiel opnieuw verbinden!</value>
+    <value>Please reconnect filterwheel!</value>
   </data>
   <data name="LblReconnectFocuser" xml:space="preserve">
-    <value>Gelieve uw focuser opnieuw verbinden!</value>
+    <value>Please reconnect focuser!</value>
   </data>
   <data name="LblReconnectMount" xml:space="preserve">
     <value>Please reconnect mount!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
-    <value>Referentiedatum</value>
+    <value>Reference Date</value>
   </data>
   <data name="LblRegions" xml:space="preserve">
-    <value>Regio's</value>
+    <value>Regions</value>
   </data>
   <data name="LblRelease" xml:space="preserve">
     <value>Release</value>
   </data>
   <data name="LblRemaining" xml:space="preserve">
-    <value>Resterend</value>
+    <value>Remaining</value>
   </data>
   <data name="LblRemainingNo" xml:space="preserve">
-    <value>Resterende #</value>
+    <value>Remaining #</value>
   </data>
   <data name="LblRemoveProfileCaption" xml:space="preserve">
-    <value>Profiel verwijderen?</value>
+    <value>Remove Profile?</value>
   </data>
   <data name="LblRemoveProfileText" xml:space="preserve">
     <value>Should the Profile with name: {0} and ID: {1} be removed?</value>
   </data>
   <data name="LblRepeatUntil" xml:space="preserve">
-    <value>Herhaal tot</value>
+    <value>Repeat until</value>
   </data>
   <data name="LblReplaceSequenceTarget" xml:space="preserve">
-    <value>Vervang als reeks doel</value>
+    <value>Replace as Sequence Target</value>
   </data>
   <data name="LblRescanDevices" xml:space="preserve">
-    <value>Apparaten opnieuw scannen</value>
+    <value>Rescan Devices</value>
   </data>
   <data name="LblResetAndContinue" xml:space="preserve">
-    <value>Reset en ga door</value>
+    <value>Reset and Continue</value>
   </data>
   <data name="LblResetDockLayout" xml:space="preserve">
-    <value>Herstel lay-out</value>
+    <value>Reset layout</value>
   </data>
   <data name="LblResetDockLayoutConfirmation" xml:space="preserve">
-    <value>Moet de lay-out worden gereset?</value>
+    <value>Should the layout be reset?</value>
   </data>
   <data name="LblReslewToTarget" xml:space="preserve">
-    <value>Zwenk opnieuw naar doel</value>
+    <value>Reslew to Target</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
-    <value>Autoguider hervatten</value>
+    <value>Resume Autoguider</value>
   </data>
   <data name="LblResumeGuiding" xml:space="preserve">
-    <value>Hervat guiding</value>
+    <value>Resume Guiding</value>
   </data>
   <data name="LblResumeSettleTime" xml:space="preserve">
-    <value>Rust tijd na hervatten</value>
+    <value>Settle Time after resume</value>
   </data>
   <data name="LblResumeTracking" xml:space="preserve">
-    <value>Tracking hervatten</value>
+    <value>Resume Tracking</value>
   </data>
   <data name="LblResuming" xml:space="preserve">
-    <value>Hervatten</value>
+    <value>Resuming</value>
   </data>
   <data name="LblRightAscension" xml:space="preserve">
-    <value>Right ascension</value>
+    <value>Right Ascension</value>
   </data>
   <data name="LblRotation" xml:space="preserve">
-    <value>Rotatie</value>
+    <value>Rotation</value>
   </data>
   <data name="LblRotationRequired" xml:space="preserve">
-    <value>Camera rotatie vereist</value>
+    <value>Camera Rotation required</value>
   </data>
   <data name="LblRotationTolerance" xml:space="preserve">
-    <value>Rotatie tolerantie</value>
+    <value>Rotation Tolerance</value>
   </data>
   <data name="LblRotator" xml:space="preserve">
     <value>Rotator</value>
   </data>
   <data name="LblRotatorConnected" xml:space="preserve">
-    <value>Rotator verbonden</value>
+    <value>Rotator Connected</value>
   </data>
   <data name="LblRotatorConnectionLost" xml:space="preserve">
-    <value>Rotator verbinding verloren! Gelieve opnieuw verbinding te maken!</value>
+    <value>Rotator connection lost! Please reconnect rotator!</value>
   </data>
   <data name="LblSave" xml:space="preserve">
-    <value>Opslaan</value>
+    <value>Save</value>
   </data>
   <data name="LblSaveAsSequence" xml:space="preserve">
-    <value>Reeks als nieuw bestand opslaan</value>
+    <value>Save Sequence as new file</value>
   </data>
   <data name="LblSaveAsSequenceToolTip" xml:space="preserve">
-    <value>Reeks als nieuw xml-bestand opslaan</value>
+    <value>Save Sequence as new xml file</value>
   </data>
   <data name="LblSaveBacklashQuestion" xml:space="preserve">
-    <value>Focuser backlash-metingen opslaan?</value>
+    <value>Save Focuser Backlash Measurements?</value>
   </data>
   <data name="LblSaveImageAs" xml:space="preserve">
-    <value>Afbeelding opslaan als</value>
+    <value>Save Image as</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>This setting is ignored for DSLRs when using the native driver. The camera's RAW format will be saved instead!</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
-    <value>Geselecteerde profiel opslaan en de volgende keer niet opnieuw vragen</value>
+    <value>Save selected profile and don't ask again next time</value>
   </data>
   <data name="LblSaveSequence" xml:space="preserve">
-    <value>Reeks opslaan</value>
+    <value>Save Sequence</value>
   </data>
   <data name="LblSaveSequenceToolTip" xml:space="preserve">
-    <value>Reeks opslaan als xml bestand</value>
+    <value>Save Sequence as xml file</value>
   </data>
   <data name="LblSaveTargetSet" xml:space="preserve">
     <value>Save target set</value>
@@ -2757,104 +2767,104 @@ Verbonden cliënten: {0}
     <value>Scope settle time after flip</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
-    <value>Zoeken</value>
+    <value>Search</value>
   </data>
   <data name="LblSearchRadius" xml:space="preserve">
-    <value>Zoekradius</value>
+    <value>Search Radius</value>
   </data>
   <data name="LblSecondary" xml:space="preserve">
-    <value>Secundair</value>
+    <value>Secondary</value>
   </data>
   <data name="LblSecondaryBackground" xml:space="preserve">
-    <value>Secundaire achtergrond</value>
+    <value>Secondary Background</value>
   </data>
   <data name="LblSelectGuidestar" xml:space="preserve">
-    <value>Selecteer een nieuwe gidsster</value>
+    <value>Select new Guidestar</value>
   </data>
   <data name="LblSelectNewGuideStar" xml:space="preserve">
-    <value>Selecteer een nieuwe gidsster</value>
+    <value>Select new Guidestar</value>
   </data>
   <data name="LblSelectProfileInUseWarning" xml:space="preserve">
-    <value>Geselecteerd profiel kan niet worden gekozen. Het is al in gebruik door een ander exemplaar van NINA!</value>
+    <value>Selected profile cannot be chosen. It is already in use by another N.I.N.A. instance!</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
     <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
-    <value>Sensornaam</value>
+    <value>Sensor Name</value>
   </data>
   <data name="LblSensorType" xml:space="preserve">
-    <value>Sensortype</value>
+    <value>Sensor Type</value>
   </data>
   <data name="LblSequence" xml:space="preserve">
-    <value>Volgorde</value>
+    <value>Sequence</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Delay start</value>
   </data>
   <data name="LblSequenceDelayStatus" xml:space="preserve">
-    <value>Sequentie begint over {0} seconden</value>
+    <value>Sequence starting in {0} seconds</value>
   </data>
   <data name="LblSequenceMode" xml:space="preserve">
-    <value>Reeks modus</value>
+    <value>Sequence Mode</value>
   </data>
   <data name="LblSequenceModeRotate" xml:space="preserve">
     <value>Loop</value>
   </data>
   <data name="LblSequenceModeStandard" xml:space="preserve">
-    <value>De een na de ander</value>
+    <value>One after another</value>
   </data>
   <data name="LblSequenceTemplate" xml:space="preserve">
-    <value>Reeks template</value>
+    <value>Sequence Template</value>
   </data>
   <data name="LblSequenceTemplateTooltip" xml:space="preserve">
-    <value>Specificeert een pad naar een eerder geëxporteerd sequentiebestand dat moet worden gebruikt als sjabloon.
-Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialiseren in plaats van de standaard template.</value>
+    <value>Specifies a path to a previously exported sequence file that should be used as a template.
+This template will be used on startup to initialize the sequence instead of the default one.</value>
   </data>
   <data name="LblSerialPort" xml:space="preserve">
-    <value>Seriële poort</value>
+    <value>Serial Port</value>
   </data>
   <data name="LblSerialRelay" xml:space="preserve">
-    <value>Serieel relais</value>
+    <value>Serial Relay</value>
   </data>
   <data name="LblSetAsSequenceTarget" xml:space="preserve">
-    <value>Instellen als reeks object</value>
+    <value>Set as sequence target</value>
   </data>
   <data name="LblSetAutoFocusFilter" xml:space="preserve">
-    <value>Instellen als autofocusfilter</value>
+    <value>Set as Auto Focus Filter</value>
   </data>
   <data name="LblSetAutoFocusFilterTooltip" xml:space="preserve">
-    <value>Indien ingesteld, zal autofocus altijd het geselecteerde filter gebruiken, met behulp van filterwiel instellingen</value>
+    <value>If set, auto-focus will always use the selected filter, using filter wheel offsets</value>
   </data>
   <data name="LblSetForFramingAssistant" xml:space="preserve">
-    <value>Instellen voor framing assistent</value>
+    <value>Set for framing assistant</value>
   </data>
   <data name="LblSetNewValue" xml:space="preserve">
-    <value>Nieuwe waarde instellen</value>
+    <value>Set new value</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Als geparkeerd instellen</value>
+    <value>Set As Park</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Stelt de parkeerpositie in op de huidige positie</value>
+    <value>Sets the park position to be the current position</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
-    <value>Instellingen</value>
+    <value>Settings</value>
   </data>
   <data name="LblSettle" xml:space="preserve">
-    <value>Rusten</value>
+    <value>Settle</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
     <value>Settle Pixel Tolerance</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
-    <value>Rust periode na slew</value>
+    <value>Settle time after slew</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>Settle Timeout</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guidingstart opnieuw proberen</value>
+    <value>Guiding Start Retry</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
     <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
@@ -2872,76 +2882,76 @@ Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialise
     <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
-    <value>Sidereal tijd</value>
+    <value>Sidereal Time</value>
   </data>
   <data name="LblSiteElevation" xml:space="preserve">
-    <value>Site-hoogte</value>
+    <value>Site Elevation</value>
   </data>
   <data name="LblSiteFromGPS" xml:space="preserve">
-    <value>vanaf GPS</value>
+    <value>from GPS</value>
   </data>
   <data name="LblSiteLatitude" xml:space="preserve">
-    <value>Site breedtegraad</value>
+    <value>Site Latitude</value>
   </data>
   <data name="LblSiteLongitude" xml:space="preserve">
-    <value>Site lengtegraad</value>
+    <value>Site Longitude</value>
   </data>
   <data name="LblSize" xml:space="preserve">
-    <value>Grootte</value>
+    <value>Size</value>
   </data>
   <data name="LblSkyAtlas" xml:space="preserve">
     <value>Sky Atlas</value>
   </data>
   <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
-    <value>Sky Atlas afbeeldingsmap</value>
+    <value>Sky Atlas Image Directory</value>
   </data>
   <data name="LblOfflineSkyMap" xml:space="preserve">
     <value>Offline Sky Map</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
-    <value>Helderheid hemel</value>
+    <value>Sky Brightness</value>
   </data>
   <data name="LblSkyQuality" xml:space="preserve">
-    <value>Kwaliteit hemel</value>
+    <value>Sky Quality</value>
   </data>
   <data name="LblSkyServerSkySurvey" xml:space="preserve">
     <value>SkyServer Sky Survey</value>
   </data>
   <data name="LblSkySurveyCacheDirectory" xml:space="preserve">
-    <value>Sky Survey cache directory</value>
+    <value>Sky Survey Cache Directory</value>
   </data>
   <data name="LblSkyTemperature" xml:space="preserve">
-    <value>Luchttemperatuur</value>
+    <value>Sky Temperature</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
-    <value>Zwenken</value>
+    <value>Slew</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
     <value>Slew and Center</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
-    <value>Duur zwenken</value>
+    <value>Slew Duration</value>
   </data>
   <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>Zwenken naar doel is ingeschakeld, maar telescoop is niet verbonden</value>
+    <value>Slew to target is enabled, yet telescope is not connected</value>
   </data>
   <data name="LblSlewRateDegSec" xml:space="preserve">
-    <value>Zwenkratio (deg/sec)</value>
+    <value>Slew Rate (deg/sec)</value>
   </data>
   <data name="LblSlewToTarget" xml:space="preserve">
-    <value>Zwenk naar doel</value>
+    <value>Slew to target</value>
   </data>
   <data name="LblSlewToZenith" xml:space="preserve">
-    <value>Zwenk naar zenit</value>
+    <value>Slew to zenith</value>
   </data>
   <data name="LblSlewWhenTargetCoordsUnset" xml:space="preserve">
-    <value>Tenminste één doel met zwenken ingeschakeld heeft geen doelcoördinaten ingesteld</value>
+    <value>At least one target with slew enabled has no target coordinates set</value>
   </data>
   <data name="LblSnapPortStart" xml:space="preserve">
-    <value>Snap Port Start opdracht</value>
+    <value>Snap Port Start Command</value>
   </data>
   <data name="LblSnapPortStop" xml:space="preserve">
-    <value>Snap Port Stop opdracht</value>
+    <value>Snap Port Stop Command</value>
   </data>
   <data name="LblSobel" xml:space="preserve">
     <value>Sobel</value>
@@ -2950,56 +2960,56 @@ Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialise
     <value>Solving...</value>
   </data>
   <data name="LblSource" xml:space="preserve">
-    <value>Bron</value>
+    <value>Source</value>
   </data>
   <data name="LblSouthern" xml:space="preserve">
-    <value>Zuidelijk</value>
+    <value>Southern</value>
   </data>
   <data name="LblStarFWHM" xml:space="preserve">
-    <value>Ster FWHM</value>
+    <value>Star FWHM</value>
   </data>
   <data name="LblStarSensitivity" xml:space="preserve">
-    <value>Stergevoeligheid</value>
+    <value>Star Sensitivity</value>
   </data>
   <data name="LblStarSensitivityTooltip" xml:space="preserve">
-    <value>Bepaalt de gevoeligheid van het ster detectie-algoritme. Hogere instellingen kunnen per ongeluk ruis detecteren en kan meer tijd in beslag nemen</value>
+    <value>Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</value>
   </data>
   <data name="LblStartAutoFocus" xml:space="preserve">
-    <value>Start autofocus</value>
+    <value>Start Auto Focus</value>
   </data>
   <data name="LblStartBacklashMeasurementConfirmation" xml:space="preserve">
-    <value>De meting van de speling op de aandrijving (backlash) zal nu beginnen.
-Voordat u doorgaat, bevestig dat uw systeem op dit moment goed of dichtbij de goede focus is</value>
+    <value>Backlash Measurement will start now.
+Before proceeding, please confirm your system is currently at or close to good focus</value>
   </data>
   <data name="LblStartBacklashQuestion" xml:space="preserve">
-    <value>Meting van de speling op de aandrijving (backlash) starten?</value>
+    <value>Start Backlash Measurement?</value>
   </data>
   <data name="LblStartGuiding" xml:space="preserve">
-    <value>Start volgen</value>
+    <value>Start guiding</value>
   </data>
   <data name="LblStartGuidingButGuiderNotConnected" xml:space="preserve">
-    <value>Start volgen is ingeschakeld, maar volgcamera is niet verbonden</value>
+    <value>Start Guiding is enabled, yet guider is not connected</value>
   </data>
   <data name="LblStartGuidingFailed" xml:space="preserve">
-    <value>Start volgen mislukt</value>
+    <value>Start guiding failed</value>
   </data>
   <data name="LblRestartGuidingAfterLostShiftLockFailed" xml:space="preserve">
     <value>Restarting guiding failed after lost shift lock</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
-    <value>Starten van IN backlashmeting</value>
+    <value>Starting IN Backlash Measurement</value>
   </data>
   <data name="LblStartingOUTBacklashMeasurement" xml:space="preserve">
-    <value>Start OUT backlashmeting</value>
+    <value>Starting OUT Backlash Measurement</value>
   </data>
   <data name="LblStartSequenceAnyway" xml:space="preserve">
-    <value>Toch reeks starten?</value>
+    <value>Start Sequence Anyway?</value>
   </data>
   <data name="LblState" xml:space="preserve">
-    <value>Staat</value>
+    <value>State</value>
   </data>
   <data name="LblStatistics" xml:space="preserve">
-    <value>Statistieken</value>
+    <value>Statistics</value>
   </data>
   <data name="LblStDev" xml:space="preserve">
     <value>SD</value>
@@ -3011,55 +3021,55 @@ Voordat u doorgaat, bevestig dat uw systeem op dit moment goed of dichtbij de go
     <value>Stellarium</value>
   </data>
   <data name="LblStellariumUse" xml:space="preserve">
-    <value>Gebruik Stellarium</value>
+    <value>Use Stellarium</value>
   </data>
   <data name="LblStellariumUseNotice" xml:space="preserve">
-    <value>Om Stellarium te kunnen gebruiken moet je de externe plug-in geïnstalleerd en actief hebben op de Host en des betreffende poort hierboven opgegeven</value>
+    <value>In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</value>
   </data>
   <data name="LblStop" xml:space="preserve">
     <value>Stop</value>
   </data>
   <data name="LblStopAutoguider" xml:space="preserve">
-    <value>Pauzeer autoguider</value>
+    <value>Pause Autoguider</value>
   </data>
   <data name="LblStopGuiding" xml:space="preserve">
-    <value>Stop guiding</value>
+    <value>Stop Guiding</value>
   </data>
   <data name="LblStopTracking" xml:space="preserve">
-    <value>Stop tracking</value>
+    <value>Stop Tracking</value>
   </data>
   <data name="LblStretchImage" xml:space="preserve">
-    <value>Stretchen van afbeelding</value>
+    <value>Stretching image</value>
   </data>
   <data name="LblStsciSkySurvey" xml:space="preserve">
     <value>Stsci Sky Survey</value>
   </data>
   <data name="LblSubSample" xml:space="preserve">
-    <value>Subsampling inschakelen</value>
+    <value>Enable SubSampling</value>
   </data>
   <data name="LblSuccess" xml:space="preserve">
-    <value>Succes</value>
+    <value>Success</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Zonsopgang</value>
+    <value>Sunrise</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
-    <value>Zonsondergang</value>
+    <value>Sunset</value>
   </data>
   <data name="LblSurfaceBrightness" xml:space="preserve">
-    <value>Oppervlakte helderheid</value>
+    <value>Surface Brightness</value>
   </data>
   <data name="LblSwitch" xml:space="preserve">
-    <value>Schakelaar</value>
+    <value>Switch</value>
   </data>
   <data name="LblSwitchConnected" xml:space="preserve">
-    <value>Schakelaar verbonden</value>
+    <value>Switch connected</value>
   </data>
   <data name="LblSwitchConnectionLost" xml:space="preserve">
-    <value>Connectie schakelaar verloren!</value>
+    <value>Switch Connection lost!</value>
   </data>
   <data name="LblSwitchingFilter" xml:space="preserve">
-    <value>Filters wisselen</value>
+    <value>Switching filter</value>
   </data>
   <data name="LblSync" xml:space="preserve">
     <value>Sync</value>
@@ -3079,70 +3089,70 @@ Should the settings be synchronized?</value>
     <value>Target</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
-    <value>DoelDec</value>
+    <value>TargetDec</value>
   </data>
   <data name="LblTargetHeightDegrees" xml:space="preserve">
-    <value>Minimale hoogte (graden)</value>
+    <value>Minimum Height (degree)</value>
   </data>
   <data name="LblTargetName" xml:space="preserve">
-    <value>Doelnaam</value>
+    <value>Target Name</value>
   </data>
   <data name="LblTargetNameDescription" xml:space="preserve">
-    <value>Doelnaam indien beschikbaar</value>
+    <value>Target Name if available</value>
   </data>
   <data name="LblTargetPosition" xml:space="preserve">
-    <value>Doelpositie</value>
+    <value>Target Position</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
-    <value>DoelRA</value>
+    <value>TargetRA</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
-    <value>Doelen</value>
+    <value>Targets</value>
   </data>
   <data name="LblTargetTemp" xml:space="preserve">
-    <value>Doeltemperatuur</value>
+    <value>Target Temperature</value>
   </data>
   <data name="LblTargetTempShort" xml:space="preserve">
-    <value>Doel temp.</value>
+    <value>Target Temp.</value>
   </data>
   <data name="LblTargetWidthDegrees" xml:space="preserve">
-    <value>Minimale breedte (graden)</value>
+    <value>Minimum Width (degree)</value>
   </data>
   <data name="LblTelescope" xml:space="preserve">
-    <value>Telescoop</value>
+    <value>Telescope</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
-    <value>Telescoop kan niet pulseguiden</value>
+    <value>Telescope cannot Pulse Guide</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
-    <value>Telescoop kan niet zwenken</value>
+    <value>Telescope cannot slew</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
-    <value>Telescoop verbonden</value>
+    <value>Telescope connected</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
-    <value>Telescoopverbinding verloren! Sluit telescoop opnieuw aan!</value>
+    <value>Telescope connection lost! Please reconnect telescope!</value>
   </data>
   <data name="LblTelescopeControl" xml:space="preserve">
-    <value>Besturing telescoop</value>
+    <value>Telescope Control</value>
   </data>
   <data name="LblTelescopeName" xml:space="preserve">
-    <value>Naam telescoop</value>
+    <value>Telescope Name</value>
   </data>
   <data name="LblTelescopeNotConnected" xml:space="preserve">
-    <value>Telescoop niet aangesloten</value>
+    <value>Telescope not connected</value>
   </data>
   <data name="LblTelescopeNotTrackingForSync" xml:space="preserve">
-    <value>Telescoop trackt niet. Synchronisatie is allen beschikbaar tijdens het tracken!</value>
+    <value>Telescope is not tracking. Sync is only available when tracking!</value>
   </data>
   <data name="LblTelescopeParkedWarn" xml:space="preserve">
-    <value>Telescoop is geparkeerd. Hierdoor kan er niet naar het object verplaatst worden</value>
+    <value>Telescope is parked. Cannot slew while parked</value>
   </data>
   <data name="LblTelescopeSnapPort" xml:space="preserve">
-    <value>Telescoop snap poort</value>
+    <value>Telescope Snap Port</value>
   </data>
   <data name="LblTelescopeSynced" xml:space="preserve">
-    <value>Telescoop gesynchroniseerd naar coördinaten</value>
+    <value>Telescope synced to coordinates</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
     <value>From Mount to N.I.N.A.</value>
@@ -3157,43 +3167,43 @@ Should the settings be synchronized?</value>
     <value>Temp Comp</value>
   </data>
   <data name="LblTempControl" xml:space="preserve">
-    <value>Temperatuurbeheer</value>
+    <value>Temperature Control</value>
   </data>
   <data name="LblTemperature" xml:space="preserve">
-    <value>Temperatuur</value>
+    <value>Temperature</value>
   </data>
   <data name="LblTemperatureCompensation" xml:space="preserve">
-    <value>Temperatuurcompensatie</value>
+    <value>Temperature Compensation</value>
   </data>
   <data name="LblTemperatureDescription" xml:space="preserve">
-    <value>Cameratemperatuur</value>
+    <value>Camera Temperature</value>
   </data>
   <data name="LblTertiaryBackground" xml:space="preserve">
-    <value>Tertiaire achtergrond</value>
+    <value>Tertiary Background</value>
   </data>
   <data name="LblTheSkyX" xml:space="preserve">
     <value>TheSkyX</value>
   </data>
   <data name="LblThrough" xml:space="preserve">
-    <value>Door</value>
+    <value>Through</value>
   </data>
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
   </data>
   <data name="LblTime" xml:space="preserve">
-    <value>Tijd</value>
+    <value>Time</value>
   </data>
   <data name="LblTimeFormatDescription" xml:space="preserve">
-    <value>Tijd met het formaat UU-mm-ss</value>
+    <value>Time with format HH-mm-ss</value>
   </data>
   <data name="LblTimeout" xml:space="preserve">
-    <value>Time-out</value>
+    <value>Timeout</value>
   </data>
   <data name="LblTimeoutToSetSwitchValue" xml:space="preserve">
     <value>Timeout to set switch value {0} for switch [ID: {1}, Name: {2}]. Current value is {3}.</value>
   </data>
   <data name="LblTimeZone" xml:space="preserve">
-    <value>Tijdzone</value>
+    <value>Time Zone</value>
   </data>
   <data name="LblTimeOffset" xml:space="preserve">
     <value>Offset</value>
@@ -3202,84 +3212,84 @@ Should the settings be synchronized?</value>
     <value>Offset in minutes from the fixed time of day</value>
   </data>
   <data name="LblTo" xml:space="preserve">
-    <value>Tot</value>
+    <value>To</value>
   </data>
   <data name="LblTools" xml:space="preserve">
-    <value>Gereedschap</value>
+    <value>Tools</value>
   </data>
   <data name="LblTooltipAddSequence" xml:space="preserve">
-    <value>Nieuwe rij toevoegen aan reekslijst</value>
+    <value>Add new row to sequence list</value>
   </data>
   <data name="LblTooltipAddTarget" xml:space="preserve">
-    <value>Voeg nieuwe lege doelreeks toe</value>
+    <value>Add new empty target sequence</value>
   </data>
   <data name="LblTooltipAutoStretch" xml:space="preserve">
-    <value>Schakelt een automatische autostretch van afbeelding aan/uit (alleen weergeven)</value>
+    <value>Toggles an automatic autostretch to image on/off (display only)</value>
   </data>
   <data name="LblTooltipBahtinovAnalyzer" xml:space="preserve">
-    <value>Bahtinov analyse
-Sleep de rechthoek over een ster met de Bahtinov spikes. NINA zal proberen de spikes te detecteren en de fout te tonen.</value>
+    <value>Bahtinov Analyzer
+Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</value>
   </data>
   <data name="LblTooltipCrossHair" xml:space="preserve">
-    <value>Richtkruis aan/uit schakelen</value>
+    <value>Toggles crosshair on/off</value>
   </data>
   <data name="LblTooltipDemoteSequenceRow" xml:space="preserve">
-    <value>Verplaats geselecteerde rij omlaag in de volglijst</value>
+    <value>Move selected row down sequence list</value>
   </data>
   <data name="LblTooltipDemoteTarget" xml:space="preserve">
-    <value>Beweeg object naar rechts</value>
+    <value>Move target right</value>
   </data>
   <data name="LblTooltipDetectStars" xml:space="preserve">
     <value>Toggles automatic star detection and analysis (Half Flux Radius) on/off</value>
   </data>
   <data name="LblToolTipLiveView" xml:space="preserve">
-    <value>Live weergave</value>
+    <value>Live View</value>
   </data>
   <data name="LblTooltipLoop" xml:space="preserve">
-    <value>Schakelt lussen in of uit</value>
+    <value>Enables/disables looping exposures</value>
   </data>
   <data name="LblTooltipPromoteSequenceRow" xml:space="preserve">
-    <value>Verplaats geselecteerde rij omhoog in de reeks</value>
+    <value>Move selected row up sequence list</value>
   </data>
   <data name="LblTooltipPromoteTarget" xml:space="preserve">
-    <value>Object naar links bewegen</value>
+    <value>Move target left</value>
   </data>
   <data name="LblTooltipRemoveSequence" xml:space="preserve">
-    <value>Verwijder geselecteerde rij uit reekslijst</value>
+    <value>Remove selected row from sequence list</value>
   </data>
   <data name="LblTooltipResetSequence" xml:space="preserve">
-    <value>Reset voortgang van geselecteerde rij in reekslijst</value>
+    <value>Reset progress of selected row in sequence list</value>
   </data>
   <data name="LblTooltipResetTarget" xml:space="preserve">
-    <value>Voortgang van alle reeks items resetten in het object</value>
+    <value>Reset progress of all sequence items in target</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
-    <value>Start reeksen</value>
+    <value>Starts sequences</value>
   </data>
   <data name="LblToolTipSubSample" xml:space="preserve">
-    <value>Gedeelte van de opname
-Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en activeer Gedeelte opname in het Opname-menu. Uw camera zal alleen het geselecteerde gebied downloaden.</value>
+    <value>SubSampling Frame
+Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</value>
   </data>
   <data name="LblTooltipTakeExposure" xml:space="preserve">
-    <value>Start belichting</value>
+    <value>Starts Exposure</value>
   </data>
   <data name="LblTooltipTargetLoadSet" xml:space="preserve">
-    <value>Laad meerdere objecten vanuit een bestand</value>
+    <value>Load set of targets from a file</value>
   </data>
   <data name="LblTooltipTargetSaveSet" xml:space="preserve">
-    <value>Sla huidige objecten op als set</value>
+    <value>Save current targets as a set</value>
   </data>
   <data name="LblTotalNo" xml:space="preserve">
-    <value>Totaal #</value>
+    <value>Total #</value>
   </data>
   <data name="LblToupTekCameraSetup" xml:space="preserve">
-    <value>ToupTek camera instellingen</value>
+    <value>ToupTek Camera Setup</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
-    <value>Traceer</value>
+    <value>Trace</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
-    <value>Volgen</value>
+    <value>Tracking</value>
   </data>
   <data name="LblTrackingRate" xml:space="preserve">
     <value>Tracking Rate</value>
@@ -3306,19 +3316,19 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Custom ({0:0.####}, {1:0.####})</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
-    <value>Transit noorden</value>
+    <value>Transit North</value>
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
-    <value>Transit zuiden</value>
+    <value>Transit South</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
-    <value>Trends en hyperbolisch</value>
+    <value>Trends and Hyperbolic</value>
   </data>
   <data name="LblTrendLines" xml:space="preserve">
-    <value>Trendlijnen</value>
+    <value>Trend Lines</value>
   </data>
   <data name="LblTrendParabolic" xml:space="preserve">
-    <value>Trends en parabolisch</value>
+    <value>Trends and Parabolic</value>
   </data>
   <data name="LblType" xml:space="preserve">
     <value>Type</value>
@@ -3327,33 +3337,35 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Unable to connect camera {0}</value>
   </data>
   <data name="LblUnableToSetExposureTime" xml:space="preserve">
-    <value>Kan belichtingstijd niet instellen</value>
+    <value>Unable to set exposure time</value>
   </data>
   <data name="LblUnableToSetISO" xml:space="preserve">
-    <value>Kan ISO niet instellen</value>
+    <value>Unable to set ISO</value>
   </data>
   <data name="LblUnableToStartExposure" xml:space="preserve">
-    <value>Kan camera belichting niet starten</value>
+    <value>Unable to start camera exposure</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
     <value>Unable to sync. Mount is not connected</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
-    <value>Onverwachte fout opgetreden</value>
+    <value>Unexpected error occurred</value>
   </data>
   <data name="LblUnhandledException" xml:space="preserve">
-    <value>Niet afgehandelde uitzondering opgetreden</value>
+    <value>Unhandled Exception occurred</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
-    <value>Niet-gekoppelde stretch</value>
+    <value>Unlinked Stretch</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
     <value>
- Indien ingeschakeld, zullen kleurkanalen apart worden gestretched, wat helpt om de achtergrond van de hemel te verbergen en autofocus en platesolving betrouwbaar te verbeteren, vooral in lichtvervuilde gebieden. De verwerkingstijd wordt hierdoor echter verhoogd.
+        When enabled, color channels will be stretched separately, helping hide the
+        sky background and enhancing autofocus and platesolving reliablity, especially
+        in light polluted areas. Processing time is however increased.
     </value>
   </data>
   <data name="LblUnpark" xml:space="preserve">
-    <value>Uit parkeermodus halen</value>
+    <value>Unpark</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
     <value>Ampere Hours</value>
@@ -3374,19 +3386,19 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Dew Heater Port</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dauw verwarmingslinten</value>
+    <value>Dew Heaters</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dauwpunt</value>
+    <value>Dew Point</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Overstroom</value>
+    <value>Excess Current</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Invoor stroom</value>
+    <value>Input Current</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Vermogen</value>
+    <value>Power</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
     <value>Input Voltage</value>
@@ -3407,13 +3419,13 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Power Port 4</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Vermogen</value>
+    <value>Power</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
     <value>Relative Humidity</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperatuur</value>
+    <value>Temperature</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
     <value>Up-Time</value>
@@ -3446,103 +3458,103 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Watt Hours</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
-    <value>Bijwerken</value>
+    <value>Update</value>
   </data>
   <data name="LblUpdating" xml:space="preserve">
-    <value>Bijwerken</value>
+    <value>Updating</value>
   </data>
   <data name="LblURL" xml:space="preserve">
     <value>URL</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
-    <value>USB-limiet</value>
+    <value>USB Limit</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
-    <value>Plate solve mislukt. Probeer nogmaals met Blind Solver?</value>
+    <value>Plate solve failed. Try to solve using Blind Solver?</value>
   </data>
   <data name="LblUseBlindSolveNoCoordinatesRollover" xml:space="preserve">
-    <value>Geen referentiecoördinaten beschikbaar. Moet de blindsolver in plaats hiervan worden gebruikt?</value>
+    <value>No reference coordinates available. Should the blind solver be used instead?</value>
   </data>
   <data name="LblUseBuldMode" xml:space="preserve">
-    <value>Gebruik bulb modus</value>
+    <value>Use bulb mode</value>
   </data>
   <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
     <value>Use SharpCap Sensor Analysis</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
-    <value>Gebruik telescoopzijde van pier</value>
+    <value>Use Telescope Side of Pier</value>
   </data>
   <data name="LblUseSnapPort" xml:space="preserve">
-    <value>Gebruik telescoop snappoort</value>
+    <value>Use Telescope Snap Port</value>
   </data>
   <data name="LblVerticalPanels" xml:space="preserve">
-    <value>Verticale panelen</value>
+    <value>Vertical Panels</value>
   </data>
   <data name="LblWaitForDither" xml:space="preserve">
-    <value>Wachten tot dither is voltooid</value>
+    <value>Waiting for dither to finish</value>
   </data>
   <data name="LblWaitForImageProcessing" xml:space="preserve">
-    <value>Wachten op de verwerking van de vorige afbeelding</value>
+    <value>Waiting for previous image to finish processing</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
-    <value>Wachten tot de camera de volgende temperatuur doel heeft bereikt</value>
+    <value>Waiting for camera to reach next temperature step</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Wachten</value>
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
-    <value>Wachten op camera</value>
+    <value>Waiting for Camera</value>
   </data>
   <data name="LblWarmEnabledButCameraCannotWarm" xml:space="preserve">
-    <value>Camera is ingesteld om op te warmen aan het einde van de sequentie, maar is niet in staat dit te doen</value>
+    <value>Camera is set to warm up at end of sequence, yet it is unable to do so</value>
   </data>
   <data name="LblWarming" xml:space="preserve">
-    <value>Aan het opwarmen</value>
+    <value>Warming</value>
   </data>
   <data name="LblWarning" xml:space="preserve">
-    <value>Waarschuwing</value>
+    <value>Warning</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
-    <value>Weer</value>
+    <value>Weather</value>
   </data>
   <data name="LblWeatherASCOMConnectFailed" xml:space="preserve">
-    <value>Kan geen verbinding maken met ASCOM ObservingCondities driver:</value>
+    <value>Unable to connect to ASCOM ObservingConditions driver:</value>
   </data>
   <data name="LblWeatherConnected" xml:space="preserve">
-    <value>Weergegevensbron verbonden</value>
+    <value>Weather data source connected</value>
   </data>
   <data name="LblWeatherConnectionLost" xml:space="preserve">
-    <value>Verbinding met weergegevensbron mislukt.</value>
+    <value>Weather data source connection failed.</value>
   </data>
   <data name="LblWeatherDisconnect" xml:space="preserve">
-    <value>Niet verbonden met weergegevensbron</value>
+    <value>Weather data source disconnected</value>
   </data>
   <data name="LblWeatherNoSource" xml:space="preserve">
-    <value>Geen bron voor weerdata</value>
+    <value>No Weather Data Source</value>
   </data>
   <data name="LblWeatherReconnect" xml:space="preserve">
-    <value>De weergegevens bronverbinding is verloren! Foutmelding:</value>
+    <value>Weather data source connection lost! Error message:</value>
   </data>
   <data name="LblWelcome" xml:space="preserve">
-    <value>Welkom bij Nighttime Imaging 'N' Astronomy!</value>
+    <value>Welcome to Nighttime Imaging 'N' Astronomy!</value>
   </data>
   <data name="LblWest" xml:space="preserve">
     <value>West</value>
   </data>
   <data name="LblWidth" xml:space="preserve">
-    <value>Breedte</value>
+    <value>Width</value>
   </data>
   <data name="LblWindDirection" xml:space="preserve">
-    <value>Windrichting</value>
+    <value>Wind Direction</value>
   </data>
   <data name="LblWindGust" xml:space="preserve">
-    <value>Windvlaag</value>
+    <value>Wind Gust</value>
   </data>
   <data name="LblWindSpeed" xml:space="preserve">
-    <value>Windsnelheid</value>
+    <value>Wind Speed</value>
   </data>
   <data name="LblXAxisScale" xml:space="preserve">
-    <value>X-as schaal</value>
+    <value>X-Axis Scale</value>
   </data>
   <data name="LblXisf" xml:space="preserve">
     <value>XISF</value>
@@ -3566,22 +3578,22 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Unsupported XISF data format: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
-    <value>Y-as schaal</value>
+    <value>Y-Axis Scale</value>
   </data>
   <data name="LblYAxisUnits" xml:space="preserve">
-    <value>Y-as eenheden</value>
+    <value>Y-Axis Units</value>
   </data>
   <data name="LblYes" xml:space="preserve">
-    <value>Ja</value>
+    <value>Yes</value>
   </data>
   <data name="LblZoomIn" xml:space="preserve">
-    <value>Inzoomen 25%</value>
+    <value>Zoom in by 25%</value>
   </data>
   <data name="LblZoomOut" xml:space="preserve">
-    <value>Uitzoomen 25%</value>
+    <value>Zoom out by 25%</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
-    <value>Afbeelding passend maken aan gebied</value>
+    <value>Fit Image to Area</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
     <value>Input Current (A)</value>
@@ -4151,7 +4163,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Delay</value>
   </data>
   <data name="LblTargetJ2000" xml:space="preserve">
-    <value>Doel (J2000)</value>
+    <value>Target (J2000)</value>
   </data>
   <data name="LblExecutingItemsInParallel" xml:space="preserve">
     <value>Executing items in parallel</value>
@@ -4295,7 +4307,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Warms the camera for the given duration</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_WarmCamera_Name" xml:space="preserve">
-    <value>Camera opwarmen</value>
+    <value>Warm Camera</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetReadoutMode_Description" xml:space="preserve">
     <value>Sets the readout mode for the camera</value>
@@ -4346,7 +4358,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Stops autoguiding</value>
   </data>
   <data name="Lbl_SequenceItem_Guider_StopGuiding_Name" xml:space="preserve">
-    <value>Stop guiding</value>
+    <value>Stop Guiding</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeExposure_Description" xml:space="preserve">
     <value>Takes an exposure for the given duration, gain and offset</value>
@@ -4659,7 +4671,7 @@ Add Deep Sky Object Sequences here or add Targets via Sky Atlas or Framing Assis
     <value>Start</value>
   </data>
   <data name="Lbl_SequenceContainer_TargetAreaContainer_Name" xml:space="preserve">
-    <value>Doelen</value>
+    <value>Targets</value>
   </data>
   <data name="LblStartupSequenceTemplate" xml:space="preserve">
     <value>Startup Sequence Template</value>
@@ -4741,7 +4753,7 @@ If the position above it is an instruction set that is not currently expanded, i
     <value>Target Imaging Instructions</value>
   </data>
   <data name="Lbl_SequenceContainer_SequenceRootContainer_Name" xml:space="preserve">
-    <value>Volgorde</value>
+    <value>Sequence</value>
   </data>
   <data name="Lbl_SequenceContainer_Duplicate_Tooltip" xml:space="preserve">
     <value>Creates a duplicate of current set and all its items and append it to the parent instruction set</value>
@@ -4798,10 +4810,10 @@ If the position above it is an instruction set that is not currently expanded, i
     <value>Guider</value>
   </data>
   <data name="Lbl_SequenceCategory_Switch" xml:space="preserve">
-    <value>Schakelaar</value>
+    <value>Switch</value>
   </data>
   <data name="Lbl_SequenceCategory_Telescope" xml:space="preserve">
-    <value>Telescoop</value>
+    <value>Telescope</value>
   </data>
   <data name="Lbl_SequenceCategory_Trigger" xml:space="preserve">
     <value>Trigger</value>
@@ -5197,7 +5209,7 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>Turns the camera's dew heater on or off</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_DewHeater_Name" xml:space="preserve">
-    <value>Verwarmingslint</value>
+    <value>Dew Heater</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_Camera_DewHeater_NotPresent" xml:space="preserve">
     <value>The connected camera lacks a dew heater that can be controlled</value>
@@ -5588,7 +5600,7 @@ Only relevant when using an ASCOM camera driver!</value>
     <value>Abort</value>
   </data>
   <data name="LblContinueOnError" xml:space="preserve">
-    <value>Ga door</value>
+    <value>Continue</value>
   </data>
   <data name="LblOnError" xml:space="preserve">
     <value>On error</value>
