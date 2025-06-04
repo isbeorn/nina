@@ -7172,4 +7172,10 @@ En outre, il est essentiel que le pilote ASCOM utilisé prenne également en cha
     <value>Ouvrir le capot une fois terminé</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
 </root>
