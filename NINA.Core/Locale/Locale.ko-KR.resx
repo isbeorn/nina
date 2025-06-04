@@ -7195,4 +7195,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>Open cover when done</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
 </root>
