@@ -1,50 +1,34 @@
-﻿#region "copyright"
-
-/*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
-
-    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
-
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.
-*/
-
-#endregion "copyright"
-
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
-using NINA.Sequencer.Utility.DateTimeProvider;
-using NINA.Core.Utility;
+using NINA.Astrometry.Interfaces;
+using NINA.Astrometry.RiseAndSet;
 using NINA.Astrometry;
-using NUnit.Framework;
+using NINA.Core.Utility;
+using NINA.Sequencer.Utility.DateTimeProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NINA.Astrometry.RiseAndSet;
-using NINA.Astrometry.Interfaces;
 
 namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
-
     [TestFixture]
-    internal class SunsetProviderTest {
+    internal class CivilDuskProviderTest {
 
         [Test]
-        public void GetDateTime_NoSunSet_ExceptionIsThrown() {
+        public void GetDateTime_NoCivilDusk_ExceptionIsThrown() {
             var referenceDate = new DateTime(2020, 1, 1, 0, 0, 0);
 
             var customDateTimeMock = new Mock<ICustomDateTime>();
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
             var riseAndSetEvent = new CustomRiseAndSet(referenceDate, 0, 0);
-            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, null, null, riseAndSetEvent, null, null);
+            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, null, null, null, null, riseAndSetEvent);
 
             var nightTimeCalculatorMock = new Mock<INighttimeCalculator>();
             nightTimeCalculatorMock.Setup(x => x.Calculate(It.IsAny<DateTime?>())).Returns(nighttimeData);
 
-            var sut = new SunsetProvider(nightTimeCalculatorMock.Object);
+            var sut = new CivilDuskProvider(nightTimeCalculatorMock.Object);
             sut.DateTime = customDateTimeMock.Object;
 
             Action act = () => sut.GetDateTime(null);
@@ -55,21 +39,21 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
         [Test]
         public void GetDateTime_HasSetEvent_SetEventReturned() {
             var referenceDate = new DateTime(2020, 1, 1, 0, 0, 0);
-            var customSet = new DateTime(2020, 2, 2, 2, 2, 2);
+            var customCivilDusk = new DateTime(2020, 2, 2, 2, 2, 2);
 
             var customDateTimeMock = new Mock<ICustomDateTime>();
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
-            var riseAndSetEvent = new CustomRiseAndSet(null, customSet);
-            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, null, null, riseAndSetEvent, null, null);
+            var riseAndSetEvent = new CustomRiseAndSet(null, customCivilDusk);
+            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, null, null, null, null, riseAndSetEvent);
 
             var nightTimeCalculatorMock = new Mock<INighttimeCalculator>();
             nightTimeCalculatorMock.Setup(x => x.Calculate(It.IsAny<DateTime?>())).Returns(nighttimeData);
 
-            var sut = new SunsetProvider(nightTimeCalculatorMock.Object);
+            var sut = new CivilDuskProvider(nightTimeCalculatorMock.Object);
             sut.DateTime = customDateTimeMock.Object;
 
-            sut.GetDateTime(null).Should().Be(customSet);
+            sut.GetDateTime(null).Should().Be(customCivilDusk);
             nightTimeCalculatorMock.Verify(x => x.Calculate(It.IsAny<DateTime?>()), Times.Once);
         }
     }

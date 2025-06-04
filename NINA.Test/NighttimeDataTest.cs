@@ -35,6 +35,7 @@ namespace NINA.Test {
         private double longitude;
         private RiseAndSetEvent twilightRiseAndSet;
         private RiseAndSetEvent nauticalTwilightRiseAndSet;
+        private RiseAndSetEvent civilTwilightRiseAndSet;
         private RiseAndSetEvent moonRiseAndSet;
         private RiseAndSetEvent sunRiseAndSet;
         private MoonPhase moonPhase;
@@ -46,6 +47,7 @@ namespace NINA.Test {
             referenceDate = NighttimeCalculator.GetReferenceDate(date);
             latitude = 41.0;
             longitude = 70.3;
+            civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude);
             nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude);
             twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude);
             moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude);
@@ -55,7 +57,7 @@ namespace NINA.Test {
         }
 
         public NighttimeData GetData() {
-            return new NighttimeData(date, referenceDate, moonPhase, illumination, twilightRiseAndSet, nauticalTwilightRiseAndSet, sunRiseAndSet, moonRiseAndSet);
+            return new NighttimeData(date, referenceDate, moonPhase, illumination, twilightRiseAndSet, nauticalTwilightRiseAndSet, sunRiseAndSet, moonRiseAndSet, civilTwilightRiseAndSet);
         }
 
         public List<OxyPlot.DataPoint> GetExpectedTwilightDuration() {
