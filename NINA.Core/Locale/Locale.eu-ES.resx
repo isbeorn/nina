@@ -121,482 +121,459 @@
     <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>N</value>
+    <value>I</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>S</value>
+    <value>H</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>W</value>
+    <value>M</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Aberration Inspector</value>
+    <value>Aberrazio ikuskatzailea</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Active</value>
+    <value>Aktibatu</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Active filter</value>
+    <value>Aktibatu filtroa</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Active Sequence Details</value>
+    <value>Sekuentzia xehetasun aktiboak</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Add as Sequence Target</value>
+    <value>Gehitu sekuentzia helburu moduan</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Advanced Settings</value>
+    <value>Ezarpen aurreratuak</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrast Detection (Experimental)</value>
+    <value>Kontraste detekzioa (Esperimentala)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Auto-Focus is enabled, yet focuser is not connected</value>
+    <value>Auto-fokua gaituta dago, baina fokua ez dago konektatuta</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Star HFR</value>
+    <value>Izarren HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>After</value>
+    <value>Ondoren</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Use brightest n stars</value>
+    <value>Erabili n izar distiratsuenak</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limit AF to brightest stars. 0 means no limit.</value>
+    <value>Mugatu AFa izar distiratsuenetara. 0k mugarik gabe esan nahi du.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
-    <value>AllPro Spike-a-Flat Panel</value>
+    <value>AllPro Spike-a-Flat panela</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>Alnitak Flat Panel</value>
+    <value>Alnitak flat panela</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Camera Setup</value>
+    <value>Altair kamera ezarpenak</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternative UI Color Schema</value>
+    <value>EI kolore-eskema alternatiboa</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>Altitudea</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Measure Altitude Error</value>
+    <value>Neurtu altitude errorea</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>Altitude Measurement</value>
+    <value>Altitude neurketa</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>Measures Altitude Error by three steps.
-1. Takes image and platesolves for actual coordinates at current position
-2. Slew telescope using Right Ascension axis by 0.5 degrees
-3. Take another image at the new position, plate solves it for the actual position
-Using those two points the actual altitude error will be calculated and displayed</value>
+    <value>Altuera akatsa hiru pausotan neurtzen du. 1. Irudiak hartu eta astrometria aplikatzen du momentuko koordenatuetarako 2. Teleskopioa biratzen du igoera zuzeneko ardatza 0,5 gradu mugituz 3. Beste irudi bat posizio berrian hartu eta momentuko posizioan astrometria aplikatzen du. Bi puntu horiek erabiliz, momentuko altuera-errorea kalkulatu eta erakutsiko da</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>Point telescope east or west near declination 0 and near horizon.</value>
+    <value>Apuntatu teleskopioa ekialde edo mendebaldera 0 deklinaziotik eta zerumugatik gertu.</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
-    <value>Altitude Measurement side</value>
+    <value>Altitudea neurtzeko aldea</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>Display Constellation Boundaries</value>
+    <value>Erakutsi konstelazioen mugak</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Display and annotate Constellations</value>
+    <value>Erakutsi eta idatzi konstelazioak</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annotate Deep Sky Objects</value>
+    <value>Idatzi zeru sakoneko objektuak</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Display Grid</value>
+    <value>Erakutsi sareta</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annotate Image</value>
+    <value>Idatzi irudia</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
+    <value>Egiaztatzen bada eta irudi baterako izar detekzioa aplikatzen bada, irudia aurkitutako izarrekin eta haien HFR balioarekin idatziko da</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>API gakoa</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>Apparent Magnitude</value>
+    <value>Itxurazko magnitudea</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>Apparent Size</value>
+    <value>Itxurazko tamaina</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>The Application ran into an unhandled exception and most likely has to shut down.
-The error has been logged to "%localappdata%\NINA\Logs".
-Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
+    <value>Aplikazioak uste gabeko salbuespen batekin topo egin du, eta litekeena da itxi egin behar izatea. Errorea honela erregistratu da: "%localappdata%\NINA\Logs". Aplikazioak akatsa konpontzen saiatu behar du? (Ustekabeko portaera ekar dezake)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Application start date with format YYYY-MM-DD</value>
+    <value>Aplikazio hasiera data YYYY-MM-DD formatuarekin</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
     <value>arcmin</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
-    <value>Max arcmin</value>
+    <value>Arcmin max</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
     <value>arcsec</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>Ascending</value>
+    <value>Goranzkoa</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Error retrieving image data from camera!</value>
+    <value>Errorea irudi datuak kameratik eskuratzean!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Only 16 bit Monochrome sensors currently supported</value>
+    <value>Soilik 16 biteko sentsore monokromoak dira oraingoz bateragarriak</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
-    <value>All Sky Plate Solver</value>
+    <value>All Sky Astrometria</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>ASPS Location</value>
+    <value>ASPS kokapena</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>ASPS exe not found</value>
+    <value>ASPS exe ez da aurkitu</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
+    <value>ASTAP, Programa Astrometrikoa, ebazle astrometrikoa eta FITS bisorea</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
-    <value>ASTAP Location</value>
+    <value>ASTAP kokapena</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>ASTAP exe not found</value>
+    <value>ASTAP exe ez da aurkitu</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Astrometry</value>
+    <value>Astrometria</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Auto Focus</value>
+    <value>Auto fokatzea</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>After HFR increase</value>
+    <value>HFR haditze ondoren</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>HFR amount</value>
+    <value>HFR kopurua</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>After # exposures</value>
+    <value># esposizio ondoren</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
-    <value>After elapsed Time</value>
+    <value>Denbora pasa ondoren</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
-    <value>After temperature change</value>
+    <value>Tenperatura aldaketa ondoren</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>Temperature amount</value>
+    <value>Tenperatura kopurua</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
-    <value>Auto Focus Exposure Time</value>
+    <value>Auto-foku esposizio denbora</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</value>
+    <value>Fokatze automatikorako erabilitako esposizio-denbora, denbora zehatzik ezartzen ez denean edo iragazkiaren denbora espezifikoa zero denean</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
-    <value>Auto Focus Filter</value>
+    <value>Auto-foku filtroa</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Cannot start Auto Focus. Camera or Focuser is not connected!</value>
+    <value>Ezin da auto-fokua hasi. Kamera edo fokua ez dago konektatuta!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
-    <value>AF Inner Crop Ratio</value>
+    <value>AF barne mozketa erlazioa</value>
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
-    <value>If set to a value less than one, star detection during autofocus will only use
-a centered subframe of the total sensor (if supported by camera). If unsupported
-by the camera, stars near the edge will be ignored during star detection. If used in combination
-with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
-outer rectangle) will be used for autofocus.</value>
+    <value>Bat baino balio txikiagoan ezartzen bada, izar-detektagailuak autofokuan sentsore osoaren azpi-marko zentratu bat bakarrik erabiliko du (kamerarekin bateragarria bada). Kamerarekin bateragarria ez bada, ertzetik gertu dauden izarrak ez dira kontuan hartuko izarrak detektatzen diren bitartean. Kanpoko ebaketa erlazioa 1 baino txikiago batekin konbinatuz erabiltzen bada, irudiaren marko laukizuzen bat erabiliko da autofokatzeko (barruko eta kanpoko laukizuzena erabiliaz).</value>
   </data>
   <data name="LblAutoFocusMethod" xml:space="preserve">
-    <value>AF Method</value>
+    <value>AF metodoa</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>When Star HFR is selected, NINA will detect stars in the FOV,
-compute their HFR across multiple focus points, and find the minimum HFR.
-The Contrast Detection method uses image processing techniques to estimate contrast
-across multiple focus points, and finds the highest contrast. This method works on
-terrestrial objects or solar system objects as well, but can be sensitive to noise.</value>
+    <value>HFR izarra hautatzen denean, NINAk izarrak detektatuko ditu ikuseremuan, beren HFRa foku-puntu anitzetan zehar kalkulatuko du eta gutxieneko HFRa aurkituko du. Kontraste-detekzioaren metodoak irudiak prozesatzeko teknikak erabiltzen ditu hainbat foku-puntutan kontrastea balioesteko, eta kontrasterik handiena aurkitzen du. Metodo honek lurreko objektuetan edo eguzki-sistemako objektuetan ere funtzionatzen du, baina zaratarekiko sentikorra izan daiteke.</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>New focus point HFR {0} is significantly worse than original HFR {1}</value>
+    <value>HFR {0} foku berria jatorrizko HFR {1} baino askoz okerragoa da</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</value>
+    <value>Ez da nahikoa HFR diferentzia foku-puntuentzat. Edo pausoen tamaina baxuegia da edo izarrak fokuz kanpo daude.</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
-    <value># exposures</value>
+    <value># esposizio</value>
   </data>
   <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
-    <value>AF Number of Attempts</value>
+    <value>AF saiakera kopurua</value>
   </data>
   <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
-    <value>If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</value>
+    <value>Autofokuak huts egiten badu HFRa jatorrizkoa baino okerragoa izan delako, zenbat aldiz saiatu autofokuaren errutina errepikatzen arrakasta izan arte edo fokuaren jatorrizko posiziora itzuli arte.</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
     <value>AF Number of Frames per Point</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</value>
+    <value>Zenbat marko hartu behar diren foku bakoitzeko. Bat baino gehiago izanez gero, foku-puntu bakoitzeko marko bat baino gehiago hartuko dira, eta haien HFRa batez bestekoa izango da HFR foku-puntua kalkulatzeko</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
-    <value>On filter change</value>
+    <value>Iragazki aldaketan</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>On start</value>
+    <value>Hasieran</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>AF Outer Crop Ratio</value>
+    <value>AF kanpo mozketa ratioa</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
-    <value>Reattempting Autofocus</value>
+    <value>Autofokua berriro saiatzen</value>
   </data>
   <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
-    <value>Restoring original focus position</value>
+    <value>Foku-posizio originala berrezartzen</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Time</value>
+    <value>Denbora</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
-    <value>Switching back to original filter</value>
+    <value>Jatorrizko iragazkira itzultzen</value>
   </data>
   <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
-    <value>Switching to Auto Focus filter</value>
+    <value>Auto foku iragazkira aldatzen</value>
   </data>
   <data name="LblAutoMeridianFlip" xml:space="preserve">
-    <value>Auto Meridian Flip</value>
+    <value>Meridianoko itzuli automatikoa</value>
   </data>
   <data name="LblAutoStretchFactor" xml:space="preserve">
-    <value>Autostretch factor</value>
+    <value>Auto-luzatze faktorea</value>
   </data>
   <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
-    <value>The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</value>
+    <value>Auto-luzatze algoritmoaren faktorea, irudi bat erakusteko eta izarrak detektatzeko erabiltzen da. 0 eta 1 arteko balioa izan behar du. 0,2ko balio batek funtzionatu beharko luke gehienetan.</value>
   </data>
   <data name="LblAutoUpdateSource" xml:space="preserve">
-    <value>Auto Update Source</value>
+    <value>Eguneratze automatikorako iturria</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>Azimut</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
-    <value>Measure Azimuth Error</value>
+    <value>Azimut neurketa errorea</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>Azimuth Measurement</value>
+    <value>Azimut neurketa</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
-    <value>Measures Azimuth Error by three steps.
-1. Takes image and platesolves for actual coordinates at current position
-2. Slew telescope using Right Ascension axis by 0.5 degrees
-3. Take another image at the new position, plate solves it for the actual position
-Using those two points the actual azimuth error will be calculated and displayed</value>
+    <value>Azimutheko akatsa hiru urratsetan neurtzen du. 1. Irudiak ateratzen ditu eta astrometria aplikatu momentuko koordenatuetarako 2. Teleskopioa igoera zuzeneko ardatza erabiliz 0,5 gradu biratzen du 3. Beste irudi bat ateratzen du posizio berrian, astrometriarenkin uneko posizioarentzat ebazten du. Bi puntu horiek erabiliz uneko azimuth errorea kalkulatu eta erakutsiko da</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
-    <value>Point Telescope South near declination 0 and near meridian</value>
+    <value>Apuntatu teleskopio hegoaldea 0 deklinazioaren eta meridianoaren inguruan</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Background</value>
+    <value>Atzealdea</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
-    <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
+    <value>Salbuespen bat gertatu da backlasha neurtzen ari zela. Backlash balioak okerrak izan daitezke</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
+    <value>Fokatzailearen ondorengo backlash balioak gordeko dira. BARRURA: {0}, KANPORA: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>BIAS mean value (in 16bit)</value>
+    <value>BIASen bataz besteko balioa (16bitean)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>BIASen mediana balioa (16 bitean)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
   </data>
   <data name="LblBinningDescription" xml:space="preserve">
-    <value>Camera binning</value>
+    <value>Kamera binning</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>Bit Depth</value>
+    <value>Bit sakonera</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>Bit Depth in ADU</value>
+    <value>ADUko bit sakonera</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
-    <value>Black clipping</value>
+    <value>Beltzen ebakitzea</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
-    <value>Image has to be solved for framing.
-Should reference coordinates be taken?
-RA: {0}
-Dec: {1}</value>
+    <value>Irudia ebatzi behar da enkoadratzeko
+Erreferentziazko koordenatuak hartu behar dira?
+IZ: {0}
+Dek: {1}</value>
   </data>
   <data name="LblBlindSolver" xml:space="preserve">
-    <value>Blind Solver</value>
+    <value>Ebazle itsua</value>
   </data>
   <data name="LblBorder" xml:space="preserve">
-    <value>Border</value>
+    <value>Muga</value>
   </data>
   <data name="LblBulbMode" xml:space="preserve">
-    <value>Bulb Mode</value>
+    <value>Bonbilla modua</value>
   </data>
   <data name="LblBulbSerialPort" xml:space="preserve">
-    <value>Bulb Serial Port</value>
+    <value>Bonbilla serieko portua</value>
   </data>
   <data name="LblButtonBackground" xml:space="preserve">
-    <value>Button Background</value>
+    <value>Botoiaren atzealdea</value>
   </data>
   <data name="LblButtonForeground" xml:space="preserve">
-    <value>Button Foreground</value>
+    <value>Botoiaren lehen planoa</value>
   </data>
   <data name="LblButtonForegroundDisabled" xml:space="preserve">
-    <value>Button Foreground Disabled</value>
+    <value>Botoiaren lehen planoa ezgaituta</value>
   </data>
   <data name="LblButtonHighlight" xml:space="preserve">
-    <value>Button Highlight</value>
+    <value>Botoia nabarmendu</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
     <value>Byte Shuffling</value>
   </data>
   <data name="LblCache" xml:space="preserve">
-    <value>Cache</value>
+    <value>Cachea</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>Kalkulatu BIASa</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>Kalkulatu esposizio denbora</value>
   </data>
   <data name="LblCam" xml:space="preserve">
-    <value>Cam</value>
+    <value>Kam</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Camera</value>
+    <value>Kamera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Camera Battery</value>
+    <value>Kamera bateria</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Camera is busy</value>
+    <value>Kamera okupatuta dago</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Camera connected</value>
+    <value>Kamera konektatuta</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>Camera connection lost! Please reconnect camera!</value>
+    <value>Kamera konexioa galduta! Mesedez, birkonektatu kamera!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Camera has cooler, yet it is not enabled</value>
+    <value>Kamerak hoztea dauka, baina ez dago oraindik gaituta</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
-    <value>Camera download failed.
-Exposure time: {0}s
-Type: {1}
-Gain: {2}
-Filter: {3}</value>
+    <value>Kameratik deskargatzean akatsa. Esposizio-denbora: {0}s Mota: {1} Irabazia: {2} Iragazkia: {3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>Camera cooler is running at {0}% power and may not be
-able to compensate for ambient temperature variations</value>
+    <value>Kamera hoztea %{0} potentzian dabil eta baliteke giroko tenperatura aldaketak konpentsatu ezin izatea</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
-    <value>Camera is at {0}°C yet target temperature is {1}°C</value>
+    <value>Kamera {0}°C-tan dago, baina helburuko tenperatura {1}°C-koa da</value>
   </data>
   <data name="LblCameraOptions" xml:space="preserve">
-    <value>Camera Options</value>
+    <value>Kameraren aukerak</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
     <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
-    <value>Camera State</value>
+    <value>Kamera egoera</value>
   </data>
   <data name="LblCameraXSize" xml:space="preserve">
-    <value>Camera X Size</value>
+    <value>Kameraren X tamaina</value>
   </data>
   <data name="LblCameraYSize" xml:space="preserve">
-    <value>Camera Y Size</value>
+    <value>Kameraren Y tamaina</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>Camera Info</value>
+    <value>Kamera infoa</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>Camera Settings</value>
+    <value>Kamera ezarpenak</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Ezeztatu</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
-    <value>A Canon error occored: {0}</value>
+    <value>Canon errorea gertatu da: {0}</value>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
-    <value>Capture Image and Platesolve</value>
+    <value>Irudia atera eta astrometria aplikatu</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>Estali sentsorea eta hartu irudia</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>Estalkia kendu sentsoreari eta argazkia atera</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Center Dec</value>
+    <value>Erdiratu Dek</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Center Dec dms</value>
+    <value>Dek gms erdigunea</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Center RA</value>
+    <value>IZ erdigunea</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>Center RA hms</value>
+    <value>IZ oms erdigunea</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
-    <value>Center target</value>
+    <value>Erdiratu helburua</value>
   </data>
   <data name="LblChange" xml:space="preserve">
-    <value>Change</value>
+    <value>Aldatu</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+    <value>Sekuentzia, '{0}' helburutarako editatua izan da azken aldiz gorde zenetik (edo ez da gordea izan oraindik).
         
-Do you want to close the sequence and lose the changes anyway?</value>
+Sekuentzia itxi eta aldaketak galdu nahi dituzu, hala ere?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
-    <value>Closing modified sequence</value>
+    <value>Editatutako sekuentzia ixten</value>
   </data>
   <data name="LblChangeToBulbMode" xml:space="preserve">
-    <value>Please change the mode dial to bulb mode</value>
+    <value>Mesedez, aldatu diala bonbilla modura</value>
   </data>
   <data name="LblChangeToManualMode" xml:space="preserve">
-    <value>Please change the mode dial to manual mode</value>
+    <value>Mesedez, aldatu diala eskuzko modura</value>
   </data>
   <data name="LblCheckMeridianFlip" xml:space="preserve">
-    <value>Check Meridian Flip</value>
+    <value>Egiaztatu meridianoaren itzulia</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>Kontrol batura</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
-    <value>Checksum does not match expected value. Downloaded file may be corrupted!</value>
+    <value>Kontrol batura ez dator bat espero den balioarekin. Deskargatutako fitxategia kaltetuta egon daiteke!</value>
   </data>
   <data name="LblChecksumSHA3_256" xml:space="preserve">
     <value>SHA3-256</value>
@@ -614,31 +591,31 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
-    <value>Chip Temperature</value>
+    <value>Txiparen tenperatura</value>
   </data>
   <data name="LblChipTempShort" xml:space="preserve">
-    <value>Chip Temp.</value>
+    <value>Txip tenp.</value>
   </data>
   <data name="LblChooseProfile" xml:space="preserve">
-    <value>Choose Profile</value>
+    <value>Aukeratu profila</value>
   </data>
   <data name="LblClear" xml:space="preserve">
-    <value>Clear</value>
+    <value>Garbitu</value>
   </data>
   <data name="LblClearCache" xml:space="preserve">
-    <value>Clear Cache</value>
+    <value>Garbitu cachea</value>
   </data>
   <data name="LblClockwise" xml:space="preserve">
-    <value>Clockwise</value>
+    <value>Erloju norantzan</value>
   </data>
   <data name="LblCloudCover" xml:space="preserve">
-    <value>Cloud Cover</value>
+    <value>Hodei estalkia</value>
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
-    <value>Color sensor is not supported yet</value>
+    <value>Kolore-sentsorea oraindik ez da onartzen</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>Konpresioa</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -656,324 +633,322 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Konektatu</value>
   </data>
   <data name="LblConnected" xml:space="preserve">
-    <value>Connected</value>
+    <value>Konektatuta</value>
   </data>
   <data name="LblConnecting" xml:space="preserve">
-    <value>Connecting</value>
+    <value>Konektatzen</value>
   </data>
   <data name="LblConstellation" xml:space="preserve">
-    <value>Constellation</value>
+    <value>Konstelazioa</value>
   </data>
   <data name="LblConstellation_AND" xml:space="preserve">
     <value>Andromeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>Antlia</value>
+    <value>Bonba pneumatikoa</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Apus</value>
+    <value>Paradisuko hegaztia</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
-    <value>Aquila</value>
+    <value>Arranoa</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>Aquarius</value>
+    <value>Akuarioa</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Ara</value>
+    <value>Aldarea</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
-    <value>Aries</value>
+    <value>Aharia</value>
   </data>
   <data name="LblConstellation_AUR" xml:space="preserve">
-    <value>Auriga</value>
+    <value>Gurdizaina</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>Bootes</value>
+    <value>Itzaina</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Caelum</value>
+    <value>Zizela</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Camelopardalis</value>
+    <value>Jirafa</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
-    <value>Capricornus</value>
+    <value>Kaprikornioa</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Carina</value>
+    <value>Gila</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
-    <value>Cassiopeia</value>
+    <value>Kasiopea</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
-    <value>Centaurus</value>
+    <value>Zentauroa</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>Cepheus</value>
+    <value>Zefeo</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>Cetus</value>
+    <value>Balea</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>Chamaeleon</value>
+    <value>Kameleoia</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Circinus</value>
+    <value>Konpasa</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Canis major</value>
+    <value>Txakur handia</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>Canis minor</value>
+    <value>Txakur txikia</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
-    <value>Cancer</value>
+    <value>Karramarroa</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>Columba</value>
+    <value>Usoa</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>Coma berenices</value>
+    <value>Berenizeren adatsa</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
-    <value>Corona australis</value>
+    <value>Hego koroa</value>
   </data>
   <data name="LblConstellation_CRB" xml:space="preserve">
-    <value>Corona borealis</value>
+    <value>Ipar koroa</value>
   </data>
   <data name="LblConstellation_CRT" xml:space="preserve">
-    <value>Crater</value>
+    <value>Kopa</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>Crux</value>
+    <value>Hego gurutzea</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>Corvus</value>
+    <value>Belea</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Canes venatici</value>
+    <value>Ehiza-txakurrak</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Cygnus</value>
+    <value>Zisnea</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>Delphinus</value>
+    <value>Izurdea</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
-    <value>Dorado</value>
+    <value>Urrezko arraina</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Draco</value>
+    <value>Herensugea</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Equuleus</value>
+    <value>Zaldia</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>Eridanus</value>
+    <value>Eridano</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Fornax</value>
+    <value>Labea</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Gemini</value>
+    <value>Bikiak</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Grus</value>
+    <value>Kurriloa</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
-    <value>Hercules</value>
+    <value>Herkules</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Horologium</value>
+    <value>Erlojua</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Hydra</value>
+    <value>Hidra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Hydrus</value>
+    <value>Itsas suge arra</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Indus</value>
+    <value>Indiarra</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Lacerta</value>
+    <value>Muskerra</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
-    <value>Leo</value>
+    <value>Lehoia</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>Lepus</value>
+    <value>Erbia</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>Libra</value>
+    <value>Balantza</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
-    <value>Leo minor</value>
+    <value>Lehoi txikia</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Lupus</value>
+    <value>Otsoa</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
-    <value>Lynx</value>
+    <value>Katamotza</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>Lyra</value>
+    <value>Lira</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
-    <value>Mensa</value>
+    <value>Mahaia</value>
   </data>
   <data name="LblConstellation_MIC" xml:space="preserve">
-    <value>Microscopium</value>
+    <value>Mikroskopioa</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>Monoceros</value>
+    <value>Adarbakarra</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>Musca</value>
+    <value>Eulia</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Norma</value>
+    <value>Erregela</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Octans</value>
+    <value>Oktantea</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Ophiuchus</value>
+    <value>Ofiuko</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
-    <value>Orion</value>
+    <value>Ehiztaria</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>Pavo</value>
+    <value>Pauma</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
-    <value>Pegasus</value>
+    <value>Pegaso</value>
   </data>
   <data name="LblConstellation_PER" xml:space="preserve">
-    <value>Perseus</value>
+    <value>Pertseo</value>
   </data>
   <data name="LblConstellation_PHE" xml:space="preserve">
-    <value>Phoenix</value>
+    <value>Fenix</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Pictor</value>
+    <value>Pintatzailea</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Pisces austrinus</value>
+    <value>Hegoaldeko arraina</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
-    <value>Pisces</value>
+    <value>Arrainak</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Puppis</value>
+    <value>Popa</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>Pyxis</value>
+    <value>Iparrorratza</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
-    <value>Reticulum</value>
+    <value>Sarea</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>Sculptor</value>
+    <value>Eskultorea</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
-    <value>Scorpius</value>
+    <value>Eskorpioia</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>Scutum</value>
+    <value>Ezkutua</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
-    <value>Serpens</value>
+    <value>Sugea</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>Serpens caput</value>
+    <value>Sugearen burua</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>Serpens cauda</value>
+    <value>Sugearen buztana</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
-    <value>Sextans</value>
+    <value>Sestantea</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Sagitta</value>
+    <value>Gezia</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
-    <value>Sagittarius</value>
+    <value>Sagitarioa</value>
   </data>
   <data name="LblConstellation_TAU" xml:space="preserve">
-    <value>Taurus</value>
+    <value>Zezena</value>
   </data>
   <data name="LblConstellation_TEL" xml:space="preserve">
-    <value>Telescopium</value>
+    <value>Teleskopioa</value>
   </data>
   <data name="LblConstellation_TRA" xml:space="preserve">
-    <value>Triangulum australe</value>
+    <value>Hegoaldeko triangelua</value>
   </data>
   <data name="LblConstellation_TRI" xml:space="preserve">
-    <value>Triangulum</value>
+    <value>Triangelua</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>Tucana</value>
+    <value>Tukana</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
-    <value>Ursa major</value>
+    <value>Hartz handia</value>
   </data>
   <data name="LblConstellation_UMI" xml:space="preserve">
-    <value>Ursa minor</value>
+    <value>Hartz txikia</value>
   </data>
   <data name="LblConstellation_VEL" xml:space="preserve">
-    <value>Vela</value>
+    <value>Bela</value>
   </data>
   <data name="LblConstellation_VIR" xml:space="preserve">
-    <value>Virgo</value>
+    <value>Birjina</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>Volans</value>
+    <value>Arrain hegalaria</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
-    <value>Vulpecula</value>
+    <value>Azeria</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>Continue</value>
+    <value>Jarraitu</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
-    <value>Contrast Detect Method</value>
+    <value>Kontrastea detektatzeko metodoa</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>Hoztea pizten du eta jarritako helburuko tenperaturara hozten du kamera. Iraupena aukerakoa da. Kamera kontrolatzaile gehienek automatikoki erregulatzen dute hoztearen energia, eta pixkanaka tenperatura gutxitzen joango dira. Iraupen luzeagoa behar izanez gero, iraupen bat zehaztu daiteke eta aplikazioak kameraren helburuko tenperatura pixkanaka jaitsiko du, emandako iraupenaren arabera.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Cooler</value>
+    <value>Hoztea</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>Cooler Power</value>
+    <value>Hozte potentzia</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>Cooling</value>
+    <value>Hoztea</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>Coordinates</value>
+    <value>Koordenatuak</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>Counterclockwise</value>
+    <value>Erlojuaren aurkako noranzkoan</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Estali zure teleskopioa orain eta sakatu ADOS darks irudiak ateratzen hasteko.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>Cover your scope now</value>
+    <value>Estali zure teleskopioa orain</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>Current Mean</value>
+    <value>Egungo batez bestekoa</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>Current Position</value>
+    <value>Egungo posizioa</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Est. finish time (this target)</value>
@@ -1079,7 +1054,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Cannot delete profile. It is already in use by another N.I.N.A. instance!</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
-    <value>Descending</value>
+    <value>Beheranzkoa</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
     <value>Description</value>
@@ -1331,7 +1306,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Estimated Download Time</value>
   </data>
   <data name="LblEstimatedExposureTime" xml:space="preserve">
-    <value>Estimated Exposure Time</value>
+    <value>Esposizio denbora zenbatetsia</value>
   </data>
   <data name="LblETA" xml:space="preserve">
     <value>Estimated Finish Time</value>
@@ -1351,13 +1326,13 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
-    <value>Exposures</value>
+    <value>Esposizioak</value>
   </data>
   <data name="LblExposureTime" xml:space="preserve">
-    <value>Exposure Time</value>
+    <value>Esposizio denbora</value>
   </data>
   <data name="LblExposureTimeDescription" xml:space="preserve">
-    <value>Exposure Time in seconds</value>
+    <value>Esposizio denbora segundutan</value>
   </data>
   <data name="LblFieldOfView" xml:space="preserve">
     <value>Field Of View</value>
@@ -2542,7 +2517,7 @@ Calculated HFR: {2}
     <value>Preferred Planetatium software</value>
   </data>
   <data name="LblPrepareExposure" xml:space="preserve">
-    <value>Prepare Exposure</value>
+    <value>Prestatu esposizioa</value>
   </data>
   <data name="LblPrepareImage" xml:space="preserve">
     <value>Preparing image</value>
@@ -2638,7 +2613,7 @@ Calculated HFR: {2}
     <value>Recenter Image</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
-    <value>Recommended Exposure Time</value>
+    <value>Esposizio denbora gomendatua</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>Reconnect all devices?</value>
@@ -3271,7 +3246,7 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</value>
   </data>
   <data name="LblTooltipTakeExposure" xml:space="preserve">
-    <value>Starts Exposure</value>
+    <value>Esposizioa hasten du</value>
   </data>
   <data name="LblTooltipTargetLoadSet" xml:space="preserve">
     <value>Load set of targets from a file</value>
@@ -3672,7 +3647,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Auto Focus after Flip</value>
   </data>
   <data name="LblExposureFinished" xml:space="preserve">
-    <value>Exposure finished</value>
+    <value>Esposizioa amaituta</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
@@ -3869,7 +3844,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Dynamic Brightness</value>
   </data>
   <data name="LblDynamicExposure" xml:space="preserve">
-    <value>Dynamic Exposure</value>
+    <value>Esposizio dinamikoa</value>
   </data>
   <data name="LblFlatPanelBrightness" xml:space="preserve">
     <value>Flat Panel Brightness</value>
@@ -4361,10 +4336,10 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Stop Guiding</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeExposure_Description" xml:space="preserve">
-    <value>Takes an exposure for the given duration, gain and offset</value>
+    <value>Esposizioa hartzen du emandako iraupen, irabazi eta konpentsazioan</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeExposure_Name" xml:space="preserve">
-    <value>Take Exposure</value>
+    <value>Hartu esposizioa</value>
   </data>
   <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_Description" xml:space="preserve">
     <value>Slews to the target, centers the target and rotates the telescope via plate solving and a rotator for the given coordinates and rotation</value>
@@ -4529,10 +4504,10 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Restore Guiding</value>
   </data>
   <data name="LblEvaluteAfterExposures" xml:space="preserve">
-    <value>Evaluate After Exposures</value>
+    <value>Ebaluatu esposioen ondoren</value>
   </data>
   <data name="LblAfterExposures" xml:space="preserve">
-    <value>After Exposures</value>
+    <value>Esposizio ondoren</value>
   </data>
   <data name="LblDragOver_BottomText" xml:space="preserve">
     <value>INSERT INSTRUCTION BELOW</value>
@@ -5597,7 +5572,7 @@ Only relevant when using an ASCOM camera driver!</value>
     <value>Unable to connect to {0}. Reason: {1}</value>
   </data>
   <data name="LblAbortOnError" xml:space="preserve">
-    <value>Abort</value>
+    <value>Abortatu</value>
   </data>
   <data name="LblContinueOnError" xml:space="preserve">
     <value>Continue</value>
@@ -6005,7 +5980,7 @@ Another attempt will be made in {0} seconds.
 Attempt {1}/{2}.</value>
   </data>
   <data name="LblMeridianFlipRetryFailed" xml:space="preserve">
-    <value>Failed to slew for meridian flip after maximum number of retries. Aborting.</value>
+    <value>Akatsa saiakera maximo ostean meridiano bira egiterakoan. Abortatzen.</value>
   </data>
   <data name="LblROI" xml:space="preserve">
     <value>ROI</value>
@@ -6435,7 +6410,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>Pertsiana edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitore gailua deskonektatuta dago. Irekitzea abortatu egin da.</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
@@ -6988,7 +6963,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Waiting for instruction to acknowledge cancellation</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Pertsiana edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitore gailuaren arabera, baldintzak ez dira seguruak. Irekitzea abortatu egin da.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>External Command</value>
@@ -7122,7 +7097,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Konektatu</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
