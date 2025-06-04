@@ -5725,7 +5725,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Unpark Mount</value>
   </data>
   <data name="LblWarmCamera" xml:space="preserve">
-    <value>Warm Camera</value>
+    <value>Warm camera</value>
   </data>
   <data name="LblRotatorRangeType" xml:space="preserve">
     <value>Mechanical Range</value>
@@ -5891,7 +5891,7 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Waiting</value>
   </data>
   <data name="LblStarDetectorNoiseReduction" xml:space="preserve">
-    <value>Noise Reduction</value>
+    <value>Noise reduction</value>
   </data>
   <data name="LblStarDetectorPrepareForStructureDetection" xml:space="preserve">
     <value>Preparing for Structure Detection</value>
@@ -7022,7 +7022,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Save sequence</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>

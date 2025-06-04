@@ -1166,7 +1166,7 @@
     <value>ASCOM ドームドライバに接続できません:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Dome can follow</value>
+    <value>ドームは追従可能です</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>シャッターの状況</value>
@@ -1467,7 +1467,7 @@
     <value>開</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>ダーク用のカバーを開ける</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>設定</value>
@@ -1868,7 +1868,7 @@
     <value>プロファイルの読み込み</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>選択したプロファイルは、現在別のNI.N.Aインスタンスによって使用されているか、 不明な問題のために読み込めませんでした。詳細はログファイルを確認してください。</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>シーケンスの読み込み</value>
@@ -4056,10 +4056,10 @@
     <value>ドーム追従機能が有効になっている場合にNINAは、ドームを回転させて望遠鏡に合わせる必要があるかどうかを頻繁に確認します。 プラネタリウムやハンドコントローラーなどの外部アプリケーションで望遠鏡を動かしているときは、望遠鏡の動作が停止するまで待ってから、ドームを回転させる方が良いでしょう。</value>
   </data>
   <data name="LblDomeSyncSlewWhenMountSlew" xml:space="preserve">
-    <value>Sync slew dome when scope slews</value>
+    <value>ドームと架台を同期して旋回する</value>
   </data>
   <data name="LblDomeSyncSlewWhenMountSlewTooltip" xml:space="preserve">
-    <value>Slews the dome to synchronize it with the telescope position when it slews. This setting doesn't maintain the dome synchronization as the scope tracks.</value>
+    <value>望遠鏡を回転するときに、ドームを回転して望遠鏡の位置と同期します。望遠鏡が追尾するときは、この設定によってドームが同期するわけではありません。</value>
   </data>
   <data name="LblDomeFindHomeBeforePark" xml:space="preserve">
     <value>パークする前にホームポジションを見つける</value>
@@ -4820,16 +4820,16 @@
     <value>ドームをパークさせる</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_FindHome_Description" xml:space="preserve">
-    <value>Rotates the dome to the home position</value>
+    <value>ドームをホームポジションに回転させます</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_FindHome_Name" xml:space="preserve">
-    <value>Find Dome Home</value>
+    <value>ドームのホームポジションを見つける</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_SetDomeAzimuth_Description" xml:space="preserve">
-    <value>Slews the dome to an absolute azimuth position</value>
+    <value>ドームを絶対的な方位の位置に回転させます</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_SetDomeAzimuth_Name" xml:space="preserve">
-    <value>Slew Dome Azimuth</value>
+    <value>ドームの方位に回転</value>
   </data>
   <data name="Lbl_OldSequencer_StartOfSequence" xml:space="preserve">
     <value>シーケンス命令の並列実行開始</value>
@@ -4856,10 +4856,10 @@
     <value>ドーム同期を有効化</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_DisableDomeSynchronization_Description" xml:space="preserve">
-    <value>Disables background dome synchronization with the telescope</value>
+    <value>ドームと望遠鏡のバックグラウンドでの同期を無効にします</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_DisableDomeSynchronization_Name" xml:space="preserve">
-    <value>Disable Dome Sync</value>
+    <value>ドーム同期を無効</value>
   </data>
   <data name="Lbl_SequenceItem_Dome_SynchronizeDome_Description" xml:space="preserve">
     <value>ドームを現在の望遠鏡の位置に同期します</value>
@@ -5234,10 +5234,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>回転装置を位置{0}に移動しています</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>指定されたパラメータで露出時間を調べ、ダークを撮影します</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>算出されたダークの露出時間</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>左側</value>
@@ -5750,7 +5750,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>バックグラウンドでサーバーを実行し、他のアプリケーションから内蔵の追尾カメラを制御します。</value>
   </data>
   <data name="LblTrackingASCOMServerLoggingEnabled" xml:space="preserve">
-    <value>Tracking CCD ASCOM Server Logging</value>
+    <value>追尾CCDのASCOMサーバーロギング</value>
   </data>
   <data name="LblTrackingASCOMServerPipeName" xml:space="preserve">
     <value>サーバーのパイプ名</value>
@@ -5793,7 +5793,7 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>フィルターの変更によってフォーカサーが動いたために、ガイドの再開に失敗しました</value>
   </data>
   <data name="LblMoveFocuserFailed" xml:space="preserve">
-    <value>Failed to move focuser</value>
+    <value>フォーカサーを移動できませんでした</value>
   </data>
   <data name="LblUnknownInstructionValidation" xml:space="preserve">
     <value>不明な命令が検出されました！シーケンスをもう一度チェックして、どの命令が無効になったかを調べてください。その上で、すべてが最新であることを確認してください。</value>
@@ -5802,16 +5802,16 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>トグル</value>
   </data>
   <data name="LblMirrorLockupDelay" xml:space="preserve">
-    <value>Mirror lockup delay</value>
+    <value>ミラーロックアップの遅延時間</value>
   </data>
   <data name="LblMirrorLockupDelayTooltip" xml:space="preserve">
-    <value>The desired length of time between when the mirror is locked up and when the exposure starts.
-A delay of 0 seconds deactivates this option.
-The mirror lockup option must be enabled in the camera as well.
-Refer to your camera's manual for the location of this setting</value>
+    <value>ミラーロックアップから露光開始までの遅延時間。
+遅延時間を0にすると、このオプションは無効になります。
+ミラーロックアップオプションは、カメラについても有効にしなければなりません。
+この設定方法については、カメラの説明書を参照してください。</value>
   </data>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
-    <value>{0} has been disconnected from the computer. Check its USB connection and power source</value>
+    <value>{0} がコンピュータから切断されました。USB接続と電源を確認してください。</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
     <value>{0} はすでに別のプログラムで使用されています。このプログラムを閉じてから再接続するか、カメラをPCに再接続してください。</value>
@@ -5820,7 +5820,7 @@ Refer to your camera's manual for the location of this setting</value>
     <value>{0} はすでにEOSユーティリティで使用されています。EOSユーティリティと全てのバックグラウンド・タスクを終了してから、再接続してください。</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
-    <value>The Canon SDK has experienced an internal error. Unreliable camera operation might result</value>
+    <value>Canon SDKに内部エラーが発生しました。信頼性の低いカメラの操作によって起こった可能性があります</value>
   </data>
   <data name="Lbl_OldSequencer_ResetTarget" xml:space="preserve">
     <value>目標のリセット</value>
@@ -5910,10 +5910,10 @@ Refer to your camera's manual for the location of this setting</value>
     <value>架台の時計がコンピュータの時計と {0:0} 秒異なっています。 これにより導入が不正確になったり、プレートソルブの問題を引き起こしたりする可能性があります。時間設定に関する架台の説明書を確認してください。</value>
   </data>
   <data name="LblCanonMluNotSupported" xml:space="preserve">
-    <value>{0} is configured with Mirror Lock-Up (MLU) on, but it does not support MLU exposures via USB. Turn MLU off under the camera's Custom Function menu for exposures to succeed.</value>
+    <value>{0} はミラーロックアップ（MLU）が有効になっていますが、USBを使ったMLU撮影はサポートされていません。 撮影を行うには、カメラのカスタム機能メニューでMLUを無効にしてください。</value>
   </data>
   <data name="LblQhyUvloActiveError" xml:space="preserve">
-    <value>The camera is in ultra-low voltage lockout (UVLO) mode to protect its components. This indicates a possible power supply issue. Please contact QHY support for advice on addressing this issue.</value>
+    <value>カメラは部品を保護するために超低電圧ロックアウト（UVLO）モードになっています。 電源に問題がある可能性があります。この問題に対処するには、QHYサポートにお問い合わせいただき、アドバイスを受けてください。</value>
   </data>
   <data name="LblCameraRotationImportFailed" xml:space="preserve">
     <value>カメラの回転角度が確定できません。</value>
@@ -5932,25 +5932,25 @@ Refer to your camera's manual for the location of this setting</value>
 プレートソルブが成功すると、フレーミングの回転角度が設定されます。</value>
   </data>
   <data name="LblSaveFileFailed" xml:space="preserve">
-    <value>Failed to save image</value>
+    <value>画像の保存に失敗しました</value>
   </data>
   <data name="LblScopeCoordinatesTooltip" xml:space="preserve">
-    <value>Get coordinates from the current scope position</value>
+    <value>現在の鏡筒の位置から座標を取得</value>
   </data>
   <data name="LblElevation" xml:space="preserve">
     <value>標高</value>
   </data>
   <data name="LblPerDeviceThreadingEnabled" xml:space="preserve">
-    <value>Device threads for ASCOM</value>
+    <value>ASCOMのデバイススレッド</value>
   </data>
   <data name="LblPerDeviceThreadingEnabledTooltip" xml:space="preserve">
-    <value>This is an experimental setting that may improve UI responsiveness and reduce the chance of UI hangs when connecting to ASCOM drivers. This setting must be enabled before connecting devices for it to have an effect. Please share feedback with the contributors in Discord if you use this, since we're considering enabling this for everyone.</value>
+    <value>これは試験的な設定で、ユーザーインターフェース（UI）の応答速度を改善し、ASCOMドライバーに接続するときにUIがハングする可能性を低減しようとするものです。この設定を使うには、デバイスに接続する前に有効にしなければなりません。この機能を全ての人に利用していただきたいと考えていますので、使用されましたら、Discordにフィードバックして投稿者と情報を共有してください。</value>
   </data>
   <data name="LblDefault" xml:space="preserve">
-    <value>Default</value>
+    <value>デフォルト</value>
   </data>
   <data name="LblFlatDeviceCannotControlBrightness" xml:space="preserve">
-    <value>Flat device cannot control brightness!</value>
+    <value>フラット装置が明るさを制御できません！</value>
   </data>
   <data name="LblAboveHorizon" xml:space="preserve">
     <value>地平線上</value>
@@ -6012,7 +6012,7 @@ Refer to your camera's manual for the location of this setting</value>
 モザイクモードの場合は、このボタンは表示されません。</value>
   </data>
   <data name="LblBlindSolveFailoverEnabled" xml:space="preserve">
-    <value>Use Blind Solver for Failures</value>
+    <value>失敗したときにブラインドソルバーを使用</value>
   </data>
   <data name="LblASCOMDriverError" xml:space="preserve">
     <value>ASCOMドライバーのエラー</value>
@@ -6030,19 +6030,19 @@ Refer to your camera's manual for the location of this setting</value>
     <value>PHD2の警告</value>
   </data>
   <data name="Lbl_SequenceItem_Disable_Tooltip" xml:space="preserve">
-    <value>Disables the current instruction. A disabled instruction will not run during sequence execution.</value>
+    <value>現在の命令を無効にします。この命令はシーケンス実行中は実行されません。</value>
   </data>
   <data name="Lbl_SequenceItem_Enable_Tooltip" xml:space="preserve">
-    <value>Enables the current instruction, to be considered again to run during sequence execution.</value>
+    <value>現在の命令を有効にし、シーケンス実行中に実行するかどうか再度検討します。</value>
   </data>
   <data name="Lbl_SequenceContainer_DisableEnable_Tooltip" xml:space="preserve">
-    <value>Disables or enables the current instruction set and all its content.</value>
+    <value>現在の命令セットとそのすべての内容を、無効または有効にします。</value>
   </data>
   <data name="LblDateUTCFormatDescription" xml:space="preserve">
-    <value>UTC date with format YYYY-MM-DD</value>
+    <value>YYYY-MM-DD形式のUTC日付</value>
   </data>
   <data name="LblTimeUTCFormatDescription" xml:space="preserve">
-    <value>UTC time with format HH-mm-ss</value>
+    <value>HH-mm-ss形式のUTC時刻</value>
   </data>
   <data name="LblGuiderCanSetShift" xml:space="preserve">
     <value>シフト追尾可能</value>
@@ -6091,43 +6091,43 @@ Refer to your camera's manual for the location of this setting</value>
     <value>観察</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
-    <value>Command</value>
+    <value>命令</value>
   </data>
   <data name="LblRaw" xml:space="preserve">
     <value>Raw</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Description" xml:space="preserve">
-    <value>Sends a command to the selected device in accordance with the ASCOM SendCommand methods. Any returned output is logged in the main N.I.N.A. log file.</value>
+    <value>ASCOMのSendCommandメソッドに従って、選択された装置に命令を送信します。返された出力は、メインの N.I.N.A.ログファイルに記録されます。</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Name" xml:space="preserve">
-    <value>Send Command</value>
+    <value>命令送信</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
-    <value>Boolean</value>
+    <value>ブール</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
-    <value>Device</value>
+    <value>装置</value>
   </data>
   <data name="LblString" xml:space="preserve">
-    <value>String</value>
+    <value>文字列</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
-    <value>Blind</value>
+    <value>ブラインド</value>
   </data>
   <data name="LblAction" xml:space="preserve">
-    <value>Action</value>
+    <value>動作</value>
   </data>
   <data name="LblParameters" xml:space="preserve">
-    <value>Parameters</value>
+    <value>パラメーター</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Description" xml:space="preserve">
-    <value>Select and execute any ASCOM (or other) Actions that may be available by the device's driver</value>
+    <value>装置のドライバーによって利用可能な、ASCOMなどの動作を選択して実行します</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Name" xml:space="preserve">
-    <value>Device Action</value>
+    <value>装置の動作</value>
   </data>
   <data name="LblNoActionsAvailable" xml:space="preserve">
-    <value>No actions are available</value>
+    <value>利用可能な動作はありません</value>
   </data>
   <data name="LblSkyGuardPath" xml:space="preserve">
     <value>SkyGuardのパス</value>
@@ -6217,33 +6217,31 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Pegasus Astro Unity Platformが導入され、通信プロトコルへの変更が考えられますので、ネイティブドライバーは今後のバージョンで非推奨になります。 代わりにASCOMドライバーを使用してください!</value>
   </data>
   <data name="LblAlwaysListen" xml:space="preserve">
-    <value>Always listen to file changes</value>
+    <value>変更ファイルの接続を常に待機</value>
   </data>
   <data name="LblDownloadDelay" xml:space="preserve">
-    <value>Seconds to wait before download</value>
+    <value>ダウンロードまで待機時間（秒）</value>
   </data>
   <data name="LblSkySurveyUnavailable" xml:space="preserve">
-    <value>{0} is unavailable. Please select an alternative image source.
-
-Reason: {1}</value>
+    <value>{0} は利用できません。別の画像ソースを選択してください。理由: {1}</value>
   </data>
   <data name="LblImageSourceError" xml:space="preserve">
-    <value>Image source error</value>
+    <value>画像ソースのエラー</value>
   </data>
   <data name="LblSaveImageQueueSize" xml:space="preserve">
-    <value>Image Save Queue Size</value>
+    <value>画像保存待ち行列の大きさ</value>
   </data>
   <data name="LblSaveImageQueueSizeTooltip" xml:space="preserve">
-    <value>Increasing this allows the application to enqueue more than one image into the processing and saving queue. This is useful for increasing the speed of short exposures during a sequence at the cost of increased memory consumption.</value>
+    <value>これを増やすと、アプリケーションは複数の画像を、処理と保存のための待ち行列に追加します。 これは、シーケンス中の短時間露出の速度を向上させるのに役立ちますが、その代わりにメモリーの消費量は増加します。</value>
   </data>
   <data name="LblSelectedTimeSourceInvalid" xml:space="preserve">
-    <value>Selected time source could not determine a valid time. Please select a different source.</value>
+    <value>選択した時刻のソースが、有効な時刻を決定できませんでした。別の時刻のソースを選択してください。</value>
   </data>
   <data name="LblLoadingPlugin" xml:space="preserve">
     <value>プラグイン{0}バージョン{1}（作成者{2}）をロード中</value>
   </data>
   <data name="LblMGENSetup" xml:space="preserve">
-    <value>MGEN Setup</value>
+    <value>MGEN設定</value>
   </data>
   <data name="LblSingleImagingLayout" xml:space="preserve">
     <value>単一の画像タブレイアウト</value>
@@ -6258,13 +6256,13 @@ Reason: {1}</value>
     <value>Platesolve3の場所</value>
   </data>
   <data name="LblPlatesolve3NoCoordinates" xml:space="preserve">
-    <value>No coordinates available. Platesolve3 requires coordinates to solve!</value>
+    <value>利用可能な座標がありません。Platesolve3 にはプレートソルブのための座標が必要です！</value>
   </data>
   <data name="LblPlatesolve3NotFound" xml:space="preserve">
     <value>Platesolve3 exeが見つかりません</value>
   </data>
   <data name="LblBackupDockLayout" xml:space="preserve">
-    <value>Backup Layout</value>
+    <value>レイアウトのバックアップ</value>
   </data>
   <data name="LblBackupDockLayoutFailed" xml:space="preserve">
     <value>レイアウトのバックアップに失敗しました</value>
@@ -6297,19 +6295,19 @@ Reason: {1}</value>
     <value>露出情報</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_UpdateTarget" xml:space="preserve">
-    <value>UPDATE TARGET</value>
+    <value>更新対象</value>
   </data>
   <data name="LblNoFilter" xml:space="preserve">
     <value>フィルターなし</value>
   </data>
   <data name="LblAtikExposureSpeed" xml:space="preserve">
-    <value>Exposure speed</value>
+    <value>露出速度</value>
   </data>
   <data name="LblAtikGainPreset" xml:space="preserve">
-    <value>Gain preset</value>
+    <value>ゲインのプリセット</value>
   </data>
   <data name="LblAtikWindowHeaterPowerLevel" xml:space="preserve">
-    <value>Heater power level</value>
+    <value>ヒーターの電力レベル</value>
   </data>
   <data name="LblSkyGuardTimeLapsDitherChecked" xml:space="preserve">
     <value>ディザリング設定</value>
@@ -6321,7 +6319,7 @@ Reason: {1}</value>
     <value>オートフォーカスが完了できませんでした。フォーカス位置は0になりました。</value>
   </data>
   <data name="LblRotateImageTooltip" xml:space="preserve">
-    <value>Rotates the image by 90° clockwise. Following images will then also be rotated by the same amount. This is for displaying purposes only and won't affect the image data.</value>
+    <value>画像を時計回りに90°回転させます。後続の画像も同じ角度だけ回転されます。 これは表示のためだけであり、画像データに影響を与えることはありません。</value>
   </data>
   <data name="LblFramingPlateSolvePromptText" xml:space="preserve">
     <value>フレーミングをするために、画像をプレートソルブする必要があります。プレートソルブに使われるメタデータを確認して下さい。確認できたら、使うソルバーを選択して下さい。</value>
@@ -6387,50 +6385,49 @@ Reason: {1}</value>
     <value>シャッター操作前の架台のパーク</value>
   </data>
   <data name="LblParkMountBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Attempt to park the mount before opening or closing the shutter</value>
+    <value>シャッターを開いたり閉じたりする前の、架台のパーク操作</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparked" xml:space="preserve">
-    <value>Refuse open or close if mount is unparked</value>
+    <value>架台がパークされていない場合の、開閉操作の拒絶</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparkedTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open or close the shutter or roof if the mount is in an unparked state.
-This is evaluated AFTER the "Park mount before moving the shutter" setting.</value>
+    <value>架台がパークされていない状態の場合、N.I.N.A.がシャッターや屋根の開閉を拒絶する原因となります。この判断は「シャッター移動前の架台のパーク」の設定後に行われます。</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDevice" xml:space="preserve">
-    <value>Refuse open if a Safety Monitor is not connected</value>
+    <value>セーフティモニターが接続されていない場合の開放の拒絶</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDeviceTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
+    <value>セーフティモニター装置が接続されていない場合、N.I.N.A.がシャッターや屋根を開くことを拒絶する原因となります。</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>シャッターまたは屋根を開くように命令されましたが、セーフティモニター装置が切断されています。開放は中止されました。</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>注意: これらの設定は機器の安全性に関連しています。慎重に考慮するとともに、設定に関するご自分の知識を十分活用する必要があります。これらはN.I.N.A.が行う機器の制御のみを管理するものであり、N.I.N.A.が当該機器に接続されていなかったり、機器を運用していなかったりする場合は無効になります。 シャッターや屋根の望ましくない動きを防ぐため、ドームまたは屋根の安全機構は常に、ハードウェアバックアップと電気的連動装置を備えている必要があります。 これらの設定がドームドライバーの設定と矛盾していないことについて、自己責任で確認をお願いします。</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
-    <value>Collapses the left sidebars to only show smaller icons without text</value>
+    <value>左側のサイドバーを折りたたみ、文字表記のない小さなアイコンのみを表示します</value>
   </data>
   <data name="LblExpandSidebarTooltip" xml:space="preserve">
-    <value>Expands the left sidebars to show larger icons with text</value>
+    <value>左側のサイドバーを展開して、文字表記のある大きなアイコンを表示します</value>
   </data>
   <data name="Lbl_Sequencer_InstructionsSidebar_SettingsModeTooltip" xml:space="preserve">
-    <value>Enable settings mode. When this mode is enabled each instruction can be disabled or enabled. A disabled instruction will then not be shown inside the sidebar outside of settings mode.</value>
+    <value>設定モードを有効にします。このモードを有効にすると、各命令を無効または有効にできます。 無効な命令は、設定モード以外のサイドバー内に表示されません。</value>
   </data>
   <data name="LblCollapseAll" xml:space="preserve">
-    <value>Collapse All</value>
+    <value>すべてを折りたたむ</value>
   </data>
   <data name="LblExpandAll" xml:space="preserve">
-    <value>Expand All</value>
+    <value>すべてを展開する</value>
   </data>
   <data name="LblRotating" xml:space="preserve">
     <value>回転中</value>
   </data>
   <data name="LblASCOMTelescopeDriveRateInvalid" xml:space="preserve">
-    <value>The drive rate {0} is invalid to move the telescope axis. Please enter a different rate.</value>
+    <value>望遠鏡軸を移動させるドライブ速度{0} が無効です。異なる速度を入力してください。</value>
   </data>
   <data name="LblFilterChangeFailed" xml:space="preserve">
-    <value>Failed to move filter wheel to filter {0} at position {1}</value>
+    <value>位置 {0} でフィルターホイールを {1}に移動できませんでした</value>
     <comment>First parameter is filter name and second parameter is filter position number</comment>
   </data>
   <data name="LblSwitches" xml:space="preserve">
@@ -6471,7 +6468,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
 設定を変更して適用するには、アプリを再起動する必要があります。</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>プロファイル</value>
     <comment>The equipment profile that is used in the application that stores all the settings</comment>
   </data>
   <data name="LblAutomaticMountSync" xml:space="preserve">
@@ -6533,10 +6530,10 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>ポート番号は {0} から {1} の間でなければなりません。</value>
   </data>
   <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
-    <value>Use all interfaces</value>
+    <value>すべてのインターフェースを使用</value>
   </data>
   <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
-    <value>Listen on all interfaces for MegaGuide broadcasts. By default, N.I.N.A. will listen on loopback (127.0.0.1) only</value>
+    <value>MegaGuideブロードキャストのすべてのインターフェースをリッスンします。デフォルトでは、N.I.N.A.はループバック（127.0.0.1）のみをリッスンします。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
     <value>この命令は、固定輝度パネル用のフラットウィザードと同じように、フラット露出を自動的に決定します。</value>
@@ -6569,16 +6566,16 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>ライトを {0} に切り替え</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
-    <value>Determining brightness using {0}. Attempt {1} / {2}.</value>
+    <value>{0}を使用して明るさを決定します。{1} / {2} を試して下さい。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
-    <value>Found brightness at panel brightness {0}. Capturing flats.</value>
+    <value>パネル明度 {0}で明るさを決定。フラットを撮像中。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>露出時間を{0}秒で決定。 {1} / {2}  を試して下さい。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing flats.</value>
+    <value>露出時間を{0} 秒で決定。フラットをキャプチャ中。</value>
   </data>
   <data name="LblFlatWizardFailed" xml:space="preserve">
     <value>フラットウィザードが失敗しました。原因 : {0}</value>
@@ -6605,7 +6602,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
 パネルの明るさまたは最大露出時間を大きくしてください。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>露出時間を{0}秒で決定。 {1} / {2}を試して下さい 。</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
     <value>露出時間を{0} 秒で決定。スカイフラットを撮像中。</value>
@@ -6634,22 +6631,22 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>ASCOMセンサータイプは現在、ディベイヤーされた画像を返すように構成されていますが、これはサポートされていません。ドライバーの設定を変更して、ベイヤー画像を返すように調整してください。</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
-    <value>Location sync</value>
+    <value>位置情報の同期</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>プロンプト</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
-    <value>Sync to application</value>
+    <value>アプリケーションに同期</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
-    <value>Sync to telescope</value>
+    <value>望遠鏡に同期</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
-    <value>No sync</value>
+    <value>同期なし</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
-    <value>When connecting the telescope this defines the behavior how to react when the mount location and application location differs.</value>
+    <value>赤道儀とアプリケーションの位置情報が異なる場合に、望遠鏡を接続するときの対応方法を定義します。</value>
   </data>
   <data name="LblPHD2PeakDec" xml:space="preserve">
     <value>赤緯のピーク: {0}({1}")</value>
@@ -6733,7 +6730,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>極限等級</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
-    <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
+    <value>参照カタログから選択する星の極限等級（最小=2.0、最大=20.0、デフォルト=20.0）</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
     <value>AllSkyのAPIのホスト</value>
@@ -6767,16 +6764,16 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>有効にすると、画像はデバイスに保存され、オフラインのスカイマップで見ることができます</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>クローズ</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>ヒストグラムを表示</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info only</value>
+    <value>情報のみ</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
-    <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
+    <value>情報コンテンツのみの表示と、パネル内のインタラクティブなコントロール表示の切り替え</value>
   </data>
   <data name="LblParked" xml:space="preserve">
     <value>パーク状態</value>
@@ -6827,34 +6824,34 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>不正なピクセル補正のしきい値</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>クローズ済み</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
-    <value>Closing</value>
+    <value>閉鎖中</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>開</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
-    <value>Opening</value>
+    <value>開放中</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
-    <value>Telescope find home has timed out after {0} minutes</value>
+    <value>望遠鏡のホーム探索は {0} 分経過後にタイムアウトしました。</value>
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
-    <value>Telescope park has timed out after {0} minutes.</value>
+    <value>望遠鏡のパークは {0} 分経過後にタイムアウトしました。</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
-    <value>Telescope unpark has timed out after {0} minutes.</value>
+    <value>望遠鏡のアンパークは {0} 分経過後にタイムアウトしました。</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
-    <value>Time sync</value>
+    <value>時刻の同期</value>
   </data>
   <data name="LblTimeSyncTooltip" xml:space="preserve">
-    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+    <value>有効にするとアプリケーションは、システム時間と同期するように、接続時に架台の時刻を更新します。</value>
   </data>
   <data name="LblCoordinatesMountSync" xml:space="preserve">
-    <value>Coordinates sync</value>
+    <value>座標の同期</value>
   </data>
   <data name="LblMount" xml:space="preserve">
     <value>架台</value>
@@ -6867,7 +6864,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
+    <value>ASCOM Alpacaのデバイス検出試行時間 (デフォルト: 2秒)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
     <value>検出ポート</value>
@@ -6881,7 +6878,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
+    <value>ASCOM Alpacaのデバイス検出ブロードキャスト数 (デフォルト: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
     <value>DNS名の解決</value>
@@ -6912,16 +6909,16 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>ASCOM Alpacaのデバイス検出にIPv6を使用 (デフォルト: オフ)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>カタログ表示の切り替え</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
     <value>目標高度</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>目標方位角</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptikフラットフィールドコントローラー</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
     <value>LEDライト</value>
@@ -6966,7 +6963,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>外部コマンドが'{0}'で見つかりませんでした</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
-    <value>Focuser movement has timed out after {0} minutes.</value>
+    <value>フォーカサーの動作は{0}分経過後にタイムアウトしました。</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
     <value>PHD2サーバーのホスト名 : {0}を処理できませんでした</value>
@@ -6975,23 +6972,23 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>PHD2サーバーのホスト名が設定されていません</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>現在のカラースキーマの色を、調整可能な「代替カスタム」カラースキーマにコピーします</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>現在のカラースキーマの色を、調整可能な「カスタム」カラースキーマにコピーします</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>光</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>指定したファイルパスに現在のシーケンスを保存します</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>シーケンスを保存</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>ファイルパスが無効です</value>
   </data>
   <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
     <value>ウェザー・アンダーグラウンドのステーションのAPIキーが設定されていません。</value>
@@ -7009,7 +7006,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>Set current position to zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>リバース</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
     <value>Set max step</value>
@@ -7024,7 +7021,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>GPSD</value>
   </data>
   <data name="LblGnssInvalidHost" xml:space="preserve">
-    <value>Failed to resolve {0} host: {1}</value>
+    <value>{0} ホストの解決に失敗しました: {1}</value>
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
     <value>設定でホストが指定されていません</value>
@@ -7033,7 +7030,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>ブラインドソルバーの設定</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
-    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+    <value>警告: 子午線反転の設定で「鏡筒の軸の向きを使用」は無効になっており、子午線近くにあるドーム内の赤道儀で、アライメントの問題を引き起こす可能性があります。 ドームは子午線反転が正確に子午線で起こると仮定しますので、マウントがまだ反転していない場合、アラインメントのエラーが起きる可能性があります.</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
     <value>Complete duration</value>
@@ -7133,10 +7130,10 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>{0} 回試行しましたが、回転が検出できませんでした。回転装置の反転フラグが正しく設定されていますか？</value>
   </data>
   <data name="LblLockUnlockImagingArea" xml:space="preserve">
-    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+    <value>パネルをロックして閉じたり配置を変更したりできないようにするか、もしくはロックを解除して配置の変更ができるようにします。</value>
   </data>
   <data name="LblGnssFix2D" xml:space="preserve">
-    <value>Current fix is 2D. A 3D fix is required</value>
+    <value>現在の測位は2Dです。3D測位が必要です</value>
   </data>
   <data name="LblMJDFormatDescription" xml:space="preserve">
     <value>修正ユリウス日</value>

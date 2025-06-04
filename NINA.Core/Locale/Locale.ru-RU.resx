@@ -958,7 +958,7 @@ Dec: {1}</value>
     <value>Против часовой стрелки</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Закройте входное отверстие телескопа и нажмите OK для начала съемки темновых кадров.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Покройте телескоп сейчас</value>
@@ -985,7 +985,7 @@ Dec: {1}</value>
     <value>Каталог Cygwin</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>Готовые темновые кадры</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>Перемещение для процедуры D.A.R.V.</value>
@@ -1159,7 +1159,7 @@ Dec: {1}</value>
     <value>Пиксели межкадровой подвижки</value>
   </data>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
-    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
+    <value>Типичное число пикселей для межкадровой подвижки. Межкадровая подвижка следует обычному распределению, расположенному по цели, которое это значение является стандартным отклонением. 67% подвижек будут находиться в пределах этого расстояния</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Межкадровые подвижки только по П.В.</value>
@@ -1474,7 +1474,7 @@ Dec: {1}</value>
     <value>Открыть</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>Откройте входное отверстие телескопа для съемки темновых кадров</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Задать</value>
@@ -1657,19 +1657,19 @@ Dec: {1}</value>
     <value>Общее</value>
   </data>
   <data name="LblGnssConnectFail" xml:space="preserve">
-    <value>Failed to connect to {0}</value>
+    <value>Ошибка подключения к {0}</value>
   </data>
   <data name="LblGnssLocationSet" xml:space="preserve">
-    <value>Location set from {0}</value>
+    <value>Местоположение задано по {0}</value>
   </data>
   <data name="LblGnssNoFix" xml:space="preserve">
-    <value>{0} reports that it does not have a fix</value>
+    <value>{0} сообщает, что исправление не внесено</value>
   </data>
   <data name="LblGnssNotFound" xml:space="preserve">
-    <value>No {0} device detected</value>
+    <value>Устройство {0} не обнаружено</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Import location from a GNSS device</value>
+    <value>Получить местоположение от GPS-устройства</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Гид</value>
@@ -1918,7 +1918,7 @@ Dec: {1}</value>
     <value>Ручное управление</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates</value>
+    <value>Задать координаты вручную</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Ручное колесо фильтров</value>
@@ -2117,10 +2117,10 @@ Dec: {1}</value>
     <value>Без синхр.</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Когда включено, приложение не будет отправлять команду синхронизации на монтировку. Следует использоваться только при наличии хорошей модели целеуказания, которая не будет изменяться.</value>
   </data>
   <data name="LblNoMount" xml:space="preserve">
-    <value>No Mount</value>
+    <value>Монтировка отсутствует</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Ошибка уведомления</value>
@@ -2541,7 +2541,7 @@ Dec: {1}</value>
     <value>Подготовка изображения</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>Подготовка последовательности темновых кадров</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Флэты для фильтра: {0}</value>
@@ -2646,7 +2646,7 @@ Dec: {1}</value>
     <value>Пожалуйста, переподключите фокусер!</value>
   </data>
   <data name="LblReconnectMount" xml:space="preserve">
-    <value>Please reconnect mount!</value>
+    <value>Пожалуйста, подключите монтировку заново!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Эталонное время</value>
@@ -2899,7 +2899,7 @@ Dec: {1}</value>
     <value>Каталог изображений Атласа Неба</value>
   </data>
   <data name="LblOfflineSkyMap" xml:space="preserve">
-    <value>Offline Sky Map</value>
+    <value>Sky Map в режиме офлайн</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
     <value>Яркость неба</value>
@@ -3068,7 +3068,7 @@ Dec: {1}</value>
     <value>Синхр.</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Mount sync failed</value>
+    <value>Ошибка синхронизации монтировки</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Синхронизировать настройки сайта</value>
@@ -3339,7 +3339,7 @@ Should the settings be synchronized?</value>
     <value>Не удалось начать экспозицию</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Unable to sync. Mount is not connected</value>
+    <value>Синхронизация невозможна. Монитровка не подключена</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Произошла непредвиденная ошибка</value>
@@ -4003,7 +4003,7 @@ Should the settings be synchronized?</value>
     <value>Отключить вращатель?</value>
   </data>
   <data name="LblDisconnectMount" xml:space="preserve">
-    <value>Disconnect Mount?</value>
+    <value>Отключить монтировку?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Телескоп запаркован. Вам может потребоваться распарковать его перед движением.</value>
@@ -4270,7 +4270,7 @@ Should the settings be synchronized?</value>
     <value>Работает как последовательный набор инструкций, но глубокий объект неба может быть указан внутри, который будет автоматически заполнять все инструкции внутри него координатами и вращением при необходимости.</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
-    <value>Deep Sky Object Instruction Set</value>
+    <value>Набор инструкций для объектов глубокого космоса</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Все инструкции в этом наборе выполняются параллельно. Этот набор инструкций не будет оценивать никаких условий или триггеров до тех пор, пока не будут выполнены все инструкции.</value>
@@ -5052,7 +5052,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Disable Legacy Sequencer</value>
   </data>
   <data name="LblDisableSimpleSequencerTooltip" xml:space="preserve">
-    <value>This will disable the legacy sequencer and directly show the advanced sequencer in the sequence tab.</value>
+    <value>Это отключит устаревший секвенсор и отобразит улучшенный секвенсор напрямую в закладке серий</value>
   </data>
   <data name="Lbl_Sequencer_SwitchToOverview" xml:space="preserve">
     <value>Вернуться к панели серии</value>
@@ -5122,13 +5122,13 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Выход из цикла когда высота Луны соответствует заданным параметрам.</value>
   </data>
   <data name="Lbl_SequenceCondition_MoonAltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Moon Altitude</value>
+    <value>Повторять до высоты Луны</value>
   </data>
   <data name="Lbl_SequenceCondition_SunAltitudeCondition_Description" xml:space="preserve">
     <value>Выход из цикла когда высота Солнца соответствует заданным параметрам.</value>
   </data>
   <data name="Lbl_SequenceCondition_SunAltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Sun Altitude</value>
+    <value>Повторять до высоты Солнца</value>
   </data>
   <data name="LblComparatorEquals" xml:space="preserve">
     <value>=</value>
@@ -5232,7 +5232,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Ждёт пока высота цели выше горизонта. Если используется пользовательский горизонт, эта высота используется вместо 0</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Name" xml:space="preserve">
-    <value>Wait until Above horizon</value>
+    <value>Ожидать, пока над горизонтом</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress" xml:space="preserve">
     <value>Ожидание до цели выше горизонта. Высота цели {0}° / высота горизонта {1}°</value>
@@ -6053,7 +6053,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Предупреждение PHD2</value>
   </data>
   <data name="Lbl_SequenceItem_Disable_Tooltip" xml:space="preserve">
-    <value>Disables the current instruction. A disabled instruction will not run during sequence execution.</value>
+    <value>Отключает текущую инструкцию. Отключенная инструкция не будет выполняться, пока выполняется последовательность.</value>
   </data>
   <data name="Lbl_SequenceItem_Enable_Tooltip" xml:space="preserve">
     <value>Enables the current instruction, to be considered again to run during sequence execution.</value>
@@ -6062,7 +6062,7 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
     <value>Disables or enables the current instruction set and all its content.</value>
   </data>
   <data name="LblDateUTCFormatDescription" xml:space="preserve">
-    <value>UTC date with format YYYY-MM-DD</value>
+    <value>Дата UTC в формате ГГГГ-ММ-ДД</value>
   </data>
   <data name="LblTimeUTCFormatDescription" xml:space="preserve">
     <value>UTC time with format HH-mm-ss</value>
@@ -6793,7 +6793,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрыть</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6809,7 +6809,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Движение</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6854,13 +6854,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Закрыто</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Открыть</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7015,7 +7015,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Сохранить серию</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>
@@ -7036,7 +7036,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Set current position to zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Обратный</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
     <value>Set max step</value>
@@ -7115,7 +7115,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Подключиться</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>

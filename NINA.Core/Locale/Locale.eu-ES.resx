@@ -5572,7 +5572,7 @@ Only relevant when using an ASCOM camera driver!</value>
     <value>Unable to connect to {0}. Reason: {1}</value>
   </data>
   <data name="LblAbortOnError" xml:space="preserve">
-    <value>Abort</value>
+    <value>Abortatu</value>
   </data>
   <data name="LblContinueOnError" xml:space="preserve">
     <value>Continue</value>
@@ -5980,7 +5980,7 @@ Another attempt will be made in {0} seconds.
 Attempt {1}/{2}.</value>
   </data>
   <data name="LblMeridianFlipRetryFailed" xml:space="preserve">
-    <value>Failed to slew for meridian flip after maximum number of retries. Aborting.</value>
+    <value>Akatsa saiakera maximo ostean meridiano bira egiterakoan. Abortatzen.</value>
   </data>
   <data name="LblROI" xml:space="preserve">
     <value>ROI</value>
@@ -6410,7 +6410,7 @@ This is evaluated AFTER the "Park mount before moving the shutter" setting.</val
     <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>Pertsiana edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitore gailua deskonektatuta dago. Irekitzea abortatu egin da.</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
     <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
@@ -6963,7 +6963,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Waiting for instruction to acknowledge cancellation</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Pertsiana edo teilatua irekitzeko agindua zegoen, baina segurtasun-monitore gailuaren arabera, baldintzak ez dira seguruak. Irekitzea abortatu egin da.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
     <value>External Command</value>
@@ -7097,7 +7097,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Konektatu</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>

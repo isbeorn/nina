@@ -5795,7 +5795,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>A trigger to limit dome synchronization movements to between sequence steps in order to reduce vibrations during exposures. This should not be used with Dome Following enabled, which runs continuously in the background.</value>
   </data>
   <data name="LblDomeTargetAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>Azimut</value>
   </data>
   <data name="LblDomeTargetAltitude" xml:space="preserve">
     <value>Altitude</value>

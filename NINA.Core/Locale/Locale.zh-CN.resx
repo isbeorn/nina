@@ -1105,10 +1105,10 @@
     <value>Digital 巡天图库(在线)</value>
   </data>
   <data name="LblMountDitherDuration" xml:space="preserve">
-    <value>Mount dither Duration</value>
+    <value>支架抖动持续时间</value>
   </data>
   <data name="LblMountDitherDurationTooltip" xml:space="preserve">
-    <value>Typical pulse duration in seconds</value>
+    <value>典型脉冲光持续时间（秒）</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -1123,10 +1123,10 @@
     <value>赤纬导星速率（角秒/秒）</value>
   </data>
   <data name="LblMountDitherConnectionFail" xml:space="preserve">
-    <value>Mount Dither could not connect to Mount</value>
+    <value>支架抖动无法连接赤道仪</value>
   </data>
   <data name="LblMountDitherMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Mount Dither will disconnect. Dithering no longer effective!</value>
+    <value>赤道仪已断开连接。支架抖动将断开，抖动不在生效！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>图像保存目录未找到！</value>
@@ -1165,7 +1165,7 @@
     <value>抖动像素</value>
   </data>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
-    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
+    <value>抖动数值（像素），这个值是标准偏差，以被导星为中心执行抖动，其中67%的抖动将在这个距离内</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>仅抖动赤经</value>
@@ -5836,10 +5836,10 @@
     <value>{0} 已与计算机断开连接。请检查其USB连接和电源</value>
   </data>
   <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
-    <value>{0} is already in use by another program. Please close this program before trying to reconnect, or reconnect the camera to the PC.</value>
+    <value>{0} 已被另一个程序使用，请关闭占用程序后重新尝试连接，或重新插拔相机数据线。</value>
   </data>
   <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
-    <value>{0} is already in use by EOS Utility. Please close EOS Utility, including any background tasks, before trying to reconnect.</value>
+    <value>{0} 已被EOS Utility使用。请在尝试重新连接之前关闭EOS Utility，包括任何后台任务。</value>
   </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Canon SDK 发生了内部错误。可能会导致不可靠的相机操作</value>
@@ -7008,7 +7008,7 @@
     <value>将当前配色方案复制到可调整的“Custom”中</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>亮色</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
@@ -7021,46 +7021,46 @@
     <value>文件路径无效</value>
   </data>
   <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
-    <value>There is no Weather Underground API key configured.</value>
+    <value>没有配置 Weather Ununderground API 密钥。</value>
   </data>
   <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
-    <value>There is no Weather Underground station configured.</value>
+    <value>没有配置 Weather Ununderground 站点。</value>
   </data>
   <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
-    <value>Weather Underground API did not respond.</value>
+    <value>Weather Underground API 没有响应。</value>
   </data>
   <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
-    <value>Weather Underground API request failed: {0}</value>
+    <value>Weather UndergroundAPI请求失败: {0}</value>
   </data>
   <data name="LblZwoResetZeroPosition" xml:space="preserve">
-    <value>Set current position to zero</value>
+    <value>将当前位置设置为 0</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>反转</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
-    <value>Set max step</value>
+    <value>设置最大步数</value>
   </data>
   <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
-    <value>Set current position to zero?</value>
+    <value>将当前位置设置为 0?</value>
   </data>
   <data name="LblCrosshair" xml:space="preserve">
-    <value>Crosshair</value>
+    <value>十字准线</value>
   </data>
   <data name="LblGpsd" xml:space="preserve">
     <value>GPSD</value>
   </data>
   <data name="LblGnssInvalidHost" xml:space="preserve">
-    <value>Failed to resolve {0} host: {1}</value>
+    <value>解析 {0} 主机失败： {1}</value>
   </data>
   <data name="LblErrorNoHostSpecified" xml:space="preserve">
-    <value>No host specified in settings</value>
+    <value>在设置中没有指定主机</value>
   </data>
   <data name="LblBlindSolveSettings" xml:space="preserve">
-    <value>Blind Solver Settings</value>
+    <value>盲解析设置</value>
   </data>
   <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
-    <value>Warning: "Use telescope side of pier" in meridian flip settings is disabled and may cause alignment issues for equatorial mounts with domes near the meridian. The dome will assume a meridian flip occurs precisely at the meridian, potentially leading to misalignment if the mount has not yet flipped.</value>
+    <value>警告：在中天翻转设置中禁用了“使用赤道仪方向”，这可能导致圆顶与赤道仪对齐的问题。圆顶将假定与赤道仪完全同步翻转。如果赤道仪还没有翻转，这个假定将导致误差。</value>
   </data>
   <data name="LblCompleteDuration" xml:space="preserve">
     <value>Complete duration</value>
@@ -7115,7 +7115,7 @@
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>连接</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>

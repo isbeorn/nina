@@ -232,7 +232,7 @@ The error has been logged to "%localappdata%\NINA\Logs".
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Application start date with format YYYY-MM-DD</value>
+    <value>Дата початку програми у форматі Рік-Місяць-День</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
     <value>arcmin</value>
@@ -247,10 +247,10 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Error retrieving image data from camera!</value>
+    <value>Помилка отримання зображення від камери!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Only 16 bit Monochrome sensors currently supported</value>
+    <value>На теперішній час підтримуються лише монохромні сенсори на 16 біт</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
@@ -499,10 +499,10 @@ Dec: {1}</value>
     <value>Камеру під'єднано</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>Camera connection lost! Please reconnect camera!</value>
+    <value>З'єднання з камерою втрачено! Повторно під'єднайте камеру!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Camera has cooler, yet it is not enabled</value>
+    <value>Камера має кулер, але він не увімкнений</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
     <value>Camera download failed.
@@ -938,7 +938,7 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Vulpecula</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>Continue</value>
+    <value>Продовжити</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
     <value>Contrast Detect Method</value>
@@ -949,31 +949,31 @@ A duration is optional. Most camera drivers already regulate the cooler power au
 In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Cooler</value>
+    <value>Кулер</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>Cooler Power</value>
+    <value>Потужність кулера</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>Cooling</value>
+    <value>Охолодження</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>Coordinates</value>
+    <value>Координати</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>Counterclockwise</value>
+    <value>Проти годинникової стрілки</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
     <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>Cover your scope now</value>
+    <value>Прикрийте свій телескоп</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>Current Mean</value>
+    <value>Поточне середнє значення</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>Current Position</value>
+    <value>Поточна позиція</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Est. finish time (this target)</value>
@@ -1010,19 +1010,19 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Download to Data ratio</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
-    <value>Date with format YYYY-MM-DD</value>
+    <value>Дата у форматі Рік-Місяць-День</value>
   </data>
   <data name="LblDateFormatDescription2" xml:space="preserve">
-    <value>Date shifted back by 12 hours with format YYYY-MM-DD</value>
+    <value>Дата зміщення назад на 12 годин у форматі Рік-Місяць-День</value>
   </data>
   <data name="LblDateTimeFormatDescription" xml:space="preserve">
-    <value>Date with format YYYY-MM-DD_HH-mm-ss</value>
+    <value>Дата у форматі Рік-Місяць-День_Години-хвилини-секунди</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Dawn</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>Днів</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1241,7 +1241,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Купол під'єднано</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>З'єднання з куполом втрачено.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
     <value>Від'єднати купол?</value>
@@ -1403,13 +1403,13 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>One or more sequence items have a filter set, but filter wheel is not connected</value>
   </data>
   <data name="LblFilterWheel" xml:space="preserve">
-    <value>Filterwheel</value>
+    <value>Колесо фільтрів</value>
   </data>
   <data name="LblFilterwheelConnected" xml:space="preserve">
     <value>Колесо фільтрів під'єднано</value>
   </data>
   <data name="LblFilterwheelConnectionLost" xml:space="preserve">
-    <value>Filterwheel connection lost! Please reconnect filterwheel!</value>
+    <value>З'єднання з колесом фільтрів втрачено! Будь ласка, повторно під'єднайте колесо фільтрів!</value>
   </data>
   <data name="LblFits" xml:space="preserve">
     <value>FITS</value>
@@ -1424,25 +1424,25 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Flats to take</value>
   </data>
   <data name="LblFlatDevice" xml:space="preserve">
-    <value>Flat Panel</value>
+    <value>Флет бокс (панель)</value>
   </data>
   <data name="LblFlatDeviceBrightness" xml:space="preserve">
-    <value>Brightness</value>
+    <value>Яскравість</value>
   </data>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Choose serial port</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>Очистити значення</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрити</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
     <value>Close cover when sequence ends</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Закрито</value>
   </data>
   <data name="LblFlatDeviceConnected" xml:space="preserve">
     <value>Флет бокс (панель) під'єднано</value>
@@ -1454,13 +1454,13 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Cover</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
-    <value>Currently</value>
+    <value>В цей час</value>
   </data>
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
-    <value>Do you want to disconnect the flat panel?</value>
+    <value>Ви хочете від'єднати флет бокс (панель)?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat Panel Settings</value>
+    <value>Налаштування флет бокса (панелі)</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Invalid response from flat panel.</value>
@@ -1655,10 +1655,10 @@ Calculated HFR: {2}
     <value>Full Well Capacity in e</value>
   </data>
   <data name="LblGain" xml:space="preserve">
-    <value>Gain</value>
+    <value>Підсилення (Gain)</value>
   </data>
   <data name="LblGainDescription" xml:space="preserve">
-    <value>Camera Gain</value>
+    <value>Підсилення камери (Gain)</value>
   </data>
   <data name="LblGeneral" xml:space="preserve">
     <value>General</value>
@@ -1910,7 +1910,7 @@ Calculated HFR: {2}
     <value>Log Level</value>
   </data>
   <data name="LblLongitude" xml:space="preserve">
-    <value>Longitude</value>
+    <value>Довгота</value>
   </data>
   <data name="LblLoop" xml:space="preserve">
     <value>Loop</value>
@@ -2027,10 +2027,10 @@ Calculated HFR: {2}
     <value>Mode</value>
   </data>
   <data name="LblMoonRise" xml:space="preserve">
-    <value>Moonrise</value>
+    <value>Схід Місяця</value>
   </data>
   <data name="LblMoonSet" xml:space="preserve">
-    <value>Moonset</value>
+    <value>Захід Місяця</value>
   </data>
   <data name="LblMove" xml:space="preserve">
     <value>Move</value>
@@ -2217,10 +2217,10 @@ Calculated HFR: {2}
     <value>Open Cluster</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Planetary Nebula</value>
+    <value>Планетарна туманність</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
-    <value>Quasar</value>
+    <value>Квазар</value>
   </data>
   <data name="LblObjectType_SMCCN" xml:space="preserve">
     <value>Cluster with Nebulosity in the SMC</value>
@@ -2767,7 +2767,7 @@ Calculated HFR: {2}
     <value>Scope settle time after flip</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
-    <value>Search</value>
+    <value>Пошук</value>
   </data>
   <data name="LblSearchRadius" xml:space="preserve">
     <value>Search Radius</value>
@@ -3051,10 +3051,10 @@ Before proceeding, please confirm your system is currently at or close to good f
     <value>Success</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Sunrise</value>
+    <value>Схід Сонця</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
-    <value>Sunset</value>
+    <value>Захід Сонця</value>
   </data>
   <data name="LblSurfaceBrightness" xml:space="preserve">
     <value>Surface Brightness</value>
@@ -3086,7 +3086,7 @@ Before proceeding, please confirm your system is currently at or close to good f
 Should the settings be synchronized?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
-    <value>Target</value>
+    <value>Ціль</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
     <value>TargetDec</value>
@@ -3119,7 +3119,7 @@ Should the settings be synchronized?</value>
     <value>Minimum Width (degree)</value>
   </data>
   <data name="LblTelescope" xml:space="preserve">
-    <value>Telescope</value>
+    <value>Телескоп</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
     <value>Telescope cannot Pulse Guide</value>
@@ -3131,13 +3131,13 @@ Should the settings be synchronized?</value>
     <value>Телескоп під'єднано</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
-    <value>Telescope connection lost! Please reconnect telescope!</value>
+    <value>З'єднання з телескопом втрачено! Будь ласка, повторно під'єднайте телескоп!</value>
   </data>
   <data name="LblTelescopeControl" xml:space="preserve">
     <value>Telescope Control</value>
   </data>
   <data name="LblTelescopeName" xml:space="preserve">
-    <value>Telescope Name</value>
+    <value>Назва телескопу</value>
   </data>
   <data name="LblTelescopeNotConnected" xml:space="preserve">
     <value>Телескоп не під'єднано</value>
@@ -6800,7 +6800,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрити</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6861,13 +6861,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Закрито</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Відкрито</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7122,7 +7122,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Під'єднати</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>

@@ -1878,7 +1878,7 @@ HFR calculat: {2}    </value>
     <value>Carregar Perfil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
+    <value>El perfil seleccionat està essent utilitzat actualment per una altra instancia de N.I.N.A. o no es pot carregar per un problema desconegut. Per més detalls, comprovi l'arxiu del registre.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Carregar Seqüència</value>
