@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>E</value>
+    <value>東</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>N</value>
+    <value>北</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>S</value>
+    <value>南</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>W</value>
+    <value>西</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
     <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Active</value>
+    <value>オン</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
     <value>Active filter</value>
@@ -142,7 +142,7 @@
     <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Add as Sequence Target</value>
+    <value>シーケンス対象として追加</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
     <value>Advanced Settings</value>
@@ -154,16 +154,16 @@
     <value>Auto-Focus is enabled, yet focuser is not connected</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Star HFR</value>
+    <value>星のHFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
     <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Use brightest n stars</value>
+    <value>一番明るいn個の星を使う</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limit AF to brightest stars. 0 means no limit.</value>
+    <value>AFを明るい星に制限する。0は無制限。</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
     <value>AllPro Spike-a-Flat Panel</value>
@@ -172,59 +172,59 @@
     <value>Alnitak Flat Panel</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Camera Setup</value>
+    <value>Altairカメラ設定</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternative UI Color Schema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>高度</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Measure Altitude Error</value>
+    <value>高度エラーを測定</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
     <value>Altitude Measurement</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>Measures Altitude Error by three steps.
-1. Takes image and platesolves for actual coordinates at current position
-2. Slew telescope using Right Ascension axis by 0.5 degrees
-3. Take another image at the new position, plate solves it for the actual position
-Using those two points the actual altitude error will be calculated and displayed</value>
+    <value>次の３ステップで高度エラーを測定します。
+1.イメージを取得し、現在位置にてプレートソルバーで現在の座標を計算します。
+2. 赤経軸回りに0.5度だけ望遠鏡を回転させます。
+3.この位置で再度イメージを撮像し、プレートソルバーで座標を計算します。
+これら２つの座標より現在の高度エラーを算出し表示します。</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>Point telescope east or west near declination 0 and near horizon.</value>
+    <value>望遠鏡を、東か西の、赤緯０付近で地平線付近に向けて下さい。</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
     <value>Altitude Measurement side</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>Display Constellation Boundaries</value>
+    <value>星座境界線を表示</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Display and annotate Constellations</value>
+    <value>星座を注釈付きで表示</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annotate Deep Sky Objects</value>
+    <value>遠距離天体DSOに注釈を付ける</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Display Grid</value>
+    <value>グリッド線を表示</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annotate Image</value>
+    <value>画像に注釈をつける</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
+    <value>ここにチェックを入れて、星検知機能がオンになっていると、画像内で検知された星に注釈が付きそれぞれのHFR値が表示されます。</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>APIキー</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>Apparent Magnitude</value>
+    <value>見かけ等級</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>Apparent Size</value>
+    <value>見かけの大きさ</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
     <value>The Application ran into an unhandled exception and most likely has to shut down.
@@ -232,58 +232,58 @@ The error has been logged to "%localappdata%\NINA\Logs".
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Application start date with format YYYY-MM-DD</value>
+    <value>アプリケーション開始日フォーマットYYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
-    <value>arcmin</value>
+    <value>角度分</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
-    <value>Max arcmin</value>
+    <value>最大分角</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>arcsec</value>
+    <value>角度秒</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
     <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Error retrieving image data from camera!</value>
+    <value>カメラから画像データを取得中にエラーが発生しました。</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Only 16 bit Monochrome sensors currently supported</value>
+    <value>16ビットモノクロセンサー以外は現状サポートされていません。</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>ASPS Location</value>
+    <value>ASPS位置</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>ASPS exe not found</value>
+    <value>ASPS exeが見つかりません</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
+    <value>ASTAPとは、天文測定スタッキングプログラム、天文測定ソルバー及びFITSビューアー</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
     <value>ASTAP Location</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>ASTAP exe not found</value>
+    <value>ASTAP exeが見つかりません。</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Astrometry</value>
+    <value>天文測定学</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Auto Focus</value>
+    <value>オートフォーカス</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>After HFR increase</value>
+    <value>HFR上昇後</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
     <value>HFR amount</value>
