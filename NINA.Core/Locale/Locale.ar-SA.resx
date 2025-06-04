@@ -118,414 +118,414 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>شرق</value>
+    <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>شمال</value>
+    <value>N</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>جَنُوب</value>
+    <value>S</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>غرب</value>
+    <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>كاشف الانحراف</value>
+    <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>نشط</value>
+    <value>Active</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>المرشح النشط</value>
+    <value>Active filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>تفاصيل البرنامَج النشط</value>
+    <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>إضافة هدف للبرنامج</value>
+    <value>Add as Sequence Target</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>إعدادات متقدمة</value>
+    <value>Advanced Settings</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>كشف التباين (تجريبي)</value>
+    <value>Contrast Detection (Experimental)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>تم تمكين التركيز التلقائي، لكن المركز البؤري غير متصل</value>
+    <value>Auto-Focus is enabled, yet focuser is not connected</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>HFR نجمة</value>
+    <value>Star HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>بعد</value>
+    <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>استخدم أسطع (ن) من النجوم</value>
+    <value>Use brightest n stars</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>حد AF لأسطع النجوم 0 يعني عدم وجود حد.</value>
+    <value>Limit AF to brightest stars. 0 means no limit.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
-    <value>لوحة AllPro Spike-a-Flat</value>
+    <value>AllPro Spike-a-Flat Panel</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>لوحة Alnitak</value>
+    <value>Alnitak Flat Panel</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>إعداد الكاميرا Altair</value>
+    <value>Altair Camera Setup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>مخطط لون واجهة المستخدم البديل</value>
+    <value>Alternative UI Color Schema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>الارتفاع</value>
+    <value>Altitude</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>خطأ في قياس الارتفاع</value>
+    <value>Measure Altitude Error</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>قياس الارتفاع</value>
+    <value>Altitude Measurement</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>يقاس الخطأ بالارتفاع بثلاث خطوات.
-1. يأخذ الصورة ويتم حلها من أجل الإحداثيات الفعلية في الموقع الحالي
-2. توجيه التلسكوب باستخدام محور المطلع المستقيم بمقدار 0.5 درجة
-3. التقط صورة أخرى في الموضع الجديد ، ويتم حلها للوضع الفعلي
-باستخدام هاتين النقطتين ، سيتم حساب خطأ الارتفاع الفعلي ويتم عرضه</value>
+    <value>Measures Altitude Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual altitude error will be calculated and displayed</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>وجه التلسكوب للشرق أو للغرب بالقرب من الميل صفر وبالقرب من الأفق.</value>
+    <value>Point telescope east or west near declination 0 and near horizon.</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
-    <value>قياس الارتفاع</value>
+    <value>Altitude Measurement side</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>عرض حدود الكوكبة</value>
+    <value>Display Constellation Boundaries</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>عرض و ترميز الكوكبات</value>
+    <value>Display and annotate Constellations</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>ترميز الأجرام السحيقة</value>
+    <value>Annotate Deep Sky Objects</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>عرض الشبكة</value>
+    <value>Display Grid</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>ترميز الصورة</value>
+    <value>Annotate Image</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>إذا تم اختيارها وتم استخدام كشف النجمة لصورة ما، سيتم ترميز الصورة مع النجوم التي تم العثور عليها وقيمة HFR الخاصة بها</value>
+    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>مفتاح API</value>
+    <value>API Key</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>القدر الظاهري</value>
+    <value>Apparent Magnitude</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>الحجم الظاهري</value>
+    <value>Apparent Size</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>التطبيق يُنفذ باستثناء غير معروف، ومن المرجح أن يُغلق.
-لقد تم تسجيل الخطأ في"%localappdata%\NINA\Logs".
-هل ينبغي أن يحاول التطبيق التخلص من الخطأ؟ (قد يؤدي ذلك إلى سلوك غير متوقع)</value>
+    <value>The Application ran into an unhandled exception and most likely has to shut down.
+The error has been logged to "%localappdata%\NINA\Logs".
+Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>تاريخ بدء التطبيق مع تنسيق YYYY-MM-DD</value>
+    <value>Application start date with format YYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
-    <value>دقيقة قوسية</value>
+    <value>arcmin</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
-    <value>أقصى دقيقة قوسية</value>
+    <value>Max arcmin</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>ثانية قوسية</value>
+    <value>arcsec</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>تصاعدي</value>
+    <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>خطأ في استرداد بيانات الصورة من الكاميرا!</value>
+    <value>Error retrieving image data from camera!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>مستشعرات أحادية 16 بت فقط مدعومة حاليا</value>
+    <value>Only 16 bit Monochrome sensors currently supported</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
-    <value>تحديد احداثيات السماء</value>
+    <value>All Sky Plate Solver</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>موقع ASPS</value>
+    <value>ASPS Location</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>لم يتم العثور على ASPS exe</value>
+    <value>ASPS exe not found</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTP برنامج للتكديس الفلكي وحل الإحداثيات وعارض للصور من نوع FITS</value>
+    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
-    <value>موقع ASPS</value>
+    <value>ASTAP Location</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>لم يتم العثور على ASPS exe</value>
+    <value>ASTAP exe not found</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>القياس الفلكي</value>
+    <value>Astrometry</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
-    <value>موقع Astrometry.Net</value>
+    <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>التركيز التلقائي</value>
+    <value>Auto Focus</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>بعد زيادة HFR</value>
+    <value>After HFR increase</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>قيمة HFR</value>
+    <value>HFR amount</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>بعد عدد # من التعريضات</value>
+    <value>After # exposures</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
-    <value>بعد انقضاء الوقت</value>
+    <value>After elapsed Time</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
-    <value>بعد تغير درجة الحرارة</value>
+    <value>After temperature change</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>مقدار درجة الحرارة</value>
+    <value>Temperature amount</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
-    <value>وقت التعريض للتركيز التلقائي</value>
+    <value>Auto Focus Exposure Time</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>وقت التعريض المستخدم للتركيز التلقائي عندما لا يتم تعيين وقت محدد للمرشح أو عندما يكون الوقت المحدد للمرشح صفر</value>
+    <value>Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
-    <value>مرشح التركيز التلقائي</value>
+    <value>Auto Focus Filter</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>لا يمكن بدء التركيز التلقائي. الكاميرا أو المركز التلقائي غير متصل!</value>
+    <value>Cannot start Auto Focus. Camera or Focuser is not connected!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
-    <value>نسبة القص الداخلي AF</value>
+    <value>AF Inner Crop Ratio</value>
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
-    <value>إذا تم تعيينها إلى قيمة أقل من واحد، فإن الكشف عن النجوم أثناء التركيز التلقائي سوف يستخدم فقط
-إطار مركزي من كامل المستشعر (إذا كانت الخاصية مدعومة من الكاميرا). إذا كانت
-غير مدعومة من الكاميرا، سيتم تجاهل النجوم القريبة من الحافة أثناء الكشف. إذا استخدم بالإضافة
-لنسبة أقل من 1 من نسبة القص الخارجية، فيتم استخدام قطعة مستطيلة من الصورة (بين المستطيل الداخلي و
-المستطيل الخارجي) للتركيز التلقائي.</value>
+    <value>If set to a value less than one, star detection during autofocus will only use
+a centered subframe of the total sensor (if supported by camera). If unsupported
+by the camera, stars near the edge will be ignored during star detection. If used in combination
+with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
+outer rectangle) will be used for autofocus.</value>
   </data>
   <data name="LblAutoFocusMethod" xml:space="preserve">
-    <value>أسلوب AF</value>
+    <value>AF Method</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>عندما يتم تحديد HFR للنجوم، سيكتشف NINA النجوم في FOV،
-ويحسب HFR عبر نقاط تركيز متعددة، وسيجد الحد الأدنى من HFR.
-تستخدم طريقة الكشف عن التباين تقنيات معالجة الصور لتقدير التباين
-عبر نقاط تركيز متعددة، وتجد أعلى التباين. تعمل هذه الطريقة على
-الأهداف الأرضية أو أجرام النظام الشمسي أيضا، لكنها يمكن أن تكون حساسة للشوشرة.</value>
+    <value>When Star HFR is selected, NINA will detect stars in the FOV,
+compute their HFR across multiple focus points, and find the minimum HFR.
+The Contrast Detection method uses image processing techniques to estimate contrast
+across multiple focus points, and finds the highest contrast. This method works on
+terrestrial objects or solar system objects as well, but can be sensitive to noise.</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>نقطة تركيز جديدة HFR {0} أسوأ بكثير من الأصلية HFR {1}</value>
+    <value>New focus point HFR {0} is significantly worse than original HFR {1}</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>لا يوجد فرق كافي لمجموعة من نقاط التركيز. إما أن حجم الخطوة منخفض جداً أو أن النجوم خارج التركيز بقدر كبير.</value>
+    <value>Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
-    <value>عدد التعريضات</value>
+    <value># exposures</value>
   </data>
   <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
-    <value>عدد محاولات AF</value>
+    <value>AF Number of Attempts</value>
   </data>
   <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
-    <value>إذا فشل التركيز التلقائي لأنه حصل على أسوأ HFR من التركيز الأصلي، كم مرة تعاد محاولة التركيز التلقائي حتى ينجح أو يعود إلى موقع التركيز الأصلي.</value>
+    <value>If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
-    <value>عدد الإطارات AF لكل نقطة</value>
+    <value>AF Number of Frames per Point</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>كم عدد الاطارات لكل نقطة تركيز. إذا كانت أكبر من واحد، فسيتم اتخاذ أطر متعددة لنقطة تركيز واحدة ، وسيتم أخذ متوسط HFR ليتم حساب نقطة التركيز HFR</value>
+    <value>How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
-    <value>عند تغيير المرشح</value>
+    <value>On filter change</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>في البداية</value>
+    <value>On start</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>نسبة القص الخارجي للتركيز البؤري التلقائيAF</value>
+    <value>AF Outer Crop Ratio</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
-    <value>إعادة محاولة التركيز البؤري التلقائي</value>
+    <value>Reattempting Autofocus</value>
   </data>
   <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
-    <value>استعادة موضع التركيز البؤري الأصلي</value>
+    <value>Restoring original focus position</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>الوقت</value>
+    <value>Time</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
-    <value>التبديل إلى المرشح الأصلي</value>
+    <value>Switching back to original filter</value>
   </data>
   <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
-    <value>التبديل إلى مرشح التركيز البؤري التلقائي</value>
+    <value>Switching to Auto Focus filter</value>
   </data>
   <data name="LblAutoMeridianFlip" xml:space="preserve">
-    <value>انقلاب الزوال التلقائي</value>
+    <value>Auto Meridian Flip</value>
   </data>
   <data name="LblAutoStretchFactor" xml:space="preserve">
-    <value>عامل التمدد التلقائي Autostretch</value>
+    <value>Autostretch factor</value>
   </data>
   <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
-    <value>عامل الخوارزمية للتمدد التلقائي Autostretch المستخدمة لعرض الصورة واكتشاف النجوم. يجب أن تكون قيمة بين 0 و 1. قيمة 0.2 تكون مناسبة عادة.</value>
+    <value>The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</value>
   </data>
   <data name="LblAutoUpdateSource" xml:space="preserve">
-    <value>مصدر التحديث التلقائي</value>
+    <value>Auto Update Source</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>السمت</value>
+    <value>Azimuth</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
-    <value>قياس خطأ السمت</value>
+    <value>Measure Azimuth Error</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>قياس السمت</value>
+    <value>Azimuth Measurement</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
-    <value>يقاس خطأ السمت بثلاث خطوات.
-1. يأخذ صورة ويتم حلها من أجل الإحداثيات الفعلية في الموقع الحالي
-2. توجيه التلسكوب باستخدام محور المطلع المستقيم Ra بمقدار 0.5 درجة
-3. التقاط صورة أخرى في الموضع الجديد ، ويتم حلها للموقع الفعلي
-وباستخدام هاتين النقطتين ، سيتم حساب خطأ السمت الفعلي ويتم عرضه</value>
+    <value>Measures Azimuth Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual azimuth error will be calculated and displayed</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
-    <value>وجّه التلسكوب للجنوب بالقرب من الميل صفر وبالقرب من الأفق</value>
+    <value>Point Telescope South near declination 0 and near meridian</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>الخلفية</value>
+    <value>Background</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
-    <value>حدث خطأ أثناء قياس الحركة الارتجاعية. قد تكون قيمتها خاطئة.</value>
+    <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>سيتم حفظ قيم الحركة الارتجاعية لجهاز التركي، للداخل"(0)"، للخارج"(1)"</value>
+    <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
-    <value>تجريبي</value>
+    <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>القيمة المتوسطة للصور من نوع BIAS (في 16 بت)</value>
+    <value>BIAS mean value (in 16bit)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>القيمة الوسيطة لـ BIAS (16 بت)</value>
+    <value>BIAS median value (in 16bit)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
-    <value>تضمين Binning</value>
+    <value>Binning</value>
   </data>
   <data name="LblBinningDescription" xml:space="preserve">
-    <value>قيمة تضمين الكاميرا Binning</value>
+    <value>Camera binning</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>عمق البت</value>
+    <value>Bit Depth</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>عمق Bit في ADU</value>
+    <value>Bit Depth in ADU</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
-    <value>قص الأسود</value>
+    <value>Black clipping</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
-    <value>يجب حل إحداثيات الصورة من أجل التأطير.
-هل ينبغي أخذ إحداثيات مرجعية؟
+    <value>Image has to be solved for framing.
+Should reference coordinates be taken?
 RA: {0}
 Dec: {1}</value>
   </data>
   <data name="LblBlindSolver" xml:space="preserve">
-    <value>حل الإحداثيات البديل</value>
+    <value>Blind Solver</value>
   </data>
   <data name="LblBorder" xml:space="preserve">
-    <value>حدود</value>
+    <value>Border</value>
   </data>
   <data name="LblBulbMode" xml:space="preserve">
-    <value>الوضع المفتوح للتعريض Bulb</value>
+    <value>Bulb Mode</value>
   </data>
   <data name="LblBulbSerialPort" xml:space="preserve">
-    <value>المنفذ التسلسلي لوضع Bulb</value>
+    <value>Bulb Serial Port</value>
   </data>
   <data name="LblButtonBackground" xml:space="preserve">
-    <value>خلفية الأزرار</value>
+    <value>Button Background</value>
   </data>
   <data name="LblButtonForeground" xml:space="preserve">
-    <value>واجهة الأزرار</value>
+    <value>Button Foreground</value>
   </data>
   <data name="LblButtonForegroundDisabled" xml:space="preserve">
-    <value>واجهة ألأزرار معطلة</value>
+    <value>Button Foreground Disabled</value>
   </data>
   <data name="LblButtonHighlight" xml:space="preserve">
-    <value>ألأزرار المعين</value>
+    <value>Button Highlight</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>خلط البيانات</value>
+    <value>Byte Shuffling</value>
   </data>
   <data name="LblCache" xml:space="preserve">
-    <value>مؤقت</value>
+    <value>Cache</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>حساب قيمة الصور من نوع Bias</value>
+    <value>Calculate Bias</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>وقت التعربض المحسوب</value>
+    <value>Calculated Exposure Time</value>
   </data>
   <data name="LblCam" xml:space="preserve">
-    <value>كاميرا</value>
+    <value>Cam</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>الكاميرا</value>
+    <value>Camera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>بطارية الكاميرا</value>
+    <value>Camera Battery</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>الكاميرا مشغولة</value>
+    <value>Camera is busy</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>الكاميرا متصلة</value>
+    <value>Camera connected</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>تم فقدان الاتصال بالكاميرا! الرجاء إعادة توصيل الكاميرا!</value>
+    <value>Camera connection lost! Please reconnect camera!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>الكاميرا مزودة بتبريد، لكنه غير مفعل</value>
+    <value>Camera has cooler, yet it is not enabled</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
-    <value>فشل التنزيل من الكاميرا.
-وقت التعريض: {0}ث
-نوع: {1}
-الكسب: {2}
-المرشح: {3}</value>
+    <value>Camera download failed.
+Exposure time: {0}s
+Type: {1}
+Gain: {2}
+Filter: {3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>تبريد الكاميرا يعمل عند {0}٪ من الطاقة وقد لا يكون
-قادراً على تصحيح درجة الحرارة</value>
+    <value>Camera cooler is running at {0}% power and may not be
+able to compensate for ambient temperature variations</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
-    <value>درجة حرارة الكاميرا{0} درجة مئوية مع أن درجة الحرارة المستهدفة هي {1} درجة مئوية</value>
+    <value>Camera is at {0}°C yet target temperature is {1}°C</value>
   </data>
   <data name="LblCameraOptions" xml:space="preserve">
-    <value>خيارات الكاميرا</value>
+    <value>Camera Options</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
     <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
-    <value>حالة الكاميرا</value>
+    <value>Camera State</value>
   </data>
   <data name="LblCameraXSize" xml:space="preserve">
     <value>Camera X Size</value>
@@ -534,13 +534,13 @@ Dec: {1}</value>
     <value>Camera Y Size</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>معلومات الكاميرا</value>
+    <value>Camera Info</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>إعدادات الكاميرا</value>
+    <value>Camera Settings</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>إلغاء</value>
+    <value>Cancel</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
     <value>A Canon error occored: {0}</value>
@@ -671,309 +671,309 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Andromeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>مفرغة الهواء</value>
+    <value>Antlia</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>طائر الفردوس</value>
+    <value>Apus</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
-    <value>العقاب</value>
+    <value>Aquila</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>الدلو</value>
+    <value>Aquarius</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>المجمرة</value>
+    <value>Ara</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
-    <value>الحمل</value>
+    <value>Aries</value>
   </data>
   <data name="LblConstellation_AUR" xml:space="preserve">
-    <value>ممسك الأعنة</value>
+    <value>Auriga</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>العواء</value>
+    <value>Bootes</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>آلة النقاش</value>
+    <value>Caelum</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>الزرافة</value>
+    <value>Camelopardalis</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
-    <value>الجدي</value>
+    <value>Capricornus</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>القاعدة</value>
+    <value>Carina</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
-    <value>ذات الكرسي</value>
+    <value>Cassiopeia</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
-    <value>قنطورس</value>
+    <value>Centaurus</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>الملتهب</value>
+    <value>Cepheus</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>قيطس</value>
+    <value>Cetus</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>الحرباء</value>
+    <value>Chamaeleon</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>البيكار</value>
+    <value>Circinus</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>الكلب الأكبر</value>
+    <value>Canis major</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>الكلب الأصغر</value>
+    <value>Canis minor</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
-    <value>السرطان</value>
+    <value>Cancer</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>الحمامة</value>
+    <value>Columba</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>الهلبة</value>
+    <value>Coma berenices</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
-    <value>الإكليل الجنوبي</value>
+    <value>Corona australis</value>
   </data>
   <data name="LblConstellation_CRB" xml:space="preserve">
-    <value>الإكليل الشمالي</value>
+    <value>Corona borealis</value>
   </data>
   <data name="LblConstellation_CRT" xml:space="preserve">
-    <value>الباطية</value>
+    <value>Crater</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>صليب الجنوب</value>
+    <value>Crux</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>الغراب</value>
+    <value>Corvus</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>السلوقيان</value>
+    <value>Canes venatici</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>الدجاجة</value>
+    <value>Cygnus</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>الدلفين</value>
+    <value>Delphinus</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
-    <value>أبو سيف</value>
+    <value>Dorado</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>التنين</value>
+    <value>Draco</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>قطعة الفرس</value>
+    <value>Equuleus</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>النهر</value>
+    <value>Eridanus</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>الكور</value>
+    <value>Fornax</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>التوأمان</value>
+    <value>Gemini</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>الكركي</value>
+    <value>Grus</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
-    <value>الجاثي</value>
+    <value>Hercules</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>الساعة</value>
+    <value>Horologium</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>الشجاع</value>
+    <value>Hydra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>حية الماء</value>
+    <value>Hydrus</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>الهندي</value>
+    <value>Indus</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>العظاءة</value>
+    <value>Lacerta</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
-    <value>الأسد</value>
+    <value>Leo</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>الأرنب</value>
+    <value>Lepus</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>الميزان</value>
+    <value>Libra</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
-    <value>الأسد الأصغر</value>
+    <value>Leo minor</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>السبع</value>
+    <value>Lupus</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
-    <value>الوشق</value>
+    <value>Lynx</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>القيثارة</value>
+    <value>Lyra</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
-    <value>الجبل</value>
+    <value>Mensa</value>
   </data>
   <data name="LblConstellation_MIC" xml:space="preserve">
-    <value>المجهر</value>
+    <value>Microscopium</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>وحيد القرن</value>
+    <value>Monoceros</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>الذبابة</value>
+    <value>Musca</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>مربع النجار</value>
+    <value>Norma</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>الثمن</value>
+    <value>Octans</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>الحواء</value>
+    <value>Ophiuchus</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
-    <value>الصياد</value>
+    <value>Orion</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>الطاووس</value>
+    <value>Pavo</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
-    <value>الفرس الأعظم</value>
+    <value>Pegasus</value>
   </data>
   <data name="LblConstellation_PER" xml:space="preserve">
-    <value>حامل رأس الغول</value>
+    <value>Perseus</value>
   </data>
   <data name="LblConstellation_PHE" xml:space="preserve">
-    <value>العنقاء</value>
+    <value>Phoenix</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>آلة الرسام</value>
+    <value>Pictor</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>الحوت الجنوبي</value>
+    <value>Pisces austrinus</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
-    <value>الحوت</value>
+    <value>Pisces</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>الكوثل</value>
+    <value>Puppis</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>بيت الإبرة</value>
+    <value>Pyxis</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
-    <value>الشبكة</value>
+    <value>Reticulum</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>معمل النحات</value>
+    <value>Sculptor</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
-    <value>العقرب</value>
+    <value>Scorpius</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>الترس</value>
+    <value>Scutum</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
-    <value>الحية</value>
+    <value>Serpens</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>رأس الحية</value>
+    <value>Serpens caput</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>ذيل الحية</value>
+    <value>Serpens cauda</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
-    <value>السدس</value>
+    <value>Sextans</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>السهم</value>
+    <value>Sagitta</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
-    <value>الرامي</value>
+    <value>Sagittarius</value>
   </data>
   <data name="LblConstellation_TAU" xml:space="preserve">
-    <value>الثور</value>
+    <value>Taurus</value>
   </data>
   <data name="LblConstellation_TEL" xml:space="preserve">
-    <value>المرقب</value>
+    <value>Telescopium</value>
   </data>
   <data name="LblConstellation_TRA" xml:space="preserve">
-    <value>المثلث الجنوبي</value>
+    <value>Triangulum australe</value>
   </data>
   <data name="LblConstellation_TRI" xml:space="preserve">
-    <value>المثلث</value>
+    <value>Triangulum</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>الطوقان</value>
+    <value>Tucana</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
-    <value>Ursa Major</value>
+    <value>Ursa major</value>
   </data>
   <data name="LblConstellation_UMI" xml:space="preserve">
-    <value>الدب الأصغر</value>
+    <value>Ursa minor</value>
   </data>
   <data name="LblConstellation_VEL" xml:space="preserve">
-    <value>الشراع</value>
+    <value>Vela</value>
   </data>
   <data name="LblConstellation_VIR" xml:space="preserve">
-    <value>العذراء</value>
+    <value>Virgo</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>السمكة الطائرة</value>
+    <value>Volans</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
-    <value>الثعلب</value>
+    <value>Vulpecula</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>متابعة</value>
+    <value>Continue</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
-    <value>طريقة الكشف عن التباين</value>
+    <value>Contrast Detect Method</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>تشغيل التبريد وتبريد الكاميرا إلى درجة الحرارة المحددة.
-المدة اختيارية. ومعظم برامج الكاميرات تنظم طاقة المبرد تلقائياً ويتم تناقص درجة الحرارة تدريجياً.
-في حالة الحاجة إلى مدة أطول، يمكن تحديد المدة والتطبيق سيخفض ببطء درجة الحرارة المستهدفة للكاميرا بناءا على المدة المحددة.</value>
+    <value>Turns the cooler on and cools the camera to the given target temperature.
+A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
+In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>المبرد</value>
+    <value>Cooler</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>طاقة التبريد</value>
+    <value>Cooler Power</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>تبريد</value>
+    <value>Cooling</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>الإحداثيات</value>
+    <value>Coordinates</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>عكس عقارب الساعة</value>
+    <value>Counterclockwise</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
     <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>قم بتغطية التلسكوب الآن</value>
+    <value>Cover your scope now</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>المتوسط الحالي</value>
+    <value>Current Mean</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>الموضع الحالي</value>
+    <value>Current Position</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Est. finish time (this target)</value>
