@@ -7173,4 +7173,10 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value>Po dokončení otevřete kryt</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Občanský soumrak</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Občanský úsvit</value>
+  </data>
 </root>

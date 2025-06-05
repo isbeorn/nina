@@ -7168,4 +7168,10 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Descubre el telescopio cuando acabes</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
 </root>

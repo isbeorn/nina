@@ -7142,4 +7142,10 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>終了したらカバーを開ける</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>市民薄明</value>
+  </data>
 </root>
