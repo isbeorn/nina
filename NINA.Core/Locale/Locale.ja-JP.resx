@@ -7146,6 +7146,6 @@ ASCOMカメラドライバーを使用している場合にのみ有効です。
     <value>Civil dusk</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>市民薄明</value>
   </data>
 </root>
