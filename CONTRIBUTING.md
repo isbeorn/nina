@@ -2,10 +2,19 @@
 
 Thank you for considering a contribution to NINA!
 There are many areas where you can contribute, ranging from improving the documentation, writing tutorials, submitting bugs or even writing code for new features inside NINA itself.
-When contributing code or documentation to this repository, please first discuss your plans via an issue, discord or mail with the repo owners, before making a change
+Before contributing code or documentation, please start a discussion via GitHub Issues or Discord. This helps ensure alignment and avoids duplicate work.
 
-# Table of Contents
-[TOC]
+# Ways to Contribute
+
+Whether you're a developer, power user, translator, or just enthusiastic about astronomy, there are many ways to contribute:
+
+- Fixing bugs and implementing new features
+- Writing or improving documentation
+- Creating tutorials or user guides
+- Improving translations
+- Suggesting and discussing new features
+- Writing or maintaining plugins
+- Participating in community discussions
 
 # Bug Reporting
 
@@ -24,7 +33,7 @@ If you encounter a bug with N.I.N.A. you can report this via the [issue tracker]
 
 For reporting bugs please use the following guideline to describe the problem:
   
-```
+```text
 [ ] Is the issue reproducible?  
 [ ] Are you running the latest version?  
 [ ] Are all prerequisites that are mentioned inside the manual met?  
@@ -53,7 +62,7 @@ Also attach your log file of that session (if applicable), which can be found in
 
 # Contributing code
 
-## Quick Start
+## Quick start
 1. Fork the repository
 2. **Sync LFS files into the fork**
 ```
@@ -69,11 +78,11 @@ git submodule update --init --recursive
 ```
 3. Add your changes
 4. Check that unit tests are passing
-5. Make sure no unnecessary files are accidentally checked in.
+5. Ensure no unintended or unnecessary files are committed.
 6. Add a short description about your changes to the correct section inside "RELEASE_NOTES.md"
 7. Push the change to your forked repository using a good commit message
 8. Submit a pull request
-9. During the pull requests there will be discussions and constructive feedback.
+9. During pull requests, expect discussions and constructive feedback.
    Required changes that might be requested during this phase have to be implemented.
    Once this is done, the pull request can be merged.
 
