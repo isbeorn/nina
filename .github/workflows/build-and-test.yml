@@ -1,6 +1,7 @@
 name: Build and Test
 
 on:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -34,4 +35,12 @@ jobs:
       run: dotnet build NINA.Test/NINA.Test.csproj --configuration Debug --no-restore
 
     - name: Run unit tests
-      run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx"
+      run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx;LogFileName=test-results.trx" `
+
+    - name: Publish NUnit test results
+      uses: dorny/test-reporter@v2
+      if: ${{ !cancelled() }}
+      with:
+        name: NUnit Tests
+        path: TestResults/test-results.trx
+        reporter: dotnet-trx
