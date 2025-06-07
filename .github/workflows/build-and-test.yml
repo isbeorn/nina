@@ -21,10 +21,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Install Visual C++ Redistributable
-      run: |
-        choco install vcredist140 -y --x64
-
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
 
