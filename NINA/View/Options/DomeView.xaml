@@ -152,6 +152,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="1">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </UniformGrid.Style>
@@ -180,6 +183,9 @@
                             <Style TargetType="{x:Type UniformGrid}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="2">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>

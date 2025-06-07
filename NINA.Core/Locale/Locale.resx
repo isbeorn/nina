@@ -7185,6 +7185,9 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblCivilDawn" xml:space="preserve">
     <value>Civil dawn</value>
   </data>
+  <data name="LblAltitudeAzimuth" xml:space="preserve">
+    <value>Altitude-Azimuth</value>
+  </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
     <value>Refuse mount unpark if shutter is not open</value>
   </data>
