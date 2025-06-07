@@ -24,10 +24,7 @@ jobs:
         choco install vcredist2010 -y --x64
         choco install vcredist2012 -y --x64
         choco install vcredist2013 -y --x64
-        choco install vcredist2015 -y --x64
-        choco install vcredist2017 -y --x64
-        choco install vcredist2019 -y --x64
-        choco install vcredist2022 -y --x64
+        choco install vcredist140
 
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
