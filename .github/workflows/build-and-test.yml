@@ -42,5 +42,5 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: NUnit Tests
-        path: TestResults/test-results.trx
+        path: NINA.Test/TestResults/test-results.trx
         reporter: dotnet-trx
