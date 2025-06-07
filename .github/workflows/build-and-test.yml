@@ -12,6 +12,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
+        lfs: 'true'
         submodules: recursive
 
     - name: Setup .NET 8
@@ -21,10 +22,7 @@ jobs:
 
     - name: Install Visual C++ Redistributable
       run: |
-        choco install vcredist2010 -y --x64
-        choco install vcredist2012 -y --x64
-        choco install vcredist2013 -y --x64
-        choco install vcredist140
+        choco install vcredist140 -y --x64
 
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
@@ -34,11 +32,6 @@ jobs:
 
     - name: Build test project
       run: dotnet build NINA.Test/NINA.Test.csproj --configuration Debug --no-restore
-
-    - name: Debug output directory
-      shell: pwsh
-      run: |
-        Get-ChildItem -Recurse NINA.Test\bin\Debug\
 
     - name: Run unit tests
       run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx"
