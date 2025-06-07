@@ -31,7 +31,7 @@ jobs:
     - name: Debug output directory
       shell: pwsh
       run: |
-        Get-ChildItem -Recurse NINA.Test\bin\Debug\net8.0\
+        Get-ChildItem -Recurse NINA.Test\bin\Debug\
 
     - name: Run unit tests
       run: dotnet test NINA.Test/NINA.Test.csproj --configuration Debug --no-build -p:PlatformTarget=x64 --logger "trx"
