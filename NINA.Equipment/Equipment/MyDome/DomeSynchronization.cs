@@ -226,11 +226,14 @@ namespace NINA.Equipment.Equipment.MyDome {
             // Azimuth rotation: scope rotates around the dome’s vertical axis (z-axis)
             var azimuthRotation = Matrix4x4.CreateRotationZ((float)(-topocentric.Azimuth.Radians));
 
+            // Determine hemisphere direction
+            var latitudeFactor = siteLatitude.Radians >= 0 ? 1.0 : -1.0;
+
             // Mount offset from dome center
             var mountOffset = Matrix4x4.CreateTranslation(new Vector3(
-                (float)domeSettings.ScopePositionNorthSouth_mm,
-                (float)domeSettings.ScopePositionEastWest_mm,
-                (float)domeSettings.ScopePositionUpDown_mm
+                (float)(domeSettings.ScopePositionNorthSouth_mm * latitudeFactor),   // X: North
+                (float)(-domeSettings.ScopePositionEastWest_mm * latitudeFactor),    // Y: East
+                (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up
             ));
 
             // Lateral axis offset (side-by-side)
