@@ -221,7 +221,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, 0d); // elevation not critical here
 
             // Altitude rotation: scope tilts up from horizontal
-            var altitudeRotation = Matrix4x4.CreateRotationY((float)(-topocentric.Altitude.Radians));
+            var altitudeRotation = Matrix4x4.CreateRotationY((float)(topocentric.Altitude.Radians));
 
             // Azimuth rotation: scope rotates around the dome’s vertical axis (z-axis)
             var azimuthRotation = Matrix4x4.CreateRotationZ((float)(-topocentric.Azimuth.Radians));
