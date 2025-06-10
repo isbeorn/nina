@@ -55,6 +55,8 @@ This allows you to safely return to a stable release if needed.
     - Native FWHM and eccentricity measurements are now calculated and exposed alongside HFR
     - The image history panel now offers FWHM and eccentricity as selectable metrics
     - The image statistics and image history panels can display FWHM, HFR and HFR deviation in either pixels or arcseconds, based on the active profile's camera pixel size and telescope focal length
+- **Domes with Alt-Az mounts**
+  - Alt-Az mounts are a new mount configuration that is supported under Options > Dome. This permits one to define mount and OTA offsets that result in proper dome azimuthhal rotation for an alt-az mount
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
