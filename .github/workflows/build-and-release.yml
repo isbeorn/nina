@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build and Test on Windows
+    name: Build and Prepare Setup on Windows
     runs-on: windows-latest
 
     steps:
@@ -31,6 +31,11 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: Set up .NET 8.0 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
     - name: Install WiX Toolset
       run: choco install wixtoolset -y
     
@@ -47,7 +52,7 @@ jobs:
         pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
 
     - name: Build WiX Setup Bundle
-      run: msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=Release
+      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=Release
 
     - name: Copy .pdb files to setup output folder
       run: |
@@ -107,7 +112,7 @@ jobs:
 
 
   upload:
-    name: Upload to Backblaze B2
+    name: Upload Setup to Backblaze B2
     runs-on: windows-latest
     needs: build
     
