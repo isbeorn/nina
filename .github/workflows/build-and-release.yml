@@ -51,12 +51,24 @@ jobs:
 
     - name: Restore NuGet packages
       run: dotnet restore NINA.sln
-
       
     - name: Generate release notes
       run: |
         pandoc RELEASE_NOTES.md -f markdown -t rtf -s -o RELEASE_NOTES.rtf
         pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
+
+    - name: Build NINA project
+      run: dotnet build NINA\NINA.csproj -c Release -r win-x64
+
+    - name: Build MkDocs documentation
+      run: |
+        mkdocs build -f NINA.Docs\mkdocs.yml -c
+
+    - name: Copy MkDocs output to setup target dir
+      shell: cmd
+      run: |
+        mkdir NINA\bin\Release\net8.0-windows\win-x64\docs
+        xcopy "NINA.Docs\site" "NINA\bin\Release\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
 
     - name: Build WiX Setup Bundle
       run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=Release
