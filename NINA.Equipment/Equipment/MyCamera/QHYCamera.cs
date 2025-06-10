@@ -1774,6 +1774,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private void DriverVersionCheck() {
             // Minimum driver versions. Key: Driver name. Value: Minimum driver version
             var driverDatabase = new Dictionary<string, string> {
+                { "QHYCameras_IO", "25.4.10.1516" },
                 { "QHY5IIISeries_IO", "21.10.18.0" },
                 { "QHY5II_IO", "0.0.9.0" },
                 { "QHY8LBASE", "0.0.9.0" },
