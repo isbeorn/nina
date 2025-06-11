@@ -6,7 +6,10 @@ on:
       version:
         description: 'Release version'
         required: true
-        default: '3.0.0.0'
+        default: '3.2.0.0'
+
+env:
+  BUILD_CONFIG: SignedRelease
 
 jobs:
   build:
@@ -18,7 +21,7 @@ jobs:
       run: |
         $version = "${{ github.event.inputs.version }}"
         if ($version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') {
-          Write-Error "Invalid version format: '$version'. Use format like 3.0.0 or 3.0.0.1"
+          Write-Error "Invalid version format: '$version'. Use format like 3.0.0.1"
           exit 1
         }
 
@@ -69,13 +72,13 @@ jobs:
         pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
 
     - name: Build NINA project
-      run: dotnet build NINA\NINA.csproj -c Release -r win-x64
+      run: dotnet build NINA\NINA.csproj -c ${{ env.BUILD_CONFIG }} -r win-x64
 
     - name: Copy Canon and Nikon DLLs to build output
       shell: cmd
       run: |
-        xcopy NINA\External\x64\Canon NINA\bin\Release\net8.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
-        xcopy NINA\External\x64\Nikon NINA\bin\Release\net8.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
+        xcopy NINA\External\x64\Canon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
+        xcopy NINA\External\x64\Nikon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
 
     - name: Build MkDocs documentation
       run: |
@@ -84,18 +87,17 @@ jobs:
     - name: Copy MkDocs output to setup target dir
       shell: cmd
       run: |
-        mkdir NINA\bin\Release\net8.0-windows\win-x64\docs
-        xcopy "NINA.Docs\site" "NINA\bin\Release\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
+        mkdir NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs
+        xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
 
     - name: Build WiX Setup Bundle
-      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=Release
+      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }}
 
     - name: Copy .pdb files to setup output folder
       run: |
         $solutionDir = "$(Resolve-Path .)"
-        $config = "Release"
-        $pdbSource = "$solutionDir\NINA\bin\$config\net8.0-windows\win-x64"
-        $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\$config"
+        $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64"
+        $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
 
         Remove-Item "$solutionDir\RELEASE_NOTES.rtf" -Force -ErrorAction SilentlyContinue
 
@@ -121,7 +123,7 @@ jobs:
 
     - name: Create ZIP files
       run: |
-        $outputPath = "NINA.SetupBundle\bin\Release"
+        $outputPath = "NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
         Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_${{ github.event.inputs.version }}.zip"
 
@@ -203,3 +205,33 @@ jobs:
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
           b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "Nightlies/${{ github.event.inputs.version }}/$($_.Name)"
         }
+    
+    - name: Upload versioninfo artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: versioninfo
+        path: |
+          artifact/versioninfo.json
+  
+  publish:
+    needs: upload
+    runs-on: ubuntu-latest
+    environment:
+      name: nightly-release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: versioninfo
+        path: ./artifact    
+    
+    - name: Push to nightly release channel
+      run: |
+        curl -T ./artifact/version.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/Nightlies/version.txt
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
