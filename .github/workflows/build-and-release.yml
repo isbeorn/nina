@@ -1,12 +1,7 @@
-name: Build and Release
+name: Version Increment and Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version'
-        required: true
-        default: '3.2.0.0'
 
 env:
   BUILD_CONFIG: Release
@@ -15,53 +10,89 @@ jobs:
   build:
     outputs:
       release_channel: ${{ steps.setvar.outputs.channel }}
+      version: ${{ steps.setvar.outputs.version }}
     name: Build and Prepare Setup
     runs-on: windows-latest
 
     steps:
-    - name: Validate version input
-      run: |
-        $version = "${{ github.event.inputs.version }}"
-        if ($version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') {
-          Write-Error "Invalid version format: '$version'. Use format like 3.0.0.1"
-          exit 1
-        }
-
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         lfs: 'true'
         submodules: recursive
 
-    - name: Set RELEASE_CHANNEL based on version
-      id: setvar
+    - name: Bump and export version in CommonAssemblyInfo.cs
+      id: bump_version
       shell: pwsh
       run: |
-        $version = "${{ github.event.inputs.version }}"
-        Write-Host "Input version: $version"
+        $file = "CommonAssemblyInfo.cs"
 
-        # Extract the first digit of the fourth component
-        $parts = $version -split '\.'
-        if ($parts.Length -lt 4) {
-          Write-Error "Invalid version format: $version"
-          exit 1
+        if (-not (Test-Path $file)) {
+            Write-Error "File not found: $file"
+            exit 1
         }
 
-        $channelDigit = $parts[3].Substring(0,1)
+        $content = Get-Content $file -Raw
 
+        # Match and increment the version (assuming 1-based indexing)
+        $versionPattern = '\[assembly: AssemblyVersion\("(\d+)\.(\d+)\.(\d+)\.(\d+)"\)\]'
+        $match = [regex]::Match($content, $versionPattern)
+        if (-not $match.Success) {
+            Write-Error "AssemblyVersion not found in $file"
+            exit 1
+        }
+
+        $major = $match.Groups[1].Value
+        $minor = $match.Groups[2].Value
+        $patch = $match.Groups[3].Value
+        $build = [int]$match.Groups[4].Value + 1
+        $releaseVersion = "$major.$minor.$patch.$build"
+
+        $channelDigit = $build.ToString().Substring(0,1)
+        switch ($channelDigit) {
+            '1' { $assemblyPostfix = '-nightly' }
+            '2' { $assemblyPostfix = '-beta' }
+            '3' { $assemblyPostfix = '-rc' }
+            '9' { $assemblyPostfix = '' }
+            default {
+            Write-Error "Unknown channel digit: $channelDigit"
+            exit 1
+            }
+        }
         switch ($channelDigit) {
           '1' { $channelName = 'Nightlies' }
           '2' { $channelName = 'Betas' }
           '3' { $channelName = 'Betas' }
           '9' { $channelName = 'Releases' }
-          default {
+            default {
             Write-Error "Unknown channel digit: $channelDigit"
             exit 1
-          }
+            }
         }
 
+        # Replace all relevant lines
+        $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
+
+        Set-Content -Path $file -Value $content -Encoding UTF8
+
+        echo "✅ Bumped to version $releaseVersion"
+        echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
         echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
         echo "channel=$channelName" >> $env:GITHUB_OUTPUT
+        echo "version=$releaseVersion" >> $env:GITHUB_OUTPUT
+
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add $file
+        git commit -m "Bump version to $releaseVersion"
+        git push
+
+
+    - name: Show version
+      shell: pwsh
+      run: echo "✅ Release channel is $env:VERSION"
 
     - name: Show release channel
       shell: pwsh
@@ -159,22 +190,23 @@ jobs:
 
     - name: Create ZIP files
       run: |
+        $version = $env:VERSION
         $outputPath = "NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
-        Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_${{ github.event.inputs.version }}.zip"
-        Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_${{ github.event.inputs.version }}.zip"
+        Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_$version.zip"
+        Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_$version.zip"
 
     - name: Upload zipped installer
       uses: actions/upload-artifact@v4
       with:
         name: zipped-installer
-        path: "NINASetupBundle_${{ github.event.inputs.version }}.zip"
+        path: "NINASetupBundle_${{ needs.build.outputs.version }}.zip"
         if-no-files-found: error
 
     - name: Upload zipped symbols
       uses: actions/upload-artifact@v4
       with:
         name: zipped-symbols
-        path: "NINAPdb_x64_${{ github.event.inputs.version }}.zip"
+        path: "NINAPdb_x64_${{ needs.build.outputs.version }}.zip"
         if-no-files-found: error
 
     - name: Upload release notes
@@ -218,8 +250,8 @@ jobs:
       shell: pwsh
       run: |
         $releaseChannel = ${{ needs.build.outputs.release_channel }}
-        $version = "${{ github.event.inputs.version }}"
-        $zipName = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
+        $version = ${{ needs.build.outputs.version }}
+        $zipName = "NINASetupBundle_$version.zip"
         $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
         $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/$releaseChannel/$version/$zipName"
@@ -240,9 +272,10 @@ jobs:
     - name: Upload ZIP files to B2
       shell: pwsh
       run: |
+        $version = ${{ needs.build.outputs.version }}
         $releaseChannel = ${{ needs.build.outputs.release_channel }}
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
-          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/${{ github.event.inputs.version }}/$($_.Name)"
+          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/$version/$($_.Name)"
         }
     
     - name: Upload versioninfo artifact
