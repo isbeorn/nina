@@ -199,14 +199,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: zipped-installer
-        path: "NINASetupBundle_${{ needs.build.outputs.version }}.zip"
+        path: "NINASetupBundle_${{ env.VERSION }}.zip"
         if-no-files-found: error
 
     - name: Upload zipped symbols
       uses: actions/upload-artifact@v4
       with:
         name: zipped-symbols
-        path: "NINAPdb_x64_${{ needs.build.outputs.version }}.zip"
+        path: "NINAPdb_x64_${{ env.VERSION }}.zip"
         if-no-files-found: error
 
     - name: Upload release notes
