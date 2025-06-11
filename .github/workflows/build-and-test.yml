@@ -20,6 +20,9 @@ jobs:
         lfs: 'true'
         submodules: recursive
 
+    - name: Checking
+      run: echo 'hello stefan!'
+      
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v4
       with:
