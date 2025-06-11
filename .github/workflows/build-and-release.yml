@@ -176,8 +176,8 @@ jobs:
         $version = "${{ github.ref_name }}"
         $zipPath = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
-        $url = "https://f002.backblazeb2.com/file/${{ B2_RELEASE_BUCKET }}/Nightlies/$version/$zipPath"
-        $changelogUrl = "https://f002.backblazeb2.com/file/${{ B2_RELEASE_BUCKET }}/Nightlies/$version/RELEASE_NOTES.html"
+        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/$zipPath"
+        $changelogUrl = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/RELEASE_NOTES.html"
 
         $versionInfo = @{
             version       = $version
