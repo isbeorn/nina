@@ -14,7 +14,7 @@ jobs:
       contents: write
     outputs:
       version: ${{ steps.bump_version.outputs.version }}
-      channel: ${{ steps.bump_version.outputs.channel }}
+      channel: ${{ steps.bump_version.outputs.release_channel }}
 
     steps:
     - name: Checkout repository
@@ -79,7 +79,7 @@ jobs:
         echo "✅ Bumped to version $releaseVersion"
         echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
         echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
-        echo "channel=$channelName" >> $env:GITHUB_OUTPUT
+        echo "release_channel=$channelName" >> $env:GITHUB_OUTPUT
         echo "version=$releaseVersion" >> $env:GITHUB_OUTPUT
 
         git config user.name "GitHub Actions"
