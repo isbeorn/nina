@@ -179,10 +179,11 @@ jobs:
     - name: Generate versioninfo.json
       shell: pwsh
       run: |
-        $version = "${{ github.ref_name }}"
-        $zipPath = "artifact/NINASetupBundle_${{ github.event.inputs.version }}.zip"
+        $version = "${{ github.event.inputs.version }}"
+        $zipName = NINASetupBundle_${{ github.event.inputs.version }}.zip
+        $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
-        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/$zipPath"
+        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/$zipName"
         $changelogUrl = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/RELEASE_NOTES.html"
 
         $versionInfo = @{
