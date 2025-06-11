@@ -9,7 +9,7 @@ on:
         default: '3.2.0.0'
 
 env:
-  BUILD_CONFIG: SignedRelease
+  BUILD_CONFIG: Release
 
 jobs:
   build:
@@ -176,7 +176,7 @@ jobs:
       run: pip install --upgrade b2
 
     - name: Authorize with Backblaze B2
-      run: b2 authorize-account "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}"
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}"
 
     - name: Generate versioninfo.json
       shell: pwsh
