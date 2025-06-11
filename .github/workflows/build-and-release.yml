@@ -28,6 +28,17 @@ jobs:
         lfs: 'true'
         submodules: recursive
 
+    - name: Install B2 CLI
+      run: pip install --upgrade b2
+        
+    - name: Authorize with Backblaze B2
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}"
+
+    - name: Download Canon and Nikon DLLs from B2
+      run: |
+        b2 sync "b2://${{ secrets.B2_PRIVATE_BUCKET }}/Canon" "NINA/External/x64/Canon"
+        b2 sync "b2://${{ secrets.B2_PRIVATE_BUCKET }}/Nikon" "NINA/External/x64/Nikon"
+
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
@@ -129,7 +140,6 @@ jobs:
         path: |
           RELEASE_NOTES.html
 
-
   upload:
     name: Upload Setup to Backblaze B2
     runs-on: windows-latest
@@ -166,8 +176,8 @@ jobs:
         $version = "${{ github.ref_name }}"
         $zipPath = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
-        $url = "https://f002.backblazeb2.com/file/nina-misc/Nightlies/$version/$zipPath"
-        $changelogUrl = "https://f002.backblazeb2.com/file/nina-misc/Nightlies/$version/RELEASE_NOTES.html"
+        $url = "https://f002.backblazeb2.com/file/${{ B2_RELEASE_BUCKET }}/Nightlies/$version/$zipPath"
+        $changelogUrl = "https://f002.backblazeb2.com/file/${{ B2_RELEASE_BUCKET }}/Nightlies/$version/RELEASE_NOTES.html"
 
         $versionInfo = @{
             version       = $version
@@ -184,5 +194,5 @@ jobs:
     - name: Upload ZIP files to B2
       run: |
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
-          b2 upload-file "${{ secrets.B2_BUCKET }}" $_.FullName "Nightlies/${{ github.event.inputs.version }}/$($_.Name)"
+          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "Nightlies/${{ github.event.inputs.version }}/$($_.Name)"
         }
