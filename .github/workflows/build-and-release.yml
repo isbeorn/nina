@@ -204,7 +204,7 @@ jobs:
 
     - name: Create ZIP files
       run: |
-        $version = ${{ needs.versioning.outputs.version }}
+        $version = "${{ needs.versioning.outputs.version }}"
         $outputPath = "NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
         Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_$version.zip"
         Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_$version.zip"
