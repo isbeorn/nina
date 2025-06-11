@@ -13,6 +13,8 @@ env:
 
 jobs:
   build:
+    outputs:
+      release_channel: ${{ steps.setvar.outputs.channel }}
     name: Build and Prepare Setup
     runs-on: windows-latest
 
@@ -30,6 +32,40 @@ jobs:
       with:
         lfs: 'true'
         submodules: recursive
+
+    - name: Set RELEASE_CHANNEL based on version
+      id: setvar
+      shell: pwsh
+      run: |
+        $version = "${{ github.event.inputs.version }}"
+        Write-Host "Input version: $version"
+
+        # Extract the first digit of the fourth component
+        $parts = $version -split '\.'
+        if ($parts.Length -lt 4) {
+          Write-Error "Invalid version format: $version"
+          exit 1
+        }
+
+        $channelDigit = $parts[3].Substring(0,1)
+
+        switch ($channelDigit) {
+          '1' { $channelName = 'Nightlies' }
+          '2' { $channelName = 'Betas' }
+          '3' { $channelName = 'Betas' }
+          '9' { $channelName = 'Releases' }
+          default {
+            Write-Error "Unknown channel digit: $channelDigit"
+            exit 1
+          }
+        }
+
+        echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
+        echo "channel=$channelName" >> $env:GITHUB_OUTPUT
+
+    - name: Show release channel
+      shell: pwsh
+      run: echo "✅ Release channel is $env:RELEASE_CHANNEL"
 
     - name: Install B2 CLI
       run: pip install --upgrade b2
@@ -181,12 +217,13 @@ jobs:
     - name: Generate versioninfo.json
       shell: pwsh
       run: |
+        $releaseChannel = ${{ needs.build.outputs.release_channel }}
         $version = "${{ github.event.inputs.version }}"
         $zipName = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
-        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/$zipName"
-        $changelogUrl = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/RELEASE_NOTES.html"
+        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/$releaseChannel/$version/$zipName"
+        $changelogUrl = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/$releaseChannel/$version/RELEASE_NOTES.html"
 
         $versionInfo = @{
             version       = $version
@@ -201,9 +238,11 @@ jobs:
         $json | Set-Content -Path "artifact/versioninfo.json" -Encoding UTF8
     
     - name: Upload ZIP files to B2
+      shell: pwsh
       run: |
+        $releaseChannel = ${{ needs.build.outputs.release_channel }}
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
-          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "Nightlies/${{ github.event.inputs.version }}/$($_.Name)"
+          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/${{ github.event.inputs.version }}/$($_.Name)"
         }
     
     - name: Upload versioninfo artifact
@@ -213,9 +252,9 @@ jobs:
         path: |
           artifact/versioninfo.json
   
-  publish:
+  publish-nightly:
     name: Publish Nightly Release
-    needs: upload
+    needs: [build, upload]
     runs-on: ubuntu-latest
     environment:
       name: nightly-release
@@ -232,6 +271,55 @@ jobs:
         curl -T ./artifact/versioninfo.json \
           --user "$FTP_USER:$FTP_PW" \
           ftp://$FTP_HOST/Nightlies/versioninfo.json
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+
+  publish-beta:
+    name: Publish Beta Release
+    needs: [build, upload]
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.outputs.release_channel == 'Betas' || needs.build.outputs.release_channel == 'Releases' }}
+    environment:
+      name: beta-release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: versioninfo
+        path: ./artifact    
+  
+    - name: Push to beta release channel
+      run: |
+        curl -T ./artifact/versioninfo.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/Betas/versioninfo.json
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+        
+  publish-release:
+    name: Publish Full Release
+    needs: [build, upload]
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.outputs.release_channel == 'Releases' }}
+    environment:
+      name: release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: versioninfo
+        path: ./artifact    
+    - name: Push to full release channel
+      run: |
+        curl -T ./artifact/versioninfo.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/Releases/versioninfo.json
       env:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
