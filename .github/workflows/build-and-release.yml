@@ -28,8 +28,6 @@ jobs:
         lfs: 'true'
         submodules: recursive
 
-    # TODO - Fetch private external sources 
-
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
@@ -165,7 +163,7 @@ jobs:
     - name: Generate versioninfo.json
       shell: pwsh
       run: |
-        $version = "${{ github.event.inputs.version }}"
+        $version = "${{ github.ref_name }}"
         $zipPath = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
         $url = "https://f002.backblazeb2.com/file/nina-misc/Nightlies/$version/$zipPath"
