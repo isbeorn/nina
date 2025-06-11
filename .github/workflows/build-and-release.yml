@@ -229,9 +229,9 @@ jobs:
     
     - name: Push to nightly release channel
       run: |
-        curl -T ./artifact/version.json \
+        curl -T ./artifact/versioninfo.json \
           --user "$FTP_USER:$FTP_PW" \
-          ftp://$FTP_HOST/Nightlies/version.txt
+          ftp://$FTP_HOST/Nightlies/versioninfo.json
       env:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
