@@ -39,7 +39,7 @@ jobs:
     - name: Install MkDocs and plugins
       run: |
         python -m pip install --upgrade pip
-        pip install mkdocs mkdocs-material mkdocs-with-pdf
+        pip install mkdocs mkdocs-material
 
     - name: Install WiX Toolset 4 CLI and extensions
       run: |
@@ -62,7 +62,7 @@ jobs:
 
     - name: Build MkDocs documentation
       run: |
-        mkdocs build -f NINA.Docs\mkdocs.yml -c
+        mkdocs build -f NINA.Docs\mkdocs-nopdf.yml -c
 
     - name: Copy MkDocs output to setup target dir
       shell: cmd
