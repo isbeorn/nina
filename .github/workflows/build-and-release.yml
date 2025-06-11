@@ -7,19 +7,18 @@ env:
   BUILD_CONFIG: Release
 
 jobs:
-  build:
-    outputs:
-      release_channel: ${{ steps.bump_version.outputs.channel }}
-      version: ${{ steps.bump_version.outputs.version }}
-    name: Build and Prepare Setup
+  versioning:
+    name: Bump Version
     runs-on: windows-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.bump_version.outputs.version }}
+      channel: ${{ steps.bump_version.outputs.channel }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        lfs: 'true'
-        submodules: recursive
 
     - name: Bump and export version in CommonAssemblyInfo.cs
       id: bump_version
@@ -92,17 +91,32 @@ jobs:
 
     - name: Show version
       shell: pwsh
-      run: echo "✅ Release channel is $env:VERSION"
+      run: echo "✅ Version is $env:VERSION"
 
     - name: Show release channel
       shell: pwsh
       run: echo "✅ Release channel is $env:RELEASE_CHANNEL"
 
+  build:
+    name: Build and Prepare Setup
+    needs: versioning
+    runs-on: windows-latest
+    environment:
+      name: build-release
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        lfs: 'true'
+        submodules: recursive
+
     - name: Install B2 CLI
       run: pip install --upgrade b2
         
     - name: Authorize with Backblaze B2
-      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}"
+      shell: pwsh
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}" > $null
 
     - name: Download Canon and Nikon DLLs from B2
       run: |
@@ -190,7 +204,7 @@ jobs:
 
     - name: Create ZIP files
       run: |
-        $version = $env:VERSION
+        $version = ${{ needs.versioning.outputs.version }}
         $outputPath = "NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
         Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_$version.zip"
         Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_$version.zip"
@@ -199,14 +213,16 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: zipped-installer
-        path: "NINASetupBundle_${{ env.VERSION }}.zip"
+        path: "NINASetupBundle_${{ needs.versioning.outputs.version }}.zip"
+        retention-days: 1
         if-no-files-found: error
 
     - name: Upload zipped symbols
       uses: actions/upload-artifact@v4
       with:
         name: zipped-symbols
-        path: "NINAPdb_x64_${{ env.VERSION }}.zip"
+        path: "NINAPdb_x64_${{ needs.versioning.outputs.version }}.zip"
+        retention-days: 1
         if-no-files-found: error
 
     - name: Upload release notes
@@ -215,12 +231,15 @@ jobs:
         name: release-notes
         path: |
           RELEASE_NOTES.html
+        retention-days: 1
 
   upload:
     name: Upload Setup to Backblaze B2
-    runs-on: windows-latest
-    needs: build
-    
+    runs-on: windows-latest    
+    environment:
+      name: build-upload
+    needs: [versioning, build]    
+
     steps:
     - name: Download zipped installer
       uses: actions/download-artifact@v4
@@ -244,13 +263,14 @@ jobs:
       run: pip install --upgrade b2
 
     - name: Authorize with Backblaze B2
-      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}"
+      shell: pwsh
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}" > $null
 
     - name: Generate versioninfo.json
       shell: pwsh
       run: |
-        $releaseChannel = "${{ needs.build.outputs.release_channel }}"
-        $version = "${{ needs.build.outputs.version }}"
+        $releaseChannel = "${{ needs.versioning.outputs.release_channel }}"
+        $version = "${{ needs.versioning.outputs.version }}"
         $zipName = "NINASetupBundle_$version.zip"
         $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
@@ -272,8 +292,8 @@ jobs:
     - name: Upload ZIP files to B2
       shell: pwsh
       run: |
-        $version = "${{ needs.build.outputs.version }}"
-        $releaseChannel = "${{ needs.build.outputs.release_channel }}"
+        $version = "${{ needs.versioning.outputs.version }}"
+        $releaseChannel = "${{ needs.versioning.outputs.release_channel }}"
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
           b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/$version/$($_.Name)"
         }
@@ -281,13 +301,14 @@ jobs:
     - name: Upload versioninfo artifact
       uses: actions/upload-artifact@v4
       with:
-        name: versioninfo
+        name: version-info
         path: |
           artifact/versioninfo.json
+        retention-days: 1
   
   publish-nightly:
     name: Publish Nightly Release
-    needs: [build, upload]
+    needs: [versioning, build, upload]
     runs-on: ubuntu-latest
     environment:
       name: nightly-release
@@ -296,14 +317,14 @@ jobs:
     - name: Download versioninfo artifact
       uses: actions/download-artifact@v4
       with:
-        name: versioninfo
+        name: version-info
         path: ./artifact    
     
     - name: Push to nightly release channel
       run: |
         curl -T ./artifact/versioninfo.json \
           --user "$FTP_USER:$FTP_PW" \
-          ftp://$FTP_HOST/Nightlies/versioninfo.json
+          ftp://$FTP_HOST/versioninfo.json
       env:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
@@ -311,9 +332,9 @@ jobs:
 
   publish-beta:
     name: Publish Beta Release
-    needs: [build, upload]
+    needs: [versioning, build, upload]
     runs-on: ubuntu-latest
-    if: ${{ needs.build.outputs.release_channel == 'Betas' || needs.build.outputs.release_channel == 'Releases' }}
+    if: ${{ needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases' }}
     environment:
       name: beta-release
     
@@ -321,14 +342,14 @@ jobs:
     - name: Download versioninfo artifact
       uses: actions/download-artifact@v4
       with:
-        name: versioninfo
+        name: version-info
         path: ./artifact    
   
     - name: Push to beta release channel
       run: |
         curl -T ./artifact/versioninfo.json \
           --user "$FTP_USER:$FTP_PW" \
-          ftp://$FTP_HOST/Betas/versioninfo.json
+          ftp://$FTP_HOST/versioninfo.json
       env:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
@@ -336,9 +357,9 @@ jobs:
         
   publish-release:
     name: Publish Full Release
-    needs: [build, upload]
+    needs: [versioning, build, upload]
     runs-on: ubuntu-latest
-    if: ${{ needs.build.outputs.release_channel == 'Releases' }}
+    if: ${{ needs.versioning.outputs.release_channel == 'Releases' }}
     environment:
       name: release
     
@@ -346,13 +367,13 @@ jobs:
     - name: Download versioninfo artifact
       uses: actions/download-artifact@v4
       with:
-        name: versioninfo
+        name: version-info
         path: ./artifact    
     - name: Push to full release channel
       run: |
         curl -T ./artifact/versioninfo.json \
           --user "$FTP_USER:$FTP_PW" \
-          ftp://$FTP_HOST/Releases/versioninfo.json
+          ftp://$FTP_HOST/versioninfo.json
       env:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
