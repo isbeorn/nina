@@ -178,7 +178,7 @@ jobs:
         xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
 
     - name: Build WiX Setup Bundle
-      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }}
+      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }} /p:Platform=x64
 
     - name: Copy .pdb files to setup output folder
       run: |
