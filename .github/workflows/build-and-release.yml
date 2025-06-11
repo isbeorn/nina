@@ -249,8 +249,8 @@ jobs:
     - name: Generate versioninfo.json
       shell: pwsh
       run: |
-        $releaseChannel = ${{ needs.build.outputs.release_channel }}
-        $version = ${{ needs.build.outputs.version }}
+        $releaseChannel = "${{ needs.build.outputs.release_channel }}"
+        $version = "${{ needs.build.outputs.version }}"
         $zipName = "NINASetupBundle_$version.zip"
         $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
@@ -272,8 +272,8 @@ jobs:
     - name: Upload ZIP files to B2
       shell: pwsh
       run: |
-        $version = ${{ needs.build.outputs.version }}
-        $releaseChannel = ${{ needs.build.outputs.release_channel }}
+        $version = "${{ needs.build.outputs.version }}"
+        $releaseChannel = "${{ needs.build.outputs.release_channel }}"
         Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
           b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/$version/$($_.Name)"
         }
