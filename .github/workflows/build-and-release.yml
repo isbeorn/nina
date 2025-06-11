@@ -184,7 +184,7 @@ jobs:
       run: |
         $solutionDir = "$(Resolve-Path .)"
         $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64"
-        $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
+        $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
 
         Remove-Item "$solutionDir\RELEASE_NOTES.rtf" -Force -ErrorAction SilentlyContinue
 
@@ -211,7 +211,7 @@ jobs:
     - name: Create ZIP files
       run: |
         $version = "${{ needs.versioning.outputs.version }}"
-        $outputPath = "NINA.SetupBundle\bin\${{ env.BUILD_CONFIG }}"
+        $outputPath = "NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
         Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_$version.zip"
         Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_$version.zip"
 
