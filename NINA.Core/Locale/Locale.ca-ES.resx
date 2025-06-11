@@ -7173,9 +7173,9 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
   </data>
   <data name="LblCivilDusk" xml:space="preserve">
-    <value>Civil dusk</value>
+    <value>Vespre civil</value>
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
-    <value>Civil dawn</value>
+    <value>Alba civil</value>
   </data>
 </root>
