@@ -1782,7 +1782,7 @@
     </ComponentGroup>
   </Fragment>
 
-  <Fragment>
+  <!--<Fragment>
     <ComponentGroup Id="External_x64_Nikon_Type0001_files" Directory="External_x64_Nikon_Type0001">
       <Component Id="External_x64_Nikon_Type0001_NkdPTP.dll" Guid="09f835d2-4b84-4914-97c5-dbee8ef042b4" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0001_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0001\NkdPTP.dll" />
@@ -2130,7 +2130,7 @@
       </Component>
     </ComponentGroup>
   </Fragment>
-  <Fragment>
+  <Fragment>-->
     <ComponentGroup Id="External_x64_Altair_files" Directory="External_x64_Altair">
       <Component Id="External_x64_Altair_altaircam.dll" Guid="54f75954-da94-4c89-86e8-4a8d4e9229c7" Bitness="$(var.Win64)">
         <File Id="External_x64_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_ProjectDir)External\x64\Altair\altaircam.dll" />
