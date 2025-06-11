@@ -21,7 +21,7 @@
 	<?endif?>
 	<Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="!(bind.packageVersion.NINASetup)" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
 		<BootstrapperApplication>
-			<bal:WixStandardBootstrapperApplication ThemeFile="$(var.ProjectDir)\RtfTheme.xml" LogoFile="$(var.ProjectDir)\ninasplash-small.png" LicenseFile="$(var.SolutionDir)\RELEASE_NOTES.rtf" LicenseUrl="http://mozilla.org/MPL/2.0/" ShowVersion="yes" Theme="rtfLicense" />
+			<bal:WixStandardBootstrapperApplication ThemeFile="$(var.ProjectDir)\RtfTheme.xml" LogoFile="$(var.ProjectDir)\ninasplash-small.png" LicenseFile="..\RELEASE_NOTES.rtf" LicenseUrl="http://mozilla.org/MPL/2.0/" ShowVersion="yes" Theme="rtfLicense" />
 		</BootstrapperApplication>
 		<Variable Name="InstallFolder" Type="formatted" Value="$(var.DefaultInstallDir)" />
 		<util:RegistrySearch Id="PreviousInstallFolderSearch" Root="HKLM" Key="SOFTWARE\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Value="InstallFolder" Variable="PreviousInstallFolder" Bitness="$(var.Win64)" />
