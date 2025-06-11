@@ -71,6 +71,12 @@ jobs:
     - name: Build NINA project
       run: dotnet build NINA\NINA.csproj -c Release -r win-x64
 
+    - name: Copy Canon and Nikon DLLs to build output
+      shell: cmd
+      run: |
+        xcopy NINA\External\Canon NINA\bin\Release\net8.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
+        xcopy NINA\External\Nikon NINA\bin\Release\net8.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
+
     - name: Build MkDocs documentation
       run: |
         mkdocs build -f NINA.Docs\mkdocs-nopdf.yml -c
