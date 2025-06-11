@@ -9,8 +9,8 @@ env:
 jobs:
   build:
     outputs:
-      release_channel: ${{ steps.setvar.outputs.channel }}
-      version: ${{ steps.setvar.outputs.version }}
+      release_channel: ${{ steps.bump_version.outputs.channel }}
+      version: ${{ steps.bump_version.outputs.version }}
     name: Build and Prepare Setup
     runs-on: windows-latest
 
