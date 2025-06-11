@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    name: Build and Prepare Setup on Windows
+    name: Build and Prepare Setup
     runs-on: windows-latest
 
     steps:
@@ -182,7 +182,7 @@ jobs:
       shell: pwsh
       run: |
         $version = "${{ github.event.inputs.version }}"
-        $zipName = NINASetupBundle_${{ github.event.inputs.version }}.zip
+        $zipName = "NINASetupBundle_${{ github.event.inputs.version }}.zip"
         $zipPath = "artifact/$zipName"
         $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
         $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/Nightlies/$version/$zipName"
@@ -214,6 +214,7 @@ jobs:
           artifact/versioninfo.json
   
   publish:
+    name: Publish Nightly Release
     needs: upload
     runs-on: ubuntu-latest
     environment:
