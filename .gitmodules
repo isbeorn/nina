@@ -5,3 +5,4 @@
 [submodule "NINA.Docs"]
 	path = NINA.Docs
 	url = https://github.com/isbeorn/nina.docs.git
+	branch = develop
