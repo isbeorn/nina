@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
+using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -72,14 +73,18 @@ namespace NINA.WPF.Base.View {
         private async void ToggleButtonPopup_Checked(object sender, RoutedEventArgs e) {
             PopupControl.IsOpen = true;            
             PopupBrowser.webView.Focus();
+
+            Logger.Trace($"Opening Browser Popup at {Source}");
             
             if(!firstTime) {
                 // Ensure to navigate back to the original url in case the user has navigated to a different place
                 await PopupBrowser.webView.EnsureCoreWebView2Async();
                 PopupBrowser.webView.CoreWebView2.Navigate(Source.ToString());
                 PopupBrowser.webView.NavigationCompleted += WebView_NavigationCompleted;
+            } else {
+                await PopupBrowser.InitializeAndSetSource();
             }
-            firstTime = false;
+                firstTime = false;
         }
 
         private void ToggleButtonPopup_Unchecked(object sender, RoutedEventArgs e) {
