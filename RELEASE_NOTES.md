@@ -13,6 +13,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - FITS keywords with boolean/logical values are now properly rendered as FITS logicals instead of as strings when using CFITSIO
 - Imaging is now possible during slewing to a target, but not centering, from the framing wizard
 - PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
+- Ascom device instances that fail to connect are now properly disposed
 
 ### **Device Management**
 - **Device Chooser Enhancements**  
@@ -55,6 +56,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
 - **Time sources**
     - Civil dawn and dusk can now be selected for time based conditions
+- **Trained Dark Exposure**
+    - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  
