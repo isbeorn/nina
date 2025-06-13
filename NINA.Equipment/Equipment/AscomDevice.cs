@@ -283,6 +283,9 @@ namespace NINA.Equipment.Equipment {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowExternalError(string.Format(Loc.Instance["LblUnableToConnect"], Name, ex.Message), Loc.Instance["LblASCOMDriverError"]);
+                    try {
+                        Disconnect();
+                    } catch { }
                 }
                 return Connected;
             });
@@ -347,27 +350,33 @@ namespace NINA.Equipment.Equipment {
         }
 
         public void Disconnect() {
-            Logger.Info($"Disconnecting from {Id} {Name}");
-            Logger.Trace($"{Name} - Calling PreDisconnect");
-            PreDisconnect();
             try {
-                Connected = false;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-            }
-            lock (lockObj) {
-                connectedExpectation = false;
-                InvalidatePropertyCache();
-            }
+                Logger.Info($"Disconnecting from {Id} {Name}");
+                Logger.Trace($"{Name} - Calling PreDisconnect");
+                PreDisconnect();
+                try {
+                    Connected = false;
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+                lock (lockObj) {
+                    connectedExpectation = false;
+                    InvalidatePropertyCache();
+                }
 
-            Logger.Trace($"{Name} - Calling PostDisconnect");
-            PostDisconnect();
-            Dispose();
-            if(!IsAlpacaDevice()) {
-                name = null;
-                DisplayName = ascomRegistrationName;
-            }            
-            RaiseAllPropertiesChanged();
+                Logger.Trace($"{Name} - Calling PostDisconnect");
+                PostDisconnect();
+                if (!IsAlpacaDevice()) {
+                    name = null;
+                    DisplayName = ascomRegistrationName;
+                }
+                RaiseAllPropertiesChanged();
+            } finally {
+                try {
+                    Dispose();
+                } catch { }
+                
+            }
         }
 
         private void WaitForConnectingFlag() {
