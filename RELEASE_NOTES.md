@@ -58,6 +58,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Civil dawn and dusk can now be selected for time based conditions
 - **Trained Dark Exposure**
     - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
+- **Legacy Sequencer Multiple File Load**
+    - Fix issue where saving sequences after multi-file load overwrote only one XML
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  

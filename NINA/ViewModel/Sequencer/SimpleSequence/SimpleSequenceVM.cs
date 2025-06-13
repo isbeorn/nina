@@ -605,7 +605,7 @@ namespace NINA.ViewModel {
                     );
                     if (l != null) {
                         var transform = MigrateFromCaptureSequenceList(l);
-                        transform.FileName = dialog.FileName;
+                        transform.FileName = fileName;
                         this.Targets.Add(transform);
 
                         // set the last one loaded as the current sequence
