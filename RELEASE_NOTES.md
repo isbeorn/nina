@@ -24,6 +24,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added native support for the new SVBony camera series 
 - **ASCOM Device Name Query**  
   - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
+- **ASCOM Device State**
+    - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  

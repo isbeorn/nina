@@ -102,6 +102,11 @@ namespace NINA.Equipment.Equipment {
             }
         }
 
+        public bool HasDeviceStates { get; private set; } = false;
+        private List<StateValue> lastDeviceState;
+        private DateTimeOffset lastDeviceStatePoll;
+        private HashSet<string> deviceStateKeys = new HashSet<string>();
+
         private bool connectedExpectation;
 
         private void DisconnectOnConnectionError() {
@@ -267,6 +272,20 @@ namespace NINA.Equipment.Equipment {
                     if (Connected) {
                         Logger.Trace($"{Name} - Calling PostConnect");
 
+                        try {
+                            var state = device.DeviceState;
+                            if (state?.Count > 0) {
+                                HasDeviceStates = true;
+                            } else {
+                                HasDeviceStates = false;
+                            }
+                            lastDeviceState = state;
+                            deviceStateKeys = new HashSet<string>(lastDeviceState.Select(x => x.Name.ToLower()));
+                            lastDeviceStatePoll = DateTimeOffset.UtcNow;
+                        } catch {
+                            HasDeviceStates = false;
+                        }
+                        
                         if (name == null && !IsAlpacaDevice()) {
                             try {
                                 // Update name of ASCOM after connection
@@ -408,11 +427,36 @@ namespace NINA.Equipment.Equipment {
         /// <param name="errorValue">The value to be returned when rethrow and useLastKnownValueOnError are both set to false and an error occurs during reading of the property</param>
         /// <returns></returns>
         protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null, bool rethrow = false, bool useLastKnownValueOnError = true, PropT errorValue = default) {
-            if (device != null) {
-                var type = device.GetType();
+            if (device == null) { return defaultValue; }
+
+            if (cacheInterval == null) { cacheInterval = TimeSpan.FromMilliseconds(100); }
+            var interval = TimeSpan.FromMilliseconds(200);
+            var type = device.GetType();
+
+            if (HasDeviceStates && deviceStateKeys.Contains(propertyName.ToLower())) {
+                if ((DateTimeOffset.UtcNow - lastDeviceStatePoll) > cacheInterval) {
+                    for (int i = 0; i < 3; i++) {
+                        try {
+                            if (i > 0) {
+                                Thread.Sleep(interval);
+                                Logger.Info($"Retrying to GET {type.Name}.{propertyName} - Attempt {i + 1} / 3");
+                            }
+                            Logger.Trace($"GET {type.Name}.DeviceState");
+                            lastDeviceState = device.DeviceState;
+                            lastDeviceStatePoll = DateTimeOffset.UtcNow;
+                            break;
+                        } catch (Exception ex) {
+                            Logger.Error($"An unexpected exception occurred during GET of DeviceState: ", ex);
+                            if (rethrow) { throw; }
+                        }
+                    }
+                }
+                var value = (PropT)lastDeviceState.FirstOrDefault(x => x.Name == propertyName)?.Value ?? defaultValue;
+                Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
+                return value;
+            } else {
 
                 if (!propertyGETMemory.TryGetValue(propertyName, out var memory)) {
-                    if (cacheInterval == null) { cacheInterval = TimeSpan.FromMilliseconds(100); }
                     memory = new PropertyMemory(type.GetProperty(propertyName), cacheInterval.Value);
                     lock (propertyGETMemory) {
                         propertyGETMemory[propertyName] = memory;
@@ -421,7 +465,6 @@ namespace NINA.Equipment.Equipment {
 
                 // Retry three times in normal conditions - disable retry when consecutive errors exceed threshold as it will not likely succeed on a retry anyways
                 var retries = memory.ConsecutiveErrors >= memory.ConsecutiveErrorThreshold ? 1 : 3;
-                var interval = TimeSpan.FromMilliseconds(200);
 
                 for (int i = 0; i < retries; i++) {
                     try {
@@ -483,7 +526,6 @@ namespace NINA.Equipment.Equipment {
                 }
                 return val;
             }
-            return defaultValue;
         }
 
         protected void InvalidatePropertyCache() {
