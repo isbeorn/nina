@@ -333,6 +333,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.CameraSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.CameraSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -438,6 +439,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
+                            profileService.ActiveProfile.CameraSettings.LastDeviceName = this.Cam.DisplayName;
                             if (Cam.PixelSizeX > 0) {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }

@@ -30,6 +30,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            lastDeviceName = string.Empty;
             useFilterWheelOffsets = false;
             autoFocusStepSize = 50;
             autoFocusInitialOffsetSteps = 4;
@@ -60,6 +61,19 @@ namespace NINA.Profile {
             set {
                 if (id != value) {
                     id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
                     RaisePropertyChanged();
                 }
             }

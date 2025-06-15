@@ -343,7 +343,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 devices.Add(new FileCamera(profileService, telescopeMediator, imageDataFactory, exposureDataFactory));
                 devices.Add(new SimulatorCamera(profileService, telescopeMediator, exposureDataFactory, imageDataFactory));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.CameraSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.CameraSettings.Id, profileService.ActiveProfile.CameraSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

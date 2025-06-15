@@ -21,6 +21,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IFlatDeviceSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         string Name { get; set; }
         string PortName { get; set; }
         int SettleTime { get; set; }

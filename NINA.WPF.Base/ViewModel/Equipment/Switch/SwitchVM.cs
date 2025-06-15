@@ -197,6 +197,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SwitchSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.SwitchSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -258,6 +259,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
+                            profileService.ActiveProfile.SwitchSettings.LastDeviceName = switchHub.DisplayName;
                             Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);

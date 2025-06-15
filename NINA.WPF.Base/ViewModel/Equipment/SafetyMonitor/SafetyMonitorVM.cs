@@ -125,6 +125,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SafetyMonitorSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -168,6 +169,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
+                            profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = sm.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Safety Monitor. Id: {sm.Id} Name: {sm.Name} DisplayName: {sm.DisplayName} Driver Version: {sm.DriverVersion}");

@@ -372,6 +372,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.TelescopeSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -519,6 +520,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
+                            profileService.ActiveProfile.TelescopeSettings.LastDeviceName = Telescope.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected mount. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");

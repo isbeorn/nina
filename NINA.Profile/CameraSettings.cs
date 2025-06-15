@@ -31,6 +31,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            lastDeviceName = "";
             pixelSize = 3.8;
             bulbMode = CameraBulbModeEnum.NATIVE;
             serialPort = "COM1";
@@ -89,6 +90,19 @@ namespace NINA.Profile {
             set {
                 if (id != value) {
                     id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
                     RaisePropertyChanged();
                 }
             }

@@ -184,6 +184,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 if (device == null) return false;
                 if (device.Id == "No_Device") {
                     profileService.ActiveProfile.FlatDeviceSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -234,6 +235,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         }
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;
+                        profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName = newDevice.DisplayName;
 
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         Logger.Info(

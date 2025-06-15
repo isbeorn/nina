@@ -22,6 +22,7 @@ namespace NINA.Profile.Interfaces {
         double FocalLength { get; set; }
         double FocalRatio { get; set; }
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         int SettleTime { get; set; }
         string SnapPortStart { get; set; }
         string SnapPortStop { get; set; }

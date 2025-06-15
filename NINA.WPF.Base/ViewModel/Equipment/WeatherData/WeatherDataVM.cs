@@ -88,6 +88,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.WeatherDataSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -143,6 +144,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
+                            profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = WeatherData.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} DisplayName: {weatherdev.DisplayName} Driver Version: {weatherdev.DriverVersion}");

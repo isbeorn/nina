@@ -69,7 +69,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                     Logger.Error(ex);
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.DomeSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.DomeSettings.Id, profileService.ActiveProfile.DomeSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

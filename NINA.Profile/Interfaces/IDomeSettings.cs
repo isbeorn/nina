@@ -18,6 +18,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IDomeSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         double ScopePositionEastWest_mm { get; set; }
         double ScopePositionNorthSouth_mm { get; set; }
         double ScopePositionUpDown_mm { get; set; }

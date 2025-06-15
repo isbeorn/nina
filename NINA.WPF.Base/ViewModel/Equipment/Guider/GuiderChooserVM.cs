@@ -79,7 +79,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                     }
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.GuiderSettings.GuiderName);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.GuiderSettings.GuiderName, profileService.ActiveProfile.GuiderSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

@@ -345,6 +345,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.RotatorSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.RotatorSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -397,6 +398,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                             TargetPosition = Rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = Rotator.Id;
+                            profileService.ActiveProfile.RotatorSettings.LastDeviceName = Rotator.DisplayName;
                             profileService.ActiveProfile.RotatorSettings.Reverse2 = this.Rotator.Reverse;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);

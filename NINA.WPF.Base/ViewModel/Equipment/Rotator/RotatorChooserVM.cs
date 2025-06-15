@@ -72,7 +72,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                 devices.Add(new ManualRotator(profileService));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.RotatorSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.RotatorSettings.Id, profileService.ActiveProfile.RotatorSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

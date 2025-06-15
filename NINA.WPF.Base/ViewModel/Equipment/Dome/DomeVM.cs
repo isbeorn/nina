@@ -134,6 +134,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.DomeSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.DomeSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -191,6 +192,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.DomeSettings.Id = Dome.Id;
+                            profileService.ActiveProfile.DomeSettings.LastDeviceName = Dome.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Dome. Id: {Dome.Id} Name: {Dome.Name} DisplayName: {Dome.DisplayName} Driver Version: {Dome.DriverVersion}");

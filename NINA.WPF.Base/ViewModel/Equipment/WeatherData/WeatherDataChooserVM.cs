@@ -76,7 +76,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 devices.Add(new WeatherUnderground(this.profileService));
                 devices.Add(new OpenMeteo(this.profileService));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.WeatherDataSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.WeatherDataSettings.Id, profileService.ActiveProfile.WeatherDataSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();
