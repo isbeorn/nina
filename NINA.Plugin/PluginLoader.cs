@@ -50,6 +50,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Trinet.Core.IO.Ntfs;
@@ -176,7 +177,7 @@ namespace NINA.Plugin {
                         } catch (Exception ex) {
                             Logger.Error("Failed to deploy plugin file to destination", ex);
                         }
-                    }                    
+                    }
                 } catch (Exception ex) {
                     Logger.Error("Pluging deployment from staging failed", ex);
                 } finally {
@@ -187,9 +188,9 @@ namespace NINA.Plugin {
                     }
                     try {
                         Directory.Delete(Constants.BaseStagingFolder, true);
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         Logger.Error("Deleting base staging folder failed", ex);
-                    }                    
+                    }
                 }
             }
         }
@@ -218,111 +219,120 @@ namespace NINA.Plugin {
             }
         }
 
-        public Task Load() {
-            return Task.Run(() => {
-                lock (lockobj) {
-                    if (!initialized) {
-                        try {
-                            Stopwatch sw = Stopwatch.StartNew();
+        public async Task Load() {
 
-                            //Check for pending plugin updates and deploy them
-                            CleanupEmptyFolders();
-                            DeployFromStaging();
-                            DeleteFromDeletion();
+            if (initialized) {
+                return;
+            }
+            await semaphore.WaitAsync();
 
-                            Items = new List<ISequenceItem>();
-                            Conditions = new List<ISequenceCondition>();
-                            Triggers = new List<ISequenceTrigger>();
-                            Container = new List<ISequenceContainer>();
-                            DockableVMs = new List<IDockableVM>();
-                            PluggableBehaviors = new List<IPluggableBehavior>();
-                            DeviceProviders = new List<IEquipmentProvider>();
-                            Plugins = new Dictionary<IPluginManifest, bool>();
+            try {
+                if (initialized) {
+                    return;
+                }
 
-                            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+                try {
+                    Stopwatch sw = Stopwatch.StartNew();
 
-                            /* Compose the core catalog */
-                            var types = GetCoreSequencerTypes();
-                            var sdkTypes = GetCoreEquipmentSDKTypes();
-                            var coreCatalog = new TypeCatalog(types.Concat(sdkTypes));
+                    //Check for pending plugin updates and deploy them
+                    CleanupEmptyFolders();
+                    DeployFromStaging();
+                    DeleteFromDeletion();
 
-                            Compose(coreCatalog, string.Empty);
+                    Items = new List<ISequenceItem>();
+                    Conditions = new List<ISequenceCondition>();
+                    Triggers = new List<ISequenceTrigger>();
+                    Container = new List<ISequenceContainer>();
+                    DockableVMs = new List<IDockableVM>();
+                    PluggableBehaviors = new List<IPluggableBehavior>();
+                    DeviceProviders = new List<IEquipmentProvider>();
+                    Plugins = new Dictionary<IPluginManifest, bool>();
 
-                            /* Compose the plugin catalog */
+                    AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-                            var files = new List<string>();
+                    /* Compose the core catalog */
+                    var types = GetCoreSequencerTypes();
+                    var sdkTypes = GetCoreEquipmentSDKTypes();
+                    var coreCatalog = new TypeCatalog(types.Concat(sdkTypes));
 
+                    Compose(coreCatalog, string.Empty);
 
-                            var baseUserExtensionsDirectory = new DirectoryInfo(Constants.BaseUserExtensionsFolder);
-                            var userExtensionsDirectory = new DirectoryInfo(Constants.UserExtensionsFolder);
+                    /* Compose the plugin catalog */
 
-
-                            if(baseUserExtensionsDirectory.Exists) {
-                                if (!userExtensionsDirectory.Exists) {
-                                    // Search for an existing directory of a previous version and copy files over if they exist
-                                    var maxDirectoryVersion = baseUserExtensionsDirectory.GetDirectories()
-                                        .Where(dir => { 
-                                            if (Version.TryParse(dir.Name, out var v)) { if(v < new Version(Constants.ApplicationVersionWithoutRevision)) return true; } 
-                                            return false; })
-                                        .Max(x => new Version(x.Name));
+                    var files = new List<string>();
 
 
-                                    if(maxDirectoryVersion == null) {
-                                        // An upgrade from 2.x to current will move all existing plugins into the first version specific folder
+                    var baseUserExtensionsDirectory = new DirectoryInfo(Constants.BaseUserExtensionsFolder);
+                    var userExtensionsDirectory = new DirectoryInfo(Constants.UserExtensionsFolder);
 
-                                        var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName));
 
-                                        // To prevent recursion of the folder we create we copy existing plugins to a temp folder in staging and then copy those into the destination folder        
-                                        var tempFolderString = Path.Combine(Constants.BaseStagingFolder, "__TEMP__");
-                                        Logger.Info($"Creating Directory {tempFolderString}");
-                                        var tempFolder = Directory.CreateDirectory(tempFolderString);
-                                        Logger.Info($"Copying Directory from {sourceFolder} to {tempFolder}");
-                                        CoreUtil.CopyDirectory(sourceFolder, tempFolder);
+                    if (baseUserExtensionsDirectory.Exists) {
+                        if (!userExtensionsDirectory.Exists) {
+                            // Search for an existing directory of a previous version and copy files over if they exist
+                            var maxDirectoryVersion = baseUserExtensionsDirectory.GetDirectories()
+                                .Where(dir => {
+                                    if (Version.TryParse(dir.Name, out var v)) { if (v < new Version(Constants.ApplicationVersionWithoutRevision)) return true; }
+                                    return false;
+                                })
+                                .Max(x => new Version(x.Name));
 
-                                        // User Extensions do not exist for current Version - Create directory
-                                        Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
-                                        var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
 
-                                        Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
-                                        CoreUtil.CopyDirectory(tempFolder, destinationFolder);
+                            if (maxDirectoryVersion == null) {
+                                // An upgrade from 2.x to current will move all existing plugins into the first version specific folder
 
-                                        Logger.Info($"Deleting {tempFolder}");
-                                        Directory.Delete(tempFolder.FullName, true);                                        
-                                    } else if (maxDirectoryVersion < new Version(Constants.ApplicationVersionWithoutRevision)) {
-                                        // An upgrade from a versioned folder to a higher version folder
-                                        var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName, maxDirectoryVersion.ToString()));
+                                var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName));
 
-                                        // User Extensions do not exist for current Version - Create directory
-                                        Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
-                                        var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
+                                // To prevent recursion of the folder we create we copy existing plugins to a temp folder in staging and then copy those into the destination folder        
+                                var tempFolderString = Path.Combine(Constants.BaseStagingFolder, "__TEMP__");
+                                Logger.Info($"Creating Directory {tempFolderString}");
+                                var tempFolder = Directory.CreateDirectory(tempFolderString);
+                                Logger.Info($"Copying Directory from {sourceFolder} to {tempFolder}");
+                                CoreUtil.CopyDirectory(sourceFolder, tempFolder);
 
-                                        Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
-                                        CoreUtil.CopyDirectory(sourceFolder, destinationFolder);
-                                    }
-                                }
+                                // User Extensions do not exist for current Version - Create directory
+                                Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
+                                var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
 
-                                // Enumerate only 1 level deep, where we'd expect plugin dlls to be in the root of the plugin folder
-                                files.AddRange(userExtensionsDirectory.GetFiles("*.dll").Select(fi => fi.FullName));
-                                foreach (var subDirectory in userExtensionsDirectory.GetDirectories()) {
-                                    files.AddRange(subDirectory.GetFiles("*.dll").Select(fi => fi.FullName));
-                                }
+                                Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
+                                CoreUtil.CopyDirectory(tempFolder, destinationFolder);
+
+                                Logger.Info($"Deleting {tempFolder}");
+                                Directory.Delete(tempFolder.FullName, true);
+                            } else if (maxDirectoryVersion < new Version(Constants.ApplicationVersionWithoutRevision)) {
+                                // An upgrade from a versioned folder to a higher version folder
+                                var sourceFolder = new DirectoryInfo(Path.Combine(baseUserExtensionsDirectory.FullName, maxDirectoryVersion.ToString()));
+
+                                // User Extensions do not exist for current Version - Create directory
+                                Logger.Info($"Creating Directory {userExtensionsDirectory.FullName}");
+                                var destinationFolder = Directory.CreateDirectory(userExtensionsDirectory.FullName);
+
+                                Logger.Info($"Migrating plugins from {sourceFolder} to {destinationFolder}");
+                                CoreUtil.CopyDirectory(sourceFolder, destinationFolder);
                             }
+                        }
 
-                            for (int i = 0; i < files.Count; i++) {
-                                var file = files[i];
-                                AsyncContext.Run(() => LoadPlugin(file, (i + 1) / (double)files.Count));
-                            }
-
-                            initialized = true;
-                            Debug.Print($"Time to load all plugins {sw.Elapsed}");
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        } finally {
-                            applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblPlugins"] });
+                        // Enumerate only 1 level deep, where we'd expect plugin dlls to be in the root of the plugin folder
+                        files.AddRange(userExtensionsDirectory.GetFiles("*.dll").Select(fi => fi.FullName));
+                        foreach (var subDirectory in userExtensionsDirectory.GetDirectories()) {
+                            files.AddRange(subDirectory.GetFiles("*.dll").Select(fi => fi.FullName));
                         }
                     }
+
+                    for (int i = 0; i < files.Count; i++) {
+                        var file = files[i];
+                        await LoadPlugin(file, (i + 1) / (double)files.Count);
+                    }
+
+                    initialized = true;
+                    Debug.Print($"Time to load all plugins {sw.Elapsed}");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                } finally {
+                    applicationStatusMediator.StatusUpdate(new ApplicationStatus() { Source = Loc.Instance["LblPlugins"] });
                 }
-            });
+            } finally {
+                semaphore.Release();
+            }
         }
 
         private async Task LoadPlugin(string file, double progress) {
@@ -334,12 +344,12 @@ namespace NINA.Plugin {
                 if (pluginFileInfo.AlternateDataStreamExists("Zone.Identifier")) {
                     pluginFileInfo.DeleteAlternateDataStream("Zone.Identifier");
                 }
-                
+
                 var references = PluginAssemblyReader.GrabAssemblyReferences(file);
                 if (references.FirstOrDefault(x => x.Contains("NINA.Plugin")) != null) {
                     try {
                         var context = new PluginAssemblyLoadContext(Guid.NewGuid().ToString(), file);
-                        var assembly = context.LoadFromAssemblyPath(file);                       
+                        var assembly = context.LoadFromAssemblyPath(file);
 
                         var plugin = new AssemblyCatalog(assembly);
                         var manifestImport = new ManifestImport();
@@ -359,7 +369,7 @@ namespace NINA.Plugin {
                                 var isNotCompatible = compatibilityMap.IsNotCompatible(manifest);
                                 var isUpdateRequired = compatibilityMap.IsUpdateRequired(manifest);
 
-                                if(isDeprecated) {
+                                if (isDeprecated) {
                                     throw new Exception($"This plugin is deprecated.");
                                 }
 
@@ -367,13 +377,13 @@ namespace NINA.Plugin {
                                     throw new Exception($"The version of this plugin is not compatible with the current version of N.I.N.A. Please update the plugin.");
                                 }
 
-                                if(isNotCompatible) {
+                                if (isNotCompatible) {
                                     throw new Exception($"The plugin is not compatible with this version of N.I.N.A. as it was compiled against {manifest.MinimumApplicationVersion} but it has to be built against at least {compatibilityMap.MinimumMajorVersion}. Please check if there is a plugin update available.");
                                 }
                             }
 
-                            applicationStatusMediator.StatusUpdate(new ApplicationStatus() { 
-                                Source = Loc.Instance["LblPlugins"], 
+                            applicationStatusMediator.StatusUpdate(new ApplicationStatus() {
+                                Source = Loc.Instance["LblPlugins"],
                                 Status = Loc.Instance["LblInitializingPlugins"],
                                 Status2 = string.Format(Loc.Instance["LblLoadingPlugin"], manifest.Name, manifest.Version, manifest.Author),
                                 Progress = progress,
@@ -523,8 +533,8 @@ namespace NINA.Plugin {
             return container;
         }
 
-        private object lockobj = new object();
         private bool initialized = false;
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         public IList<IDateTimeProvider> DateTimeProviders { get; }
         public IList<ISequenceItem> Items { get; private set; }
         public IList<ISequenceCondition> Conditions { get; private set; }
@@ -573,8 +583,8 @@ namespace NINA.Plugin {
         private readonly IOptionsVM optionsVM;
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
-        private readonly IMessageBroker messageBroker; 
-        
+        private readonly IMessageBroker messageBroker;
+
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
             var parts = args?.Name?.Split(',');
@@ -630,9 +640,9 @@ namespace NINA.Plugin {
             }
             return coreTypes;
         }
-        
-                   
-        private IOrderedEnumerable<T> AssignSequenceEntity<T>(IEnumerable<Lazy<T, Dictionary<string, object>>> imports, IApplicationResourceDictionary resourceDictionary,string pluginName) where T : ISequenceEntity {
+
+
+        private IOrderedEnumerable<T> AssignSequenceEntity<T>(IEnumerable<Lazy<T, Dictionary<string, object>>> imports, IApplicationResourceDictionary resourceDictionary, string pluginName) where T : ISequenceEntity {
             var items = new List<T>();
             foreach (var importItem in imports) {
                 try {
@@ -649,7 +659,7 @@ namespace NINA.Plugin {
                         item.Description = GrabLabel(description);
                         if (!string.IsNullOrEmpty(pluginName)) {
                             item.Description += $"{Environment.NewLine}({pluginName})";
-                        }                        
+                        }
                     }
                     if (importItem.Metadata.TryGetValue("Icon", out var iconObj)) {
                         string icon = iconObj.ToString();
@@ -740,6 +750,6 @@ namespace NINA.Plugin {
         [ImportMany(typeof(IEquipmentProvider))]
         public IEnumerable<IEquipmentProvider> DeviceProviderImports { get; private set; }
 
-        
+
     }
 }
