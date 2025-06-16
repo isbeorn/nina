@@ -52,7 +52,7 @@ namespace NINA.Sequencer.Conditions {
         private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
 
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer);
+            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer);
 
             if (!Check(null, null, true)) {
                 Data.ExpectedDateTime = DateTime.Now;
