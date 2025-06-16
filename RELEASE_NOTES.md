@@ -15,7 +15,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
 - Ascom device instances that fail to connect are now properly disposed
 - When Smart Exposure was interrupted and the filter was manually changed afterwards, the instruction will now make sure the filter is set to the correct one before proceeding with the next exposure
-
+- Sunrise, sunset, moonrise, and moonset now account for your location's elevation for increased accuracy.
+- Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
+ 
 ### **Device Management**
 - **Device Chooser Enhancements**  
   - A stored device ID that is currently unavailable will now appear as an "Offline Device" instead of "No Device," differentiating between having no device selected and an unavailable saved device.  

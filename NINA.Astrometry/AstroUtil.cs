@@ -330,36 +330,63 @@ namespace NINA.Astrometry {
             return au * conversionFactor;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude);
+            return GetNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude);
+            return GetNauticalNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude);
+            return GetCivilNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new MoonRiseAndSet(date, latitude, longitude);
+            return GetMoonRiseAndSet(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new MoonRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new SunRiseAndSet(date, latitude, longitude);
+            return GetSunRiseAndSet(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new SunRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
@@ -695,11 +722,12 @@ namespace NINA.Astrometry {
             return GetAltitude(hourAngle, observerInfo.Latitude, tuple.Item2.Dec);
         }
 
-        public static double CalculateAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude) {
+        public static double CalculateAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude, double elevation) {
             var zenithDistance = 90d - currentAltitude;
             var location = new NOVAS.OnSurface() {
                 Latitude = latitude,
-                Longitude = longitude
+                Longitude = longitude,
+                Height = elevation
             };
             var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, zenithDistance);
             return currentAltitude + refraction;

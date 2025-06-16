@@ -57,17 +57,18 @@ namespace NINA.Astrometry {
                 var referenceDate = GetReferenceDate(selectedDate);
                 var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
                 var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
+                var elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
 
                 var key = $"{referenceDate:yyyy-MM-dd-HH-mm-ss}_{latitude.ToString("0.000000", CultureInfo.InvariantCulture)}_{longitude.ToString("0.000000", CultureInfo.InvariantCulture)}";
 
                 if (Cache.TryGetValue(key, out var nighttimeData)) {
                     return nighttimeData;
                 } else {
-                    var twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude);
-                    var civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude);
-                    var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude);
-                    var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude);
-                    var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude);
+                    var twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude, elevation);
+                    var civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude, elevation);
+                    var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, elevation);
+                    var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, elevation);
+                    var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, elevation);
                     var moonPhase = AstroUtil.GetMoonPhase(referenceDate);
                     var illumination = AstroUtil.GetMoonIllumination(referenceDate);
 

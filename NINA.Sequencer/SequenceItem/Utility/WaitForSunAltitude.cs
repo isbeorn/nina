@@ -73,10 +73,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private bool MustWait() {
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
-                    return Data.CurrentAltitude > Data.Offset;
+                    return Data.CurrentAltitude > GetDataOffset();
 
                 default:
-                    return Data.CurrentAltitude <= Data.Offset;
+                    return Data.CurrentAltitude <= GetDataOffset();
             }
         }
 
@@ -84,9 +84,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private double lastCalculationOffset = double.NaN;
         private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
 
-        // See SunAltitudeCondition for documentation on the -.833 constant
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.CalculateAltitudeForStandardRefraction(AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer) + AstroUtil.ArcminToDegree(0.25), Data.Observer.Latitude, Data.Observer.Longitude);
+            // Refraction correction is omitted here. The altitude would otherwise jump when going below the horizon, as refraction modeling breaks down below the horizon.
+            Data.CurrentAltitude = AstroUtil.GetSunAltitude(DateTime.Now, Data.Observer);
 
             if (!MustWait()) {
                 Data.ExpectedDateTime = DateTime.Now;
@@ -95,7 +95,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             } else {
                 var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
                 // Only calculate every day or when the parameters have changed
-                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != GetDataOffset() || lastCalculationComparator != Data.Comparator) {
                     Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
                     if (Data.ExpectedDateTime < DateTime.Now) {
                         Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
@@ -105,15 +105,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                         Data.ExpectedTime = "--";
                     }
                     lastCalculation = referenceDate;
-                    lastCalculationOffset = Data.Offset;
+                    lastCalculationOffset = GetDataOffset();
                     lastCalculationComparator = Data.Comparator;
                 }
             }
         }
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
-            // The SunRiseAndSet already models refraction and sun disk size
-            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
+            var customRiseAndSet = new SunCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
             AsyncContext.Run(customRiseAndSet.Calculate);
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
@@ -125,6 +124,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public bool Validate() {
             CalculateExpectedTime();
             return true;
+        }
+
+        private double GetDataOffset() {
+            // Sunrise/Sunset calculations are a special case where we adjust for the upper limp of the Sun touching the horizon including atmospheric refraction.
+            return Data.Offset != 0 ? Data.Offset : -0.833;
         }
     }
 }

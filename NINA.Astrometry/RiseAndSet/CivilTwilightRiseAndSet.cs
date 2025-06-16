@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace NINA.Astrometry.RiseAndSet {
     internal class CivilTwilightRiseAndSet : SunCustomRiseAndSet {
 
-        public CivilTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude, -6) {
+        public CivilTwilightRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -6) {
         }
     }
 }
