@@ -79,7 +79,7 @@ namespace NINA.Sequencer.Conditions {
 
         protected override double GetDataOffset() {
             // Moonrise/Moonset calculations are a special case where we adjust for the upper limp of the Moon touching the horizon including atmospheric refraction.
-            return Data.Offset != 0 ? Data.Offset : -0.583;
+            return Data.Offset != 0 ? Data.Offset : -AstroUtil.MoonUpperLimbApparentHorizonAltitude;
         }
 
         private DateTime CalculateExpectedDateTime(DateTime time) {

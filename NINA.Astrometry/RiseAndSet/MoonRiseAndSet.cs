@@ -19,7 +19,7 @@ namespace NINA.Astrometry.RiseAndSet {
 
     public class MoonRiseAndSet : MoonCustomRiseAndSet {
 
-        public MoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -0.583) {
+        public MoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -AstroUtil.MoonUpperLimbApparentHorizonAltitude) {
         }
     }
 }

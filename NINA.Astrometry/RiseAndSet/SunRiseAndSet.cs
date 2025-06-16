@@ -19,7 +19,7 @@ namespace NINA.Astrometry.RiseAndSet {
 
     public class SunRiseAndSet : SunCustomRiseAndSet {
 
-        public SunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -0.833) {
+        public SunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -AstroUtil.SunUpperLimbApparentHorizonAltitude) {
         }
     }
 }

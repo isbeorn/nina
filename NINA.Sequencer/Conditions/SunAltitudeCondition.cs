@@ -85,7 +85,7 @@ namespace NINA.Sequencer.Conditions {
 
         protected override double GetDataOffset() {
             // Sunrise/Sunset calculations are a special case where we adjust for the upper limp of the Sun touching the horizon including atmospheric refraction.
-            return Data.Offset != 0 ? Data.Offset : -0.833;
+            return Data.Offset != 0 ? Data.Offset : -AstroUtil.SunUpperLimbApparentHorizonAltitude;
         }
     }
 }
