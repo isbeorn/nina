@@ -14,6 +14,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Imaging is now possible during slewing to a target, but not centering, from the framing wizard
 - PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
 - Ascom device instances that fail to connect are now properly disposed
+- When Smart Exposure was interrupted and the filter was manually changed afterwards, the instruction will now make sure the filter is set to the correct one before proceeding with the next exposure
 
 ### **Device Management**
 - **Device Chooser Enhancements**  
