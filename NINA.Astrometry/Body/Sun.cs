@@ -18,7 +18,7 @@ namespace NINA.Astrometry.Body {
 
     public class Sun : BasicBody {
 
-        public Sun(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        public Sun(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 
         public override double Radius => 696342; // https://de.wikipedia.org/wiki/Sonnenradius

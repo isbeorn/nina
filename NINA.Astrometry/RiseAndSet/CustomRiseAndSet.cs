@@ -22,12 +22,12 @@ namespace NINA.Astrometry.RiseAndSet {
         private DateTime? rise;
         private DateTime? set;
 
-        public CustomRiseAndSet(DateTime? rise, DateTime? set) : base(DateTime.Now, 0, 0) {
+        public CustomRiseAndSet(DateTime? rise, DateTime? set) : base(DateTime.Now, 0, 0, 0) {
             this.rise = rise;
             this.set = set;
         }
 
-        public CustomRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        public CustomRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 
         public override Task<bool> Calculate() {

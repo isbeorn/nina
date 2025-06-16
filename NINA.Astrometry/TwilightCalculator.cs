@@ -19,9 +19,14 @@ namespace NINA.Astrometry {
 
     public class TwilightCalculator : ITwilightCalculator {
 
+        [Obsolete("Use method with elevation parameter instead")]
         public TimeSpan GetTwilightDuration(DateTime date, double latitude, double longitude) {
-            var nightRise = AstroUtil.GetNightTimes(date, latitude, longitude).Rise;
-            var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(date, latitude, longitude);
+            return GetTwilightDuration(date, latitude, longitude, 0.0);
+        }
+
+        public TimeSpan GetTwilightDuration(DateTime date, double latitude, double longitude, double elevation) {
+            var nightRise = AstroUtil.GetNightTimes(date, latitude, longitude, elevation).Rise;
+            var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(date, latitude, longitude, elevation);
             if (nightRise == null) {
                 return sunRiseAndSet.Rise - sunRiseAndSet.Set ?? TimeSpan.Zero;
             }            

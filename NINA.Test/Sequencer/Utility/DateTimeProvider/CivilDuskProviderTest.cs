@@ -22,7 +22,7 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
             var customDateTimeMock = new Mock<ICustomDateTime>();
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
-            var riseAndSetEvent = new CustomRiseAndSet(referenceDate, 0, 0);
+            var riseAndSetEvent = new CustomRiseAndSet(referenceDate, 0, 0, 0);
             var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, null, null, null, null, riseAndSetEvent);
 
             var nightTimeCalculatorMock = new Mock<INighttimeCalculator>();

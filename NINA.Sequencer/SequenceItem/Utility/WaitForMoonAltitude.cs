@@ -75,9 +75,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private bool MustWait() {
             switch (Data.Comparator) {
                 case ComparisonOperatorEnum.GREATER_THAN:
-                    return Data.CurrentAltitude > Data.Offset;
+                    return Data.CurrentAltitude > GetDataOffset();
                 default:
-                    return Data.CurrentAltitude <= Data.Offset;
+                    return Data.CurrentAltitude <= GetDataOffset();
             }
         }
 
@@ -85,9 +85,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private double lastCalculationOffset = double.NaN;
         private ComparisonOperatorEnum lastCalculationComparator = ComparisonOperatorEnum.EQUALS;
 
-        // See MoonAltitudeCondition for explanation of the constant
         public override void CalculateExpectedTime() {
-            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer) + .583;
+            Data.CurrentAltitude = AstroUtil.GetMoonAltitude(DateTime.Now, Data.Observer);
 
             if (!MustWait()) {
                 Data.ExpectedDateTime = DateTime.Now;
@@ -96,7 +95,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             } else {
                 var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
                 // Only calculate every day or when the parameters have changed
-                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != Data.Offset || lastCalculationComparator != Data.Comparator) {
+                if (Data.ExpectedDateTime == DateTime.MinValue || lastCalculation < referenceDate || lastCalculationOffset != GetDataOffset() || lastCalculationComparator != Data.Comparator) {
                     Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate);
                     if (Data.ExpectedDateTime < DateTime.Now) {
                         Data.ExpectedDateTime = CalculateExpectedDateTime(referenceDate.AddDays(1));
@@ -106,15 +105,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                         Data.ExpectedTime = "--";
                     }
                     lastCalculation = referenceDate;
-                    lastCalculationOffset = Data.Offset;
+                    lastCalculationOffset = GetDataOffset();
                     lastCalculationComparator = Data.Comparator;
                 }
             }
         }
 
         private DateTime CalculateExpectedDateTime(DateTime time) {
-            // The MoonRiseAndSet already models refraction and moon disk size
-            var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Offset);
+            var customRiseAndSet = new MoonCustomRiseAndSet(NighttimeCalculator.GetReferenceDate(time), Data.Observer.Latitude, Data.Observer.Longitude, Data.Observer.Elevation, GetDataOffset());
             AsyncContext.Run(customRiseAndSet.Calculate);
             return (Data.Comparator == ComparisonOperatorEnum.GREATER_THAN ? customRiseAndSet.Set : customRiseAndSet?.Rise) ?? DateTime.MaxValue;
         }
@@ -126,6 +124,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public bool Validate() {
             CalculateExpectedTime();
             return true;
+        }
+
+        private double GetDataOffset() {
+            // Moonrise/Moonset calculations are a special case where we adjust for the upper limp of the Moon touching the horizon including atmospheric refraction.
+            return Data.Offset != 0 ? Data.Offset : -0.583;
         }
     }
 }

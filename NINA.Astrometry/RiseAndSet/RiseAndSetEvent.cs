@@ -20,15 +20,17 @@ namespace NINA.Astrometry.RiseAndSet {
 
     public abstract class RiseAndSetEvent {
 
-        public RiseAndSetEvent(DateTime date, double latitude, double longitude) {
+        public RiseAndSetEvent(DateTime date, double latitude, double longitude, double elevation) {
             this.Date = date;
             this.Latitude = latitude;
             this.Longitude = longitude;
+            Elevation = elevation;
         }
 
         public DateTime Date { get; private set; }
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
+        public double Elevation { get; private set; }
         public virtual DateTime? Rise { get; private set; }
         public virtual DateTime? Set { get; private set; }
 
@@ -59,7 +61,8 @@ namespace NINA.Astrometry.RiseAndSet {
 
                     var location = new NOVAS.OnSurface() {
                         Latitude = Latitude,
-                        Longitude = Longitude
+                        Longitude = Longitude,
+                        Height = Elevation
                     };
 
                     // Adjust altitude for the three body parameters

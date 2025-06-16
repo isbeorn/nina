@@ -38,11 +38,11 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
                 case ComparisonOperatorEnum.GREATER_THAN:
                 case ComparisonOperatorEnum.GREATER_THAN_OR_EQUAL:
-                    if (Data.CurrentAltitude > Data.Offset) { check = false; }
+                    if (Data.CurrentAltitude > GetDataOffset()) { check = false; }
                     break;
 
                 default:
-                    if (Data.CurrentAltitude <= Data.Offset) { check = false; }
+                    if (Data.CurrentAltitude <= GetDataOffset()) { check = false; }
                     break;
             }
 
@@ -51,6 +51,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             }
             return check;
         }
+
+        protected abstract double GetDataOffset();
 
         public override string ToString() {
             return $"Condition: {GetType().Name}, " +
