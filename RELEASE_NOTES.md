@@ -47,7 +47,11 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Options > Astrometry Enhancements**  
   - Added new metadata fields: **Observer**, **Observatory**, and **Site**, which are written to FITS files as `OBSERVER`, `OBSERVAT`, and `SITENAME`.  
   - Added a world map displaying a pin for the entered latitude and longitude.
-
+- **Connect/Disconnect All Button**
+  - The "Connect/Disconnect All" button in the lower-left corner of the application has been updated
+      - It shows "Connect All" only when no devices are connected.
+      - When at least one device is connected it will change to "Disconnect All".
+ 
 ### **Sequencer & Imaging**
 - **Sequencer Enhancements**  
   - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
