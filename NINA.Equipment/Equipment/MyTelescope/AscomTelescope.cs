@@ -260,7 +260,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public Coordinates TargetCoordinates {
             get {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     return _targetCoordinates;
                 }
                 return null;
@@ -275,7 +275,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public PierSide? TargetSideOfPier {
             get {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     return targetSideOfPier;
                 } else {
                     return null;
@@ -452,7 +452,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         public void MoveAxis(TelescopeAxes axis, double rate) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSlew) {
                     if (!AtPark) {
                         var actualRate = rate;
@@ -498,7 +498,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         public void PulseGuide(GuideDirections direction, int duration) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanPulseGuide) {
                     if (!AtPark) {
                         try {
@@ -543,7 +543,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
             }
         }
 
-        public bool CanSetTrackingEnabled => Connected && GetProperty(nameof(Telescope.CanSetTracking), false);
+        public bool CanSetTrackingEnabled => ShouldBeConnected && GetProperty(nameof(Telescope.CanSetTracking), false);
 
         public bool TrackingEnabled {
             get => GetProperty(nameof(Telescope.Tracking), false);
@@ -558,7 +558,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         public async Task<bool> SlewToCoordinates(Coordinates coordinates, CancellationToken token) {
-            if (Connected && !AtPark) {
+            if (ShouldBeConnected && !AtPark) {
                 try {
                     TrackingEnabled = true;
                     TargetCoordinates = coordinates.Transform(EquatorialSystem);
@@ -588,7 +588,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         }
 
         public async Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
-            if (Connected && !AtPark && CanSlewAltAz) {
+            if (ShouldBeConnected && !AtPark && CanSlewAltAz) {
                 try {
                     TrackingEnabled = false;
                     TargetCoordinates = coordinates.Transform(EquatorialSystem);
@@ -707,7 +707,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public bool CanMovePrimaryAxis {
             get {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     return device.CanMoveAxis(ASCOM.Common.DeviceInterfaces.TelescopeAxis.Primary);
                 }
                 return false;
@@ -716,7 +716,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public bool CanMoveSecondaryAxis {
             get {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     return device.CanMoveAxis(ASCOM.Common.DeviceInterfaces.TelescopeAxis.Secondary);
                 }
                 return false;
@@ -734,7 +734,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 return primaryMovingRate;
             }
             set {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     primaryMovingRate = GetAdjustedMovingRate(value, primaryMovingRate, ASCOM.Common.DeviceInterfaces.TelescopeAxis.Primary);
                     RaisePropertyChanged();
                 }
@@ -752,7 +752,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                 return secondaryMovingRate;
             }
             set {
-                if (Connected) {
+                if (ShouldBeConnected) {
                     secondaryMovingRate = GetAdjustedMovingRate(value, secondaryMovingRate, ASCOM.Common.DeviceInterfaces.TelescopeAxis.Secondary);
                     RaisePropertyChanged();
                 }
@@ -916,7 +916,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public TrackingRate TrackingRate {
             get {
-                if (!Connected || !TrackingEnabled) {
+                if (!ShouldBeConnected || !TrackingEnabled) {
                     return new TrackingRate() { TrackingMode = TrackingMode.Stopped };
                 } else if (!CanSetTrackingEnabled) {
                     return new TrackingRate() { TrackingMode = TrackingMode.Sidereal };
@@ -956,7 +956,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
                     throw new ArgumentException("TrackingMode cannot be set to Custom. Use SetCustomTrackingRate");
                 }
 
-                if (Connected && device.CanSetTracking) {
+                if (ShouldBeConnected && device.CanSetTracking) {
                     try {
                         // Set the mode regardless of whether it is the same as what is currently set
                         // Some ASCOM drivers incorrectly report custom rates as Sidereal, and this can help force set the tracking mode to the desired value

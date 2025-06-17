@@ -125,7 +125,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             }
         }
 
-        public bool CanSyncAzimuth => Connected && device.CanSyncAzimuth;
+        public bool CanSyncAzimuth => ShouldBeConnected && device.CanSyncAzimuth;
 
         protected override string ConnectionLostMessage => Loc.Instance["LblDomeConnectionLost"];
 
@@ -133,7 +133,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public async Task SlewToAzimuth(double azimuth, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSetAzimuth) {
                     using (ct.Register(async () => await StopSlewing())) {
                         await (device?.SlewToAzimuthAsync(azimuth, ct) ?? Task.CompletedTask);
@@ -150,7 +150,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public Task StopSlewing() {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 // ASCOM only allows you to stop all movement, which includes both shutter and slewing. If the shutter was opening or closing
                 // when this command is received, try and continue the operation afterwards
                 return Task.Run(async () => {
@@ -177,7 +177,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public Task StopAll() {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 return Task.Run(() => device?.AbortSlew());
             } else {
                 Logger.Warning("Dome is not connected");
@@ -187,7 +187,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public async Task OpenShutter(CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSetShutter) {
                     if (ShutterStatus == ShutterState.ShutterOpen) {
                         return;
@@ -232,7 +232,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public async Task CloseShutter(CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSetShutter) {
                     if (ShutterStatus == ShutterState.ShutterClosed) {
                         return;
@@ -271,7 +271,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public async Task FindHome(CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanFindHome) {
                     if (AtHome == true) {
                         Logger.Info("Dome already AtHome. Not submitting a FindHome request");
@@ -313,7 +313,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public async Task Park(CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanPark) {
                     // ASCOM domes make no promise that a slew operation can take place if one is already in progress, so we do a hard abort up front to ensure Park works
                     if (Slewing == true) {
@@ -359,7 +359,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public void SetPark() {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSetPark) {
                     device.SetPark();
                 } else {
@@ -373,7 +373,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         }
 
         public void SyncToAzimuth(double azimuth) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (CanSyncAzimuth) {
                     device.SyncToAzimuth(azimuth);
                 } else {

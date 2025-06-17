@@ -66,7 +66,7 @@ namespace NINA.Equipment.Equipment {
 
         protected object lockObj = new object();
 
-        public bool HasSetupDialog => !Connected;
+        public bool HasSetupDialog => !ShouldBeConnected;
 
         public string Id { get; }
 
@@ -130,6 +130,8 @@ namespace NINA.Equipment.Equipment {
             return true;
         }
 
+        protected bool ShouldBeConnected => connectedExpectation;
+
         public bool Connected {
             get {
                 lock (lockObj) {
@@ -192,7 +194,7 @@ namespace NINA.Equipment.Equipment {
         }
 
         public string Action(string actionName, string actionParameters) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 return device.Action(actionName, actionParameters);
             } else {
                 return null;
@@ -200,7 +202,7 @@ namespace NINA.Equipment.Equipment {
         }
 
         public string SendCommandString(string command, bool raw = true) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 lock (lockObj) {
                     return device.CommandString(command, raw);
                 }
@@ -210,7 +212,7 @@ namespace NINA.Equipment.Equipment {
         }
 
         public bool SendCommandBool(string command, bool raw = true) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 lock (lockObj) {
                     return device.CommandBool(command, raw);
                 }
@@ -220,7 +222,7 @@ namespace NINA.Equipment.Equipment {
         }
 
         public void SendCommandBlind(string command, bool raw = true) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 lock (lockObj) {
                     device.CommandBlind(command, raw);
                 }
@@ -428,6 +430,7 @@ namespace NINA.Equipment.Equipment {
         /// <returns></returns>
         protected PropT GetProperty<PropT>(string propertyName, PropT defaultValue, TimeSpan? cacheInterval = null, bool rethrow = false, bool useLastKnownValueOnError = true, PropT errorValue = default) {
             if (device == null) { return defaultValue; }
+            if (!ShouldBeConnected) { return defaultValue; }
 
             if (cacheInterval == null) { cacheInterval = TimeSpan.FromMilliseconds(100); }
             var interval = TimeSpan.FromMilliseconds(200);
@@ -546,6 +549,7 @@ namespace NINA.Equipment.Equipment {
         /// <returns></returns>
         protected bool SetProperty<PropT>(string propertyName, PropT value, TimeSpan? cacheInterval = null, [CallerMemberName] string originalPropertyName = null) {
             if (device != null) {
+                if (!ShouldBeConnected) { return false; }
                 var type = device.GetType();
 
                 if (!propertySETMemory.TryGetValue(propertyName, out var memory)) {
@@ -557,7 +561,7 @@ namespace NINA.Equipment.Equipment {
                 }
 
                 try {
-                    if (memory.IsImplemented && Connected) {
+                    if (memory.IsImplemented && ShouldBeConnected) {
                         memory.SetValue(device, value);
                         if (propertyGETMemory.TryGetValue(propertyName, out var getmemory)) {
                             getmemory.InvalidateCache();

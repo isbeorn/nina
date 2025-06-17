@@ -933,7 +933,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         public double ExposureMin {
             get {
-                if (Cam?.Connected != true) {
+                if (CameraInfo?.Connected != true) {
                     return 0.0;
                 }
                 // Guard against bad values reported by a driver
@@ -960,7 +960,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public string Action(string actionName, string actionParameters) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.Action(actionName, actionParameters);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + actionName);
@@ -969,7 +969,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public string SendCommandString(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.SendCommandString(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
@@ -978,7 +978,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public bool SendCommandBool(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.SendCommandBool(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
@@ -987,7 +987,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public void SendCommandBlind(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 Cam.SendCommandBlind(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
