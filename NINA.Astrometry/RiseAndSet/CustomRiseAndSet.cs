@@ -27,6 +27,8 @@ namespace NINA.Astrometry.RiseAndSet {
             this.set = set;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
+        public CustomRiseAndSet(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public CustomRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 

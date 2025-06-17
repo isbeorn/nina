@@ -18,6 +18,8 @@ namespace NINA.Astrometry.Body {
 
     public class Sun : BasicBody {
 
+        [Obsolete("Use method with elevation parameter instead")]
+        public Sun(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public Sun(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 

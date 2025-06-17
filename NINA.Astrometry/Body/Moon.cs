@@ -18,6 +18,8 @@ namespace NINA.Astrometry.Body {
 
     public class Moon : BasicBody {
 
+        [Obsolete("Use method with elevation parameter instead")]
+        public Moon(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public Moon(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 

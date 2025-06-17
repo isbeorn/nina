@@ -18,7 +18,8 @@ using System.Threading.Tasks;
 namespace NINA.Astrometry.Body {
 
     public abstract class BasicBody {
-
+        [Obsolete("Use method with elevation parameter instead")]
+        public BasicBody(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public BasicBody(DateTime date, double latitude, double longitude, double elevation) {
             this.Date = date;
             this.Latitude = latitude;

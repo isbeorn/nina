@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace NINA.Astrometry.RiseAndSet {
     public class SunCustomRiseAndSet : RiseAndSetEvent {
+        [Obsolete("Use method with elevation parameter instead")]
+        public SunCustomRiseAndSet(DateTime date, double latitude, double longitude, double sunAltitude) : this(date, latitude, longitude, elevation: 0, sunAltitude) { }
         public SunCustomRiseAndSet(DateTime date, double latitude, double longitude, double elevation, double sunAltitude) : base(date, latitude, longitude, elevation) {
             SunAltitude = sunAltitude;
         }

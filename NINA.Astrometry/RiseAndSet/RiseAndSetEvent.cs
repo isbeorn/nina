@@ -20,6 +20,8 @@ namespace NINA.Astrometry.RiseAndSet {
 
     public abstract class RiseAndSetEvent {
 
+        [Obsolete("Use method with elevation parameter instead")]
+        public RiseAndSetEvent(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
         public RiseAndSetEvent(DateTime date, double latitude, double longitude, double elevation) {
             this.Date = date;
             this.Latitude = latitude;
