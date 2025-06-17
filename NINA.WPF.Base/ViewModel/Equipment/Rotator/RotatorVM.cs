@@ -234,7 +234,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public async Task<float> MoveRelative(float offset, TimeSpan waitTime, CancellationToken ct) {
-            if (Rotator?.Connected == true) {
+            if (RotatorInfo?.Connected == true) {
                 return await MoveMechanical(Rotator.MechanicalPosition + offset, waitTime, ct);
             }
             return -1;

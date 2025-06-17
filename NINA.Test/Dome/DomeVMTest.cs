@@ -153,6 +153,7 @@ namespace NINA.Test.Dome {
         [Test]
         public async Task Test_DomeDisconnected_DomeFollowEnabled_NoStart() {
             var sut = await CreateSUT();
+            await sut.Disconnect();
             domeConnected = false;
             sut.FollowEnabled = true;
             mockDomeFollower.Verify(x => x.Start(), Times.Never);

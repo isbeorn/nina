@@ -109,7 +109,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
         private void HaltFocuser() {
             Logger.Info("Halting Focuser");
-            if (Focuser?.Connected != true) return;
+            if (FocuserInfo?.Connected != true) return;
             try {
                 Focuser.Halt();
             } catch (Exception ex) {
@@ -178,7 +178,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         public async Task<int> MoveFocuserRelative(int offset, CancellationToken ct) {
             await ss.WaitAsync(ct);
             try {
-                if (Focuser?.Connected != true) return -1;
+                if (FocuserInfo?.Connected != true) return -1;
                 var pos = Position + offset;
                 pos = await MoveFocuserInternal(pos, ct);
                 return pos;

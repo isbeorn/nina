@@ -230,7 +230,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             bool success = false;
             Logger.Info("Mount ordered to unpark");
 
-            if (!Telescope.Connected) {
+            if (!TelescopeInfo.Connected) {
                 Logger.Error("Mount is not connected");
                 return false;
             }
@@ -285,8 +285,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             await Task.Run(async () => {
                 IsParkingOrHoming = true;
 
-                if (Telescope.Connected) {
-                    if (Telescope.CanFindHome) {
+                if (TelescopeInfo.Connected) {
+                    if (TelescopeInfo.CanFindHome) {
                         if (!Telescope.AtHome) {
                             if (!Telescope.AtPark) {
                                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -914,7 +914,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
             timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
             try {
-                if (Telescope?.Connected == true) {
+                if (TelescopeInfo?.Connected == true) {
                     if (Telescope?.Slewing == true && Telescope?.TrackingEnabled == false) {
                         Logger.Warning("Slew issued while telesope is possibly in the process of parking!");
                     }
@@ -1028,7 +1028,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task WaitForSlew(CancellationToken cancellationToken) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 while (Telescope?.Slewing == true && !cancellationToken.IsCancellationRequested) {
                     await Task.Delay(1000);
                 }
@@ -1057,12 +1057,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public bool SetTrackingMode(TrackingMode trackingMode) {
-            if(Telescope?.Connected != true) {
+            if(TelescopeInfo?.Connected != true) {
                 Logger.Warning("Cannot set tracking mode as the mount is not connected");
                 return false;
             }
 
-            if(Telescope.AtPark) {
+            if(TelescopeInfo.AtPark) {
                 Logger.Warning("Cannot set tracking mode as the mount is parked");
                 return false;
             }
@@ -1086,7 +1086,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 if (rate.Enabled) {
                     Telescope.SetCustomTrackingRate(rightAscensionRate: rate.RASecondsPerSiderealSecond, declinationRate: rate.DecArcsecsPerSec);
                 } else {
@@ -1118,24 +1118,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public string Action(string actionName, string actionParameters = "") {
-            return Telescope?.Connected == true ? Telescope.Action(actionName, actionParameters) : null;
+            return TelescopeInfo?.Connected == true ? Telescope.Action(actionName, actionParameters) : null;
         }
 
         public string SendCommandString(string command, bool raw = true) {
-            return Telescope?.Connected == true ? Telescope.SendCommandString(command, raw) : null;
+            return TelescopeInfo?.Connected == true ? Telescope.SendCommandString(command, raw) : null;
         }
 
         public bool SendCommandBool(string command, bool raw = true) {
-            return Telescope?.Connected == true ? Telescope.SendCommandBool(command, raw) : false;
+            return TelescopeInfo?.Connected == true ? Telescope.SendCommandBool(command, raw) : false;
         }
 
         public void SendCommandBlind(string command, bool raw = true) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 Telescope.SendCommandBlind(command, raw);
             }
         }
         public PierSide DestinationSideOfPier(Coordinates coordinates) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 return Telescope.DestinationSideOfPier(coordinates);
             }
             return PierSide.pierUnknown;
