@@ -248,9 +248,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             rotatorValues.TryGetValue(nameof(RotatorInfo.Position), out o);
             RotatorInfo.Position = (float)(o ?? 0f);
 
-            rotatorValues.TryGetValue(nameof(RotatorInfo.StepSize), out o);
-            RotatorInfo.StepSize = (float)(o ?? 0f);
-
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);
 
@@ -271,7 +268,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             rotatorValues.Add(nameof(RotatorInfo.Connected), Rotator?.Connected ?? false);
             rotatorValues.Add(nameof(RotatorInfo.Position), Rotator?.Position ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.IsMoving), Rotator?.IsMoving ?? false);
-            rotatorValues.Add(nameof(RotatorInfo.StepSize), Rotator?.StepSize ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.Reverse), Rotator?.Reverse ?? false);
             rotatorValues.Add(nameof(RotatorInfo.Synced), Rotator?.Synced ?? false);
             rotatorValues.Add(nameof(RotatorInfo.MechanicalPosition), Rotator?.MechanicalPosition ?? 0f);

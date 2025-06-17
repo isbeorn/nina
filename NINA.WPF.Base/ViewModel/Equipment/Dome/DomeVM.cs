@@ -235,13 +235,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             Dictionary<string, object> domeValues = new Dictionary<string, object> {
                 { nameof(DomeInfo.Connected), Dome?.Connected ?? false },
                 { nameof(DomeInfo.ShutterStatus), Dome?.ShutterStatus ?? ShutterState.ShutterError },
-                { nameof(DomeInfo.DriverCanFollow), Dome?.DriverCanFollow ?? false },
-                { nameof(DomeInfo.CanSetShutter), Dome?.CanSetShutter ?? false },
-                { nameof(DomeInfo.CanSetPark), Dome?.CanSetPark ?? false },
-                { nameof(DomeInfo.CanSetAzimuth), Dome?.CanSetAzimuth ?? false },
-                { nameof(DomeInfo.CanSyncAzimuth), Dome?.CanSyncAzimuth ?? false },
-                { nameof(DomeInfo.CanPark), Dome?.CanPark ?? false },
-                { nameof(DomeInfo.CanFindHome), Dome?.CanFindHome ?? false },
                 { nameof(DomeInfo.AtPark), Dome?.AtPark ?? false },
                 { nameof(DomeInfo.AtHome), Dome?.AtHome ?? false },
                 { nameof(DomeInfo.DriverFollowing), Dome?.DriverFollowing ?? false },
@@ -261,27 +254,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
             domeValues.TryGetValue(nameof(DomeInfo.ShutterStatus), out o);
             DomeInfo.ShutterStatus = (ShutterState)(o ?? ShutterState.ShutterError);
-
-            domeValues.TryGetValue(nameof(DomeInfo.DriverCanFollow), out o);
-            DomeInfo.DriverCanFollow = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanSetShutter), out o);
-            DomeInfo.CanSetShutter = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanSetPark), out o);
-            DomeInfo.CanSetPark = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanSetAzimuth), out o);
-            DomeInfo.CanSetAzimuth = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanSyncAzimuth), out o);
-            DomeInfo.CanSyncAzimuth = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanPark), out o);
-            DomeInfo.CanPark = (bool)(o ?? false);
-
-            domeValues.TryGetValue(nameof(DomeInfo.CanFindHome), out o);
-            DomeInfo.CanFindHome = (bool)(o ?? false);
 
             domeValues.TryGetValue(nameof(DomeInfo.AtPark), out o);
             DomeInfo.AtPark = (bool)(o ?? false);
