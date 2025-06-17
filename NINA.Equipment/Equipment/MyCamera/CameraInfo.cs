@@ -183,6 +183,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
             set { if (pixelSize != value) { pixelSize = value; RaisePropertyChanged(); } }
         }
 
+        private bool hasBattery;
+
+        public bool HasBattery {
+            get => hasBattery;
+            set { if (hasBattery != value) { hasBattery = value; RaisePropertyChanged(); } }
+        }
+
         private int battery;
 
         public int Battery {

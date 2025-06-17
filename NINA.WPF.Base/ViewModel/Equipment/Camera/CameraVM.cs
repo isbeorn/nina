@@ -414,6 +414,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
+                                HasBattery = Cam.HasBattery,
                                 Battery = Cam.BatteryLevel,
                                 BitDepth = Cam.BitDepth,
                                 ElectronsPerADU = Cam.ElectronsPerADU,
@@ -612,21 +613,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0);
             cameraValues.Add(nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0);
 
-            if (_cam != null && _cam.CanSetGain) {
+            if (_cam != null && CameraInfo.CanSetGain) {
                 cameraValues.Add(nameof(CameraInfo.Gain), _cam?.Gain ?? -1);
                 cameraValues.Add(nameof(CameraInfo.DefaultGain), DefaultGain);
             }
 
-            if (_cam != null && _cam.CanSetOffset) {
+            if (_cam != null && CameraInfo.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);
                 cameraValues.Add(nameof(CameraInfo.DefaultOffset), DefaultOffset);
             }
 
-            if (_cam != null && _cam.CanSetUSBLimit) {
+            if (_cam != null && CameraInfo.CanSetUSBLimit) {
                 cameraValues.Add(nameof(CameraInfo.USBLimit), _cam?.USBLimit ?? -1);
             }
 
-            if (_cam != null && _cam.HasBattery) {
+            if (_cam != null && CameraInfo.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
             }
 

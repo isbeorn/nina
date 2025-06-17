@@ -619,32 +619,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.TryGetValue(nameof(TelescopeInfo.AtHome), out o);
             TelescopeInfo.AtHome = (bool)(o ?? false);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLatitude), out o);
-            TelescopeInfo.SiteLatitude = (double)(o ?? double.NaN);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLongitude), out o);
-            TelescopeInfo.SiteLongitude = (double)(o ?? double.NaN);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteElevation), out o);
-            TelescopeInfo.SiteElevation = (double)(o ?? double.NaN);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingRate), out o);
             TelescopeInfo.TrackingRate = (TrackingRate)(o ?? TrackingRate.STOPPED);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetTrackingEnabled), out o);
-            TelescopeInfo.CanSetTrackingEnabled = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetDeclinationRate), out o);
-            TelescopeInfo.CanSetDeclinationRate = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetRightAscensionRate), out o);
-            TelescopeInfo.CanSetRightAscensionRate = (bool)(o ?? false);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingEnabled), out o);
             TelescopeInfo.TrackingEnabled = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingModes), out o);
-            TelescopeInfo.TrackingModes = (IList<TrackingMode>)(o ?? ImmutableList<TrackingMode>.Empty);
 
             telescopeValues.TryGetValue(nameof(Coordinates), out o);
             TelescopeInfo.Coordinates = (Coordinates)(o ?? null);
@@ -673,20 +652,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.TryGetValue(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), out o);
             TelescopeInfo.GuideRateDeclinationArcsecPerSec = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.AlignmentMode), out o);
-            TelescopeInfo.AlignmentMode = (AlignmentMode)(o ?? AlignmentMode.GermanPolar);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanPulseGuide), out o);
-            TelescopeInfo.CanPulseGuide = (bool)(o ?? false);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.IsPulseGuiding), out o);
             TelescopeInfo.IsPulseGuiding = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetPierSide), out o);
-            TelescopeInfo.CanSetPierSide = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSlew), out o);
-            TelescopeInfo.CanSlew = (bool)(o ?? false);
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.UTCDate), out o);
             TelescopeInfo.UTCDate = (DateTime)(o ?? DateTime.MinValue);
@@ -696,16 +663,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         private Dictionary<string, object> GetTelescopeValues() {
             Dictionary<string, object> telescopeValues = new Dictionary<string, object>();
-
             telescopeValues.Add(nameof(TelescopeInfo.Connected), _telescope?.Connected ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.AtPark), _telescope?.AtPark ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.AtHome), _telescope?.AtHome ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetTrackingEnabled), _telescope?.CanSetTrackingEnabled ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetDeclinationRate), _telescope?.CanSetDeclinationRate ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetRightAscensionRate), _telescope?.CanSetRightAscensionRate ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.TrackingRate), _telescope?.TrackingRate ?? TrackingRate.STOPPED);
             telescopeValues.Add(nameof(TelescopeInfo.TrackingEnabled), _telescope?.TrackingEnabled ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.TrackingModes), _telescope?.TrackingModes ?? ImmutableList<TrackingMode>.Empty);
             telescopeValues.Add(nameof(TelescopeInfo.Altitude), _telescope?.Altitude ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.AltitudeString), _telescope?.AltitudeString ?? string.Empty);
             telescopeValues.Add(nameof(TelescopeInfo.Azimuth), _telescope?.Azimuth ?? double.NaN);
@@ -717,9 +679,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Declination), _telescope?.Declination ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.SiderealTime), _telescope?.SiderealTime ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteLongitude), _telescope?.SiteLongitude ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteLatitude), _telescope?.SiteLatitude ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteElevation), _telescope?.SiteElevation ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlipString), _telescope?.TimeToMeridianFlipString ?? string.Empty);
@@ -729,11 +688,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Slewing), _telescope?.Slewing ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateRightAscensionArcsecPerSec), _telescope?.GuideRateRightAscensionArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), _telescope?.GuideRateDeclinationArcsecPerSec ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.AlignmentMode), _telescope?.AlignmentMode ?? null);
-            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanPulseGuide ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.IsPulseGuiding ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetPierSide), _telescope?.CanSetPierSide ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSlew), _telescope?.CanSlew ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.UTCDate), _telescope?.UTCDate ?? null);
             return telescopeValues;
         }
