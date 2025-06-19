@@ -34,6 +34,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Framing Assistant Improvements**  
   - Sky annotation options are now saved to the active profile.  
   - After determining the rotation from camera, the rotation value is now automatically synced to the rotator if available.  
+  - Sending a target from Sky Atlas to Framing Assistant will now also use the last rotation that was set in framing
 - **Plate Solver UI Improvements**  
   - Settings for the selected Plate Solver and Blind Solver are now displayed exclusively, making setup verification more intuitive.  
 - **Message Box and Annotation Instructions**  

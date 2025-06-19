@@ -50,8 +50,9 @@ namespace NINA.ViewModel {
             });
             SetOldSequencerTargetCommand = new RelayCommand((object o) => {
                 applicationMediator.ChangeTab(ApplicationTab.SEQUENCE);
-
-                sequenceMediator.AddSimpleTarget(SearchResult.SelectedItem);
+                var dso = SearchResult.SelectedItem;
+                dso.RotationPositionAngle = 360 - profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
+                sequenceMediator.AddSimpleTarget(dso);
             });
             SetSequencerTargetCommand = new RelayCommand((object o) => {
                 applicationMediator.ChangeTab(ApplicationTab.SEQUENCE);
@@ -61,7 +62,7 @@ namespace NINA.ViewModel {
                 var container = (IDeepSkyObjectContainer)template.Clone();
                 container.Name = SearchResult.SelectedItem.Name;
                 container.Target.TargetName = SearchResult.SelectedItem.Name;
-                container.Target.PositionAngle = 0;
+                container.Target.PositionAngle = 360 - profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
                 container.Target.InputCoordinates.Coordinates = SearchResult.SelectedItem.Coordinates;
 
                 sequenceMediator.AddAdvancedTarget(container);
@@ -71,7 +72,9 @@ namespace NINA.ViewModel {
             });
             SetFramingAssistantCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 applicationMediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
-                return await framingAssistantVM.SetCoordinates(SearchResult.SelectedItem);
+                var dso = SearchResult.SelectedItem;
+                dso.RotationPositionAngle = 360 - profileService.ActiveProfile.FramingAssistantSettings.LastRotationAngle;
+                return await framingAssistantVM.SetCoordinates(dso);
             });
 
             Task.Run(() => { NighttimeData = this.nighttimeCalculator.Calculate();  InitializeFilters(); ResetFilters(null); });
