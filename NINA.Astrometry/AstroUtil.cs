@@ -627,9 +627,14 @@ namespace NINA.Astrometry {
             return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, jd, observerInfo), GetSunPosition(date, jd, observerInfo));
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static double GetMoonPositionAngle(DateTime date) {
+            return GetMoonPositionAngle(date, new ObserverInfo());
+        }
+
+        public static double GetMoonPositionAngle(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -643,9 +648,14 @@ namespace NINA.Astrometry {
             }
         }
 
-        private static double CalculateMoonIllumination(DateTime date) {
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
+        public static double CalculateMoonIllumination(DateTime date) {
+            return CalculateMoonIllumination(date, new ObserverInfo());
+        }
+
+        private static double CalculateMoonIllumination(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -677,8 +687,13 @@ namespace NINA.Astrometry {
             return days * DaysToSecondsFactor;
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static MoonPhase GetMoonPhase(DateTime date) {
-            var angle = GetMoonPositionAngle(date);
+            return GetMoonPhase(date, new ObserverInfo());
+        }
+
+        public static MoonPhase GetMoonPhase(DateTime date, ObserverInfo observerInfo) {
+            var angle = GetMoonPositionAngle(date, observerInfo);
 
             if ((angle >= -180.0 && angle < -135.0) || angle == 180.0) {
                 return MoonPhase.FullMoon;
@@ -701,8 +716,13 @@ namespace NINA.Astrometry {
             }
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static double GetMoonIllumination(DateTime date) {
-            return CalculateMoonIllumination(date);
+            return CalculateMoonIllumination(date, new ObserverInfo());
+        }
+
+        public static double GetMoonIllumination(DateTime date, ObserverInfo observerInfo) {
+            return CalculateMoonIllumination(date, observerInfo);
         }
 
         public static double GetMoonAltitude(DateTime date, ObserverInfo observerInfo) {
