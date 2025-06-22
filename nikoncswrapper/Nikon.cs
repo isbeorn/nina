@@ -168,37 +168,37 @@ namespace Nikon {
         D80,
         D100,
         D200,
-        Type0001,
-        Type0002,
-        Type0003,
-        Type0004,
-        Type0005,
-        Type0006,
-        Type0007,
-        Type0008,
-        Type0009,
-        Type0010,
-        Type0011,
-        Type0012,
-        Type0013,
-        Type0014,
-        Type0015,
-        Type0016,
-        Type0017,
-        Type0018,
-        Type0019,
-        Type0020,
-        Type0021,
-        Type0022,
-        Type0023,
-        Type0024,
-        Type0025,
-        Type0026,
-        Type0027,
-        Type0028,
-        Type0029,
-        Type0030,
-        Type0031,
+        Type0001, // D3, D300, D300S & D700
+        Type0002, // D3X
+        Type0003, // D5000 & D90
+        Type0004, // D7000
+        Type0005, // D5100
+        Type0006, // D800
+        Type0007, // D4
+        Type0008, // D600 & D610
+        Type0009, // D5200
+        Type0010, // D7100
+        Type0011, // D5300
+        Type0012, // DF
+        Type0013, // D4S
+        Type0014, // D810 & D810A
+        Type0015, // D750
+        Type0016, // D5500 & D5600
+        Type0017, // D7200
+        Type0018, // D5
+        Type0019, // Nikon1 V3
+        Type0020, // D500
+        Type0021, // D7500
+        Type0022, // D850
+        Type0023, // Z7
+        Type0024, // Z6
+        Type0025, // Z50
+        Type0026, // D780
+        Type0027, // D6
+        Type0028, // Z5
+        Type0029, // Z6 II & Z7 II
+        Type0030, // Z9
+        Type0031, // Z8
     }
 
     #endregion
