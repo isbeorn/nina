@@ -41,6 +41,7 @@ using NINA.Core.Enum;
 using NINA.Equipment.Exceptions;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
@@ -61,7 +62,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             this.applicationStatusMediator = applicationStatusMediator;
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null);
-            CancelConnectCommand = new RelayCommand(CancelConnectCamera);
+            CancelConnectCommand = new Core.Utility.RelayCommand(CancelConnectCamera);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             CoolCamCommand = new AsyncCommand<bool>(() => {
                 _cancelChangeTemperatureCts?.Dispose();
@@ -73,7 +74,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 _cancelChangeTemperatureCts = new CancellationTokenSource();
                 return Task.Run(() => WarmCamera(TimeSpan.FromMinutes(WarmingDuration), new Progress<ApplicationStatus>(p => Status = p), _cancelChangeTemperatureCts.Token));
             }, (object o) => !TempChangeRunning);
-            CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
+            CancelCoolCamCommand = new Core.Utility.RelayCommand(CancelCoolCamera);
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Task.Run(Rescan); return true; }, o => !CameraInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
@@ -81,7 +82,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CoolerHistory = new LinkedList<CameraCoolingStep>();
             CoolerHistoryMax = 20;
             coolerHistoryMin = -20;
-            ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -502,15 +502,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
-        private void ToggleDewHeaterOn(object o) {
-            if (CameraInfo.Connected) {
-                var cam = Cam;
-                if (cam != null) {
-                    Cam.DewHeaterOn = (bool)o;
-                }                
-            }
-        }
-
         private void BroadcastCameraInfo() {
             cameraMediator.Broadcast(CameraInfo);
         }
@@ -868,8 +859,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
+        [RelayCommand]
         public void SetDewHeater(bool onOff) {
             if (CameraInfo.Connected == true && CameraInfo.HasDewHeater == true) {
+                Logger.Info($"Setting camera dew heater to {(onOff ? "on" : "off")}");
                 Cam.DewHeaterOn = onOff;
                 BroadcastCameraInfo();
             }
@@ -1014,7 +1007,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }
-        public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
         private double exposureTime;
