@@ -43,7 +43,7 @@
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <Grid Margin="5,0,5,0" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
                 <Grid IsEnabled="{Binding CameraInfo.Connected}">
-                    <StackPanel IsEnabled="{Binding Cam.CanSetTemperature}" Orientation="Vertical">
+                    <StackPanel Orientation="Vertical">
                         <Border
                             Margin="0,5,0,0"
                             BorderBrush="{StaticResource BorderBrush}"
@@ -108,7 +108,7 @@
                                     Width="75"
                                     Height="25"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding ToggleDewHeaterOnCommand}"
+                                    Command="{Binding SetDewHeaterCommand}"
                                     CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     IsChecked="{Binding CameraInfo.DewHeaterOn}"
                                     Visibility="{Binding ActiveProfile.DockPanelSettings.CameraInfoOnly, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
