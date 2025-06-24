@@ -13,7 +13,9 @@
 #endregion "copyright"
 
 using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,22 +30,35 @@ namespace NINA.Core.Utility.Http {
         public string TargetLocation { get; }
 
         public override async Task Request(CancellationToken ct, IProgress<int> progress = null) {
-            using (var client = new WebClient()) {
-                using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    try {
-                        client.Headers.Add("User-Agent", CoreUtil.UserAgent);
-                        client.DownloadProgressChanged += (s, e) => {
-                            progress?.Report(e.ProgressPercentage);
-                        };
-                        await client.DownloadFileTaskAsync(Url, TargetLocation);
-                    } catch (WebException ex) {
-                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
-                            throw new OperationCanceledException();
-                        } else {
-                            throw;
-                        }
+            try {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
+
+                using var response = await httpClient.GetAsync(Url, HttpCompletionOption.ResponseHeadersRead, ct);
+                response.EnsureSuccessStatusCode();
+
+                var totalBytes = response.Content.Headers.ContentLength ?? -1L;
+                using var input = await response.Content.ReadAsStreamAsync(ct);
+                using var output = new FileStream(TargetLocation, FileMode.Create, FileAccess.Write, FileShare.None);
+
+                var buffer = new byte[81920];
+                long totalRead = 0;
+                int bytesRead;
+
+                while ((bytesRead = await input.ReadAsync(buffer, 0, buffer.Length, ct)) > 0) {
+                    await output.WriteAsync(buffer, 0, bytesRead, ct);
+                    totalRead += bytesRead;
+
+                    if (totalBytes > 0) {
+                        int percent = (int)((totalRead * 100L) / totalBytes);
+                        progress?.Report(percent);
                     }
                 }
+            } catch (OperationCanceledException) {
+                throw;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw;
             }
         }
     }

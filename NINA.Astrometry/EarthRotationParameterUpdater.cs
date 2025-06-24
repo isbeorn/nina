@@ -20,6 +20,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace NINA.Astrometry {
             var maxUnix = 0L;
             using (MyStopWatch.Measure()) {
                 var startDateUnix = CoreUtil.DateTimeToUnixTimeStamp(startDate);
-                var data = QueryOnlineData();
+                var data = await QueryOnlineData();
 
                 List<string> rows = new List<string>();
                 using (var context = new DatabaseInteraction().GetContext()) {
@@ -98,17 +99,20 @@ namespace NINA.Astrometry {
             }
             return CoreUtil.UnixTimeStampToDateTime(maxUnix);
         }
+        private async Task<string> QueryOnlineData() {
+            using var httpClient = new HttpClient();
 
-        private string QueryOnlineData() {
-            var webClient = new WebClient();
-            webClient.Headers.Add("User-Agent", CoreUtil.UserAgent);
-            webClient.Headers.Add("Accept", "*/*");
-            webClient.Headers.Add("Cache-Control", "no-cache");
-            webClient.Headers.Add("Host", "datacenter.iers.org");
-            webClient.Headers.Add("accept-encoding", "gzip,deflate");
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
+            httpClient.DefaultRequestHeaders.Accept.ParseAdd("*/*");
+            httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue {
+                NoCache = true
+            };
+            httpClient.DefaultRequestHeaders.Host = "datacenter.iers.org";
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip,deflate");
 
-            // https://datacenter.iers.org/versionMetadata.php?filename=latestVersionMeta/10_FINALS.DATA_IAU2000_V2013_0110.txt
-            return webClient.DownloadString("https://datacenter.iers.org/data/csv/finals2000A.daily.csv");
+            var url = "https://datacenter.iers.org/data/csv/finals2000A.daily.csv";
+
+            return await httpClient.GetStringAsync(url);
         }
 
         public Task Update() {
