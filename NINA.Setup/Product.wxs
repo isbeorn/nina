@@ -646,6 +646,9 @@
       <Component Id="System.Data.SQLite.EF6.dll" Guid="d4cb4e71-0820-45de-9ce7-ae682bb70840" Bitness="$(var.Win64)">
         <File Id="System.Data.SQLite.EF6.dll" Name="System.Data.SQLite.EF6.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.EF6.dll" />
       </Component>
+      <Component Id="System.IO.Pipelines.dll" Guid="8929bcbb-5b70-46e9-8250-869ec5656d42">
+        <File Id="System.IO.Pipelines.dll" Name="System.IO.Pipelines.dll" Source="$(var.NINA_TargetDir)System.IO.Pipelines.dll" />
+      </Component>
       <Component Id="System.IO.Ports.dll" Guid="00cfbe8b-2e61-43e2-9240-2ffbea5097f6">
         <File Id="System.IO.Ports.dll" Name="System.IO.Ports.dll" Source="$(var.NINA_TargetDir)System.IO.Ports.dll" />
       </Component>
