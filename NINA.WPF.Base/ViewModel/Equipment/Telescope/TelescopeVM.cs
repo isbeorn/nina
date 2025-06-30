@@ -237,9 +237,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }
 
             if (profileService.ActiveProfile.DomeSettings.RefuseUnparkWithoutShutterOpen) {
-                var shutterState = domeMediator.GetInfo().ShutterStatus;
-                if (shutterState != ShutterState.ShutterOpen) {
-                    Logger.Error($"Attempt to unpark unpark while the dome shutter or roof status is {shutterState}");
+                var domeInfo = domeMediator.GetInfo();
+                if (!domeInfo.Connected || domeInfo.ShutterStatus != ShutterState.ShutterOpen) {
+                    Logger.Error($"Attempt to unpark the mount while the dome shutter or roof status is {domeInfo.ShutterStatus} or is not connected");
                     Notification.ShowError(Loc.Instance["LblRefuseUnparkWithoutShutterOpenError"]);
                     return false;
                 }
