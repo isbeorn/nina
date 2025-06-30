@@ -19,6 +19,7 @@ using Accord.Math;
 using NINA.Core.Enum;
 using NINA.Equipment.Interfaces;
 using NINA.Core.Locale;
+using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 
 namespace NINA.Equipment.Equipment.MyDome {
@@ -28,6 +29,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         private const double HALF_PI = Math.PI / 2.0;
 
         private readonly IProfileService profileService;
+        private bool flippedDome = false;
 
         public DomeSynchronization(IProfileService profileService) {
             this.profileService = profileService;
@@ -84,7 +86,7 @@ namespace NINA.Equipment.Equipment.MyDome {
             var scopeOriginTranslation = domeSettings.MountType switch {
                 MountTypeEnum.EQUATORIAL => CalculateGEM(scopeCoordinates, localSiderealTime, siteLatitude, sideOfPier),
                 MountTypeEnum.FORK_ON_WEDGE => CalculateForkOnWedge(scopeCoordinates, localSiderealTime, siteLatitude),
-                MountTypeEnum.ALT_AZ => CalculateAltAz(scopeCoordinates, siteLatitude, siteLongitude),
+                MountTypeEnum.ALT_AZ => CalculateAltAz(scopeCoordinates, siteLatitude, siteLongitude, siteElevation),
                 _ => throw new NotSupportedException($"Unsupported mount type: {domeSettings.MountType}"),
             };
 
@@ -211,39 +213,66 @@ namespace NINA.Equipment.Equipment.MyDome {
         private Matrix4x4 CalculateAltAz(
             Coordinates scopeCoordinates,
             Angle siteLatitude,
-            Angle siteLongitude) {
+            Angle siteLongitude,
+            double siteElevation) {
             var domeSettings = profileService.ActiveProfile.DomeSettings;
 
-            // Alt-Az mounts rotate in altitude (around the y-axis) and azimuth (around the z-axis)
-            // Altitude is Dec, Azimuth is Azimuth derived from RA/Dec + LST
-
             // Convert scope RA/Dec to horizontal coordinates (Alt/Az)
-            var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, 0d); // elevation not critical here
+            var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, siteElevation);
 
             // Altitude rotation: scope tilts up from horizontal
             var altitudeRotation = Matrix4x4.CreateRotationY((float)(topocentric.Altitude.Radians));
+            var azimuth = topocentric.Azimuth;
+
+            // Adaptive threshold: telescope is considered to be beyond the top edge of the shutter if this altitude is exceeded
+            double verticalClearanceAngleDeg = Math.Atan2(Math.Abs(domeSettings.GemAxis_mm), domeSettings.DomeRadius_mm) * (180.0 / Math.PI);
+            double zenithThresholdDeg = 90.0 - verticalClearanceAngleDeg;
+            double zOffsetAngle = topocentric.Altitude.Degree + verticalClearanceAngleDeg;
+
+            // Check if telescope is vertically offset and near zenith and whether it is beyond the zenith threshold
+            if (domeSettings.GemAxis_mm != 0d && topocentric.Altitude.Degree >= zenithThresholdDeg) {
+
+                // If the line of sight is higher than the slit can accommodate, rotate the dome to the opposing azimuth
+                if (zOffsetAngle > domeSettings.SlitMaximumAltitude_degrees) {
+                    azimuth = Angle.ByDegree((azimuth.Degree + 180.0) % 360.0);
+
+                    if (!flippedDome) {
+                        Logger.Info("Dome azimuth flipped due to pointing inside zenith threshold. " +
+                            $"Mount Alt: {topocentric.Altitude.Degree:F2}°, Mount Az: {topocentric.Azimuth.Degree:F2}°, Dome Az: {azimuth.Degree:F2}°, z-Offset Alt: {zOffsetAngle:F2}°");
+                    }
+
+                    flippedDome = true;
+                } else {
+                    if (flippedDome) {
+                        Logger.Info("Dome azimuth unflipped after telescope moved away from zenith threshold. " +
+                            $"Mount Alt: {topocentric.Altitude.Degree:F2}°, Mount Az: {topocentric.Azimuth.Degree:F2}°, Dome Az: {azimuth.Degree:F2}°, z-Offset Alt: {zOffsetAngle:F2}°");
+                    }
+
+                    flippedDome = false;
+                }
+            }
 
             // Azimuth rotation: scope rotates around the dome's vertical axis (z-axis)
-            var azimuthRotation = Matrix4x4.CreateRotationZ((float)(-topocentric.Azimuth.Radians));
+            var azimuthRotation = Matrix4x4.CreateRotationZ((float)(-azimuth.Radians));
 
             // Determine hemisphere direction
             var latitudeFactor = siteLatitude.Radians >= 0 ? 1.0 : -1.0;
 
             // Mount offset from dome center
             var mountOffset = Matrix4x4.CreateTranslation(new Vector3(
-                (float)(domeSettings.ScopePositionNorthSouth_mm * latitudeFactor),   // X: North
-                (float)(-domeSettings.ScopePositionEastWest_mm * latitudeFactor),    // Y: East
-                (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up
+                (float)(domeSettings.ScopePositionNorthSouth_mm * latitudeFactor),   // X: North-South
+                (float)(-domeSettings.ScopePositionEastWest_mm * latitudeFactor),    // Y: East-West
+                (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up-Down
             ));
 
-            // Lateral axis offset (side-by-side)
-            var lateralOffset = Matrix4x4.CreateTranslation(new Vector3(
+            // Account for any lateral axis and vertical axis offsets to accomodate side-by-side or piggyback telescopes
+            var offsets = Matrix4x4.CreateTranslation(new Vector3(
                 0.0f,
-                -(float)domeSettings.LateralAxis_mm,
-                0.0f
+                (float)domeSettings.LateralAxis_mm,
+                (float)domeSettings.GemAxis_mm
             ));
 
-            return mountOffset * (azimuthRotation * altitudeRotation * lateralOffset);
+            return mountOffset * (azimuthRotation * altitudeRotation * offsets);
         }
     }
 }

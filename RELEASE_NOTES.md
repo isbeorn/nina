@@ -56,7 +56,7 @@ This allows you to safely return to a stable release if needed.
     - The image history panel now offers FWHM and eccentricity as selectable metrics
     - The image statistics and image history panels can display FWHM, HFR and HFR deviation in either pixels or arcseconds, based on the active profile's camera pixel size and telescope focal length
 - **Domes with Alt-Az mounts**
-  - Alt-Az mounts are a new mount configuration that is supported under Options > Dome. This permits one to define mount and OTA offsets that result in proper dome azimuthhal rotation for an alt-az mount
+  - Alt-Az mounts are a new mount configuration that is supported under Options > Dome. This permits one to define mount and OTA offsets that result in proper dome azimuthal rotation for an alt-az mount, or any side-by-side or piggy-backed telescopes mounted on a main telescope.
 
 ## Behavioral Changes
 - Unparking the mount no longer automatically starts sidereal tracking. Tracking will begin automatically during a slew to a target, as usual.
@@ -182,7 +182,7 @@ This allows you to safely return to a stable release if needed.
   - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
 - **ASCOM Device State**
     - For drivers that implement the new ASCOM 7 Device State, the application will now use the state when possible instead of polling individual fields
-- **Dome/Roof Safety**
+- ** Dome/Roof safety **
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
 - **Switch Polling**
     - Switches are now polled sequentially instead of in parallel for their status updates, to accommodate drivers that do not handle concurrent access properly.

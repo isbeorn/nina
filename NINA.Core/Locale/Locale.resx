@@ -3929,13 +3929,13 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>GEM Axis Length</value>
   </data>
   <data name="LblDomeGemAxisLengthTooltip" xml:space="preserve">
-    <value>If Alt/Az, this should be 0. For an EQ mount, slew RA to +/- 90 degrees, and measure the lateral distance (in mm) from the axis to center of the telescope aperture</value>
+    <value>On an EQ mount, slew RA to +/- 90 degrees, and measure the lateral distance (in mm) from the axis to center of the telescope aperture</value>
   </data>
-  <data name="LblDomeLateralAxisLength" xml:space="preserve">
-    <value>Lateral Axis Length</value>
+  <data name="LblDomeLateralAxisOffset" xml:space="preserve">
+    <value>Lateral axis offset</value>
   </data>
-  <data name="LblDomeLateralAxisLengthTooltip" xml:space="preserve">
-    <value>In a side-by-side configuration, this is the distance (laterally, in mm) from the saddle to the OTA center. Positive is to the right along the OTA axis.</value>
+  <data name="LblDomeLateralAxisOffsetTooltip" xml:space="preserve">
+    <value>The distance laterally on Y the axis from the central axis to the OTA center. Positive is to the right along the OTA axis.</value>
   </data>
   <data name="LblDomeRadius" xml:space="preserve">
     <value>Dome Radius</value>
@@ -7341,6 +7341,12 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblAltitudeAzimuth" xml:space="preserve">
     <value>Altitude-Azimuth</value>
   </data>
+  <data name="LblDomeVerticalAxisOffset" xml:space="preserve">
+    <value>Vertical axis offset</value>
+  </data>
+  <data name="LblDomeVerticalAxisOffsetTooltip" xml:space="preserve">
+    <value>For piggy-backed OTAs on an Alt-Az mounted telescope. This should be the distance between the center of the main OTA and the piggy-backed OTA, in mm</value>
+  </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
     <value>Refuse mount unpark if shutter is not open</value>
   </data>
@@ -7373,6 +7379,12 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
     <value>There is no sunset at your location today.</value>
+  </data>
+  <data name="LblSlitMaximumAltitude" xml:space="preserve">
+    <value>Slit maximum altitude</value>
+  </data>
+  <data name="LblSlitMaximumAltitudeTooltip" xml:space="preserve">
+    <value>The maximum altitude angle, in degrees, that the arc of the slit reaches from the horizon. Generally, dome slits extend for some distance past zenith (90°) but may also not be able to reach zenith due to limitations of the dome's shutter</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
     <value>Unable to connect to {0}</value>
@@ -8051,5 +8063,8 @@ This is useful when a built-in trigger has the timing you need, but you want cus
   </data>
   <data name="Lbl_SequenceTrigger_TriggerOnUnsafe_AfterWaitingUntilSafe_HelpDescription" xml:space="preserve">
     <value>Instructions that run after conditions are safe again.</value>
+  </data>
+  <data name="LblDomeLateralAxisLength" xml:space="preserve">
+    <value>Lateral axis length</value>
   </data>
 </root>
