@@ -29,6 +29,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
 - **ASCOM Device State**
     - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
+- ** Dome/Roof safety **
+    - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
