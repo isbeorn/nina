@@ -30,12 +30,13 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             Id = "No_Device";
-            LastDeviceName = "";
+            LastDeviceName = string.Empty;
             ScopePositionEastWest_mm = 0.0;
             ScopePositionNorthSouth_mm = 0.0;
             ScopePositionUpDown_mm = 0.0;
             DomeRadius_mm = 0.0;
             GemAxis_mm = 0.0;
+            LateralAxis_mm = 0.0;
             AzimuthTolerance_degrees = 2.0;
             FindHomeBeforePark = false;
             DomeSyncTimeoutSeconds = 120;

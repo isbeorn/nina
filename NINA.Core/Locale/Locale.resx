@@ -3899,7 +3899,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>GEM Axis Length</value>
   </data>
   <data name="LblDomeGemAxisLengthTooltip" xml:space="preserve">
-    <value>If Alt/Az, this should be 0. For an EQ mount, slew RA to +/- 90 degrees, and measure the lateral distance (in mm) from the axis to center of the telescope aperture</value>
+    <value>On an EQ mount, slew RA to +/- 90 degrees, and measure the lateral distance (in mm) from the axis to center of the telescope aperture</value>
   </data>
   <data name="LblDomeLateralAxisLength" xml:space="preserve">
     <value>Lateral Axis Length</value>
@@ -7187,6 +7187,12 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblAltitudeAzimuth" xml:space="preserve">
     <value>Altitude-Azimuth</value>
+  </data>
+	<data name="LblDomeVerticalAxisLength" xml:space="preserve">
+    <value>Vertical axis length</value>
+  </data>
+  <data name="LblDomeVerticalAxisLengthTooltip" xml:space="preserve">
+    <value>For piggy-backed OTAs on an Alt-Az mounted telescope. This should be the distance between the center of the main OTA and the piggy-backed OTA</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
     <value>Refuse mount unpark if shutter is not open</value>

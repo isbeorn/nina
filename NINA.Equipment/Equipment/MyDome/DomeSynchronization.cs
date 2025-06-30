@@ -236,14 +236,14 @@ namespace NINA.Equipment.Equipment.MyDome {
                 (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up
             ));
 
-            // Lateral axis offset (side-by-side)
-            var lateralOffset = Matrix4x4.CreateTranslation(new Vector3(
+            // Account for any lateral axis and vertical axis offsets to accomodate side-by-side or piggyback telescopes
+            var offsets = Matrix4x4.CreateTranslation(new Vector3(
                 0.0f,
                 -(float)domeSettings.LateralAxis_mm,
-                0.0f
+                (float)domeSettings.GemAxis_mm  // Reusing GemAxis_mm for vertical offset in Alt-Az mounts since the basic meaning is the same
             ));
 
-            return mountOffset * (azimuthRotation * altitudeRotation * lateralOffset);
+            return mountOffset * (azimuthRotation * altitudeRotation * offsets);
         }
     }
 }
