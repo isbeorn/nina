@@ -223,30 +223,38 @@ namespace NINA.Equipment.Equipment.MyGuider {
         public event EventHandler<IGuideStep> GuideEvent { add { } remove { } }
 
         public async Task<bool>Dither (double ditherPixels, TimeSpan settleTime, bool ditherRAOnly, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            State = "Dithering...";
+            try {
+                State = "Dithering...";
 
-            // Extra defense against telescope disconnection right before a dithering operation
-            if (!telescopeInfo.Connected) {
-                return false;
-            } else {
-                var pulseInstructions = SelectDitherPulse(ditherPixels);
+                // Extra defense against telescope disconnection right before a dithering operation
+                if (!telescopeInfo.Connected) {
+                    return false;
+                } else {
+                    var pulseInstructions = SelectDitherPulse(ditherPixels);
 
-                // Note: According to the ASCOM specification, PulseGuide returns immediately (asynchronous) if the mount supports back to back axis moves, otherwise
-                // it waits until completion. To be strictly correct here we'd start a counter here instead to avoid a potential extra wait. However, DirectGuiding is
-                // primarily aimed at high end mounts which probably can do this anyways.
-                telescopeMediator.PulseGuide(pulseInstructions.directionWestEast, (int)Math.Round(pulseInstructions.durationWestEast.TotalMilliseconds));
-                var pulseGuideDelayMilliseconds = pulseInstructions.durationWestEast.TotalMilliseconds;
-                if (!ditherRAOnly) {
-                    telescopeMediator.PulseGuide(pulseInstructions.directionNorthSouth, (int)Math.Round(pulseInstructions.durationNorthSouth.TotalMilliseconds));
-                    pulseGuideDelayMilliseconds = Math.Max(pulseGuideDelayMilliseconds, pulseInstructions.durationNorthSouth.TotalMilliseconds);
+                    // Note: According to the ASCOM specification, PulseGuide returns immediately (asynchronous) if the mount supports back to back axis moves, otherwise
+                    // it waits until completion. To be strictly correct here we'd start a counter here instead to avoid a potential extra wait. However, DirectGuiding is
+                    // primarily aimed at high end mounts which probably can do this anyways.
+                    telescopeMediator.PulseGuide(pulseInstructions.directionWestEast, (int)Math.Round(pulseInstructions.durationWestEast.TotalMilliseconds));
+                    var pulseGuideDelayMilliseconds = pulseInstructions.durationWestEast.TotalMilliseconds;
+                    if (!ditherRAOnly) {
+                        telescopeMediator.PulseGuide(pulseInstructions.directionNorthSouth, (int)Math.Round(pulseInstructions.durationNorthSouth.TotalMilliseconds));
+                        pulseGuideDelayMilliseconds = Math.Max(pulseGuideDelayMilliseconds, pulseInstructions.durationNorthSouth.TotalMilliseconds);
+                    }
+                    await CoreUtil.Delay(TimeSpan.FromMilliseconds(pulseGuideDelayMilliseconds), ct);
+
+                    State = "Dither settling...";
+                    await CoreUtil.Delay(settleTime, ct);
+
+                    while (telescopeInfo.IsPulseGuiding) {
+                        await CoreUtil.Delay(TimeSpan.FromMilliseconds(100), ct);
+                    }
                 }
-                await CoreUtil.Delay(TimeSpan.FromMilliseconds(pulseGuideDelayMilliseconds), ct);
+                return true;
 
-                State = "Dither settling...";
-                await CoreUtil.Delay(settleTime, ct);
+            } finally {
+                State = "Idle";
             }
-            State = "Idle";
-            return true;
         }
 
         public Task<bool> Dither(IProgress<ApplicationStatus> progress, CancellationToken ct) {

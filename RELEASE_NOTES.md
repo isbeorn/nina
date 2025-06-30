@@ -17,6 +17,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When Smart Exposure was interrupted and the filter was manually changed afterwards, the instruction will now make sure the filter is set to the correct one before proceeding with the next exposure
 - Sunrise, sunset, moonrise, and moonset now account for your location's elevation for increased accuracy.
 - Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
+- Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
  
 ### **Device Management**
 - **Device Chooser Enhancements**  
