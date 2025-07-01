@@ -278,6 +278,19 @@ namespace NINA.Profile {
             }
         }
 
+        private bool refuseUnparkWithoutShutterOpen = false;
+
+        [DataMember]
+        public bool RefuseUnparkWithoutShutterOpen {
+            get => refuseUnparkWithoutShutterOpen;
+            set {
+                if (refuseUnparkWithoutShutterOpen != value) {
+                    refuseUnparkWithoutShutterOpen = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private bool parkDomeBeforeShutterMove = false;
 
         [DataMember]
