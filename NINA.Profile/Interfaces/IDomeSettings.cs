@@ -34,6 +34,7 @@ namespace NINA.Profile.Interfaces {
         bool CloseOnUnsafe { get; set; }
         bool ParkMountBeforeShutterMove { get; set; }
         bool RefuseUnsafeShutterMove { get; set; }
+        bool RefuseUnparkWithoutShutterOpen { get; set; }
         bool RefuseUnsafeShutterOpenSansSafetyDevice { get; set; }
         bool ParkDomeBeforeShutterMove { get; set; }
         MountTypeEnum MountType { get; set; }
