@@ -276,7 +276,7 @@ jobs:
         retention-days: 1
 
     - name: Upload NuGet packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nugets
         path: publish/*.nupkg
@@ -434,7 +434,7 @@ jobs:
     needs: [versioning, build, upload]
     runs-on: ubuntu-latest
     environment:
-      name: nightly-release
+      name: nuget-release
     
     steps:
     - name: Download nuget artifact
