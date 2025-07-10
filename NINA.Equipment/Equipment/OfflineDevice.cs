@@ -471,7 +471,7 @@ namespace NINA.Equipment.Equipment {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Poll() {
+        public bool Poll() {
             throw new NotImplementedException();
         }
 

@@ -32,6 +32,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
 - ** Dome/Roof safety **
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
+- ** Switch Polling**
+    - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
