@@ -79,12 +79,22 @@ jobs:
         
         $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
         foreach ($file in $csprojFiles) {
-            $projContent = Get-Content $file.FullName -Raw
-            if ($projContent -match '<Version>.*?</Version>') {
-                $newProjContent = $projContent -replace '<Version>.*?</Version>', "<Version>$releaseVersion$assemblyPostfix</Version>"
-                Set-Content -Path $file.FullName -Value $newProjContent -Encoding UTF8
-                Write-Host "🔄 Updated <Version> in $($file.Name) to $releaseVersion$assemblyPostfix"
-                git add $file.FullName
+            [xml]$proj = Get-Content $file.FullName
+
+            # No namespace case (SDK-style projects):
+            if ($proj.Project.PropertyGroup) {
+                $changed = $false
+                foreach ($pg in $proj.Project.PropertyGroup) {
+                    if ($pg.Version) {
+                        $pg.Version = "$releaseVersion$assemblyPostfix"
+                        $changed = $true
+                    }
+                }
+                if ($changed) {
+                    $proj.Save($file.FullName)
+                    Write-Host "🔄 Updated <Version> in $($file.Name) to $releaseVersion$assemblyPostfix"
+                    git add $file.FullName
+                }
             }
         }
 
