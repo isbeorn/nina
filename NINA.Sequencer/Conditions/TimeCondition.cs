@@ -99,7 +99,7 @@ namespace NINA.Sequencer.Conditions {
                 }
             }
             if (!timeDeterminedSuccessfully) {
-                i.Add(Loc.Instance["LblSelectedTimeSourceInvalid"]);
+                i.Add($"{Loc.Instance["LblSelectedTimeSourceInvalid"]} {failureReason}");
             }
 
             Issues = i;
@@ -205,6 +205,7 @@ namespace NINA.Sequencer.Conditions {
         }
 
         private bool timeDeterminedSuccessfully;
+        private string failureReason;
         private DateTime lastReferenceDate;
         private void UpdateTime() {
             try {
@@ -217,8 +218,9 @@ namespace NINA.Sequencer.Conditions {
 
                 }
                 timeDeterminedSuccessfully = true;
-            } catch (Exception) {
+            } catch (Exception ex) {
                 timeDeterminedSuccessfully = false;
+                failureReason = ex is TimeProviderException tpe ? tpe.LocalizedMessage : ex.Message;
                 Validate();
             }
         }

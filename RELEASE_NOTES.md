@@ -75,6 +75,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
 - **Legacy Sequencer Multiple File Load**
     - Fix issue where saving sequences after multi-file load overwrote only one XML
+- **Time source failure reasons**
+    - When a time source fails to provide a value - e.g. that there is no astronomical twilight today - the validation will also include the reason for the failure. This will help to understand why a time source is not providing a value.
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  
