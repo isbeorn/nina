@@ -76,6 +76,17 @@ jobs:
         $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
 
         Set-Content -Path $file -Value $content -Encoding UTF8
+        
+        $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
+        foreach ($file in $csprojFiles) {
+            $projContent = Get-Content $file.FullName -Raw
+            if ($projContent -match '<Version>.*?</Version>') {
+                $newProjContent = $projContent -replace '<Version>.*?</Version>', "<Version>$releaseVersion$assemblyPostfix</Version>"
+                Set-Content -Path $file.FullName -Value $newProjContent -Encoding UTF8
+                Write-Host "🔄 Updated <Version> in $($file.Name) to $releaseVersion$assemblyPostfix"
+                git add $file.FullName
+            }
+        }
 
         echo "✅ Bumped to version $releaseVersion"
         echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
