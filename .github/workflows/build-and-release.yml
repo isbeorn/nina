@@ -78,8 +78,8 @@ jobs:
         Set-Content -Path $file -Value $content -Encoding UTF8
         
         $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
-        foreach ($file in $csprojFiles) {
-            [xml]$proj = Get-Content $file.FullName
+        foreach ($csproj in $csprojFiles) {
+            [xml]$proj = Get-Content $csproj.FullName
 
             # No namespace case (SDK-style projects):
             if ($proj.Project.PropertyGroup) {
@@ -91,9 +91,9 @@ jobs:
                     }
                 }
                 if ($changed) {
-                    $proj.Save($file.FullName)
-                    Write-Host "🔄 Updated <Version> in $($file.Name) to $releaseVersion$assemblyPostfix"
-                    git add $file.FullName
+                    $proj.Save($csproj.FullName)
+                    Write-Host "🔄 Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
+                    git add $csproj.FullName
                 }
             }
         }
