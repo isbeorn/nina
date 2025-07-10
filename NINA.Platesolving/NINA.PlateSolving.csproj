@@ -49,7 +49,7 @@
   <PropertyGroup>
     <Description>This assembly contains the Platesolving components of N.I.N.A. to invoke different platesolvers.</Description>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.1060-nightly</Version>
+    <Version>3.2.0.1059-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
