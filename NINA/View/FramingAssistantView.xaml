@@ -1096,6 +1096,7 @@
 
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
                                                     <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                     <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                     <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.AddTargetToTargetListCommand}" />
@@ -1137,6 +1138,7 @@
 
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
                                                     <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                     <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                     <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.UpdateExistingTargetInSequencerCommand}" />
