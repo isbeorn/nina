@@ -60,25 +60,11 @@
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
             VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Standard">
-            <TreeView.Style>
-                <Style TargetType="TreeView">
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <!--  Set the same brush to keep the background consistent  -->
-                            <Setter Property="Background" Value="Red" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TreeView.Style>
             <TreeView.Resources>
-                <ResourceDictionary>
-                    <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
-                        <local:SequenceBlockView />
-                    </DataTemplate>
-                </ResourceDictionary>
-            </TreeView.Resources>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
+                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                    <local:SequenceBlockView />
+                </DataTemplate>
+                <Style x:Key="RootStyle" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -154,7 +140,129 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </TreeView.ItemContainerStyle>
+                <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                <Grid Margin="0,5,0,5" IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="20" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border
+                                        x:Name="Bd"
+                                        Grid.Column="1"
+                                        Margin="0,0,0,0"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="0,0,0,0"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter
+                                            x:Name="PART_Header"
+                                            Margin="-1,-5,0,-5"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            ContentSource="Header"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                    <Border
+                                        x:Name="ContainerSideBorder"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,0,0,0"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,0">
+                                        <ItemsPresenter
+                                            x:Name="ItemsHost"
+                                            Margin="0,0,0,15"
+                                            HorizontalAlignment="Stretch">
+                                            <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
+                                            <i:Interaction.Behaviors>
+                                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                            </i:Interaction.Behaviors>
+                                        </ItemsPresenter>
+                                    </Border>
+                                    <Border
+                                        x:Name="ContainerBottomBorder"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,0,0,5"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,15">
+                                        <i:Interaction.Behaviors>
+                                            <!--  Drop area above and below the Sequence Container  -->
+                                            <behaviors:DragOverBehavior
+                                                AllowDragAbove="False"
+                                                AllowDragBelow="{Binding IsExpanded}"
+                                                AllowDragCenter="False"
+                                                DragBelowSize="15"
+                                                Enabled="{Binding IsExpanded}" />
+                                        </i:Interaction.Behaviors>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+
+                                    <DataTrigger Binding="{Binding IsExpanded}" Value="false">
+                                        <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true" />
+                                            <Condition Property="IsSelectionActive" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+                            <Setter Property="ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Resources>
+            <TreeView.Style>
+                <Style TargetType="TreeView">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <!--  Set the same brush to keep the background consistent  -->
+                            <Setter Property="Background" Value="Red" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
+            <TreeView.ItemContainerStyleSelector>
+                <local:SequenceTreeViewItemStyleSelector
+                    ContainerStyle="{StaticResource ContainerStyle}"
+                    DefaultStyle="{StaticResource RootStyle}"
+                    ItemStyle="{StaticResource RootStyle}" />
+            </TreeView.ItemContainerStyleSelector>
         </TreeView>
         <!--  ******* Available Sequence Items and Templates *******  -->
         <GridSplitter
