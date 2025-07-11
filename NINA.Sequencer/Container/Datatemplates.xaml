@@ -266,7 +266,7 @@
             DataContext="{Binding UpdateSourceTrigger=PropertyChanged}" />
     </HierarchicalDataTemplate>
 
-    <DataTemplate DataType="{x:Type local:ParallelContainer}">
+    <HierarchicalDataTemplate DataType="{x:Type local:ParallelContainer}" ItemsSource="{Binding Items}">
         <view:SequenceContainerView>
             <view:SequenceContainerView.SequenceContainerContent>
                 <TextBlock
@@ -276,9 +276,9 @@
                     Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
             </view:SequenceContainerView.SequenceContainerContent>
         </view:SequenceContainerView>
-    </DataTemplate>
+    </HierarchicalDataTemplate>
 
-    <DataTemplate DataType="{x:Type local:DeepSkyObjectContainer}">
+    <HierarchicalDataTemplate DataType="{x:Type local:DeepSkyObjectContainer}" ItemsSource="{Binding Items}">
         <view:SequenceContainerView>
             <view:SequenceContainerView.SequenceContainerContent>
                 <Grid>
@@ -817,10 +817,10 @@
                 </Grid>
             </view:SequenceContainerView.SequenceContainerContent>
         </view:SequenceContainerView>
-    </DataTemplate>
-    <DataTemplate DataType="{x:Type local:SequenceContainer}">
+    </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate DataType="{x:Type local:SequenceContainer}" ItemsSource="{Binding Items}">
         <view:SequenceContainerView />
-    </DataTemplate>
+    </HierarchicalDataTemplate>
 
     <HierarchicalDataTemplate DataType="{x:Type local:TargetAreaContainer}" ItemsSource="{Binding Items}">
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">

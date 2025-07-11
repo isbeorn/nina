@@ -63,6 +63,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
   - Added **drag-and-drop disable and enable buttons**.  
   - Pressing the **Escape** key while dragging an item cancels the action.  
+  - Large sequences should now load significantly faster, with proper UI virtualization for off-screen items.
 - **Imaging Tab Locking**  
   - Added a **lock/unlock button** to prevent panels from being closed or rearranged.  
   - **Resizing panels remains possible** (no method found to disable this).  
