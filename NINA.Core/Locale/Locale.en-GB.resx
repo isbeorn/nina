@@ -7185,4 +7185,43 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblCivilDawn" xml:space="preserve">
     <value>Civil dawn</value>
   </data>
+  <data name="Lbl_SequenceItem_Utility_SetCustomText_Description" xml:space="preserve">
+    <value>Set one of the custom text image pattern items to a text value</value>
+  </data>
+  <data name="Lbl_SequenceItem_Utility_SetCustomText_Name" xml:space="preserve">
+    <value>Set Custom Text</value>
+  </data>
+  <data name="LblCustomTexts" xml:space="preserve">
+    <value>Custom Texts</value>
+  </data>
+  <data name="LblCustomText1Key" xml:space="preserve">
+    <value>$$CUSTOMTEXT1$$</value>
+  </data>
+  <data name="LblCustomText1" xml:space="preserve">
+    <value>Custom Text 1</value>
+  </data>
+  <data name="LblCustomText2Key" xml:space="preserve">
+    <value>$$CUSTOMTEXT2$$</value>
+  </data>
+  <data name="LblCustomText2" xml:space="preserve">
+    <value>Custom Text 2</value>
+  </data>
+  <data name="LblCustomText3Key" xml:space="preserve">
+    <value>$$CUSTOMTEXT3$$</value>
+  </data>
+  <data name="LblCustomText3" xml:space="preserve">
+    <value>Custom Text 3</value>
+  </data>
+  <data name="LblCustomText4Key" xml:space="preserve">
+    <value>$$CUSTOMTEXT4$$</value>
+  </data>
+  <data name="LblCustomText4" xml:space="preserve">
+    <value>Custom Text 4</value>
+  </data>
+  <data name="LblCustomText5Key" xml:space="preserve">
+    <value>$$CUSTOMTEXT5$$</value>
+  </data>
+  <data name="LblCustomText5" xml:space="preserve">
+    <value>Custom Text 5</value>
+  </data>
 </root>

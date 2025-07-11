@@ -278,6 +278,35 @@
         </view:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:SetCustomText}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox VerticalAlignment="Center"
+                              DisplayMemberPath="Description"
+                              SelectedValuePath="Key"
+                              SelectedValue="{Binding Path=PatternKey, Mode=TwoWay}"
+                              ItemsSource="{Binding CustomPatterns}"
+                            />
+                    <TextBox
+                        Grid.Column="1"
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Text="{Binding Text}"
+                        TextAlignment="Left" />
+                </Grid>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+
     <StackPanel
         x:Key="WaitProgress"
         x:Shared="false"

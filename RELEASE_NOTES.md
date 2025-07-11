@@ -55,6 +55,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - The "Connect/Disconnect All" button in the lower-left corner of the application has been updated
       - It shows "Connect All" only when no devices are connected.
       - When at least one device is connected it will change to "Disconnect All".
+- **SetCustomText sequence item**
+  - Five custom text file patterns can be added using this new sequence item.
+  - The new file patterns are $$CUSTOMTEXTn$ where n is a number between 1 and 5
  
 ### **Sequencer & Imaging**
 - **Sequencer Enhancements**  
