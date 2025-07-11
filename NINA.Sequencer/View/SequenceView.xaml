@@ -148,7 +148,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Grid Margin="0,10,0,0" IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                <Grid Margin="0,5,0,5" IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MinWidth="20" />
                                         <ColumnDefinition />
@@ -156,6 +156,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Border
                                         x:Name="Bd"
@@ -164,7 +165,7 @@
                                         Padding="{TemplateBinding Padding}"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="10,0,0,0"
+                                        BorderThickness="0,0,0,0"
                                         SnapsToDevicePixels="true">
                                         <ContentPresenter
                                             x:Name="PART_Header"
@@ -174,16 +175,16 @@
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                     </Border>
                                     <Border
-                                        x:Name="ContainerBorder"
+                                        x:Name="ContainerSideBorder"
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Grid.ColumnSpan="2"
-                                        Margin="0,0,0,10"
+                                        Margin="0,0,0,0"
                                         BorderBrush="{StaticResource SecondaryBackgroundBrush}"
-                                        BorderThickness="10,0,0,15">
+                                        BorderThickness="10,0,0,0">
                                         <ItemsPresenter
                                             x:Name="ItemsHost"
-                                            Margin="0,0,0,10"
+                                            Margin="0,0,0,15"
                                             HorizontalAlignment="Stretch">
                                             <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
                                             <i:Interaction.Behaviors>
@@ -191,11 +192,30 @@
                                             </i:Interaction.Behaviors>
                                         </ItemsPresenter>
                                     </Border>
+                                    <Border
+                                        x:Name="ContainerBottomBorder"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,0,0,5"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,15">
+                                        <i:Interaction.Behaviors>
+                                            <!--  Drop area above and below the Sequence Container  -->
+                                            <behaviors:DragOverBehavior
+                                                AllowDragAbove="False"
+                                                AllowDragBelow="{Binding IsExpanded}"
+                                                AllowDragCenter="False"
+                                                DragBelowSize="15"
+                                                Enabled="{Binding IsExpanded}" />
+                                        </i:Interaction.Behaviors>
+                                    </Border>
                                 </Grid>
                                 <ControlTemplate.Triggers>
 
                                     <DataTrigger Binding="{Binding IsExpanded}" Value="false">
-                                        <Setter TargetName="ContainerBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
