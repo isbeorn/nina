@@ -237,13 +237,6 @@
                     </Style.Triggers>
                 </Style>
             </TreeView.Style>
-            <!--<TreeView.Resources>
-                <ResourceDictionary>
-                    <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
-                        <local:SequenceBlockView />
-                    </DataTemplate>
-                </ResourceDictionary>
-            </TreeView.Resources>-->
             <TreeView.ItemContainerStyleSelector>
                 <local:SequenceTreeViewItemStyleSelector
                     ContainerStyle="{StaticResource ContainerStyle}"

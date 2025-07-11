@@ -38,12 +38,11 @@ using System.Windows.Shapes;
 namespace NINA.View.Sequencer {
 
     /// <summary>
-    /// Interaction logic for SequenceContainerView.xaml
+    /// Interaction logic for HierarchicalSequenceContainerView.xaml
     /// </summary>
-    [Obsolete("Use HierarchicalSequenceContainerView inside a Hierarchical Data Template instead!")]
-    public partial class SequenceContainerView : UserControl {
+    public partial class HierarchicalSequenceContainerView : UserControl {
 
-        public SequenceContainerView() {
+        public HierarchicalSequenceContainerView() {
             InitializeComponent();
         }
 
@@ -52,7 +51,7 @@ namespace NINA.View.Sequencer {
         }
 
         public static readonly DependencyProperty SequenceContainerContentProperty =
-            DependencyProperty.Register(nameof(SequenceContainerContent), typeof(object), typeof(SequenceContainerView));
+            DependencyProperty.Register(nameof(SequenceContainerContent), typeof(object), typeof(HierarchicalSequenceContainerView));
 
         public object SequenceContainerContent {
             get => (object)GetValue(SequenceContainerContentProperty);
@@ -60,7 +59,7 @@ namespace NINA.View.Sequencer {
         }
 
         public static readonly DependencyProperty ShowDetailsProperty =
-            DependencyProperty.Register(nameof(ShowDetails), typeof(bool), typeof(SequenceContainerView), new PropertyMetadata(true));
+            DependencyProperty.Register(nameof(ShowDetails), typeof(bool), typeof(HierarchicalSequenceContainerView), new PropertyMetadata(true));
 
         public bool ShowDetails {
             get => (bool)GetValue(ShowDetailsProperty);
@@ -165,25 +164,6 @@ namespace NINA.View.Sequencer {
                     }
                 }
             }
-        }
-    }
-
-    internal class DeprecatedContainerStyleSelector : DataTemplateSelector {
-        public DataTemplate DeepSkyObjectContainer { get; set; }
-        public DataTemplate Container { get; set; }
-        public DataTemplate ParallelContainer { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            if (item is SequentialContainer && item is not IImmutableContainer) {
-                return Container;
-            }
-            if (item is ParallelContainer && item is not IImmutableContainer) {
-                return ParallelContainer;
-            }
-            if (item is DeepSkyObjectContainer && item is not IImmutableContainer) {
-                return DeepSkyObjectContainer;
-            }
-            return null;
         }
     }
 }
