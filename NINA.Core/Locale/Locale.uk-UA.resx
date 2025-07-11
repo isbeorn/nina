@@ -118,49 +118,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>Сх.</value>
+    <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>Пн.</value>
+    <value>N</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>Пд.</value>
+    <value>S</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>Зх.</value>
+    <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Інспектор з аберації</value>
+    <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Активний</value>
+    <value>Active</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Активний фільтр</value>
+    <value>Active filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Деталі активного плану</value>
+    <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Додати як ціль плану</value>
+    <value>Add as Sequence Target</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Додаткові налаштування</value>
+    <value>Advanced Settings</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Визначення контрастності (експериментально)</value>
+    <value>Contrast Detection (Experimental)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Автофокус увімкнено, але електрофокусер не під'єднаний</value>
+    <value>Auto-Focus is enabled, yet focuser is not connected</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
     <value>Star HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>Після</value>
+    <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Використовувати найяскравіші зірки</value>
+    <value>Use brightest n stars</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
     <value>Limit AF to brightest stars. 0 means no limit.</value>
@@ -172,13 +172,13 @@
     <value>Alnitak Flat Panel</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Налаштування камери Altair</value>
+    <value>Altair Camera Setup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternative UI Color Schema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Висота</value>
+    <value>Altitude</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
     <value>Measure Altitude Error</value>
@@ -209,7 +209,7 @@ Using those two points the actual altitude error will be calculated and displaye
     <value>Annotate Deep Sky Objects</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Показати сітку</value>
+    <value>Display Grid</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
     <value>Annotate Image</value>
@@ -232,7 +232,7 @@ The error has been logged to "%localappdata%\NINA\Logs".
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Дата початку програми у форматі Рік-Місяць-День</value>
+    <value>Application start date with format YYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
     <value>arcmin</value>
@@ -247,10 +247,10 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Помилка отримання зображення від камери!</value>
+    <value>Error retrieving image data from camera!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>На теперішній час підтримуються лише монохромні сенсори на 16 біт</value>
+    <value>Only 16 bit Monochrome sensors currently supported</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
@@ -274,13 +274,13 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Астрометрія</value>
+    <value>Astrometry</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Автофокус</value>
+    <value>Auto Focus</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
     <value>After HFR increase</value>
@@ -357,7 +357,7 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <value>On filter change</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>При запуску</value>
+    <value>On start</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
     <value>AF Outer Crop Ratio</value>
@@ -369,7 +369,7 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <value>Restoring original focus position</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Час</value>
+    <value>Time</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
     <value>Switching back to original filter</value>
@@ -390,7 +390,7 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <value>Auto Update Source</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Азимут</value>
+    <value>Azimuth</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
     <value>Measure Azimuth Error</value>
@@ -409,7 +409,7 @@ Using those two points the actual azimuth error will be calculated and displayed
     <value>Point Telescope South near declination 0 and near meridian</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Фон</value>
+    <value>Background</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
     <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
@@ -418,7 +418,7 @@ Using those two points the actual azimuth error will be calculated and displayed
     <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
-    <value>Бета</value>
+    <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIAS mean value (in 16bit)</value>
@@ -475,7 +475,7 @@ Dec: {1}</value>
     <value>Byte Shuffling</value>
   </data>
   <data name="LblCache" xml:space="preserve">
-    <value>Кеш</value>
+    <value>Cache</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
     <value>Calculate Bias</value>
@@ -487,22 +487,22 @@ Dec: {1}</value>
     <value>Cam</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Камера</value>
+    <value>Camera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Акумулятор камери</value>
+    <value>Camera Battery</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Камера зайнята</value>
+    <value>Camera is busy</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Камеру під'єднано</value>
+    <value>Camera connected</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>З'єднання з камерою втрачено! Повторно під'єднайте камеру!</value>
+    <value>Camera connection lost! Please reconnect camera!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Камера має кулер, але він не увімкнений</value>
+    <value>Camera has cooler, yet it is not enabled</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
     <value>Camera download failed.
@@ -516,64 +516,64 @@ Filter: {3}</value>
 able to compensate for ambient temperature variations</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
-    <value>Температура сенсора камери близько {0}°C, метою є температура {1}°C</value>
+    <value>Camera is at {0}°C yet target temperature is {1}°C</value>
   </data>
   <data name="LblCameraOptions" xml:space="preserve">
-    <value>Опції камери</value>
+    <value>Camera Options</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
     <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
-    <value>Стан камери</value>
+    <value>Camera State</value>
   </data>
   <data name="LblCameraXSize" xml:space="preserve">
-    <value>Розмір матриці X</value>
+    <value>Camera X Size</value>
   </data>
   <data name="LblCameraYSize" xml:space="preserve">
-    <value>Розмір матриці Y</value>
+    <value>Camera Y Size</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>Інформація про камеру</value>
+    <value>Camera Info</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>Налаштування камери</value>
+    <value>Camera Settings</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>Скасувати</value>
+    <value>Cancel</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
-    <value>Помилка камери Canon: {0}</value>
+    <value>A Canon error occored: {0}</value>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Capture Image and Platesolve</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Закрийте сенсор і зробіть фото</value>
+    <value>Cover Sensor and Capture Image</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Відкрийте сенсор і зробіть фото</value>
+    <value>Uncover Sensor and Capture Image</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Центрування осі Dec</value>
+    <value>Center Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>DMS центрування осі Dec</value>
+    <value>Center Dec dms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Центрування осі RA</value>
+    <value>Center RA</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>HMS центрування осі RA</value>
+    <value>Center RA hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
     <value>Center target</value>
   </data>
   <data name="LblChange" xml:space="preserve">
-    <value>Змінити</value>
+    <value>Change</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
     <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
@@ -614,31 +614,31 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
-    <value>Температура сенсора</value>
+    <value>Chip Temperature</value>
   </data>
   <data name="LblChipTempShort" xml:space="preserve">
-    <value>Темп. сенсора</value>
+    <value>Chip Temp.</value>
   </data>
   <data name="LblChooseProfile" xml:space="preserve">
-    <value>Виберіть профіль</value>
+    <value>Choose Profile</value>
   </data>
   <data name="LblClear" xml:space="preserve">
-    <value>Очистити</value>
+    <value>Clear</value>
   </data>
   <data name="LblClearCache" xml:space="preserve">
-    <value>Очистити кеш</value>
+    <value>Clear Cache</value>
   </data>
   <data name="LblClockwise" xml:space="preserve">
-    <value>За годинниковою стрілкою</value>
+    <value>Clockwise</value>
   </data>
   <data name="LblCloudCover" xml:space="preserve">
     <value>Cloud Cover</value>
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
-    <value>Кольоровий сенсор ще не підтримується</value>
+    <value>Color sensor is not supported yet</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Стиснення</value>
+    <value>Compression</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -656,280 +656,280 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
-    <value>Під'єднати</value>
+    <value>Connect</value>
   </data>
   <data name="LblConnected" xml:space="preserve">
-    <value>Під'єднано</value>
+    <value>Connected</value>
   </data>
   <data name="LblConnecting" xml:space="preserve">
-    <value>З'єднання</value>
+    <value>Connecting</value>
   </data>
   <data name="LblConstellation" xml:space="preserve">
-    <value>Сузір'я</value>
+    <value>Constellation</value>
   </data>
   <data name="LblConstellation_AND" xml:space="preserve">
-    <value>Андромеда</value>
+    <value>Andromeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
     <value>Antlia</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Райський Птах</value>
+    <value>Apus</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
-    <value>Орел</value>
+    <value>Aquila</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>Водолій</value>
+    <value>Aquarius</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Жертовник</value>
+    <value>Ara</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
-    <value>Овен</value>
+    <value>Aries</value>
   </data>
   <data name="LblConstellation_AUR" xml:space="preserve">
-    <value>Візничий</value>
+    <value>Auriga</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>Волопас</value>
+    <value>Bootes</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Різець</value>
+    <value>Caelum</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Жирафа</value>
+    <value>Camelopardalis</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
-    <value>Козоріг</value>
+    <value>Capricornus</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Кіль</value>
+    <value>Carina</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
-    <value>Кассіопея</value>
+    <value>Cassiopeia</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
-    <value>Кентавр</value>
+    <value>Centaurus</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>Цефей</value>
+    <value>Cepheus</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>Кит</value>
+    <value>Cetus</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>Хамелеон</value>
+    <value>Chamaeleon</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Циркуль</value>
+    <value>Circinus</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Великий Пес</value>
+    <value>Canis major</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>Малий Пес</value>
+    <value>Canis minor</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
-    <value>Рак</value>
+    <value>Cancer</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>Голуб</value>
+    <value>Columba</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>Волосся Вероніки</value>
+    <value>Coma berenices</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
-    <value>Південна Корона</value>
+    <value>Corona australis</value>
   </data>
   <data name="LblConstellation_CRB" xml:space="preserve">
-    <value>Північна Корона</value>
+    <value>Corona borealis</value>
   </data>
   <data name="LblConstellation_CRT" xml:space="preserve">
-    <value>Чаша</value>
+    <value>Crater</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>Південний Хрест</value>
+    <value>Crux</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>Ворон</value>
+    <value>Corvus</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Гончі Пси</value>
+    <value>Canes venatici</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Лебідь</value>
+    <value>Cygnus</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>Дельфін</value>
+    <value>Delphinus</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
-    <value>Золота Риба</value>
+    <value>Dorado</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Дракон</value>
+    <value>Draco</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Малий кінь</value>
+    <value>Equuleus</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>Ерідан</value>
+    <value>Eridanus</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Піч</value>
+    <value>Fornax</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Близнюки</value>
+    <value>Gemini</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Журавель</value>
+    <value>Grus</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
-    <value>Геркулес</value>
+    <value>Hercules</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Годинник</value>
+    <value>Horologium</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Гідра</value>
+    <value>Hydra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Південна Гідра</value>
+    <value>Hydrus</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Індіанець</value>
+    <value>Indus</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Ящірка</value>
+    <value>Lacerta</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
-    <value>Лев</value>
+    <value>Leo</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>Заєць</value>
+    <value>Lepus</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>Терези</value>
+    <value>Libra</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
-    <value>Малий Лев</value>
+    <value>Leo minor</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Вовк</value>
+    <value>Lupus</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
-    <value>Рись</value>
+    <value>Lynx</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>Ліра</value>
+    <value>Lyra</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
-    <value>Столова Гора</value>
+    <value>Mensa</value>
   </data>
   <data name="LblConstellation_MIC" xml:space="preserve">
-    <value>Мікроскоп</value>
+    <value>Microscopium</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>Єдиноріг</value>
+    <value>Monoceros</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>Муха</value>
+    <value>Musca</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Косинець</value>
+    <value>Norma</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Октант</value>
+    <value>Octans</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Змієносець</value>
+    <value>Ophiuchus</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
-    <value>Оріон</value>
+    <value>Orion</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>Павич</value>
+    <value>Pavo</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
-    <value>Пегас</value>
+    <value>Pegasus</value>
   </data>
   <data name="LblConstellation_PER" xml:space="preserve">
-    <value>Персей</value>
+    <value>Perseus</value>
   </data>
   <data name="LblConstellation_PHE" xml:space="preserve">
-    <value>Фенікс</value>
+    <value>Phoenix</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Живописець</value>
+    <value>Pictor</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Південна Риба</value>
+    <value>Pisces austrinus</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
-    <value>Риби</value>
+    <value>Pisces</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Корма</value>
+    <value>Puppis</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>Компас</value>
+    <value>Pyxis</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
-    <value>Сітка</value>
+    <value>Reticulum</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>Скульптор</value>
+    <value>Sculptor</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
-    <value>Скорпіон</value>
+    <value>Scorpius</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>Щит</value>
+    <value>Scutum</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
-    <value>Змія</value>
+    <value>Serpens</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>Голова Змії</value>
+    <value>Serpens caput</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>Хвіст Змії</value>
+    <value>Serpens cauda</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
-    <value>Секстант</value>
+    <value>Sextans</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Стріла</value>
+    <value>Sagitta</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
-    <value>Стрілець</value>
+    <value>Sagittarius</value>
   </data>
   <data name="LblConstellation_TAU" xml:space="preserve">
-    <value>Телець</value>
+    <value>Taurus</value>
   </data>
   <data name="LblConstellation_TEL" xml:space="preserve">
-    <value>Телескоп</value>
+    <value>Telescopium</value>
   </data>
   <data name="LblConstellation_TRA" xml:space="preserve">
-    <value>Південний Трикутник</value>
+    <value>Triangulum australe</value>
   </data>
   <data name="LblConstellation_TRI" xml:space="preserve">
-    <value>Трикутник</value>
+    <value>Triangulum</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>Тукан</value>
+    <value>Tucana</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
-    <value>Велика Ведмедиця</value>
+    <value>Ursa major</value>
   </data>
   <data name="LblConstellation_UMI" xml:space="preserve">
-    <value>Мала Ведмедиця</value>
+    <value>Ursa minor</value>
   </data>
   <data name="LblConstellation_VEL" xml:space="preserve">
-    <value>Вітрила</value>
+    <value>Vela</value>
   </data>
   <data name="LblConstellation_VIR" xml:space="preserve">
-    <value>Діва</value>
+    <value>Virgo</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
     <value>Volans</value>
@@ -938,7 +938,7 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Vulpecula</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>Продовжити</value>
+    <value>Continue</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
     <value>Contrast Detect Method</value>
@@ -949,31 +949,31 @@ A duration is optional. Most camera drivers already regulate the cooler power au
 In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Кулер</value>
+    <value>Cooler</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>Потужність кулера</value>
+    <value>Cooler Power</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>Охолодження</value>
+    <value>Cooling</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>Координати</value>
+    <value>Coordinates</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>Проти годинникової стрілки</value>
+    <value>Counterclockwise</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
     <value>Cover your scope now and press OK to start taking the darks.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>Прикрийте свій телескоп</value>
+    <value>Cover your scope now</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>Поточне середнє значення</value>
+    <value>Current Mean</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>Поточна позиція</value>
+    <value>Current Position</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Est. finish time (this target)</value>
@@ -1010,19 +1010,19 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Download to Data ratio</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
-    <value>Дата у форматі Рік-Місяць-День</value>
+    <value>Date with format YYYY-MM-DD</value>
   </data>
   <data name="LblDateFormatDescription2" xml:space="preserve">
-    <value>Дата зміщення назад на 12 годин у форматі Рік-Місяць-День</value>
+    <value>Date shifted back by 12 hours with format YYYY-MM-DD</value>
   </data>
   <data name="LblDateTimeFormatDescription" xml:space="preserve">
-    <value>Дата у форматі Рік-Місяць-День_Години-хвилини-секунди</value>
+    <value>Date with format YYYY-MM-DD_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Dawn</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Днів</value>
+    <value>Days</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1070,25 +1070,25 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Sequences will be loaded from and saved to the folder specified here</value>
   </data>
   <data name="LblDegree" xml:space="preserve">
-    <value>градус</value>
+    <value>degree</value>
   </data>
   <data name="LblDegreeShort" xml:space="preserve">
     <value>°</value>
   </data>
   <data name="LblDeleteProfileInUseWarning" xml:space="preserve">
-    <value>Неможливо видалити профіль. Він вже використовується іншим зразком N.I.N.A!</value>
+    <value>Cannot delete profile. It is already in use by another N.I.N.A. instance!</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
     <value>Descending</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
-    <value>Опис</value>
+    <value>Description</value>
   </data>
   <data name="LblDetails" xml:space="preserve">
-    <value>Деталі</value>
+    <value>Details</value>
   </data>
   <data name="LblDetectedStars" xml:space="preserve">
-    <value>Виявлені зірки</value>
+    <value>Detected Stars</value>
   </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
     <value>Device polling interval</value>
@@ -1136,7 +1136,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Directory to save image to does not have write permissions!</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Вимкнено</value>
+    <value>Disabled</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>AF Disable Guiding</value>
@@ -1145,13 +1145,13 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Disable guiding during auto-focus</value>
   </data>
   <data name="LblDisconnect" xml:space="preserve">
-    <value>Від'єднатись</value>
+    <value>Disconnect</value>
   </data>
   <data name="LblDisconnectAll" xml:space="preserve">
-    <value>Від'єднати всі пристрої?</value>
+    <value>Disconnect all devices?</value>
   </data>
   <data name="LblDistance" xml:space="preserve">
-    <value>Відстань</value>
+    <value>Distance</value>
   </data>
   <data name="LblDither" xml:space="preserve">
     <value>Dither</value>
@@ -1172,7 +1172,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Dither RA Only</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Купол</value>
+    <value>Dome</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
     <value>Unable to connect to ASCOM Dome driver:</value>
@@ -1220,13 +1220,13 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Dome cannot slew</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Купол не може знайти дім</value>
+    <value>Dome cannot find home</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Купол не може припаркуватися</value>
+    <value>Dome cannot park</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Купол не може встановити позицію паркування</value>
+    <value>Dome cannot set park position</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
     <value>Dome cannot set shutter</value>
@@ -1238,28 +1238,28 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Dome cannot sync azimuth</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Купол під'єднано</value>
+    <value>Dome connected</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>З'єднання з куполом втрачено.</value>
+    <value>Dome connection lost.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Від'єднати купол?</value>
+    <value>Disconnect dome?</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Купол не під'єднано</value>
+    <value>Dome not connected</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
-    <value>Завантажити</value>
+    <value>Download</value>
   </data>
   <data name="LblDownloadImage" xml:space="preserve">
-    <value>Завантажити зображення</value>
+    <value>Download Image</value>
   </data>
   <data name="LblDownloadImageTooltip" xml:space="preserve">
-    <value>Завантажити зображення НАСА з оглядом неба за вказаними координатами</value>
+    <value>Download Image from the NASA skysurvey for the given coordinates</value>
   </data>
   <data name="LblDownloading" xml:space="preserve">
-    <value>Завантажується</value>
+    <value>Downloading</value>
   </data>
   <data name="LblDownloadMoreIndexFiles" xml:space="preserve">
     <value>Download more index files</value>
@@ -1268,22 +1268,22 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Downsample factor</value>
   </data>
   <data name="LblDriverInfo" xml:space="preserve">
-    <value>Інформація про драйвер</value>
+    <value>Driver Info</value>
   </data>
   <data name="LblDriverVersion" xml:space="preserve">
-    <value>Версія драйвера</value>
+    <value>Driver Version</value>
   </data>
   <data name="LblDuration" xml:space="preserve">
-    <value>Тривалість</value>
+    <value>Duration</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
-    <value>Сутінки</value>
+    <value>Dusk</value>
   </data>
   <data name="LblEast" xml:space="preserve">
-    <value>Схід</value>
+    <value>East</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>На камері не встановлений ручний режим або режим довгої експозиції (Bulb mode)! Будь ласка, встановіть на камері ручний режим або режим довгої експозиції (Bulb mode) перед підключенням</value>
+    <value>Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
     <value>Enable bit scaling</value>
@@ -1292,7 +1292,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Save 10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair, Omegon, SVBony, RisingCam and ToupTek cameras, when using the native driver)</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
-    <value>Увімкнено</value>
+    <value>Enabled</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
     <value>Closing flat device cover</value>
@@ -1304,19 +1304,19 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>End of Sequence Options</value>
   </data>
   <data name="LblEndOfSequenceParkTelescope" xml:space="preserve">
-    <value>Припаркувати телескоп</value>
+    <value>Park Telescope</value>
   </data>
   <data name="LblEndOfSequenceWarmCamera" xml:space="preserve">
     <value>Warm Camera</value>
   </data>
   <data name="LblEpoch" xml:space="preserve">
-    <value>Епоха</value>
+    <value>Epoch</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
-    <value>Обладнання</value>
+    <value>Equipment</value>
   </data>
   <data name="LblError" xml:space="preserve">
-    <value>Помилка</value>
+    <value>Error</value>
   </data>
   <data name="LblErrorDistance" xml:space="preserve">
     <value>Error Distance</value>
@@ -1354,16 +1354,16 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>Exposures</value>
   </data>
   <data name="LblExposureTime" xml:space="preserve">
-    <value>Час експозиції</value>
+    <value>Exposure Time</value>
   </data>
   <data name="LblExposureTimeDescription" xml:space="preserve">
-    <value>Час експозиції в секундах</value>
+    <value>Exposure Time in seconds</value>
   </data>
   <data name="LblFieldOfView" xml:space="preserve">
-    <value>Поле зору</value>
+    <value>Field Of View</value>
   </data>
   <data name="LblFile" xml:space="preserve">
-    <value>Файл</value>
+    <value>File</value>
   </data>
   <data name="LblFileCameraDescription" xml:space="preserve">
     <value>This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
@@ -1373,19 +1373,19 @@ Additionally a manual Bulb Mode trigger can be activated, so it will use the sel
 When this trigger is deactivated the application will just skip the Start Exposure and just wait for another file to roll into the specified folder</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
-    <value>Назва зразка файлу</value>
+    <value>Example File Name</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
-    <value>Розширення файлу</value>
+    <value>File Extension</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>Параметри формату файлу</value>
+    <value>File Format Options</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
-    <value>Налаштування файлу</value>
+    <value>File Settings</value>
   </data>
   <data name="LblFilter" xml:space="preserve">
-    <value>Фільтр</value>
+    <value>Filter</value>
   </data>
   <data name="LblFilterChangeRequired" xml:space="preserve">
     <value>Filter Change Required</value>
@@ -1403,13 +1403,13 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>One or more sequence items have a filter set, but filter wheel is not connected</value>
   </data>
   <data name="LblFilterWheel" xml:space="preserve">
-    <value>Колесо фільтрів</value>
+    <value>Filterwheel</value>
   </data>
   <data name="LblFilterwheelConnected" xml:space="preserve">
-    <value>Колесо фільтрів під'єднано</value>
+    <value>Filterwheel connected</value>
   </data>
   <data name="LblFilterwheelConnectionLost" xml:space="preserve">
-    <value>З'єднання з колесом фільтрів втрачено! Будь ласка, повторно під'єднайте колесо фільтрів!</value>
+    <value>Filterwheel connection lost! Please reconnect filterwheel!</value>
   </data>
   <data name="LblFits" xml:space="preserve">
     <value>FITS</value>
@@ -1424,28 +1424,28 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Flats to take</value>
   </data>
   <data name="LblFlatDevice" xml:space="preserve">
-    <value>Флет бокс (панель)</value>
+    <value>Flat Panel</value>
   </data>
   <data name="LblFlatDeviceBrightness" xml:space="preserve">
-    <value>Яскравість</value>
+    <value>Brightness</value>
   </data>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Choose serial port</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Очистити значення</value>
+    <value>Clear Values</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
-    <value>Закрити</value>
+    <value>Close</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
     <value>Close cover when sequence ends</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
-    <value>Закрито</value>
+    <value>Closed</value>
   </data>
   <data name="LblFlatDeviceConnected" xml:space="preserve">
-    <value>Флет бокс (панель) під'єднано</value>
+    <value>Flat panel connected.</value>
   </data>
   <data name="LblFlatDeviceConnectedButCoverNotOpen" xml:space="preserve">
     <value>A flat panel is connected but the cover is not open.</value>
@@ -1454,13 +1454,13 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Cover</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
-    <value>В цей час</value>
+    <value>Currently</value>
   </data>
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
-    <value>Ви хочете від'єднати флет бокс (панель)?</value>
+    <value>Do you want to disconnect the flat panel?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Налаштування флет бокса (панелі)</value>
+    <value>Flat Panel Settings</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Invalid response from flat panel.</value>
@@ -1475,10 +1475,10 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>No Flat Panel</value>
   </data>
   <data name="LblFlatDeviceOpen" xml:space="preserve">
-    <value>Відкрито</value>
+    <value>Open</value>
   </data>
   <data name="LblFlatDeviceOpenButton" xml:space="preserve">
-    <value>Відкрити</value>
+    <value>Open</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
     <value>Open cover for darks</value>
@@ -1490,7 +1490,7 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Flat Wizard Trained Exposure Times</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
-    <value>Не вказано</value>
+    <value>Unknown</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
     <value>Use trained exposure times</value>
@@ -1574,10 +1574,10 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Focal Length</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
-    <value>Світлосила (фокусне співвідношення)</value>
+    <value>Focal Ratio</value>
   </data>
   <data name="LblFocuser" xml:space="preserve">
-    <value>Фокусер</value>
+    <value>Focuser</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetSteps" xml:space="preserve">
     <value>Auto Focus Initial Offset Steps</value>
@@ -1598,7 +1598,7 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Inwards and outwards focuser backlash, in focuser steps</value>
   </data>
   <data name="LblFocuserConnected" xml:space="preserve">
-    <value>Електрофокусер під’єднано</value>
+    <value>Focuser connected</value>
   </data>
   <data name="LblFocuserConnectionLost" xml:space="preserve">
     <value>Focuser connection lost! Please reconnect focuser!</value>
@@ -1655,10 +1655,10 @@ Calculated HFR: {2}
     <value>Full Well Capacity in e</value>
   </data>
   <data name="LblGain" xml:space="preserve">
-    <value>Підсилення (Gain)</value>
+    <value>Gain</value>
   </data>
   <data name="LblGainDescription" xml:space="preserve">
-    <value>Підсилення камери (Gain)</value>
+    <value>Camera Gain</value>
   </data>
   <data name="LblGeneral" xml:space="preserve">
     <value>General</value>
@@ -1682,7 +1682,7 @@ Calculated HFR: {2}
     <value>Guider</value>
   </data>
   <data name="LblGuiderConnected" xml:space="preserve">
-    <value>Гід під'єднано</value>
+    <value>Guider Connected</value>
   </data>
   <data name="LblGuiderDitherButNotConnected" xml:space="preserve">
     <value>Guider Dither is enabled, but application is not connected to Guider</value>
@@ -1910,7 +1910,7 @@ Calculated HFR: {2}
     <value>Log Level</value>
   </data>
   <data name="LblLongitude" xml:space="preserve">
-    <value>Довгота</value>
+    <value>Longitude</value>
   </data>
   <data name="LblLoop" xml:space="preserve">
     <value>Loop</value>
@@ -2027,16 +2027,16 @@ Calculated HFR: {2}
     <value>Mode</value>
   </data>
   <data name="LblMoonRise" xml:space="preserve">
-    <value>Схід Місяця</value>
+    <value>Moonrise</value>
   </data>
   <data name="LblMoonSet" xml:space="preserve">
-    <value>Захід Місяця</value>
+    <value>Moonset</value>
   </data>
   <data name="LblMove" xml:space="preserve">
     <value>Move</value>
   </data>
   <data name="LblName" xml:space="preserve">
-    <value>Назва</value>
+    <value>Name</value>
   </data>
   <data name="LblNASASkySurvey" xml:space="preserve">
     <value>NASA Sky Survey</value>
@@ -2076,7 +2076,7 @@ Calculated HFR: {2}
     <value>No Camera</value>
   </data>
   <data name="LblNoCameraConnected" xml:space="preserve">
-    <value>Немає під'єднаної камери</value>
+    <value>No camera connected</value>
   </data>
   <data name="LblNoCoordinates" xml:space="preserve">
     <value>No coordinates available</value>
@@ -2217,10 +2217,10 @@ Calculated HFR: {2}
     <value>Open Cluster</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Планетарна туманність</value>
+    <value>Planetary Nebula</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
-    <value>Квазар</value>
+    <value>Quasar</value>
   </data>
   <data name="LblObjectType_SMCCN" xml:space="preserve">
     <value>Cluster with Nebulosity in the SMC</value>
@@ -2728,7 +2728,7 @@ Calculated HFR: {2}
     <value>Rotator</value>
   </data>
   <data name="LblRotatorConnected" xml:space="preserve">
-    <value>Ротатор під'єднано</value>
+    <value>Rotator Connected</value>
   </data>
   <data name="LblRotatorConnectionLost" xml:space="preserve">
     <value>Rotator connection lost! Please reconnect rotator!</value>
@@ -2767,7 +2767,7 @@ Calculated HFR: {2}
     <value>Scope settle time after flip</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
-    <value>Пошук</value>
+    <value>Search</value>
   </data>
   <data name="LblSearchRadius" xml:space="preserve">
     <value>Search Radius</value>
@@ -2794,7 +2794,7 @@ Calculated HFR: {2}
     <value>Sensor Name</value>
   </data>
   <data name="LblSensorType" xml:space="preserve">
-    <value>Тип сенсора</value>
+    <value>Sensor Type</value>
   </data>
   <data name="LblSequence" xml:space="preserve">
     <value>Sequence</value>
@@ -3051,10 +3051,10 @@ Before proceeding, please confirm your system is currently at or close to good f
     <value>Success</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Схід Сонця</value>
+    <value>Sunrise</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
-    <value>Захід Сонця</value>
+    <value>Sunset</value>
   </data>
   <data name="LblSurfaceBrightness" xml:space="preserve">
     <value>Surface Brightness</value>
@@ -3086,7 +3086,7 @@ Before proceeding, please confirm your system is currently at or close to good f
 Should the settings be synchronized?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
-    <value>Ціль</value>
+    <value>Target</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
     <value>TargetDec</value>
@@ -3119,7 +3119,7 @@ Should the settings be synchronized?</value>
     <value>Minimum Width (degree)</value>
   </data>
   <data name="LblTelescope" xml:space="preserve">
-    <value>Телескоп</value>
+    <value>Telescope</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
     <value>Telescope cannot Pulse Guide</value>
@@ -3128,19 +3128,19 @@ Should the settings be synchronized?</value>
     <value>Telescope cannot slew</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
-    <value>Телескоп під'єднано</value>
+    <value>Telescope connected</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
-    <value>З'єднання з телескопом втрачено! Будь ласка, повторно під'єднайте телескоп!</value>
+    <value>Telescope connection lost! Please reconnect telescope!</value>
   </data>
   <data name="LblTelescopeControl" xml:space="preserve">
     <value>Telescope Control</value>
   </data>
   <data name="LblTelescopeName" xml:space="preserve">
-    <value>Назва телескопу</value>
+    <value>Telescope Name</value>
   </data>
   <data name="LblTelescopeNotConnected" xml:space="preserve">
-    <value>Телескоп не під'єднано</value>
+    <value>Telescope not connected</value>
   </data>
   <data name="LblTelescopeNotTrackingForSync" xml:space="preserve">
     <value>Telescope is not tracking. Sync is only available when tracking!</value>
@@ -3521,13 +3521,13 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>Unable to connect to ASCOM ObservingConditions driver:</value>
   </data>
   <data name="LblWeatherConnected" xml:space="preserve">
-    <value>Джерело даних погоди під'єднано</value>
+    <value>Weather data source connected</value>
   </data>
   <data name="LblWeatherConnectionLost" xml:space="preserve">
     <value>Weather data source connection failed.</value>
   </data>
   <data name="LblWeatherDisconnect" xml:space="preserve">
-    <value>Джерело даних погоди від'єднано</value>
+    <value>Weather data source disconnected</value>
   </data>
   <data name="LblWeatherNoSource" xml:space="preserve">
     <value>No Weather Data Source</value>
@@ -3995,7 +3995,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Moving focuser to position {0}</value>
   </data>
   <data name="LblCameraConnectedOnExit" xml:space="preserve">
-    <value>Камеру ще під'єднано. Все одно вийти?</value>
+    <value>Camera still connected. Exit anyway?</value>
   </data>
   <data name="LblDisconnectCamera" xml:space="preserve">
     <value>Disconnect Camera?</value>
@@ -4136,16 +4136,16 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Star count</value>
   </data>
   <data name="LblCameraNotConnected" xml:space="preserve">
-    <value>Камеру не під'єднано</value>
+    <value>Camera not connected</value>
   </data>
   <data name="LblFilterWheelNotConnected" xml:space="preserve">
-    <value>Колесо фільтрів не під'єднано</value>
+    <value>Filterwheel not connected</value>
   </data>
   <data name="LblFocuserNotConnected" xml:space="preserve">
-    <value>Електрофокусер не під’єднано</value>
+    <value>Focuser not connected</value>
   </data>
   <data name="LblGuiderNotConnected" xml:space="preserve">
-    <value>Гід не під'єднано</value>
+    <value>Guider not connected</value>
   </data>
   <data name="LblGuiderCannotClearCalibration" xml:space="preserve">
     <value>Guider does not support calibration</value>
@@ -4154,7 +4154,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Iterations</value>
   </data>
   <data name="LblRotatorNotConnected" xml:space="preserve">
-    <value>Ротатор не під'єднано</value>
+    <value>Rotator not connected</value>
   </data>
   <data name="LblScript" xml:space="preserve">
     <value>Script</value>
@@ -4175,7 +4175,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>After Iterations</value>
   </data>
   <data name="LblFlatDeviceNotConnected" xml:space="preserve">
-    <value>Флет бокс (панель) не під'єднано</value>
+    <value>Flat Device not connected</value>
   </data>
   <data name="LblEnterMessage" xml:space="preserve">
     <value>Enter Message</value>
@@ -5353,7 +5353,7 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>SDK Version</value>
   </data>
   <data name="LblUsbDriverVersion" xml:space="preserve">
-    <value>Версія драйвера USB</value>
+    <value>USB Driver Version</value>
   </data>
   <data name="LblFailedChangingConnectionState" xml:space="preserve">
     <value>Failed to change connection state of device.</value>
@@ -6398,7 +6398,7 @@ Once confirmed choose which solver should be used.</value>
     <value>Dome &amp; mount geometry</value>
   </data>
   <data name="LblDomeNotConnectedError" xml:space="preserve">
-    <value>Драйвер купола не під'єднано!</value>
+    <value>The dome driver is not connected!</value>
   </data>
   <data name="LblDomeShutterCoordination" xml:space="preserve">
     <value>Shutter coordination</value>
@@ -6800,7 +6800,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Закрити</value>
+    <value>Close</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6861,13 +6861,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Закрито</value>
+    <value>Closed</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Відкрито</value>
+    <value>Open</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7122,7 +7122,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Під'єднати</value>
+    <value>Connect</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
@@ -7184,5 +7184,38 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
     <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>
