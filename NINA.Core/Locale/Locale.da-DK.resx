@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>Ø</value>
+    <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
     <value>N</value>
@@ -127,43 +127,43 @@
     <value>S</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>V</value>
+    <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Abberations inspicerer</value>
+    <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Aktiv</value>
+    <value>Active</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Aktiv filter</value>
+    <value>Active filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Aktiv sekvens detaljer</value>
+    <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Tilføj som sekvens mål</value>
+    <value>Add as Sequence Target</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Advanceret opsætning</value>
+    <value>Advanced Settings</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Kontrast detektering (eksperimental)</value>
+    <value>Contrast Detection (Experimental)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Autofokus er slået til, men fokuseren er ikke forbundet</value>
+    <value>Auto-Focus is enabled, yet focuser is not connected</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Stjerne HFR</value>
+    <value>Star HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>Efter</value>
+    <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Brug de klareste n stjerner</value>
+    <value>Use brightest n stars</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Begræns AF til de klareste stjerner. 0 betyder ingen begrænsning.</value>
+    <value>Limit AF to brightest stars. 0 means no limit.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
     <value>AllPro Spike-a-Flat Panel</value>
@@ -175,245 +175,253 @@
     <value>Altair Camera Setup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternativ UI farve skema</value>
+    <value>Alternative UI Color Schema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
     <value>Altitude</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Mål altitude fejl</value>
+    <value>Measure Altitude Error</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>Altitude måling</value>
+    <value>Altitude Measurement</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>Måler altitude fejlmargen med tre skridt.
-1. Tager et billede og platesolver for at finde de faktiske koordinater på den nuværende postion
-2. Bevæg teleskop langs Right Ascension aksen med 0.5 grader
-3. Tag endnu et billeder på den nye position, plate solve den for at finde de faktiske koordinater på den aktuelle position
-Ved at bruge de to punkter udregnes og vises den faktiske altitude fejlmargen</value>
+    <value>Measures Altitude Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual altitude error will be calculated and displayed</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>Peg teleskopet øst eller vest nær declination 0 og nær horisonten.</value>
+    <value>Point telescope east or west near declination 0 and near horizon.</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
-    <value>Altitude måle siden</value>
+    <value>Altitude Measurement side</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>Vis stjernebillede grænser</value>
+    <value>Display Constellation Boundaries</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Vis og annoter stjernebilleder</value>
+    <value>Display and annotate Constellations</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annoter Deep Sky Objects</value>
+    <value>Annotate Deep Sky Objects</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Vis grid</value>
+    <value>Display Grid</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annoter billede</value>
+    <value>Annotate Image</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>Hvis aktiveret og stjerne detektering for et billede er udregnet, så vil billedet blive annoteret med de fundne stjerner og deres respektive HFR værdier</value>
+    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API nøgle</value>
+    <value>API Key</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>Åbenbar magnitude</value>
+    <value>Apparent Magnitude</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>Åbenbar størrelse</value>
+    <value>Apparent Size</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>Denne applikation blev mødt af en uhåndteret fejl og vil sandsynligvis være nødt til at lukke.
-Fejlen er blevet logget til "%localappdata%\NINA\Logs".
-Skal applikationen forsøge at genetablere sig efter fejlen? (Kan forårsage uventet adfærd)</value>
+    <value>The Application ran into an unhandled exception and most likely has to shut down.
+The error has been logged to "%localappdata%\NINA\Logs".
+Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Applikations start dato med format YYYY-MM-DD</value>
+    <value>Application start date with format YYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
-    <value>bue min</value>
+    <value>arcmin</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
     <value>Max arcmin</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>bue sek</value>
+    <value>arcsec</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>Stigende</value>
+    <value>Ascending</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Fejl under hentning af billeddata fra kamera!</value>
+    <value>Error retrieving image data from camera!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Kun 16 bit Monokrom sensorer er understøttet på dette tidspunkt</value>
+    <value>Only 16 bit Monochrome sensors currently supported</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>ASPS Lokation</value>
+    <value>ASPS Location</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>ASPS exe ikke fundet</value>
+    <value>ASPS exe not found</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
     <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
-    <value>ASTAP lokation</value>
+    <value>ASTAP Location</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>ASTAP exe ikke fundet</value>
+    <value>ASTAP exe not found</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Astrometri</value>
+    <value>Astrometry</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Auto fokus</value>
+    <value>Auto Focus</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>Efter stigning i HFR</value>
+    <value>After HFR increase</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>HFR ændring</value>
+    <value>HFR amount</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>Efter # antal eksponeringer</value>
+    <value>After # exposures</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
-    <value>Efter tid gået</value>
+    <value>After elapsed Time</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
-    <value>Efter temperatur ændring</value>
+    <value>After temperature change</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>Temperatur ændring</value>
+    <value>Temperature amount</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
-    <value>Auto fokus eksponeringstid</value>
+    <value>Auto Focus Exposure Time</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Eksponeringstid til brug for auto fokus når der ikke er defineret nogen specifik tid eller filter specifik tid er nul</value>
+    <value>Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
-    <value>Auto fokus filter</value>
+    <value>Auto Focus Filter</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Kan ikke starte auto fokus. Kamera eller fokuser er ikke forbundet!</value>
+    <value>Cannot start Auto Focus. Camera or Focuser is not connected!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
-    <value>AF indre beskærings forhold</value>
+    <value>AF Inner Crop Ratio</value>
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
-    <value>Hvis værdien er mindre end 1, så vil stjerne detektering ved autofokus kun bruge et centreret udsnit af den totale sensor (hvis dette understøttes af kameraet). Hvis det ikke understøttes af kameraet, vil stjerner nær kanterne blive ignoreret ved stjernedetektering. Hvis brugt i kombination med en Ydre crop faktor, så vil et rektangulært udsnit af billedet (imellem indre rektangel og ydre rektangel) blive brugt til autofokus.</value>
+    <value>If set to a value less than one, star detection during autofocus will only use
+a centered subframe of the total sensor (if supported by camera). If unsupported
+by the camera, stars near the edge will be ignored during star detection. If used in combination
+with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
+outer rectangle) will be used for autofocus.</value>
   </data>
   <data name="LblAutoFocusMethod" xml:space="preserve">
-    <value>AF metode</value>
+    <value>AF Method</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>Når Stjerne HFR er valgt, vil NINA detektere stjerner i FOV, beregne deres HFR på tværs af flere fokus punkter, og finde den mindste HFR. Kontrast detekterings metoden bruger billedbehandlings teknikker til at estimere kontrast forhold på tværs af flere fokus punkter, og finder det højeste kontrast forhold. Denne metode virker også på jordiske objekter og solsystems objekter, men kan være påvirkelig af støj.</value>
+    <value>When Star HFR is selected, NINA will detect stars in the FOV,
+compute their HFR across multiple focus points, and find the minimum HFR.
+The Contrast Detection method uses image processing techniques to estimate contrast
+across multiple focus points, and finds the highest contrast. This method works on
+terrestrial objects or solar system objects as well, but can be sensitive to noise.</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>HFR på nyt fokus punkt {0} er betydeligt dårligere end den originale HFR {1}</value>
+    <value>New focus point HFR {0} is significantly worse than original HFR {1}</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>Ikke nok difference i HFR for sætte af fokus punkter. Enten er skridt størrelsen for lav eller stjernerne er for meget ude af fokus.</value>
+    <value>Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
-    <value># af eksponeringer</value>
+    <value># exposures</value>
   </data>
   <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
-    <value>AF antal forsøg</value>
+    <value>AF Number of Attempts</value>
   </data>
   <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
-    <value>Hvis autofokus fejler fordi den fandt en dårligere HFR end det originale fokuspunkt, hvor mange gange skal der så forsøges at opnå bedre fokus indtil den enten er bedre eller det originale fokus punkt benyttes.</value>
+    <value>If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
-    <value>AF Antal billeder per punkt</value>
+    <value>AF Number of Frames per Point</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>Hvor mange billeder skal der tages for hvert fokus punkt. Hvis større end et, så tages der flere billeder pr. fokus punkt, og der beregnes et gennemsnits HFR for fokus punktet</value>
+    <value>How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
-    <value>Ved skift af filter</value>
+    <value>On filter change</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>Ved start</value>
+    <value>On start</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>AF Ydre crop faktor</value>
+    <value>AF Outer Crop Ratio</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
-    <value>Forsøger autofokus igen</value>
+    <value>Reattempting Autofocus</value>
   </data>
   <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
-    <value>Går tilbage til original fokus position</value>
+    <value>Restoring original focus position</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Tid</value>
+    <value>Time</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
-    <value>Skifter tilbage til det originale filter</value>
+    <value>Switching back to original filter</value>
   </data>
   <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
-    <value>Skifter til autofokus filter</value>
+    <value>Switching to Auto Focus filter</value>
   </data>
   <data name="LblAutoMeridianFlip" xml:space="preserve">
-    <value>Automatisk Meridian flip</value>
+    <value>Auto Meridian Flip</value>
   </data>
   <data name="LblAutoStretchFactor" xml:space="preserve">
-    <value>Automatisk strække faktor</value>
+    <value>Autostretch factor</value>
   </data>
   <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
-    <value>Den faktor som den automatiske strække algoritme bruger til at vise et billede og detektere stjerner. Skal være en værdi i mellem 0 og 1. En værdi på 0.2 burde virke i de fleste tilfælde.</value>
+    <value>The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</value>
   </data>
   <data name="LblAutoUpdateSource" xml:space="preserve">
-    <value>Automatisk opdaterings ressource</value>
+    <value>Auto Update Source</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Azimut</value>
+    <value>Azimuth</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
-    <value>Mål Azimut afvigelse</value>
+    <value>Measure Azimuth Error</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>Azimut måling</value>
+    <value>Azimuth Measurement</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
-    <value>Mål Azimuth afvigelse i tre trin.
-1. Tager billede og platesolver for at finde de aktuelle koordinater på den nuværende position
-2. Fly teleskopet langs RA aksen med 0.5 grader
-3. Tag endnu et billede på den nye position, platesolve den for at finde den nye aktuelle position
-Ved at bruge disse to punkter til at beregne og vise den reelle azimuth afvigelse</value>
+    <value>Measures Azimuth Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual azimuth error will be calculated and displayed</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
-    <value>Peg teleskopet Syd nær deklination 0 og nær meridianen</value>
+    <value>Point Telescope South near declination 0 and near meridian</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Baggrund</value>
+    <value>Background</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
-    <value>Der forekom en fejl under måling af backlash. Backlash værdierne er måske forkerte.</value>
+    <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>Følgende fokuser backlash værdier bliver gemt. IN: {0}, OUT: {1}</value>
+    <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>BIAS gennemsnitlig værdi (i 16bit)</value>
+    <value>BIAS mean value (in 16bit)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
     <value>BIAS median value (in 16bit)</value>
@@ -422,20 +430,20 @@ Ved at bruge disse to punkter til at beregne og vise den reelle azimuth afvigels
     <value>Binning</value>
   </data>
   <data name="LblBinningDescription" xml:space="preserve">
-    <value>Kamera binning</value>
+    <value>Camera binning</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>Bit dybde</value>
+    <value>Bit Depth</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>Bit dybde i ADU</value>
+    <value>Bit Depth in ADU</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
-    <value>Sortpunkts clipping</value>
+    <value>Black clipping</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
-    <value>Billedet skal platesolves til framing.
-Skal reference koordinaterne benyttes?
+    <value>Image has to be solved for framing.
+Should reference coordinates be taken?
 RA: {0}
 Dec: {1}</value>
   </data>
@@ -443,25 +451,25 @@ Dec: {1}</value>
     <value>Blind Solver</value>
   </data>
   <data name="LblBorder" xml:space="preserve">
-    <value>Grænse</value>
+    <value>Border</value>
   </data>
   <data name="LblBulbMode" xml:space="preserve">
-    <value>Bulb mode</value>
+    <value>Bulb Mode</value>
   </data>
   <data name="LblBulbSerialPort" xml:space="preserve">
     <value>Bulb Serial Port</value>
   </data>
   <data name="LblButtonBackground" xml:space="preserve">
-    <value>Baggrund knap</value>
+    <value>Button Background</value>
   </data>
   <data name="LblButtonForeground" xml:space="preserve">
-    <value>Knap forgrund</value>
+    <value>Button Foreground</value>
   </data>
   <data name="LblButtonForegroundDisabled" xml:space="preserve">
-    <value>Knap forgrund deaktiveret</value>
+    <value>Button Foreground Disabled</value>
   </data>
   <data name="LblButtonHighlight" xml:space="preserve">
-    <value>Knap fremhævning</value>
+    <value>Button Highlight</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
     <value>Byte Shuffling</value>
@@ -476,19 +484,19 @@ Dec: {1}</value>
     <value>Calculated Exposure Time</value>
   </data>
   <data name="LblCam" xml:space="preserve">
-    <value>Kamera</value>
+    <value>Cam</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Kamera</value>
+    <value>Camera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Kamera batteri</value>
+    <value>Camera Battery</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Kameraet er optaget</value>
+    <value>Camera is busy</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Kamera forbundet</value>
+    <value>Camera connected</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
     <value>Camera connection lost! Please reconnect camera!</value>
@@ -1203,7 +1211,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Slewing</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
-    <value>Azimut</value>
+    <value>Azimuth</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
     <value>No Dome Source</value>
@@ -1485,7 +1493,7 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Unknown</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>Use trained exposure times</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>Mean ADU was {0}, starting Exposure Time calculation at {1}</value>
@@ -3183,7 +3191,7 @@ Should the settings be synchronized?</value>
     <value>TIFF</value>
   </data>
   <data name="LblTime" xml:space="preserve">
-    <value>Tid</value>
+    <value>Time</value>
   </data>
   <data name="LblTimeFormatDescription" xml:space="preserve">
     <value>Time with format HH-mm-ss</value>
@@ -4781,7 +4789,7 @@ If the position above it is an instruction set that is not currently expanded, i
     <value>Sequencer</value>
   </data>
   <data name="Lbl_SequenceCategory_Camera" xml:space="preserve">
-    <value>Kamera</value>
+    <value>Camera</value>
   </data>
   <data name="Lbl_SequenceCategory_Condition" xml:space="preserve">
     <value>Loop Condition</value>
@@ -5795,7 +5803,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>A trigger to limit dome synchronization movements to between sequence steps in order to reduce vibrations during exposures. This should not be used with Dome Following enabled, which runs continuously in the background.</value>
   </data>
   <data name="LblDomeTargetAzimuth" xml:space="preserve">
-    <value>Azimut</value>
+    <value>Azimuth</value>
   </data>
   <data name="LblDomeTargetAltitude" xml:space="preserve">
     <value>Altitude</value>
@@ -7176,5 +7184,38 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   </data>
   <data name="LblCivilDawn" xml:space="preserve">
     <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>
