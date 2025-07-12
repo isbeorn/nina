@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>NINA.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.1062-nightly</Version>
+    <Version>3.2.0.1063-nightly</Version>
     <Description>A patched version for N.I.N.A. of the original module</Description>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
   </PropertyGroup>
