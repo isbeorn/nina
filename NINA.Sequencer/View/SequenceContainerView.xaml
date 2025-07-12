@@ -934,29 +934,8 @@
                                                 <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
                                                     <local:SequenceBlockView />
                                                 </DataTemplate>
-
-                                                <DataTemplate x:Key="OldContainerStyle">
-                                                    <local:SequenceContainerView />
-                                                </DataTemplate>
-                                                <DataTemplate x:Key="OldParallelContainerStyle">
-                                                    <local:SequenceContainerView>
-                                                        <local:SequenceContainerView.SequenceContainerContent>
-                                                            <TextBlock
-                                                                Margin="5,5,0,0"
-                                                                VerticalAlignment="Center"
-                                                                FontStyle="Italic"
-                                                                Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
-                                                        </local:SequenceContainerView.SequenceContainerContent>
-                                                    </local:SequenceContainerView>
-                                                </DataTemplate>
                                             </ResourceDictionary>
                                         </ItemsControl.Resources>
-                                        <ItemsControl.ItemTemplateSelector>
-                                            <local:DeprecatedContainerStyleSelector
-                                                Container="{StaticResource OldContainerStyle}"
-                                                DeepSkyObjectContainer="{StaticResource OldDeepSkyObjectContainer}"
-                                                ParallelContainer="{StaticResource OldParallelContainerStyle}" />
-                                        </ItemsControl.ItemTemplateSelector>
                                     </ItemsControl>
                                 </ninactrl:HitTestGroupBox>
                             </Grid>
