@@ -11,10 +11,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
+    xmlns:cont="clr-namespace:NINA.Sequencer.Container"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:seqItem="clr-namespace:NINA.Sequencer.SequenceItem"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
     x:Name="UC"
@@ -73,6 +75,103 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
                                 <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="20" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Border
+                                        x:Name="Bd"
+                                        Grid.Column="1"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter
+                                            x:Name="PART_Header"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            ContentSource="Header"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                    <ItemsPresenter
+                                        x:Name="ItemsHost"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="-21,0,0,0"
+                                        HorizontalAlignment="Stretch">
+                                        <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                        </i:Interaction.Behaviors>
+                                    </ItemsPresenter>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true" />
+                                            <Condition Property="IsSelectionActive" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+                            <Setter Property="ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="ItemStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Grid.Resources>
+                                        <ResourceDictionary>
+                                            <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                <local:SequenceBlockView />
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:SequenceContainer}">
+                                                <local:SequenceContainerView />
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:ParallelContainer}">
+                                                <local:SequenceContainerView>
+                                                    <local:SequenceContainerView.SequenceContainerContent>
+                                                        <TextBlock
+                                                            Margin="5,5,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontStyle="Italic"
+                                                            Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
+                                                    </local:SequenceContainerView.SequenceContainerContent>
+                                                </local:SequenceContainerView>
+                                            </DataTemplate>
+                                        </ResourceDictionary>
+                                    </Grid.Resources>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MinWidth="20" />
                                         <ColumnDefinition />
@@ -261,7 +360,7 @@
                 <local:SequenceTreeViewItemStyleSelector
                     ContainerStyle="{StaticResource ContainerStyle}"
                     DefaultStyle="{StaticResource RootStyle}"
-                    ItemStyle="{StaticResource RootStyle}" />
+                    ItemStyle="{StaticResource ItemStyle}" />
             </TreeView.ItemContainerStyleSelector>
         </TreeView>
         <!--  ******* Available Sequence Items and Templates *******  -->
