@@ -18,10 +18,22 @@ namespace NINA.View.Sequencer {
                 return DefaultStyle;
             }
             if (item is ISequenceContainer && item is not IImmutableContainer) {
-                return ContainerStyle;
+                var template = FindTemplateForData(item, container as FrameworkElement);
+                if (template is HierarchicalDataTemplate || template is null) {
+                    return ContainerStyle;
+                } else {
+                    return ItemStyle;
+                }                
             } else {
                 return ItemStyle;
             }   
+        }
+        static DataTemplate FindTemplateForData(object data, FrameworkElement scope) {
+            if (data == null) return null;
+            if (scope == null) return null;
+
+            var key = new DataTemplateKey(data.GetType());
+            return scope.TryFindResource(key) as DataTemplate;
         }
     }
 }
