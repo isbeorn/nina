@@ -76,7 +76,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.1064-nightly</Version>
+    <Version>3.2.0.1065-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the Equipment components of N.I.N.A. to interact and connect to various types of astronomy equipment.</Description>
