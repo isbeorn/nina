@@ -293,6 +293,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     ),
                     token
                 );
+            } catch (SequenceEntityFailedException) {
+                // Ensure the light is turned off when it fails
+                await GetToggleLightOffItem().Run(localProgress, token);
+                throw;
             } finally {
                 await CoreUtil.Wait(TimeSpan.FromMilliseconds(500));
                 localProgress?.Report(new ApplicationStatus() { });

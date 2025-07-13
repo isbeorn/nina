@@ -119,6 +119,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added separate options for **dither pixel size** and **dither settle time** parameters.  
 - **Flat Wizard Customization**  
   - Added an **"Open Cover When Done"** option to set the desired cover state after completing the flat wizard.  
+  - When exposure determiniation fails for auto brightness and auto exposure flat routine the flat panel will be turned off.  
 - **External Script Execution**  
   - Now runs in a separate context using `UseShellExecute`, allowing scripts to start applications without waiting for them to close.  
 
