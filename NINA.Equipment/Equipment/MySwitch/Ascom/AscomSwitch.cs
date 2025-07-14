@@ -42,23 +42,18 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
 
         public double Value { get; private set; }
 
-        public async Task<bool> Poll() {
-            var success = await Task.Run(() => {
-                try {
-                    this.Name = ascomSwitchHub.GetSwitchName(Id);
-                    this.Value = ascomSwitchHub.GetSwitchValue(Id);
-                    Logger.Trace($"Retrieved values for switch id {Id}: {this.Value}");
-                } catch (Exception) {
-                    Logger.Trace($"Failed to retrieve value sfor switch id {Id}");
-                    return false;
-                }
-                return true;
-            });
-            if (success) {
+        public bool Poll() {
+            try {
+                this.Name = ascomSwitchHub.GetSwitchName(Id);
+                this.Value = ascomSwitchHub.GetSwitchValue(Id);
+                Logger.Trace($"Retrieved values for switch id {Id}: {this.Value}");
                 RaisePropertyChanged(nameof(Name));
                 RaisePropertyChanged(nameof(Value));
+                return true;
+            } catch (Exception) {
+                Logger.Trace($"Failed to retrieve value sfor switch id {Id}");
+                return false;
             }
-            return success;
         }
     }
 }

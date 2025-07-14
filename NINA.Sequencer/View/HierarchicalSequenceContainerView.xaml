@@ -1,0 +1,941 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Sequencer.HierarchicalSequenceContainerView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
+    xmlns:condition="clr-namespace:NINA.Sequencer.Conditions"
+    xmlns:cont="clr-namespace:NINA.Sequencer.Container"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dragdrop="clr-namespace:NINA.Sequencer.DragDrop"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Sequencer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:seq="clr-namespace:NINA.Sequencer"
+    xmlns:seqCond="clr-namespace:NINA.Sequencer.Conditions"
+    xmlns:seqItem="clr-namespace:NINA.Sequencer.SequenceItem"
+    xmlns:seqTrig="clr-namespace:NINA.Sequencer.Trigger"
+    xmlns:sequencerPlatesolve="clr-namespace:NINA.Sequencer.SequenceItem.Platesolving"
+    xmlns:sequencerUtil="clr-namespace:NINA.Sequencer.SequenceItem.Utility"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:t="clr-namespace:NINA.Sequencer.Trigger"
+    xmlns:utility="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    x:Name="UC"
+    Margin="0,0,0,0"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <i:Interaction.Behaviors>
+        <!--  Drop area above the Sequence Container  -->
+        <behaviors:DragOverBehavior
+            AllowDragBelow="{Binding IsExpanded, Converter={StaticResource InverseBooleanConverter}}"
+            AllowDragCenter="False"
+            DragAboveSize="25"
+            DragBelowSize="15" />
+    </i:Interaction.Behaviors>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Expander.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                <wpfutil:SharedResourceDictionary>
+                    <converter:DroppableToDropIntoParametersConverter x:Key="DroppableToDropIntoParametersConverter" />
+                    <converter:IsIDeepSkyObjectContainerConverter x:Key="DeepSkyObjectContainerToVisibilityConverter" />
+                    <converter:StrategyEvaluatesConditionsAndTriggersToVisibilityConverter x:Key="StrategyEvaluatesConditionsAndTriggersToVisibilityConverter" />
+                    <converter:StatusToEnabledConverter x:Key="StatusToEnabledConverter" />
+                    <converter:DisabledStatusToStrikethroughConverter x:Key="DisabledStatusToStrikethroughConverter" />
+                </wpfutil:SharedResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ContentPresenter x:Name="Content" Content="{Binding}">
+        <ContentPresenter.Resources>
+            <utility:BindingProxy x:Key="ViewModel" Data="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}, Path=DataContext}" />
+
+            <Border
+                x:Key="MenuHeader"
+                MinHeight="30"
+                x:Shared="false"
+                Background="Transparent">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+            </Border>
+            <Border
+                x:Key="EntityMenuHeader"
+                MinHeight="30"
+                x:Shared="false"
+                Background="Transparent">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Entity.Name}" />
+            </Border>
+            <Border
+                x:Key="TemplateMenuHeader"
+                MinHeight="30"
+                x:Shared="false"
+                Background="Transparent">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Container.Name}" />
+            </Border>
+            <Path
+                x:Key="MenuIcon"
+                Width="20"
+                Height="20"
+                Margin="5"
+                x:Shared="false"
+                Data="{Binding Icon}"
+                Fill="{StaticResource PrimaryBrush}"
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
+            <Path
+                x:Key="EntityMenuIcon"
+                Width="20"
+                Height="20"
+                Margin="5"
+                x:Shared="false"
+                Data="{Binding Entity.Icon}"
+                Fill="{StaticResource PrimaryBrush}"
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
+            <Path
+                x:Key="TemplateMenuIcon"
+                Width="20"
+                Height="20"
+                Margin="5"
+                x:Shared="false"
+                Data="{Binding Container.Icon}"
+                Fill="{StaticResource PrimaryBrush}"
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
+
+            <Style x:Key="ContainerStyle" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                            <MenuItem
+                                local:GroupMenuBehavior.Dummy="True"
+                                Header="{StaticResource MenuHeader}"
+                                ItemsSource="{Binding Items}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{StaticResource EntityMenuHeader}" />
+                                        <Setter Property="Icon" Value="{StaticResource EntityMenuIcon}" />
+                                        <EventSetter Event="Click" Handler="MenuItemInstruction_Click" />
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SequenceContainerHeaderExpanderStyle" TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <StackPanel>
+                                <Border
+                                    x:Name="topBorder"
+                                    BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                    BorderThickness="1,1,0,0">
+                                    <Grid
+                                        x:Name="Head"
+                                        Background="{StaticResource SecondaryBackgroundBrush}"
+                                        UseLayoutRounding="True">
+                                        <Grid.Resources>
+                                            <Path
+                                                x:Key="TelescopeIcon"
+                                                Width="20"
+                                                Height="20"
+                                                Margin="5,0,0,0"
+                                                Data="{StaticResource TelescopeSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path
+                                            x:Name="iconarrow"
+                                            Grid.Column="0"
+                                            Width="10"
+                                            Height="10"
+                                            Margin="10,0,10,0"
+                                            Data="{StaticResource ArrowRightSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                        <Path
+                                            x:Name="icon"
+                                            Grid.Column="1"
+                                            Margin="5,0,3,0"
+                                            Data="{StaticResource BoxClosedSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                        <Path
+                                            Grid.Column="2"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="5,0,3,0"
+                                            Data="{Binding Icon}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                        <ContentPresenter
+                                            Grid.Column="3"
+                                            Margin="4,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            RecognizesAccessKey="True"
+                                            UseLayoutRounding="True">
+                                            <i:Interaction.Behaviors>
+                                                <!--  This gives the ability to drag and drop a sequence container by its header  -->
+                                                <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}}" />
+                                            </i:Interaction.Behaviors>
+                                        </ContentPresenter>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter TargetName="icon" Property="Data" Value="{StaticResource BoxSVG}" />
+                                    <Setter TargetName="iconarrow" Property="Data" Value="{StaticResource ArrowDownSVG}" />
+                                    <Setter TargetName="iconarrow" Property="Margin" Value="5,0,10,0" />
+                                </Trigger>
+
+                                <Trigger Property="IsChecked" Value="false">
+                                    <Setter TargetName="topBorder" Property="BorderThickness" Value="1,1,1,1" />
+                                </Trigger>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Head" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SequenceContainerExpander" TargetType="{x:Type ninactrl:DetachingExpander}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ninactrl:DetachingExpander}">
+                            <Border
+                                Margin="0,5,0,5"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Focusable="False"
+                                UseLayoutRounding="True">
+                                <DockPanel>
+                                    <ToggleButton
+                                        x:Name="HeaderSite"
+                                        MinWidth="0"
+                                        MinHeight="0"
+                                        Padding="{TemplateBinding Padding}"
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Content="{TemplateBinding Header}"
+                                        ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                        ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                        DockPanel.Dock="Top"
+                                        FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
+                                        FontFamily="{TemplateBinding FontFamily}"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        FontStretch="{TemplateBinding FontStretch}"
+                                        FontStyle="{TemplateBinding FontStyle}"
+                                        FontWeight="{TemplateBinding FontWeight}"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Style="{StaticResource SequenceContainerHeaderExpanderStyle}" />
+                                    <ContentPresenter
+                                        x:Name="ExpandSite"
+                                        Margin="{TemplateBinding Padding}"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Focusable="false" />
+                                </DockPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded" Value="true">
+                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsExpanded" Value="False">
+                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ContentPresenter.Resources>
+        <ContentPresenter.ContentTemplate>
+            <DataTemplate DataType="{x:Type cont:SequenceContainer}">
+                <ninactrl:DetachingExpander
+                    Padding="0,0,0,0"
+                    Background="{StaticResource BackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,0"
+                    IsExpanded="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    IsHitTestVisible="True"
+                    Style="{StaticResource SequenceContainerExpander}">
+                    <ninactrl:DetachingExpander.Header>
+                        <Grid
+                            Name="PART_Header"
+                            Grid.Row="0"
+                            MinHeight="35"
+                            Margin="0"
+                            HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Grid.Column="0"
+                                MinWidth="200"
+                                Padding="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource SecondaryBackgroundBrush}"
+                                DockPanel.Dock="Left"
+                                FontSize="10pt"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
+                                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
+                            <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                                <ContentPresenter
+                                    Margin="2,0,10,0"
+                                    HorizontalAlignment="Right"
+                                    Content="{Binding}"
+                                    DockPanel.Dock="Right"
+                                    Style="{StaticResource ProgressPresenter}" />
+                            </Border>
+                            <Border
+                                x:Name="ButtonCommands"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                Background="{StaticResource SecondaryBackgroundBrush}">
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                                    <Button
+                                        x:Name="TargetContainerButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Click="TargetContainerButton_Click">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource PictureSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_SaveAsTarget_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource SecondaryBackgroundButton}" TargetType="Button">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=., Converter={StaticResource DeepSkyObjectContainerToVisibilityConverter}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="TemplateContainerButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Click="TemplateContainerButton_Click"
+                                        Style="{StaticResource SecondaryBackgroundButton}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource SaveAsSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_SaveAsTemplate_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="EnableDisableButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DisableEnableCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource PowerSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_DisableEnable_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="CloseButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DetachCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource TrashCanSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Delete_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="ResetProgressButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding ResetProgressCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource RefreshSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Reset_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="CloneContainerButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding AddCloneToParentCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        Visibility="{Binding AddCloneToParentCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource CopySVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Duplicate_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="MoveUpButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="25,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding MoveUpCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource ArrowUpSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveUp_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="MoveDownButton"
+                                        Width="25"
+                                        Height="25"
+                                        Margin="10,0,5,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding MoveDownCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                        <Grid>
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource ArrowDownSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Grid>
+                                        <Button.ToolTip>
+                                            <ToolTip>
+                                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveDown_Tooltip}" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </ninactrl:DetachingExpander.Header>
+
+                    <ninactrl:DetachingExpander.Content>
+                        <DockPanel
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}"
+                            IsHitTestVisible="True"
+                            LastChildFill="True">
+                            <Border
+                                BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                BorderThickness="10,0,0,0"
+                                DockPanel.Dock="Top">
+                                <StackPanel Orientation="Vertical">
+                                    <Border BorderBrush="{StaticResource TertiaryBackgroundBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <ContentPresenter
+                                                Grid.Row="0"
+                                                Grid.ColumnSpan="4"
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Top"
+                                                Content="{Binding SequenceContainerContent, ElementName=UC}" />
+
+                                            <Grid Grid.Row="1" Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
+                                                <ninactrl:HitTestGroupBox
+                                                    VerticalAlignment="Stretch"
+                                                    VerticalContentAlignment="Top"
+                                                    Background="{StaticResource BackgroundBrush}"
+                                                    BorderBrush="Transparent"
+                                                    IsHitTestVisible="True"
+                                                    Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
+                                                    <i:Interaction.Behaviors>
+                                                        <!--  Drop area for Triggers  -->
+                                                        <behaviors:DragOverBehavior
+                                                            AllowDragAbove="False"
+                                                            AllowDragBelow="False"
+                                                            AllowDragCenter="{Binding Triggers.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                                            DragOverCenterText="{ns:Loc LblDragOver_AddTrigger}"
+                                                            DragOverDisplayAnchor="Right" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.ISequenceTrigger" OnDropCommand="DropIntoTriggersCommand" />
+                                                    </i:Interaction.Behaviors>
+                                                    <GroupBox.Header>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Grid.Column="0"
+                                                                    Width="15"
+                                                                    Height="15"
+                                                                    Margin="5"
+                                                                    Data="{StaticResource ThunderSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTriggers}" />
+                                                            </StackPanel>
+
+                                                            <Button
+                                                                x:Name="AddTriggerButton"
+                                                                Grid.Column="1"
+                                                                Width="25"
+                                                                Height="25"
+                                                                Margin="5">
+                                                                <Path
+                                                                    Margin="5"
+                                                                    Data="{StaticResource AddSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <Button.ToolTip>
+                                                                    <ToolTip>
+                                                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddTrigger_Tooltip}" />
+                                                                    </ToolTip>
+                                                                </Button.ToolTip>
+                                                                <Button.Style>
+                                                                    <Style BasedOn="{StaticResource BackgroundButton}" TargetType="{x:Type Button}">
+                                                                        <Style.Triggers>
+                                                                            <EventTrigger RoutedEvent="Click">
+                                                                                <EventTrigger.Actions>
+                                                                                    <BeginStoryboard>
+                                                                                        <Storyboard>
+                                                                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                                                                                <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
+                                                                                            </BooleanAnimationUsingKeyFrames>
+                                                                                        </Storyboard>
+                                                                                    </BeginStoryboard>
+                                                                                </EventTrigger.Actions>
+                                                                            </EventTrigger>
+                                                                        </Style.Triggers>
+                                                                        <Setter Property="ContextMenu">
+                                                                            <Setter.Value>
+                                                                                <ContextMenu ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.TriggersView}">
+                                                                                    <ContextMenu.Template>
+                                                                                        <ControlTemplate>
+                                                                                            <Border Background="{StaticResource BackgroundBrush}">
+                                                                                                <ScrollViewer
+                                                                                                    CanContentScroll="True"
+                                                                                                    HorizontalScrollBarVisibility="Disabled"
+                                                                                                    Style="{StaticResource MenuScrollViewer}"
+                                                                                                    VerticalScrollBarVisibility="Auto">
+                                                                                                    <ItemsPresenter />
+                                                                                                </ScrollViewer>
+                                                                                            </Border>
+                                                                                        </ControlTemplate>
+                                                                                    </ContextMenu.Template>
+                                                                                    <ContextMenu.ItemContainerStyle>
+                                                                                        <Style TargetType="MenuItem">
+                                                                                            <Setter Property="Header" Value="{StaticResource EntityMenuHeader}" />
+                                                                                            <Setter Property="Icon" Value="{StaticResource EntityMenuIcon}" />
+                                                                                            <EventSetter Event="Click" Handler="MenuItemTrigger_Click" />
+                                                                                        </Style>
+                                                                                    </ContextMenu.ItemContainerStyle>
+                                                                                </ContextMenu>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </Grid>
+                                                    </GroupBox.Header>
+                                                    <ItemsControl
+                                                        Margin="0,0,0,0"
+                                                        VerticalAlignment="Top"
+                                                        ItemsSource="{Binding Triggers}">
+
+                                                        <ItemsControl.Resources>
+                                                            <ResourceDictionary>
+                                                                <DataTemplate DataType="{x:Type seqTrig:SequenceTrigger}">
+                                                                    <local:SequenceBlockView />
+                                                                </DataTemplate>
+                                                            </ResourceDictionary>
+                                                        </ItemsControl.Resources>
+                                                    </ItemsControl>
+                                                </ninactrl:HitTestGroupBox>
+                                            </Grid>
+
+                                            <Grid Grid.Row="2" Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
+                                                <Border
+                                                    BorderBrush="{StaticResource TertiaryBackgroundBrush}"
+                                                    BorderThickness="0,1,0,0"
+                                                    Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}" />
+                                            </Grid>
+
+                                            <Grid Grid.Row="3" Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
+                                                <ninactrl:HitTestGroupBox
+                                                    VerticalAlignment="Stretch"
+                                                    VerticalContentAlignment="Top"
+                                                    BorderBrush="Transparent"
+                                                    Visibility="{Binding Converter={StaticResource StrategyEvaluatesConditionsAndTriggersToVisibilityConverter}}">
+                                                    <GroupBox.Header>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Grid.Column="0"
+                                                                    Width="15"
+                                                                    Height="15"
+                                                                    Margin="5"
+                                                                    Data="{StaticResource NotepadSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceContainer_Conditions_Header}" />
+                                                            </StackPanel>
+
+                                                            <Button
+                                                                x:Name="AddConditionButton"
+                                                                Grid.Column="1"
+                                                                Width="25"
+                                                                Height="25"
+                                                                Margin="5">
+                                                                <Path
+                                                                    Margin="5"
+                                                                    Data="{StaticResource AddSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <Button.ToolTip>
+                                                                    <ToolTip>
+                                                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddCondition_Tooltip}" />
+                                                                    </ToolTip>
+                                                                </Button.ToolTip>
+                                                                <Button.Style>
+                                                                    <Style BasedOn="{StaticResource BackgroundButton}" TargetType="{x:Type Button}">
+                                                                        <Style.Triggers>
+                                                                            <EventTrigger RoutedEvent="Click">
+                                                                                <EventTrigger.Actions>
+                                                                                    <BeginStoryboard>
+                                                                                        <Storyboard>
+                                                                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                                                                                <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
+                                                                                            </BooleanAnimationUsingKeyFrames>
+                                                                                        </Storyboard>
+                                                                                    </BeginStoryboard>
+                                                                                </EventTrigger.Actions>
+                                                                            </EventTrigger>
+                                                                        </Style.Triggers>
+                                                                        <Setter Property="ContextMenu">
+                                                                            <Setter.Value>
+                                                                                <ContextMenu ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.ConditionsView}">
+                                                                                    <ContextMenu.Template>
+                                                                                        <ControlTemplate>
+                                                                                            <Border Background="{StaticResource BackgroundBrush}">
+                                                                                                <ScrollViewer
+                                                                                                    CanContentScroll="True"
+                                                                                                    HorizontalScrollBarVisibility="Disabled"
+                                                                                                    Style="{StaticResource MenuScrollViewer}"
+                                                                                                    VerticalScrollBarVisibility="Auto">
+                                                                                                    <ItemsPresenter />
+                                                                                                </ScrollViewer>
+                                                                                            </Border>
+                                                                                        </ControlTemplate>
+                                                                                    </ContextMenu.Template>
+                                                                                    <ContextMenu.ItemContainerStyle>
+                                                                                        <Style TargetType="MenuItem">
+                                                                                            <Setter Property="Header" Value="{StaticResource EntityMenuHeader}" />
+                                                                                            <Setter Property="Icon" Value="{StaticResource EntityMenuIcon}" />
+                                                                                            <EventSetter Event="Click" Handler="MenuItemCondition_Click" />
+                                                                                        </Style>
+                                                                                    </ContextMenu.ItemContainerStyle>
+                                                                                </ContextMenu>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </Grid>
+                                                    </GroupBox.Header>
+                                                    <i:Interaction.Behaviors>
+                                                        <!--  Drop area for Conditions  -->
+                                                        <behaviors:DragOverBehavior
+                                                            AllowDragAbove="False"
+                                                            AllowDragBelow="False"
+                                                            AllowDragCenter="{Binding Conditions.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                                            DragOverCenterText="{ns:Loc LblDragOver_AddCondition}"
+                                                            DragOverDisplayAnchor="Right" />
+                                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Conditions.ISequenceCondition" OnDropCommand="DropIntoConditionsCommand" />
+                                                    </i:Interaction.Behaviors>
+                                                    <ItemsControl
+                                                        Margin="0,0,0,0"
+                                                        VerticalAlignment="Top"
+                                                        ItemsSource="{Binding Conditions}">
+
+                                                        <ItemsControl.Resources>
+                                                            <ResourceDictionary>
+                                                                <DataTemplate DataType="{x:Type seqCond:SequenceCondition}">
+                                                                    <local:SequenceBlockView />
+                                                                </DataTemplate>
+                                                            </ResourceDictionary>
+                                                        </ItemsControl.Resources>
+                                                    </ItemsControl>
+                                                </ninactrl:HitTestGroupBox>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+
+                            <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,0,0,0">
+                                <Grid
+                                    MinHeight="40"
+                                    Background="{StaticResource BackgroundBrush}"
+                                    Visibility="{Binding ShowDetails, ElementName=UC, Converter={StaticResource VisibilityConverter}}">
+                                    <i:Interaction.Behaviors>
+                                        <!--  Drop area For Instructions  -->
+                                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                        <behaviors:DragOverBehavior
+                                            AllowDragAbove="False"
+                                            AllowDragBelow="False"
+                                            AllowDragCenter="{Binding Items.Count, Converter={StaticResource ZeroToBooleanTrueConverter}}"
+                                            DragAboveSize="0"
+                                            DragBelowSize="0" />
+                                    </i:Interaction.Behaviors>
+                                    <ninactrl:HitTestGroupBox BorderBrush="Transparent">
+                                        <GroupBox.Header>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path
+                                                        Grid.Column="0"
+                                                        Width="15"
+                                                        Height="15"
+                                                        Margin="5"
+                                                        Data="{StaticResource SequenceSVG}"
+                                                        Fill="{StaticResource PrimaryBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblInstructions}" />
+                                                </StackPanel>
+
+                                                <Button
+                                                    x:Name="AddButton"
+                                                    Grid.Column="1"
+                                                    Width="25"
+                                                    Height="25"
+                                                    Margin="5">
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AddSVG}"
+                                                        Fill="{StaticResource PrimaryBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                    <Button.ToolTip>
+                                                        <ToolTip>
+                                                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_AddInstruction_Tooltip}" />
+                                                        </ToolTip>
+                                                    </Button.ToolTip>
+                                                    <Button.Style>
+                                                        <Style BasedOn="{StaticResource BackgroundButton}" TargetType="{x:Type Button}">
+                                                            <Style.Triggers>
+                                                                <EventTrigger RoutedEvent="Click">
+                                                                    <EventTrigger.Actions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                                                                    <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
+                                                                                </BooleanAnimationUsingKeyFrames>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger.Actions>
+                                                                </EventTrigger>
+                                                            </Style.Triggers>
+                                                            <Setter Property="ContextMenu">
+                                                                <Setter.Value>
+                                                                    <ContextMenu>
+                                                                        <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.SequencerFactory.InstructionsView}">
+                                                                            <MenuItem.Header>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblInstructions}" />
+                                                                            </MenuItem.Header>
+                                                                            <MenuItem.GroupStyle>
+                                                                                <GroupStyle ContainerStyle="{StaticResource ContainerStyle}" />
+                                                                            </MenuItem.GroupStyle>
+                                                                        </MenuItem>
+                                                                        <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TemplateController.TemplatesMenuView}">
+                                                                            <MenuItem.Header>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemplates}" />
+                                                                            </MenuItem.Header>
+                                                                            <MenuItem.ItemContainerStyle>
+                                                                                <Style TargetType="MenuItem">
+                                                                                    <EventSetter Event="Click" Handler="MenuItemTemplate_Click" />
+                                                                                    <Setter Property="Header" Value="{StaticResource TemplateMenuHeader}" />
+                                                                                    <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
+                                                                                </Style>
+                                                                            </MenuItem.ItemContainerStyle>
+                                                                        </MenuItem>
+                                                                        <MenuItem MinHeight="30" ItemsSource="{Binding Source={StaticResource ViewModel}, Path=Data.TargetController.TargetsMenuView}">
+                                                                            <MenuItem.Header>
+                                                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargets}" />
+                                                                            </MenuItem.Header>
+                                                                            <MenuItem.GroupStyle>
+                                                                                <GroupStyle ContainerStyle="{StaticResource ContainerStyle}" />
+                                                                            </MenuItem.GroupStyle>
+                                                                            <MenuItem.ItemContainerStyle>
+                                                                                <Style TargetType="MenuItem">
+                                                                                    <EventSetter Event="Click" Handler="MenuItemTarget_Click" />
+                                                                                    <Setter Property="Header" Value="{StaticResource MenuHeader}" />
+                                                                                    <Setter Property="Icon" Value="{StaticResource TemplateMenuIcon}" />
+                                                                                </Style>
+                                                                            </MenuItem.ItemContainerStyle>
+                                                                        </MenuItem>
+                                                                    </ContextMenu>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </Grid>
+                                        </GroupBox.Header>
+                                    </ninactrl:HitTestGroupBox>
+                                </Grid>
+                            </Border>
+                        </DockPanel>
+                    </ninactrl:DetachingExpander.Content>
+                </ninactrl:DetachingExpander>
+            </DataTemplate>
+        </ContentPresenter.ContentTemplate>
+    </ContentPresenter>
+</UserControl>

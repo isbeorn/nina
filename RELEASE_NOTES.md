@@ -32,6 +32,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
 - ** Dome/Roof safety **
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
+- ** Switch Polling**
+    - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
@@ -64,6 +66,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
   - Added **drag-and-drop disable and enable buttons**.  
   - Pressing the **Escape** key while dragging an item cancels the action.  
+  - Large sequences should now load significantly faster, with proper UI virtualization for off-screen items.
 - **Imaging Tab Locking**  
   - Added a **lock/unlock button** to prevent panels from being closed or rearranged.  
   - **Resizing panels remains possible** (no method found to disable this).  
@@ -78,6 +81,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
 - **Legacy Sequencer Multiple File Load**
     - Fix issue where saving sequences after multi-file load overwrote only one XML
+- **Time source failure reasons**
+    - When a time source fails to provide a value - e.g. that there is no astronomical twilight today - the validation will also include the reason for the failure. This will help to understand why a time source is not providing a value.
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  
@@ -117,6 +122,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added separate options for **dither pixel size** and **dither settle time** parameters.  
 - **Flat Wizard Customization**  
   - Added an **"Open Cover When Done"** option to set the desired cover state after completing the flat wizard.  
+  - When exposure determiniation fails for auto brightness and auto exposure flat routine the flat panel will be turned off.  
 - **External Script Execution**  
   - Now runs in a separate context using `UseShellExecute`, allowing scripts to start applications without waiting for them to close.  
 

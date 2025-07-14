@@ -21,8 +21,7 @@ namespace NINA.Equipment.Interfaces {
         string Name { get; }
         string Description { get; }
         double Value { get; }
-
-        Task<bool> Poll();
+        bool Poll();
     }
 
     public interface IWritableSwitch : ISwitch {
@@ -30,7 +29,6 @@ namespace NINA.Equipment.Interfaces {
         double Minimum { get; }
         double StepSize { get; }
         double TargetValue { get; set; }
-
-        Task SetValue();
+        void SetValue();
     }
 }
