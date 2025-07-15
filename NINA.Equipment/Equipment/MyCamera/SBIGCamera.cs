@@ -168,7 +168,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return true;
             } catch (Exception e) {
                 Logger.Error($"SBIGCCD: Failed to connect {this.queriedCameraInfo.DeviceId}", e);
-                Notification.ShowError($"Failed to connect {this.queriedCameraInfo.DeviceId}, {e.Message}");
+                Notification.ShowError(String.Format(Loc.Instance["LblFailedToConnectDevice"], this.queriedCameraInfo.DeviceId, e));
                 if (connectedDevice.HasValue) {
                     sdk.CloseDevice(connectedDevice.Value.DeviceId);
                     connectedDevice = null;

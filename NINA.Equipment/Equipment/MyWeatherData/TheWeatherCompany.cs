@@ -224,7 +224,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
 
         public Task<bool> Connect(CancellationToken ct) {
             if (string.IsNullOrEmpty(GetTWCAPIKey())) {
-                Notification.ShowError("There is no TheWeatherCompany API key configured.");
+                Notification.ShowError(Loc.Instance["LblTWCNoAPIKey"]);
                 Logger.Warning("TWC: No API key has been set");
 
                 Connected = false;
