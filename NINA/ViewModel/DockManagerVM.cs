@@ -131,6 +131,8 @@ namespace NINA.ViewModel {
             profileService.BeforeProfileChanging += ProfileService_BeforeProfileChanging; ;
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
+            isLocked = profileService.ActiveProfile.DockPanelSettings.IsLocked;
+
             Task.Run(async () => {
                 await pluginProvider.Load();
                 foreach (var dockable in pluginProvider.DockableVMs) {
@@ -246,6 +248,10 @@ namespace NINA.ViewModel {
 
         [ObservableProperty]
         private bool isLocked = false;
+
+        partial void OnIsLockedChanged(bool value) {
+            profileService.ActiveProfile.DockPanelSettings.IsLocked = value;
+        }
 
         private List<IDockableVM> _anchorables;
 
