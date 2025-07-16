@@ -190,7 +190,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         public IList<string> Issues {
             get { return issues; }
             set {
-                Issues = value;
+                issues = value;
             }
         }
     }
