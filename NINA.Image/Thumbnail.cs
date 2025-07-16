@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using NINA.Image.ImageData;
 using NINA.Core.Enum;
 using NINA.Image.Interfaces;
+using NINA.Core.Locale;
 
 namespace NINA.Image {
 
@@ -41,7 +42,7 @@ namespace NINA.Image {
                     return await imageDataFactory.CreateFromFile(filePath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
                 } else {
                     Logger.Info($"Unable to reload image as the file does not exist at {filePath}");
-                    Notification.ShowError($"File ${filePath} does not exist");
+                    Notification.ShowError(String.Format(Loc.Instance["LblFileNotExist"], filePath));
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);

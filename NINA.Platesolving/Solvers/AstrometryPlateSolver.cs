@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using NINA.Core.Model;
 using NINA.Image.FileFormat;
+using NINA.Core.Locale;
 
 namespace NINA.PlateSolving.Solvers {
 
@@ -239,7 +240,7 @@ namespace NINA.PlateSolving.Solvers {
             } catch (Exception ex) {
                 result.Success = false;
                 if (!parameter.DisableNotifications) {
-                    Notification.ShowError($"Error plate solving with Astrometry.net. {ex.Message}");
+                    Notification.ShowError(String.Format(Loc.Instance["LblAstrometryNetSolveFailed"], ex.Message));
                 }
             }
 

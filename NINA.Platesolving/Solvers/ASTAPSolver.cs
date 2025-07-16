@@ -45,7 +45,7 @@ namespace NINA.PlateSolving.Solvers {
             if (!File.Exists(outputFilePath)) {
                 Logger.Error("ASTAP - Plate solve failed. No output file found.");
                 if (!parameter.DisableNotifications) {
-                    Notification.ShowError("ASTAP - Plate solve failed. No output file found.");
+                    Notification.ShowError(Loc.Instance["LblASTAPNoOutputFile"]);
                 }
                 return result;
             }
@@ -61,7 +61,7 @@ namespace NINA.PlateSolving.Solvers {
                 dict.TryGetValue("ERROR", out var error);
                 Logger.Error($"ASTAP - Plate solve failed.{Environment.NewLine}{warning}{Environment.NewLine}{error}");
                 if (!parameter.DisableNotifications) {
-                    Notification.ShowError($"ASTAP - Plate solve failed.{Environment.NewLine}{warning}{Environment.NewLine}{error}");
+                    Notification.ShowError(String.Format(Loc.Instance["LblASTAPSolveFailed"], warning, error));
                 }
                 return result;
             }
