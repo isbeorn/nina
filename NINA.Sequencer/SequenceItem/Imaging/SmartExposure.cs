@@ -29,14 +29,11 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
-<<<<<<< HEAD
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.Validations;
-=======
 using NINA.Core.Model;
 using System.Threading;
->>>>>>> 194134526e1c37330369bb16a213fedeca9c7589
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 

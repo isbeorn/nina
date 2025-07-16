@@ -588,12 +588,7 @@ namespace NINA.Plugin {
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
         private readonly IMessageBroker messageBroker;
-<<<<<<< HEAD
         private readonly ISymbolBrokerVM symbolBroker;
-        
-=======
-
->>>>>>> 194134526e1c37330369bb16a213fedeca9c7589
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
             var parts = args?.Name?.Split(',');

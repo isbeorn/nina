@@ -488,7 +488,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
-            Expression.ValidateExpressions(Issues, MinBrightnessExpression, MaxBrightnessExpression);
+            NINA.Sequencer.Logic.Expression.ValidateExpressions(Issues, MinBrightnessExpression, MaxBrightnessExpression);
             RaisePropertyChanged(nameof(Issues));
 
             return Issues.Count == 0;
