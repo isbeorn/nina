@@ -57,9 +57,11 @@ namespace NINA.Image.ImageData {
     }
 
     public class Flipped2DExposureData : BaseExposureData {
-        private readonly Array flipped2DArray;
+        private readonly Array flatArray;
         public bool IsBayered { get; private set; }
         public bool Create32BitData { get; }
+        public int Width { get; }
+        public int Height { get; }
 
         public Flipped2DExposureData(
             Array flipped2DArray,
@@ -70,36 +72,38 @@ namespace NINA.Image.ImageData {
             bool create32BitData = false)
             : base(bitDepth, metaData, imageDataFactory) {
             if (flipped2DArray.Rank > 2) { throw new NotSupportedException(); }
-            this.flipped2DArray = flipped2DArray;
+            this.Width = flipped2DArray.GetLength(0);
+            this.Height = flipped2DArray.GetLength(1);
+
+            if (this.Create32BitData && flipped2DArray.GetType() == typeof(int[,])) {
+                this.flatArray = FlipAndProcessAsInt((int[,])flipped2DArray, flipped2DArray.GetLength(0), flipped2DArray.GetLength(1), (int)(flipped2DArray.GetLength(0) * flipped2DArray.GetLength(1)));
+            } else {
+                this.flatArray = FlipAndConvert2d(flipped2DArray);
+            }
             this.IsBayered = isBayered;
             Create32BitData = create32BitData;
         }
 
         public override async Task<IImageData> ToImageData(IProgress<ApplicationStatus> progress = default, CancellationToken cancelToken = default) {
-            try {
-                progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblPrepareExposure"] });
-
-                if(this.Create32BitData && this.flipped2DArray.GetType() == typeof(int[,])) {
-                    var flatArray = await Task.Run(() => FilpAndProcessAsInt((int[,])this.flipped2DArray, this.flipped2DArray.GetLength(0), this.flipped2DArray.GetLength(1), (int)(this.flipped2DArray.GetLength(0) * this.flipped2DArray.GetLength(1))));
+            switch(flatArray) {
+                case int[] integers:
                     return imageDataFactory.CreateBaseImageData(
-                        imageArray: new ImageArrayInt(flatArray),
-                        width: this.flipped2DArray.GetLength(0),
-                        height: this.flipped2DArray.GetLength(1),
+                        imageArray: new ImageArrayInt(integers),
+                        width: Width,
+                        height: Height,
                         bitDepth: this.BitDepth,
                         isBayered: this.IsBayered,
                         metaData: this.MetaData);
-                } else {
-                    var flatArray = await Task.Run(() => FlipAndConvert2d(this.flipped2DArray), cancelToken);
+                case ushort[] ushorts:
                     return imageDataFactory.CreateBaseImageData(
-                        imageArray: new ImageArray(flatArray),
-                        width: this.flipped2DArray.GetLength(0),
-                        height: this.flipped2DArray.GetLength(1),
+                        imageArray: new ImageArray(ushorts),
+                        width: Width,
+                        height: Height,
                         bitDepth: this.BitDepth,
                         isBayered: this.IsBayered,
                         metaData: this.MetaData);
-                }
-            } finally {
-                progress?.Report(new ApplicationStatus { Status = string.Empty });
+                default:
+                    throw new InvalidOperationException($"Unsupported array type: {flatArray.GetType()}");
             }
         }
 
@@ -224,7 +228,7 @@ namespace NINA.Image.ImageData {
                 }
             }
         }
-        private static int[] FilpAndProcessAsInt(int[,] arr, int width, int height, int length) {
+        private static int[] FlipAndProcessAsInt(int[,] arr, int width, int height, int length) {
             int[] flatArray = new int[length];
             int value;
             unsafe {

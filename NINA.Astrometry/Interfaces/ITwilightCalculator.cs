@@ -18,6 +18,8 @@ namespace NINA.Astrometry.Interfaces {
 
     public interface ITwilightCalculator {
 
+        [Obsolete("Use method with elevation parameter instead")]
         TimeSpan GetTwilightDuration(DateTime date, double latitude, double longitude);
+        TimeSpan GetTwilightDuration(DateTime date, double latitude, double longitude, double elevation);
     }
 }

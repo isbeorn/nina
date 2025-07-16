@@ -16,6 +16,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -38,32 +39,30 @@ namespace NINA.Core.Utility.Http {
                 formattedUrl = string.Format(CultureInfo.InvariantCulture, Url, Parameters);
             }
 
-            using (var client = new WebClient()) {
-                using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    try {
-                        client.Headers.Add("User-Agent", CoreUtil.UserAgent);
-                        client.DownloadProgressChanged += (s, e) => {
-                            progress?.Report(e.ProgressPercentage);
-                        };
-                        var data = await client.DownloadDataTaskAsync(formattedUrl);
-                        using (MemoryStream stream = new MemoryStream(data)) {
-                            var bitmap = new BitmapImage();
-                            bitmap.BeginInit();
-                            bitmap.StreamSource = stream;
-                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                            bitmap.EndInit();
-                            bitmap.Freeze();
-                            img = bitmap;
-                        }
-                    } catch (WebException ex) {
-                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
-                            throw new OperationCanceledException();
-                        } else {
-                            throw;
-                        }
-                    }
-                }
+            try {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
+
+                using var data = await httpClient.GetStreamAsync(formattedUrl, ct);
+                using var ms = new MemoryStream();
+                await data.CopyToAsync(ms, ct);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = ms;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                img = bitmap;
+            } catch (OperationCanceledException) {
+                throw;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw;
             }
+
             return img;
         }
     }

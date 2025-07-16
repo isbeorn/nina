@@ -95,9 +95,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         private async Task<bool> SetSwitchValue(object arg) {
             var aSwitch = (IWritableSwitch)arg;
 
-            await aSwitch.SetValue();
-
-            await aSwitch.Poll();
+            aSwitch.SetValue();
+            await CoreUtil.Wait(TimeSpan.FromMilliseconds(50));
+            aSwitch.Poll();
 
             var timeOut = TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 4);
             bool success = true;
@@ -148,14 +148,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
         private SwitchInfo switchInfo;
 
         private Dictionary<string, object> GetSwitchValues() {
-            Dictionary<string, object> switchValues = new Dictionary<string, object>();
+            var switchValues = new Dictionary<string, object>();
             switchValues.Add(nameof(SwitchInfo.Connected), SwitchHub?.Connected ?? false);
 
-            var tasks = new List<Task>();
             foreach (var s in SwitchHub.Switches) {
-                tasks.Add(s.Poll());
+                s.Poll();
             }
-            AsyncContext.Run(async () => await Task.WhenAll(tasks));
             return switchValues;
         }
 
@@ -197,6 +195,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SwitchSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.SwitchSettings.LastDeviceName = string.Empty;
                     return false;
                 }
 
@@ -258,6 +257,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SwitchSettings.Id = switchHub.Id;
+                            profileService.ActiveProfile.SwitchSettings.LastDeviceName = switchHub.DisplayName;
                             Notification.ShowSuccess(Loc.Instance["LblSwitchConnected"]);
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);

@@ -64,9 +64,9 @@ namespace NINA.Core.Utility {
         public static string ChangelogPage {
             get {
                 if (IsReleaseBuild) {
-                    return "https://bitbucket.org/Isbeorn/nina/commits/branch/master";
+                    return "https://github.com/isbeorn/nina/commits/master/";
                 } else {
-                    return "https://bitbucket.org/Isbeorn/nina/commits/branch/develop";
+                    return "https://github.com/isbeorn/nina/commits/develop/";
                 }
             }
         }

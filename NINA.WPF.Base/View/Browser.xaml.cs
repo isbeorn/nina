@@ -39,6 +39,11 @@ namespace NINA.WPF.Base.View {
             }            
         }
 
+        public async Task InitializeAndSetSource() {
+            await InitializeWebView2Async();
+            webView.Source = Source;
+        }
+
         private async Task InitializeWebView2Async() {
             try {
                 if (webView.CoreWebView2 != null) { return; }

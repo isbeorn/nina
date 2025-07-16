@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
@@ -38,14 +38,14 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.1029-nightly</Version>
+    <Version>3.2.0.1065-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>Interfaces to communicate with Lacerta MGEN2 and MGEN3 Autoguider Units</Description>
-    <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
-    <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>

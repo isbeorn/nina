@@ -646,6 +646,9 @@
       <Component Id="System.Data.SQLite.EF6.dll" Guid="d4cb4e71-0820-45de-9ce7-ae682bb70840" Bitness="$(var.Win64)">
         <File Id="System.Data.SQLite.EF6.dll" Name="System.Data.SQLite.EF6.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.EF6.dll" />
       </Component>
+      <Component Id="System.IO.Pipelines.dll" Guid="8929bcbb-5b70-46e9-8250-869ec5656d42">
+        <File Id="System.IO.Pipelines.dll" Name="System.IO.Pipelines.dll" Source="$(var.NINA_TargetDir)System.IO.Pipelines.dll" />
+      </Component>
       <Component Id="System.IO.Ports.dll" Guid="00cfbe8b-2e61-43e2-9240-2ffbea5097f6">
         <File Id="System.IO.Ports.dll" Name="System.IO.Ports.dll" Source="$(var.NINA_TargetDir)System.IO.Ports.dll" />
       </Component>
@@ -663,9 +666,6 @@
       </Component>
       <Component Id="ToastNotifications.Messages.dll" Guid="74b98fb4-f2a9-44d8-8c8b-988b83bf09d4" Bitness="$(var.Win64)">
         <File Id="ToastNotifications.Messages.dll" Name="ToastNotifications.Messages.dll" Source="$(var.NINA_TargetDir)ToastNotifications.Messages.dll" />
-      </Component>
-      <Component Id="ToggleSwitch.dll" Guid="b7d48149-e902-402d-86f7-6d08341960c2" Bitness="$(var.Win64)">
-        <File Id="ToggleSwitch.dll" Name="ToggleSwitch.dll" Source="$(var.NINA_TargetDir)ToggleSwitch.dll" />
       </Component>
       <Component Id="Trinet.Core.IO.Ntfs.dll" Guid="194dc6f2-ec04-439a-ab26-b9edbe4daee0" Bitness="$(var.Win64)">
         <File Id="Trinet.Core.IO.Ntfs.dll" Name="Trinet.Core.IO.Ntfs.dll" Source="$(var.NINA_TargetDir)Trinet.Core.IO.Ntfs.dll" />
@@ -766,8 +766,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Guid="a0d56131-9dfd-4488-b60f-5b0a9be46971">
-        <File Id="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Name="mscordaccore_amd64_amd64_8.0.1625.21506.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1625.21506.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.1825.31117.dll" Guid="e37d9ae6-240c-4640-88c4-262dccc9d694">
+        <File Id="mscordaccore_amd64_amd64_8.0.1825.31117.dll" Name="mscordaccore_amd64_amd64_8.0.1825.31117.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.1825.31117.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />

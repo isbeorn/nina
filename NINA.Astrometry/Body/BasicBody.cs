@@ -18,16 +18,19 @@ using System.Threading.Tasks;
 namespace NINA.Astrometry.Body {
 
     public abstract class BasicBody {
-
-        public BasicBody(DateTime date, double latitude, double longitude) {
+        [Obsolete("Use method with elevation parameter instead")]
+        public BasicBody(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
+        public BasicBody(DateTime date, double latitude, double longitude, double elevation) {
             this.Date = date;
             this.Latitude = latitude;
             this.Longitude = longitude;
+            Elevation = elevation;
         }
 
         public DateTime Date { get; private set; }
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
+        public double Elevation { get; }
         public double Distance { get; protected set; }
         public double Altitude { get; protected set; }
 
@@ -42,12 +45,13 @@ namespace NINA.Astrometry.Body {
 
                 var location = new NOVAS.OnSurface() {
                     Latitude = Latitude,
-                    Longitude = Longitude
+                    Longitude = Longitude,
+                    Height = Elevation
                 };
 
                 var observer = new NOVAS.Observer() {
                     OnSurf = location,
-                    Where = (short)NOVAS.ObserverLocation.EarthGeoCenter
+                    Where = (short)NOVAS.ObserverLocation.EarthSurface
                 };
 
                 var obj = new NOVAS.CelestialObject() {
@@ -59,7 +63,7 @@ namespace NINA.Astrometry.Body {
 
                 var objPosition = new NOVAS.SkyPosition();
 
-                NOVAS.Place(jd + AstroUtil.SecondsToDays(deltaT), obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
+                NOVAS.Place(jd, obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
                 this.Distance = AstroUtil.AUToKilometer(objPosition.Dis);
 
                 var siderealTime = AstroUtil.GetLocalSiderealTime(Date, Longitude);

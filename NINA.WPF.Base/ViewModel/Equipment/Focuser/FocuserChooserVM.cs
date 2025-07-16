@@ -86,7 +86,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     Logger.Error(ex);
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id, profileService.ActiveProfile.FocuserSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

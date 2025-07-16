@@ -19,6 +19,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IRotatorSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
 
         /// <summary>
         /// Historically N.I.N.A. was expressing rotation in clockwise orientation

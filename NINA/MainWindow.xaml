@@ -493,7 +493,7 @@
                     CancelToolTip="{ns:Loc LblCancel}"
                     Command="{Binding ApplicationDeviceConnectionVM.ConnectAllDevicesCommand}"
                     ToolTip="{ns:Loc LblConnect}"
-                    Visibility="{Binding ApplicationDeviceConnectionVM.AllConnected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                    Visibility="{Binding ApplicationDeviceConnectionVM.AtLeastOneConnected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
                 <ninactrl:CancellableButton
                     Grid.Row="0"
                     Grid.Column="0"
@@ -509,7 +509,7 @@
                     CancelToolTip="{ns:Loc LblCancel}"
                     Command="{Binding ApplicationDeviceConnectionVM.DisconnectAllDevicesCommand}"
                     ToolTip="{ns:Loc LblDisconnect}"
-                    Visibility="{Binding ApplicationDeviceConnectionVM.AllConnected, Converter={StaticResource VisibilityConverter}}" />
+                    Visibility="{Binding ApplicationDeviceConnectionVM.AtLeastOneConnected, Converter={StaticResource VisibilityConverter}}" />
                 <ninactrl:LoadingControl
                     Grid.Row="0"
                     Grid.Column="0"
@@ -550,7 +550,7 @@
                     CancelToolTip="{ns:Loc LblCancel}"
                     Command="{Binding ApplicationDeviceConnectionVM.ConnectAllDevicesCommand}"
                     ToolTip="{ns:Loc LblConnect}"
-                    Visibility="{Binding ApplicationDeviceConnectionVM.AllConnected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                    Visibility="{Binding ApplicationDeviceConnectionVM.AtLeastOneConnected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
                 <ninactrl:CancellableButton
                     Grid.Row="0"
                     Grid.Column="0"
@@ -566,7 +566,7 @@
                     CancelToolTip="{ns:Loc LblCancel}"
                     Command="{Binding ApplicationDeviceConnectionVM.DisconnectAllDevicesCommand}"
                     ToolTip="{ns:Loc LblDisconnect}"
-                    Visibility="{Binding ApplicationDeviceConnectionVM.AllConnected, Converter={StaticResource VisibilityConverter}}" />
+                    Visibility="{Binding ApplicationDeviceConnectionVM.AtLeastOneConnected, Converter={StaticResource VisibilityConverter}}" />
                 <ninactrl:LoadingControl
                     Grid.Row="0"
                     Grid.Column="0"

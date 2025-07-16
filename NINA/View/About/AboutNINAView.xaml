@@ -114,7 +114,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="https://bitbucket.org/Isbeorn/nina/" RequestNavigate="Hyperlink_RequestNavigate">https://bitbucket.org/Isbeorn/nina/</Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/isbeorn/nina/" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/isbeorn/nina/</Hyperlink>
                 </TextBlock>
 
                 <TextBlock

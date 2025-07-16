@@ -60,7 +60,7 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
                     try {                        
                         var s = new AscomWritableV1Switch(device, i);
                         s.TargetValue = s.Value;
-                        await s.SetValue();
+                        s.SetValue();
                         Logger.Trace($"Writable v1 Switch found for index {i}");
                         Switches.Add(s);
                     } catch (Exception e2) {

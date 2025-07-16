@@ -201,7 +201,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 bool val = false;
                 try {
-                    if (Connected && _hasCooler) {
+                    if (ShouldBeConnected && _hasCooler) {
                         val = device.CoolerOn;
                     }
                 } catch (Exception) {
@@ -211,7 +211,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             set {
                 try {
-                    if (Connected && _hasCooler) {
+                    if (ShouldBeConnected && _hasCooler) {
                         device.CoolerOn = value;
                         RaisePropertyChanged();
                     }
@@ -286,7 +286,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int Gain {
             get {
                 int val = -1;
-                if (Connected && CanGetGain) {
+                if (ShouldBeConnected && CanGetGain) {
                     try {
                         if (Gains.Count > 0) {
                             val = (int)Gains[device.Gain];
@@ -301,7 +301,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return val;
             }
             set {
-                if (Connected && CanSetGain) {
+                if (ShouldBeConnected && CanSetGain) {
                     try {
                         if (Gains.Count > 0) {
                             short idx = (short)Gains.IndexOf(value);
@@ -379,7 +379,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int GainMax {
             get {
                 int val = -1;
-                if (Connected) {
+                if (ShouldBeConnected) {
                     if (_canGetGainMinMax) {
                         try {
                             val = device.GainMax;
@@ -403,7 +403,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int GainMin {
             get {
                 int val = -1;
-                if (Connected) {
+                if (ShouldBeConnected) {
                     if (_canGetGainMinMax) {
                         try {
                             val = device.GainMin;
@@ -455,7 +455,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 double val = -1;
                 try {
-                    if (Connected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureInfo) {
                         val = device.LastExposureDuration;
                     }
                 } catch (ASCOM.InvalidOperationException) {
@@ -470,7 +470,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 string val = string.Empty;
                 try {
-                    if (Connected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureInfo) {
                         val = device.LastExposureStartTime;
                     }
                 } catch (ASCOM.InvalidOperationException) {
@@ -521,7 +521,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public short ReadoutMode {
             get => GetProperty<short>(nameof(Camera.ReadoutMode), 0);
             set {
-                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                if (ShouldBeConnected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
                     try {
                         device.ReadoutMode = value;
                     } catch (InvalidValueException ex) {
@@ -728,7 +728,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int OffsetMin {
             get {
                 var offsetMin = 0;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offsetMin = device.OffsetMin;
                     } else {
@@ -744,7 +744,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int OffsetMax {
             get {
                 var offsetMax = 0;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offsetMax = device.OffsetMax;
                     } else {
@@ -762,7 +762,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int Offset {
             get {
                 var offset = -1;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offset = device.Offset;
                     } else {
@@ -773,7 +773,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             set {
                 try {
-                    if (Connected && CanSetOffset) {
+                    if (ShouldBeConnected && CanSetOffset) {
                         if (offsetValueMode) {
                             if (value < OffsetMin) {
                                 value = OffsetMin;

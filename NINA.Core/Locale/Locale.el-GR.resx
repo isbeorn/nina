@@ -1726,7 +1726,7 @@
     <value>Ιστορικό HFR</value>
   </data>
   <data name="LblHFRHistoryAllFilters" xml:space="preserve">
-    <value>All</value>
+    <value>Όλα</value>
   </data>
   <data name="LblHFRPatternDescription" xml:space="preserve">
     <value>Υπολογισμένο HFR της εικόνας (Η ανίχνευση HFR θα πρέπει να είναι ενεργοποιημένη)</value>
@@ -2502,7 +2502,7 @@
     <value>Plate Solving</value>
   </data>
   <data name="LblCenterAfterDrift" xml:space="preserve">
-    <value>Recentering after too much drift</value>
+    <value>Επαναστόχευση μετά από υπερβολικό γλίστρημα</value>
   </data>
   <data name="LblNoTarget" xml:space="preserve">
     <value>No target set</value>
@@ -2523,7 +2523,7 @@
     <value>Θέση</value>
   </data>
   <data name="LblRelativePosition" xml:space="preserve">
-    <value>Relative Position</value>
+    <value>Σχετική Θέση</value>
   </data>
   <data name="LblClearGuidingCalibration" xml:space="preserve">
     <value>Καθαρισμός Βαθμονόμησης</value>
@@ -2790,7 +2790,7 @@
     <value>Αλληλουχία</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
-    <value>Delay start</value>
+    <value>Καθυστέρηση έναρξης</value>
   </data>
   <data name="LblSequenceDelayStatus" xml:space="preserve">
     <value>Η αλληλουχία θα ξεκινήσει σε {0} δευτερόλεπτα</value>
@@ -2896,7 +2896,7 @@
     <value>Κατάλογος Εικόνων Άτλαντα Ουρανού</value>
   </data>
   <data name="LblOfflineSkyMap" xml:space="preserve">
-    <value>Offline Sky Map</value>
+    <value>Χάρτης Ουρανού Χωρίς Σύνδεση</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
     <value>Φωτεινότητα Ουρανού</value>
@@ -2917,7 +2917,7 @@
     <value>Μετακίνηση</value>
   </data>
   <data name="LblSlewCenter" xml:space="preserve">
-    <value>Slew and Center</value>
+    <value>Κύλιση και Στόχευση</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
     <value>Διάρκεια Μετακίνησης</value>
@@ -5700,7 +5700,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Target Options</value>
   </data>
   <data name="LblCoolCamera" xml:space="preserve">
-    <value>Cool Camera</value>
+    <value>Ψήξη Κάμερας</value>
   </data>
   <data name="LblParkMount" xml:space="preserve">
     <value>Park Mount</value>
@@ -5715,7 +5715,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Unpark Mount</value>
   </data>
   <data name="LblWarmCamera" xml:space="preserve">
-    <value>Warm Camera</value>
+    <value>Θέρμανση Κάμερας</value>
   </data>
   <data name="LblRotatorRangeType" xml:space="preserve">
     <value>Mechanical Range</value>
@@ -5751,7 +5751,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Unable to set mount latitude to {0} and longitude to {1}!</value>
   </data>
   <data name="LblMGENDitherSettleTime" xml:space="preserve">
-    <value>Dither settling time</value>
+    <value>Χρόνος ηρεμίας Dither</value>
   </data>
   <data name="LblTrackingASCOMServerStartFailed" xml:space="preserve">
     <value>Failed to start tracking CCD ASCOM server. {0}</value>
@@ -5793,10 +5793,10 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>A trigger to limit dome synchronization movements to between sequence steps in order to reduce vibrations during exposures. This should not be used with Dome Following enabled, which runs continuously in the background.</value>
   </data>
   <data name="LblDomeTargetAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>Αζιμούθιο</value>
   </data>
   <data name="LblDomeTargetAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>Υψόμετρο</value>
   </data>
   <data name="LblDomeFollowerEnabledError" xml:space="preserve">
     <value>Turn dome following off to use the Synchronize Dome Trigger</value>
@@ -5857,13 +5857,13 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Initializing Plugins</value>
   </data>
   <data name="LblCameraStateDownload" xml:space="preserve">
-    <value>Downloading</value>
+    <value>Γίνεται Λήψη</value>
   </data>
   <data name="LblCameraStateError" xml:space="preserve">
-    <value>Error</value>
+    <value>Σφάλμα</value>
   </data>
   <data name="LblCameraStateExposing" xml:space="preserve">
-    <value>Exposing</value>
+    <value>Γίνετε Έκθεση</value>
   </data>
   <data name="LblCameraStateIdle" xml:space="preserve">
     <value>Idle</value>
@@ -5878,10 +5878,10 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Reading out</value>
   </data>
   <data name="LblCameraStateWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>Αναμονή</value>
   </data>
   <data name="LblStarDetectorNoiseReduction" xml:space="preserve">
-    <value>Noise Reduction</value>
+    <value>Μείωση Θορύβου</value>
   </data>
   <data name="LblStarDetectorPrepareForStructureDetection" xml:space="preserve">
     <value>Preparing for Structure Detection</value>
@@ -5911,7 +5911,7 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Unavailable in x86</value>
   </data>
   <data name="LblAutoFocusDuration" xml:space="preserve">
-    <value>Duration</value>
+    <value>Διάρκεια</value>
   </data>
   <data name="LblSynchronizingDome" xml:space="preserve">
     <value>Synchronizing Dome</value>
@@ -6790,7 +6790,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Κλείσιμο</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6806,7 +6806,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Γίνεται Μετακίνηση</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6851,13 +6851,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Κλειστό</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Ανοικτό</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7012,7 +7012,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Αποθήκευση Αλληλουχίας</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>
@@ -7033,7 +7033,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Set current position to zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Αντιστροφή</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
     <value>Set max step</value>
@@ -7112,7 +7112,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Σύνδεση</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
@@ -7168,5 +7168,44 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Open cover when done</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>

@@ -73,7 +73,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Switch {
                     Logger.Error(ex);
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.SwitchSettings.Id, profileService.ActiveProfile.SwitchSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

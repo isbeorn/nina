@@ -19,6 +19,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IGuiderSettings : ISettings {
         string GuiderName { get; set; }
+        string LastDeviceName { get; set; }
         double DitherPixels { get; set; }
         bool DitherRAOnly { get; set; }
         GuiderScaleEnum PHD2GuiderScale { get; set; }

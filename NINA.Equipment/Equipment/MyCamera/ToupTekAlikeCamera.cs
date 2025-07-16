@@ -14,29 +14,30 @@
 
 using Altair;
 using NINA.Core.Enum;
-using NINA.Image.ImageData;
-using NINA.Profile.Interfaces;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Model.Equipment;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces;
-using System.Drawing;
-using System.Collections;
-using System.Linq;
-using NINA.Equipment.Utility;
-using System.Diagnostics.Eventing.Reader;
-using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class ToupTekAlikeCamera : BaseINPC, ICamera {
+    public partial class ToupTekAlikeCamera : BaseINPC, ICamera {
         private ToupTekAlikeFlag flags;
         private IToupTekAlikeCameraSDK sdk;
         private string internalId;
@@ -56,13 +57,27 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
 
             this.Name = deviceInfo.displayname;
-            this.Description = deviceInfo.id;
+
+
+            var match = IdExtractorRegex().Match(deviceInfo.id);
+
+            this.Description = $"{Category} camera.";
+            if (match.Success) {
+                var vid = match.Groups[1].Value;
+                var pid = match.Groups[2].Value;
+                var tail = match.Groups[3].Value;
+                this.Description += $" Vendor ID: {vid}, Product ID: {pid}, Camera ID: {tail}";
+            }
+            
             this.MaxFanSpeed = (int)deviceInfo.model.maxfanspeed;
             this.PixelSizeX = Math.Round(deviceInfo.model.xpixsz, 2);
             this.PixelSizeY = Math.Round(deviceInfo.model.ypixsz, 2);
 
             this.flags = (ToupTekAlikeFlag)deviceInfo.model.flag;
         }
+
+        [GeneratedRegex(@"vid_([0-9a-fA-F]+)&pid_([0-9a-fA-F]+)#([^\\]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex IdExtractorRegex();
 
         private IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;

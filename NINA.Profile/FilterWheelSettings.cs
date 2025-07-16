@@ -49,6 +49,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            lastDeviceName = string.Empty;
             filterWheelFilters = new ObserveAllCollection<FilterInfo>();
             disableGuidingOnFilterChange = false;
             unidirectional = false;
@@ -62,6 +63,19 @@ namespace NINA.Profile {
             set {
                 if (id != value) {
                     id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
                     RaisePropertyChanged();
                 }
             }

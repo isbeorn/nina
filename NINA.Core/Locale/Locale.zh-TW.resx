@@ -238,7 +238,7 @@
     <value>角分</value>
   </data>
   <data name="LblMaxArcmin" xml:space="preserve">
-    <value>Max arcmin</value>
+    <value>最大角秒</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
     <value>角秒</value>
@@ -424,7 +424,7 @@
     <value>偏置平均值(本地)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>偏壓之中位數值 (以16位元表示)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>合併圖元</value>
@@ -478,10 +478,10 @@
     <value>巡天圖庫本地緩存</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>計算偏壓</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>得出的曝光時間</value>
   </data>
   <data name="LblCam" xml:space="preserve">
     <value>相機</value>
@@ -593,7 +593,7 @@
     <value>檢查中天翻轉</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>核對和</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>校驗和與預期值不匹配，下載的檔可能已損壞!</value>
@@ -638,7 +638,7 @@
     <value>暫不支援彩色感測器</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>壓縮</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -944,9 +944,9 @@
     <value>反差對焦模式</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>打開冷卻器並冷卻攝影機至指定溫度。
+冷卻所需時間可以讓使用者選擇性地指定。大多數相機驅動程式已經自動調節冷卻器功率，並且只會逐漸降低溫度。
+如果需要較長的冷卻時間，可以指定一個時間，應用程式將根據該時間，逐漸降低相機至特定溫度。</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>製冷開啟</value>
@@ -976,7 +976,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>當前位置</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Est. finish time (this target)</value>
+    <value>估計結束時間 (此目標)</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>當前的UI顏色方案</value>
@@ -1022,7 +1022,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>黎明</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>天數</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1112,16 +1112,16 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>Typical pulse duration in seconds</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
-    <value>Right Ascension Guide Rate</value>
+    <value>赤經導星速率</value>
   </data>
   <data name="LblRightAscensionGuideRateTooltip" xml:space="preserve">
-    <value>Right Ascension guide rate in arcseconds per second</value>
+    <value>赤經導星速率，以 角秒/每秒 為單位</value>
   </data>
   <data name="LblDeclinationGuideRate" xml:space="preserve">
-    <value>Declination Guide Rate</value>
+    <value>赤緯導星速率</value>
   </data>
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
-    <value>Declination guide rate in arcseconds per second</value>
+    <value>赤緯導星速率，以 角秒/每秒 為單位</value>
   </data>
   <data name="LblMountDitherConnectionFail" xml:space="preserve">
     <value>Mount Dither could not connect to Mount</value>
@@ -1136,7 +1136,7 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>圖像保存目錄沒有寫入許可權！</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>禁用</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>對焦時停止導星</value>
@@ -1157,16 +1157,16 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>抖動</value>
   </data>
   <data name="LblDitherEveryNoFrame" xml:space="preserve">
-    <value>Dither Every #</value>
+    <value>抖動間隔幀數</value>
   </data>
   <data name="LblDitherOnButGuiderNotConnected" xml:space="preserve">
     <value>抖動已啟用，但未連接導星工具</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
-    <value>Dither Pixels</value>
+    <value>Dither 像素</value>
   </data>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
-    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
+    <value>典型dither像素數目。Dither以目標為中心的呈現常態分佈，此值為標準差。67% 的dither將在此距離內。</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>僅抖動赤經</value>
@@ -1736,7 +1736,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>HFR 歷史</value>
   </data>
   <data name="LblHFRHistoryAllFilters" xml:space="preserve">
-    <value>All</value>
+    <value>全部</value>
   </data>
   <data name="LblHFRPatternDescription" xml:space="preserve">
     <value>計算圖像的 HFR（必須啟用HFR檢測）</value>
@@ -1772,7 +1772,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>小時</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>小時</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>濕度</value>
@@ -1988,13 +1988,13 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>中天位置偏移</value>
   </data>
   <data name="LblPHD2Setup" xml:space="preserve">
-    <value>PHD2 Setup</value>
+    <value>PHD2設定</value>
   </data>
   <data name="LblMetaGuideSetup" xml:space="preserve">
-    <value>MetaGuide Setup</value>
+    <value>MetaGuide設定</value>
   </data>
   <data name="LblMetaGuidePort" xml:space="preserve">
-    <value>MetaGuide Port</value>
+    <value>MetaGuide通訊阜</value>
   </data>
   <data name="LblMin" xml:space="preserve">
     <value>最小</value>
@@ -2051,7 +2051,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>Nautical Dusk</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>新準焦位置</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -2253,7 +2253,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>好的</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>上次電調位置</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -5725,7 +5725,7 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>Unpark Mount</value>
   </data>
   <data name="LblWarmCamera" xml:space="preserve">
-    <value>Warm Camera</value>
+    <value>相機回溫</value>
   </data>
   <data name="LblRotatorRangeType" xml:space="preserve">
     <value>Mechanical Range</value>
@@ -5803,10 +5803,10 @@ The default behavior is to continue on errors, however for some instructions it 
     <value>A trigger to limit dome synchronization movements to between sequence steps in order to reduce vibrations during exposures. This should not be used with Dome Following enabled, which runs continuously in the background.</value>
   </data>
   <data name="LblDomeTargetAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>方位角</value>
   </data>
   <data name="LblDomeTargetAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>地平高度</value>
   </data>
   <data name="LblDomeFollowerEnabledError" xml:space="preserve">
     <value>Turn dome following off to use the Synchronize Dome Trigger</value>
@@ -5867,13 +5867,13 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Initializing Plugins</value>
   </data>
   <data name="LblCameraStateDownload" xml:space="preserve">
-    <value>Downloading</value>
+    <value>下載中</value>
   </data>
   <data name="LblCameraStateError" xml:space="preserve">
-    <value>Error</value>
+    <value>錯誤</value>
   </data>
   <data name="LblCameraStateExposing" xml:space="preserve">
-    <value>Exposing</value>
+    <value>曝光中</value>
   </data>
   <data name="LblCameraStateIdle" xml:space="preserve">
     <value>Idle</value>
@@ -5891,7 +5891,7 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Waiting</value>
   </data>
   <data name="LblStarDetectorNoiseReduction" xml:space="preserve">
-    <value>Noise Reduction</value>
+    <value>降噪</value>
   </data>
   <data name="LblStarDetectorPrepareForStructureDetection" xml:space="preserve">
     <value>Preparing for Structure Detection</value>
@@ -5921,7 +5921,7 @@ Refer to your camera's manual for the location of this setting</value>
     <value>Unavailable in x86</value>
   </data>
   <data name="LblAutoFocusDuration" xml:space="preserve">
-    <value>Duration</value>
+    <value>持續時間</value>
   </data>
   <data name="LblSynchronizingDome" xml:space="preserve">
     <value>Synchronizing Dome</value>
@@ -6800,7 +6800,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>關閉</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6861,13 +6861,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>已關閉</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>打開</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7022,7 +7022,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>保存序列</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>
@@ -7122,7 +7122,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>連接</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
@@ -7178,5 +7178,44 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Open cover when done</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>

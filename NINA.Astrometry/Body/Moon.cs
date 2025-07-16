@@ -18,7 +18,9 @@ namespace NINA.Astrometry.Body {
 
     public class Moon : BasicBody {
 
-        public Moon(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        [Obsolete("Use method with elevation parameter instead")]
+        public Moon(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
+        public Moon(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation) {
         }
 
         public override double Radius => 1738; // https://de.wikipedia.org/wiki/Monddurchmesser

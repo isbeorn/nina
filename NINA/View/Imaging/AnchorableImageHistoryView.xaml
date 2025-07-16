@@ -383,6 +383,7 @@
                         DataFieldY="{Binding ImageHistoryLeftSelectedKey}"
                         ItemsSource="{Binding ObservableImageHistoryView}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MarkerSize="2"
                         MarkerType="Circle"
                         TrackerKey="ImageProperties"
                         YAxisKey="Left" />
@@ -392,7 +393,7 @@
                         DataFieldY="Zero"
                         ItemsSource="{Binding AutoFocusPointsView}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                        MarkerSize="5"
+                        MarkerSize="4"
                         MarkerType="Triangle"
                         TrackerKey="AutoFocus"
                         YAxisKey="LeftAutofocus"
@@ -403,6 +404,7 @@
                         DataFieldY="{Binding ImageHistoryRightSelectedKey}"
                         ItemsSource="{Binding ObservableImageHistoryView}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                        MarkerSize="2"
                         MarkerType="Square"
                         TrackerKey="ImageProperties"
                         YAxisKey="Right" />

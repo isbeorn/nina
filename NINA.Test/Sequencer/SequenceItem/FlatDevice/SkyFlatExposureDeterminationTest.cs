@@ -33,9 +33,9 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
 
             var spring = new DateTime(2024, 03, 20);
             var now = new DateTime(2024, month, day, hour, minute, 0);
-            twilightCalculator.GetTwilightDuration(spring, 30.0, 0d);
-            var springTwilight = twilightCalculator.GetTwilightDuration(spring, 30.0, 0d).TotalMilliseconds;
-            var todayTwilight = twilightCalculator.GetTwilightDuration(now, latitude, longitude).TotalMilliseconds;
+            twilightCalculator.GetTwilightDuration(spring, 30.0, 0d, 0);
+            var springTwilight = twilightCalculator.GetTwilightDuration(spring, 30.0, 0d, 0).TotalMilliseconds;
+            var todayTwilight = twilightCalculator.GetTwilightDuration(now, latitude, longitude, 0).TotalMilliseconds;
 
             dt.Setup(x => x.Now).Returns(now);
             var sut = new SkyFlatExposureDetermination(Stopwatch.StartNew(), 5, springTwilight, todayTwilight, dt.Object);
@@ -66,8 +66,8 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var spring = new DateTime(2024, 03, 20);
             var now = new DateTime(2024, month, day, hour, minute, 0);
 
-            var springTwilight = twilightCalculator.GetTwilightDuration(spring, 30.0, 0d).TotalMilliseconds;
-            var todayTwilight = twilightCalculator.GetTwilightDuration(now, latitude, longitude).TotalMilliseconds;
+            var springTwilight = twilightCalculator.GetTwilightDuration(spring, 30.0, 0d, 0).TotalMilliseconds;
+            var todayTwilight = twilightCalculator.GetTwilightDuration(now, latitude, longitude, 0).TotalMilliseconds;
 
             dt.Setup(x => x.Now).Returns(now);
             var sut = new SkyFlatExposureDetermination(Stopwatch.StartNew(), 5, springTwilight, todayTwilight, dt.Object);

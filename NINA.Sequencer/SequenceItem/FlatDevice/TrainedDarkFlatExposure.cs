@@ -212,14 +212,18 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             /* Lookup trained values and set brightness and exposure time accordingly */
-            var filter = GetSwitchFilterItem()?.Filter;
+            var filterItem = GetSwitchFilterItem();
+            var filter = filterItem?.Filter;
+            // Use the filter item only for lookups, but don't actually change the filter
+            filterItem?.Skip();
+
             var takeExposure = GetExposureItem();
             var binning = takeExposure.Binning;
             var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
             var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
             var info = profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
 
-            (Items[3] as SetBrightness).Brightness = 0;
+            GetSetBrightnessItem().Brightness = 0;
             takeExposure.ExposureTime = info.Time;
 
             if (KeepPanelClosed) {
@@ -252,7 +256,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var takeExposure = GetExposureItem();
             var setBrightness = GetSetBrightnessItem();
 
-            var valid = takeExposure.Validate() && switchFilter.Validate() && setBrightness.Validate();
+            var valid = takeExposure.Validate() && setBrightness.Validate();
 
             var issues = new List<string>();
 
@@ -269,7 +273,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 }
             }
 
-            Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
+            Issues = issues.Concat(takeExposure.Issues).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
 
             return valid;

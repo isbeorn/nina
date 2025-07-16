@@ -41,6 +41,9 @@ namespace NINA.Astrometry {
         public const string HMSPattern = @"(([0-9]{1,2})([h|:| ]|[?]{2}|[h|r]{2})\s*([0-9]{1,2})([m|'|′|:| ]|[?]{2})?\s*([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|""|″|:| ]|[?]{2})?\s*)";
         public const string DMSPattern = @"([\+|-]?([0-9]{1,2})([d|°|º|:| ]|[?]{2})\s*([0-9]{1,2})([m|'|′|:| ]|[?]{2})\s*([0-9]{1,2}(?:\.[0-9]+)?)?([s|""|″|:| ]|[?]{2})?\s*)";
 
+        public const double MoonUpperLimbApparentHorizonAltitude = 0.583;
+        public const double SunUpperLimbApparentHorizonAltitude = 0.833;
+
         /// <summary>
         /// Convert degree to radians
         /// </summary>
@@ -330,29 +333,63 @@ namespace NINA.Astrometry {
             return au * conversionFactor;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude);
+            return GetNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude);
+            return GetNauticalNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetNauticalNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new NauticalTwilightRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+        [Obsolete("Use method with elevation parameter instead")]
+        public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude) {
+            return GetCivilNightTimes(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetCivilNightTimes(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new CivilTwilightRiseAndSet(date, latitude, longitude, elevation);
+            var t = riseAndSet.Calculate().Result;
+
+            return riseAndSet;
+        }
+
+
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new MoonRiseAndSet(date, latitude, longitude);
+            return GetMoonRiseAndSet(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new MoonRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
         }
 
+
+        [Obsolete("Use method with elevation parameter instead")]
         public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude) {
-            var riseAndSet = new SunRiseAndSet(date, latitude, longitude);
+            return GetSunRiseAndSet(date, latitude, longitude, 0d);
+        }
+
+        public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude, double elevation) {
+            var riseAndSet = new SunRiseAndSet(date, latitude, longitude, elevation);
             var t = riseAndSet.Calculate().Result;
 
             return riseAndSet;
@@ -590,9 +627,14 @@ namespace NINA.Astrometry {
             return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(GetMoonPosition(date, jd, observerInfo), GetSunPosition(date, jd, observerInfo));
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static double GetMoonPositionAngle(DateTime date) {
+            return GetMoonPositionAngle(date, new ObserverInfo());
+        }
+
+        public static double GetMoonPositionAngle(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -606,9 +648,14 @@ namespace NINA.Astrometry {
             }
         }
 
-        private static double CalculateMoonIllumination(DateTime date) {
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
+        public static double CalculateMoonIllumination(DateTime date) {
+            return CalculateMoonIllumination(date, new ObserverInfo());
+        }
+
+        private static double CalculateMoonIllumination(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var tuple = GetMoonAndSunPosition(date, jd, observerInfo);
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
@@ -640,8 +687,13 @@ namespace NINA.Astrometry {
             return days * DaysToSecondsFactor;
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static MoonPhase GetMoonPhase(DateTime date) {
-            var angle = GetMoonPositionAngle(date);
+            return GetMoonPhase(date, new ObserverInfo());
+        }
+
+        public static MoonPhase GetMoonPhase(DateTime date, ObserverInfo observerInfo) {
+            var angle = GetMoonPositionAngle(date, observerInfo);
 
             if ((angle >= -180.0 && angle < -135.0) || angle == 180.0) {
                 return MoonPhase.FullMoon;
@@ -664,35 +716,41 @@ namespace NINA.Astrometry {
             }
         }
 
+        [Obsolete("Use function with NINA.Astrometry.ObserverInfo parameter")]
         public static double GetMoonIllumination(DateTime date) {
-            return CalculateMoonIllumination(date);
+            return CalculateMoonIllumination(date, new ObserverInfo());
+        }
+
+        public static double GetMoonIllumination(DateTime date, ObserverInfo observerInfo) {
+            return CalculateMoonIllumination(date, observerInfo);
         }
 
         public static double GetMoonAltitude(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var moon = GetMoonPosition(date, jd, observerInfo);
 
             var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
-            var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, tuple.Item1.RA));
+            var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, moon.RA));
 
-            return GetAltitude(hourAngle, observerInfo.Latitude, tuple.Item1.Dec);
+            return GetAltitude(hourAngle, observerInfo.Latitude, moon.Dec);
         }
 
         public static double GetSunAltitude(DateTime date, ObserverInfo observerInfo) {
             var jd = GetJulianDate(date);
-            var tuple = GetMoonAndSunPosition(date, jd);
+            var sun = GetSunPosition(date, jd, observerInfo);
 
             var siderealTime = GetLocalSiderealTime(date, observerInfo.Longitude);
-            var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, tuple.Item2.RA));
+            var hourAngle = HoursToDegrees(GetHourAngle(siderealTime, sun.RA));
 
-            return GetAltitude(hourAngle, observerInfo.Latitude, tuple.Item2.Dec);
+            return GetAltitude(hourAngle, observerInfo.Latitude, sun.Dec);
         }
 
-        public static double CalculateAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude) {
+        public static double CalculateAltitudeForStandardRefraction(double currentAltitude, double latitude, double longitude, double elevation) {
             var zenithDistance = 90d - currentAltitude;
             var location = new NOVAS.OnSurface() {
                 Latitude = latitude,
-                Longitude = longitude
+                Longitude = longitude,
+                Height = elevation
             };
             var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, zenithDistance);
             return currentAltitude + refraction;

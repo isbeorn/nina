@@ -17,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,31 +47,22 @@ namespace NINA.Core.Utility.Http {
                 formattedUrl = string.Format(CultureInfo.InvariantCulture, Url, Parameters);
             }
 
-            HttpWebRequest request = null;
-            HttpWebResponse response = null;
-            using (ct.Register(() => request.Abort(), useSynchronizationContext: false)) {
-                try {
-                    request = (HttpWebRequest)WebRequest.Create(formattedUrl);
-                    request.UserAgent = CoreUtil.UserAgent;
-                    HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
-                    request.CachePolicy = noCachePolicy;
+            try {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
 
-                    response = (HttpWebResponse)await request.GetResponseAsync();
+                using var response = await httpClient.GetAsync(formattedUrl, ct);
 
-                    using (var streamReader = new StreamReader(response.GetResponseStream())) {
-                        result = streamReader.ReadToEnd();
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(formattedUrl + " " + ex);
-                    if (response != null) {
-                        response.Close();
-                        response = null;
-                    }
-                    if (rethrowOnError) {
-                        throw;
-                    }
-                } finally {
-                    request = null;
+                response.EnsureSuccessStatusCode();
+
+                result = await response.Content.ReadAsStringAsync();
+            } catch (OperationCanceledException) {
+                ct.ThrowIfCancellationRequested();
+            } catch (Exception ex) {
+                Logger.Error(formattedUrl + " " + ex);
+
+                if (rethrowOnError) {
+                    throw;
                 }
             }
 

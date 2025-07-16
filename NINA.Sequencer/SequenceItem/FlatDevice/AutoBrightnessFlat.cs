@@ -22,6 +22,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -297,6 +298,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                     ),
                     token
                 );
+            } catch (SequenceEntityFailedException) {
+                // Ensure the light is turned off when it fails
+                await GetToggleLightOffItem().Run(localProgress, token);
+                throw;            
             } finally {
                 await CoreUtil.Wait(TimeSpan.FromMilliseconds(500));
                 localProgress?.Report(new ApplicationStatus() { });

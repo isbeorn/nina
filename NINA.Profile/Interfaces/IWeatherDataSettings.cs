@@ -16,6 +16,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IWeatherDataSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         string OpenWeatherMapAPIKey { get; set; }
         string TheWeatherCompanyAPIKey { get; set; }
         string WeatherUndergroundAPIKey { get; set; }

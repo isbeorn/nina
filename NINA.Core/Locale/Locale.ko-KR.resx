@@ -1155,7 +1155,7 @@ Dec: {1}</value>
     <value>디더링 픽셀</value>
   </data>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
-    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
+    <value>디더링할 일반적인 픽셀 수입니다. 디더링은 목표 값을 중심으로 정규 분포를 따르며, 이 목표 값은 표준 편차를 사용합니다. 67%의 디더링이 이 범위 내에 있을 것입니다.</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Ra 만 디더링</value>
@@ -1914,7 +1914,7 @@ SharpCap을 설치하고 센서 분석을 수행한 경우 아래 드롭다운 �
     <value>수동 제어</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates</value>
+    <value>수동 좌표</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>수동 필터 휠</value>
@@ -6598,10 +6598,10 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>플랫 자동 밝기</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
+    <value>이 명령은 플랫 마법사 도구의 기능처럼 황혼의 하늘을 촬영하기 위한 노출 시간을 자동으로 조정한다. 하늘 밝기 변화를 실시간으로 예측하는 것을 기반으로 매 촬영 후 노출 시간을 동적으로 조정합니다.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Twilight Sky Flats</value>
+    <value>황혼 스카이 플랫</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
     <value>커버 폐쇄</value>
@@ -6913,107 +6913,107 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>가대 이름</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>탐색 기간</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
+    <value>ASCOM Alpaca 장치 검색 시도 기간(기본값: 2초)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>포트 탐색</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>ASCOM Alpaca 탐색 IP 포트 번호 (기본값: 32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value># 개의 브로드캐스트</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
+    <value>ASCOM Alpaca 장치 검색 브로드캐스트 수(기본값: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>DNS 이름 확인</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>ASCOM Alpaca 장치에 대한 DNS 이름 확인 시도(기본값: 꺼짐)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>HTTPS 사용</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>ASCOM Alpaca 장치 검색에서 HTTP 또는 HTTPS를 사용해야 하는지 여부를 결정합니다(기본값: 꺼짐)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
+    <value>IPv4 사용</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>ASCOM Alpaca 디바이스 검색에 IPv6 사용(기본값: 켜짐)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
+    <value>IPv6 사용</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>ASCOM Alpaca 디바이스 검색에 IPv6 사용(기본값: 꺼짐)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>카탈로그 표시 전환</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>타겟 고도</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>타겟 방위</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptik 플랫 조명 컨트롤러</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
-    <value>LED Lights</value>
+    <value>LED 조명</value>
   </data>
   <data name="LblLEDLightsTooltop" xml:space="preserve">
-    <value>Turn the LED lights on the camera on or off</value>
+    <value>카메라의 LED 조명을 켜거나 끕니다</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum brightness is higher than the maximum brightness!</value>
+    <value>최소 밝기가 최대 밝기보다 높습니다!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>최소 노출 시간이 최대 노출 시간보다 높습니다!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+    <value>디더와 함께 스카이플랫 노출이 활성화되었지만 망원경이 펄스 가이드를 수행할 수 없습니다</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+    <value>디더와 함께 스카이플랫 노출이 활성화되었지만 마운트에 연결할 수 없습니다</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+    <value>디더와 함께 스카이플랫 노출이 활성화되었지만 망원경이 파크상태 입니다</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>최소 노출 시간이 최대 노출 시간보다 높습니다!</value>
   </data>
   <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
-    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+    <value>"{0}" 명령이 "{1}"분 후에도 취소 요구에 응답하지 않았습니다. 시퀀스가 계속 진행되며 응답하지 않은 작업은 무시됩니다.</value>
   </data>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
-    <value>Waiting for instruction to acknowledge cancellation</value>
+    <value>취소 승인 명령을 기다리는 중</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>셔터 또는 루프를 열라고 명령했지만 안전 모니터 장치에서 안전하지 않은 상태를 보고합니다. 열림이 중단되었습니다</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>외부 명령</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>외부 명령을 성공적으로 실행할 수 없습니다</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>'{0}'에서 외부 명령을 찾을 수 없습니다</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
     <value>Focuser movement has timed out after {0} minutes.</value>
@@ -7038,7 +7038,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>시퀀스 저장</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>
@@ -7059,7 +7059,7 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>Set current position to zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>반전</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
     <value>Set max step</value>
@@ -7132,13 +7132,13 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
     <value>World Map</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
-    <value>Connect Equipment</value>
+    <value>장치 연결</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>연결</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
@@ -7194,5 +7194,44 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Open cover when done</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>

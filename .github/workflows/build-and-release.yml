@@ -1,0 +1,455 @@
+name: Version Increment and Release
+
+on:
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIG: SignedRelease
+
+jobs:
+  versioning:
+    name: Bump Version
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.bump_version.outputs.version }}
+      release_channel: ${{ steps.bump_version.outputs.release_channel }}
+      commit_sha: ${{ steps.bump_version.outputs.commit_sha }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Bump and export version in CommonAssemblyInfo.cs
+      id: bump_version
+      shell: pwsh
+      run: |
+        $file = "CommonAssemblyInfo.cs"
+
+        if (-not (Test-Path $file)) {
+            Write-Error "File not found: $file"
+            exit 1
+        }
+
+        $content = Get-Content $file -Raw
+
+        # Match and increment the version (assuming 1-based indexing)
+        $versionPattern = '\[assembly: AssemblyVersion\("(\d+)\.(\d+)\.(\d+)\.(\d+)"\)\]'
+        $match = [regex]::Match($content, $versionPattern)
+        if (-not $match.Success) {
+            Write-Error "AssemblyVersion not found in $file"
+            exit 1
+        }
+
+        $major = $match.Groups[1].Value
+        $minor = $match.Groups[2].Value
+        $patch = $match.Groups[3].Value
+        $build = [int]$match.Groups[4].Value + 1
+        $releaseVersion = "$major.$minor.$patch.$build"
+
+        $channelDigit = $build.ToString().Substring(0,1)
+        switch ($channelDigit) {
+            '1' { $assemblyPostfix = '-nightly' }
+            '2' { $assemblyPostfix = '-beta' }
+            '3' { $assemblyPostfix = '-rc' }
+            '9' { $assemblyPostfix = '' }
+            default {
+            Write-Error "Unknown channel digit: $channelDigit"
+            exit 1
+            }
+        }
+        switch ($channelDigit) {
+          '1' { $channelName = 'Nightlies' }
+          '2' { $channelName = 'Betas' }
+          '3' { $channelName = 'Betas' }
+          '9' { $channelName = 'Releases' }
+            default {
+            Write-Error "Unknown channel digit: $channelDigit"
+            exit 1
+            }
+        }
+
+        # Replace all relevant lines
+        $content = $content -replace '\[assembly: AssemblyVersion\(".*?"\)\]', "[assembly: AssemblyVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyFileVersion\(".*?"\)\]', "[assembly: AssemblyFileVersion(`"$releaseVersion`")]"
+        $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
+
+        Set-Content -Path $file -Value $content -Encoding UTF8
+        
+        $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
+        foreach ($csproj in $csprojFiles) {
+            [xml]$proj = Get-Content $csproj.FullName
+
+            # No namespace case (SDK-style projects):
+            if ($proj.Project.PropertyGroup) {
+                $changed = $false
+                foreach ($pg in $proj.Project.PropertyGroup) {
+                    if ($pg.Version) {
+                        $pg.Version = "$releaseVersion$assemblyPostfix"
+                        $changed = $true
+                    }
+                }
+                if ($changed) {
+                    $proj.Save($csproj.FullName)
+                    Write-Host "🔄 Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
+                    git add $csproj.FullName
+                }
+            }
+        }
+
+        echo "✅ Bumped to version $releaseVersion"
+        echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
+        echo "RELEASE_CHANNEL=$channelName" >> $env:GITHUB_ENV
+        echo "release_channel=$channelName" >> $env:GITHUB_OUTPUT
+        echo "version=$releaseVersion" >> $env:GITHUB_OUTPUT
+
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add $file
+        git commit -m "Bump version to $releaseVersion"
+        git push
+
+        $commitSha = git rev-parse HEAD
+        echo "commit_sha=$commitSha" >> $env:GITHUB_OUTPUT
+
+
+    - name: Show version
+      shell: pwsh
+      run: echo "✅ Version is $env:VERSION"
+
+    - name: Show release channel
+      shell: pwsh
+      run: echo "✅ Release channel is $env:RELEASE_CHANNEL"
+
+  build:
+    name: Build and Prepare Setup
+    needs: versioning
+    runs-on: windows-latest
+    environment:
+      name: build-release
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ needs.versioning.outputs.commit_sha }}
+        fetch-depth: 0
+        lfs: 'true'
+        submodules: recursive
+
+    - name: Install B2 CLI
+      run: pip install --upgrade b2
+        
+    - name: Authorize with Backblaze B2
+      shell: pwsh
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}" > $null
+
+    - name: Download Canon and Nikon DLLs from B2
+      run: |
+        b2 sync "b2://${{ secrets.B2_PRIVATE_BUCKET }}/Canon" "NINA/External/x64/Canon"
+        b2 sync "b2://${{ secrets.B2_PRIVATE_BUCKET }}/Nikon" "NINA/External/x64/Nikon"
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Set up .NET 8.0 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install MkDocs and plugins
+      run: |
+        python -m pip install --upgrade pip
+        pip install mkdocs mkdocs-material
+
+    - name: Install WiX Toolset 4 CLI and extensions
+      run: |
+        dotnet tool install --global wix --version 4.0.5
+        wix --version
+    
+    - name: Install Pandoc
+      run: choco install pandoc -y
+
+    - name: Restore NuGet packages
+      run: dotnet restore NINA.sln
+      
+    - name: Generate release notes
+      run: |
+        pandoc RELEASE_NOTES.md -f markdown -t rtf -s -o RELEASE_NOTES.rtf
+        pandoc RELEASE_NOTES.md -f markdown -t html -s -o RELEASE_NOTES.html --template md-template.html --metadata title="Nighttime Imaging 'N' Astronomy"
+
+    - name: Build NINA project
+      run: dotnet build NINA\NINA.csproj -c ${{ env.BUILD_CONFIG }} -r win-x64
+
+    - name: Copy Canon and Nikon DLLs to build output
+      shell: cmd
+      run: |
+        xcopy NINA\External\x64\Canon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
+        xcopy NINA\External\x64\Nikon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
+
+    - name: Build MkDocs documentation
+      run: |
+        mkdocs build -f NINA.Docs\mkdocs-nopdf.yml -c
+
+    - name: Copy MkDocs output to setup target dir
+      shell: cmd
+      run: |
+        mkdir NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs
+        xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
+
+    - name: Build WiX Setup Bundle
+      run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }} /p:Platform=x64 /p:AllowUnsafeBlocks=true
+
+    - name: Copy .pdb files to setup output folder
+      run: |
+        $solutionDir = "$(Resolve-Path .)"
+        $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64"
+        $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
+
+        Remove-Item "$solutionDir\RELEASE_NOTES.rtf" -Force -ErrorAction SilentlyContinue
+
+        $pdbFiles = @(
+          "NINA.pdb",
+          "NINA.Astrometry.pdb",
+          "NINA.Core.pdb",
+          "NINA.Equipment.pdb",
+          "NINA.Image.pdb",
+          "NINA.MGEN.pdb",
+          "NINA.Platesolving.pdb",
+          "NINA.Profile.pdb",
+          "NINA.Sequencer.pdb",
+          "NINA.WPF.Base.pdb",
+          "NINA.CustomControlLibrary.pdb",
+          "NINA.Plugin.pdb"
+        )
+
+        foreach ($file in $pdbFiles) {
+          Write-Host "Copying $file to setup output"
+          Copy-Item "$pdbSource\$file" "$pdbTarget\$file" -Force
+        }
+      
+    - name: Pack all nugets
+      run: |
+        dotnet pack .\nikoncswrapper\nikoncswrapper.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Core\NINA.Core.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Astrometry\NINA.Astrometry.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Equipment\NINA.Equipment.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Image\NINA.Image.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.MGEN\NINA.MGEN.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.PlateSolving\NINA.PlateSolving.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Profile\NINA.Profile.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Sequencer\NINA.Sequencer.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.WPF.Base\NINA.WPF.Base.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Plugin\NINA.Plugin.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+
+    - name: Create ZIP files
+      run: |
+        $version = "${{ needs.versioning.outputs.version }}"
+        $outputPath = "NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
+        Compress-Archive -Path "$outputPath\*.exe" -DestinationPath "NINASetupBundle_$version.zip"
+        Compress-Archive -Path "$outputPath\*.pdb" -DestinationPath "NINAPdb_x64_$version.zip"
+
+    - name: Upload zipped installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: zipped-installer
+        path: "NINASetupBundle_${{ needs.versioning.outputs.version }}.zip"
+        retention-days: 1
+        if-no-files-found: error
+
+    - name: Upload zipped symbols
+      uses: actions/upload-artifact@v4
+      with:
+        name: zipped-symbols
+        path: "NINAPdb_x64_${{ needs.versioning.outputs.version }}.zip"
+        retention-days: 1
+        if-no-files-found: error
+
+    - name: Upload release notes
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-notes
+        path: |
+          RELEASE_NOTES.html
+        retention-days: 1
+
+    - name: Upload NuGet packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: nugets
+        path: publish/*.nupkg
+        retention-days: 1
+
+  upload:
+    name: Upload Setup to Backblaze B2
+    runs-on: windows-latest    
+    environment:
+      name: build-upload
+    needs: [versioning, build]    
+
+    steps:
+    - name: Download zipped installer
+      uses: actions/download-artifact@v4
+      with:
+        name: zipped-installer
+        path: ./artifact
+
+    - name: Download zipped symbols
+      uses: actions/download-artifact@v4
+      with:
+        name: zipped-symbols
+        path: ./artifact
+
+    - name: Download release notes
+      uses: actions/download-artifact@v4
+      with:
+        name: release-notes
+        path: ./artifact
+
+    - name: Install B2 CLI
+      run: pip install --upgrade b2
+
+    - name: Authorize with Backblaze B2
+      shell: pwsh
+      run: b2 account authorize "${{ secrets.B2_KEY_ID }}" "${{ secrets.B2_APP_KEY }}" > $null
+
+    - name: Generate versioninfo.json
+      shell: pwsh
+      run: |
+        $releaseChannel = "${{ needs.versioning.outputs.release_channel }}"
+        $version = "${{ needs.versioning.outputs.version }}"
+        $zipName = "NINASetupBundle_$version.zip"
+        $zipPath = "artifact/$zipName"
+        $checksum = Get-FileHash -Path $zipPath -Algorithm MD5 | Select-Object -ExpandProperty Hash
+        $url = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/$releaseChannel/$version/$zipName"
+        $changelogUrl = "https://f002.backblazeb2.com/file/${{ secrets.B2_RELEASE_BUCKET }}/$releaseChannel/$version/RELEASE_NOTES.html"
+
+        $versionInfo = @{
+            version       = $version
+            checksum      = $checksum
+            file          = $url
+            changelog     = $changelogUrl
+            checksum_x86  = "57778714DD854CD9602DE7D361A348AE"
+            file_x86      = "https://f002.backblazeb2.com/file/ninasetup/Releases/2.1.0.9001/NINASetupBundle_2.1.0.9001_x86.zip"
+        }
+
+        $json = $versionInfo | ConvertTo-Json -Depth 2
+        $json | Set-Content -Path "artifact/versioninfo.json" -Encoding UTF8
+    
+    - name: Upload ZIP files to B2
+      shell: pwsh
+      run: |
+        $version = "${{ needs.versioning.outputs.version }}"
+        $releaseChannel = "${{ needs.versioning.outputs.release_channel }}"
+        Get-ChildItem ./artifact | Where-Object { $_.Extension -in ".zip", ".json", ".html" } | ForEach-Object {
+          b2 file upload "${{ secrets.B2_RELEASE_BUCKET }}" $_.FullName "$releaseChannel/$version/$($_.Name)"
+        }
+    
+    - name: Upload versioninfo artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: version-info
+        path: |
+          artifact/versioninfo.json
+        retention-days: 1
+  
+  publish-nightly:
+    name: Publish Nightly Release
+    needs: [versioning, build, upload]
+    runs-on: ubuntu-latest
+    environment:
+      name: nightly-release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: version-info
+        path: ./artifact    
+    
+    - name: Push to nightly release channel
+      run: |
+        curl -T ./artifact/versioninfo.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/versioninfo.json
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+
+  publish-beta:
+    name: Publish Beta Release
+    needs: [versioning, build, upload]
+    runs-on: ubuntu-latest
+    if: ${{ needs.versioning.outputs.release_channel == 'Betas' || needs.versioning.outputs.release_channel == 'Releases' }}
+    environment:
+      name: beta-release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: version-info
+        path: ./artifact    
+  
+    - name: Push to beta release channel
+      run: |
+        curl -T ./artifact/versioninfo.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/versioninfo.json
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+        
+  publish-release:
+    name: Publish Full Release
+    needs: [versioning, build, upload]
+    runs-on: ubuntu-latest
+    if: ${{ needs.versioning.outputs.release_channel == 'Releases' }}
+    environment:
+      name: release
+    
+    steps:
+    - name: Download versioninfo artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: version-info
+        path: ./artifact    
+    - name: Push to full release channel
+      run: |
+        curl -T ./artifact/versioninfo.json \
+          --user "$FTP_USER:$FTP_PW" \
+          ftp://$FTP_HOST/versioninfo.json
+      env:
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PW: ${{ secrets.FTP_PW }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+  
+  
+  publish-nugets:
+    name: Publish Nugets
+    needs: [versioning, build, upload]
+    runs-on: ubuntu-latest
+    environment:
+      name: nuget-release
+    
+    steps:
+    - name: Download nuget artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: nugets
+        path: ./publish    
+    - name: Push packages to NuGet.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        for pkg in publish/*.nupkg; do
+          echo "Pushing $pkg..."
+          dotnet nuget push "$pkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+        done

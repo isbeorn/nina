@@ -29,6 +29,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             Id = "No_Device";
+            LastDeviceName = string.Empty;
             OpenWeatherMapAPIKey = string.Empty;
             TheWeatherCompanyAPIKey = string.Empty;
             WeatherUndergroundAPIKey = string.Empty;
@@ -43,6 +44,19 @@ namespace NINA.Profile {
             set {
                 id = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 

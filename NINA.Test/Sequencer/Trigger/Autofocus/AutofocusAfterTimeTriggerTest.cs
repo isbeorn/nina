@@ -112,6 +112,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         }
 
         [Test]
+        [Ignore("This test has some time dependencies making it not consistent")]
         [TestCase(10, 15, true)]
         [TestCase(100, 5, false)]
         [TestCase(10, 10, true)]

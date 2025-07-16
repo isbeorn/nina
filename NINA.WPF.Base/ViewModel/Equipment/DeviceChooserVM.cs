@@ -95,13 +95,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             }
         }
 
-        protected void DetermineSelectedDevice(IList<IDevice> d, string id) {
+        protected void DetermineSelectedDevice(IList<IDevice> d, string id, string name) {
             if (d.Count > 0) {
                 var items = (from device in d where device.Id == id select device);
                 if (items.Any()) {
                     SelectedDevice = items.First();
                 } else {
-                    var offlineDevice = new OfflineDevice(id);
+                    var offlineDevice = new OfflineDevice(id, name);
                     d.Insert(0, offlineDevice);
                     SelectedDevice = offlineDevice;
                 }

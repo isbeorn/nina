@@ -16,5 +16,6 @@ namespace NINA.Profile.Interfaces {
 
     public interface ISafetyMonitorSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
     }
 }

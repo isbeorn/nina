@@ -197,7 +197,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
                 devices.Add(new ManualFilterWheel(this.profileService));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.FilterWheelSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.FilterWheelSettings.Id, profileService.ActiveProfile.FilterWheelSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

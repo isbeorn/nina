@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,34 +34,23 @@ namespace NINA.Core.Utility.Http {
         public override async Task<string> Request(CancellationToken ct, IProgress<int> progress = null) {
             string result = string.Empty;
 
-            HttpWebRequest request = null;
-            HttpWebResponse response = null;
-            using (ct.Register(() => request?.Abort(), useSynchronizationContext: false)) {
-                try {
-                    request = (HttpWebRequest)WebRequest.Create(Url);
-                    request.ContentType = ContentType;
-                    request.Method = "POST";
-                    request.UserAgent = CoreUtil.UserAgent;
+            try {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
 
-                    using (var streamWriter = new StreamWriter(request.GetRequestStream())) {
-                        streamWriter.Write(Body);
-                        streamWriter.Flush();
-                        streamWriter.Close();
-                    }
-                    response = (HttpWebResponse)await request.GetResponseAsync();
-                    using (var streamReader = new StreamReader(response.GetResponseStream())) {
-                        result = streamReader.ReadToEnd();
-                    }
-                } catch (Exception ex) {
-                    ct.ThrowIfCancellationRequested();
-                    Logger.Error(ex);
-                    Notification.Notification.ShowError(string.Format("Unable to connect to {0}", Url));
+                var content = new StringContent(Body);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(ContentType);
 
-                    response?.Close();
-                    response = null;
-                } finally {
-                    request = null;
-                }
+                using var response = await httpClient.PostAsync(Url, content, ct);
+
+                response.EnsureSuccessStatusCode();
+
+                result = await response.Content.ReadAsStringAsync();
+            } catch (OperationCanceledException) {
+                ct.ThrowIfCancellationRequested();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.Notification.ShowError($"Unable to connect to {Url}");
             }
 
             return result;

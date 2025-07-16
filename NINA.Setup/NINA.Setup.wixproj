@@ -161,10 +161,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Heat" Version="4.0.5" />
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.5" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.5" />
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.Heat" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.6" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images" />
@@ -186,15 +186,14 @@
     <HarvestFileSuppressUniqueIds>true</HarvestFileSuppressUniqueIds>
   </PropertyGroup>
   <ItemGroup>
-    <HarvestDirectory Include="$(SolutionDir)\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs">
+    <HarvestDirectory Include="..\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs">
       <ComponentGroupName>DocumentationComponent</ComponentGroupName>
       <DirectoryRefId>DocumentationDirectory</DirectoryRefId>
       <SuppressRootDirectory>true</SuppressRootDirectory>
       <SuppressRegistry>true</SuppressRegistry>
       <SuppressCom>true</SuppressCom>
     </HarvestDirectory>
-
-    <BindPath Include="$(SolutionDir)\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs" />
+    <BindPath Include="..\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs" />
   </ItemGroup>
   <!-- /Harvest Documentation  -->
 </Project>

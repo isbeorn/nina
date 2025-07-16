@@ -350,10 +350,15 @@ namespace NINA.ViewModel.FramingAssistant {
                     };
 
                     var captureSolver = new CaptureSolver(plateSolver, blindSolver, imagingMediator, filterWheelMediator);
-                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);
+                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);                    
 
                     if (result.Success) {
                         RectangleTotalRotation = 360 - result.PositionAngle;
+
+                        if (rotatorMediator.GetInfo().Connected) {
+                            rotatorMediator.Sync((float)result.PositionAngle);
+                        }
+
                         Logger.Info($"Camera rotation has been determined: {result.PositionAngle}°");
                         Notification.ShowInformation(string.Format(Loc.Instance["LblCameraRotationSolved"], Math.Round(result.PositionAngle, 2)));
                     } else {

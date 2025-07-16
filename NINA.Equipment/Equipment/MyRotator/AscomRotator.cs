@@ -85,7 +85,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> Move(float angle, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (angle >= 360) {
                     angle = AstroUtil.EuclidianModulus(angle, 360);
                 }
@@ -103,7 +103,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> MoveAbsoluteMechanical(float targetPosition, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 var movement = targetPosition - MechanicalPosition;
                 return await Move(movement, ct);
             }
@@ -111,7 +111,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> MoveAbsolute(float targetPosition, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 return await Move(targetPosition - Position, ct);
             }
             return false;

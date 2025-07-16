@@ -964,7 +964,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Linksdrehend</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Decken Sie ihr Teleskop nun ab und drücken Sie OK um mit der Aufnahme der Darks zu beginnen.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Decken Sie ihr Teleskop ab</value>
@@ -991,7 +991,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Cygwin Verzeichnis</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>Zu verwendende Darks</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V. Schwenken</value>
@@ -1166,7 +1166,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Dither Pixel</value>
   </data>
   <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
-    <value>Typical number of pixels to dither by. Dithering follows a normal distribution centered at the target, which this value as the standard deviation. 67% of dithers will be within this distance</value>
+    <value>Anzahl Pixel zum Dithern. Dithering folgt einer Normalverteilung zentriert um das Ziel und die Pixelzahl ist die Standardabweichung. 67% der Dither-Vorgänge bleiben innerhalb dieses Abstands</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither ausschließlich RA</value>
@@ -1178,7 +1178,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Verbindung zum ASCOM Kuppel Treiber nicht möglich:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Dome can follow</value>
+    <value>Kuppel kann folgen</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Verschlussstatus</value>
@@ -1481,7 +1481,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Öffnen</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>Öffne Deckel für Darks</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Setzen</value>
@@ -1664,19 +1664,19 @@ Berechneter HFR: {2}
     <value>Allgemein</value>
   </data>
   <data name="LblGnssConnectFail" xml:space="preserve">
-    <value>Failed to connect to {0}</value>
+    <value>Verbindung zu {0} fehlgeschlagen</value>
   </data>
   <data name="LblGnssLocationSet" xml:space="preserve">
-    <value>Location set from {0}</value>
+    <value>Standort von {0} gesetzt</value>
   </data>
   <data name="LblGnssNoFix" xml:space="preserve">
-    <value>{0} reports that it does not have a fix</value>
+    <value>{0} meldet, dass es keine Korrektur hat</value>
   </data>
   <data name="LblGnssNotFound" xml:space="preserve">
-    <value>No {0} device detected</value>
+    <value>Kein {0} Gerät erkannt</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Import location from a GNSS device</value>
+    <value>Standort von einem GNSS-Gerät importieren</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guider</value>
@@ -1709,16 +1709,16 @@ Berechneter HFR: {2}
     <value>Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme in Pixel</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in arc seconds</value>
+    <value>Max. RA Guiding Fehler während der Belichtung in Bogensekunden</value>
   </data>
   <data name="LblGuidingPeakRADescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in pixels</value>
+    <value>Max. RA Guiding Fehler während der Belichtung in Pixeln</value>
   </data>
   <data name="LblGuidingPeakDecArcSecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in arc seconds</value>
+    <value>Max. Dec Guiding Fehler während der Belichtung in Bogensekunden</value>
   </data>
   <data name="LblGuidingPeakDecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in pixels</value>
+    <value>Max. Dec Guiding Fehler während der Belichtung in Pixeln</value>
   </data>
   <data name="LblHalt" xml:space="preserve">
     <value>Stop</value>
@@ -1925,7 +1925,7 @@ Berechneter HFR: {2}
     <value>Manuelle Kontrolle</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates</value>
+    <value>Manuelle Koordinaten</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Manuelles Filterrad</value>
@@ -2067,7 +2067,7 @@ Berechneter HFR: {2}
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>From N.I.N.A. to Mount</value>
+    <value>Von N.I.N.A. zur Montierung</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Nein</value>
@@ -2124,10 +2124,10 @@ Berechneter HFR: {2}
     <value>Kein Sync</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Wenn diese Option aktiviert ist, sendet die Anwendung niemals einen Sync-Befehl an die Montierung. Dies sollte nur verwendet werden, wenn ein gutes Zeigemodell vorhanden ist, das in keiner Weise verändert werden sollte.</value>
   </data>
   <data name="LblNoMount" xml:space="preserve">
-    <value>No Mount</value>
+    <value>Keine Montierung</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Fehlerbenachrichtigung</value>
@@ -2362,7 +2362,7 @@ Berechneter HFR: {2}
     <value>PHD2 Serverport</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>PHD2-Server-Hostname</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 Einstellung</value>
@@ -2548,7 +2548,7 @@ Berechneter HFR: {2}
     <value>Bereite Bild vor</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>Bereite Dark-Sequenz vor</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Flats für filter: {0}</value>
@@ -2620,7 +2620,7 @@ Berechneter HFR: {2}
     <value>Auslesemodus für Sequenzen</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>Dieser Auslesemodus der Kamera wird für LIGHT, BIAS, DARK, FLAT-Bilder in Sequenzen verwendet.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Auslesemodus für Snapshots</value>
@@ -2653,7 +2653,7 @@ Berechneter HFR: {2}
     <value>Okularauszug bitte neu verbinden!</value>
   </data>
   <data name="LblReconnectMount" xml:space="preserve">
-    <value>Please reconnect mount!</value>
+    <value>Montierung bitte neu verbinden!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Referenzdatum</value>
@@ -2994,7 +2994,7 @@ Bitte vergewissern, dass das System gut oder nahe im Fokus ist, bevor fortgefahr
     <value>Starten der Nachführung fehlgeschlagen</value>
   </data>
   <data name="LblRestartGuidingAfterLostShiftLockFailed" xml:space="preserve">
-    <value>Restarting guiding failed after lost shift lock</value>
+    <value>Guiding-Neustart fehlgeschlagen nach verlorener Shift-Sperre</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
     <value>Beginne Backlashmessung für IN</value>
@@ -3075,7 +3075,7 @@ Bitte vergewissern, dass das System gut oder nahe im Fokus ist, bevor fortgefahr
     <value>Synchronisieren</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Mount sync failed</value>
+    <value>Synchronisierung mit der Montierung fehlgeschlagen</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Einstellungen für Beobachtungsort synchronisieren</value>
@@ -4009,7 +4009,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Rotator trennen?</value>
   </data>
   <data name="LblDisconnectMount" xml:space="preserve">
-    <value>Disconnect Mount?</value>
+    <value>Montierung trennen?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Das Teleskop ist geparkt. Das Teleskop muss ausparken bevor es wieder bewegt werden kann.</value>
@@ -5234,7 +5234,7 @@ Andererseits hilft bei sich schnell ändernden atmosphärischen Bedingungen ein 
     <value>Wartet, bis die Zielhöhe über dem Horizont liegt. Wenn ein benutzerdefinierter Horizont verwendet wird, wird diese Höhe anstelle von 0° verwendet</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Name" xml:space="preserve">
-    <value>Wait until Above horizon</value>
+    <value>Warten bis über Horizont</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress" xml:space="preserve">
     <value>Warte bis das Ziel oberhalb des Horizonts ist. Ziel Höhe {0}° / Horizont Höhe {1}°</value>
@@ -5243,7 +5243,7 @@ Andererseits hilft bei sich schnell ändernden atmosphärischen Bedingungen ein 
     <value>Eine Bedingung, die eine Anweisungsfolge wiederholt, solange das Ziel sich überm Horizont befindet und dann diese Anweisungsfolge beendet</value>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>Loop while Altitude Above Horizon</value>
+    <value>Wiederholen, solange Höhe über Horizont</value>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Das Ziel wird nie über dem Horizont liegen</value>
@@ -5568,10 +5568,10 @@ Nur relevant bei Verwendung eines ASCOM-Kamera-Treibers!</value>
     <value>Tags</value>
   </data>
   <data name="LblBinAverageEnabled" xml:space="preserve">
-    <value>Binning averages pixels</value>
+    <value>Mittelwert Binning</value>
   </data>
   <data name="LblBinAverageEnabledTooltop" xml:space="preserve">
-    <value>By default, binning is additive. Data are still the same bitness as the camera, so bright pixels can be clipped. Average mode prevents this clipping from taking place at the expense of some dynamic range due to integer division.</value>
+    <value>Standardmäßig ist Binning additiv. Die Daten haben dabei immer noch die gleiche Bittiefe wie die Kamera, helle Pixel können dabei geclippt werden. Der Durchschnittsmodus verhindert dieses Clipping auf Kosten des Dynamikumfangs durch Ganzzahldivision.</value>
   </data>
   <data name="Lbl_Sequencer_AbortToEnd" xml:space="preserve">
     <value>Abbrechen und Ende der Sequenzanweisungen ausführen</value>
@@ -5666,7 +5666,7 @@ Das Standardverhalten ist bei Fehlern die Sequenz fortzusetzen, aber für einige
     <value>Einfache Ziel Sequenz</value>
   </data>
   <data name="LblTooltipSwitchTargetSet" xml:space="preserve">
-    <value>Switches to the simple target set planning mode</value>
+    <value>Wechselt in den Planungsmodus für einfache Zielsätze</value>
   </data>
   <data name="LblByName" xml:space="preserve">
     <value>Nach Name</value>
@@ -5783,7 +5783,7 @@ Das Standardverhalten ist bei Fehlern die Sequenz fortzusetzen, aber für einige
     <value>Use External Tracking CCD</value>
   </data>
   <data name="LblSBIGUseExternalTrackingCCDChanged" xml:space="preserve">
-    <value>External Tracking CCD setting changed. Disconnect and reconnect camera for it to take effect.</value>
+    <value>Die CCD-Einstellung für die externe Verfolgung wurde geändert. Kamera trennen und erneut verbinden, damit die Einstellung wirksam wird.</value>
   </data>
   <data name="LblYourWindowsIsTooOld" xml:space="preserve">
     <value>{0} wird nicht mehr von Microsoft und dem N.I.N.A. Projekt unterstützt. Bei Verwendung von N.I.N.A. auf einer nicht unterstützten Version von Windows sind Fehler oder Abstürze möglich. Die aktuellen Systemvoraussetzungen für N.I.N.A. sind in der Online-Dokumentation aufgeführt.</value>
@@ -5965,7 +5965,7 @@ Einmal erfolgreich gelöst, wird die Drehung für das Framing gesetzt.</value>
     <value>Gerätethreads für ASCOM</value>
   </data>
   <data name="LblPerDeviceThreadingEnabledTooltip" xml:space="preserve">
-    <value>This is an experimental setting that may improve UI responsiveness and reduce the chance of UI hangs when connecting to ASCOM drivers. This setting must be enabled before connecting devices for it to have an effect. Please share feedback with the contributors in Discord if you use this, since we're considering enabling this for everyone.</value>
+    <value>Diese noch experimentelle Einstellung dient dazu die Reaktionsfähigkeit der Benutzeroberfläche verbessern und die Wahrscheinlichkeit verringern kann, dass die Benutzeroberfläche beim Verbinden mit ASCOM Treibern einfriert. Diese Einstellung muss vor dem Anschließen von Geräten aktiviert werden, damit sie eine Wirkung hat. Bitte teilen Sie Ihr Feedback mit den Mitwirkenden auf Discord, wenn Sie diese Einstellung verwenden, da wir erwägen, sie für alle zu aktivieren.</value>
   </data>
   <data name="LblDefault" xml:space="preserve">
     <value>Standard</value>
@@ -6034,16 +6034,16 @@ Diese Option sollte aktiviert sein, wenn eine automatische Kamera-Rotation verf�
 Dieser Button ist im Mosaik-Modus nicht sichtbar.</value>
   </data>
   <data name="LblBlindSolveFailoverEnabled" xml:space="preserve">
-    <value>Use Blind Solver for Failures</value>
+    <value>Blind Solver für Fehler verwenden</value>
   </data>
   <data name="LblASCOMDriverError" xml:space="preserve">
-    <value>ASCOM Driver Error</value>
+    <value>ASCOM Treiberfehler</value>
   </data>
   <data name="LblCanonDriverError" xml:space="preserve">
-    <value>Canon Driver Error</value>
+    <value>Canon Treiberfehler</value>
   </data>
   <data name="LblZWODriverError" xml:space="preserve">
-    <value>ZWO Driver Error</value>
+    <value>ZWO Treiberfehler</value>
   </data>
   <data name="LblASTAPWarning" xml:space="preserve">
     <value>ASTAP Warnung</value>
@@ -6067,10 +6067,10 @@ Dieser Button ist im Mosaik-Modus nicht sichtbar.</value>
     <value>UTC-Zeit im Format HH-mm-ss</value>
   </data>
   <data name="LblGuiderCanSetShift" xml:space="preserve">
-    <value>Can Shift Tracking</value>
+    <value>Guider kann Shift setzen</value>
   </data>
   <data name="LblGuiderShiftEnabled" xml:space="preserve">
-    <value>Shift Enabled</value>
+    <value>Shift aktiviert</value>
   </data>
   <data name="LblGuiderRAShiftRate" xml:space="preserve">
     <value>RA Shift Rate</value>
@@ -6088,10 +6088,10 @@ Dieser Button ist im Mosaik-Modus nicht sichtbar.</value>
     <value>Shift stoppen</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockFailed" xml:space="preserve">
-    <value>Setting shift rate after losing shift lock failed</value>
+    <value>Setzen der Shift Rate nach dem Verlust der Shift Sperre fehlgeschlagen</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockSuccess" xml:space="preserve">
-    <value>Restored shift rate after losing shift lock</value>
+    <value>Shift Rate nach Verlust der Shift Sperre wiederhergestellt</value>
   </data>
   <data name="LblDisplayMoonChart" xml:space="preserve">
     <value>Monddiagramm anzeigen</value>
@@ -6122,13 +6122,13 @@ Bitte prüfen, ob ein Update verfügbar ist.</value>
     <value>Sends a command to the selected device in accordance with the ASCOM SendCommand methods. Any returned output is logged in the main N.I.N.A. log file.</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Name" xml:space="preserve">
-    <value>Send Command</value>
+    <value>Befehl senden</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
     <value>Boolean</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
-    <value>Device</value>
+    <value>Gerät</value>
   </data>
   <data name="LblString" xml:space="preserve">
     <value>String</value>
@@ -6137,22 +6137,22 @@ Bitte prüfen, ob ein Update verfügbar ist.</value>
     <value>Blind</value>
   </data>
   <data name="LblAction" xml:space="preserve">
-    <value>Action</value>
+    <value>Aktion</value>
   </data>
   <data name="LblParameters" xml:space="preserve">
-    <value>Parameters</value>
+    <value>Parameter</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Description" xml:space="preserve">
-    <value>Select and execute any ASCOM (or other) Actions that may be available by the device's driver</value>
+    <value>ASCOM (oder andere) Befehle auswählen und ausführen, die im Gerätetreiber verfügbar sind</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Name" xml:space="preserve">
-    <value>Device Action</value>
+    <value>Geräte-Aktion</value>
   </data>
   <data name="LblNoActionsAvailable" xml:space="preserve">
-    <value>No actions are available</value>
+    <value>Keine Aktionen verfügbar</value>
   </data>
   <data name="LblSkyGuardPath" xml:space="preserve">
-    <value>SkyGuard path</value>
+    <value>SkyGuard Pfad</value>
   </data>
   <data name="LblSkyGuardServerPort" xml:space="preserve">
     <value>SkyGuard Server Port</value>
@@ -6167,76 +6167,76 @@ Bitte prüfen, ob ein Update verfügbar ist.</value>
     <value>Callback Reservation Port SkyGuard</value>
   </data>
   <data name="LblSkyGuardTimeLapsChecked" xml:space="preserve">
-    <value>Guider Settling</value>
+    <value>Guider Beruhigung</value>
   </data>
   <data name="LblSkyGuardTimeLapsGuiding" xml:space="preserve">
-    <value>For a duration of</value>
+    <value>Für eine Dauer von</value>
   </data>
   <data name="LblSkyGuardTimeOutGuiding" xml:space="preserve">
-    <value>Start guiding timeout delay</value>
+    <value>Wartezeit nach Start des Guidings</value>
   </data>
   <data name="LblSkyGuardValueMaxGuiding" xml:space="preserve">
     <value>Settle at &lt;</value>
   </data>
   <data name="LblDitherSkyGuardSkippedBecauseNotGuiding" xml:space="preserve">
-    <value>Dither was skipped because SkyGuard was not actively guiding</value>
+    <value>Dither wurde übersprungen, weil SkyGuard-Guiding nicht aktiv war</value>
   </data>
   <data name="LblSkyGuardNotReady" xml:space="preserve">
-    <value>SkyGuard is not ready for operations. Check logs for details.</value>
+    <value>SkyGuard ist nicht bereit für Operationen. Protokoll prüfen für Details.</value>
   </data>
   <data name="LblSkyGuardOperationCancelled" xml:space="preserve">
-    <value>Operation cancelled.</value>
+    <value>Vorgang abgebrochen.</value>
   </data>
   <data name="LblSkyGuardPathNotFound" xml:space="preserve">
-    <value>Could not start SkyGuard. Path not found.</value>
+    <value>SkyGuard konnte nicht gestartet werden. Pfad nicht gefunden.</value>
   </data>
   <data name="LblSkyGuardStartProcessError" xml:space="preserve">
-    <value>Could not start SkyGuard. Check logs for details.</value>
+    <value>SkyGuard konnte nicht gestartet werden. Protokollierung prüfen für Details.</value>
   </data>
   <data name="LblSkyGuardConnectError" xml:space="preserve">
-    <value>Failed connecting to SkyGuard. View logs for more details.</value>
+    <value>Verbindung zu SkyGuard fehlgeschlagen. Protokollierung für weitere Details anzeigen.</value>
   </data>
   <data name="LblSkyGuardDisconnectError" xml:space="preserve">
-    <value>Failed disconnecting SkyGuard. View logs for more details.</value>
+    <value>Fehler beim Trennen von SkyGuard fehlgeschlagen. Protokollierung für weitere Details anzeigen.</value>
   </data>
   <data name="LblSkyGuardDitheringError" xml:space="preserve">
-    <value>Error on dithering operation. View logs for more details.</value>
+    <value>Fehler bei der Dithering-Operation. Siehe Protokolle für weitere Details.</value>
   </data>
   <data name="LblSkyGuardEndpointNotReachable" xml:space="preserve">
     <value>SkyGuard enpoint not reachable. View logs for more details.</value>
   </data>
   <data name="LblSkyGuardGuidingError" xml:space="preserve">
-    <value>Error on start guiding operation. View logs for more details.</value>
+    <value>Fehler beim Start des Guidings. Siehe Protokoll für weitere Details.</value>
   </data>
   <data name="LblSkyGuardStopGuidingError" xml:space="preserve">
-    <value>Error on stop guiding operation. View logs for more details.</value>
+    <value>Fehler bei Beenden des Guidings. Siehe Protokoll für weitere Details.</value>
   </data>
   <data name="lblSkyGuardWrongVersion" xml:space="preserve">
-    <value>SkyGuard version is not supported by N.I.N.A. View logs for more details.</value>
+    <value>SkyGuard Version wird von N.I.N.A. nicht unterstützt. Protokoll für weitere Details.</value>
   </data>
   <data name="LblUseCachedImages" xml:space="preserve">
-    <value>This will use the images out of the framing cache and draw them in the offline sky map for framing. Only images that are less than or equal to 10° and greater than or equal to 0.1° horizontal field of view are used.</value>
+    <value>Dies wird die Bilder aus dem Framing-Cache verwenden und in der Offline-Himmelskarte für das Framing anzeigen. Es werden nur Bilder verwendet, die kleiner oder gleich 10° und größer als oder gleich 0,1° horizontales Sichtfeld sind.</value>
   </data>
   <data name="LblAny" xml:space="preserve">
-    <value>Any</value>
+    <value>Alle</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
-    <value>Any duration</value>
+    <value>Jede Dauer</value>
   </data>
   <data name="LblFromTime" xml:space="preserve">
-    <value>from time</value>
+    <value>von</value>
   </data>
   <data name="LblMinimumDistance" xml:space="preserve">
-    <value>Minimum distance</value>
+    <value>Minimaler Abstand</value>
   </data>
   <data name="LblThroughTime" xml:space="preserve">
-    <value>through time</value>
+    <value>bis</value>
   </data>
   <data name="LblVisibleFor" xml:space="preserve">
-    <value>visible for</value>
+    <value>sichtbar für</value>
   </data>
   <data name="LblPegasusNativeDeprecation" xml:space="preserve">
-    <value>With the introduction of the Pegasus Astro Unity Platform and possible changes to the communication protocols the native drivers will be deprecated in future versions. Please use the ASCOM drivers instead!</value>
+    <value>Mit der Einführung der Pegasus Astro Unity Plattform und möglichen Änderungen der Kommunikationsprotokolle sind die nativen Treiber in zukünftigen Versionen veraltet. Bitte verwenden Sie stattdessen die ASCOM-Treiber!</value>
   </data>
   <data name="LblAlwaysListen" xml:space="preserve">
     <value>Immer auf Dateiänderungen prüfen</value>
@@ -6253,7 +6253,7 @@ Grund: {1}</value>
     <value>Bilddateifehler</value>
   </data>
   <data name="LblSaveImageQueueSize" xml:space="preserve">
-    <value>Image Save Queue Size</value>
+    <value>Größe der Bildspeicher Warteschlange</value>
   </data>
   <data name="LblSaveImageQueueSizeTooltip" xml:space="preserve">
     <value>Dies erhöht die Anzahl der Bilder in der Warteschlange zur Verarbeitung und zum Speichern. Bei kurzen Belichtungen ist dies sinnvoll, um die Abarbeitung der Sequenz bei kurzen Belichtungszeiten auf Kosten eines erhöhten Speicherbedarfs zu beschleunigen.</value>
@@ -6268,10 +6268,10 @@ Grund: {1}</value>
     <value>MGEN Setup</value>
   </data>
   <data name="LblSingleImagingLayout" xml:space="preserve">
-    <value>Single imaging tab layout</value>
+    <value>Einheitliches Aufnahme Tab Layout</value>
   </data>
   <data name="LblSingleImagingLayoutTooltip" xml:space="preserve">
-    <value>When enabled, the imaging tab will have only one layout for all profiles instead of being profile dependent</value>
+    <value>Wenn aktiviert, wird der Aufnahme Tab nur ein Layout über alle Profile haben. Andernfalls wird der Aufnahme-Tab Profilabhängig dargestellt</value>
   </data>
   <data name="LblPlatesolve3" xml:space="preserve">
     <value>Platesolve3</value>
@@ -6286,16 +6286,16 @@ Grund: {1}</value>
     <value>Platesolve3 exe nicht gefunden</value>
   </data>
   <data name="LblBackupDockLayout" xml:space="preserve">
-    <value>Backup Layout</value>
+    <value>Layout sichern</value>
   </data>
   <data name="LblBackupDockLayoutFailed" xml:space="preserve">
-    <value>Backup layout failed</value>
+    <value>Layout Sicherung fehlgeschlagen</value>
   </data>
   <data name="LblBackupDockLayoutSuccessful" xml:space="preserve">
     <value>Aufnahme Tab Layout gesichert</value>
   </data>
   <data name="LblBackupDockLayoutTooltip" xml:space="preserve">
-    <value>Backup the imaging tab layout to a file, so it can be restored at a later point</value>
+    <value>Aufnahme Tab Layout in eine Datei sichern, damit es zu einem späteren Zeitpunkt wiederhergestellt werden kann</value>
   </data>
   <data name="LblDockLayoutReset" xml:space="preserve">
     <value>Aufnahme Tab Layout zurücksetzen</value>
@@ -6313,223 +6313,223 @@ Grund: {1}</value>
     <value>Aufnahme Tab Layout aus Backup wiederherstellen</value>
   </data>
   <data name="LblTotal" xml:space="preserve">
-    <value>Total</value>
+    <value>Gesamt</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo" xml:space="preserve">
-    <value>Exposure Info</value>
+    <value>Belichtungen</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_UpdateTarget" xml:space="preserve">
-    <value>UPDATE TARGET</value>
+    <value>ZIEL AKTUALISIEREN</value>
   </data>
   <data name="LblNoFilter" xml:space="preserve">
-    <value>No Filter</value>
+    <value>Kein Filter</value>
   </data>
   <data name="LblAtikExposureSpeed" xml:space="preserve">
-    <value>Exposure speed</value>
+    <value>Belichtungszeit</value>
   </data>
   <data name="LblAtikGainPreset" xml:space="preserve">
-    <value>Gain preset</value>
+    <value>Gain Voreinstellung</value>
   </data>
   <data name="LblAtikWindowHeaterPowerLevel" xml:space="preserve">
     <value>Heater power level</value>
   </data>
   <data name="LblSkyGuardTimeLapsDitherChecked" xml:space="preserve">
-    <value>Dither Settling</value>
+    <value>Beruhigung nach Dithering</value>
   </data>
   <data name="LblAutoFocusPointLimitReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Maximum number of measurement points reached.</value>
+    <value>Autofokus unvollständig abgebrochen. Maximale Anzahl an Messpunkten erreicht.</value>
   </data>
   <data name="LblAutoFocusZeroPositionReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Focuser Position reached 0.</value>
+    <value>Autofokus konnte nicht abgeschlossen werden. Fokussierposition erreichte 0.</value>
   </data>
   <data name="LblRotateImageTooltip" xml:space="preserve">
-    <value>Rotates the image by 90° clockwise. Following images will then also be rotated by the same amount. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Dreht das Bild um 90° im Uhrzeigersinn, danach werden alle nachfolgenden Bilder auch um den gleichen Betrag gedreht. Dies dient nur zur Anzeige und wirkt sich nicht auf die Bilddaten aus.</value>
   </data>
   <data name="LblFramingPlateSolvePromptText" xml:space="preserve">
-    <value>Image needs to be solved for framing.
-Please confirm the meta data to use for solving.
-Once confirmed choose which solver should be used.</value>
+    <value>Für das Framing muss für das Bild ein Platesolve durchgeführt werden.
+Bitte bestätigen Sie die dafür zu verwendenden Metadaten.
+Danach bitte den zu verwendenden Platesolver auswählen.</value>
   </data>
   <data name="LblPlateSolveRequired" xml:space="preserve">
-    <value>Platesolve required</value>
+    <value>Platesolve erforderlich</value>
   </data>
   <data name="LblFramingSolveWithBlindSolver" xml:space="preserve">
-    <value>When blind solver is selected, the coordinates will be ignored and the blind solver that is set up in the options will be used.</value>
+    <value>Wenn der Blind Solver ausgewählt ist, werden die Koordinaten ignoriert und der Blind Solver in den Optionen verwendet.</value>
   </data>
   <data name="LblFramingSolveWithPlateSolver" xml:space="preserve">
-    <value>When plate solver is selected, the coordinates will be used as reference coordinates and used for the plate solver that is set up in the options.</value>
+    <value>Wenn der Platesolver ausgewählt ist werden die Koordinaten als Referenzkoordinaten verwendet und mit dem in den Optionen eingestellten Platesolver verwendet.</value>
   </data>
   <data name="LblGuideGraphDeclinationColor" xml:space="preserve">
-    <value>Guide Graph Dec Color</value>
+    <value>Guide Graph Farbe DEC</value>
   </data>
   <data name="LblGuideGraphRightAscensionColor" xml:space="preserve">
-    <value>Guide Graph RA Color</value>
+    <value>Guide Graph Farbe RA</value>
   </data>
   <data name="LblGuideGraphShowCorrections" xml:space="preserve">
-    <value>Guide Graph Show Corrections</value>
+    <value>Guide Graph Korrekturen anzeigen</value>
   </data>
   <data name="LblRotateImageAfterFlip" xml:space="preserve">
-    <value>Rotate image after flip</value>
+    <value>Bild drehen nach Flip</value>
   </data>
   <data name="LblRotateImageAfterFlipTooltip" xml:space="preserve">
-    <value>When enabled, this will rotate the image by 180° in the imaging tab after the flip. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Wenn aktiviert, dreht sich das Bild nach dem Drehen um 180° in der Registerkarte Aufnahmen. Dies dient nur zur Darstellung von Bilddaten und wirkt sich nicht auf die Bilddaten aus.</value>
   </data>
   <data name="LblDisableGuidingOnFilterChange" xml:space="preserve">
-    <value>Disable guiding during filter change</value>
+    <value>Guiding während des Filterwechsels deaktivieren</value>
   </data>
   <data name="LblDisableGuidingOnFilterChangeTooltip" xml:space="preserve">
-    <value>When this option is enabled, every time a filter is changed the guiding will be disabled while the filter is being changed and re-enabled afterwards.</value>
+    <value>Wenn diese Option aktiviert ist, wird das Guiding während eines Filterwechsels automatisch deaktiviert und danach wieder aktiviert.</value>
   </data>
   <data name="LblEphemerisNotFound" xml:space="preserve">
-    <value>Ephemeris file to calculate celestial trajectories not found. Please run a repair on your N.I.N.A. installation.</value>
+    <value>Bahndaten zur Ephemeridenberechnung nicht gefunden. Bitte reparieren Sie Ihre N.I.N.A. Installation.</value>
   </data>
   <data name="LblPHD2InstanceNumber" xml:space="preserve">
-    <value>PHD2 instance number</value>
+    <value>PHD2-Instanznummer</value>
   </data>
   <data name="LblDomeMountGeometry" xml:space="preserve">
-    <value>Dome &amp; mount geometry</value>
+    <value>Kuppel und Montierungsgeometrie</value>
   </data>
   <data name="LblDomeNotConnectedError" xml:space="preserve">
-    <value>The dome driver is not connected!</value>
+    <value>Der Kuppel Treiber ist nicht verbunden!</value>
   </data>
   <data name="LblDomeShutterCoordination" xml:space="preserve">
-    <value>Shutter coordination</value>
+    <value>Auslöserkoordination</value>
   </data>
   <data name="LblMountDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is disconnected. Mount status cannot be determined. This can be unsafe!</value>
+    <value>Befehl an Verschluss bzw. Dach gesendet, aber die Montierung ist nicht verbunden. Status der Montierung kann nicht abgefragt werden. Das ist nicht sicher!</value>
   </data>
   <data name="LblMountUnparkedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is unparked. This can be unsafe!</value>
+    <value>Der Verschluss oder das Dach soll bewegt werden, aber die Montierung ist nicht geparkt. Das kann die Ausrüstung gefährden!</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovement" xml:space="preserve">
-    <value>Park dome before shutter operation</value>
+    <value>Kuppel vor Verschlussvorgang parken</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Sends the dome to its park position before attempting to open or cloose the shutter</value>
+    <value>Schwenkt die Kuppel in die Park-Position bevor versucht wird den Verschluss zu öffnen oder zu schließen</value>
   </data>
   <data name="LblParkMountBeforeShutterMovement" xml:space="preserve">
-    <value>Park mount before shutter operation</value>
+    <value>Montierung vor Kuppelverschluss parken</value>
   </data>
   <data name="LblParkMountBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Attempt to park the mount before opening or closing the shutter</value>
+    <value>Versuch die Montierung vor dem Öffnen oder Schließen des Kuppelspalts zu parken</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparked" xml:space="preserve">
-    <value>Refuse open or close if mount is unparked</value>
+    <value>Nicht öffnen oder schließen, wenn die Montierung nicht geparkt ist</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparkedTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open or close the shutter or roof if the mount is in an unparked state.
-This is evaluated AFTER the "Park mount before moving the shutter" setting.</value>
+    <value>Bewirkt, dass N.I.N.A. das Öffnen oder Schließen des Verschlusses oder des Daches verweigert, wenn sich die Montierung im ungeparkten Zustand befindet.
+Dies wird NACH der Einstellung "Park Mount" ausgewertet.</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDevice" xml:space="preserve">
-    <value>Refuse open if a Safety Monitor is not connected</value>
+    <value>Öffnen verweigern, wenn ein Sicherheitsmonitor nicht verbunden ist</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDeviceTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
+    <value>Bewirkt, dass N.I.N.A. sich weigert, den Verschluss oder das Dach zu öffnen, wenn ein Sicherheitsüberwachungsgerät nicht verbunden ist.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>Der Verschluss oder das Dach soll geöffnet werden, aber das Sicherheitsgerät ist getrennt. Öffnen wurde abgebrochen.</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>HINWEIS: Diese Einstellungen dienen der Sicherheit Ihrer Ausrüstung. Sie müssen mit Sorgfalt unter Kenntnis der eigenen Ausrüstung vorgenommen werden. Sie regeln nur N.I.N.A.s Kontrolle der Ausrüstung und sind NICHT verfügbar, wenn N.I.N.A. nicht läuft oder nicht mit der betreffenden Ausrüstung verbunden ist. Die Kuppel- oder Dachsicherheitsmechanismen sollten immer auch durch eine Hardware-Sicherung und elektrische Schnittstellen unterstützt werden, um unerwünschte Verschluss- oder Dachbewegungen zu vermeiden. Es liegt in Ihrer Verantwortung sicherzustellen, dass diese Einstellungen nicht im Widerspruch zu den Einstellungen des Kuppel Treibers stehen.</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
-    <value>Collapses the left sidebars to only show smaller icons without text</value>
+    <value>Klappt die linke Leiste ein, sodass nur kleinere Icons ohne Text angezeigt werden</value>
   </data>
   <data name="LblExpandSidebarTooltip" xml:space="preserve">
-    <value>Expands the left sidebars to show larger icons with text</value>
+    <value>Erweitert die linke Seitenleiste um größere Symbole mit Text anzuzeigen</value>
   </data>
   <data name="Lbl_Sequencer_InstructionsSidebar_SettingsModeTooltip" xml:space="preserve">
     <value>Enable settings mode. When this mode is enabled each instruction can be disabled or enabled. A disabled instruction will then not be shown inside the sidebar outside of settings mode.</value>
   </data>
   <data name="LblCollapseAll" xml:space="preserve">
-    <value>Collapse All</value>
+    <value>Alles einklappen</value>
   </data>
   <data name="LblExpandAll" xml:space="preserve">
-    <value>Expand All</value>
+    <value>Alles aufklappen</value>
   </data>
   <data name="LblRotating" xml:space="preserve">
-    <value>Rotating</value>
+    <value>Drehend</value>
   </data>
   <data name="LblASCOMTelescopeDriveRateInvalid" xml:space="preserve">
-    <value>The drive rate {0} is invalid to move the telescope axis. Please enter a different rate.</value>
+    <value>Die Geschwindigkeit {0} ist ungültig, um die Teleskop-Achse zu bewegen. Bitte geben Sie eine andere Geschwindigkeit ein.</value>
   </data>
   <data name="LblFilterChangeFailed" xml:space="preserve">
     <value>Failed to move filter wheel to filter {0} at position {1}</value>
     <comment>First parameter is filter name and second parameter is filter position number</comment>
   </data>
   <data name="LblSwitches" xml:space="preserve">
-    <value>Switches</value>
+    <value>Schalter</value>
   </data>
   <data name="LblGauges" xml:space="preserve">
-    <value>Gauges</value>
+    <value>Messanzeigen</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Description" xml:space="preserve">
-    <value>Sets the USB limit for the camera if available</value>
+    <value>Das USB-Limit für die Kamera setzen, falls verfügbar</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Name" xml:space="preserve">
-    <value>Set USB Limit</value>
+    <value>USB-Limit setzen</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CannotSetUSBLimit" xml:space="preserve">
-    <value>Camera cannot set USB limit</value>
+    <value>Kamera kann kein USB-Limit festlegen</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_InvalidUSBLimit" xml:space="preserve">
-    <value>Invalid value for USB limit for the camera</value>
+    <value>Ungültiger Wert für USB-Limit für die Kamera</value>
   </data>
   <data name="LblHighFullwellMode" xml:space="preserve">
-    <value>High Fullwell Mode</value>
+    <value>High Fullwell Modus</value>
   </data>
   <data name="LblHighFullwellModeTooltip" xml:space="preserve">
     <value>Enables the high fullwell mode for extended fullwell</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
-    <value>Target Dew Heater Strength</value>
+    <value>Gewünschte Stärke der Tauheizung</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
-    <value>Hardware Acceleration</value>
+    <value>Hardwarebeschleunigung</value>
   </data>
   <data name="LblHardwareAccelerationTooltip" xml:space="preserve">
-    <value>This will enable or disable hardware accelerated rendering of the application.
-In case you are having rendering issues, or the application is turning blank when using a remote software while there is no monitor attached disabling hardware acceleration might be beneficial.
-Keep in mind that disabling hardware acceleration might reduce overall application performance.
+    <value>Dies aktiviert oder deaktiviert die hardwarebeschleunigte Darstellung der Anwendung.
+Falls Sie Anzeige-Probleme haben oder in der Anwendung nichts angezeigt wird, wenn Sie eine Remote-Software verwenden und kein Monitor angeschlossen ist, könnte es helfen die Hardwarebeschleunigung zu deaktivieren.
+Bitte beachten Sie, dass das Deaktivieren der Hardwarebeschleunigung die Gesamtleistung der Anwendung verringern könnte.
 
-Changing the value will require an app restart to take affect.</value>
+Das Ändern des Wertes erfordert einen Neustart der App.</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profil</value>
     <comment>The equipment profile that is used in the application that stores all the settings</comment>
   </data>
   <data name="LblAutomaticMountSync" xml:space="preserve">
-    <value>Automatic Sync</value>
+    <value>Automatisches Synchronisieren</value>
     <comment>The option to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblAutomaticMountSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will send a sync command to the mount during platesolve &amp; center operations. 
-This should only be disabled when having a good pointing model that must not be altered in any way. When disabled the plate solve panel in imaging tab will also not show the sync toggle.</value>
+    <value>Wenn aktiviert, sendet die Anwendung während Platesolve &amp; Center Operationen einen Sync-Befehl an die Montierung. 
+Dies sollte nur deaktiviert werden, wenn bereits ein gutes Modell für die Orientierung der Montierung vorhanden ist, welches nicht verändert werden soll. Wenn deaktiviert, wird das Platesolve-Panel im Aufnahmen-Tab auch nicht den Synchronisations-Schalter anzeigen.</value>
     <comment>The option tooltip to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblCameraDitherPixels" xml:space="preserve">
-    <value>Camera Dither Pixels</value>
+    <value>Kamera Dither Pixel</value>
   </data>
   <data name="LblCameraPixelScale" xml:space="preserve">
-    <value>Camera Pixel Scale</value>
+    <value>Kamera Pixel Skalierung</value>
   </data>
   <data name="LblGuiderDitherPixels" xml:space="preserve">
     <value>Guider Dither Pixels</value>
   </data>
   <data name="LblGuiderPixelScale" xml:space="preserve">
-    <value>Guider Pixel Scale</value>
+    <value>Guider Pixel Skalierung</value>
   </data>
   <data name="LblZwoDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Geräte-ID</value>
   </data>
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Ein Name mit bis zu 8 ASCII-Zeichen, die Sie dem angeschlossenen ZWO-Gerät zuweisen können. Dadurch können Sie verschieden Geräte des gleichen Gerätemodells eindeutig identifizieren.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
-    <value>Unidirectional</value>
+    <value>Unidirektional</value>
   </data>
   <data name="LblCalibrate" xml:space="preserve">
-    <value>Calibrate</value>
+    <value>Kalibrieren</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
     <value>NMEA Serial GNSS</value>
@@ -6580,10 +6580,10 @@ This should only be disabled when having a good pointing model that must not be 
     <value>Twilight Sky Flats</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
-    <value>Closing Cover</value>
+    <value>Schließe Deckel</value>
   </data>
   <data name="LblOpeningCover" xml:space="preserve">
-    <value>Opening Cover</value>
+    <value>Öffne Deckel</value>
   </data>
   <data name="LblSettingBrightness" xml:space="preserve">
     <value>Setting brightness to {0}</value>
@@ -6792,7 +6792,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Schließen</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
     <value>Show Histogram</value>
@@ -6808,7 +6808,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Schwenkt</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6853,13 +6853,13 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Bad Pixel Correction Threshold</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Geschlossen</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
     <value>Closing</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Offen</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
     <value>Opening</value>
@@ -7014,7 +7014,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Saves the current sequence at the specified file path</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Sequenz speichern</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>File path is invalid</value>
@@ -7035,7 +7035,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>Set current position to zero</value>
   </data>
   <data name="LblZwoReversed" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Rückwärts</value>
   </data>
   <data name="LblZwoSetMaxStep" xml:space="preserve">
     <value>Set max step</value>
@@ -7114,7 +7114,7 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
     <value>For the selected device, the device save in the profile will be connected.</value>
   </data>
   <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Verbinden</value>
   </data>
   <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
     <value>Disconnect Equipment</value>
@@ -7170,5 +7170,44 @@ Additionally, it is essential that the ASCOM driver used also supports this 32-b
   <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
     <value>Open cover when done</value>
     <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
   </data>
 </root>

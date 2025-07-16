@@ -862,6 +862,7 @@
                                                                 <ContextMenu ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
                                                                     <ContextMenu.ItemContainerStyle>
                                                                         <Style TargetType="MenuItem">
+                                                                            <Setter Property="ItemsSource" Value="{x:Null}" />
                                                                             <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                                             <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                                             <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />
@@ -881,6 +882,7 @@
                                                             <MenuItem Header="{ns:Loc Lbl_Sequencer_Title}" ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
                                                                 <MenuItem.ItemContainerStyle>
                                                                     <Style TargetType="MenuItem">
+                                                                        <Setter Property="ItemsSource" Value="{x:Null}" />
                                                                         <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                                         <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                                         <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />

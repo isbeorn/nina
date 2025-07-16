@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
@@ -54,13 +54,13 @@
   <PropertyGroup>
     <Description>This assembly contains the profile related components of N.I.N.A.</Description>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.1029-nightly</Version>
+    <Version>3.2.0.1065-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
-    <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
-    <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>

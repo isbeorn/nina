@@ -19,7 +19,9 @@ namespace NINA.Astrometry.RiseAndSet {
 
     public class AstronomicalTwilightRiseAndSet : SunCustomRiseAndSet {
 
-        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude, -18) {
+        [Obsolete("Use method with elevation parameter instead")]
+        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : this(date, latitude, longitude, elevation: 0) { }
+        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude, double elevation) : base(date, latitude, longitude, elevation, -18) {
         }
     }
 }

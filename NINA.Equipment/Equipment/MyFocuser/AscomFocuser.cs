@@ -67,7 +67,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 }
             }
             set {
-                if (Connected && TempCompAvailable) {
+                if (ShouldBeConnected && TempCompAvailable) {
                     SetProperty(nameof(Focuser.TempComp), value);
                 }
             }
@@ -86,7 +86,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         private static TimeSpan SameFocuserPositionTimeout = TimeSpan.FromMinutes(1);
 
         private async Task MoveInternalAbsolute(int position, CancellationToken ct, int waitInMs = 1000) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 var reEnableTempComp = TempComp;
                 if (reEnableTempComp) {
                     TempComp = false;
@@ -122,7 +122,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         }
 
         private async Task MoveInternalRelative(int position, CancellationToken ct, int waitInMs = 1000) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 var reEnableTempComp = TempComp;
                 if (reEnableTempComp) {
                     TempComp = false;
@@ -153,7 +153,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         private bool _canHalt;
 
         public void Halt() {
-            if (Connected && _canHalt) {
+            if (ShouldBeConnected && _canHalt) {
                 try {
                     device.Halt();
                 } catch (MethodNotImplementedException) {

@@ -133,7 +133,9 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
             ToupCam.FrameInfoV4 toupcamInfo;
             var result = sdk.PullImage(data, 0, bitDepth, 0, out toupcamInfo);
+            sdk.get_Option(ToupCam.eOPTION.OPTION_GPS, out var hasGps);
             info = toupcamInfo.ToFrameInfo();
+            info.hasgps = hasGps > 0;
             return result;
         }
 

@@ -13,15 +13,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Remove="Sequencer\SequenceItem\Utility\WaitUntilAboveHorizonTest.cs" />
     <PackageReference Include="ASCOM.Tools" Version="2.0.9" />
+=======
+    <PackageReference Include="ASCOM.Tools" Version="2.1.0" />
+>>>>>>> 194134526e1c37330369bb16a213fedeca9c7589
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="FluentAssertions" Version="[7.0.0]" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.7.0">
+    <PackageReference Include="NUnit.Analyzers" Version="4.8.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

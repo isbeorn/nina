@@ -20,6 +20,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 using System.Windows.Media;
+using NINA.Core.Utility;
+using System;
 
 namespace NINA.Sequencer.Behaviors {
 
@@ -158,41 +160,45 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private void AttachAdorner() {
-            if (lastDropTarget == DropTargetEnum.Top || lastDropTarget == DropTargetEnum.Bottom || lastDropTarget == DropTargetEnum.Center) {
-                int index = -1;
+            try {
+                if (lastDropTarget == DropTargetEnum.Top || lastDropTarget == DropTargetEnum.Bottom || lastDropTarget == DropTargetEnum.Center) {
+                    int index = -1;
 
-                foreach (UIElement child in layoutParent.Children) {
-                    if (child is DragDropAdorner) {
-                        index = layoutParent.Children.IndexOf(child);
+                    foreach (UIElement child in layoutParent.Children) {
+                        if (child is DragDropAdorner) {
+                            index = layoutParent.Children.IndexOf(child);
+                        }
                     }
+
+                    TranslateTransform movingTransform = new TranslateTransform();
+
+                    Point relativeLocation = AssociatedObject.TranslatePoint(new Point(0, 0), layoutParent);
+                    double height = GetVisibleHeight(AssociatedObject);
+
+                    var adornerBaseWidth = AssociatedObject.ActualWidth;
+
+                    bool leftOfElement = DragOverDisplayAnchor == DragOverDisplayAnchor.Left;
+
+                    if (lastDropTarget == DropTargetEnum.Top) {
+                        dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverTopText, leftOfElement, lastDropTarget, AssociatedObject);
+                        movingTransform.Y = relativeLocation.Y - dragOverAdorner.AdornerHeight / 2;
+                        movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
+                    } else if (lastDropTarget == DropTargetEnum.Center) {
+                        dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverCenterText, leftOfElement, lastDropTarget, AssociatedObject);
+                        movingTransform.Y = relativeLocation.Y + height / 2 - dragOverAdorner.AdornerHeight / 2;
+                        movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
+                    } else {
+                        dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverBottomText, leftOfElement, lastDropTarget, AssociatedObject);
+                        movingTransform.Y = relativeLocation.Y + AssociatedObject.ActualHeight - dragOverAdorner.AdornerHeight / 2;
+                        movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
+                    }
+
+                    layoutParent.Children.Insert(index, dragOverAdorner);
+                    dragOverAdorner.RenderTransform = movingTransform;
+                    movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
                 }
-
-                TranslateTransform movingTransform = new TranslateTransform();
-
-                Point relativeLocation = AssociatedObject.TranslatePoint(new Point(0, 0), layoutParent);
-                double height = GetVisibleHeight(AssociatedObject);
-
-                var adornerBaseWidth = AssociatedObject.ActualWidth;
-
-                bool leftOfElement = DragOverDisplayAnchor == DragOverDisplayAnchor.Left;
-
-                if (lastDropTarget == DropTargetEnum.Top) {
-                    dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverTopText, leftOfElement, lastDropTarget, AssociatedObject);
-                    movingTransform.Y = relativeLocation.Y - dragOverAdorner.AdornerHeight / 2;
-                    movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
-                } else if (lastDropTarget == DropTargetEnum.Center) {
-                    dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverCenterText, leftOfElement, lastDropTarget, AssociatedObject);
-                    movingTransform.Y = relativeLocation.Y + height / 2 - dragOverAdorner.AdornerHeight / 2;
-                    movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
-                } else {
-                    dragOverAdorner = new DragOverAdorner(adornerBaseWidth, height, DragOverBottomText, leftOfElement, lastDropTarget, AssociatedObject);
-                    movingTransform.Y = relativeLocation.Y + AssociatedObject.ActualHeight - dragOverAdorner.AdornerHeight / 2;
-                    movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
-                }
-
-                layoutParent.Children.Insert(index, dragOverAdorner);
-                dragOverAdorner.RenderTransform = movingTransform;
-                movingTransform.X = relativeLocation.X + (leftOfElement ? (-(dragOverAdorner.AdornerWidth - adornerBaseWidth)) : adornerBaseWidth);
+            } catch (Exception ex) {
+                Logger.Trace($"AttachAdorner failed - {ex.Message}");
             }
         }
 
