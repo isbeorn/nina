@@ -15,15 +15,13 @@
 using NINA.Core.Interfaces;
 using NINA.Core.Model;
 using NINA.Core.Utility;
-using NINA.Image.ImageData;
-using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces.ViewModel;
 
 namespace NINA.Equipment.Interfaces.Mediator {
 
@@ -57,7 +55,9 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         void SetImage(BitmapSource img);
         int GetImageRotation();
-        void SetImageRotation(int rotation);        
+        void SetImageRotation(int rotation);
+
+        void SetSubSambleRectangle(ObservableRectangle observableRectangle);
 
         event EventHandler<ImagePreparedEventArgs> ImagePrepared;        
     }

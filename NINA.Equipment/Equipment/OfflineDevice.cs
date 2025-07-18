@@ -522,5 +522,9 @@ namespace NINA.Equipment.Equipment {
         public Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
             throw new NotImplementedException();
         }
+
+        public void UpdateSubSampleArea() {
+            throw new NotImplementedException();
+        }
     }
 }

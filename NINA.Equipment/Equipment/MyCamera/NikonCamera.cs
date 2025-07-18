@@ -860,6 +860,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
         }
+
+        public void UpdateSubSampleArea() {
+            throw new NotImplementedException();
+        }
     }
 
     internal class NikonLogger : Nikon.ILogger {

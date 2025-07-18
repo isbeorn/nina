@@ -9,34 +9,33 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
+using Dasync.Collections;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Equipment.MyTelescope;
+using NINA.Equipment.Equipment.MyWeatherData;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
-using NINA.ViewModel.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.ViewModel;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Equipment.Equipment.MyTelescope;
-using NINA.Equipment.Equipment.MyFilterWheel;
-using NINA.Equipment.Equipment.MyFocuser;
-using NINA.Equipment.Equipment.MyRotator;
-using NINA.Equipment.Equipment.MyWeatherData;
-using Dasync.Collections;
-using NINA.Equipment.Utility;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Image.Interfaces;
-using NINA.Image.ImageData;
-using NINA.Equipment.Model;
-using NINA.Core.Locale;
-using NINA.Core.Utility;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Notification;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Equipment;
-using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces.ViewModel;
 
 namespace NINA.ViewModel {
 
@@ -418,5 +417,8 @@ namespace NINA.ViewModel {
             _imageControl.ImageRotation = rotation;
         }
 
+        public void SetSubSambleRectangle(ObservableRectangle observableRectangle) {
+            cameraMediator.SetSubSambleRectangle(observableRectangle);
+        }
     }
 }
