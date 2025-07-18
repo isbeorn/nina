@@ -299,7 +299,7 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
                         await filterWheelMediator.ChangeFilter(imagingFilter);
                     } catch (Exception e) {
                         Logger.Error("Failed to restore previous filter position after AutoFocus", e);
-                        Notification.ShowError($"Failed to restore previous filter position: {e.Message}");
+                        Notification.ShowError(String.Format(Loc.Instance["LblFailedToRestoreFilterPosition"], e.Message));
                     }
 
                     //Restore the temperature compensation of the focuser
@@ -590,7 +590,7 @@ namespace NINA.WPF.Base.ViewModel.AutoFocus {
                     return await filterWheelMediator.ChangeFilter(filter, token, progress);
                 } catch (Exception e) {
                     Logger.Error("Failed to change filter during AutoFocus", e);
-                    Notification.ShowWarning($"Failed to change filter: {e.Message}");
+                    Notification.ShowWarning(String.Format(Loc.Instance["LblFailedToChangeFilter"], e.Message));
                     return imagingFilter;
                 }
             } else {

@@ -14,6 +14,7 @@
 
 using Altair;
 using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -850,13 +851,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 case ToupTekAlikeEvent.EVENT_ERROR: // Error
                     Logger.Error($"{Category} - Camera reported a generic error!");
-                    Notification.ShowError("Camera reported a generic error and needs to be reconnected!");
+                    Notification.ShowError(Loc.Instance["LblGenericCameraError"]);
                     Disconnect();
                     break;
 
                 case ToupTekAlikeEvent.EVENT_DISCONNECTED:
                     Logger.Warning($"{Category} - Camera disconnected! Maybe USB connection was interrupted.");
-                    Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
+                    Notification.ShowError(Loc.Instance["LblCameraDisconnected"]);
                     OnEventDisconnected();
                     break;
             }
