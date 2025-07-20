@@ -51,6 +51,7 @@ namespace NINA.Profile.Interfaces {
         IGnssSettings GnssSettings { get; set; }
         IAlpacaSettings AlpacaSettings { get; set; }
         IImageHistorySettings ImageHistorySettings { get; set; }
+        IDockPanelSettings DockPanelSettings { get; set; }
 
         void Save();
     }

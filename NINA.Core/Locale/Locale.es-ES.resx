@@ -7175,36 +7175,134 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
     <value>Amanecer civil</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>Rechazar desaparcar la montura si la ventana del domo  no está abierta</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>No se puede desaparcar la montura mientras la ventana del domo o el tejado no estén abiertos</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Rechazar los intentos de desaparcar la montura si la ventana del domo o el estado del techo es Cerrado, Cerrando, Abriendo o Erróneo. Desaparcar la montura solo se permitirá si la ventana del domo o el tejado se reportan como Abierto</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>Hoy no hay amanecer civil en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>Hoy no hay atardecer civil en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>Hoy no hay amanecer astronómico en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>Hoy no hay atardecer astronómico en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>Hoy no hay amanecer civil en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>Hoy no hay atardecer náutico en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>Hoy no hay amanecer en su localización.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>Hoy no hay ocaso en su localización.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>No es posible conectarse con {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>La cámara no soporta el modo de 16 bits</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Aún hay otra exposición en progreso. Cancélala para empezar otra.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Error al conectar {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>¡La cámara informa de un error genérico y necesita ser reconectada!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>¡Cámara desconectada! Tal vez se haya interrumpido la conexión USB.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>Error del oyente de MetaGuide: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Error al enviar {0} mensaje</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>El guiado no está activo. Imposible hacer dither</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Error al comunicarse con MGEN durante el dither</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>Error PHD: {0}
+CÓDIGO: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>Error PHD: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>No hay ninguna clave API configurada para TheWeatherCompany.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>El archivo {0} no existe</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Resolución de placas fallida. No se encontró archivo de salida.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Resolución de placas fallida.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Error en la resolución de placas con Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>La exposición prevista de {0}s es más larga que el máximo permitido.
+Deteniendo la adquisición de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>La exposición prevista de {0}s es más corta que la mínima permitida.
+Deteniendo la adquisición de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>La corrección de flats de cielo no funcionó y está fuera del rango de tolerancia:
+primer tiempo de exposición {0:#.####}
+tiempo actual de exposición {1:#.####}
+tiempo transcurrido: {2:#.##}
+Media Adu: {3:#.##}.
+El tiempo de exposición de los flats de cierlo será recalculado y se repetirá la exposición.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Error al restaurar la posición anterior del filtro: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Error al cambiar el filtro: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Error al ajustar la tasa de cambio. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Error al preparar la imagen para mostrar: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
   </data>
 </root>

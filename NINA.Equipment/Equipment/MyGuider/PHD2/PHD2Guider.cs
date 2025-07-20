@@ -386,7 +386,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         private static void CheckPhdError(PhdMethodResponse m) {
             if (m.error != null) {
-                Notification.ShowError("PHDError: " + m.error.message + "\n CODE: " + m.error.code);
+                Notification.ShowError(String.Format(Loc.Instance["LblPHDError"], m.error.message, m.error.code));
                 Logger.Warning("PHDError: " + m.error.message + " CODE: " + m.error.code);
             }
         }
@@ -1164,7 +1164,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError("PHD2 Error: " + ex.Message);
+                Notification.ShowError(String.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
                 throw;
             } finally {
                 Settling = false;

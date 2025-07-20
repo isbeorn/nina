@@ -7212,4 +7212,102 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
     <value>There is no sunset at your location today.</value>
   </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>Nepodařilo se připojit k {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>Kamera nepodporuje 16 bitový režim</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Stále probíhá další expozice. Zrušte ji a začněte jinou.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Nepodařilo se připojit {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>Kamera ohlásila souhrnnou chybu a je třeba ji znovu připojit!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>Kamera odpojena! Možná bylo přerušeno připojení USB.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>Chyba MetaGuide Listener: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Nepodařilo se odeslat {0} zprávu</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>Pointace není aktivní. Nelze ditherovat</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Nepodařilo se komunikovat s MGEN během ditheringu</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>Chyba PHD: {0}
+KÓDE: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>Chyba PHD: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>Není nakonfigurován žádný klíč API služby Weather Underground.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>Soubor {0} neexistuje</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Řešení astrometrie se nezdařilo. Nebyl nalezen žádný výstupní soubor.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Astrometrie se nezdařila.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Chyba řešení astrometrie pomocí Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>Předpokládaná expozice {0}s je delší než maximální povolená.
+Zastavení pořízení flatu oblohy.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>Předpokládaná expozice {0}s je kratší než minimální povolená doba.
+Zastavení pořízení flatu oblohy.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>Korekce Skyflat nefungovala a je mimo toleranci:
+čas první expozice {0:#.####}
+aktuální čas expozice {1:#.####}
+uplynulý čas: {2:#.##}
+průměr adu: {3:#.##}.
+Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Nepodařilo se obnovit předchozí pozici filtru: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Nepodařilo se změnit filtr: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Set shift rate failed. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Nepodařilo se připravit obrázek k zobrazení: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
 </root>

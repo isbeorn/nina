@@ -350,7 +350,7 @@ namespace NINA.ViewModel {
                     throw;
                 } catch (Exception e) {
                     Logger.Error("Failed to prepare image", e);
-                    Notification.ShowError($"Failed to prepare image for display: {e.Message}");
+                    Notification.ShowError(String.Format(Loc.Instance["LblPrepareImageFailed"], e.Message));
                     throw;
                 }
             }, cancelToken);

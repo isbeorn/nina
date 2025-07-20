@@ -66,7 +66,7 @@ namespace NINA.Core.Utility.Http {
                 ct.ThrowIfCancellationRequested();
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.Notification.ShowError($"Unable to connect to {Url}");
+                Notification.Notification.ShowError(String.Format(Locale.Loc.Instance["LblUnableToConnectTo"], Url));
             }
 
             return result;

@@ -682,6 +682,20 @@
 
                                                         <ItemsControl.Resources>
                                                             <ResourceDictionary>
+                                                                <DataTemplate DataType="{x:Type cont:SequenceContainer}">
+                                                                    <local:SequenceContainerView />
+                                                                </DataTemplate>
+                                                                <DataTemplate DataType="{x:Type cont:ParallelContainer}">
+                                                                    <local:SequenceContainerView>
+                                                                        <local:SequenceContainerView.SequenceContainerContent>
+                                                                            <TextBlock
+                                                                                Margin="5,5,0,0"
+                                                                                VerticalAlignment="Center"
+                                                                                FontStyle="Italic"
+                                                                                Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
+                                                                        </local:SequenceContainerView.SequenceContainerContent>
+                                                                    </local:SequenceContainerView>
+                                                                </DataTemplate>
                                                                 <DataTemplate DataType="{x:Type seqTrig:SequenceTrigger}">
                                                                     <local:SequenceBlockView />
                                                                 </DataTemplate>
@@ -803,6 +817,20 @@
 
                                                         <ItemsControl.Resources>
                                                             <ResourceDictionary>
+                                                                <DataTemplate DataType="{x:Type cont:SequenceContainer}">
+                                                                    <local:SequenceContainerView />
+                                                                </DataTemplate>
+                                                                <DataTemplate DataType="{x:Type cont:ParallelContainer}">
+                                                                    <local:SequenceContainerView>
+                                                                        <local:SequenceContainerView.SequenceContainerContent>
+                                                                            <TextBlock
+                                                                                Margin="5,5,0,0"
+                                                                                VerticalAlignment="Center"
+                                                                                FontStyle="Italic"
+                                                                                Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
+                                                                        </local:SequenceContainerView.SequenceContainerContent>
+                                                                    </local:SequenceContainerView>
+                                                                </DataTemplate>
                                                                 <DataTemplate DataType="{x:Type seqCond:SequenceCondition}">
                                                                     <local:SequenceBlockView />
                                                                 </DataTemplate>

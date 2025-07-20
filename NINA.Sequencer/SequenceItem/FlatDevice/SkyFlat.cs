@@ -571,15 +571,13 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 var time = exposureDetermination.GetNextExposureTime();
 
                 if (time > MaxExposure) {
-                    Notification.ShowWarning($"The predicted exposure of {Math.Round(time,5)}s is longer than the maximum allowed." + Environment.NewLine +
-                                             $"Stopping sky flat acquisition.");
+                    Notification.ShowWarning(String.Format(Loc.Instance["LblExposureOverMax"], Math.Round(time,5)));
                         
                     Logger.Warning($"Predicted exposure {time} is longer than {MaxExposure} - Stopping");
                     break;
                 }
                 if (time < MinExposure) {
-                    Notification.ShowWarning($"The predicted exposure of {Math.Round(time, 5)}s is shorter than the minumum allowed." + Environment.NewLine +
-                                             $"Stopping sky flat acquisition.");
+                    Notification.ShowWarning(String.Format(Loc.Instance["LblExposureUnderMin"], Math.Round(time, 5)));
 
                     Logger.Warning($"Predicted exposure {time} is shorter than {MinExposure} - Stopping");
                     break;
@@ -620,12 +618,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                                      $"elapsed time: {exposureDetermination.GetElapsedTime().TotalSeconds}, " +
                                      $"current mean adu: {imageStatistics.Mean}. " +
                                      $"The sky flat exposure time will be determined again and the exposure will be repeated.");
-                        Notification.ShowWarning($"Skyflat correction did not work and is outside of tolerance:" + Environment.NewLine +
-                                     $"first exposure time {exposureDetermination.StartExposureTime:#.####}" + Environment.NewLine +
-                                     $"current exposure time {time:#.####}, " + Environment.NewLine +
-                                     $"elapsed time: {exposureDetermination.GetElapsedTime().TotalSeconds:#.##}" + Environment.NewLine +
-                                     $"mean adu: {imageStatistics.Mean:#.##}." + Environment.NewLine +
-                                     $"The sky flat exposure time will be determined again and the exposure will be repeated.");
+                        Notification.ShowWarning(String.Format(Loc.Instance["LblSkyFlatOutsideTolerance"], exposureDetermination.StartExposureTime, time, 
+                            exposureDetermination.GetElapsedTime().TotalSeconds, imageStatistics.Mean));
 
                         cameraIsLinear = false;
                             
