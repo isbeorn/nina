@@ -100,5 +100,7 @@ namespace NINA.Equipment.Interfaces {
         Task<IExposureData> DownloadLiveView(CancellationToken token);
 
         void StopLiveView();
+
+        void UpdateSubSampleArea();
     }
 }

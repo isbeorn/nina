@@ -12,28 +12,29 @@
 
 #endregion "copyright"
 
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using QHYCCD;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Image.ImageData;
-using NINA.Core.Enum;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Locale;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Exceptions;
-using System.Collections;
-using NINA.Astrometry;
-using NINA.Equipment.Utility;
+using static NINA.Image.ImageAnalysis.StarDetection;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -1202,6 +1203,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
             return true;
         }
 
+        public void UpdateSubSampleArea() {
+            SetResolution(out var startx, out var starty, out var sizex, out var sizey);
+        }
 
         public void StartExposure(CaptureSequence sequence) {
             RaiseIfNotConnected();
