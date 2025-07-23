@@ -1277,29 +1277,33 @@ namespace Nikon {
         }
 
         public bool LiveViewEnabled {
-            set { SetUnsigned(eNkMAIDCapability.kNkMAIDCapability_LiveViewStatus, value ? 1U : 0U); }
-            get { return GetUnsigned(eNkMAIDCapability.kNkMAIDCapability_LiveViewStatus) == 0 ? false : true; }
+            set {
+                uint liveviewcode = NikonCameraDatabase.GetLiveViewConfig(Name).OnStatus;
+                SetUnsigned(eNkMAIDCapability.kNkMAIDCapability_LiveViewStatus, value ? liveviewcode : 0U);
+
+                // Timeout for liveview on newer cameras (viewcode == 3U)
+                if (value && liveviewcode == 3U) {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    while (GetEnum(eNkMAIDCapability.kNkMAIDCapability_LiveViewImageStatus).Index != (int)eNkMAIDLiveViewImageStatus.kNkMAIDLiveViewImageStatus_CanAcquire) {
+                        if (sw.ElapsedMilliseconds > 5000) throw new TimeoutException("Liveview have not been able to be started after timeout");
+                    }
+                }
+            }
+
+            get {
+                uint liveviewcode = GetUnsigned(eNkMAIDCapability.kNkMAIDCapability_LiveViewStatus);
+                if (liveviewcode == 1U || liveviewcode == 3U) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
 
         public NikonLiveViewImage GetLiveViewImage() {
             NikonArray a = GetArray(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
-
-            int headerSize = 0;
-
-            switch (ModuleType) {
-                case NikonModuleType.Type0001:
-                case NikonModuleType.Type0002:
-                    headerSize = 64;
-                    break;
-
-                case NikonModuleType.Type0003:
-                    headerSize = 128;
-                    break;
-
-                default:
-                    headerSize = 384;
-                    break;
-            }
+            int headerSize = NikonCameraDatabase.GetLiveViewConfig(Name).ImageHeaderSize; ;
 
             return new NikonLiveViewImage(a.Buffer, headerSize);
         }

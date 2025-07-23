@@ -329,9 +329,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short BayerOffsetY => 0;
 
-        public int CameraXSize => -1;
+        public int CameraXSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResX;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
-        public int CameraYSize => -1;
+        public int CameraYSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResY;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
         public double ExposureMin => 0;
 
@@ -343,9 +367,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short MaxBinY => 1;
 
-        public double PixelSizeX => double.NaN;
+        public double PixelSizeX {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeX;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
 
-        public double PixelSizeY => double.NaN;
+        public double PixelSizeY {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeY;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
 
         public bool CanSetTemperature => false;
 
@@ -548,10 +596,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int BatteryLevel {
             get {
-                try {
-                    return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
-                } catch (NikonException ex) {
-                    Logger.Error(ex);
+                if (Connected) {
+                    try {
+                        return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
+                    } catch (NikonException ex) {
+                        Logger.Error(ex);
+                        return -1;
+                    }
+                } else {
                     return -1;
                 }
             }
