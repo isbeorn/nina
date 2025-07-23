@@ -519,7 +519,7 @@ namespace NINA.Equipment.Equipment.MyGuider {
         private static bool PostAndCheckMessage(string messageType, uint msg, int wParam, int lParam) {
             if (!PostMessage(HWND_BROADCAST, msg, wParam, lParam)) {
                 Logger.Error($"Failed to post {messageType} message");
-                Notification.ShowError($"Failed to post {messageType} message");
+                Notification.ShowError(String.Format(Loc.Instance["LblPostFailed"], messageType));
                 return false;
             }
             return true;

@@ -372,5 +372,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void SendCommandBlind(string command, bool raw) {
             this.Camera.SendCommandBlind(command, raw);
         }
+
+        public void UpdateSubSampleArea() {
+            this.Camera.UpdateSubSampleArea();
+        }
     }
 }

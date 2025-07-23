@@ -45,12 +45,12 @@ namespace NINA.Equipment.Equipment.MySwitch {
 
         public double Value { get; }
 
-        public Task<bool> Poll() {
-            return Task.FromResult(true);
+        public bool Poll() {
+            return true;
         }
 
-        public Task SetValue() {
-            return Task.CompletedTask;
+        public void SetValue() {
+            return;
         }
     }
 }

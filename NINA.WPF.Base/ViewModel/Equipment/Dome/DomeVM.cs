@@ -235,6 +235,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             Dictionary<string, object> domeValues = new Dictionary<string, object> {
                 { nameof(DomeInfo.Connected), Dome?.Connected ?? false },
                 { nameof(DomeInfo.ShutterStatus), Dome?.ShutterStatus ?? ShutterState.ShutterError },
+                { nameof(DomeInfo.DriverCanFollow), Dome?.DriverCanFollow ?? false },
+                { nameof(DomeInfo.CanSetShutter), Dome?.CanSetShutter ?? false },
+                { nameof(DomeInfo.CanSetPark), Dome?.CanSetPark ?? false },
+                { nameof(DomeInfo.CanSetAzimuth), Dome?.CanSetAzimuth ?? false },
+                { nameof(DomeInfo.CanSyncAzimuth), Dome?.CanSyncAzimuth ?? false },
+                { nameof(DomeInfo.CanPark), Dome?.CanPark ?? false },
+                { nameof(DomeInfo.CanFindHome), Dome?.CanFindHome ?? false },
                 { nameof(DomeInfo.AtPark), Dome?.AtPark ?? false },
                 { nameof(DomeInfo.AtHome), Dome?.AtHome ?? false },
                 { nameof(DomeInfo.DriverFollowing), Dome?.DriverFollowing ?? false },
@@ -254,6 +261,27 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
             domeValues.TryGetValue(nameof(DomeInfo.ShutterStatus), out o);
             DomeInfo.ShutterStatus = (ShutterState)(o ?? ShutterState.ShutterError);
+
+            domeValues.TryGetValue(nameof(DomeInfo.DriverCanFollow), out o);
+            DomeInfo.DriverCanFollow = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanSetShutter), out o);
+            DomeInfo.CanSetShutter = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanSetPark), out o);
+            DomeInfo.CanSetPark = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanSetAzimuth), out o);
+            DomeInfo.CanSetAzimuth = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanSyncAzimuth), out o);
+            DomeInfo.CanSyncAzimuth = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanPark), out o);
+            DomeInfo.CanPark = (bool)(o ?? false);
+
+            domeValues.TryGetValue(nameof(DomeInfo.CanFindHome), out o);
+            DomeInfo.CanFindHome = (bool)(o ?? false);
 
             domeValues.TryGetValue(nameof(DomeInfo.AtPark), out o);
             DomeInfo.AtPark = (bool)(o ?? false);
@@ -348,7 +376,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
         public async Task<bool> OpenShutter(CancellationToken cancellationToken) {
             if (DomeInfo.Connected) {
-                if (Dome.CanSetShutter) {
+                if (DomeInfo.CanSetShutter) {
 
                     // 0. Check if the shutter/roof is moving toward the open state, and wait.
                     if (DomeInfo.ShutterStatus == ShutterState.ShutterOpening) {
@@ -446,7 +474,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
         public async Task<bool> CloseShutter(CancellationToken cancellationToken) {
             if (DomeInfo.Connected) {
-                if (Dome.CanSetShutter) {
+                if (DomeInfo.CanSetShutter) {
 
                     // 0. Check if the shutter/roof is moving toward the closed state, and wait.
                     if (DomeInfo.ShutterStatus == ShutterState.ShutterClosing) {
@@ -541,7 +569,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         }
 
         public async Task<bool> Park(CancellationToken cancellationToken) {
-            if (Dome.CanPark) {
+            if (DomeInfo.CanPark) {
                 Logger.Info("Parking dome");
                 await DisableFollowing(cancellationToken);
                 if (profileService.ActiveProfile.DomeSettings.FindHomeBeforePark && Dome.CanFindHome) {
@@ -610,7 +638,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                 if (DomeInfo?.Connected != true || TelescopeInfo?.Connected != true) {
                     return false;
                 }
-                return Dome.CanSyncAzimuth;
+                return DomeInfo.CanSyncAzimuth;
             }
         }
 
@@ -634,7 +662,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         }
 
         private async Task<bool> ManualSlew(double degrees) {
-            if (Dome.CanSetAzimuth) {
+            if (DomeInfo.CanSetAzimuth) {
                 this.FollowEnabled = false;
                 Logger.Info($"Manually slewing dome to azimuth {degrees}°");
                 return await SlewToAzimuth(degrees, CancellationToken.None);
@@ -644,7 +672,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
         }
 
         private async Task<bool> RotateRelative(double degrees) {
-            if (Dome.CanSetAzimuth) {
+            if (DomeInfo.CanSetAzimuth) {
                 this.FollowEnabled = false;
                 var targetAzimuth = AstroUtil.EuclidianModulus(this.Dome.Azimuth + degrees, 360.0);
                 Logger.Info($"Rotating dome relatively by {degrees}°");

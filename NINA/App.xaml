@@ -46,7 +46,6 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/CancellableButton.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/DatePicker.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/StepperControl.xaml" />
-                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/ToggleSwitch.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/ContextMenu.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/SplitButton.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/ColorPicker.xaml" />

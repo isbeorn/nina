@@ -15,14 +15,12 @@
 using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Image.ImageData;
-using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
 
 namespace NINA.Equipment.Interfaces.ViewModel {
 
@@ -34,6 +32,7 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         void SetImage(BitmapSource img);
         int GetImageRotation();
         void SetImageRotation(int rotation);
+        void SetSubSambleRectangle(ObservableRectangle observableRectangle);
 
         Task<IExposureData> CaptureImage(
             CaptureSequence sequence,

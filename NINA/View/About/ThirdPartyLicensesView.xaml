@@ -455,19 +455,6 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="ToggleSwitch           " />
-                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://archive.codeplex.com/?p=toggleswitch    " RequestNavigate="Hyperlink_RequestNavigate">https://archive.codeplex.com/?p=toggleswitch</Hyperlink></TextBlock>
-                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/MS-PL" RequestNavigate="Hyperlink_RequestNavigate">Microsoft Public License (MS-PL)</Hyperlink></TextBlock>
-                </Grid>
-                <Grid Margin="5,5,5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition
-                            Width="Auto"
-                            MinWidth="150"
-                            SharedSizeGroup="Column1" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
-                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Trinet.Core.IO.Ntfs    " />
                     <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/RichardD2/NTFS-Streams     " RequestNavigate="Hyperlink_RequestNavigate">https://github.com/RichardD2/NTFS-Streams</Hyperlink></TextBlock>
                     <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://opensource.org/licenses/BSD-2-Clause" RequestNavigate="Hyperlink_RequestNavigate">The 2-Clause BSD License</Hyperlink></TextBlock>

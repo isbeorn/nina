@@ -9,23 +9,26 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
-using NINA.Utility;
 using NINA.Astrometry;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Http;
+using NINA.Core.Utility.WindowService;
+using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Utility;
-using NINA.Core.Utility.WindowService;
 
 namespace NINA.AstrometryIndexDownloader {
 
     public class AstrometryIndexDownloaderVM : BaseINPC {
-        private const string WIDEFIELDINDEXESURL = "http://broiler.astrometry.net/~dstn/4100/";
-        private const string INDEXESURL = "http://broiler.astrometry.net/~dstn/4200/";
+        private const string WIDEFIELDINDEXESURL = "https://data.astrometry.net/4100/";
+        private const string INDEXESURL = "https://data.astrometry.net/4200/";
 
         private AstrometryIndexDownloaderVM(string destinationfolder) {
             _focalLength = 750;
@@ -108,26 +111,26 @@ namespace NINA.AstrometryIndexDownloader {
         private async Task<bool> DownloadFile(IndexFile file) {
             var url = new Uri(INDEXESURL + file.Name);
             var success = false;
-            using (var client = new WebClient()) {
-                try {
-                    client.Headers.Add("User-Agent", CoreUtil.UserAgent);
-                    await client.DownloadFileTaskAsync(url, _destinationfolder + file.Name);
-                    success = true;
-                } catch (WebException ex) {
-                    if (ex.InnerException.GetType() == typeof(System.UnauthorizedAccessException)) {
-                        Logger.Error(ex.InnerException);
-                        System.Windows.MessageBox.Show(ex.InnerException.Message);
-                    } else {
-                        Logger.Error(ex);
-                        System.Windows.MessageBox.Show(ex.Message);
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    System.Windows.MessageBox.Show(ex.Message);
-                }
+            var targetPath = Path.Combine(_destinationfolder, file.Name);
+
+            try {
+                var request = new HttpDownloadFileRequest(url.ToString(), targetPath);
+                await request.Request(default, default);
+                success = true;
+            } catch (UnauthorizedAccessException ex) {
+                Logger.Error(ex);
+                System.Windows.MessageBox.Show(ex.Message);
+            } catch (HttpRequestException ex) {
+                Logger.Error(ex);
+                System.Windows.MessageBox.Show(ex.Message);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                System.Windows.MessageBox.Show(ex.Message);
             }
+
             return success;
         }
+
 
         private IAsyncCommand _downloadCommand;
 

@@ -17,6 +17,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - When Smart Exposure was interrupted and the filter was manually changed afterwards, the instruction will now make sure the filter is set to the correct one before proceeding with the next exposure
 - Sunrise, sunset, moonrise, and moonset now account for your location's elevation for increased accuracy.
 - Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
+- Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
  
 ### **Device Management**
 - **Device Chooser Enhancements**  
@@ -29,11 +30,16 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
 - **ASCOM Device State**
     - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
+- ** Dome/Roof safety **
+    - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
+- ** Switch Polling**
+    - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
   - Sky annotation options are now saved to the active profile.  
   - After determining the rotation from camera, the rotation value is now automatically synced to the rotator if available.  
+  - Sending a target from Sky Atlas to Framing Assistant will now also use the last rotation that was set in framing
 - **Plate Solver UI Improvements**  
   - Settings for the selected Plate Solver and Blind Solver are now displayed exclusively, making setup verification more intuitive.  
 - **Message Box and Annotation Instructions**  
@@ -57,6 +63,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
   - Added **drag-and-drop disable and enable buttons**.  
   - Pressing the **Escape** key while dragging an item cancels the action.  
+  - Large sequences should now load significantly faster, with proper UI virtualization for off-screen items.
 - **Imaging Tab Locking**  
   - Added a **lock/unlock button** to prevent panels from being closed or rearranged.  
   - **Resizing panels remains possible** (no method found to disable this).  
@@ -66,10 +73,13 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
 - **Time sources**
     - Civil dawn and dusk can now be selected for time based conditions
+    - The altitude charts now also show the civil dawn and dusk times
 - **Trained Dark Exposure**
     - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
 - **Legacy Sequencer Multiple File Load**
     - Fix issue where saving sequences after multi-file load overwrote only one XML
+- **Time source failure reasons**
+    - When a time source fails to provide a value - e.g. that there is no astronomical twilight today - the validation will also include the reason for the failure. This will help to understand why a time source is not providing a value.
 
 ### **Guiding & Tracking**
 - **Looping Mode Behavior**  
@@ -109,6 +119,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - Added separate options for **dither pixel size** and **dither settle time** parameters.  
 - **Flat Wizard Customization**  
   - Added an **"Open Cover When Done"** option to set the desired cover state after completing the flat wizard.  
+  - When exposure determiniation fails for auto brightness and auto exposure flat routine the flat panel will be turned off.  
 - **External Script Execution**  
   - Now runs in a separate context using `UseShellExecute`, allowing scripts to start applications without waiting for them to close.  
 

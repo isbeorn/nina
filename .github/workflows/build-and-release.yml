@@ -76,6 +76,27 @@ jobs:
         $content = $content -replace '\[assembly: AssemblyInformationalVersion\(".*?"\)\]', "[assembly: AssemblyInformationalVersion(`"$releaseVersion$assemblyPostfix`")]"
 
         Set-Content -Path $file -Value $content -Encoding UTF8
+        
+        $csprojFiles = Get-ChildItem -Path . -Filter *.csproj -Recurse | Where-Object { $_.Name -like 'NINA*' -or $_.Name -eq 'nikoncswrapper.csproj' }
+        foreach ($csproj in $csprojFiles) {
+            [xml]$proj = Get-Content $csproj.FullName
+
+            # No namespace case (SDK-style projects):
+            if ($proj.Project.PropertyGroup) {
+                $changed = $false
+                foreach ($pg in $proj.Project.PropertyGroup) {
+                    if ($pg.Version) {
+                        $pg.Version = "$releaseVersion$assemblyPostfix"
+                        $changed = $true
+                    }
+                }
+                if ($changed) {
+                    $proj.Save($csproj.FullName)
+                    Write-Host "🔄 Updated <Version> in $($csproj.Name) to $releaseVersion$assemblyPostfix"
+                    git add $csproj.FullName
+                }
+            }
+        }
 
         echo "✅ Bumped to version $releaseVersion"
         echo "VERSION=$releaseVersion" >> $env:GITHUB_ENV
@@ -207,6 +228,21 @@ jobs:
           Write-Host "Copying $file to setup output"
           Copy-Item "$pdbSource\$file" "$pdbTarget\$file" -Force
         }
+      
+    - name: Pack all nugets
+      run: |
+        dotnet pack .\nikoncswrapper\nikoncswrapper.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Core\NINA.Core.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Astrometry\NINA.Astrometry.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Equipment\NINA.Equipment.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Image\NINA.Image.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.MGEN\NINA.MGEN.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.PlateSolving\NINA.PlateSolving.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Profile\NINA.Profile.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Sequencer\NINA.Sequencer.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.WPF.Base\NINA.WPF.Base.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Plugin\NINA.Plugin.csproj -c ${{ env.BUILD_CONFIG }} --output publish
 
     - name: Create ZIP files
       run: |
@@ -237,6 +273,13 @@ jobs:
         name: release-notes
         path: |
           RELEASE_NOTES.html
+        retention-days: 1
+
+    - name: Upload NuGet packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: nugets
+        path: publish/*.nupkg
         retention-days: 1
 
   upload:
@@ -384,3 +427,29 @@ jobs:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PW: ${{ secrets.FTP_PW }}
         FTP_HOST: ${{ secrets.FTP_HOST }}
+  
+  
+  publish-nugets:
+    name: Publish Nugets
+    needs: [versioning, build, upload]
+    runs-on: ubuntu-latest
+    environment:
+      name: nuget-release
+    
+    steps:
+    - name: Download nuget artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: nugets
+        path: ./publish    
+    - name: Push packages to NuGet.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        for pkg in publish/*.nupkg; do
+          echo "Pushing $pkg..."
+          dotnet nuget push "$pkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+        done

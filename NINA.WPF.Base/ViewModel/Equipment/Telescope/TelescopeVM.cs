@@ -36,6 +36,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Equipment;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.Input;
+using System.Xml.Serialization;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
@@ -233,6 +234,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             if (!TelescopeInfo.Connected) {
                 Logger.Error("Mount is not connected");
                 return false;
+            }
+
+            if (profileService.ActiveProfile.DomeSettings.RefuseUnparkWithoutShutterOpen) {
+                var domeInfo = domeMediator.GetInfo();
+                if (!domeInfo.Connected || domeInfo.ShutterStatus != ShutterState.ShutterOpen) {
+                    Logger.Error($"Attempt to unpark the mount while the dome shutter or roof status is {domeInfo.ShutterStatus} or is not connected");
+                    Notification.ShowError(Loc.Instance["LblRefuseUnparkWithoutShutterOpenError"]);
+                    return false;
+                }
             }
 
             await Task.Run(async () => {

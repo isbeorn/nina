@@ -12,18 +12,16 @@
 
 #endregion "copyright"
 
-using NINA.Image.ImageData;
-using NINA.Equipment.Equipment.MyCamera;
+using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Core.Model;
-using NINA.Core.Utility;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces.ViewModel;
 
 namespace NINA.WPF.Base.Mediator {
 
@@ -86,6 +84,10 @@ namespace NINA.WPF.Base.Mediator {
 
         public void SetImageRotation(int rotation) {
             handler.SetImageRotation(rotation);
+        }
+
+        public void SetSubSambleRectangle(ObservableRectangle observableRectangle) {
+            handler.SetSubSambleRectangle(observableRectangle);
         }
     }
 }

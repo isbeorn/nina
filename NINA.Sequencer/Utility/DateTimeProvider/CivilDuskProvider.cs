@@ -23,7 +23,7 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
         public DateTime GetDateTime(ISequenceEntity context) {
             var night = nighttimeCalculator.Calculate().CivilTwilightRiseAndSet.Set;
             if (!night.HasValue) {
-                throw new Exception("No civil dusk");
+                throw new TimeProviderException("No civil dusk", Loc.Instance["Lbl_TimeProvider_NoCivilDusk"]);
             }
             return night.Value;
         }

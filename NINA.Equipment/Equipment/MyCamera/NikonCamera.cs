@@ -34,6 +34,7 @@ using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Utility;
 using System.Runtime.CompilerServices;
+using NINA.Core.Locale;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -619,7 +620,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
                 if (_downloadExposure != null && _downloadExposure.Task.Status <= TaskStatus.Running) {
-                    Notification.ShowWarning("Another exposure still in progress. Cancelling it to start another.");
+                    Notification.ShowWarning(Loc.Instance["LblExposureInProgress"]);
                     Logger.Warning("An exposure was still in progress. Cancelling it to start another.");
                     try { bulbCompletionCTS?.Cancel(); } catch { }
                     _downloadExposure.TrySetCanceled();
@@ -858,6 +859,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void SendCommandBlind(string command, bool raw) {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateSubSampleArea() {
             throw new NotImplementedException();
         }
     }

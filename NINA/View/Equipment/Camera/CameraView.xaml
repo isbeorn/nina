@@ -1001,7 +1001,7 @@
                                     <CheckBox
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
-                                        Command="{Binding ToggleDewHeaterOnCommand}"
+                                        Command="{Binding SetDewHeaterCommand}"
                                         CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                         IsChecked="{Binding CameraInfo.DewHeaterOn}" />
                                 </UniformGrid>

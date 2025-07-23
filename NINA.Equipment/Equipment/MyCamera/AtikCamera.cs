@@ -954,6 +954,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
             throw new NotImplementedException();
         }
 
+        public void UpdateSubSampleArea() {
+            throw new NotImplementedException();
+        }
+
         private readonly IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
         public bool LiveViewEnabled { get => false; set => throw new NotImplementedException(); }

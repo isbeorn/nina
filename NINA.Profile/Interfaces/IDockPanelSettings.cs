@@ -12,6 +12,7 @@ namespace NINA.Profile.Interfaces {
         bool RotatorInfoOnly { get; set; }
         bool SwitchInfoOnly { get; set; }
         bool FlatDeviceInfoOnly { get; set; }
-        bool ShowImagingHistogram { get; set; } 
+        bool ShowImagingHistogram { get; set; }
+        bool IsLocked { get; set; }
     }
 }

@@ -471,7 +471,7 @@ namespace NINA.Equipment.Equipment {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Poll() {
+        public bool Poll() {
             throw new NotImplementedException();
         }
 
@@ -520,6 +520,10 @@ namespace NINA.Equipment.Equipment {
         }
 
         public Task<bool> SlewToAltAz(TopocentricCoordinates coordinates, CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateSubSampleArea() {
             throw new NotImplementedException();
         }
     }

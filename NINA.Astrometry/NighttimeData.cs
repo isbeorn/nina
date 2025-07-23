@@ -43,6 +43,10 @@ namespace NINA.Astrometry {
             this.CivilTwilightRiseAndSet = civilTwilightRiseAndSet;
             this.SunRiseAndSet = sunRiseAndSet;
             this.MoonRiseAndSet = moonRiseAndSet;
+            this.ReferenceDateSpan = new List<DataPoint>() {
+                new DataPoint(Axis.ToDouble(referenceDate), 0),
+                new DataPoint(Axis.ToDouble(referenceDate.AddDays(1)), 0)
+            };
             this.NightDuration = new AsyncObservableCollection<DataPoint>(CalculateNightDuration(twilightRiseAndSet));
             this.TwilightDuration = new AsyncObservableCollection<DataPoint>(CalculateTwilightDuration(twilightRiseAndSet, sunRiseAndSet));
             this.NauticalTwilightDuration = new AsyncObservableCollection<DataPoint>(CalculateNauticalTwilightDuration(nauticalTwilightRiseAndSet, sunRiseAndSet));
@@ -132,6 +136,7 @@ namespace NINA.Astrometry {
         public RiseAndSetEvent CivilTwilightRiseAndSet { get; set; }
         public RiseAndSetEvent SunRiseAndSet { get; set; }
         public RiseAndSetEvent MoonRiseAndSet { get; set; }
+        public List<DataPoint> ReferenceDateSpan { get; set; }
         public AsyncObservableCollection<DataPoint> TwilightDuration { get; set; }
         public AsyncObservableCollection<DataPoint> NauticalTwilightDuration { get; set; }
         public AsyncObservableCollection<DataPoint> CivilTwilightDuration { get; set; }

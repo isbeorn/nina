@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
@@ -82,7 +82,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>N.I.N.A. Core Library</Title>
-    <Version>3.2.0.1029-nightly</Version>
+    <Version>3.2.0.1067-nightly</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the core components of N.I.N.A.</Description>
@@ -106,7 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Locale\Locale.resx">
-      <Generator></Generator>
+      <Generator>
+      </Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

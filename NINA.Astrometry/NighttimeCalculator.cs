@@ -40,7 +40,7 @@ namespace NINA.Astrometry {
 
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
             DateTime referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
-            if(LastReferenceDate != referenceDate) {
+            if (LastReferenceDate != referenceDate) {
                 OnReferenceDayChanged?.Invoke(this, null);
             }
         }
@@ -69,8 +69,8 @@ namespace NINA.Astrometry {
                     var nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, elevation);
                     var moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, elevation);
                     var sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, elevation);
-                    var moonPhase = AstroUtil.GetMoonPhase(referenceDate);
-                    var illumination = AstroUtil.GetMoonIllumination(referenceDate);
+                    var moonPhase = AstroUtil.GetMoonPhase(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
+                    var illumination = AstroUtil.GetMoonIllumination(referenceDate, new ObserverInfo() { Latitude = latitude, Longitude = longitude, Elevation = elevation });
 
                     var data = new NighttimeData(date: selectedDate, referenceDate: referenceDate, moonPhase: moonPhase, moonIllumination: illumination, twilightRiseAndSet: twilightRiseAndSet, nauticalTwilightRiseAndSet: nauticalTwilightRiseAndSet,
                         sunRiseAndSet: sunRiseAndSet, moonRiseAndSet: moonRiseAndSet, civilTwilightRiseAndSet: civilTwilightRiseAndSet);

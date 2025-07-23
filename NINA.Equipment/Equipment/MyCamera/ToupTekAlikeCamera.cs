@@ -14,6 +14,7 @@
 
 using Altair;
 using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -850,13 +851,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 case ToupTekAlikeEvent.EVENT_ERROR: // Error
                     Logger.Error($"{Category} - Camera reported a generic error!");
-                    Notification.ShowError("Camera reported a generic error and needs to be reconnected!");
+                    Notification.ShowError(Loc.Instance["LblGenericCameraError"]);
                     Disconnect();
                     break;
 
                 case ToupTekAlikeEvent.EVENT_DISCONNECTED:
                     Logger.Warning($"{Category} - Camera disconnected! Maybe USB connection was interrupted.");
-                    Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
+                    Notification.ShowError(Loc.Instance["LblCameraDisconnected"]);
                     OnEventDisconnected();
                     break;
             }
@@ -1097,6 +1098,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
                 LiveViewEnabled = false;
             });
+        }
+
+        public void UpdateSubSampleArea() {
+            if (EnableSubSample) {
+                var rect = GetROI();
+                roiInfo = rect;
+                if (!sdk.put_ROI((uint)rect.X, (uint)rect.Y, (uint)rect.Width, (uint)rect.Height)) {
+                    throw new Exception($"{Category} - Failed to set ROI to {rect.X}x{rect.Y}x{rect.Width}x{rect.Height}");
+                }
+            } else {
+                roiInfo = null;
+                // 0,0,0,0 resets the ROI to original size
+                if (!sdk.put_ROI(0, 0, 0, 0)) {
+                    throw new Exception($"{Category} - Failed to reset ROI");
+                }
+            }
         }
 
         public int USBLimitStep => 1;
