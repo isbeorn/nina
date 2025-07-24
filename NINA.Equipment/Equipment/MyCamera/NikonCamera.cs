@@ -406,6 +406,26 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        public double LensFocalLength {
+            get {
+                if (Connected) {
+                    return _camera.GetFloat(Nikon.eNkMAIDCapability.kNkMAIDCapability_FocalLength);
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
+        public double LensFocalRatio {
+            get {
+                if(Connected) {
+                    return Convert.ToDouble(_camera.GetEnum(Nikon.eNkMAIDCapability.kNkMAIDCapability_Aperture).ToString());
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
 
         public bool CanSetTemperature => false;
 

@@ -314,6 +314,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public string LensName => string.Empty;
 
+        public double LensFocalLength => double.NaN;
+
+        public double LensFocalRatio => double.NaN;
+
         private int minTemperatureSetpoint = 0;
         private int maxTemperatureSetpoint = 0;
 

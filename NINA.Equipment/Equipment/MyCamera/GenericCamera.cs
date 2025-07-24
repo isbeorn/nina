@@ -85,6 +85,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public string LensName => string.Empty;
 
+        public double LensFocalLength => double.NaN;
+
+        public double LensFocalRatio => double.NaN;
+
         public double ExposureMin => sdk.GetMinExposureTime();
 
         public double ExposureMax => Math.Ceiling(sdk.GetMaxExposureTime());

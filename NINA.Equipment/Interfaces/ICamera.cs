@@ -60,6 +60,8 @@ namespace NINA.Equipment.Interfaces {
         int BitDepth { get; }
 
         string LensName { get; }
+        double LensFocalLength { get; }
+        double LensFocalRatio { get; }
 
         bool CanSetOffset { get; }
         int Offset { get; set; }

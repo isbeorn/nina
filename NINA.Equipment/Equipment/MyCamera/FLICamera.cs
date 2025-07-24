@@ -388,8 +388,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public string LensName => string.Empty;
-
         private double pixelSizeY = 0;
 
         public double PixelSizeY {
@@ -403,6 +401,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return Info.PixelWidthY;
             }
         }
+
+        public string LensName => string.Empty;
+
+        public double LensFocalLength => double.NaN;
+
+        public double LensFocalRatio => double.NaN;
 
         public short ReadoutMode {
             get {

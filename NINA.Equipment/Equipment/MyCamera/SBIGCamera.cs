@@ -399,6 +399,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public string LensName => string.Empty;
 
+        public double LensFocalLength => double.NaN;
+
+        public double LensFocalRatio => double.NaN;
+
         public bool HasDewHeater => false;
 
         public IList<string> SupportedActions => new List<string>();

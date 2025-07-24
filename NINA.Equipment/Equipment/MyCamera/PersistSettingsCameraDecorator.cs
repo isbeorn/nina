@@ -166,6 +166,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public string LensName => this.Camera.LensName;
 
+        public double LensFocalLength => this.Camera.LensFocalLength;
+
+        public double LensFocalRatio => this.Camera.LensFocalRatio;
+
         public bool CanSetTemperature => this.Camera.CanSetTemperature;
 
         public bool CoolerOn { get => this.Camera.CoolerOn; set => this.Camera.CoolerOn = value; }

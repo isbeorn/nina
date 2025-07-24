@@ -447,6 +447,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 profileService.ActiveProfile.TelescopeSettings.Name = Cam.LensName;
                             }
 
+                            if (Cam.LensFocalLength > 0) {
+                                profileService.ActiveProfile.TelescopeSettings.FocalLength = Cam.LensFocalLength;
+                            }
+
+                            if (Cam.LensFocalRatio > 0) {
+                                profileService.ActiveProfile.TelescopeSettings.FocalRatio = Cam.LensFocalRatio;
+                            }
+
                             BroadcastCameraInfo();
 
                             if (Cam.CanSetTemperature) {
