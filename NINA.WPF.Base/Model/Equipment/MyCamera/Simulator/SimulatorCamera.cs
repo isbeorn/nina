@@ -131,6 +131,8 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public double PixelSizeY => SimulatorImage?.RawImageData?.MetaData?.Camera?.PixelSize ?? profileService.ActiveProfile.CameraSettings.PixelSize;
 
+        public string LensName => profileService.ActiveProfile.TelescopeSettings.Name;
+
         public bool CanSetCCDTemperature => false;
 
         public bool CoolerOn {

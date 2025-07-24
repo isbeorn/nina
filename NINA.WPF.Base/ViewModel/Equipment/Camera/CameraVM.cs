@@ -443,6 +443,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }
 
+                            if (Cam.LensName.Length > 0) {
+                                profileService.ActiveProfile.TelescopeSettings.Name = Cam.LensName;
+                            }
+
                             BroadcastCameraInfo();
 
                             if (Cam.CanSetTemperature) {

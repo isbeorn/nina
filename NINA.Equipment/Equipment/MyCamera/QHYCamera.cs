@@ -407,6 +407,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        public string LensName => string.Empty;
+
         public short ReadoutModeForNormalImages {
             get => _readoutModeForNormalImages;
             set {

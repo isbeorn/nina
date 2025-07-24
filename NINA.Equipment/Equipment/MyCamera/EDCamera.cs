@@ -159,6 +159,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY => double.NaN;
 
+        public string LensName => string.Empty;
+
         public bool CanSetTemperature => false;
 
         public bool CoolerOn {

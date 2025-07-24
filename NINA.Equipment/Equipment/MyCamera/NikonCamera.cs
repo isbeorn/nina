@@ -395,6 +395,18 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+
+        public string LensName {
+            get {
+                if (Connected) {
+                    return _camera.GetString(Nikon.eNkMAIDCapability.kNkMAIDCapability_LensInfo).Trim();
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+
         public bool CanSetTemperature => false;
 
         public bool CoolerOn {

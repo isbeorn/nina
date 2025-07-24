@@ -218,6 +218,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY => Info.PixelMicronsY;
 
+        public string LensName => string.Empty;
+
         public bool canSetTemperature = false;
 
         public bool CanSetTemperature {

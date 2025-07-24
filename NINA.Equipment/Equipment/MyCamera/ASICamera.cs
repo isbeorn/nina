@@ -312,6 +312,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY => Info.PixelSize;
 
+        public string LensName => string.Empty;
+
         private int minTemperatureSetpoint = 0;
         private int maxTemperatureSetpoint = 0;
 

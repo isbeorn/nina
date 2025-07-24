@@ -388,6 +388,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        public string LensName => string.Empty;
+
         private double pixelSizeY = 0;
 
         public double PixelSizeY {

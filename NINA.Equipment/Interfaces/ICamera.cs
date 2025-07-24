@@ -59,6 +59,8 @@ namespace NINA.Equipment.Interfaces {
         int BatteryLevel { get; }
         int BitDepth { get; }
 
+        string LensName { get; }
+
         bool CanSetOffset { get; }
         int Offset { get; set; }
         int OffsetMin { get; }

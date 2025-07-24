@@ -397,6 +397,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        public string LensName => string.Empty;
+
         public bool HasDewHeater => false;
 
         public IList<string> SupportedActions => new List<string>();

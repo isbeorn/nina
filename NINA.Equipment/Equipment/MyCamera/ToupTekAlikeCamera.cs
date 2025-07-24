@@ -189,6 +189,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY { get; }
 
+        public string LensName => string.Empty;
+
         public int MaxFanSpeed { get; }
 
         public int FanSpeed {

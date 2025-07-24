@@ -90,6 +90,8 @@ namespace NINA.Equipment.Equipment {
 
         public double PixelSizeY => throw new NotImplementedException();
 
+        public string LensName => throw new NotImplementedException();
+
         public bool CanSetTemperature => throw new NotImplementedException();
 
         public bool CoolerOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
