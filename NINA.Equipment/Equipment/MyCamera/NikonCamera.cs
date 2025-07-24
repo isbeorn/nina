@@ -419,7 +419,12 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public double LensFocalRatio {
             get {
                 if(Connected) {
-                    return Convert.ToDouble(_camera.GetEnum(Nikon.eNkMAIDCapability.kNkMAIDCapability_Aperture).ToString());
+                    try {
+                        return Convert.ToDouble(_camera.GetEnum(Nikon.eNkMAIDCapability.kNkMAIDCapability_Aperture).ToString());
+                    } catch (FormatException ex) {
+                        Logger.Error($"Unexpected format for lens aperture value : {ex.Message}");
+                        return double.NaN;
+                    }
                 } else {
                     return double.NaN;
                 }
