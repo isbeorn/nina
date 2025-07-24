@@ -12,17 +12,17 @@
 
 #endregion "copyright"
 
+using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Core.Utility.Extensions;
 
 namespace NINA.WPF.Base.Mediator {
 
@@ -115,6 +115,10 @@ namespace NINA.WPF.Base.Mediator {
 
         public void SetUSBLimit(int usbLimit) {
             handler.SetUSBLimit(usbLimit);
+        }
+
+        public void SetSubSambleRectangle(ObservableRectangle observableRectangle) {
+            handler.SetSubSambleRectangle(observableRectangle);
         }
     }
 }

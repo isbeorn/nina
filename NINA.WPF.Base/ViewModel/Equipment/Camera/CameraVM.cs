@@ -12,11 +12,27 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyCamera;
+using Accord.Statistics.Models.Regression.Linear;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Dasync.Collections;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,24 +40,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Accord.Statistics.Models.Regression.Linear;
-using Dasync.Collections;
-using NINA.Equipment.Utility;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.MyMessageBox;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment;
-using Nito.AsyncEx;
-using NINA.Core.Enum;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
@@ -921,6 +919,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     Cam.SubSampleHeight = height;
                 }
             }
+        }
+
+        public void SetSubSambleRectangle(ObservableRectangle observableRectangle) {
+            SetSubSampleArea((int)observableRectangle.X, (int)observableRectangle.Y, (int)observableRectangle.Width, (int)observableRectangle.Height);
+            Cam.UpdateSubSampleArea();
         }
 
         public bool AtTargetTemp => Math.Abs(cameraInfo.Temperature - TargetTemp) <= 2;

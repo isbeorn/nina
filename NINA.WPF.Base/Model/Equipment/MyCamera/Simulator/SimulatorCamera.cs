@@ -12,29 +12,33 @@
 
 #endregion "copyright"
 
-using NINA.Core.Enum;
-using NINA.Image.ImageData;
-using NINA.Equipment.Equipment.MyTelescope;
-using NINA.Profile.Interfaces;
-using NINA.Core.Utility;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Grpc.Core;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 using NINA.Astrometry;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Enum;
+using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyTelescope;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Image.RawConverter;
+using NINA.Profile.Interfaces;
+using NINA.WPF.Base.SkySurvey;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Core.Model.Equipment;
-using NINA.Image.RawConverter;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.SkySurvey;
-using System.Linq;
-using NINA.Equipment.Utility;
-using Microsoft.Win32;
+using System.Windows.Media.Media3D;
 
 namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
@@ -232,22 +236,55 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public bool CanSetTemperature => false;
 
-        public bool CanSubSample => false;
+        public bool CanSubSample => true;
 
+        private bool _enableSubSample;
         public bool EnableSubSample {
-            get => false;
-
+            get => _enableSubSample;
             set {
+                _enableSubSample = value;
+                RaisePropertyChanged();
             }
         }
 
-        public int SubSampleX { get; set; }
+        // Extra bool because the EnableSubSample get's turned off again in CameraVm before images are downloaded
+        private bool _enabledSubSampleDuringImaging;
 
-        public int SubSampleY { get; set; }
+        private int _subSampleX;
+        public int SubSampleX {
+            get => _subSampleX;
+            set {
+                _subSampleX = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public int SubSampleWidth { get; set; }
+        private int _subSampleY;
+        public int SubSampleY {
+            get => _subSampleY;
+            set {
+                _subSampleY = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public int SubSampleHeight { get; set; }
+        private int _subSampleWidth;
+        public int SubSampleWidth {
+            get => _subSampleWidth;
+            set {
+                _subSampleWidth = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _subSampleHeight;
+        public int SubSampleHeight {
+            get => _subSampleHeight;
+            set {
+                _subSampleHeight = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public bool CanShowLiveView => true;
 
@@ -501,6 +538,11 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
         private async Task LoadImage(string path) {
             if(File.Exists(path)) { 
                 var rawData = await imageDataFactory.CreateFromFile(path, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                // Check if we need to crop the image
+                if (_enabledSubSampleDuringImaging && SubSampleWidth != rawData.Properties.Width && SubSampleHeight != rawData.Properties.Height) {
+                    var roiImage = ExtractROI(rawData.Data.FlatArray, rawData.Properties.Width);
+                    rawData = imageDataFactory.CreateBaseImageData(roiImage, SubSampleWidth, SubSampleHeight, 16, rawData.Properties.IsBayered, rawData.MetaData);
+                }
                 this.SimulatorImage = rawData.RenderImage();
 
                 if (SimulatorImage.RawImageData.MetaData?.Camera.SensorType != SensorType.Monochrome) {
@@ -527,6 +569,26 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
             return false;
         }
 
+        private ushort[] ExtractROI(ushort[] fullImage, int fullImageWidth) {
+
+            int startX = (int)SubSampleX;
+            int startY = (int)SubSampleY;
+            int endX = startX + (int)SubSampleWidth;
+            int endY = startY + (int)SubSampleHeight;
+
+            ushort[] roi = new ushort[(int)SubSampleWidth * (int)SubSampleHeight];
+
+            for (int y = 0; y < (int)SubSampleHeight; y++) {
+                for (int x = 0; x < (int)SubSampleWidth; x++) {
+                    int fullIndex = (startY + y) * fullImageWidth + (startX + x);
+                    int roiIndex = y * (int)SubSampleWidth + x;
+                    roi[roiIndex] = fullImage[fullIndex];
+                }
+            }
+
+            return roi;
+        }
+
         public IAsyncCommand LoadImageCommand { get; private set; }
         public ICommand LoadDirectoryCommand { get; private set; }
         public ICommand UnloadImageCommand { get; private set; }
@@ -545,6 +607,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
         public void StartExposure(CaptureSequence captureSequence) {
             exposureStart = DateTime.Now;
             exposureTime = TimeSpan.FromSeconds(captureSequence.ExposureTime);
+            _enabledSubSampleDuringImaging = EnableSubSample;
         }
 
         public void StopExposure() {
@@ -555,6 +618,7 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public void StartLiveView(CaptureSequence sequence) {
             LiveViewEnabled = true;
+            _enabledSubSampleDuringImaging = EnableSubSample;
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
@@ -589,6 +653,10 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
+        }
+
+        public void UpdateSubSampleArea() {
+            _enabledSubSampleDuringImaging = EnableSubSample;
         }
     }
 }
