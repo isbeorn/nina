@@ -431,6 +431,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
+        public event EventHandler LensStateChanged;
+
 
         public bool CanSetTemperature => false;
 
@@ -647,6 +649,17 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool HasBattery => true;
+
+        private void ScanDeviceCapabilitiyValue (NikonDevice sender, eNkMAIDCapability capability) {
+            switch (capability) {
+                case eNkMAIDCapability.kNkMAIDCapability_LensInfo:
+                case eNkMAIDCapability.kNkMAIDCapability_Aperture:
+                case eNkMAIDCapability.kNkMAIDCapability_FocalLength:
+                    Logger.Debug($"Lens info changed: {capability}");
+                    LensStateChanged?.Invoke(this, EventArgs.Empty);
+                    break;
+            }
+        }
 
         public void AbortExposure() {
             if (Connected) {
@@ -921,6 +934,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     using (token.Register(() => _cameraConnected.TrySetCanceled())) {
                         await _cameraConnected.Task;
                     }
+
+                    _camera.CapabilityValueChanged += new CapabilityChangedDelegate(ScanDeviceCapabilitiyValue);
 
                     Logger.Debug($"Camera connection task returned successfully with result {_cameraConnected.Task.Result}");
                     connected = _cameraConnected.Task.Result;

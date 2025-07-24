@@ -17,6 +17,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,6 +63,8 @@ namespace NINA.Equipment.Interfaces {
         string LensName { get; }
         double LensFocalLength { get; }
         double LensFocalRatio { get; }
+
+        public event EventHandler LensStateChanged;
 
         bool CanSetOffset { get; }
         int Offset { get; set; }

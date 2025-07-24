@@ -170,6 +170,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double LensFocalRatio => this.Camera.LensFocalRatio;
 
+        public event EventHandler LensStateChanged
+        {
+            add => this.Camera.LensStateChanged += value;
+            remove => this.Camera.LensStateChanged -= value;
+        }
         public bool CanSetTemperature => this.Camera.CanSetTemperature;
 
         public bool CoolerOn { get => this.Camera.CoolerOn; set => this.Camera.CoolerOn = value; }

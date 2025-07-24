@@ -403,6 +403,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double LensFocalRatio => double.NaN;
 
+        public event EventHandler LensStateChanged;
+
         public bool HasDewHeater => false;
 
         public IList<string> SupportedActions => new List<string>();

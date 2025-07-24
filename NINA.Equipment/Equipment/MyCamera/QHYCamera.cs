@@ -413,6 +413,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double LensFocalRatio => double.NaN;
 
+        public event EventHandler LensStateChanged;
+
         public short ReadoutModeForNormalImages {
             get => _readoutModeForNormalImages;
             set {

@@ -524,6 +524,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double LensFocalRatio => double.NaN;
 
+        public event EventHandler LensStateChanged;
+
         public short ReadoutMode {
             get => GetProperty<short>(nameof(Camera.ReadoutMode), 0);
             set {
