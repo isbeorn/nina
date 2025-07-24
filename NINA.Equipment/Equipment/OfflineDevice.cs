@@ -96,6 +96,8 @@ namespace NINA.Equipment.Equipment {
 
         public double LensFocalRatio => throw new NotImplementedException();
 
+        public event EventHandler LensStateChanged;
+
         public bool CanSetTemperature => throw new NotImplementedException();
 
         public bool CoolerOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

@@ -466,6 +466,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} DisplayName: {Cam.DisplayName}Driver Version: {Cam.DriverVersion}");
 
+                            Cam.LensStateChanged += UpdateLensInfo;
+
                             return true;
                         } else {
                             Notification.ShowError(string.Format(Loc.Instance["LblUnableToConnectCamera"], cam.Name));
@@ -594,6 +596,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
             BroadcastCameraInfo();
+        }
+
+        private void UpdateLensInfo(object sender, EventArgs e) {
+            if (Cam.LensName.Length > 0) {
+                profileService.ActiveProfile.TelescopeSettings.Name = Cam.LensName;
+            }
+
+            if (Cam.LensFocalLength > 0) {
+                profileService.ActiveProfile.TelescopeSettings.FocalLength = Cam.LensFocalLength;
+            }
+
+            if (Cam.LensFocalRatio > 0) {
+                profileService.ActiveProfile.TelescopeSettings.FocalRatio = Cam.LensFocalRatio;
+            }
         }
 
         private Dictionary<string, object> GetCameraValues() {
