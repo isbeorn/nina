@@ -131,14 +131,6 @@ namespace NINA.WPF.Base.Model.Equipment.MyCamera.Simulator {
 
         public double PixelSizeY => SimulatorImage?.RawImageData?.MetaData?.Camera?.PixelSize ?? profileService.ActiveProfile.CameraSettings.PixelSize;
 
-        public string LensName => profileService.ActiveProfile.TelescopeSettings.Name;
-
-        public double LensFocalLength => profileService.ActiveProfile.TelescopeSettings.FocalLength;
-
-        public double LensFocalRatio => profileService.ActiveProfile.TelescopeSettings.FocalRatio;
-
-        public event EventHandler LensStateChanged;
-
         public bool CanSetCCDTemperature => false;
 
         public bool CoolerOn {

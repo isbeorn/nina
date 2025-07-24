@@ -518,14 +518,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY => GetProperty<double>(nameof(Camera.PixelSizeY), -1d);
 
-        public string LensName => string.Empty;
-
-        public double LensFocalLength => double.NaN;
-
-        public double LensFocalRatio => double.NaN;
-
-        public event EventHandler LensStateChanged;
-
         public short ReadoutMode {
             get => GetProperty<short>(nameof(Camera.ReadoutMode), 0);
             set {

@@ -159,14 +159,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public double PixelSizeY => double.NaN;
 
-        public string LensName => string.Empty;
-
-        public double LensFocalLength => double.NaN;
-
-        public double LensFocalRatio => double.NaN;
-
-        public event EventHandler LensStateChanged;
-
         public bool CanSetTemperature => false;
 
         public bool CoolerOn {

@@ -443,16 +443,34 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }
 
-                            if (Cam.LensName.Length > 0) {
-                                profileService.ActiveProfile.TelescopeSettings.Name = Cam.LensName;
-                            }
+                            if (Cam is PersistSettingsCameraDecorator p) {
+                                if (p.Camera is NikonCamera nikonCamera) {
+                                    if (nikonCamera.LensName.Length > 0) {
+                                        profileService.ActiveProfile.TelescopeSettings.Name = nikonCamera.LensName;
+                                    }
 
-                            if (Cam.LensFocalLength > 0) {
-                                profileService.ActiveProfile.TelescopeSettings.FocalLength = Cam.LensFocalLength;
-                            }
+                                    if (nikonCamera.LensFocalLength > 0) {
+                                        profileService.ActiveProfile.TelescopeSettings.FocalLength = nikonCamera.LensFocalLength;
+                                    }
 
-                            if (Cam.LensFocalRatio > 0) {
-                                profileService.ActiveProfile.TelescopeSettings.FocalRatio = Cam.LensFocalRatio;
+                                    if (nikonCamera.LensFocalRatio > 0) {
+                                        profileService.ActiveProfile.TelescopeSettings.FocalRatio = nikonCamera.LensFocalRatio;
+                                    }
+
+                                    nikonCamera.LensStateChanged += (object sender, EventArgs e) => {
+                                        if (nikonCamera.LensName.Length > 0) {
+                                            profileService.ActiveProfile.TelescopeSettings.Name = nikonCamera.LensName;
+                                        }
+
+                                        if (nikonCamera.LensFocalLength > 0) {
+                                            profileService.ActiveProfile.TelescopeSettings.FocalLength = nikonCamera.LensFocalLength;
+                                        }
+
+                                        if (nikonCamera.LensFocalRatio > 0) {
+                                            profileService.ActiveProfile.TelescopeSettings.FocalRatio = nikonCamera.LensFocalRatio;
+                                        }
+                                    };
+                                }
                             }
 
                             BroadcastCameraInfo();
@@ -465,8 +483,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} DisplayName: {Cam.DisplayName}Driver Version: {Cam.DriverVersion}");
-
-                            Cam.LensStateChanged += UpdateLensInfo;
 
                             return true;
                         } else {
@@ -596,20 +612,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
             BroadcastCameraInfo();
-        }
-
-        private void UpdateLensInfo(object sender, EventArgs e) {
-            if (Cam.LensName.Length > 0) {
-                profileService.ActiveProfile.TelescopeSettings.Name = Cam.LensName;
-            }
-
-            if (Cam.LensFocalLength > 0) {
-                profileService.ActiveProfile.TelescopeSettings.FocalLength = Cam.LensFocalLength;
-            }
-
-            if (Cam.LensFocalRatio > 0) {
-                profileService.ActiveProfile.TelescopeSettings.FocalRatio = Cam.LensFocalRatio;
-            }
         }
 
         private Dictionary<string, object> GetCameraValues() {
