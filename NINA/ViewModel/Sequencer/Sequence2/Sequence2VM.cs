@@ -339,8 +339,16 @@ namespace NINA.ViewModel.Sequencer {
             }
 
             // Don't ask if this is an empty sequence
-            if (!isEmpty && Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
-                return;
+            if (!isEmpty) {
+                if (Sequencer.MainContainer.AskHasChanged(SavePath ?? "", "*")) {
+                    return;
+                }
+                if (!Sequencer.MainContainer.HasChanged)
+                    if (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges) {
+                        if (Sequencer.MainContainer.AskHasChanged(Loc.Instance["LblExposureCount"], "Exposures")) {
+                            return;
+                        }
+                    }
             }
 
             var initialDirectory = string.Empty;

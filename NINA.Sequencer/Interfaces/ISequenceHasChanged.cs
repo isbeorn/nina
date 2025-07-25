@@ -12,6 +12,8 @@
 
 #endregion "copyright"
 
+using System.Collections.Generic;
+
 namespace NINA.Sequencer {
 
     public interface ISequenceHasChanged {
@@ -21,6 +23,12 @@ namespace NINA.Sequencer {
         /// </summary>
         ///
         bool HasChanged { get; set; }
+
+        /// <summary>
+        /// Indicater that item or child items have been modified - only those items in specified set are considered ("*" = general items)
+        /// </summary>
+        Dictionary<string, bool> HasChangedBySet { get; set; }
+
 
         /// <summary>
         /// Clear HasChanged in item and child items
@@ -33,6 +41,6 @@ namespace NINA.Sequencer {
         /// Returns true if HasChanged and user says not to proceed
         /// </summary>
         ///
-        bool AskHasChanged(string name);
+        bool AskHasChanged(string name, string hasChangedSet);
     }
 }

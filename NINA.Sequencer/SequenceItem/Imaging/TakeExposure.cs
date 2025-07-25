@@ -135,6 +135,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int exposureCount;
 
         [JsonProperty]
+        [HasChangedSet("Exposures")]
         public int ExposureCount { get => exposureCount; set { exposureCount = value; RaisePropertyChanged(); } }
 
         private CameraInfo cameraInfo;

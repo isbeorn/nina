@@ -140,9 +140,7 @@ namespace NINA.Sequencer.SequenceItem {
         public abstract object Clone();
 
         public void Detach() {
-            if (!(this is ISimpleDSOContainer) || !AskHasChanged(Name)) {
-                Parent?.Remove(this);
-            }
+            Parent?.Remove(this);
         }
 
         public abstract Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token);

@@ -227,8 +227,15 @@ namespace NINA.ViewModel {
         private void Exit() {
             Sequencer.ISequenceNavigationVM vm = ((Interfaces.IMainWindowVM)Application.Current.MainWindow.DataContext).SequenceNavigationVM;
             if (vm.Initialized) {
-                if (vm.Sequence2VM.Sequencer.MainContainer.AskHasChanged(vm.Sequence2VM.Sequencer.MainContainer.Name)) {
+                // check for changes to the sequence
+                if (vm.Sequence2VM.Sequencer.MainContainer.AskHasChanged(vm.Sequence2VM.Sequencer.MainContainer.Name, "*")) {
                     return;
+                }
+                // if main HasChanged flag isn't set (no actual edits to the sequence), check the exposure count
+                if ((!vm.Sequence2VM.Sequencer.MainContainer.HasChanged) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+                    if (vm.Sequence2VM.Sequencer.MainContainer.AskHasChanged(Loc.Instance["LblExposureCount"], "Exposures")) {
+                        return;
+                    }
                 }
                 if (((SimpleSequenceVM)vm.SimpleSequenceVM).AskHasChanged()) {
                     return;

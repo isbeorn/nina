@@ -154,7 +154,7 @@ namespace NINA.ViewModel {
         public ISequencer Sequencer { get; protected set; }
 
         private void MoveLeft(object obj) {
-            if(obj is ISimpleDSOContainer container) {
+            if (obj is ISimpleDSOContainer container) {
                 container.MoveUp();
                 SelectedTarget = container;
             }
@@ -273,7 +273,7 @@ namespace NINA.ViewModel {
                     Sequencer.MainContainer.Items[0].ResetProgress();
                 }
 
-                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {                    
+                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {
                     Sequencer.MainContainer.Items[2].ResetProgress();
                 }
 
@@ -520,20 +520,48 @@ namespace NINA.ViewModel {
             }
         }
 
+        /// <summary>
+        /// Check for any changes in any items
+        /// Items are grouped into 'hasChangeSets' (currently 2).  By default, items will be in the "*" hasChangeSet.
+        /// To place an item in a different change set, give that item the HasChangeSetAttribute passing the name of the hasChangeSet as the parameter
+        /// Currently the only other hasChangeSet is "Exposures" which is used to separate out the exposureCount
+        /// Changes are first looked for in the general hasChangeSet ("*").  Only if there are no changes there and 
+        /// if the ExcludeExposureCountFromHasChanges is false will the "Exposures" hasChangeSet be checked
+        /// </summary>
+        /// <returns>Will return true if there are changes which need to be saved
+        /// will return false if there are no changes or the user has opted not to save the changes</returns>
         public bool AskHasChanged() {
-            string names = null;
-            foreach (var item in Targets.Items) {
-                if (item.HasChanged) {
-                    if (names == null) {
-                        names = item.Name;
-                    } else {
-                        names += ", " + item.Name;
-                    }
+            bool userSaysNo = false;    // if user says carry on we don't bother asking anything else
+            // check the general items
+            if (AskHasChanged(null, "*", out userSaysNo))
+                return true;
+
+            if (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges) {
+                if (!userSaysNo) {
+                    if (AskHasChanged(Loc.Instance["LblExposureCount"], "Exposures", out userSaysNo))
+                        return true;    // we want to stop to save
                 }
             }
-            if (names != null &&
-                MyMessageBox.Show(string.Format(Loc.Instance["LblChangedSequenceWarning"], names), Loc.Instance["LblChangedSequenceWarningTitle"], MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No) {
-                return true;
+            return false;
+        }
+
+        public bool AskHasChanged(string changeArea, string hasChangedSet, out bool ignoredByUser) {
+            ignoredByUser = false;
+            bool hasChanges = false;
+            string names = string.IsNullOrEmpty(changeArea) ? "" : changeArea + " in ";
+            foreach (var item in Targets.Items) {
+                if (item.HasChangedBySet[hasChangedSet]) {
+                    // build a list of the names of the changed parts
+                    names += (hasChanges ? ", " : "") + item.Name;
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges) {
+                if (MyMessageBox.Show(string.Format(Loc.Instance["LblChangedSequenceWarning"], names), Loc.Instance["LblChangedSequenceWarningTitle"], MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No)
+                    return true;
+                else 
+                    ignoredByUser = true;
             }
             return false;
         }
@@ -735,18 +763,18 @@ namespace NINA.ViewModel {
 
         public string OverallDurationFormatted {
             get {
-                if(OverallDuration.TotalDays > 1) {
+                if (OverallDuration.TotalDays > 1) {
                     return OverallDuration.ToString(@"dd\d\ hh\h\ mm\m\ ss\s");
 
-                } else if(OverallDuration.TotalHours > 1) {
+                } else if (OverallDuration.TotalHours > 1) {
                     return OverallDuration.ToString(@"hh\h\ mm\m\ ss\s");
 
-                } else if(OverallDuration.TotalMinutes > 1) {
+                } else if (OverallDuration.TotalMinutes > 1) {
                     return OverallDuration.ToString(@"mm\m\ ss\s");
 
                 } else {
                     return OverallDuration.ToString(@"ss\s");
-                }                
+                }
             }
         }
 
@@ -777,7 +805,7 @@ namespace NINA.ViewModel {
             var targetArea = factory.GetContainer<TargetAreaContainer>();
             var itemSnapshot = Targets.GetItemsSnapshot();
             foreach (var item in itemSnapshot) {
-                var target = item as SimpleDSOContainer;                
+                var target = item as SimpleDSOContainer;
                 if (target.Status == SequenceEntityStatus.CREATED) {
                     var dsoContainer = target.TransformToDSOContainer();
                     if (itemSnapshot.First() != target) {
