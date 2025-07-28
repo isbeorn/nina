@@ -32,7 +32,7 @@ using NINA.Sequencer.Utility;
 namespace NINA.Sequencer.Conditions {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceCondition : SequenceHasChanged, ISequenceCondition {
+    public abstract class SequenceCondition : SequenceEntityINPC, ISequenceCondition {
 
         public SequenceCondition() {
         }

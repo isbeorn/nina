@@ -575,10 +575,13 @@ able to compensate for ambient temperature variations</value>
   <data name="LblChange" xml:space="preserve">
     <value>Change</value>
   </data>
+  <data name="LblExposureCount" xml:space="preserve">
+    <value>Exposure count</value>
+  </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+    <value>The sequence has been modified since it was last saved (changes to {0}).
         
-Do you want to close the sequence and lose the changes anyway?</value>
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Closing modified sequence</value>
@@ -7315,5 +7318,14 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
   </data>
 </root>

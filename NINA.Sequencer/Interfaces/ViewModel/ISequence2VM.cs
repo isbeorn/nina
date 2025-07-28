@@ -46,5 +46,7 @@ namespace NINA.ViewModel.Sequencer {
         event Func<object, EventArgs, Task> SequenceFinished;
         Task SaveContainer(ISequenceContainer content, string filePath, CancellationToken token);
         string GetAdvancedSequencerSavePath();
+        public bool ShouldStopForChanges(string name, string hasChanges);
+        public void ClearHasChanged();
     }
 }

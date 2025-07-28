@@ -26,13 +26,15 @@ using System.Windows.Media;
 using NINA.Sequencer.Utility;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
+using System.Diagnostics;
 
 namespace NINA.Sequencer.SequenceItem {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceItem : SequenceHasChanged, ISequenceItem {
+    public abstract class SequenceItem : SequenceEntityINPC, ISequenceItem {
 
         public SequenceItem() {
+            
         }
 
         public SequenceItem(SequenceItem cloneMe) {
@@ -140,9 +142,7 @@ namespace NINA.Sequencer.SequenceItem {
         public abstract object Clone();
 
         public void Detach() {
-            if (!(this is ISimpleDSOContainer) || !AskHasChanged(Name)) {
-                Parent?.Remove(this);
-            }
+            Parent?.Remove(this);
         }
 
         public abstract Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token);

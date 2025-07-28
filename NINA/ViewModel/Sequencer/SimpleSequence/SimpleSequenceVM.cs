@@ -154,7 +154,7 @@ namespace NINA.ViewModel {
         public ISequencer Sequencer { get; protected set; }
 
         private void MoveLeft(object obj) {
-            if(obj is ISimpleDSOContainer container) {
+            if (obj is ISimpleDSOContainer container) {
                 container.MoveUp();
                 SelectedTarget = container;
             }
@@ -177,7 +177,6 @@ namespace NINA.ViewModel {
                     rootContainer.Add(targetArea);
                     rootContainer.Add(new SimpleEndContainer(factory, profileService, cameraMediator));
                     (targetArea.Items as ObservableCollection<ISequenceItem>).CollectionChanged += SimpleSequenceVM_CollectionChanged;
-                    rootContainer.ClearHasChanged();
                     Sequencer = new NINA.Sequencer.Sequencer(
                         rootContainer
                     );
@@ -186,6 +185,8 @@ namespace NINA.ViewModel {
                     DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
 
                     EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+
+                    ClearHasChanged();
 
                     autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
                     autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
@@ -273,7 +274,7 @@ namespace NINA.ViewModel {
                     Sequencer.MainContainer.Items[0].ResetProgress();
                 }
 
-                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {                    
+                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {
                     Sequencer.MainContainer.Items[2].ResetProgress();
                 }
 
@@ -381,7 +382,7 @@ namespace NINA.ViewModel {
         }
 
         public bool ImportTargets() {
-            if (AskHasChanged()) {
+            if (ShouldStopForChanges()) {
                 return false;
             }
             var initialDirectory = string.Empty;
@@ -464,6 +465,9 @@ namespace NINA.ViewModel {
                 }
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+
+            ClearHasChanged();
+
             return Targets?.Items.Count > 0;
         }
 
@@ -476,6 +480,7 @@ namespace NINA.ViewModel {
             this.Targets.Add(GetTemplate());
             SelectedTarget = Targets.Items.Last() as SimpleDSOContainer;
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
         }
 
         public void AddTarget(IDeepSkyObject deepSkyObject) {
@@ -486,6 +491,13 @@ namespace NINA.ViewModel {
             this.Targets.Add(target);
             SelectedTarget = Targets.Items.Last() as SimpleDSOContainer;
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
+        }
+
+        private void SetChanged() {
+            if (Sequencer != null)
+                if (Sequencer.MainContainer != null)
+                    Sequencer.MainContainer.SetChanged();
         }
 
         private void SaveTargetSet(object obj) {
@@ -512,7 +524,7 @@ namespace NINA.ViewModel {
                     var target = item as SimpleDSOContainer;
                     if (target != null) {
                         cslCollection.Add(MigrateToCaptureSequenceList(target));
-                        target.ClearHasChanged();
+                        ClearHasChanged();
                     }
                 }
                 CaptureSequenceList.SaveSequenceSet(cslCollection, dialog.FileName);
@@ -520,26 +532,77 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool AskHasChanged() {
-            string names = null;
-            foreach (var item in Targets.Items) {
-                if (item.HasChanged) {
-                    if (names == null) {
-                        names = item.Name;
-                    } else {
-                        names += ", " + item.Name;
-                    }
+        public void ClearHasChanged() {
+            if ((Sequencer != null) && (Sequencer.MainContainer != null)) {
+                foreach (string key in Sequencer.MainContainer.HasChanges.Keys) {
+                    Sequencer.MainContainer.HasChanges[key] = false;
+                }
+                foreach (var target in Targets.Items) {
+                    if (target is ISimpleDSOContainer)
+                        (target as ISimpleDSOContainer).ClearHasChanged();
                 }
             }
-            if (names != null &&
-                MyMessageBox.Show(string.Format(Loc.Instance["LblChangedSequenceWarning"], names), Loc.Instance["LblChangedSequenceWarningTitle"], MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No) {
+        }
+
+        /// <summary>
+        /// Check for any changes in any items
+        /// Items are grouped into 'hasChangeSets' (currently 2).  By default, items will be in the "*" hasChangeSet.
+        /// To place an item in a different change set, give that item the HasChangeSetAttribute passing the name of the hasChangeSet as the parameter
+        /// Currently the only other hasChangeSet is "Exposures" which is used to separate out the exposureCount
+        /// Changes are first looked for in the general hasChangeSet ("*").  Only if there are no changes there and 
+        /// if the ExcludeExposureCountFromHasChanges is false will the "Exposures" hasChangeSet be checked
+        /// </summary>
+        /// <returns>Will return true if there are changes which need to be saved
+        /// will return false if there are no changes or the user has opted not to save the changes</returns>
+        public bool ShouldStopForChanges() {
+            // check the general items
+            if (ShouldStopForChanges(null, "*"))
                 return true;
+
+            if ((!Sequencer.MainContainer.HasChanges["*"]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+                if (ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures"))
+                    return true;    // we want to stop to save
             }
             return false;
         }
 
+        /*        public bool ShouldStopForChanges(string name, string hasChangedSet) {
+                    if ((Sequencer.MainContainer.HasChanges.ContainsKey(hasChangedSet)) && (Sequencer.MainContainer.HasChanges[hasChangedSet]) &&
+                        (MyMessageBox.Show(
+                            string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                            Loc.Instance["LblChangedSequenceWarningTitle"],
+                            MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.No)) {
+                        return true;
+                    }
+                    return false;
+                }
+        */
+
+        public bool ShouldStopForChanges(string changeArea, string hasChangedSet) {
+            bool hasChanges = false;
+            string names = string.IsNullOrEmpty(changeArea) ? "" : changeArea + " in ";
+            if (Sequencer.MainContainer.DoesHaveChanges(hasChangedSet)) {
+                names = Sequencer.MainContainer.Name;
+                hasChanges = true;
+            } else
+                foreach (var target in Targets.Items) {
+                    if (((SimpleDSOContainer)target).DoesHaveChanges(hasChangedSet)) {
+                        // build a list of the names of the changed parts
+                        names += (hasChanges ? ", " : "") + target.Name;
+                        hasChanges = true;
+                    }
+                }
+
+            if (hasChanges) {
+                if (MyMessageBox.Show(string.Format(Loc.Instance["LblChangedSequenceWarning"], names), Loc.Instance["LblChangedSequenceWarningTitle"], MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No)
+                    return true;
+            }
+            return false;
+        }
+
+
         public bool LoadTargetSet() {
-            if (AskHasChanged()) {
+            if (ShouldStopForChanges()) {
                 return false;
             }
             var initialDirectory = string.Empty;
@@ -569,16 +632,18 @@ namespace NINA.ViewModel {
                         profileService.ActiveProfile.AstrometrySettings.Longitude
                     ));
                     foreach (var csl in set) {
-                        this.Targets.Add(MigrateFromCaptureSequenceList(csl));
+                        var target = MigrateFromCaptureSequenceList(csl);
+                        this.Targets.Add(target);
                     }
-                    foreach (var item in Targets.Items) {
-                        item.ClearHasChanged();
-                    }
+
                     SelectedTarget = Targets.Items.FirstOrDefault() as SimpleDSOContainer;
                     SavePath = dialog.FileName;
                 }
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+
+            ClearHasChanged();
+
             return Targets?.Items.Count > 0;
         }
 
@@ -612,11 +677,11 @@ namespace NINA.ViewModel {
                         SelectedTarget = transform;
                     }
                 }
-                foreach (var item in Targets.Items) {
-                    item.ClearHasChanged();
-                }
+                SelectedTarget.ClearHasChanged();
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
+
             return Targets?.Items.Count > 0;
         }
 
@@ -735,18 +800,18 @@ namespace NINA.ViewModel {
 
         public string OverallDurationFormatted {
             get {
-                if(OverallDuration.TotalDays > 1) {
+                if (OverallDuration.TotalDays > 1) {
                     return OverallDuration.ToString(@"dd\d\ hh\h\ mm\m\ ss\s");
 
-                } else if(OverallDuration.TotalHours > 1) {
+                } else if (OverallDuration.TotalHours > 1) {
                     return OverallDuration.ToString(@"hh\h\ mm\m\ ss\s");
 
-                } else if(OverallDuration.TotalMinutes > 1) {
+                } else if (OverallDuration.TotalMinutes > 1) {
                     return OverallDuration.ToString(@"mm\m\ ss\s");
 
                 } else {
                     return OverallDuration.ToString(@"ss\s");
-                }                
+                }
             }
         }
 
@@ -777,7 +842,7 @@ namespace NINA.ViewModel {
             var targetArea = factory.GetContainer<TargetAreaContainer>();
             var itemSnapshot = Targets.GetItemsSnapshot();
             foreach (var item in itemSnapshot) {
-                var target = item as SimpleDSOContainer;                
+                var target = item as SimpleDSOContainer;
                 if (target.Status == SequenceEntityStatus.CREATED) {
                     var dsoContainer = target.TransformToDSOContainer();
                     if (itemSnapshot.First() != target) {
