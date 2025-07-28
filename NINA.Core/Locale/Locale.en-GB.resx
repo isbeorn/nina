@@ -575,6 +575,11 @@ able to compensate for ambient temperature variations</value>
   <data name="LblChange" xml:space="preserve">
     <value>Change</value>
   </data>
+  <data name="LblChangedSequenceWarning" xml:space="preserve">
+    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+        
+Do you want to close the sequence and lose the changes anyway?</value>
+  </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Closing modified sequence</value>
   </data>
