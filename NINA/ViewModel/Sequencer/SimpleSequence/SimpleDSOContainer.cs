@@ -57,7 +57,7 @@ using NINA.Sequencer.Validations;
 namespace NINA.Sequencer.Container {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class SimpleDSOContainer : SequenceContainer, IDeepSkyObjectContainer, ISimpleDSOContainer {
+    public class SimpleDSOContainer : SequenceContainer, IDeepSkyObjectContainer, ISimpleDSOContainer, ISequenceHasChanged {
         private readonly IProfileService profileService;
         private readonly ISequencerFactory factory;
         private readonly IFramingAssistantVM framingAssistantVM;
@@ -154,12 +154,14 @@ namespace NINA.Sequencer.Container {
             if (this.Parent.Items.IndexOf(this) > 0) {
                 base.MoveUp();
             }
+            SetChanged();
         }
 
         public override void MoveDown() {
             if (this.Parent.Items.IndexOf(this) < this.Parent.Items.Count - 1) {
                 base.MoveDown();
             }
+            SetChanged();
         }
 
         public TimeSpan CalculateEstimatedRuntime() {
@@ -240,6 +242,9 @@ namespace NINA.Sequencer.Container {
             SelectedSimpleExposure = item;
             ActiveExposure = Items.FirstOrDefault() as SimpleExposure;
             this.ResetProgressCascaded();
+
+            SetChanged();
+
             return item;
         }
 
@@ -250,6 +255,10 @@ namespace NINA.Sequencer.Container {
                     ActiveExposure = se;
                 }
             }
+        }
+
+        public override ISequenceRootContainer GetSequenceRootContainer() {
+            return Parent as ISequenceRootContainer;
         }
 
         private void RemoveSimpleExposure(object obj) {
@@ -263,6 +272,9 @@ namespace NINA.Sequencer.Container {
                 } else {
                     SelectedSimpleExposure = (SimpleExposure)this.Items[idx];
                 }
+
+                SetChanged();
+
             }
         }
 
@@ -276,6 +288,7 @@ namespace NINA.Sequencer.Container {
             if (idx > 0 && idx <= this.Items.Count - 1) {
                 SelectedSimpleExposure?.MoveUp();
                 SelectedSimpleExposure = (SimpleExposure)this.Items[--idx];
+                SetChanged();
             }
         }
 
@@ -284,6 +297,7 @@ namespace NINA.Sequencer.Container {
             if (idx >= 0 && idx < this.Items.Count - 1) {
                 SelectedSimpleExposure?.MoveDown();
                 SelectedSimpleExposure = (SimpleExposure)this.Items[++idx];
+                SetChanged();
             }
         }
 
@@ -296,6 +310,7 @@ namespace NINA.Sequencer.Container {
                 foreach (var item in Items) {
                     item.ResetProgress();
                 }
+                SetChanged();
             }
         }
 
@@ -325,6 +340,7 @@ namespace NINA.Sequencer.Container {
                             loop.ResetProgress();
                         }
                     }
+                    SetChanged();
                     RaisePropertyChanged();
                 }
             }
@@ -335,6 +351,7 @@ namespace NINA.Sequencer.Container {
             set {
                 selectedSimpleExposure = value;
                 RaisePropertyChanged();
+                SetChanged();
             }
         }
 
@@ -343,6 +360,7 @@ namespace NINA.Sequencer.Container {
             private set {
                 cameraInfo = value;
                 RaisePropertyChanged();
+                SetChanged();
             }
         }
 
@@ -684,6 +702,37 @@ namespace NINA.Sequencer.Container {
             }
 
             return clone;
+        }
+
+        public Dictionary<string, bool> HasChanges { get => hasChanges;  }
+
+        private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { "*", false } };
+
+        public void ClearHasChanged() {
+            foreach (string key in HasChanges.Keys) {
+                HasChanges[key] = false;
+            }
+        }
+
+        public bool DoesHaveChanges(string hasChangeSet) {
+            return HasChanges.ContainsKey(hasChangeSet) && HasChanges[hasChangeSet];
+        }
+        public void SetChanged(string changedSet = "*") {
+            if (HasChanges.ContainsKey(changedSet))
+                HasChanges[changedSet] = true;
+            else
+                HasChanges.Add(changedSet, true);
+        }
+
+        public bool ShouldStopForChanges(string name, string hasChangedSet) {
+            if ((HasChanges.ContainsKey(hasChangedSet)) && (HasChanges[hasChangedSet]) &&
+                (MyMessageBox.Show(
+                    string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                    Loc.Instance["LblChangedSequenceWarningTitle"],
+                    MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.No)) {
+                return true;
+            }
+            return false;
         }
 
         public IDeepSkyObjectContainer TransformToDSOContainer() {

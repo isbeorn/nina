@@ -228,16 +228,16 @@ namespace NINA.ViewModel {
             Sequencer.ISequenceNavigationVM vm = ((Interfaces.IMainWindowVM)Application.Current.MainWindow.DataContext).SequenceNavigationVM;
             if (vm.Initialized) {
                 // check for changes to the sequence
-                if (vm.Sequence2VM.Sequencer.MainContainer.AskHasChanged(vm.Sequence2VM.Sequencer.MainContainer.Name, "*")) {
+                if (vm.Sequence2VM.ShouldStopForChanges(vm.Sequence2VM.Sequencer.MainContainer.Name, "*")) {
                     return;
                 }
                 // if main HasChanged flag isn't set (no actual edits to the sequence), check the exposure count
-                if ((!vm.Sequence2VM.Sequencer.MainContainer.HasChanged) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
-                    if (vm.Sequence2VM.Sequencer.MainContainer.AskHasChanged(Loc.Instance["LblExposureCount"], "Exposures")) {
+                if ((!vm.Sequence2VM.Sequencer.MainContainer.HasChanges["*"]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+                    if (vm.Sequence2VM.ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures")) {
                         return;
                     }
                 }
-                if (((SimpleSequenceVM)vm.SimpleSequenceVM).AskHasChanged()) {
+                if (((SimpleSequenceVM)vm.SimpleSequenceVM).ShouldStopForChanges()) {
                     return;
                 }
                 if (cameraInfo.Connected) {

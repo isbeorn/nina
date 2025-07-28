@@ -33,6 +33,7 @@ namespace NINA.Sequencer.SequenceItem {
     public abstract class SequenceItem : SequenceHasChanged, ISequenceItem {
 
         public SequenceItem() {
+            
         }
 
         public SequenceItem(SequenceItem cloneMe) {
@@ -339,6 +340,10 @@ namespace NINA.Sequencer.SequenceItem {
         }
 
         public virtual void Teardown() {
+        }
+
+        public override ISequenceRootContainer GetSequenceRootContainer() {
+            return ItemUtility.GetRootContainer(this.Parent);
         }
     }
 }

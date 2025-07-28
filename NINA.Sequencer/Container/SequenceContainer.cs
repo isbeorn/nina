@@ -380,6 +380,7 @@ namespace NINA.Sequencer.Container {
                         MoveWithinIntoSequenceBlocks(index, newIndex);
                     }
                 }
+                SetChanged();
             }
         }
 
@@ -411,7 +412,12 @@ namespace NINA.Sequencer.Container {
                         MoveWithinIntoSequenceBlocks(index, newIndex);
                     }
                 }
+                SetChanged();
             }
+        }
+
+        private void SetChanged() {
+            GetRootContainer(this)?.SetChanged();
         }
 
         public void MoveWithinIntoSequenceBlocks(int index, int newIndex) {
@@ -428,6 +434,8 @@ namespace NINA.Sequencer.Container {
                 } else {
                     Items.Insert(newIndex, item);
                 }
+                SetChanged();
+
             }
         }
 
@@ -437,6 +445,8 @@ namespace NINA.Sequencer.Container {
                     item.AttachNewParent(null);
                 }
                 item.Parent?.Remove(item);
+                SetChanged();
+
                 return Items.Remove(item);
             }
         }
@@ -447,6 +457,8 @@ namespace NINA.Sequencer.Container {
                     condition.AttachNewParent(null);
                 }
                 condition.Parent?.Remove(condition);
+                SetChanged();
+
                 return Conditions.Remove(condition);
             }
         }
@@ -457,6 +469,8 @@ namespace NINA.Sequencer.Container {
                     trigger.AttachNewParent(null);
                 }
                 trigger.Parent?.Remove(trigger);
+                SetChanged();
+
                 return Triggers.Remove(trigger);
             }
         }
@@ -639,58 +653,5 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        // Roll up all the child HasChanged items into a coalesced dictionary
-        public override Dictionary<string, bool> HasChangedBySet {
-            get {
-                Trace.WriteLine($"{Name}: Rolling up HasChangesBySet");
-                Dictionary<string, bool> ret = new Dictionary<string, bool>();
-                // first scan for all the keys used in child items
-                foreach (ISequenceItem item in Items) {
-                    foreach (string key in item.HasChangedBySet.Keys) {
-                        if (item.HasChangedBySet[key]) {
-                            if (ret.ContainsKey(key))
-                                ret[key] = true;
-                            else
-                                ret.Add(key, true);
-                        }
-                    }
-                }
-                foreach (ISequenceTrigger item in Triggers) {
-                    foreach (string key in item.HasChangedBySet.Keys) {
-                        if (item.HasChangedBySet[key]) {
-                            if (ret.ContainsKey(key))
-                                ret[key] = true;
-                            else
-                                ret.Add(key, true);
-                        }
-                    }
-                }
-                foreach (ISequenceTrigger item in Triggers) {
-                    foreach (string key in item.HasChangedBySet.Keys) {
-                        if (item.HasChangedBySet[key]) {
-                            if (ret.ContainsKey(key))
-                                ret[key] = true;
-                            else
-                                ret.Add(key, true);
-                        }
-                    }
-                }
-                return ret;
-            }
-        }
-
-
-        public override void ClearHasChanged() {
-            base.ClearHasChanged();
-            foreach (ISequenceItem item in Items) {
-                item.ClearHasChanged();
-            }
-            foreach (ISequenceTrigger item in Triggers) {
-                item.ClearHasChanged();
-            }
-            foreach (ISequenceCondition item in Conditions) {
-                item.ClearHasChanged();
-            }
-        }
     }
 }

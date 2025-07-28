@@ -12,15 +12,16 @@
 
 #endregion "copyright"
 
-using NINA.Core.Model;
 using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Model;
+using NINA.Equipment.Equipment.MyCamera;
 using NINA.ViewModel.Sequencer.SimpleSequence;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Core.Enum;
-using NINA.Equipment.Equipment.MyCamera;
 
 namespace NINA.Sequencer.Container {
 
@@ -58,6 +59,9 @@ namespace NINA.Sequencer.Container {
         bool SlewToTarget { get; set; }
         bool StartGuiding { get; set; }
         InputTarget Target { get; set; }
+        Dictionary<string, bool> HasChanges { get; }
+        void ClearHasChanged();
+        bool ShouldStopForChanges(string name, string hasChangedSet);
 
         ISimpleExposure AddSimpleExposure();
 

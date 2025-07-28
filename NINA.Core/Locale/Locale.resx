@@ -7319,4 +7319,13 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
+  <data name="LblSupressSaveExposureCountMsg" xml:space="preserve">
+    <value>Don't prompt to save sequence when the only thing changed is the exposure count</value>
+  </data>
+  <data name="LblSupressSaveExposureCountTooltip" xml:space="preserve">
+    <value>If your sequence hasn't been modified but you have run it, the exposure count will have changed.
+You'll normally be prompted to save the sequence to save the changed exposure count.
+
+If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+  </data>
 </root>

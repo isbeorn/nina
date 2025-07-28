@@ -177,7 +177,6 @@ namespace NINA.ViewModel {
                     rootContainer.Add(targetArea);
                     rootContainer.Add(new SimpleEndContainer(factory, profileService, cameraMediator));
                     (targetArea.Items as ObservableCollection<ISequenceItem>).CollectionChanged += SimpleSequenceVM_CollectionChanged;
-                    rootContainer.ClearHasChanged();
                     Sequencer = new NINA.Sequencer.Sequencer(
                         rootContainer
                     );
@@ -186,6 +185,8 @@ namespace NINA.ViewModel {
                     DoMeridianFlip = profileService.ActiveProfile.SequenceSettings.DoMeridianFlip;
 
                     EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+
+                    ClearHasChanged();
 
                     autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
                     autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
@@ -381,7 +382,7 @@ namespace NINA.ViewModel {
         }
 
         public bool ImportTargets() {
-            if (AskHasChanged()) {
+            if (ShouldStopForChanges()) {
                 return false;
             }
             var initialDirectory = string.Empty;
@@ -464,6 +465,9 @@ namespace NINA.ViewModel {
                 }
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+
+            ClearHasChanged();
+
             return Targets?.Items.Count > 0;
         }
 
@@ -476,6 +480,7 @@ namespace NINA.ViewModel {
             this.Targets.Add(GetTemplate());
             SelectedTarget = Targets.Items.Last() as SimpleDSOContainer;
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
         }
 
         public void AddTarget(IDeepSkyObject deepSkyObject) {
@@ -486,6 +491,13 @@ namespace NINA.ViewModel {
             this.Targets.Add(target);
             SelectedTarget = Targets.Items.Last() as SimpleDSOContainer;
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
+        }
+
+        private void SetChanged() {
+            if (Sequencer != null)
+                if (Sequencer.MainContainer != null)
+                    Sequencer.MainContainer.SetChanged();
         }
 
         private void SaveTargetSet(object obj) {
@@ -512,11 +524,23 @@ namespace NINA.ViewModel {
                     var target = item as SimpleDSOContainer;
                     if (target != null) {
                         cslCollection.Add(MigrateToCaptureSequenceList(target));
-                        target.ClearHasChanged();
+                        ClearHasChanged();
                     }
                 }
                 CaptureSequenceList.SaveSequenceSet(cslCollection, dialog.FileName);
                 SavePath = dialog.FileName;
+            }
+        }
+
+        public void ClearHasChanged() {
+            if ((Sequencer != null) && (Sequencer.MainContainer != null)) {
+                foreach (string key in Sequencer.MainContainer.HasChanges.Keys) {
+                    Sequencer.MainContainer.HasChanges[key] = false;
+                }
+                foreach (var target in Targets.Items) {
+                    if (target is ISimpleDSOContainer)
+                        (target as ISimpleDSOContainer).ClearHasChanged();
+                }
             }
         }
 
@@ -530,44 +554,55 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <returns>Will return true if there are changes which need to be saved
         /// will return false if there are no changes or the user has opted not to save the changes</returns>
-        public bool AskHasChanged() {
-            bool userSaysNo = false;    // if user says carry on we don't bother asking anything else
+        public bool ShouldStopForChanges() {
             // check the general items
-            if (AskHasChanged(null, "*", out userSaysNo))
+            if (ShouldStopForChanges(null, "*"))
                 return true;
 
-            if (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges) {
-                if (!userSaysNo) {
-                    if (AskHasChanged(Loc.Instance["LblExposureCount"], "Exposures", out userSaysNo))
-                        return true;    // we want to stop to save
-                }
+            if ((!Sequencer.MainContainer.HasChanges["*"]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+                if (ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures"))
+                    return true;    // we want to stop to save
             }
             return false;
         }
 
-        public bool AskHasChanged(string changeArea, string hasChangedSet, out bool ignoredByUser) {
-            ignoredByUser = false;
+        /*        public bool ShouldStopForChanges(string name, string hasChangedSet) {
+                    if ((Sequencer.MainContainer.HasChanges.ContainsKey(hasChangedSet)) && (Sequencer.MainContainer.HasChanges[hasChangedSet]) &&
+                        (MyMessageBox.Show(
+                            string.Format(Loc.Instance["LblChangedSequenceWarning"], name ?? ""),
+                            Loc.Instance["LblChangedSequenceWarningTitle"],
+                            MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.No)) {
+                        return true;
+                    }
+                    return false;
+                }
+        */
+
+        public bool ShouldStopForChanges(string changeArea, string hasChangedSet) {
             bool hasChanges = false;
             string names = string.IsNullOrEmpty(changeArea) ? "" : changeArea + " in ";
-            foreach (var item in Targets.Items) {
-                if (item.HasChangedBySet[hasChangedSet]) {
-                    // build a list of the names of the changed parts
-                    names += (hasChanges ? ", " : "") + item.Name;
-                    hasChanges = true;
+            if (Sequencer.MainContainer.DoesHaveChanges(hasChangedSet)) {
+                names = Sequencer.MainContainer.Name;
+                hasChanges = true;
+            } else
+                foreach (var target in Targets.Items) {
+                    if (((SimpleDSOContainer)target).DoesHaveChanges(hasChangedSet)) {
+                        // build a list of the names of the changed parts
+                        names += (hasChanges ? ", " : "") + target.Name;
+                        hasChanges = true;
+                    }
                 }
-            }
 
             if (hasChanges) {
                 if (MyMessageBox.Show(string.Format(Loc.Instance["LblChangedSequenceWarning"], names), Loc.Instance["LblChangedSequenceWarningTitle"], MessageBoxButton.YesNo, MessageBoxResult.Yes) == MessageBoxResult.No)
                     return true;
-                else 
-                    ignoredByUser = true;
             }
             return false;
         }
 
+
         public bool LoadTargetSet() {
-            if (AskHasChanged()) {
+            if (ShouldStopForChanges()) {
                 return false;
             }
             var initialDirectory = string.Empty;
@@ -597,16 +632,18 @@ namespace NINA.ViewModel {
                         profileService.ActiveProfile.AstrometrySettings.Longitude
                     ));
                     foreach (var csl in set) {
-                        this.Targets.Add(MigrateFromCaptureSequenceList(csl));
+                        var target = MigrateFromCaptureSequenceList(csl);
+                        this.Targets.Add(target);
                     }
-                    foreach (var item in Targets.Items) {
-                        item.ClearHasChanged();
-                    }
+
                     SelectedTarget = Targets.Items.FirstOrDefault() as SimpleDSOContainer;
                     SavePath = dialog.FileName;
                 }
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+
+            ClearHasChanged();
+
             return Targets?.Items.Count > 0;
         }
 
@@ -640,11 +677,11 @@ namespace NINA.ViewModel {
                         SelectedTarget = transform;
                     }
                 }
-                foreach (var item in Targets.Items) {
-                    item.ClearHasChanged();
-                }
+                SelectedTarget.ClearHasChanged();
             }
             (SelectedTarget as SimpleDSOContainer)?.ResetProgressCascaded();
+            SetChanged();
+
             return Targets?.Items.Count > 0;
         }
 
