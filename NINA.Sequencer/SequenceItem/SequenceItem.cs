@@ -26,11 +26,12 @@ using System.Windows.Media;
 using NINA.Sequencer.Utility;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
+using System.Diagnostics;
 
 namespace NINA.Sequencer.SequenceItem {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class SequenceItem : SequenceHasChanged, ISequenceItem {
+    public abstract class SequenceItem : SequenceEntityINPC, ISequenceItem {
 
         public SequenceItem() {
             
@@ -340,10 +341,6 @@ namespace NINA.Sequencer.SequenceItem {
         }
 
         public virtual void Teardown() {
-        }
-
-        public override ISequenceRootContainer GetSequenceRootContainer() {
-            return ItemUtility.GetRootContainer(this.Parent);
         }
     }
 }

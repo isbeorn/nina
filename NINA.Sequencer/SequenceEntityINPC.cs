@@ -30,9 +30,9 @@ using System.Windows;
 
 namespace NINA.Sequencer {
 
-    public abstract class SequenceHasChanged : BaseINPC, ISequenceHasChanged {
+    public abstract class SequenceEntityINPC : BaseINPC {
 
-        public SequenceHasChanged() {
+        public SequenceEntityINPC() {
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -40,20 +40,20 @@ namespace NINA.Sequencer {
             //var _profileService = (ProfileService)Application.Current.Resources["ProfileService"];
             //Trace.WriteLine(_profileService.ActiveProfile.ImageFileSettings.FilePath);
 
-            ISequenceRootContainer root = GetSequenceRootContainer();
+            System.Reflection.PropertyInfo propInf = GetType().GetProperty(e.PropertyName);
+            if (propInf.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Length > 0) {
+                ISequenceRootContainer root = GetSequenceRootContainer();
 
-            if ((root!=null) && (!root.HasChanges["*"])) {
-                System.Reflection.PropertyInfo propInf = GetType().GetProperty(e.PropertyName);
-                if (propInf.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Length > 0) {
+                if ((root != null) && (!root.HasChanges["*"])) {
                     object[] hasChangedSets = propInf.GetCustomAttributes(typeof(NINA.Core.Model.HasChangedSetAttribute), true);
                     if (hasChangedSets.Length > 0) {
                         foreach (object item in hasChangedSets) {
                             HasChangedSetAttribute att = (HasChangedSetAttribute)item;
-                                if (root.HasChanges.ContainsKey(att.HasChangedSet)) {
+                            if (root.HasChanges.ContainsKey(att.HasChangedSet)) {
                                 root.HasChanges[att.HasChangedSet] = true;
-                                } else {
+                            } else {
                                 root.HasChanges.Add(att.HasChangedSet, true);
-                                }
+                            }
                         }
                     } else {
                         root.HasChanges["*"] = true;
@@ -64,13 +64,11 @@ namespace NINA.Sequencer {
 
 
         public virtual ISequenceRootContainer GetSequenceRootContainer() {
-            if (this is ISequenceEntity) {
-                ISequenceEntity item = ((ISequenceEntity)this);
-                while (item.Parent != null) {
-                    if (item.Parent is ISequenceRootContainer)
-                        return item.Parent as ISequenceRootContainer;
-                    item = item.Parent;
-                }
+            ISequenceEntity item = ((ISequenceEntity)this);
+            while (item.Parent != null) {
+                if (item.Parent is ISequenceRootContainer)
+                    return item.Parent as ISequenceRootContainer;
+                item = item.Parent;
             }
             return null;
         }

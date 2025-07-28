@@ -25,7 +25,7 @@ using System.Windows.Input;
 
 namespace NINA.Sequencer.Container {
 
-    public interface ISimpleDSOContainer : ISequenceHasChanged {
+    public interface ISimpleDSOContainer  {
         ISimpleExposure ActiveExposure { get; set; }
         ICommand AddSimpleExposureCommand { get; }
         bool AutoFocusAfterHFRChange { get; set; }

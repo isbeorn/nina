@@ -10,9 +10,19 @@
 */
 #endregion "copyright"
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyPlanetarium;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
@@ -26,38 +36,29 @@ using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Trigger.Autofocus;
+using NINA.Sequencer.Validations;
 using NINA.Utility;
-using NINA.Astrometry;
 using NINA.ViewModel.FramingAssistant;
 using NINA.ViewModel.ImageHistory;
 using NINA.ViewModel.Sequencer.SimpleSequence;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Core.Utility;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Notification;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.Core.MyMessageBox;
 using System.Windows;
-using NINA.Sequencer.Validations;
+using System.Windows.Input;
 
 namespace NINA.Sequencer.Container {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class SimpleDSOContainer : SequenceContainer, IDeepSkyObjectContainer, ISimpleDSOContainer, ISequenceHasChanged {
+    public class SimpleDSOContainer : SequenceContainer, IDeepSkyObjectContainer, ISimpleDSOContainer {
         private readonly IProfileService profileService;
         private readonly ISequencerFactory factory;
         private readonly IFramingAssistantVM framingAssistantVM;
