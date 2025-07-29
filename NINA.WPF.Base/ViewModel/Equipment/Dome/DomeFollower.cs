@@ -250,7 +250,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
             if (targetCoordinates == null) { return null; }
             PierSide targetSideOfPier = PierSide.pierUnknown;
             if (this.profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
-                targetSideOfPier = telescopeInfo.TargetSideOfPier ?? telescopeInfo.SideOfPier;
+                try {
+                    // If the telescope mediator is available, use it to determine the target side of pier
+                    targetSideOfPier = telescopeMediator?.DestinationSideOfPier(targetCoordinates) ?? PierSide.pierUnknown;
+                    if (targetSideOfPier == PierSide.pierUnknown) {
+                        targetSideOfPier = telescopeInfo.TargetSideOfPier ?? telescopeInfo.SideOfPier;
+                    }
+                } catch (Exception ex) {
+                    targetSideOfPier = telescopeInfo.TargetSideOfPier ?? telescopeInfo.SideOfPier;
+                }
             }
             if (targetSideOfPier == PierSide.pierUnknown) {
                 targetSideOfPier = MeridianFlip.ExpectedPierSide(targetCoordinates, Angle.ByHours(telescopeInfo.SiderealTime));

@@ -823,6 +823,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
             throw new System.NotImplementedException();
         }
 
+        public void UpdateSubSampleArea() {
+            throw new System.NotImplementedException();
+        }
+
         protected override async Task PostConnect() {
             if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
                 Disconnect();

@@ -1100,6 +1100,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
             });
         }
 
+        public void UpdateSubSampleArea() {
+            if (EnableSubSample) {
+                var rect = GetROI();
+                roiInfo = rect;
+                if (!sdk.put_ROI((uint)rect.X, (uint)rect.Y, (uint)rect.Width, (uint)rect.Height)) {
+                    throw new Exception($"{Category} - Failed to set ROI to {rect.X}x{rect.Y}x{rect.Width}x{rect.Height}");
+                }
+            } else {
+                roiInfo = null;
+                // 0,0,0,0 resets the ROI to original size
+                if (!sdk.put_ROI(0, 0, 0, 0)) {
+                    throw new Exception($"{Category} - Failed to reset ROI");
+                }
+            }
+        }
+
         public int USBLimitStep => 1;
 
         public string Action(string actionName, string actionParameters) {

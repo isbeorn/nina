@@ -166,6 +166,10 @@ namespace NINA {
 
             Logger.SetLogLevel(_profileService.ActiveProfile.ApplicationSettings.LogLevel);
 
+            if (e.Args.Length > 0) {
+                Logger.Info("Launched with command line arguments: " + string.Join(" ", e.Args));
+            }
+
             if (userSettingsException != null) {
                 Logger.Error("There was an issue loading the user settings and the application tried to delete the file and reload default settings.", userSettingsException);
             }

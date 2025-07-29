@@ -832,6 +832,30 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
         public int DroppedFrames { get; private set; }
 
+        public void UpdateSubSampleArea() {
+            // This is not fully working yet, still needs testing, might not be possible or needs some other approach
+            // I did see it working when taking images 0.5s images, but not consistently
+            if (EnableSubSample) {
+                CaptureAreaInfo = new CaptureAreaInfo(
+                    new Point(SubSampleX / BinX, SubSampleY / BinY),
+                    new Size(SubSampleWidth / BinX - (SubSampleWidth / BinX % 8),
+                             SubSampleHeight / BinY - (SubSampleHeight / BinY % 2)
+                    ),
+                    BinX,
+                    ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16
+                );
+            } else {
+                CaptureAreaInfo = new CaptureAreaInfo(
+                    new Point(0, 0),
+                    new Size((Resolution.Width / BinX) - (Resolution.Width / BinX % 8),
+                              Resolution.Height / BinY - (Resolution.Height / BinY % 2)
+                    ),
+                    BinX,
+                    ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16
+                );
+            }
+        }
+
         public bool HasBattery => false;
 
         public string Action(string actionName, string actionParameters) {

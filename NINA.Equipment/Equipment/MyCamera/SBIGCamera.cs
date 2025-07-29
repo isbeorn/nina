@@ -851,6 +851,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
             throw new NotImplementedException();
         }
 
+        public void UpdateSubSampleArea() {
+            throw new NotImplementedException();
+        }
+
         public void SetupDialog() {
             throw new NotImplementedException();
         }

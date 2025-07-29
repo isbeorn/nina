@@ -13,14 +13,15 @@
 #endregion "copyright"
 
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
-using NINA.Equipment.Equipment.MyCamera;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Equipment.Interfaces.ViewModel;
 
 namespace NINA.Equipment.Interfaces.Mediator {
 
@@ -65,6 +66,9 @@ namespace NINA.Equipment.Interfaces.Mediator {
 
         bool IsFreeToCapture(object cameraConsumer);
         void SetUSBLimit(int usbLimit);
+
+        void SetSubSambleRectangle(ObservableRectangle observableRectangle);
+
         event Func<object, EventArgs, Task> DownloadTimeout;
     }
 }
