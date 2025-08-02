@@ -329,9 +329,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short BayerOffsetY => 0;
 
-        public int CameraXSize => -1;
+        public int CameraXSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResX;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
-        public int CameraYSize => -1;
+        public int CameraYSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResY;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
         public double ExposureMin => 0;
 
@@ -343,9 +367,72 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short MaxBinY => 1;
 
-        public double PixelSizeX => double.NaN;
+        public double PixelSizeX {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeX;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
 
-        public double PixelSizeY => double.NaN;
+        public double PixelSizeY {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeY;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
+
+        public string LensName {
+            get {
+                if (Connected) {
+                    return _camera.GetString(Nikon.eNkMAIDCapability.kNkMAIDCapability_LensInfo).Trim();
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public double LensFocalLength {
+            get {
+                if (Connected) {
+                    return _camera.GetFloat(Nikon.eNkMAIDCapability.kNkMAIDCapability_FocalLength);
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
+        public double LensFocalRatio {
+            get {
+                if(Connected) {
+                    try {
+                        return Convert.ToDouble(_camera.GetEnum(Nikon.eNkMAIDCapability.kNkMAIDCapability_Aperture).ToString());
+                    } catch (FormatException ex) {
+                        Logger.Error($"Unexpected format for lens aperture value : {ex.Message}");
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
+        public event EventHandler LensStateChanged;
+
 
         public bool CanSetTemperature => false;
 
@@ -548,16 +635,31 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int BatteryLevel {
             get {
-                try {
-                    return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
-                } catch (NikonException ex) {
-                    Logger.Error(ex);
+                if (Connected) {
+                    try {
+                        return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
+                    } catch (NikonException ex) {
+                        Logger.Error(ex);
+                        return -1;
+                    }
+                } else {
                     return -1;
                 }
             }
         }
 
         public bool HasBattery => true;
+
+        private void ScanDeviceCapabilitiyValue (NikonDevice sender, eNkMAIDCapability capability) {
+            switch (capability) {
+                case eNkMAIDCapability.kNkMAIDCapability_LensInfo:
+                case eNkMAIDCapability.kNkMAIDCapability_Aperture:
+                case eNkMAIDCapability.kNkMAIDCapability_FocalLength:
+                    Logger.Debug($"Lens info changed: {capability}");
+                    LensStateChanged?.Invoke(this, EventArgs.Empty);
+                    break;
+            }
+        }
 
         public void AbortExposure() {
             if (Connected) {
@@ -832,6 +934,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     using (token.Register(() => _cameraConnected.TrySetCanceled())) {
                         await _cameraConnected.Task;
                     }
+
+                    _camera.CapabilityValueChanged += new CapabilityChangedDelegate(ScanDeviceCapabilitiyValue);
 
                     Logger.Debug($"Camera connection task returned successfully with result {_cameraConnected.Task.Result}");
                     connected = _cameraConnected.Task.Result;
