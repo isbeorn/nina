@@ -28,6 +28,8 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Equipment.MySwitch;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Switch {
 
@@ -37,7 +39,9 @@ namespace NINA.Sequencer.SequenceItem.Switch {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Switch")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetSwitchValue : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SetSwitchValue : SequenceItem, IValidatable {
         private ISwitchMediator switchMediator;
 
         [ImportingConstructor]
@@ -52,11 +56,8 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SetSwitchValue(this) {
-                SwitchIndex = SwitchIndex,
-                Value = Value
-            };
+        partial void AfterClone(SetSwitchValue clone) {
+            clone.SwitchIndex = SwitchIndex;
         }
 
         private IList<string> issues = new List<string>();
@@ -69,17 +70,8 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             }
         }
 
+        [IsExpression (Default = 1)]
         private double value;
-
-        [JsonProperty]
-        public double Value {
-            get => value;
-            set {
-                this.value = value;
-                Validate();
-                RaisePropertyChanged();
-            }
-        }
 
         private short switchIndex;
 
@@ -128,6 +120,11 @@ namespace NINA.Sequencer.SequenceItem.Switch {
             return dummySwitches;        
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             try {
                 var i = new List<string>();
@@ -171,6 +168,8 @@ namespace NINA.Sequencer.SequenceItem.Switch {
                     if (Value < s.Minimum || Value > s.Maximum)
                         i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], s.Minimum, s.Maximum, s.StepSize));
                 }
+
+                Expression.ValidateExpressions(i, ValueExpression);
 
                 Issues = i;
                 return Issues.Count == 0;

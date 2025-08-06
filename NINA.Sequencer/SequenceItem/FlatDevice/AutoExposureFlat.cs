@@ -1,28 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NINA.Core.Locale;
 using NINA.Core.Model;
-using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
-using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -37,10 +36,14 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class AutoExposureFlat : SequentialContainer, IImmutableContainer {
+    [UsesExpressions]
+
+    public partial class AutoExposureFlat : SequentialContainer, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
+        private ISymbolBrokerVM symbolBroker;
+
 
         private bool cameraIsLinear = true;
 
@@ -52,7 +55,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         [ImportingConstructor]
-        public AutoExposureFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+        public AutoExposureFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -71,8 +75,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             HistogramTargetPercentage = 0.5;
             HistogramTolerancePercentage = 0.1;
-            MaxExposure = 10;
-            MinExposure = 0;
         }
 
         private AutoExposureFlat(
@@ -112,6 +114,26 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        partial void AfterClone(AutoExposureFlat clone) {
+            // The order of these matters!
+            clone.profileService = profileService;
+            clone.imagingMediator = imagingMediator;
+            clone.imageSaveMediator = imageSaveMediator;
+
+            clone.Add((CloseCover)GetCloseCoverItem().Clone());
+            clone.Add((ToggleLight)GetToggleLightItem().Clone());
+            clone.Add((SwitchFilter)GetSwitchFilterItem().Clone());
+            clone.Add((SetBrightness)GetSetBrightnessItem().Clone());
+            clone.Add((SequenceContainer)GetImagingContainer().Clone());
+            clone.Add((ToggleLight)GetToggleLightOffItem().Clone());
+            clone.Add((OpenCover)GetOpenCoverItem().Clone());
+
+            clone.HistogramTargetPercentage = HistogramTargetPercentage;
+            clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
+            clone.KeepPanelClosed = KeepPanelClosed;
+            clone.IsExpanded = false;
+        }
+
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
 
         [JsonProperty]
@@ -142,28 +164,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        public override object Clone() {
-            var clone = new AutoExposureFlat(
-                this,
-                profileService,
-                imagingMediator,
-                imageSaveMediator,
-                (CloseCover)this.GetCloseCoverItem().Clone(),
-                (ToggleLight)this.GetToggleLightItem().Clone(),
-                (SwitchFilter)this.GetSwitchFilterItem().Clone(),
-                (SetBrightness)this.GetSetBrightnessItem().Clone(),
-                (TakeExposure)this.GetExposureItem().Clone(),
-                (LoopCondition)this.GetIterations().Clone(),
-                (ToggleLight)this.GetToggleLightOffItem().Clone(),
-                (OpenCover)this.GetOpenCoverItem().Clone()
-            ) {
-                MaxExposure = this.MaxExposure,
-                MinExposure = this.MinExposure,
-                HistogramTargetPercentage = this.HistogramTargetPercentage,
-                HistogramTolerancePercentage = this.HistogramTolerancePercentage,
-                KeepPanelClosed = this.KeepPanelClosed
-            };
-            return clone;
+        private AutoExposureFlat(AutoExposureFlat cloneMe) {
+            if (cloneMe != null) {
+                CopyMetaData(cloneMe);
+            }
         }
 
         public CloseCover GetCloseCoverItem() {
@@ -200,6 +204,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         public OpenCover GetOpenCoverItem() {
             return (Items[6] as OpenCover);
+        }
+
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -484,27 +492,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        [IsExpression (Default = 10)]
         private double minExposure;
 
-        [JsonProperty]
-        public double MinExposure {
-            get => minExposure;
-            set {
-                minExposure = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        [IsExpression (Default = 20)]
         private double maxExposure;
-
-        [JsonProperty]
-        public double MaxExposure {
-            get => maxExposure;
-            set {
-                maxExposure = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private double histogramTargetPercentage;
 
@@ -540,6 +532,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();
             var takeExposure = GetExposureItem();
@@ -554,9 +551,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Distinct().ToList();
+            Expression.ValidateExpressions(Issues, MinExposureExpression, MaxExposureExpression);
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
+            return Issues.Count == 0;
         }
     }
 }

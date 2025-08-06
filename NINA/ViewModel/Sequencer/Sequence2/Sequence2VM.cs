@@ -9,29 +9,18 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
-using Accord.IO;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
-using NINA.Equipment.Equipment.MyPlanetarium;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer;
-using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Serialization;
-using NINA.Sequencer.Trigger;
 using NINA.Utility;
-using NINA.Astrometry;
-using NINA.ViewModel.FramingAssistant;
-using NINA.ViewModel.ImageHistory;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,17 +35,13 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Model;
-using NINA.Astrometry.Interfaces;
-using NINA.Equipment.Interfaces;
 using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Sequencer.Trigger.Autofocus;
 using NINA.Equipment.Equipment.MyCamera;
 using System.ComponentModel;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NINA.Sequencer.Logic;
 
 namespace NINA.ViewModel.Sequencer {
 
@@ -76,7 +61,8 @@ namespace NINA.ViewModel.Sequencer {
             IApplicationMediator applicationMediator,
             IApplicationStatusMediator applicationStatusMediator,
             ICameraMediator cameraMediator,
-            ISequencerFactory factory
+            ISequencerFactory factory,
+            ISymbolBrokerVM symbolBroker
             ) : base(profileService) {
 
             this.commandLineOptions = commandLineOptions;
@@ -85,6 +71,7 @@ namespace NINA.ViewModel.Sequencer {
             this.sequenceMediator = sequenceMediator;
             this.applicationMediator = applicationMediator;
             this.cameraMediator = cameraMediator;
+            SymbolBroker = symbolBroker;
             cameraMediator.RegisterConsumer(this);
 
             SequencerFactory = factory;
@@ -119,6 +106,8 @@ namespace NINA.ViewModel.Sequencer {
                 RaisePropertyChanged();
             }
         }
+
+        public ISymbolBrokerVM SymbolBroker;
 
         private ISequencer sequencer;
         public ISequencer Sequencer {
@@ -473,6 +462,18 @@ namespace NINA.ViewModel.Sequencer {
             }
             if (!string.IsNullOrEmpty(SavePath)) {
                 Notification.ShowSuccess(string.Format(Loc.Instance["Lbl_Sequencer_SaveSequence_Notification"], Sequencer.MainContainer.Name, SavePath));
+            }
+        }
+
+        private static readonly int MAX_SYMBOLS = 100;
+
+        private List<Symbol> dataSymbols;
+
+        public List<Symbol> DataSymbols {
+            get => dataSymbols;
+            set {
+                dataSymbols = value;
+                RaisePropertyChanged("DataSymbols");
             }
         }
 

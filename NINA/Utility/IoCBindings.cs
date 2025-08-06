@@ -43,6 +43,7 @@ using NINA.Plugin.Messaging;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Mediator;
 using NINA.ViewModel;
 using NINA.ViewModel.FlatWizard;
@@ -97,6 +98,8 @@ namespace NINA.Utility {
                 services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
 
                 services.AddSingleton<IMessageBroker, MessageBroker>();
+                
+                services.AddSingleton<ISymbolBrokerVM, SymbolBrokerVM>();
 
                 services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 
@@ -252,6 +255,8 @@ namespace NINA.Utility {
                 services.AddSingleton<IImageHistoryVM, ImageHistoryVM>();
                 services.AddSingleton<IImageStatisticsVM, ImageStatisticsVM>();
 
+                services.AddSingleton<ISymbolBrokerVM, SymbolBrokerVM>();
+
                 services.AddSingleton<ITwilightCalculator, TwilightCalculator>();
                 services.AddSingleton<IMicroCacheFactory, DefaultMicroCacheFactory>();
                 services.AddSingleton<ISbigSdk, SbigSdk>();
@@ -325,7 +330,9 @@ namespace NINA.Utility {
                     f.GetService<IFlatDeviceMediator>(), f.GetService<IImageGeometryProvider>(), f.GetService<IApplicationStatusMediator>(), f.GetService<IMyMessageBoxVM>(),
                     f.GetService<INighttimeCalculator>(),
                     f.GetService<ITwilightCalculator>(),
-                    f.GetService<IImageSaveMediator>()));
+                    f.GetService<IImageSaveMediator>()
+                    
+                    ));
 
                 services.AddSingleton<IImageSaveController, ImageSaveController>();
                 services.AddSingleton<ISequenceNavigationVM, SequenceNavigationVM>();

@@ -11,12 +11,13 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     using NINA.Core.Utility;
     using NINA.Profile.Interfaces;
     using NINA.Sequencer.Conditions;
+    using NINA.Sequencer.SequenceItem.Telescope;
     using NINA.Sequencer.Utility;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
-    public abstract class LoopForAltitudeBase : SequenceCondition {
+    public abstract class LoopForAltitudeBase : CoordinatesCondition {
 
         private IList<string> issues = new List<string>();
 
@@ -26,8 +27,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             ConditionWatchdog = new ConditionWatchdog(Interrupt, TimeSpan.FromSeconds(5)); 
         }
 
-       [JsonProperty]
-        public WaitLoopData Data { get; set; }
+        //[JsonProperty]
+        //public WaitLoopData Data { get; set; }
         public IProfileService ProfileService { get; set; }
  
         [OnDeserialized]
@@ -36,6 +37,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             RunWatchdogIfInsideSequenceRoot();
         }
 
@@ -51,14 +53,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public string InterruptReason { get; set; }
-
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public abstract void CalculateExpectedTime();
 

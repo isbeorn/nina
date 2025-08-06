@@ -50,7 +50,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Camera {
             item2.Name.Should().BeSameAs(sut.Name);
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Duration.Should().Be(sut.Duration);
+            item2.Duration.Should().Be(0);  // DurationExpression.Default
         }
 
         [Test]

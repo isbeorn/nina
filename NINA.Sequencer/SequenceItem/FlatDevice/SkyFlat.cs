@@ -18,6 +18,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Guider;
 using NINA.Sequencer.SequenceItem.Imaging;
@@ -54,6 +55,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IImageSaveMediator imageSaveMediator;
         private ITwilightCalculator twilightCalculator;
         private ITelescopeMediator telescopeMediator;
+        private ISymbolBrokerVM symbolBroker;
 
         private bool cameraIsLinear = true;
 

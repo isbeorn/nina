@@ -35,6 +35,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using NINA.Sequencer.Logic;
+using Expression = NINA.Sequencer.Logic.Expression;
 
 namespace NINA.Sequencer.Container {
 

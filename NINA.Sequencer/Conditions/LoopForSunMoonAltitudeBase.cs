@@ -23,7 +23,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     public abstract class LoopForSunMoonAltitudeBase : LoopForAltitudeBase {
 
         public LoopForSunMoonAltitudeBase(IProfileService profileService, bool useCustomHorizon) : base(profileService, useCustomHorizon) {
-            Data.Offset = 0d;
         }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {

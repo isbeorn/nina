@@ -25,6 +25,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Focuser {
 
@@ -34,7 +36,9 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoveFocuserByTemperature : SequenceItem, IValidatable, IFocuserConsumer {
+    [UsesExpressions]
+
+    public partial class MoveFocuserByTemperature : SequenceItem, IValidatable, IFocuserConsumer {
 
         [ImportingConstructor]
         public MoveFocuserByTemperature(IFocuserMediator focuserMediator) {
@@ -45,26 +49,14 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoveFocuserByTemperature(this) {
-                Slope = Slope,
-                Intercept = Intercept,
-                Absolute = Absolute
-            };
+        partial void AfterClone(MoveFocuserByTemperature clone) {
+            Absolute = Absolute;
         }
 
         private IFocuserMediator focuserMediator;
 
+        [IsExpression (Default = 1)]
         private double slope = 1;
-
-        [JsonProperty]
-        public double Slope {
-            get => slope;
-            set {
-                slope = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private static double lastTemperature = -1000;
 
@@ -81,16 +73,8 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             }
         }
 
+        [IsExpression (Default = 0)]
         private double intercept = 0;
-
-        [JsonProperty]
-        public double Intercept {
-            get => intercept;
-            set {
-                intercept = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private IList<string> issues = new List<string>();
 
@@ -118,6 +102,11 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             return result;
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             var i = new List<string>();
             var info = focuserMediator.GetInfo();
@@ -128,6 +117,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
                     i.Add(Loc.Instance["Lbl_SequenceItem_Focuser_MoveFocuserByTemperature_Validation_NoTemperature"]);
                 }
             }
+            Expression.ValidateExpressions(i, SlopeExpression, InterceptExpression);
             Issues = i;
             return i.Count == 0;
         }

@@ -25,6 +25,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem.Telescope;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -34,26 +38,40 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForAltitude : WaitForAltitudeBase, IValidatable {
-        private bool hasDsoParent;
+
+    public partial class WaitForAltitude : CoordinatesInstruction, IValidatable {
         private string aboveOrBelow;
  
         [ImportingConstructor]
-        public WaitForAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            AboveOrBelow = ">";
+        public WaitForAltitude(IProfileService profileService) :base() {
+            Data = new WaitLoopData(profileService, false, CalculateExpectedTime, GetType().Name);
             Data.Offset = 30;
+            AboveOrBelow = ">";
+            ProfileService = profileService;
         }
 
         private WaitForAltitude(WaitForAltitude cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
-        
+
         public override object Clone() {
-            return new WaitForAltitude(this) {
-                AboveOrBelow = AboveOrBelow,
-                Data = Data.Clone()
-            };
+            WaitForAltitude clone = new WaitForAltitude(this);
+            clone.Data = Data.Clone();
+            clone.AboveOrBelow = AboveOrBelow;
+            UpdateExpressions(clone, this);
+            return clone;
         }
+
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            Coordinates = Data.Coordinates.Clone();
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
+            base.OnDeserialized(context);
+        }
+
+        public IProfileService ProfileService { get; set; }
         
         [JsonProperty]
         public string AboveOrBelow {
@@ -72,6 +90,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 RaisePropertyChanged();
             }
         }
+
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             do {
@@ -96,58 +115,45 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return altaz.Altitude.Degree;
         }
 
-        public override void CalculateExpectedTime() {
+        public void CalculateExpectedTime() {
             Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: true, 30, GetCurrentAltitude);
         }
 
-
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public override void AfterParentChanged() {
-            var contextCoordinates = RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
-               HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
+            base.AfterParentChanged();
+            Data.Coordinates = Coordinates;
             Validate();
         }
 
-        public override string ToString() {
+        public override string ToString() { 
             return $"Category: {Category}, Item: {nameof(WaitForAltitude)}, Altitude: {AboveOrBelow}{Data.TargetAltitude}";
         }
 
         public bool Validate() {
-            List<string> issues = new List<string>();
+            Issues.Clear();
 
             double maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.DecDegrees);
             double minAlt = AstroUtil.GetAltitude(180, Data.Latitude, Data.Coordinates.DecDegrees);
 
             if (aboveOrBelow == ">") {
                 if (maxAlt < Data.TargetAltitude) {
-                    issues.Add(Loc.Instance["LblUnreachableAltitude"]);
+                    Issues.Add(Loc.Instance["LblUnreachableAltitude"]);
                 }
             } else {
                 if (minAlt > Data.TargetAltitude) {
-                    issues.Add(Loc.Instance["LblUnreachableAltitude"]);
+                    Issues.Add(Loc.Instance["LblUnreachableAltitude"]);
                 }
             }
 
-            if (issues.Count == 0) {
+            if (Issues.Count == 0) {
                 CalculateExpectedTime();
             }
 
-            Issues = issues;
-            return issues.Count == 0;
+            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression, DecExpression);
+
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
     }
 }

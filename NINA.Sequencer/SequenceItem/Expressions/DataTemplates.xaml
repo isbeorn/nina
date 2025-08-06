@@ -1,0 +1,195 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    x:Class="NINA.Sequencer.SequenceItem.Expressions.Datatemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Expressions"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:view="clr-namespace:NINA.View.Sequencer">
+    
+    <DataTemplate DataType="{x:Type local:Constant}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding Identifier}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Center" />
+                    <logic:ExprControl Label="{ns:Loc LblValue}" Exp="{Binding Expr, Mode=TwoWay}" />
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:Variable}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,5,10,-2"
+                      Text="{Binding Identifier}"
+                      TextAlignment="Center" />
+                    <logic:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
+                    <logic:ExprControlVariable Margin="10,0,0,0" Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:ResetVariable}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,5,10,-2"
+                      Text="{Binding Variable}"
+                      TextAlignment="Center" />
+                    <logic:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:ResetVariableToDate}">
+        <view:SequenceBlockView DataContext="{Binding}">
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,1,10,-2"
+                       Text="{Binding Variable}"
+                       TextAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSource}" />
+                        <ComboBox
+                           Margin="5,0,0,0"
+                           VerticalAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           DisplayMemberPath="Name"
+                           ItemsSource="{Binding DateTimeProviders}"
+                           SelectedItem="{Binding SelectedProvider}" />
+                        <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTime}" />
+                        <TextBox
+                               MinWidth="40"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Hours">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="23" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Minutes">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Seconds">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding HasFixedTimeProvider, Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTimeOffset}"
+                               ToolTip="{ns:Loc LblTimeOffsetTooltip}" />
+                            <TextBox
+                               MinWidth="30"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               Text="{Binding MinutesOffset}" />
+                            <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center">m</TextBlock>
+                        </StackPanel>
+                        <TextBlock Margin="10,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}{" />
+                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{Binding TimeString}" />
+                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}}" />
+                    </StackPanel>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <!--Temporary Icons-->
+    
+    <GeometryGroup x:Key="VariableSVG">
+        <PathGeometry Figures="M 92.448,3.34265C 84.0733,6.17065 77.1613,12.2134 73.24,20.1346C 26.3547,114.979 0,221.973 0,334.916C 0,447.859 26.3547,554.853 73.24,649.692C 77.1613,657.619 84.068,663.667 92.4427,666.5C 100.817,669.333 109.979,668.719 117.907,664.796C 125.828,660.88 131.875,653.973 134.708,645.599C 137.541,637.223 136.927,628.061 133.011,620.14C 90.5413,534.233 66.6667,437.5 66.6667,334.916C 66.6667,232.333 90.5413,135.599 133.011,49.6973C 136.927,41.7706 137.541,32.6094 134.708,24.2333C 131.875,15.8586 125.828,8.95197 117.907,5.03064C 109.979,1.11334 100.823,0.503967 92.448,3.34265 Z M 615.432,5.03064C 607.505,8.95197 601.459,15.8586 598.625,24.2333C 595.792,32.6094 596.407,41.7706 600.328,49.6973C 642.792,135.599 666.667,232.333 666.667,334.916C 666.667,437.5 642.792,534.233 600.328,620.14C 596.407,628.061 595.792,637.223 598.625,645.599C 601.459,653.973 607.505,660.88 615.432,664.796C 623.355,668.719 632.516,669.333 640.891,666.5C 649.265,663.667 656.172,657.619 660.088,649.692C 706.979,554.853 733.333,447.859 733.333,334.916C 733.333,221.973 706.979,114.979 660.088,20.1346C 656.172,12.2134 649.265,6.16663 640.891,3.33331C 632.516,0.5 623.355,1.11334 615.432,5.03064 Z M 257.161,189.083C 248.323,189.083 239.844,192.593 233.593,198.848C 227.339,205.099 223.828,213.577 223.828,222.416C 223.828,231.255 227.339,239.733 233.593,245.984C 239.844,252.239 248.323,255.749 257.161,255.749L 303.645,255.749C 305.495,255.749 306.855,256.749 307.421,258.744L 332.099,345.593L 254.104,437.129C 246.224,446.369 234.869,451.583 222.855,451.583L 219.855,451.583C 201.448,451.583 186.521,466.504 186.521,484.916C 186.521,503.328 201.448,518.249 219.855,518.249L 222.855,518.249C 254.391,518.249 284.412,504.364 304.88,480.359L 354.036,422.676L 366.604,466.817C 375.188,497.02 403.041,518.249 434.505,518.249L 480.989,518.249C 499.401,518.249 514.323,503.328 514.323,484.916C 514.323,466.504 499.401,451.583 480.989,451.583L 434.505,451.583C 432.656,451.583 431.297,450.577 430.729,448.588L 406.057,361.739L 484.047,270.203C 491.927,260.963 503.281,255.749 515.297,255.749L 518.292,255.749C 536.703,255.749 551.625,240.828 551.625,222.416C 551.625,204.004 536.703,189.083 518.292,189.083L 515.297,189.083C 483.76,189.083 453.74,202.968 433.271,226.973L 384.115,284.656L 371.547,240.515C 362.964,210.312 335.109,189.083 303.645,189.083"/>
+    </GeometryGroup>
+
+    <GeometryGroup x:Key="ConstantSVG">
+        <PathGeometry Figures="M 482.395,5.06799C 480,2.66666 476,1.06799 472.796,1.06799C 434.395,-0.530701 393.599,2.66666 355.197,2.66666L 217.599,3.4693C 175.197,3.4693 142.395,12.272 110.395,41.068C 89.5987,60.272 70.3947,86.6667 55.1973,109.068C 53.5987,111.469 52.796,114.667 52.796,117.871C 52.796,126.667 60,133.068 68,133.068C 76.796,133.068 79.1973,127.469 83.1973,121.068C 87.1973,114.667 92.796,108.272 98.3947,102.667C 119.197,82.6667 148.796,72.272 177.599,74.6667C 153.599,141.871 119.197,219.469 70.3947,272.272C 50.3947,294.667 16,317.871 8.00001,348.272C 1.01725e-005,379.469 32,388.272 56.796,378.667C 88,366.667 106.395,334.667 122.395,307.469C 141.599,273.068 158.395,238.667 173.599,201.871C 188.796,166.667 204,130.667 218.395,95.4693C 227.197,74.6667 230.395,73.8706 252,73.8706L 312,73.8706C 289.599,122.667 268,172.272 248,222.667C 232.796,261.068 205.599,316.272 224.796,357.871C 244,398.667 298.395,383.469 328,362.667C 358.395,341.871 377.599,307.469 394.395,275.469C 397.599,269.871 400.796,262.667 398.395,256.272C 396,250.667 390.395,246.667 384,246.667C 370.395,246.667 367.197,263.469 363.197,273.871C 355.197,290.667 336,306.667 316.796,303.469C 271.197,297.068 312,216.272 320,194.667C 328,172.272 337.599,149.871 347.197,128.272C 352.796,115.469 357.599,102.667 364,90.6667C 372,74.6667 372,75.4693 390.395,74.6667C 406.395,73.8706 450.395,81.8706 464,73.068C 474.395,65.8706 481.599,39.4693 486.395,20.272C 488,13.8706 486.395,8.27197 482.395,5.06799 Z "/>
+    </GeometryGroup>
+
+    <GeometryGroup x:Key="IfSVG">
+        <PathGeometry Figures="M 5,0.666667L 9,0.666667L 9,14.6667L 5,14.6667L 5,0.666667 Z "/>
+        <PathGeometry Figures="M 0,5.66667L 4,5.66667L 4,14.6667L 0,14.6667L 0,5.66667 Z "/>
+        <PathGeometry Figures="M 2,0.666667C 0.896,0.666667 0,1.56267 0,2.66667C 0,3.77067 0.896,4.66667 2,4.66667C 3.104,4.66667 4,3.77067 4,2.66667C 4,1.56267 3.104,0.666667 2,0.666667 Z "/>
+        <PathGeometry Figures="M 10,0.666667L 14,0.666667L 14,4.66667L 10,4.66667L 10,0.666667 Z "/>
+        <PathGeometry Figures="M 10,5.66667L 14,5.66667L 14,9.66667L 10,9.66667L 10,5.66667 Z "/>
+    </GeometryGroup>
+
+</ResourceDictionary>

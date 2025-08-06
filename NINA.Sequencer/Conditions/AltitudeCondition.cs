@@ -20,6 +20,10 @@ using System;
 using System.ComponentModel.Composition;
 using NINA.Sequencer.SequenceItem.Utility;
 using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Sequencer.Validations;
+using NINA.Sequencer.SequenceItem.Telescope;
+using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -29,48 +33,42 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AltitudeCondition : LoopForAltitudeBase {
+    public class AltitudeCondition : LoopForAltitudeBase, IValidatable {
         
-        private bool hasDsoParent;
-
         [ImportingConstructor]
         public AltitudeCondition(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
-            Data.Offset = 30;
             Data.Comparator = Core.Enum.ComparisonOperatorEnum.LESS_THAN;
         }
         private AltitudeCondition(AltitudeCondition cloneMe) : this(cloneMe.ProfileService) {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new AltitudeCondition(this) {
-                Data = Data.Clone()
-            };
+        public override AltitudeCondition Clone() {
+            AltitudeCondition clone = new AltitudeCondition(this);
+            UpdateExpressions(clone, this);
+            OffsetExpression.Default = 30;
+            clone.Data = Data.Clone();
+            return clone;
         }
 
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
+        [OnSerializing]
+        public void OnSerializing (StreamingContext context) {
+            Data.Offset = OffsetExpression.Value;
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized (StreamingContext context) {
+            base.OnDeserialized(context);
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
             }
-        }
-
-        private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            CalculateExpectedTime();
         }
 
         public override void AfterParentChanged() {
-            var coordinates = RetrieveContextCoordinates(this.Parent)?.Coordinates;
-            if (coordinates != null) {
-                Data.Coordinates.Coordinates = coordinates;
-                HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
-            RunWatchdogIfInsideSequenceRoot();
+            base.AfterParentChanged();
+            Validate();
         }
+
         public override string ToString() {
             return $"Condition: {nameof(AltitudeCondition)}, Altitude >= {Data.TargetAltitude}";
         }
@@ -88,6 +86,12 @@ namespace NINA.Sequencer.Conditions {
         public override void CalculateExpectedTime() {
             Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: true, 30, GetCurrentAltitude);
+        }
+
+        public bool Validate() {
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, OffsetExpression);
+            RaisePropertyChanged("Issues");
+            return true;
         }
     }
 }

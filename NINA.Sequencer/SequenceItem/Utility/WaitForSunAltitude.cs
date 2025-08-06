@@ -26,6 +26,11 @@ using NINA.Core.Locale;
 using NINA.Sequencer.Validations;
 using NINA.Astrometry.RiseAndSet;
 using Nito.AsyncEx;
+using Nikon;
+using NINA.Sequencer.Generators;
+using Microsoft.Extensions.Options;
+using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -35,7 +40,8 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForSunAltitude : WaitForAltitudeBase, IValidatable {
+    [UsesExpressions]
+    public partial class WaitForSunAltitude : WaitForAltitudeBase, IValidatable {
 
         [ImportingConstructor]
         public WaitForSunAltitude(IProfileService profileService) : base(profileService, useCustomHorizon: false) {
@@ -45,10 +51,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new WaitForSunAltitude(this) {
-                Data = Data.Clone()
-            };
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
+        }
+
+        partial void AfterClone(WaitForSunAltitude clone) {
+            clone.Data = Data.Clone();
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -77,6 +88,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
                 default:
                     return Data.CurrentAltitude <= GetDataOffset();
+            }
+        }
+
+        [IsExpression(Default = 30, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
+        private double offset;
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                Data.Offset = expr.Value;
             }
         }
 
@@ -121,9 +141,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return $"Category: {Category}, Item: {nameof(WaitForSunAltitude)}, TargetAltitude: {Data.TargetAltitude}, Comparator: {Data.Comparator}, CurrentSunAltitude: {Data.CurrentAltitude}";
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public bool Validate() {
             CalculateExpectedTime();
-            return true;
+            Expression.ValidateExpressions(Issues, OffsetExpression);
+            return Issues.Count == 0;
         }
 
         private double GetDataOffset() {

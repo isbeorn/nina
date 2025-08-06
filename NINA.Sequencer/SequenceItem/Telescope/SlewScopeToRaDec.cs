@@ -14,21 +14,24 @@
 
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Sequencer.Container;
 using NINA.Sequencer.Validations;
 using NINA.Astrometry;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Core.Utility;
+using Parlot.Fluent;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Telescope {
 
@@ -38,51 +41,27 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Telescope")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewScopeToRaDec : SequenceItem, IValidatable {
+
+    public class SlewScopeToRaDec : CoordinatesInstruction, IValidatable {
 
         [ImportingConstructor]
-        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
+        public SlewScopeToRaDec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) :base() {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
-            Coordinates = new InputCoordinates();
         }
 
         private SlewScopeToRaDec(SlewScopeToRaDec cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator) {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SlewScopeToRaDec(this) {
-                Coordinates = Coordinates?.Clone()
-            };
+        public override SlewScopeToRaDec Clone() {
+            SlewScopeToRaDec clone = new SlewScopeToRaDec(this);
+            UpdateExpressions(clone, this);
+            return clone;
         }
 
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
-
-        private bool inherited;
-
-        [JsonProperty]
-        public bool Inherited {
-            get => inherited;
-            set {
-                inherited = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public InputCoordinates Coordinates { get; set; }
-
-        private IList<string> issues = new List<string>();
-
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if(telescopeMediator.GetInfo().AtPark) {
@@ -98,24 +77,19 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public override void AfterParentChanged() {
-            var coordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (coordinates != null) {
-                Coordinates.Coordinates = coordinates.Coordinates;
-                Inherited = true;
-            } else {
-                Inherited = false;
-            }
+            base.AfterParentChanged();
             Validate();
         }
 
         public bool Validate() {
-            var i = new List<string>();
+            Issues.Clear();
             var info = telescopeMediator.GetInfo();
             if (!info.Connected) {
-                i.Add(Loc.Instance["LblTelescopeNotConnected"]);
-            } 
-            Issues = i;
-            return i.Count == 0;
+                Issues.Add(Loc.Instance["LblTelescopeNotConnected"]);
+            }
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         public override string ToString() {

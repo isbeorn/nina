@@ -11,109 +11,18 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Telescope"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
     <DataTemplate DataType="{x:Type local:SlewScopeToRaDec}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-
-                <StackPanel
-                    DataContext="{Binding Coordinates}"
-                    Orientation="Horizontal"
-                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext.Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:HoursRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">h</TextBlock>
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:MinutesRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="RASeconds" StringFormat="N1" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:SecondsRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                    <TextBlock
-                        Margin="7.5,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="|" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
-                                <Binding Path="NegativeDec" />
-                                <Binding Path="DecDegrees">
-                                    <Binding.ValidationRules>
-                                        <rules:DegreesRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </MultiBinding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">d</TextBlock>
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:MinutesRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="DecSeconds" StringFormat="N1" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:SecondsRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                </StackPanel>
+                <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:SlewScopeToAltAz}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -122,7 +31,7 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
@@ -138,7 +47,7 @@
                     <TextBlock VerticalAlignment="Center">d</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AltMinutes" UpdateSourceTrigger="LostFocus">
@@ -151,7 +60,7 @@
                     <TextBlock VerticalAlignment="Center">m</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AltSeconds" UpdateSourceTrigger="LostFocus">
@@ -162,6 +71,7 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AltExpression, Mode=TwoWay}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -170,7 +80,7 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAzimuth}" />
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzDegrees" UpdateSourceTrigger="LostFocus">
@@ -187,7 +97,7 @@
                     <TextBlock VerticalAlignment="Center">d</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzMinutes" UpdateSourceTrigger="LostFocus">
@@ -200,7 +110,7 @@
                     <TextBlock VerticalAlignment="Center">m</TextBlock>
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,0,0"
+                        Margin="5,4,0,0"
                         TextAlignment="Right">
                         <TextBox.Text>
                             <Binding Path="AzSeconds" UpdateSourceTrigger="LostFocus">
@@ -211,6 +121,7 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AzExpression, Mode=TwoWay}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

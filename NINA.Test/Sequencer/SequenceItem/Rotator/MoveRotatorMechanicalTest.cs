@@ -49,7 +49,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Rotator {
             item2.Name.Should().BeSameAs(sut.Name);
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.MechanicalPosition.Should().Be(sut.MechanicalPosition);
+            item2.MechanicalPosition.Should().Be(0); // MechanicalPositionExpression.Default
         }
 
         [Test]

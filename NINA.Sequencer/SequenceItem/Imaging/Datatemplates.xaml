@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Imaging"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -25,16 +26,7 @@
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
-        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTime}" />
-        <ninactrl:UnitTextBox
-            MinWidth="40"
-            Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            VerticalContentAlignment="Center"
-            Text="{Binding ExposureTime}"
-            TextAlignment="Right"
-            Unit="s" />
-
+        <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExposureTimeExpression}" Unit="s" />
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"
@@ -112,7 +104,7 @@
         </WrapPanel>
 
         <!--  Free Gain  -->
-        <WrapPanel Orientation="Horizontal">
+        <WrapPanel Orientation="Horizontal" MinWidth="40">
             <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding
@@ -126,39 +118,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-            <ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Center"
-                Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
-                <ninactrl:HintTextBox.HintText>
-                    <Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultGain"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />
-                </ninactrl:HintTextBox.HintText>
-                <ninactrl:HintTextBox.Text>
-                    <Binding
-                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                        Mode="TwoWay"
-                        Path="Gain"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:ShortRangeRule>
-                                <util:ShortRangeRule.ValidRange>
-                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                </util:ShortRangeRule.ValidRange>
-                            </util:ShortRangeRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>
+            <logic:ExprControl Label="{ns:Loc LblGain}" Exp="{Binding GainExpression, Mode=TwoWay}"/>
         </WrapPanel>
 
         <!--  Offset  -->
@@ -177,39 +137,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-            <ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Center"
-                Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
-                <ninactrl:HintTextBox.HintText>
-                    <Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultOffset"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />
-                </ninactrl:HintTextBox.HintText>
-                <ninactrl:HintTextBox.Text>
-                    <Binding
-                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                        Mode="TwoWay"
-                        Path="Offset"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:ShortRangeRule>
-                                <util:ShortRangeRule.ValidRange>
-                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                </util:ShortRangeRule.ValidRange>
-                            </util:ShortRangeRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>
+            <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" />
         </WrapPanel>
     </WrapPanel>
 
@@ -236,7 +164,7 @@
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                     <TextBlock VerticalAlignment="Center" Text="x" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -253,7 +181,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Conditions[0].CompletedIterations}" />
                     <TextBlock VerticalAlignment="Center" Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                 </StackPanel>
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
@@ -263,19 +191,12 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="#" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Conditions[0].Iterations}"
-                        TextAlignment="Right" />
+                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -297,7 +218,7 @@
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
                     <TextBlock VerticalAlignment="Center" Text="x" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -323,18 +244,13 @@
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:SmartExposure}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="#" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Conditions[0].Iterations}"
-                        TextAlignment="Right" />
+                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -351,40 +267,37 @@
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
+                    <TextBlock DataContext="{Binding Items[0].XfilterExpression}" Margin="5,2,0,0"
+                        Text="&#x26A0;" 
+                        Foreground="{Binding InfoButtonColor}"
+                        FontSize="18"
+                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                     />
                     <ComboBox
-                        Margin="5,0,0,0"
-                        DisplayMemberPath="Name"
-                        SelectedItem="{Binding Items[0].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
-                        SelectedValuePath="Name">
-                        <ComboBox.Resources>
-                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
-                        </ComboBox.Resources>
-                        <ComboBox.ItemsSource>
-                            <CompositeCollection>
-                                <x:Static Member="filter:NullFilter.Instance" />
-                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
-                            </CompositeCollection>
-                        </ComboBox.ItemsSource>
-                    </ComboBox>
+                       Margin="5,0,0,0"
+                       IsEditable="True"
+                       Text="{Binding Items[0].ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                       SelectionChanged="FilterSelectionChanged">
+                       <ComboBox.Resources>
+                           <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                       </ComboBox.Resources>
+                       <ComboBox.ItemsSource>
+                           <CompositeCollection>
+                               <x:Static Member="filter:NullFilter.Instance" />
+                               <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                           </CompositeCollection>
+                       </ComboBox.ItemsSource>
+                   </ComboBox>
+                   <logic:ExprComboControl
+                       Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" 
+                       Combo="{Binding Path=Items[0].FilterNames}"
+                       />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblDitherEveryNoFrame}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding Triggers[0].AfterExposures}">
-                        <TextBox.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_Imaging_SmartExposure_DitherTooltip}" />
-                        </TextBox.ToolTip>
-                    </TextBox>
+                    <logic:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding Triggers[0].AfterExposuresExpression}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
@@ -417,29 +330,12 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" />
-
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROI}">
-                        <TextBlock.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROIPercentageTooltip}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding ROI, Converter={StaticResource PercentageConverter}}"
-                        TextAlignment="Right"
-                        Unit="%">
-                        <ninactrl:UnitTextBox.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblROIPercentageTooltip}" />
-                        </ninactrl:UnitTextBox.ToolTip>
-                    </ninactrl:UnitTextBox>
+                    <logic:ExprControl Label="{ns:Loc LblROI}" Exp="{Binding ROIExpression}" Unit="%" ToolTip="{ns:Loc LblROIPercentageTooltip}"/>
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

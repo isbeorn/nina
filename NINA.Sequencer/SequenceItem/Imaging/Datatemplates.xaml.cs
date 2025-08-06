@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Sequencer.SequenceItem.FilterWheel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -19,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -28,5 +30,13 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public Datatemplates() {
             InitializeComponent();
         }
+
+        public void FilterSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox cb = (ComboBox)sender;
+            if (cb.DataContext is SwitchFilter sw && cb.SelectedIndex >= 0) {
+                sw.SelectedFilter = cb.SelectedIndex;
+            }
+        }
+
     }
 }
