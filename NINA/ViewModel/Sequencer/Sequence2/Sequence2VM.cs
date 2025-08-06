@@ -108,7 +108,7 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         public ISymbolBrokerVM SymbolBroker;
-        
+
         private ISequencer sequencer;
         public ISequencer Sequencer {
             get => sequencer;
@@ -466,9 +466,9 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private static readonly int MAX_SYMBOLS = 100;
-        
+
         private List<Symbol> dataSymbols;
-        
+
         public List<Symbol> DataSymbols {
             get => dataSymbols;
             set {

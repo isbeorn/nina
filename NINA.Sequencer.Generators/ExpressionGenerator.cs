@@ -192,8 +192,7 @@ namespace NINA.Sequencer.Generators {
                         hasValidator = true;
                     } else if (kvp.Key == "Proxy") {
                         proxy = (string)kvp.Value.Value;
-                    } else if (kvp.Key == "JsonIgnore") {
-                        jsonIgnore = (bool)kvp.Value.Value;
+                        jsonIgnore = true;
                     } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
                         var values = kvp.Value.Values;
                         double min = (double)values[0].Value;
@@ -348,13 +347,6 @@ namespace {namespaceName}
         public bool HasValidator {
             get { return _hasValidator; }
             set { _hasValidator = value; }
-        }
-
-
-        public bool _jsonIgnore = false;
-        public bool JsonIgnore {
-            get { return _jsonIgnore; }
-            set { _jsonIgnore = value; }
         }
 
         public string _proxy = "";
