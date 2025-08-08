@@ -1,0 +1,17 @@
+pipelines:
+  custom:   
+    unittests:
+        - step:
+            name: dotnet unit tests
+            clone:
+                lfs: true
+            image: mcr.microsoft.com/dotnet/sdk:8.0
+            caches:
+              - dotnetcore
+            script:              
+              # Clone extenral folder LFS files
+              - git submodule update --init --recursive
+              # Build and run test project
+              - dotnet restore
+              - dotnet build -c Debug
+              - dotnet test ./NINA.Test/NINA.Test.csproj -c Debug

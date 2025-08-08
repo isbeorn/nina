@@ -1,0 +1,66 @@
+﻿<UserControl
+    x:Class="NINA.WPF.Base.View.BrowserPopupButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.WPF.Base.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--  Converter to calculate the height of the Popup  -->
+        <local:BrowserPopupHeightConverter x:Key="BrowserPopupHeightConverter" />
+        <!--  Converter to calculate the width of the Popup  -->
+        <local:BrowserPopupWidthConverter x:Key="BrowserPopupWidthConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <ToggleButton
+            x:Name="ToggleButtonPopup"
+            Width="20"
+            Margin="5,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Checked="ToggleButtonPopup_Checked"
+            Style="{StaticResource BackgroundToggleButton}"
+            Unchecked="ToggleButtonPopup_Unchecked">
+            <Path
+                Data="{Binding ButtonImage, ElementName=UC}"
+                Fill="{StaticResource PrimaryBrush}"
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
+        </ToggleButton>
+
+
+        <Popup
+            Name="PopupControl"
+            AllowsTransparency="True"
+            Placement="Right"
+            PlacementTarget="{Binding ElementName=ToggleButtonPopup}"
+            PopupAnimation="None"
+            StaysOpen="True">
+            <Border
+                Background="Beige"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="2"
+                LostFocus="Popup_LostFocus"
+                LostKeyboardFocus="PopupControl_LostKeyboardFocus"
+                PreviewKeyUp="PopupControl_PreviewKeyUp">
+                <Border.Width>
+                    <MultiBinding Converter="{StaticResource BrowserPopupWidthConverter}">
+                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=Window}" />
+                        <Binding ElementName="UC" Path="WindowWidthFraction" />
+                    </MultiBinding>
+                </Border.Width>
+                <Border.Height>
+                    <MultiBinding Converter="{StaticResource BrowserPopupHeightConverter}">
+                        <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Window}" />
+                        <Binding ElementName="UC" Path="WindowHeightFraction" />
+                    </MultiBinding>
+                </Border.Height>
+                <local:Browser x:Name="PopupBrowser" Source="{Binding Source, ElementName=UC}" />
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

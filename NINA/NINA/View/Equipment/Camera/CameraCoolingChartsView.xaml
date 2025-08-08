@@ -1,0 +1,108 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Equipment.CameraCoolingChartsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Contrib.Wpf"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <oxy:Plot
+            HorizontalAlignment="Stretch"
+            Background="{StaticResource BackgroundBrush}"
+            DataContext="{Binding}"
+            InvalidateFlag="{Binding CoolerHistoryChangeId}"
+            PlotAreaBackground="{StaticResource BackgroundBrush}"
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+            <oxy:Plot.Legends>
+                <oxy:Legend
+                    LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                    LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                    LegendOrientation="Vertical"
+                    LegendPosition="BottomLeft"
+                    LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+            </oxy:Plot.Legends>
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis
+                    Key="Temperature"
+                    Title="{ns:Loc LblChipTemp}"
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                    MajorGridlineStyle="LongDash"
+                    MajorStep="10"
+                    Maximum="{Binding CoolerHistoryMax}"
+                    MaximumDataMargin="5"
+                    Minimum="{Binding CoolerHistoryMin}"
+                    MinimumDataMargin="5"
+                    Position="Right"
+                    StringFormat="0 &#176;C"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                <oxy:LinearAxis
+                    Key="CoolingPower"
+                    Title="{ns:Loc LblCoolerPower}"
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Maximum="100"
+                    MaximumDataMargin="5"
+                    Minimum="0"
+                    MinimumDataMargin="5"
+                    Position="Left"
+                    StringFormat="0 '%'"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}" />
+                <oxy:DateTimeAxis
+                    Title="{ns:Loc LblTime}"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Position="Bottom"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    TitleColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries
+                    Title="{ns:Loc LblChipTemp}"
+                    DataFieldX="Date"
+                    DataFieldY="Temperature"
+                    ItemsSource="{Binding CoolerHistory}"
+                    YAxisKey="Temperature" />
+                <oxy:LineSeries
+                    Title="{ns:Loc LblCoolerPower}"
+                    DataFieldX="Date"
+                    DataFieldY="Power"
+                    ItemsSource="{Binding CoolerHistory}"
+                    Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}"
+                    YAxisKey="CoolingPower" />
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

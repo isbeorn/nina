@@ -1,0 +1,52 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    x:Class="NINA.Sequencer.SequenceItem.FilterWheel.Datatemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.FilterWheel"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:view="clr-namespace:NINA.View.Sequencer">
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Filter, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Filter.Name}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type local:SwitchFilter}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                    <ComboBox
+                        Margin="5,0,0,0"
+                        DisplayMemberPath="Name"
+                        SelectedItem="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
+                        SelectedValuePath="Name">
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <x:Static Member="filter:NullFilter.Instance" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+</ResourceDictionary>

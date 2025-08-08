@@ -1,0 +1,199 @@
+﻿<Project>
+  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <PropertyGroup>
+    <OutputName>NINASetup</OutputName>
+    <Name>NINA.Setup</Name>
+    <Configurations>Debug;Release;SignedRelease</Configurations>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x86' ">
+    <SignOutput>True</SignOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x64' ">
+    <SignOutput>True</SignOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x64' ">
+    <SignOutput>True</SignOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Images\WixUIBannerBmp.bmp" />
+    <Content Include="Images\WixUIDialogBmp.bmp" />
+    <Content Include="LICENSE.rtf" />
+    <Content Include="Logo_Nina.ico" />
+    <Content Include="NINASetup.wax" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nikoncswrapper\nikoncswrapper.csproj">
+      <Name>nikoncswrapper</Name>
+      <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Astrometry\NINA.Astrometry.csproj">
+      <Name>NINA.Astrometry</Name>
+      <Project>{57b7cc6e-a410-4866-9bf9-278b94118e3d}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Core\NINA.Core.csproj">
+      <Name>NINA.Core</Name>
+      <Project>{f906e54b-9ce8-4a66-856b-e876dd305f2b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj">
+      <Name>NINA.CustomControlLibrary</Name>
+      <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Equipment\NINA.Equipment.csproj">
+      <Name>NINA.Equipment</Name>
+      <Project>{20b7c98e-f7f8-497e-b5e5-02fa99d4b98b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Image\NINA.Image.csproj">
+      <Name>NINA.Image</Name>
+      <Project>{2e7b7c6f-fb8e-49f2-9579-6d16cd263e64}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj">
+      <Name>NINA.MGEN</Name>
+      <Project>{d897bffd-7777-44f5-9100-1ff0db3b032f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Platesolving\NINA.PlateSolving.csproj">
+      <Name>NINA.PlateSolving</Name>
+      <Project>{a721d420-3c8e-4e96-9558-37b50801ff6b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Plugin\NINA.Plugin.csproj">
+      <Name>NINA.Plugin</Name>
+      <Project>{03ace0fa-069a-43cf-8b20-7bb3c32d8c1d}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Profile\NINA.Profile.csproj">
+      <Name>NINA.Profile</Name>
+      <Project>{8540150e-7ff0-4f7b-a714-0f6abdb1ac60}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.Sequencer\NINA.Sequencer.csproj">
+      <Name>NINA.Sequencer</Name>
+      <Project>{537a7a82-8c12-45e9-abad-b6b3729d6cb1}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj">
+      <Name>NINA.WPF.Base</Name>
+      <Project>{a407425a-4bf0-429e-8867-045c4cd10d3f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NINA\NINA.csproj">
+      <Name>NINA</Name>
+      <Project>{7dec1b46-9701-4e49-90c1-f4427845669e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images" />
+  </ItemGroup>
+  <!--<Target Name="SignCabs">
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;%(SignCabs.FullPath)&quot;" />
+  </Target>
+  <Target Name="SignMsi">
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;%(SignMsi.FullPath)&quot;" />
+  </Target>-->
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- Harvest Documentation -->
+  <PropertyGroup>
+    <HarvestDirectorySuppressUniqueIds>true</HarvestDirectorySuppressUniqueIds>
+    <HarvestFileSuppressUniqueIds>true</HarvestFileSuppressUniqueIds>
+  </PropertyGroup>
+  <ItemGroup>
+    <HarvestDirectory Include="..\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs">
+      <ComponentGroupName>DocumentationComponent</ComponentGroupName>
+      <DirectoryRefId>DocumentationDirectory</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+      <SuppressCom>true</SuppressCom>
+    </HarvestDirectory>
+    <BindPath Include="..\NINA\bin\$(Configuration)\net8.0-windows\win-x64\docs" />
+  </ItemGroup>
+  <!-- /Harvest Documentation  -->
+</Project>

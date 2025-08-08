@@ -1,0 +1,742 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Equipment.FlatDeviceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Equipment"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:FilterPositionToFilterConverter x:Key="FilterPositionToFilterConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GroupBox>
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblFlatDevice}" />
+                    <equip:Connector
+                        Grid.Column="1"
+                        CancelCommand="{Binding CancelConnectCommand}"
+                        ConnectCommand="{Binding ConnectCommand}"
+                        Connected="{Binding FlatDeviceInfo.Connected}"
+                        Devices="{Binding DeviceChooserVM.Devices}"
+                        DisconnectCommand="{Binding DisconnectCommand}"
+                        HasSetupDialog="{Binding DeviceChooserVM.SelectedDevice.HasSetupDialog}"
+                        RefreshCommand="{Binding RescanDevicesCommand}"
+                        SelectedDevice="{Binding DeviceChooserVM.SelectedDevice, Mode=TwoWay}"
+                        SetupCommand="{Binding DeviceChooserVM.SetupDialogCommand}"
+                        SetupDialogOpen="{Binding DeviceChooserVM.SetupDialogOpen}" />
+                </Grid>
+            </GroupBox.Header>
+            <Grid>
+                <StackPanel>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.Name}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblDescription}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.Description}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverInfo}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.DriverInfo}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverVersion}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.DriverVersion}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceLight}" />
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    x:Name="LightStatus"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding FlatDeviceInfo.LightOn}"
+                                    IsEnabled="False"
+                                    Style="{StaticResource CheckmarkCheckbox}" />
+                                <Button
+                                    Grid.Column="1"
+                                    MinWidth="80"
+                                    Command="{Binding ToggleLightCommand}"
+                                    CommandParameter="{Binding Path=IsChecked, ElementName=LightStatus, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Run Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblToggle}" />
+                                </Button>
+                            </Grid>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.LocalizedLightOnState}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceBrightness}" />
+                                <StackPanel Opacity="0.4" Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="(" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding FlatDeviceInfo.MinBrightness}" />
+                                    <TextBlock VerticalAlignment="Center" Text="-" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding FlatDeviceInfo.MaxBrightness}" />
+                                    <TextBlock VerticalAlignment="Center" Text=")" />
+                                </StackPanel>
+                            </StackPanel>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ninactrl:IntStepperControl
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                    MaxValue="{Binding FlatDeviceInfo.MaxBrightness}"
+                                    MinValue="{Binding FlatDeviceInfo.MinBrightness}"
+                                    StepSize="1"
+                                    Value="{Binding Brightness, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding FlatDeviceInfo.Brightness}" />
+                                <Button
+                                    Grid.Column="2"
+                                    MinWidth="80"
+                                    Margin="5,0,0,0"
+                                    Command="{Binding SetBrightnessCommand}"
+                                    CommandParameter="{Binding Brightness}"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceSetBrightness}" />
+                                </Button>
+                            </Grid>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCover}" />
+                            <StackPanel MinHeight="25" Orientation="Horizontal">
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <Button
+                                        MinWidth="80"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding OpenCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceOpenButton}" />
+                                    </Button>
+                                </Grid>
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <Button
+                                        MinWidth="80"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding CloseCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceClose}" />
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.LocalizedCoverState}" />
+                        </UniformGrid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="1"
+            Grid.Column="0"
+            Header="{ns:Loc LblSettings}">
+            <Grid>
+                <StackPanel Orientation="Vertical">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Top"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceSettleTime}" />
+
+                            <ninactrl:UnitTextBox
+                                Height="25"
+                                MinWidth="65"
+                                Margin="5,0,0,0"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center"
+                                IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                Unit="ms">
+                                <TextBox.Text>
+                                    <Binding
+                                        Mode="TwoWay"
+                                        Path="ActiveProfile.FlatDeviceSettings.SettleTime"
+                                        Source="{StaticResource ProfileService}"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                    </Border>
+                    <Grid>
+                        <Grid.Resources>
+                            <DataTemplate x:Key="Default">
+                                <Grid />
+                            </DataTemplate>
+                            <DataTemplate x:Key="Failed">
+                                <TextBlock
+                                    Margin="5"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="Failed to load plugin data template" />
+                            </DataTemplate>
+                            <wpfutil:GenericTemplateSelector
+                                x:Key="ContentSelector"
+                                Default="{StaticResource Default}"
+                                FailedToLoadTemplate="{StaticResource Failed}"
+                                Postfix="{x:Static wpfutil:DataTemplatePostfix.FlatDeviceSettings}" />
+                        </Grid.Resources>
+                        <ContentControl
+                            Content="{Binding}"
+                            ContentTemplateSelector="{StaticResource ContentSelector}"
+                            DataContext="{Binding FlatDevice}" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1">
+            <GroupBox.Resources>
+                <CollectionViewSource x:Key="TrainedExposureSettings" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FlatDeviceSettings.TrainedFlatExposureSettings}">
+                    <CollectionViewSource.SortDescriptions>
+                        <scm:SortDescription PropertyName="Filter" />
+                        <scm:SortDescription PropertyName="Gain" />
+                    </CollectionViewSource.SortDescriptions>
+                </CollectionViewSource>
+            </GroupBox.Resources>
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        MinHeight="40"
+                        Margin="0,10,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblFlatDeviceTrainedFilterTimes}" />
+                    <Button
+                        Grid.Column="1"
+                        Width="35"
+                        Height="35"
+                        Margin="5,0,5,0"
+                        Command="{Binding AddTrainedSettingCommand}"
+                        CommandParameter="{Binding Text, ElementName=GainInput}"
+                        Style="{StaticResource BackgroundButton}">
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource AddSVG}"
+                            Fill="{StaticResource PrimaryBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Button>
+                </Grid>
+            </GroupBox.Header>
+
+
+            <DataGrid
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                HeadersVisibility="Column"
+                HorizontalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding Source={StaticResource TrainedExposureSettings}}"
+                SelectedItem="{Binding SelectedTrainedExposureSetting}"
+                SelectionMode="Single"
+                VerticalScrollBarVisibility="Auto">
+                <DataGrid.Resources>
+                    <util:BindingProxy x:Key="CameraInfo" Data="{Binding DataContext.CameraInfo, RelativeSource={RelativeSource AncestorType={x:Type local:FlatDeviceView}}}" />
+                </DataGrid.Resources>
+                <i:Interaction.Behaviors>
+                    <behavior:BubbleScrollEvent />
+                </i:Interaction.Behaviors>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblFilter}">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox
+                                    Margin="5,0,0,0"
+                                    DisplayMemberPath="Name"
+                                    SelectedItem="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterPositionToFilterConverter}, ConverterParameter={StaticResource ProfileService}}"
+                                    SelectedValuePath="Position">
+                                    <ComboBox.Resources>
+                                        <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                                    </ComboBox.Resources>
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Filter, Converter={StaticResource FilterPositionToFilterConverter}, ConverterParameter={StaticResource ProfileService}}"
+                                    TextAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblBinning}">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+
+                                <ComboBox
+                                    Margin="5,0,0,0"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{Binding Data.BinningModes, Source={StaticResource CameraInfo}, Converter={StaticResource DefaultBinningModesConverter}}"
+                                    SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedValuePath="Name" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Binning.Name}"
+                                    TextAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblGain}">
+                        <DataGridTemplateColumn.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                    Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                    Path="Data.Gains"
+                                    Source="{StaticResource CameraInfo}" />
+                                <Binding
+                                    Converter="{StaticResource BooleanToVisibilityCollapsedConverter}"
+                                    Path="Data.Connected"
+                                    Source="{StaticResource CameraInfo}" />
+                            </PriorityBinding>
+                        </DataGridTemplateColumn.Visibility>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox
+                                    Margin="5,0,0,0"
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.SelectedValue>
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                            Mode="TwoWay"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </ComboBox.SelectedValue>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--  Free Gain  -->
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblGain}">
+                        <DataGridTemplateColumn.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                    Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                                    Path="Data.Gains"
+                                    Source="{StaticResource CameraInfo}" />
+                            </PriorityBinding>
+                        </DataGridTemplateColumn.Visibility>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ninactrl:HintTextBox
+                                    MinWidth="40"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    TextAlignment="Right">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultGain"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblOffset}">
+                        <DataGridTemplateColumn.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                                <Binding
+                                    Converter="{StaticResource InverseBooleanConverter}"
+                                    Path="Data.Connected"
+                                    Source="{StaticResource CameraInfo}" />
+                                <Binding Path="Data.CanSetOffset" Source="{StaticResource CameraInfo}" />
+                            </MultiBinding>
+                        </DataGridTemplateColumn.Visibility>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ninactrl:HintTextBox
+                                    MinWidth="40"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    TextAlignment="Right">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultOffset"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="Offset"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Offset"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultOffset"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblFlatDeviceBrightness}">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ninactrl:StepperControl
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    AddSVG="{StaticResource AddSVG}"
+                                    MinValue="0"
+                                    SnapsToDevicePixels="True"
+                                    StepSize="1"
+                                    SubstractSVG="{StaticResource SubstractSVG}"
+                                    UseLayoutRounding="True"
+                                    Value="{Binding Brightness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Brightness}"
+                                    TextAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblTime}">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ninactrl:StepperControl
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    AddSVG="{StaticResource AddSVG}"
+                                    MinValue="0"
+                                    StepSize="1"
+                                    SubstractSVG="{StaticResource SubstractSVG}"
+                                    Value="{Binding Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Time, Converter={StaticResource UnitConverter}, ConverterParameter=' s|2'}"
+                                    TextAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="40"
+                        Header=""
+                        IsReadOnly="True">
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DataContext.RemoveTrainedSettingCommand, RelativeSource={RelativeSource AncestorType={x:Type local:FlatDeviceView}}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource BackgroundButton}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource TrashCanSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</UserControl>

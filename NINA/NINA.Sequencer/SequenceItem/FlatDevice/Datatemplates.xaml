@@ -1,0 +1,718 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    x:Class="NINA.Sequencer.SequenceItem.FlatDevice.Datatemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.FlatDevice"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:view="clr-namespace:NINA.View.Sequencer">
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.FlatDevice.SetBrightness_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Brightness}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type local:SetBrightness}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceBrightness}" />
+                    <ninactrl:StepperControl
+                        Margin="5,0,0,0"
+                        MinValue="0"
+                        StepSize="1"
+                        Value="{Binding Brightness, Mode=TwoWay}" />
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type local:ToggleLight}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding OnOff}" />
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemProgressContent>
+                <WrapPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Items[4].Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Items[4].Conditions[0].Iterations}" />
+                </WrapPanel>
+            </mini:MiniSequenceItem.SequenceItemProgressContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemProgressContent>
+                <WrapPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Items[4].Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Items[4].Conditions[0].Iterations}" />
+                </WrapPanel>
+            </mini:MiniSequenceItem.SequenceItemProgressContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
+    <WrapPanel
+        x:Key="TakeExposureDetails"
+        x:Shared="false"
+        Orientation="Horizontal">
+        <TextBlock
+            Margin="5,0,0,0"
+            VerticalAlignment="Center"
+            Text="{ns:Loc LblAmount}" />
+        <TextBox
+            MinWidth="40"
+            Margin="5,0,0,0"
+            VerticalAlignment="Center"
+            Text="{Binding Conditions[0].Iterations}"
+            TextAlignment="Right" />
+        <TextBlock
+            Margin="7.5,0,7.5,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="|" />
+
+        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+
+        <ComboBox
+            Margin="5,0,0,0"
+            DisplayMemberPath="Name"
+            SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext.Items[2].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
+            SelectedValuePath="Name">
+            <ComboBox.Resources>
+                <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+            </ComboBox.Resources>
+            <ComboBox.ItemsSource>
+                <CompositeCollection>
+                    <x:Static Member="filter:NullFilter.Instance" />
+                    <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                </CompositeCollection>
+            </ComboBox.ItemsSource>
+        </ComboBox>
+
+        <TextBlock
+            Margin="7.5,0,7.5,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="|" />
+
+        <StackPanel DataContext="{Binding Items[0]}" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+            </StackPanel.Resources>
+
+            <TextBlock
+                Margin="7.5,0,7.5,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="|" />
+
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
+            <ComboBox
+                Margin="5,0,0,0"
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Name" />
+
+            <!--  List of Gain  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <PriorityBinding>
+                        <Binding
+                            Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                            Path="Data.Gains"
+                            Source="{StaticResource CameraInfo}" />
+                        <Binding
+                            Converter="{StaticResource BooleanToVisibilityCollapsedConverter}"
+                            Path="Data.Connected"
+                            Source="{StaticResource CameraInfo}" />
+                    </PriorityBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                    Margin="7.5,0,7.5,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                <ComboBox
+                    Margin="5,0,0,0"
+                    DisplayMemberPath="Text"
+                    IsSynchronizedWithCurrentItem="True"
+                    SelectedValuePath="Text">
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                    <ComboBox.SelectedValue>
+                        <MultiBinding
+                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                            Mode="TwoWay"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding
+                                Mode="TwoWay"
+                                Path="Gain"
+                                UpdateSourceTrigger="PropertyChanged" />
+                            <Binding
+                                Mode="OneWay"
+                                Path="Data.DefaultGain"
+                                Source="{StaticResource CameraInfo}"
+                                UpdateSourceTrigger="PropertyChanged" />
+                        </MultiBinding>
+                    </ComboBox.SelectedValue>
+                </ComboBox>
+            </WrapPanel>
+
+            <!--  Free Gain  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <PriorityBinding FallbackValue="Visible">
+                        <Binding
+                            Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                            Path="Data.Gains"
+                            Source="{StaticResource CameraInfo}" />
+                    </PriorityBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                    Margin="7.5,0,7.5,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                <ninactrl:HintTextBox
+                    MinWidth="40"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Right"
+                    VerticalContentAlignment="Center"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    TextAlignment="Right">
+                    <ninactrl:HintTextBox.HintText>
+                        <Binding
+                            Converter="{StaticResource CameraDefaultValueConverter}"
+                            Mode="OneWay"
+                            Path="Data.DefaultGain"
+                            Source="{StaticResource CameraInfo}"
+                            UpdateSourceTrigger="PropertyChanged" />
+                    </ninactrl:HintTextBox.HintText>
+                    <ninactrl:HintTextBox.Text>
+                        <Binding
+                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                            Mode="TwoWay"
+                            Path="Gain"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <util:ShortRangeRule>
+                                    <util:ShortRangeRule.ValidRange>
+                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                    </util:ShortRangeRule.ValidRange>
+                                </util:ShortRangeRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ninactrl:HintTextBox.Text>
+                </ninactrl:HintTextBox>
+            </WrapPanel>
+
+            <!--  Offset  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                        <Binding
+                            Converter="{StaticResource InverseBooleanConverter}"
+                            Path="Data.Connected"
+                            Source="{StaticResource CameraInfo}" />
+                        <Binding Path="Data.CanSetOffset" Source="{StaticResource CameraInfo}" />
+                    </MultiBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                    Margin="7.5,0,7.5,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
+                <ninactrl:HintTextBox
+                    MinWidth="40"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Right"
+                    VerticalContentAlignment="Center"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    TextAlignment="Right">
+                    <ninactrl:HintTextBox.HintText>
+                        <Binding
+                            Converter="{StaticResource CameraDefaultValueConverter}"
+                            Mode="OneWay"
+                            Path="Data.DefaultOffset"
+                            Source="{StaticResource CameraInfo}"
+                            UpdateSourceTrigger="PropertyChanged" />
+                    </ninactrl:HintTextBox.HintText>
+                    <ninactrl:HintTextBox.Text>
+                        <Binding
+                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                            Mode="TwoWay"
+                            Path="Offset"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <util:ShortRangeRule>
+                                    <util:ShortRangeRule.ValidRange>
+                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                    </util:ShortRangeRule.ValidRange>
+                                </util:ShortRangeRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ninactrl:HintTextBox.Text>
+                </ninactrl:HintTextBox>
+            </WrapPanel>
+        </StackPanel>
+    </WrapPanel>
+
+    <ControlTemplate x:Key="TrainedFlatExposureTemplate">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+                <WrapPanel Orientation="Horizontal">
+
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[4]}" />
+
+                    <TextBlock
+                        Margin="7.5,0,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="|" />
+
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                    <CheckBox
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding KeepPanelClosed}" />
+                </WrapPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+            <view:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </view:SequenceBlockView.SequenceItemProgressContent>
+        </view:SequenceBlockView>
+    </ControlTemplate>
+
+    <DataTemplate DataType="{x:Type local:TrainedFlatExposure}">
+        <view:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:TrainedDarkFlatExposure}">
+        <view:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:AutoExposureFlat}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+
+                <StackPanel Orientation="Vertical">
+                    <WrapPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatMinExposureTime}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MinExposure}"
+                            TextAlignment="Right"
+                            Unit="s" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatMaxExposureTime}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MaxExposure}"
+                            TextAlignment="Right"
+                            Unit="s" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramMeanTarget}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTargetPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramTolerance}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTolerancePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatPanelBrightness}" />
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Items[3].Brightness}"
+                            TextAlignment="Right" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                        <CheckBox
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding KeepPanelClosed}" />
+                    </WrapPanel>
+
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[4]}" />
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+            <view:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </view:SequenceBlockView.SequenceItemProgressContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+
+    <DataTemplate DataType="{x:Type local:AutoBrightnessFlat}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+
+                <StackPanel Orientation="Vertical">
+                    <WrapPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatPanelMinBrightness}" />
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MinBrightness}"
+                            TextAlignment="Right" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatPanelMaxBrightness}" />
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MaxBrightness}"
+                            TextAlignment="Right" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramMeanTarget}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTargetPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramTolerance}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTolerancePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblExposureTime}" />
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Items[4].Items[0].ExposureTime}"
+                            TextAlignment="Right" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                        <CheckBox
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding KeepPanelClosed}" />
+                    </WrapPanel>
+
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[4]}" />
+
+
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+            <view:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </view:SequenceBlockView.SequenceItemProgressContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+
+
+    <DataTemplate DataType="{x:Type local:SkyFlat}">
+        <view:SequenceBlockView>
+            <view:SequenceBlockView.SequenceItemContent>
+
+                <StackPanel Orientation="Vertical">
+                    <WrapPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatMinExposureTime}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MinExposure}"
+                            TextAlignment="Right"
+                            Unit="s" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatMaxExposureTime}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding MaxExposure}"
+                            TextAlignment="Right"
+                            Unit="s" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramMeanTarget}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTargetPercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFlatHistogramTolerance}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding HistogramTolerancePercentage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}"
+                            TextAlignment="Right"
+                            Unit="%" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDither}" />
+                        <CheckBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding ShouldDither, Mode=TwoWay}" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDitherPixels}"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding DitherPixels, Mode=TwoWay}"
+                            Unit="px"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblMinimumSettleTime}"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                        <ninactrl:UnitTextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding DitherSettleTime, Mode=TwoWay}"
+                            Unit="s"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                        <TextBlock
+                            Margin="7.5,0,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|"
+                            Visibility="{Binding ShouldDither, Converter={StaticResource VisibilityConverter}}" />
+                    </WrapPanel>
+
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding ImagingContainer}" />
+
+
+                </StackPanel>
+            </view:SequenceBlockView.SequenceItemContent>
+            <view:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding ImagingContainer}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </view:SequenceBlockView.SequenceItemProgressContent>
+        </view:SequenceBlockView>
+    </DataTemplate>
+</ResourceDictionary>

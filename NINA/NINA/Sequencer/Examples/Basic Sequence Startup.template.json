@@ -1,0 +1,53 @@
+{
+  "$id": "1",
+  "$type": "NINA.Sequencer.Container.ParallelContainer, NINA",
+  "Strategy": {
+    "$type": "NINA.Sequencer.Container.ExecutionStrategy.ParallelStrategy, NINA"
+  },
+  "Conditions": {
+    "$id": "2",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Conditions.ISequenceCondition, NINA]], System",
+    "$values": []
+  },
+  "IsExpanded": true,
+  "Items": {
+    "$id": "3",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.SequenceItem.ISequenceItem, NINA]], System",
+    "$values": [
+      {
+        "$id": "4",
+        "$type": "NINA.Sequencer.SequenceItem.Utility.Annotation, NINA",
+        "Text": "This set of instructions will be executed in parallel and prepare your equipment to start a sequence. Add or remove items based on your requirements.",
+        "Name": "Annotation",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "5",
+        "$type": "NINA.Sequencer.SequenceItem.Camera.CoolCamera, NINA",
+        "Temperature": -10.0,
+        "Duration": 0.0,
+        "Name": "Cool Camera",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "6",
+        "$type": "NINA.Sequencer.SequenceItem.Telescope.UnparkScope, NINA",
+        "Name": "Unpark Scope",
+        "Parent": {
+          "$ref": "1"
+        }
+      }
+    ]
+  },
+  "Triggers": {
+    "$id": "7",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Trigger.ISequenceTrigger, NINA]], System",
+    "$values": []
+  },
+  "Name": "Basic Sequence Startup",
+  "Parent": null
+}

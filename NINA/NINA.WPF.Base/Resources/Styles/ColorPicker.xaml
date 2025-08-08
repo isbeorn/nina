@@ -1,0 +1,72 @@
+<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Style TargetType="{x:Type xceed:ColorPicker}">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="TabForeground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="HeaderBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="HeaderForeground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="DropDownBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="TabBackground" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="ButtonStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource ButtonBackgroundBrush}" />
+                    <Setter Property="FontSize" Value="15" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Border
+                                    x:Name="border"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="1">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <Grid>
+                                            <ContentPresenter
+                                                x:Name="MyContentPresenter"
+                                                Margin="0,0,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Content="{TemplateBinding Content}" />
+                                        </Grid>
+                                    </Border>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

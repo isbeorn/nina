@@ -1,0 +1,1627 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.FramingAssistantView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:alt="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:behaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:survey="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+    x:Name="UC"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="8*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <util:BindingProxy x:Key="Context" Data="{Binding}" />
+            <util:BindingProxy x:Key="nighttimeProxy" Data="{Binding NighttimeData}" />
+        </Grid.Resources>
+        <ScrollViewer
+            Grid.IsSharedSizeScope="True"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <Grid Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontSize="20" Text="{ns:Loc LblImageSource}" />
+                                <wpfbase:BrowserPopupButton
+                                    Grid.Column="1"
+                                    Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Framing_General}}"
+                                    WindowWidthFraction="2" />
+                            </Grid>
+                        </GroupBox.Header>
+                        <StackPanel Orientation="Vertical">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                                <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblImageSource}" />
+                                    <ComboBox
+                                        x:Name="PART_FramingAssistantSource"
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type survey:SkySurveySource}}}"
+                                        SelectedItem="{Binding FramingAssistantSource}" />
+                                </Grid>
+                            </Border>
+
+                            <Grid>
+                                <!--  NASA Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.NASA}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <StackPanel Orientation="Vertical">
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
+                                        <TextBlock TextWrapping="Wrap">
+                                            <Hyperlink NavigateUri="https://skyview.gsfc.nasa.gov/" RequestNavigate="Hyperlink_RequestNavigate">SkyView</Hyperlink>
+                                        </TextBlock>
+                                        <TextBlock Text=" a service of the Astrophysics Science Division at NASA/GSFC" TextWrapping="Wrap" />
+                                    </WrapPanel>
+
+                                    <Grid Margin="0,5,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding SaveImageInOfflineCache}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <!--  SkyServer Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.SKYSERVER}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <StackPanel Orientation="Vertical">
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
+                                        <TextBlock TextWrapping="Wrap">
+                                            <Hyperlink NavigateUri="http://skyserver.sdss.org/dr17/" RequestNavigate="Hyperlink_RequestNavigate">Sloan Digital Sky Survey</Hyperlink>
+                                        </TextBlock>
+                                        <TextBlock Text=" a service provided by SkyServer" TextWrapping="Wrap" />
+                                    </WrapPanel>
+
+                                    <Grid Margin="0,5,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding SaveImageInOfflineCache}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <!--  ESO Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.ESO}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <StackPanel Orientation="Vertical">
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
+                                        <TextBlock TextWrapping="Wrap">
+                                            <Hyperlink NavigateUri="http://archive.eso.org/dss/dss" RequestNavigate="Hyperlink_RequestNavigate">ESO Online Digitized Sky Survey</Hyperlink>
+                                        </TextBlock>
+                                        <TextBlock Text=" a service provided by the European Southern Observatory" TextWrapping="Wrap" />
+                                    </WrapPanel>
+
+                                    <Grid Margin="0,5,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding SaveImageInOfflineCache}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <!--  STSCI Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.STSCI}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <StackPanel Orientation="Vertical">
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
+                                        <TextBlock TextWrapping="Wrap">
+                                            <Hyperlink NavigateUri="https://archive.stsci.edu/dss/acknowledging.html" RequestNavigate="Hyperlink_RequestNavigate">STScI DSS Search</Hyperlink>
+                                        </TextBlock>
+                                        <TextBlock Text=" a service provided by the Space Telescope Science Institude" TextWrapping="Wrap" />
+                                    </WrapPanel>
+
+                                    <Grid Margin="0,5,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding SaveImageInOfflineCache}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <!--  Hips2Fits Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.HIPS2FITS}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <StackPanel Orientation="Vertical">
+                                    <WrapPanel Orientation="Horizontal">
+                                        <TextBlock Text="This sky survey makes use of " TextWrapping="Wrap" />
+                                        <TextBlock TextWrapping="Wrap">
+                                            <Hyperlink NavigateUri="https://alasky.u-strasbg.fr/hips-image-services/hips2fits" RequestNavigate="Hyperlink_RequestNavigate">hips2fits</Hyperlink>
+                                        </TextBlock>
+                                        <TextBlock Text=" a service provided by CDS" TextWrapping="Wrap" />
+                                    </WrapPanel>
+
+                                    <Grid Margin="0,5,0,0" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding SaveImageInOfflineCache}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <!--  Cache Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.CACHE}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <ListView
+                                    MaxHeight="250"
+                                    Margin="0,5,0,0"
+                                    ItemsSource="{Binding Path=ImageCacheInfo.Elements[Image]}"
+                                    SelectedItem="{Binding SelectedImageCacheInfo}"
+                                    SelectionMode="Single">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Name].Value}"
+                                                Header="{ns:Loc LblName}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[RA].Value, Converter={StaticResource HoursToHMSConverter}}"
+                                                Header="{ns:Loc LblRA}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Dec].Value, Converter={StaticResource DegreesToDMSConverter}}"
+                                                Header="{ns:Loc LblDec}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[FoVW].Value, StringFormat=\{0:0\}\'}"
+                                                Header="{ns:Loc LblFieldOfView}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Source].Value}"
+                                                Header="{ns:Loc LblSource}" />
+
+                                            <GridViewColumn>
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button
+                                                            Width="25"
+                                                            Height="25"
+                                                            Margin="5,0,5,0"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Command="{Binding DataContext.DeleteCacheEntryCommand, RelativeSource={RelativeSource AncestorType={x:Type local:FramingAssistantView}}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource BackgroundButton}">
+                                                            <Grid>
+                                                                <Path
+                                                                    Margin="5"
+                                                                    Data="{StaticResource TrashCanSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </Grid>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <Button
+                                    Grid.Row="1"
+                                    Height="25"
+                                    Margin="5"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding ClearCacheCommand}">
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblClearCache}"
+                                        TextWrapping="Wrap" />
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                <!--  File Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.FILE}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveInCache}" />
+                                    <CheckBox
+                                        Grid.Column="1"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding SaveImageInOfflineCache}">
+                                        <CheckBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblSaveInCacheTooltip}" />
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <DockPanel>
+                                <TextBlock
+                                    DockPanel.Dock="Left"
+                                    FontSize="20"
+                                    Text="{ns:Loc LblCoordinates}" />
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="1,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    HorizontalContentAlignment="Right"
+                                    Command="{Binding CoordsFromPlanetariumCommand}"
+                                    DockPanel.Dock="Right">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource GetCoordsSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                </Button>
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="1,0,4,0"
+                                    HorizontalAlignment="Right"
+                                    HorizontalContentAlignment="Right"
+                                    Command="{Binding CoordsFromScopeCommand}"
+                                    DockPanel.Dock="Right">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblScopeCoordinatesTooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                    <Grid>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource TelescopeSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Grid>
+                                </Button>
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
+                                <ninactrl:AutoCompleteBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    HintText="{ns:Loc LblObjectNameHint}"
+                                    PopupBackground="{StaticResource TertiaryBackgroundBrush}"
+                                    SearchResult="{Binding DeepSkyObjectSearchVM.TargetSearchResult.Result}"
+                                    SelectedSearchResult="{Binding DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
+                                    ShowPopup="{Binding DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
+                                    Text="{Binding DeepSkyObjectSearchVM.TargetName, UpdateSourceTrigger=PropertyChanged}">
+                                    <ninactrl:AutoCompleteBox.Background>
+                                        <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                                    </ninactrl:AutoCompleteBox.Background>
+                                </ninactrl:AutoCompleteBox>
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <ninactrl:UnitTextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="h">
+                                        <TextBox.Text>
+                                            <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:HoursRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+                                    <ninactrl:UnitTextBox
+                                        Grid.Column="1"
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="m">
+                                        <TextBox.Text>
+                                            <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+                                    <ninactrl:UnitTextBox
+                                        Grid.Column="2"
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="s">
+                                        <TextBox.Text>
+                                            <Binding
+                                                Path="RASeconds"
+                                                StringFormat="N1"
+                                                UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+                                </Grid>
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <ninactrl:UnitTextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="d">
+                                        <TextBox.Text>
+                                            <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
+                                                <Binding Path="NegativeDec" />
+                                                <Binding Path="DecDegrees">
+                                                    <Binding.ValidationRules>
+                                                        <rules:DegreesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </MultiBinding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+
+                                    <ninactrl:UnitTextBox
+                                        Grid.Column="1"
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="m">
+                                        <TextBox.Text>
+                                            <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+
+                                    <ninactrl:UnitTextBox
+                                        Grid.Column="2"
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        DataObject.Pasting="UnitTextBox_Pasting"
+                                        TextAlignment="Right"
+                                        Unit="s">
+                                        <TextBox.Text>
+                                            <Binding
+                                                Path="DecSeconds"
+                                                StringFormat="N1"
+                                                UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+                                </Grid>
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
+                                <ninactrl:StepperControl
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    MaxValue="200"
+                                    MinValue="0.1"
+                                    Value="{Binding FieldOfView, Mode=TwoWay}">
+                                    <ninactrl:StepperControl.InnerContent>
+                                        <ninactrl:UnitTextBox
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding FieldOfView, StringFormat=\{0:0.00\}}"
+                                            TextAlignment="Center"
+                                            Unit="°" />
+                                    </ninactrl:StepperControl.InnerContent>
+                                </ninactrl:StepperControl>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ninactrl:CancellableButton
+                            Grid.Column="0"
+                            Height="25"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            ButtonText="{ns:Loc LblLoadImage}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelLoadImageCommand}"
+                            CancelToolTip="{ns:Loc LblCancel}"
+                            Command="{Binding LoadImageCommand}" />
+                        <ninactrl:LoadingControl
+                            Grid.Column="1"
+                            Height="30"
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            LoadingImageBrush="{StaticResource PrimaryBrush}"
+                            Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                    </Grid>
+
+                    <GroupBox Header="{ns:Loc LblCameraParameter}">
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    Text="{Binding CameraWidth}" />
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    Text="{Binding CameraHeight}" />
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPixelSize}" />
+                                <ninactrl:UnitTextBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding CameraPixelSize}"
+                                    Unit="μm" />
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFocalLength}" />
+                                <ninactrl:UnitTextBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    VerticalContentAlignment="Center"
+                                    Unit="mm">
+                                    <ninactrl:UnitTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource NaNToDoubleDashConverter}"
+                                            Path="FocalLength"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterThanZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:UnitTextBox.Text>
+                                </ninactrl:UnitTextBox>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="{ns:Loc LblTargets}" Visibility="{Binding RectangleCalculated, Converter={StaticResource VisibilityConverter}}">
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingTargetsLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHorizontalPanels}" />
+                                <ninactrl:IntStepperControl
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    MinValue="1"
+                                    Value="{Binding HorizontalPanels, Mode=TwoWay}" />
+                            </Grid>
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingTargetsLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVerticalPanels}" />
+                                <ninactrl:IntStepperControl
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    MinValue="1"
+                                    Value="{Binding VerticalPanels, Mode=TwoWay}" />
+                            </Grid>
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMosaic, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingTargetsLabel" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPanelOverlap}" />
+                                <ninactrl:IntStepperControl
+                                    x:Name="OverlapValueStepperControl"
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    VerticalContentAlignment="Center"
+                                    MaxValue="{Binding MaxOverlapValue}"
+                                    MinValue="0"
+                                    StepSize="{Binding OverlapValueStepSize}" />
+                                <ComboBox
+                                    x:Name="OverlapUnitCombobox"
+                                    Grid.Column="2"
+                                    Margin="5,0,0,0"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    ItemsSource="{Binding OverlapUnits}"
+                                    SelectedItem="{Binding SelectedOverlapUnit}"
+                                    SelectionChanged="OverlapUnitCombobox_SelectionChanged" />
+                            </Grid>
+
+                            <Grid Margin="0,0,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingTargetsLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <ninactrl:UnitTextBox
+                                        MinWidth="35"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        IsEnabled="{Binding RectangleCalculated}"
+                                        Text="{Binding RectangleTotalRotation, Converter={StaticResource ReverseAngleConverter}}"
+                                        Unit="°" />
+                                    <Slider
+                                        Grid.Column="1"
+                                        Margin="5,0,0,0"
+                                        IsEnabled="{Binding RectangleCalculated}"
+                                        IsSnapToTickEnabled="True"
+                                        Maximum="359.99"
+                                        Minimum="0"
+                                        TickFrequency="5"
+                                        Value="{Binding RectangleTotalRotation, Converter={StaticResource ReverseAngleConverter}}" />
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                Margin="0,0,0,6"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding IsMosaic, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="FramingTargetsLabel" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreserveAlignment}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblPreserveAlignmentTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalContentAlignment="Center"
+                                    IsChecked="{Binding PreserveAlignment, Mode=TwoWay}">
+                                    <CheckBox.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblPreserveAlignmentTooltip}" />
+                                    </CheckBox.ToolTip>
+                                </CheckBox>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="{ns:Loc LblMosaicPanels}" Visibility="{Binding IsMosaic, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Grid>
+                            <!--  Helper grid to size the Listview columns  -->
+                            <Grid Margin="10,0,10,0" Visibility="Hidden">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid x:Name="col1" Grid.Column="0" />
+                                <Grid x:Name="col2" Grid.Column="1" />
+                                <Grid x:Name="col3" Grid.Column="2" />
+                                <Grid x:Name="col4" Grid.Column="3" />
+
+                            </Grid>
+                            <ListView ItemsSource="{Binding CameraRectangles}">
+                                <i:Interaction.Behaviors>
+                                    <behavior:BubbleScrollEvent />
+                                </i:Interaction.Behaviors>
+                                <ListView.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="{Binding ElementName=col1, Path=ActualWidth}" Header="{ns:Loc LblPanel}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Id}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="{Binding ElementName=col2, Path=ActualWidth}" Header="{ns:Loc LblRA}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Coordinates.RAString}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="{Binding ElementName=col3, Path=ActualWidth}" Header="{ns:Loc LblDec}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Coordinates.DecString}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="{Binding ElementName=col4, Path=ActualWidth}" Header="{ns:Loc LblRotation}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding DSOPositionAngle, StringFormat=\{0:0.00\}°}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </GroupBox>
+
+                    <Grid Visibility="{Binding RectangleCalculated, Converter={StaticResource VisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <ninactrl:AsyncProcessButton
+                            Height="30"
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Stretch"
+                            ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                            ButtonText="{ns:Loc LblDetermineRotationFromCamera}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelGetRotationFromCameraCommand}"
+                            CancelToolTip="{ns:Loc LblDetermineRotationFromCameraCancel}"
+                            Command="{Binding GetRotationFromCameraCommand}"
+                            ToolTip="{ns:Loc LblDetermineRotationFromCameraTooltip}" />
+                        <Grid Grid.Row="1" Margin="5,5,5,0">
+                            <ninactrl:CancellableButton
+                                Height="30"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding CancelSlewToCoordinatesCommand}"
+                                CancelToolTip="{ns:Loc LblCancel}"
+                                Command="{Binding SlewToCoordinatesCommand}" />
+                            <xceed:SplitButton
+                                Height="30"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding SlewToCoordinatesCommand}"
+                                CommandParameter="Center"
+                                Style="{StaticResource StandardSplitButton}"
+                                Visibility="{Binding SlewToCoordinatesCommand.Execution.IsCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <xceed:SplitButton.Content>
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblSlewCenter}"
+                                        TextWrapping="Wrap" />
+                                </xceed:SplitButton.Content>
+                                <xceed:SplitButton.DropDownContent>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button
+                                            HorizontalAlignment="Stretch"
+                                            Command="{Binding SlewToCoordinatesCommand}"
+                                            CommandParameter="Slew"
+                                            Style="{StaticResource BackgroundButton}">
+                                            <TextBlock
+                                                Padding="4"
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="{StaticResource PrimaryBrush}"
+                                                Text="{ns:Loc LblSlew}"
+                                                TextWrapping="Wrap" />
+                                        </Button>
+                                        <Button
+                                            HorizontalAlignment="Stretch"
+                                            Command="{Binding SlewToCoordinatesCommand}"
+                                            CommandParameter="Rotate"
+                                            Style="{StaticResource BackgroundButton}">
+                                            <TextBlock
+                                                Padding="4"
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="{StaticResource PrimaryBrush}"
+                                                Text="{ns:Loc LblSlewCenterRotate}"
+                                                TextWrapping="Wrap" />
+                                        </Button>
+                                    </StackPanel>
+                                </xceed:SplitButton.DropDownContent>
+                            </xceed:SplitButton>
+                        </Grid>
+                        <xceed:SplitButton
+                            Grid.Row="2"
+                            Height="30"
+                            Margin="5,5,5,0"
+                            Command="{Binding GetDSOTemplatesCommand}"
+                            DropDownContentBackground="{StaticResource BackgroundBrush}"
+                            IsOpen="{Binding SequencerActionsOpened, Mode=TwoWay}">
+                            <xceed:SplitButton.Style>
+                                <Style BasedOn="{StaticResource StandardSplitButton}" TargetType="{x:Type xceed:SplitButton}">
+                                    <Style.Resources>
+                                        <Border
+                                            x:Key="MenuHeader"
+                                            MinHeight="30"
+                                            x:Shared="false"
+                                            Background="Transparent">
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                        </Border>
+                                        <Path
+                                            x:Key="MenuIcon"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="5"
+                                            x:Shared="false"
+                                            Data="{Binding Icon}"
+                                            Fill="{StaticResource PrimaryBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Style.Resources>
+                                    <Style.Triggers>
+                                        <EventTrigger RoutedEvent="Click">
+                                            <EventTrigger.Actions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                                            <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
+                                                        </BooleanAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger.Actions>
+                                        </EventTrigger>
+                                        <DataTrigger Binding="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.SequenceSettings.DisableSimpleSequencer}" Value="True">
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
+                                                        <ContextMenu.ItemContainerStyle>
+                                                            <Style TargetType="MenuItem">
+                                                                <Setter Property="ItemsSource" Value="{x:Null}" />
+                                                                <Setter Property="Header" Value="{StaticResource MenuHeader}" />
+                                                                <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                                                                <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />
+                                                                <Setter Property="CommandParameter" Value="{Binding}" />
+                                                            </Style>
+                                                        </ContextMenu.ItemContainerStyle>
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Command="{Binding Source={StaticResource Context}, Path=Data.SetOldSequencerTargetCommand}" Header="{ns:Loc Lbl_OldSequencer_Title}" />
+                                                <Separator />
+                                                <MenuItem Header="{ns:Loc Lbl_Sequencer_Title}" ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
+                                                    <MenuItem.ItemContainerStyle>
+                                                        <Style TargetType="MenuItem">
+                                                            <Setter Property="ItemsSource" Value="{x:Null}" />
+                                                            <Setter Property="Header" Value="{StaticResource MenuHeader}" />
+                                                            <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                                                            <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />
+                                                            <Setter Property="CommandParameter" Value="{Binding}" />
+                                                        </Style>
+                                                    </MenuItem.ItemContainerStyle>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </xceed:SplitButton.Style>
+                            <xceed:SplitButton.Content>
+                                <TextBlock
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="{ns:Loc LblAddTargetToSequence}"
+                                    TextWrapping="Wrap" />
+                            </xceed:SplitButton.Content>
+                            <xceed:SplitButton.DropDownContent>
+                                <StackPanel Orientation="Vertical">
+                                    <Menu Background="{StaticResource BackgroundBrush}">
+                                        <Menu.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="1" />
+                                            </ItemsPanelTemplate>
+                                        </Menu.ItemsPanel>
+                                        <MenuItem
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
+                                            <MenuItem.Header>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    Foreground="{StaticResource PrimaryBrush}"
+                                                    Text="{ns:Loc LblAddTargetToTargetList}" />
+                                            </MenuItem.Header>
+                                            <MenuItem.Resources>
+                                                <Border
+                                                    x:Key="MenuHeader"
+                                                    MinHeight="30"
+                                                    x:Shared="false"
+                                                    Background="Transparent">
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                                </Border>
+                                                <Path
+                                                    x:Key="MenuIcon"
+                                                    Width="20"
+                                                    Height="20"
+                                                    Margin="5"
+                                                    x:Shared="false"
+                                                    Data="{Binding Icon}"
+                                                    Fill="{StaticResource PrimaryBrush}"
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
+                                            </MenuItem.Resources>
+
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
+                                                    <Setter Property="Header" Value="{StaticResource MenuHeader}" />
+                                                    <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                                                    <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.AddTargetToTargetListCommand}" />
+                                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            IsEnabled="{Binding ExistingTargets, Converter={StaticResource CollectionContainsItemsToBooleanConverter}}"
+                                            ItemsSource="{Binding Source={StaticResource Context}, Path=Data.ExistingTargets}"
+                                            Visibility="{Binding IsMosaic, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                            <MenuItem.Header>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    Foreground="{StaticResource PrimaryBrush}"
+                                                    Text="{ns:Loc LblUpdateExistingTargetInSequencer}" />
+                                            </MenuItem.Header>
+                                            <MenuItem.Resources>
+                                                <Border
+                                                    x:Key="MenuHeader"
+                                                    MinHeight="30"
+                                                    x:Shared="false"
+                                                    Background="Transparent">
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                                </Border>
+                                                <Path
+                                                    x:Key="MenuIcon"
+                                                    Width="20"
+                                                    Height="20"
+                                                    Margin="5"
+                                                    x:Shared="false"
+                                                    Data="{Binding Icon}"
+                                                    Fill="{StaticResource PrimaryBrush}"
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
+                                            </MenuItem.Resources>
+
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
+                                                    <Setter Property="Header" Value="{StaticResource MenuHeader}" />
+                                                    <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                                                    <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.UpdateExistingTargetInSequencerCommand}" />
+                                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                    </Menu>
+                                </StackPanel>
+                            </xceed:SplitButton.DropDownContent>
+                        </xceed:SplitButton>
+                    </Grid>
+                </StackPanel>
+
+
+                <Grid
+                    Grid.Row="1"
+                    Margin="5"
+                    VerticalAlignment="Bottom">
+                    <alt:AltitudeChart
+                        MinHeight="180"
+                        DataContext="{Binding DSO}"
+                        NighttimeData="{Binding Source={StaticResource nighttimeProxy}, Path=Data}" />
+                </Grid>
+
+                <Grid Grid.Row="2" VerticalAlignment="Bottom">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.SKYATLAS}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Expander
+                        Margin="5"
+                        Header="{ns:Loc LblToggleCatalogueDisplay}"
+                        Visibility="{Binding SkyMapAnnotator.Initialized, Converter={StaticResource VisibilityConverter}}">
+                        <ItemsControl Margin="15,5,5,5" ItemsSource="{Binding SkyMapAnnotator.ActiveCatalogues}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Catalogue" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" />
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Margin="0,0,5,0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{Binding Active, Mode=TwoWay}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </Expander>
+                </Grid>
+
+
+            </Grid>
+        </ScrollViewer>
+        <GridSplitter
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+
+        <Grid Grid.Column="2">
+            <wpfbase:ImageView
+                Image="{Binding ImageParameter.Image, IsAsync=True}"
+                ImageRotation="{Binding InverseRectangleRotation}"
+                RectangleFontSize="{Binding FontSize}"
+                RectangleOpacity="{Binding Opacity}"
+                ScrollEnabled="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource InverseBooleanConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=wpfbase:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <wpfbase:ImageView.ButtonHeaderContent>
+                    <StackPanel Margin="0,0,2,0" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOpacity}" />
+                        <ninactrl:StepperControl
+                            Margin="2,0,0,0"
+                            MaxValue="1"
+                            MinValue="0"
+                            StepSize=".1"
+                            Value="{Binding Opacity, Mode=TwoWay}" />
+
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            IsChecked="{Binding RotateSky, Mode=TwoWay}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblRotateSkyTooltip}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource RotatorSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource RotatorSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellationBoundaries}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellationBoundaries}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellations}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellations}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateGrid}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateGrid}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateDSO}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateDSO}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.UseCachedImages}"
+                            Visibility="{Binding IsX64, Converter={StaticResource VisibilityConverter}}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblUseCachedImages}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource MapSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource MapSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform"
+                                                        UseLayoutRounding="True" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                    </StackPanel>
+                </wpfbase:ImageView.ButtonHeaderContent>
+                <wpfbase:ImageView.ImageAreaContent>
+                    <Canvas Width="{Binding ImageParameter.Image.PixelWidth}" Height="{Binding ImageParameter.Image.PixelHeight}">
+                        <local:SkyMapOverlayView />
+                        <Grid>
+                            <Grid.Resources>
+                                <s:Int32 x:Key="zero">0</s:Int32>
+                            </Grid.Resources>
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Grid />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                <Rectangle
+                                                    Width="{Binding Width}"
+                                                    Height="{Binding Height}"
+                                                    RenderTransformOrigin="0.5,0.5"
+                                                    Stroke="{StaticResource SecondaryBrush}"
+                                                    StrokeThickness="5">
+                                                    <Rectangle.Fill>
+                                                        <SolidColorBrush Opacity="{Binding RelativeSource={RelativeSource AncestorType=wpfbase:ImageView, Mode=FindAncestor}, Path=RectangleOpacity}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                                    </Rectangle.Fill>
+                                                    <Rectangle.RenderTransform>
+                                                        <RotateTransform Angle="{Binding Rotation}" />
+                                                    </Rectangle.RenderTransform>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="{Binding RelativeSource={RelativeSource AncestorType=wpfbase:ImageView, Mode=FindAncestor}, Path=RectangleFontSize}"
+                                                    FontStretch="ExtraExpanded"
+                                                    Text="{Binding Id}"
+                                                    Visibility="{Binding Id, Converter={StaticResource ZeroToVisibilityConverter}}" />
+                                                <Grid.Margin>
+                                                    <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                                        <Binding Path="X" />
+                                                        <Binding Path="Y" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                    </MultiBinding>
+                                                </Grid.Margin>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </ItemsControl.RenderTransform>
+                                    <ItemsControl.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </ItemsControl.Margin>
+                                </ItemsControl>
+                                <Rectangle
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    behaviors:DragCommandBehavior.Drag="True"
+                                    behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
+                                    behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
+                                    behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                                    behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
+                                    behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
+                                    Fill="Transparent"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Stroke="{StaticResource ButtonForegroundBrush}"
+                                    StrokeThickness="2">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Rectangle.Margin>
+                                </Rectangle>
+                                <Border
+                                    Width="2.5"
+                                    Height="2.5"
+                                    Background="{StaticResource ButtonForegroundBrush}">
+                                    <Border.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Border.Margin>
+                                </Border>
+
+                                <Grid
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    IsHitTestVisible="False"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Grid.Margin>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Canvas>
+                </wpfbase:ImageView.ImageAreaContent>
+            </wpfbase:ImageView>
+            <StackPanel
+                Margin="5,0,0,20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Orientation="Vertical">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.RAString}" />
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.DecString}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

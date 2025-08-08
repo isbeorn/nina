@@ -1,0 +1,241 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AnchorableCameraControlView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
+    xmlns:imaging="clr-namespace:NINA.ViewModel.Imaging"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:view="clr-namespace:NINA.View"
+    x:Name="UC"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+        <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="5,0,5,0" IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <StackPanel IsEnabled="{Binding CameraInfo.Connected}" Orientation="Vertical">
+
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="50"
+                                Margin="5,0,0,0"
+                                VerticalContentAlignment="Center"
+                                Unit="s">
+                                <TextBox.Text>
+                                    <Binding Mode="TwoWay" Path="SnapExposureDuration">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                            <ComboBox
+                                Height="25"
+                                Margin="5,0,0,0"
+                                DisplayMemberPath="Name"
+                                IsEnabled="{Binding FilterWheelInfo.Connected, Mode=TwoWay}"
+                                SelectedItem="{Binding SnapFilter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                                SelectedValuePath="Name">
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <x:Static Member="filter:NullFilter.Instance" />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
+                            <ComboBox
+                                Height="25"
+                                Margin="5,0,0,0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding ElementName=UC, Path=DataContext.CameraInfo.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                                SelectedItem="{Binding SnapBin, Mode=TwoWay}"
+                                SelectedValuePath="Name" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding ElementName=UC, Path=DataContext.CameraInfo.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                            <Grid Margin="5,0,0,0">
+                                <ninactrl:HintTextBox
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Left"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    IsEnabled="{Binding ElementName=UC, Path=DataContext.CameraInfo.CanSetGain}"
+                                    TextAlignment="Left"
+                                    Visibility="{Binding ElementName=UC, Path=DataContext.CameraInfo.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultGain"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="SnapGain"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:IntRangeRuleWithDefault>
+                                                    <rules:IntRangeRuleWithDefault.ValidRange>
+                                                        <rules:IntRangeChecker Maximum="{Binding Source={StaticResource CameraInfo}, Path=Data.GainMax}" Minimum="{Binding Source={StaticResource CameraInfo}, Path=Data.GainMin}" />
+                                                    </rules:IntRangeRuleWithDefault.ValidRange>
+                                                </rules:IntRangeRuleWithDefault>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                                <ComboBox
+                                    Grid.Column="1"
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text"
+                                    Visibility="{Binding ElementName=UC, Path=DataContext.CameraInfo.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.SelectedValue>
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                            Mode="TwoWay"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="SnapGain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </ComboBox.SelectedValue>
+                                </ComboBox>
+                            </Grid>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLoop}" />
+                            <CheckBox
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Loop, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSave}" />
+                            <CheckBox
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding SnapSave, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding SnapSave, Converter={StaticResource VisibilityConverter}}">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
+                            <TextBox
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding SnapTargetName, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding ElementName=UC, Path=DataContext.CameraInfo.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <view:SubSampleView />
+                    </Border>
+
+                    <ninactrl:CancellableButton
+                        Height="25"
+                        Margin="10,10,10,0"
+                        ButtonImage="{StaticResource LiveViewSVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding StopLiveViewCommand}"
+                        CancelToolTip="{ns:Loc LblCancel}"
+                        Command="{Binding StartLiveViewCommand}"
+                        ToolTip="{ns:Loc LblToolTipLiveView}"
+                        Visibility="{Binding ElementName=UC, Path=DataContext.CameraInfo.CanShowLiveView, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                </StackPanel>
+
+                <Grid>
+                    <ninactrl:CancellableButton
+                        Height="25"
+                        Margin="10,10,10,0"
+                        ButtonImage="{StaticResource CameraSVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelSnapCommand}"
+                        CancelToolTip="{ns:Loc LblCancel}"
+                        Command="{Binding SnapCommand}"
+                        ToolTip="{ns:Loc LblTooltipTakeExposure}"
+                        Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

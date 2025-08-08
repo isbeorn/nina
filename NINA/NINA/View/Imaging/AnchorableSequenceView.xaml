@@ -1,0 +1,285 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AnchorableSequenceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:sequencer="clr-namespace:NINA.View.SimpleSequencer"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBlock.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+            <Style
+                x:Key="IfMultipleTargets"
+                BasedOn="{StaticResource {x:Type TextBlock}}"
+                TargetType="TextBlock">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Targets.Items.Count}" Value="1">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <sequencer:InverseSequenceModeIsRotateToVisibilityConverter x:Key="InverseSequenceModeIsRotateToVisibilityConverter" />
+            <sequencer:SequenceModeIsRotateToVisibilityConverter x:Key="SequenceModeIsRotateToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel
+            Margin="5,0,5,0"
+            IsEnabled="{Binding CameraInfo.Connected}"
+            Orientation="Vertical">
+
+            <Grid Height="25" Margin="5">
+                <ProgressBar
+                    x:Name="pbSequences"
+                    Maximum="{Binding Targets.Items.Count}"
+                    Minimum="0"
+                    Value="{Binding ActiveTargetIndex, Mode=OneWay}" />
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock Text="{Binding ElementName=pbSequences, Path=Value}" />
+                    <TextBlock Text=" / " />
+                    <TextBlock Text="{Binding ElementName=pbSequences, Path=Maximum}" />
+                </StackPanel>
+            </Grid>
+            <Grid Margin="5,6,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ResourceKey=IfMultipleTargets}"
+                    Text="{ns:Loc LblCurrentSequenceEstimates}" />
+
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ResourceKey=IfMultipleTargets}"
+                    Text="{Binding ActiveTarget.EstimatedEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblETA}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="{Binding OverallEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+            </Grid>
+
+            <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
+                <StackPanel Orientation="Vertical">
+                    <Grid
+                        Height="25"
+                        Margin="5"
+                        DataContext="{Binding ActiveTarget}"
+                        Visibility="{Binding Mode, Converter={StaticResource SequenceModeIsRotateToVisibilityConverter}}">
+                        <ProgressBar
+                            x:Name="pbActiveSequence"
+                            Maximum="{Binding Conditions[0].Iterations, FallbackValue=0}"
+                            Minimum="0"
+                            Value="{Binding Conditions[0].CompletedIterations, Mode=OneWay}" />
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <TextBlock Text="{Binding ElementName=pbActiveSequence, Path=Value}" />
+                            <TextBlock Text=" / " />
+                            <TextBlock Text="{Binding ElementName=pbActiveSequence, Path=Maximum}" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid
+                        Height="25"
+                        Margin="5"
+                        DataContext="{Binding ActiveTarget}"
+                        Visibility="{Binding Mode, Converter={StaticResource InverseSequenceModeIsRotateToVisibilityConverter}}">
+                        <ProgressBar
+                            x:Name="pbActiveSequence2"
+                            DataContext="{Binding ActiveExposure}"
+                            Maximum="{Binding Conditions[0].Iterations, FallbackValue=0}"
+                            Minimum="0"
+                            Value="{Binding Conditions[0].CompletedIterations, Mode=OneWay}" />
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            DataContext="{Binding ActiveExposure}"
+                            Orientation="Horizontal">
+                            <TextBlock Text="{Binding ElementName=pbActiveSequence2, Path=Value}" />
+                            <TextBlock Text=" / " />
+                            <TextBlock Text="{Binding ElementName=pbActiveSequence2, Path=Maximum}" />
+                        </StackPanel>
+                    </Grid>
+                    <Border Margin="0,5,0,0" BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblTarget}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding ActiveTarget.Name}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblMode}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding ActiveTarget.Mode}" />
+                        </UniformGrid>
+                    </Border>
+                    <StackPanel DataContext="{Binding ActiveTarget.ActiveExposure}" Orientation="Vertical">
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblExposureTime}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding Items[1].ExposureTime, Converter={StaticResource UnitConverter}, ConverterParameter=' s'}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblType}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding Items[1].ImageType}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblFilter}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding Items[0].Filter}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblBinning}" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding Items[1].Binning.Name}" />
+                            </UniformGrid>
+                        </Border>
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblGain}" />
+                                <TextBlock Margin="5,0,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}">
+                                            <Binding Mode="OneWay" Path="Items[1].Gain" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </UniformGrid>
+                        </Border>
+                        <Border Margin="0,5,0,0" BorderThickness="0">
+                            <Border.Visibility>
+                                <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                                    <Binding
+                                        Converter="{StaticResource InverseBooleanConverter}"
+                                        Path="Data.Connected"
+                                        Source="{StaticResource CameraInfo}" />
+                                    <Binding Path="Data.CanSetOffset" Source="{StaticResource CameraInfo}" />
+                                </MultiBinding>
+                            </Border.Visibility>
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock Text="{ns:Loc LblOffset}" />
+                                <TextBlock Margin="5,0,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}">
+                                            <Binding Mode="OneWay" Path="Items[1].Offset" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultOffset"
+                                                Source="{StaticResource CameraInfo}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </UniformGrid>
+                        </Border>
+                    </StackPanel>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderThickness="0"
+
+                        Visibility="{Binding DoMeridianFlip, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            VerticalAlignment="Center"
+                            Columns="2"
+                            DataContext="{Binding FlipTrigger}">
+                            <TextBlock
+                                Grid.Row="1"
+                                VerticalAlignment="Top"
+                                Text="{ns:Loc LblFlipTime}" />
+                            <StackPanel
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+
+                                Orientation="Vertical"
+                                Visibility="{Binding EarliestFlipTime, Converter={StaticResource DateTimeZeroToVisibilityCollapsedConverter}}">
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding EarliestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="-" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding LatestFlipTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                            </StackPanel>
+                        </UniformGrid>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <ninactrl:AsyncProcessButton
+                Height="25"
+                Margin="10,0,10,0"
+                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                ButtonImage="{StaticResource PlaySVG}"
+                CancelButtonImage="{StaticResource StopSVG}"
+                CancelCommand="{Binding CancelSequenceCommand}"
+                CancelToolTip="{ns:Loc LblStopSequence}"
+                Command="{Binding StartSequenceCommand}"
+                IsEnabled="{Binding CameraInfo.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
+                LoadingImageBrush="{StaticResource PrimaryBrush}"
+                ToolTip="{ns:Loc LblTooltipStartSequence}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

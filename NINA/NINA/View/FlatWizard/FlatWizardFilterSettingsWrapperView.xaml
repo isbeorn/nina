@@ -1,0 +1,792 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.FlatWizardFilterSettingsWrapperView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBlock.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel.Resources>
+            <DataTemplate x:Key="DynamicExposure">
+                <!--  Start Dynamic Exposure Mode  -->
+                <StackPanel Orientation="Vertical">
+
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBinning}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding CameraInfo.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                                SelectedItem="{Binding Settings.Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Name" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Gain  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                            <Grid Grid.Column="1" Margin="0,0,0,0">
+                                <ninactrl:HintTextBox
+                                    Grid.Column="1"
+                                    MinWidth="40"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    TextAlignment="Right">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultGain"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="Settings.Gain"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                                <!--<ComboBox
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text"
+                                    Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.SelectedValue>
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                            Mode="TwoWay"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Settings.Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </ComboBox.SelectedValue>
+                                </ComboBox>-->
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!--  Offset  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
+                            <ninactrl:HintTextBox
+                                Grid.Column="1"
+                                MinWidth="40"
+                                Margin="0,0,0,0"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                TextAlignment="Right">
+                                <ninactrl:HintTextBox.HintText>
+                                    <Binding
+                                        Converter="{StaticResource CameraDefaultValueConverter}"
+                                        Mode="OneWay"
+                                        Path="Data.DefaultOffset"
+                                        Source="{StaticResource CameraInfo}"
+                                        UpdateSourceTrigger="PropertyChanged" />
+                                </ninactrl:HintTextBox.HintText>
+                                <ninactrl:HintTextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Mode="TwoWay"
+                                        Path="Settings.Offset"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:HintTextBox.Text>
+                            </ninactrl:HintTextBox>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatMinExposureTime}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:PrecisionStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                Precision="4"
+                                StepSize="1"
+                                Unit="s"
+                                Value="{Binding Settings.MinFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatMaxExposureTime}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:PrecisionStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                Precision="4"
+                                StepSize="1"
+                                Unit="s"
+                                Value="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding ElementName=SettingsHost, Path=DataContext.FlatDeviceInfo.Connected, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatPanelBrightness}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MaxValue="{Binding ElementName=SettingsHost, FallbackValue=32767, Path=DataContext.FlatDeviceInfo.MaxBrightness}"
+                                MinValue="{Binding ElementName=SettingsHost, FallbackValue=0, Path=DataContext.FlatDeviceInfo.MinBrightness}"
+                                StepSize="1"
+                                Value="{Binding Settings.MaxAbsoluteFlatDeviceBrightness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                <!--  End Dynamic Exposure Mode  -->
+            </DataTemplate>
+            <DataTemplate x:Key="DynamicBrightness">
+                <!--  Start Dynamic Brightness Mode  -->
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBinning}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding CameraInfo.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                                SelectedItem="{Binding Settings.Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Name" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Gain  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                            <Grid Grid.Column="1" Margin="0,0,0,0">
+                                <ninactrl:HintTextBox
+                                    Grid.Column="1"
+                                    MinWidth="40"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    TextAlignment="Right">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultGain"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="Settings.Gain"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                                <!--<ComboBox
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text"
+                                    Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.SelectedValue>
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                            Mode="TwoWay"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Settings.Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </ComboBox.SelectedValue>
+                                </ComboBox>-->
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!--  Offset  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
+                            <ninactrl:HintTextBox
+                                Grid.Column="1"
+                                MinWidth="40"
+                                Margin="0,0,0,0"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                TextAlignment="Right">
+                                <ninactrl:HintTextBox.HintText>
+                                    <Binding
+                                        Converter="{StaticResource CameraDefaultValueConverter}"
+                                        Mode="OneWay"
+                                        Path="Data.DefaultOffset"
+                                        Source="{StaticResource CameraInfo}"
+                                        UpdateSourceTrigger="PropertyChanged" />
+                                </ninactrl:HintTextBox.HintText>
+                                <ninactrl:HintTextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Mode="TwoWay"
+                                        Path="Settings.Offset"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:HintTextBox.Text>
+                            </ninactrl:HintTextBox>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatPanelMinBrightness}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                StepSize="1"
+                                Value="{Binding Settings.MinAbsoluteFlatDeviceBrightness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatPanelMaxBrightness}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                StepSize="1"
+                                Value="{Binding Settings.MaxAbsoluteFlatDeviceBrightness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblExposureTime}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:PrecisionStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                Precision="4"
+                                StepSize="1"
+                                Unit="s"
+                                Value="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                <!--  End Dynamic Brightness Mode  -->
+            </DataTemplate>
+            <DataTemplate x:Key="SkyFlat">
+                <!--  Start SkyFlat Mode  -->
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBinning}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding CameraInfo.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                                SelectedItem="{Binding Settings.Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Name" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Gain  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                            <Grid Grid.Column="1" Margin="0,0,0,0">
+                                <ninactrl:HintTextBox
+                                    Grid.Column="1"
+                                    MinWidth="40"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    TextAlignment="Right">
+                                    <ninactrl:HintTextBox.HintText>
+                                        <Binding
+                                            Converter="{StaticResource CameraDefaultValueConverter}"
+                                            Mode="OneWay"
+                                            Path="Data.DefaultGain"
+                                            Source="{StaticResource CameraInfo}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </ninactrl:HintTextBox.HintText>
+                                    <ninactrl:HintTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                            Mode="TwoWay"
+                                            Path="Settings.Gain"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:HintTextBox.Text>
+                                </ninactrl:HintTextBox>
+                                <!--<ComboBox
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text"
+                                    Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.SelectedValue>
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                            Mode="TwoWay"
+                                            UpdateSourceTrigger="PropertyChanged">
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="Settings.Gain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="Data.DefaultGain"
+                                                Source="{StaticResource CameraInfo}"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                        </MultiBinding>
+                                    </ComboBox.SelectedValue>
+                                </ComboBox>-->
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!--  Offset  -->
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource CameraInfo}, Path=Data.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
+                            <ninactrl:HintTextBox
+                                Grid.Column="1"
+                                MinWidth="40"
+                                Margin="0,0,0,0"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                TextAlignment="Right">
+                                <ninactrl:HintTextBox.HintText>
+                                    <Binding
+                                        Converter="{StaticResource CameraDefaultValueConverter}"
+                                        Mode="OneWay"
+                                        Path="Data.DefaultOffset"
+                                        Source="{StaticResource CameraInfo}"
+                                        UpdateSourceTrigger="PropertyChanged" />
+                                </ninactrl:HintTextBox.HintText>
+                                <ninactrl:HintTextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Mode="TwoWay"
+                                        Path="Settings.Offset"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:HintTextBox.Text>
+                            </ninactrl:HintTextBox>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatMinExposureTime}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:PrecisionStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                Precision="4"
+                                StepSize="1"
+                                Unit="s"
+                                Value="{Binding Settings.MinFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatMaxExposureTime}"
+                                TextWrapping="WrapWithOverflow" />
+                            <ninactrl:PrecisionStepperControl
+                                Grid.Column="1"
+                                Margin="0,2.5,0,0"
+                                MinValue="0"
+                                Precision="4"
+                                StepSize="1"
+                                Unit="s"
+                                Value="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                <!--  End SkyFlat Mode  -->
+            </DataTemplate>
+            <DataTemplate x:Key="Default">
+                <Grid />
+            </DataTemplate>
+        </StackPanel.Resources>
+
+        <ContentControl Content="{Binding}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=SettingsHost, Path=DataContext.FlatWizardMode}" Value="0">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DynamicExposure}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=SettingsHost, Path=DataContext.FlatWizardMode}" Value="1">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DynamicBrightness}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=SettingsHost, Path=DataContext.FlatWizardMode}" Value="2">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SkyFlat}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+
+        <Border
+            Margin="0,0,0,5"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0,0,0,1">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblFlatHistogramMeanTarget}"
+                    TextWrapping="WrapWithOverflow" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="{Binding HistogramMeanTargetADU, Mode=OneWay, StringFormat={}{0:N0}}" />
+                <ninactrl:IntStepperControl
+                    Grid.Column="2"
+                    Margin="0,2.5,0,0"
+                    MaxValue="100"
+                    MinValue="0"
+                    StepSize="10"
+                    Unit="%"
+                    Value="{Binding Settings.HistogramMeanTarget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+            </Grid>
+        </Border>
+        <Border
+            Margin="0,0,0,5"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0,0,0,1">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblFlatHistogramTolerance}"
+                    TextWrapping="WrapWithOverflow" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="{Binding HistogramToleranceADU, Mode=OneWay}" />
+                <ninactrl:IntStepperControl
+                    Grid.Column="2"
+                    Margin="0,2.5,0,0"
+                    HorizontalAlignment="Stretch"
+                    MaxValue="100"
+                    MinValue="0"
+                    StepSize="10"
+                    Unit="%"
+                    Value="{Binding Settings.HistogramTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

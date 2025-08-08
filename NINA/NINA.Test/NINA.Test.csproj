@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ASCOM.Tools" Version="2.1.0" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="FluentAssertions" Version="[7.0.0]" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.8.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OxyPlot.WPF" Version="2.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NINA.Astrometry\NINA.Astrometry.csproj" />
+    <ProjectReference Include="..\NINA.Core\NINA.Core.csproj" />
+    <ProjectReference Include="..\NINA.Equipment\NINA.Equipment.csproj" />
+    <ProjectReference Include="..\NINA.Image\NINA.Image.csproj" />
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj" />
+    <ProjectReference Include="..\NINA.Platesolving\NINA.PlateSolving.csproj" />
+    <ProjectReference Include="..\NINA.Plugin\NINA.Plugin.csproj" />
+    <ProjectReference Include="..\NINA.Profile\NINA.Profile.csproj" />
+    <ProjectReference Include="..\NINA.Sequencer\NINA.Sequencer.csproj" />
+    <ProjectReference Include="..\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj" />
+    <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
+    <ProjectReference Include="..\NINA\NINA.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AstrometryTest\HorizonData\commas.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\empty.hrz">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\full360.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\incomplete.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\mixed.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\mw4.hpts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\partial.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AstrometryTest\HorizonData\tabs.hrz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Autofocus\TestImage_Jelly.xisf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

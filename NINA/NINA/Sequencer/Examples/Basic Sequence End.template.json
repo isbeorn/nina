@@ -1,0 +1,116 @@
+{
+  "$id": "1",
+  "$type": "NINA.Sequencer.Container.SequentialContainer, NINA",
+  "Strategy": {
+    "$type": "NINA.Sequencer.Container.ExecutionStrategy.SequentialStrategy, NINA"
+  },
+  "Conditions": {
+    "$id": "2",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Conditions.ISequenceCondition, NINA]], System",
+    "$values": []
+  },
+  "IsExpanded": true,
+  "Items": {
+    "$id": "3",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.SequenceItem.ISequenceItem, NINA]], System",
+    "$values": [
+      {
+        "$id": "4",
+        "$type": "NINA.Sequencer.SequenceItem.Utility.Annotation, NINA",
+        "Text": "This set of instructions will execute the first instruction set in parallel and brings your equipment into a safe state to be disassembled. Afterwards an external script will be invoked. ",
+        "Name": "Annotation",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "5",
+        "$type": "NINA.Sequencer.SequenceItem.Utility.Annotation, NINA",
+        "Text": "Add or remove items based on your requirements.",
+        "Name": "Annotation",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "6",
+        "$type": "NINA.Sequencer.Container.ParallelContainer, NINA",
+        "Strategy": {
+          "$type": "NINA.Sequencer.Container.ExecutionStrategy.ParallelStrategy, NINA"
+        },
+        "Conditions": {
+          "$id": "7",
+          "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Conditions.ISequenceCondition, NINA]], System",
+          "$values": []
+        },
+        "IsExpanded": true,
+        "Items": {
+          "$id": "8",
+          "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.SequenceItem.ISequenceItem, NINA]], System",
+          "$values": [
+            {
+              "$id": "9",
+              "$type": "NINA.Sequencer.SequenceItem.Utility.Annotation, NINA",
+              "Text": "This group here will be executed in parallel.",
+              "Name": "Annotation",
+              "Parent": {
+                "$ref": "6"
+              }
+            },
+            {
+              "$id": "10",
+              "$type": "NINA.Sequencer.SequenceItem.Camera.WarmCamera, NINA",
+              "Duration": 0.0,
+              "Name": "Warm Camera",
+              "Parent": {
+                "$ref": "6"
+              }
+            },
+            {
+              "$id": "11",
+              "$type": "NINA.Sequencer.SequenceItem.Telescope.ParkScope, NINA",
+              "Name": "Park Scope",
+              "Parent": {
+                "$ref": "6"
+              }
+            }
+          ]
+        },
+        "Triggers": {
+          "$id": "12",
+          "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Trigger.ISequenceTrigger, NINA]], System",
+          "$values": []
+        },
+        "Name": "Parallel End of Sequence Instructions",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "13",
+        "$type": "NINA.Sequencer.SequenceItem.Utility.Annotation, NINA",
+        "Text": "Once the above parallel instructions are done, the external script will be called",
+        "Name": "Annotation",
+        "Parent": {
+          "$ref": "1"
+        }
+      },
+      {
+        "$id": "14",
+        "$type": "NINA.Sequencer.SequenceItem.Utility.ExternalScript, NINA",
+        "Script": "",
+        "Name": "External Script",
+        "Parent": {
+          "$ref": "1"
+        }
+      }
+    ]
+  },
+  "Triggers": {
+    "$id": "15",
+    "$type": "System.Collections.ObjectModel.ObservableCollection`1[[NINA.Sequencer.Trigger.ISequenceTrigger, NINA]], System",
+    "$values": []
+  },
+  "Name": "Basic Sequence End",
+  "Parent": null
+}

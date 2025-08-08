@@ -1,0 +1,71 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NINA.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DatabaseLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%localappdata%\NINA\NINA.sqlite</Value>
+    </Setting>
+    <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UseSavedProfileSelection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AutoUpdateSource" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ApplicationFontFamily" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)">Segoe UI</Value>
+    </Setting>
+    <Setting Name="SGPServerEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="FontStretch" Type="System.Windows.FontStretch" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="FontStyle" Type="System.Windows.FontStyle" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="FontWeight" Type="System.Windows.FontWeight" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="SaveQueueSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="SingleDockLayout" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CollapsedSidebar" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HardwareAcceleration" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="PluginRepositories" Type="System.String" Scope="User">
+      <Value Profile="(Default)">["https://nighttime-imaging.eu/wp-json/nina/v1"]</Value>
+    </Setting>
+    <Setting Name="WindowPlacement" Type="System.String" Scope="User">
+      <Value Profile="(Default)">
+          &lt;WindowPlacement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+            &lt;length&gt;0&lt;/length&gt;
+            &lt;flags&gt;0&lt;/flags&gt;
+            &lt;showCmd&gt;0&lt;/showCmd&gt;
+            &lt;minPosition&gt;
+              &lt;X&gt;0&lt;/X&gt;
+              &lt;Y&gt;0&lt;/Y&gt;
+            &lt;/minPosition&gt;
+            &lt;maxPosition&gt;
+              &lt;X&gt;0&lt;/X&gt;
+              &lt;Y&gt;0&lt;/Y&gt;
+            &lt;/maxPosition&gt;
+            &lt;normalPosition&gt;
+              &lt;Left&gt;0&lt;/Left&gt;
+              &lt;Top&gt;0&lt;/Top&gt;
+              &lt;Right&gt;0&lt;/Right&gt;
+              &lt;Bottom&gt;0&lt;/Bottom&gt;
+            &lt;/normalPosition&gt;
+          &lt;/WindowPlacement&gt;
+        </Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

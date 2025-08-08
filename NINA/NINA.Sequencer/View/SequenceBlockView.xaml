@@ -1,0 +1,712 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Sequencer.SequenceBlockView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
+    xmlns:converters="clr-namespace:NINA.Core.Utility.Converters;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Sequencer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:sequtil="clr-namespace:NINA.Sequencer.Utility"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    x:Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                <wpfutil:SharedResourceDictionary>
+                    <converter:StatusToEnabledConverter x:Key="StatusToEnabledConverter" />
+                    <converter:DisabledStatusToStrikethroughConverter x:Key="DisabledStatusToStrikethroughConverter" />
+                    <converter:DisabledStatusToInvisibleConverter x:Key="DisabledStatusToInvisibleConverter" />
+                    <converter:InverseDisabledStatusToInvisibleConverter x:Key="InverseDisabledStatusToInvisibleConverter" />
+                </wpfutil:SharedResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Margin="0,0,0,1" Orientation="Vertical">
+        <i:Interaction.Behaviors>
+            <behaviors:DragDropBehavior IsEnabled="{Binding DataContext.CanDragAndDrop, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceView}}}" />
+            <behaviors:DragOverBehavior
+                AllowDragAbove="{Binding Parent.IsExpanded, FallbackValue=true}"
+                AllowDragBelow="{Binding Parent.IsExpanded, FallbackValue=true}"
+                AllowDragCenter="False"
+                DragAboveSize="25"
+                DragBelowSize="15" />
+        </i:Interaction.Behaviors>
+        <Border MinHeight="25">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseRightButtonDown">
+                    <i:InvokeCommandAction Command="{Binding ShowMenuCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Grid x:Name="StackPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
+                                <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Opacity="0.4" Color="{Binding Color, Source={StaticResource SecondaryBackgroundBrush}}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Border
+                    MinWidth="200"
+                    MinHeight="30"
+                    Padding="0,0,5,0"
+                    VerticalAlignment="Stretch">
+                    <Grid
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        Panel.ZIndex="1"
+                        IsEnabled="{Binding Status, Converter={StaticResource StatusToEnabledConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Path
+                            Grid.Column="0"
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            Data="{Binding Icon}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource ButtonForegroundBrush}"
+                            Text="{Binding Name}"
+                            TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
+
+                        <Grid Grid.Column="2" Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+
+                        </Grid>
+                    </Grid>
+
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="White" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding Status}" Value="5">
+                                    <Setter Property="Opacity" Value="0.4" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <ContentPresenter
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Content="{Binding SequenceItemContent, ElementName=UC}"
+                    Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}" />
+
+                <ContentPresenter
+                    Grid.Column="2"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Content="{Binding SequenceItemProgressContent, ElementName=UC}"
+                    Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}" />
+                <StackPanel
+                    Grid.Column="3"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <DataTemplate x:Key="WithAttempts">
+                            <StackPanel Orientation="Horizontal">
+
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center ">
+                                    <Grid.Resources>
+                                        <sys:Double x:Key="comparisonValue">1</sys:Double>
+                                    </Grid.Resources>
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
+                                            <Binding Path="Attempts" />
+                                            <Binding Source="{StaticResource comparisonValue}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>
+                                    <Grid.ToolTip>
+
+                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
+                                    </Grid.ToolTip>
+                                    <Path
+                                        Width="25"
+                                        Height="20"
+                                        Margin="5"
+                                        Data="{StaticResource RefreshSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                    <TextBlock
+                                        Padding="0,0,2,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <PriorityBinding>
+                                                <Binding Path="Attempts" />
+                                            </PriorityBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
+
+                                <ContentControl
+                                    Height="25"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                    <ContentControl.Resources>
+                                        <sys:Double x:Key="comparisonValue">0</sys:Double>
+                                    </ContentControl.Resources>
+                                    <ContentControl.Visibility>
+                                        <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}" FallbackValue="Collapsed">
+                                            <Binding ElementName="PART_ErrorBehavior" Path="SelectedIndex" />
+                                            <Binding Source="{StaticResource comparisonValue}" />
+                                        </MultiBinding>
+                                    </ContentControl.Visibility>
+                                    <ContentControl.ToolTip>
+                                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc LblNumberOfAttempts}" />
+                                    </ContentControl.ToolTip>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="1">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Skip current instruction set  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource SkipSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="2">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Abort Sequence  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource StopSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=PART_ErrorBehavior, Path=SelectedIndex}" Value="3">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <!--  Skip to end of sequence instructions  -->
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="5,5,0,5"
+                                                                    Data="{StaticResource CancelCircledSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Text="→" />
+                                                                <Path
+                                                                    Width="25"
+                                                                    Margin="0,5,5,5"
+                                                                    Data="{StaticResource FlagFinishSVG}"
+                                                                    Fill="{StaticResource PrimaryBrush}"
+                                                                    Stretch="Uniform"
+                                                                    UseLayoutRounding="True" />
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="NoAttempts" />
+                        <local:SequenceDataTemplateSelector
+                            x:Key="AttemptsDataTemplateSelector"
+                            DeepSkyObjectContainer="{StaticResource NoAttempts}"
+                            SequenceCondition="{StaticResource NoAttempts}"
+                            SequenceContainer="{StaticResource NoAttempts}"
+                            SequenceItem="{StaticResource WithAttempts}"
+                            SequenceTrigger="{StaticResource NoAttempts}" />
+                    </StackPanel.Resources>
+
+                    <ContentControl
+                        Content="{Binding}"
+                        ContentTemplateSelector="{StaticResource AttemptsDataTemplateSelector}"
+                        IsTabStop="False" />
+                </StackPanel>
+
+                <ContentPresenter
+                    Grid.Column="4"
+                    Margin="10,5,10,5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Content="{Binding}"
+                    Style="{StaticResource ProgressPresenter}" />
+
+                <Button
+                    x:Name="DetachButton"
+                    Grid.Column="5"
+                    Width="25"
+                    Height="25"
+                    Margin="5,0,5,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding DetachCommand}"
+                    Style="{StaticResource BackgroundButton}">
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource TrashCanSVG}"
+                            Fill="{StaticResource PrimaryBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Delete_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    x:Name="ShowMenuButton"
+                    Grid.Column="6"
+                    Width="25"
+                    Height="25"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource BackgroundButton}"
+                    Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
+                    <Button.Command>
+                        <PriorityBinding>
+                            <Binding Path="ShowMenuCommand" />
+                        </PriorityBinding>
+                    </Button.Command>
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource DotsVerticalSVG}"
+                            Fill="{StaticResource PrimaryBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Show_Menu}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    x:Name="ShowDisableDisableButtonInsteadOfMenu"
+                    Grid.Column="6"
+                    Width="25"
+                    Height="25"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource BackgroundButton}"
+                    Visibility="{Binding Status, Converter={StaticResource InverseDisabledStatusToInvisibleConverter}}">
+                    <Button.Command>
+                        <PriorityBinding>
+                            <Binding Path="DisableEnableCommand" />
+                        </PriorityBinding>
+                    </Button.Command>
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource PowerSVG}"
+                            Fill="{StaticResource PrimaryBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Enable_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+            </Grid>
+        </Border>
+        <Border
+            MinHeight="31"
+            HorizontalAlignment="Stretch"
+            Background="{StaticResource TertiaryBackgroundBrush}"
+            Visibility="{Binding ShowMenu, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <WrapPanel
+                x:Name="ButtonCommands"
+                Grid.Column="1"
+                Margin="0,0,5,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <WrapPanel.Resources>
+                    <DataTemplate x:Key="WithAttempts">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblNumberOfAttempts}">
+
+                                <TextBlock.ToolTip>
+                                    <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                MinWidth="40"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}">
+                                <TextBox.ToolTip>
+                                    <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_NumberOfAttempts_Tooltip}" />
+                                </TextBox.ToolTip>
+                                <TextBox.Text>
+                                    <PriorityBinding>
+                                        <Binding Path="Attempts" />
+                                    </PriorityBinding>
+                                </TextBox.Text>
+                                <TextBox.Visibility>
+
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Attempts" />
+                                    </PriorityBinding>
+                                </TextBox.Visibility>
+                            </TextBox>
+                            <StackPanel.Visibility>
+                                <PriorityBinding>
+                                    <Binding
+                                        Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                        FallbackValue="Collapsed"
+                                        Path="Attempts" />
+                                </PriorityBinding>
+                            </StackPanel.Visibility>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="NoAttempts" />
+                    <local:SequenceDataTemplateSelector
+                        x:Key="AttemptsDataTemplateSelector"
+                        DeepSkyObjectContainer="{StaticResource NoAttempts}"
+                        SequenceCondition="{StaticResource NoAttempts}"
+                        SequenceContainer="{StaticResource NoAttempts}"
+                        SequenceItem="{StaticResource WithAttempts}"
+                        SequenceTrigger="{StaticResource NoAttempts}" />
+                </WrapPanel.Resources>
+
+                <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource AttemptsDataTemplateSelector}" />
+
+                <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
+
+                    <StackPanel.Visibility>
+                        <PriorityBinding>
+                            <Binding
+                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                FallbackValue="Collapsed"
+                                Path="ErrorBehavior" />
+                        </PriorityBinding>
+                    </StackPanel.Visibility>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource ButtonForegroundBrush}"
+                        Text="{ns:Loc LblOnError}">
+
+                        <TextBlock.ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_ErrorBehavior_Tooltip}" />
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+
+                    <ComboBox
+                        x:Name="PART_ErrorBehavior"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource TertiaryBackgroundBrush}"
+                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type sequtil:InstructionErrorBehavior}}}">
+                        <ComboBox.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                            </Style>
+                        </ComboBox.Resources>
+                        <ComboBox.ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_ErrorBehavior_Tooltip}" />
+                        </ComboBox.ToolTip>
+                        <ComboBox.SelectedItem>
+                            <PriorityBinding>
+                                <Binding Path="ErrorBehavior" />
+                            </PriorityBinding>
+                        </ComboBox.SelectedItem>
+                        <ComboBox.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                    Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                    FallbackValue="Collapsed"
+                                    Path="ErrorBehavior" />
+                            </PriorityBinding>
+                        </ComboBox.Visibility>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button
+                    x:Name="EnableDisableButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding DisableEnableCommand}"
+                    Style="{StaticResource TertiaryBackgroundButton}"
+                    Visibility="{Binding DisableEnableCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource PowerSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Disable_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+
+                <Button
+                    x:Name="ResetProgressButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TertiaryBackgroundButton}">
+                    <Button.Command>
+                        <PriorityBinding>
+                            <Binding Path="ResetProgressCommand" />
+                        </PriorityBinding>
+                    </Button.Command>
+                    <Button.Visibility>
+                        <PriorityBinding>
+                            <Binding
+                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                FallbackValue="Collapsed"
+                                Path="ResetProgressCommand" />
+                        </PriorityBinding>
+                    </Button.Visibility>
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource RefreshSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Reset_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+
+                <Button
+                    x:Name="AddCloneToParentButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TertiaryBackgroundButton}">
+                    <Button.Command>
+                        <PriorityBinding>
+                            <Binding Path="AddCloneToParentCommand" />
+                        </PriorityBinding>
+                    </Button.Command>
+
+                    <Button.Visibility>
+                        <PriorityBinding>
+                            <Binding
+                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                FallbackValue="Collapsed"
+                                Path="AddCloneToParentCommand" />
+                        </PriorityBinding>
+                    </Button.Visibility>
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource CopySVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_Duplicate_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+
+                <Button
+                    x:Name="MoveUpButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding MoveUpCommand}"
+                    Style="{StaticResource TertiaryBackgroundButton}"
+                    Visibility="{Binding MoveUpCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource ArrowUpSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_MoveUp_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+
+                <Button
+                    x:Name="MoveDownButton"
+                    Width="25"
+                    Height="25"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding MoveDownCommand}"
+                    Style="{StaticResource TertiaryBackgroundButton}"
+                    Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <Grid>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource ArrowDownSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceItem_MoveDown_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+            </WrapPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

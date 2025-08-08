@@ -1,0 +1,185 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AnchorableTelescopeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="5,0,5,0" IsEnabled="{Binding TelescopeInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid IsEnabled="{Binding TelescopeInfo.Connected}">
+                <Border
+                    Margin="0,5,0,0"
+                    VerticalAlignment="Top"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding TelescopeInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
+                        <CheckBox
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            BorderBrush="Transparent"
+                            IsChecked="{Binding TelescopeInfo.Connected, FallbackValue=False, Mode=OneWay}"
+                            IsEnabled="False"
+                            Style="{StaticResource CheckmarkCheckbox}" />
+                    </UniformGrid>
+                </Border>
+                <StackPanel Orientation="Vertical" Visibility="{Binding TelescopeInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.AtPark, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblParked}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding TelescopeInfo.AtPark, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
+                                Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTracking}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding TelescopeInfo.TrackingRate, Converter={StaticResource TrackingRateConverter}}"
+                                Visibility="{Binding TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.Slewing, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSlewing}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding TelescopeInfo.Slewing, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
+                                Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+
+                            <TextBlock Text="{ns:Loc LblSiderealTime}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.SiderealTimeString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+
+                            <TextBlock Text="{ns:Loc LblMeridianIn}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.HoursToMeridianString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+
+                            <TextBlock Text="{ns:Loc LblRightAscension}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.RightAscensionString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+
+                            <TextBlock Text="{ns:Loc LblDeclination}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.DeclinationString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+
+                            <TextBlock Text="{ns:Loc LblAltitude}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AltitudeString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblAzimuth}" />
+
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AzimuthString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblSideOfPier}" />
+
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.SideOfPier, Converter={StaticResource SideOfPierConverter}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.GuideRateRightAscensionArcsecPerSec, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblTelescopeGuideRateRA}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.GuideRateRightAscensionArcsecPerSec, StringFormat=\{0:0.000\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding TelescopeInfo.GuideRateDeclinationArcsecPerSec, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblTelescopeGuideRateDec}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.GuideRateDeclinationArcsecPerSec, StringFormat=\{0:0.000\}}" />
+                        </UniformGrid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

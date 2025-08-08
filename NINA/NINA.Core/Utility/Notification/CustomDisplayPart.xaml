@@ -1,0 +1,138 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<core:NotificationDisplayPart
+    x:Class="NINA.Core.Utility.Notification.CustomDisplayPart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.Core.Utility.Notification"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale"
+    d:DataContext="{d:DesignInstance local:CustomNotification,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="60"
+    d:DesignWidth="250"
+    Background="{Binding Background}"
+    mc:Ignorable="d">
+    <Border MinHeight="130" BorderThickness="0">
+        <Grid Margin="5" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        Width="20"
+                        Height="15"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Source="/NINA.Core;component/Resources/Logo_Nina.png" />
+                    <TextBlock
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#FFAAAAAA"
+                        Text="{Binding Source={x:Static coreutil:CoreUtil.Title}}" />
+                    <TextBlock
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#FFAAAAAA"
+                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}}" />
+                </StackPanel>
+
+                <Button
+                    x:Name="CloseButton"
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    VerticalAlignment="Center"
+                    Background="{Binding Background}"
+                    Click="OnClose"
+                    Visibility="Visible">
+                    <Path
+                        Width="10"
+                        Margin="5"
+                        Data="{StaticResource CancelSVG}"
+                        Fill="#FFAAAAAA"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0,2.5,0,0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Path
+                    Grid.Row="1"
+                    Width="50"
+                    VerticalAlignment="Top"
+                    Data="{Binding Symbol}"
+                    Fill="{Binding Color}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True"
+                    Visibility="{Binding Symbol, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        VerticalAlignment="Top"
+                        FontSize="15"
+                        Foreground="White"
+                        Text="{Binding Header}"
+                        TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Top"
+                        FontSize="15"
+                        Foreground="#FFAAAAAA"
+                        Text="{Binding Message}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="0,5,0,0"
+                        HorizontalAlignment="Left"
+                        FontSize="12"
+                        Foreground="#FFAAAAAA"
+                        Text="{Binding DateTime, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" />
+
+                    <Button
+                        x:Name="CloseAllButton"
+                        Grid.Row="2"
+                        Margin="0,5,0,0"
+                        Padding="1"
+                        HorizontalAlignment="Right"
+                        Background="{Binding Background}"
+                        Command="{Binding CloseAllCommand}"
+                        Visibility="Visible">
+                        <Run Foreground="#FFAAAAAA" Text="{ns:Loc LblCloseAll}" />
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</core:NotificationDisplayPart>

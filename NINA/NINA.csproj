@@ -93,6 +93,20 @@
     <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="NINA.SetupBundle\**" />
+    <Compile Remove="NINA.Setup\**" />
+    <Compile Remove="NINA.Test\**" />
+    <EmbeddedResource Remove="NINA.SetupBundle\**" />
+    <EmbeddedResource Remove="NINA.Setup\**" />
+    <EmbeddedResource Remove="NINA.Test\**" />
+    <None Remove="NINA.SetupBundle\**" />
+    <None Remove="NINA.Setup\**" />
+    <None Remove="NINA.Test\**" />
+    <Page Remove="NINA.SetupBundle\**" />
+    <Page Remove="NINA.Setup\**" />
+    <Page Remove="NINA.Test\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="External\x64\ASI\EAF_focuser.dll" />
     <None Remove="External\x64\Cfitsio\cfitsionative.dll" />
     <None Remove="External\x64\Cfitsio\pthreadVC2.dll" />

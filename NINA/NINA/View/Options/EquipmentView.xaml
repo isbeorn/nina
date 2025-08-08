@@ -1,0 +1,1277 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.EquipmentView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.View.Options"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <util:BindingProxy x:Key="proxy" Data="{Binding}" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid DataContext="{Binding ActiveProfile}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <GroupBox DataContext="{Binding CameraSettings}">
+                <GroupBox.Header>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        Text="{ns:Loc LblCamera}" />
+                </GroupBox.Header>
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="150"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPixelSize}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="μm">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="PixelSize" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="5,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="150"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBitDepth}" />
+                            <TextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="BitDepth" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="16" Minimum="8" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="150"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBayerPattern}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblBayerPatternTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BayerPatternEnum}}}"
+                                SelectedItem="{Binding BayerPattern}" />
+                        </UniformGrid>
+                    </UniformGrid>
+                    <Border
+                        Margin="0,10,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,1">
+                        <Expander Header="{ns:Loc LblAdvancedSettings}">
+                            <StackPanel Orientation="Vertical">
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblEnableBitScaling}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblEnableBitScalingTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <CheckBox HorizontalAlignment="Left" IsChecked="{Binding BitScaling}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblBulbMode}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ComboBox
+                                            Name="cbBulbMode"
+                                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:CameraBulbModeEnum}}}"
+                                            SelectedItem="{Binding BulbMode}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="5,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblRawConverter}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblRawConverterTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:RawConverterEnum}}}" SelectedItem="{Binding RawConverter}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                                <!--  Serial Port  -->
+                                <UniformGrid Columns="2">
+                                    <UniformGrid.Style>
+                                        <Style TargetType="{x:Type UniformGrid}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="3">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </UniformGrid.Style>
+
+                                    <UniformGrid
+                                        Margin="0,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblBulbSerialPort}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblBulbSerialPort}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ComboBox
+                                            MinWidth="75"
+                                            MinHeight="20"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            SelectedItem="{Binding SerialPort}">
+                                            <s:String>COM1</s:String>
+                                            <s:String>COM2</s:String>
+                                            <s:String>COM3</s:String>
+                                            <s:String>COM4</s:String>
+                                            <s:String>COM5</s:String>
+                                            <s:String>COM6</s:String>
+                                            <s:String>COM7</s:String>
+                                            <s:String>COM8</s:String>
+                                            <s:String>COM9</s:String>
+                                            <s:String>COM10</s:String>
+                                            <s:String>COM11</s:String>
+                                            <s:String>COM12</s:String>
+                                            <s:String>COM13</s:String>
+                                            <s:String>COM14</s:String>
+                                            <s:String>COM15</s:String>
+                                            <s:String>COM16</s:String>
+                                        </ComboBox>
+                                    </UniformGrid>
+                                </UniformGrid>
+                                <!--  Snap Port  -->
+                                <UniformGrid Columns="2">
+                                    <UniformGrid.Style>
+                                        <Style TargetType="{x:Type UniformGrid}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="2">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </UniformGrid.Style>
+                                    <UniformGrid
+                                        Margin="0,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblSnapPortStart}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <TextBox
+                                            MinWidth="75"
+                                            MinHeight="20"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding DataContext.ActiveProfile.TelescopeSettings.SnapPortStart, ElementName=UC}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="5,6,0,6"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblSnapPortStop}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <TextBox
+                                            MinWidth="75"
+                                            MinHeight="20"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding DataContext.ActiveProfile.TelescopeSettings.SnapPortStop, ElementName=UC}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblCameraTimeoutOption}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblCameraTimeoutTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ninactrl:UnitTextBox
+                                            MinWidth="80"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Unit="s">
+                                            <ninactrl:UnitTextBox.Text>
+                                                <Binding Path="Timeout" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:GreaterZeroRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ninactrl:UnitTextBox.Text>
+                                        </ninactrl:UnitTextBox>
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="5,5,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblASCOMAllowUnevenPixelDimension}"
+                                            TextWrapping="Wrap">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblASCOMAllowUnevenPixelDimensionTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <CheckBox HorizontalAlignment="Left" IsChecked="{Binding ASCOMAllowUnevenPixelDimension}">
+                                            <CheckBox.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblASCOMAllowUnevenPixelDimensionTooltip}" />
+                                            </CheckBox.ToolTip>
+                                        </CheckBox>
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Expander>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                DataContext="{Binding FilterWheelSettings}">
+
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="20"
+                            Text="{ns:Loc LblFilterWheel}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,5,0"
+                            Command="{Binding Data.AddFilterCommand, Source={StaticResource proxy}}"
+                            Style="{StaticResource BackgroundButton}">
+                            <Path
+                                Data="{StaticResource AddSVG}"
+                                Fill="{StaticResource PrimaryBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid
+                        Margin="0,10,0,0"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Disabled"
+                        ItemsSource="{Binding FilterWheelFilters}"
+                        SelectionMode="Single"
+                        VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblPosition}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Position, Converter={StaticResource AddToNumberConverter}, ConverterParameter=1}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblName}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="40"
+                                Header=""
+                                IsReadOnly="True">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                            Width="25"
+                                            Height="25"
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding Data.RemoveFilterCommand, Source={StaticResource proxy}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource BackgroundButton}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource TrashCanSVG}"
+                                                Fill="{StaticResource PrimaryBrush}"
+                                                Stretch="Uniform"
+                                                UseLayoutRounding="True" />
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDisableGuidingOnFilterChange}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDisableGuidingOnFilterChangeTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox HorizontalAlignment="Left" IsChecked="{Binding DisableGuidingOnFilterChange}" />
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                DataContext="{Binding TelescopeSettings}"
+                Header="{ns:Loc LblTelescope}">
+                <StackPanel Orientation="Vertical">
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTelescopeName}" />
+                            <TextBox
+                                MinWidth="48"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                MaxLength="48"
+                                Text="{Binding Name}" />
+                        </UniformGrid>
+                    </UniformGrid>
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocalLength}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="mm">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource NaNToDoubleDashConverter}"
+                                        Path="FocalLength"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterThanZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocalRatio}" />
+                            <TextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource NaNToEmptyTextConverter}"
+                                        Path="FocalRatio"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterThanZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="2"
+                DataContext="{Binding TelescopeSettings}"
+                Header="{ns:Loc LblMount}">
+                <StackPanel Orientation="Vertical">
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMountName}" />
+                            <TextBox
+                                MinWidth="48"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                MaxLength="48"
+                                Text="{Binding MountName}" />
+                        </UniformGrid>
+                    </UniformGrid>
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSettleTimeAfterSlew}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="s">
+                                <TextBox.Text>
+                                    <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+
+                        <UniformGrid
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCoordinatesMountSync}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding NoSync, Converter={StaticResource InverseBooleanConverter}}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutomaticMountSyncTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </UniformGrid>
+                    </UniformGrid>
+
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc Lbl_TelescopeLocationSyncDirection}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_TelescopeLocationSyncDirection_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+
+                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:TelescopeLocationSyncDirection}}}" SelectedItem="{Binding TelescopeLocationSyncDirection}">
+
+                                <ComboBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_TelescopeLocationSyncDirection_Tooltip}" />
+                                </ComboBox.ToolTip>
+                            </ComboBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTimeSync}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblTimeSyncTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding TimeSync}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblTimeSyncTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="3"
+                DataContext="{Binding WeatherDataSettings}"
+                Header="{ns:Loc LblWeather}">
+
+                <StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblOpenWeatherMapAPIKey}" />
+                        <DockPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding OpenWeatherMapAPIKey}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
+
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblTheWeatherCompanyAPIKey}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding TheWeatherCompanyAPIKey}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://weather.service-now.com/apicustomer">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
+
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblWeatherUndergroundAPIKey}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding WeatherUndergroundAPIKey}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                    </Grid>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="WeatherLabel" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblWeatherUndergroundStationID}" />
+                        <DockPanel Grid.Column="2" Margin="5,0,0,0">
+                            <TextBox
+                                MinWidth="190"
+                                DockPanel.Dock="Left"
+                                Text="{Binding WeatherUndergroundStation}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                Margin="2,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontWeight="Bold"
+                                Text="">
+                                <Hyperlink Command="{Binding ElementName=UC, Path=DataContext.OpenWebRequestCommand}" CommandParameter="https://www.wunderground.com/member/api-keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="4"
+                DataContext="{Binding GnssSettings}"
+                Header="{ns:Loc LblGnss}">
+                <StackPanel Orientation="Vertical">
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="130"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSource}" />
+                            <ComboBox
+                                Name="PART_GnssSourceList"
+                                Grid.Column="1"
+                                MinWidth="150"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GnssSourceEnum}}}"
+                                SelectedItem="{Binding GnssSource}" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.Resources>
+                            <DataTemplate x:Key="Default" />
+
+                            <DataTemplate x:Key="Gpsd">
+                                <StackPanel Orientation="Vertical"
+                                            DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}">
+                                    <DockPanel Margin="0,0,0,5">
+                                        <TextBlock
+                                            Width="130"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblHost}" />
+                                        <TextBox
+                                            Width="200"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding GpsdHost}" />
+                                    </DockPanel>
+
+                                    <DockPanel Margin="0,0,0,5">
+                                        <TextBlock
+                                            Width="130"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblPort}" />
+                                        <TextBox
+                                            Width="200"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center">
+                                            <TextBox.Text>
+                                                <Binding Mode="TwoWay" Path="GpsdPort">
+                                                    <Binding.ValidationRules>
+                                                        <rules:IsValidIpPortRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </DockPanel>
+                                </StackPanel>
+                            </DataTemplate>
+
+                            <DataTemplate x:Key="Failed">
+                                <TextBlock Text="Failed to load data template" />
+                            </DataTemplate>
+
+                            <local:GnssSourceTemplateSelector
+                                x:Key="GnssContentSelector"
+                                Default="{StaticResource Default}"
+                                Gpsd="{StaticResource Gpsd}"
+                                FailedToLoadTemplate="{StaticResource Failed}"
+                                Postfix="{x:Static wpfutil:DataTemplatePostfix.GnssSourceSettings}" />
+                        </Grid.Resources>
+                        <ContentControl
+                            Content="{Binding GnssSource}"
+                            ContentTemplateSelector="{StaticResource GnssContentSelector}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="3"
+                Grid.Column="1"
+                DataContext="{Binding PlanetariumSettings}"
+                Header="{ns:Loc LblPlanetarium}">
+                <StackPanel Orientation="Vertical">
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
+                        <ComboBox
+                            Name="PART_PlanetariumList"
+                            Grid.Column="1"
+                            MinWidth="150"
+                            Margin="10,0,0,0"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
+                            SelectedItem="{Binding PreferredPlanetarium}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblHost}" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Height="25"
+                            MinWidth="200"
+                            Margin="10,5,0,0">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="CdCHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="StellariumHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="TSXHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="HNSKYHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="C2AHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="SkytechXHost" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPort}" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Height="25"
+                            MinWidth="150"
+                            Margin="10,5,0,0">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="0">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="CdCPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="1">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="StellariumPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="2">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="TSXPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="3">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="HNSKYPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="4">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="C2APort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_PlanetariumList, Path=SelectedIndex}" Value="5">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <Binding Mode="TwoWay" Path="SkytechXPort">
+                                                        <Binding.ValidationRules>
+                                                            <rules:IsValidIpPortRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlanetariumUseSelectedObject}">
+
+                            <TextBlock.Style>
+                                <Style BasedOn="{StaticResource StandardTextBlock}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=PART_PlanetariumList}" Value="THESKYX">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <CheckBox
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Height="25"
+                            Margin="10,5,0,0"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding TSXUseSelectedObject}">
+
+
+                            <CheckBox.Style>
+                                <Style BasedOn="{StaticResource StandardCheckBox}" TargetType="{x:Type CheckBox}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=PART_PlanetariumList}" Value="THESKYX">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="4"
+                Grid.Column="1"
+                DataContext="{Binding AlpacaSettings}"
+                Header="ASCOM Alpaca Discovery">
+                <StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_DiscoveryPort}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryPort_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox Grid.Column="1" Margin="5,0,0,0">
+                            <TextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryPort_Tooltip}" />
+                            </TextBox.ToolTip>
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="DiscoveryPort">
+                                    <Binding.ValidationRules>
+                                        <rules:IsValidIpPortRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Unit="x">
+                            <ninactrl:UnitTextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_NrOfBroadcasts_Tooltip}" />
+                            </ninactrl:UnitTextBox.ToolTip>
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="NumberOfPolls">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration_Tooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Unit="s">
+                            <ninactrl:UnitTextBox.ToolTip>
+                                <TextBlock Text="{ns:Loc Lbl_Alpaca_DiscoveryDuration_Tooltip}" />
+                            </ninactrl:UnitTextBox.ToolTip>
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="DiscoveryDuration">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_ResolveDnsName}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_ResolveDnsName_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding ResolveDnsName, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_ResolveDnsName_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseHTTPS}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseHTTPS_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseHttps, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseHTTPS_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseIPv4}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv4_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseIPv4, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv4_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Alpaca" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_Alpaca_UseIPv6}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv6_Tooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseIPv6, Mode=TwoWay}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc Lbl_Alpaca_UseIPv6_Tooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                    </Grid>
+
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

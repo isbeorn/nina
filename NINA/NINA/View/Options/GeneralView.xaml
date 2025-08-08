@@ -1,0 +1,1275 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.GeneralView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Options"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:plugin="clr-namespace:NINA.Plugin;assembly=NINA.Plugin"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+    x:Name="UC"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    Background="{StaticResource BackgroundBrush}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <util:BindingProxy x:Key="OptionsProxy" Data="{Binding}" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="{ns:Loc LblProfiles}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="45" />
+                    </Grid.RowDefinitions>
+
+                    <ListView
+                        VerticalAlignment="Stretch"
+                        ItemsSource="{Binding Profiles}"
+                        SelectedItem="{Binding SelectedProfile}"
+                        SelectionMode="Single">
+                        <i:Interaction.Behaviors>
+                            <behavior:BubbleScrollEvent />
+                        </i:Interaction.Behaviors>
+                        <ListView.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="{ns:Loc LblActive}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Center"
+                                                IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
+                                                IsEnabled="False"
+                                                Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="200" Header="{ns:Loc LblName}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="{ns:Loc LblDescription}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Description}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="{ns:Loc LblId}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Id}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Button
+                            Width="40"
+                            Margin="0,5,0,5"
+                            Command="{Binding AddProfileCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource AddSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <Button
+                            Width="40"
+                            Margin="1,5,0,5"
+                            Command="{Binding CloneProfileCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <Button
+                            Width="40"
+                            Margin="1,5,0,5"
+                            Command="{Binding RemoveProfileCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource TrashCanSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <Button
+                            Grid.Column="1"
+                            Width="100"
+                            Margin="1,5,0,5"
+                            Command="{Binding SelectProfileCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
+                            </Button.Content>
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
+                                    <Binding Path="DeviceConsumer.CameraInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.FilterWheelInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.FocuserInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.RotatorInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.TelescopeInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.GuiderInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.DomeInfo.Connected" />
+                                    <Binding Path="DeviceConsumer.SwitchInfo.Connected" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="1">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontSize="20" Text="{ns:Loc LblGeneral}" />
+                        <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_General}}" />
+                    </Grid>
+                </GroupBox.Header>
+                <StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="150"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblName}" />
+                        <TextBox
+                            MinWidth="120"
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding ActiveProfile.Name}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="150"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDescription}" />
+                        <TextBox
+                            MinWidth="120"
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            AcceptsReturn="True"
+                            Text="{Binding ActiveProfile.Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="150"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblLanguage}" />
+                        <ComboBox
+                            Margin="10,0,0,0"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding AvailableLanguages}"
+                            SelectedItem="{Binding Language}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="150"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFont}" />
+                        <ComboBox
+                            xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                            Margin="10,0,0,0"
+                            ItemTemplate="{DynamicResource FontTemplate}"
+                            SelectedItem="{Binding ApplicationFontFamily}">
+                            <ComboBox.Resources>
+
+                                <CollectionViewSource x:Key="OrderedSystemFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <ComponentModel:SortDescription PropertyName="Source" />
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
+
+                                <DataTemplate x:Key="FontTemplate">
+                                    <StackPanel VirtualizingStackPanel.IsVirtualizing="True">
+                                        <TextBlock
+                                            FontFamily="{Binding Source}"
+                                            FontStretch="Normal"
+                                            FontStyle="Normal"
+                                            FontWeight="Normal"
+                                            Text="{Binding Source}"
+                                            ToolTip="{Binding Source}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.Resources>
+                            <ComboBox.ItemsSource>
+                                <Binding Source="{StaticResource OrderedSystemFonts}" />
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+                        <ComboBox
+                            ItemTemplate="{DynamicResource FontTemplate}"
+                            ItemsSource="{Binding ApplicationFontFamily.FamilyTypefaces}"
+                            SelectedItem="{Binding FamilyTypeface}">
+                            <ComboBox.Resources>
+                                <DataTemplate x:Key="FontTemplate">
+                                    <StackPanel VirtualizingStackPanel.IsVirtualizing="True">
+                                        <TextBlock
+                                            FontStretch="{Binding Stretch}"
+                                            FontStyle="{Binding Style}"
+                                            FontWeight="{Binding Weight}"
+                                            Text="{Binding AdjustedFaceNames[en-US]}"
+                                            ToolTip="{Binding AdjustedFaceNames[en-US]}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.Resources>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkySurveyCacheDirectory}" />
+
+                        <TextBox
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:DirectoryExistsRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <Button
+                            Grid.Column="2"
+                            Width="40"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenSkySurveyCacheDirectoryDiagCommand}">
+                            <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="150"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblProfileChooserOnStartup}" />
+                        <CheckBox Margin="10,0,0,0" IsChecked="{Binding UseSavedProfileSelection, Converter={StaticResource InverseBooleanConverter}}" />
+                    </StackPanel>
+
+                    <Border
+                        Margin="0,10,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,1">
+                        <Expander Header="{ns:Loc LblAdvancedSettings}">
+                            <StackPanel Orientation="Vertical">
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoUpdateSource}" />
+                                    <ComboBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AutoUpdateSourceEnum}}}"
+                                        SelectedItem="{Binding AutoUpdateSource}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSingleImagingLayout}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblSingleImagingLayoutTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding SingleDockLayout}" />
+
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        FontWeight="Bold"
+                                        Text="{ns:Loc LblRequiresRestart}"
+                                        Visibility="{Binding RequiresRestart, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblLogLevel}" />
+                                    <ComboBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:LogLevelEnum}}}"
+                                        SelectedItem="{Binding LogLevel}" />
+                                    <Button
+                                        Width="40"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding OpenLogFolderCommand}">
+                                        <Path
+                                            Margin="2"
+                                            Data="{StaticResource PreviewSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblDevicePollingInterval}" />
+                                    <ninactrl:UnitTextBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Unit="s">
+                                        <TextBox.Text>
+                                            <Binding Path="ActiveProfile.ApplicationSettings.DevicePollingInterval" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </ninactrl:UnitTextBox>
+                                </StackPanel>
+
+
+                                <StackPanel
+                                    Margin="0,5,0,5"
+                                    IsEnabled="{Binding IsX64}"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSaveImageQueueSize}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblSaveImageQueueSizeTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        MinWidth="120"
+                                        Margin="10,0,0,0"
+                                        Text="{Binding SaveQueueSize}">
+                                        <TextBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblSaveImageQueueSizeTooltip}" />
+                                        </TextBox.ToolTip>
+                                    </TextBox>
+
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblUnavailableForX86}"
+                                        Visibility="{Binding IsX64, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="150"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblHardwareAcceleration}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblHardwareAccelerationTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding HardwareAcceleration, Mode=TwoWay}">
+                                        <CheckBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblHardwareAcceleration}" />
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+
+                                </StackPanel>
+
+                                <TextBlock
+                                    Margin="0,0,0,5"
+                                    FontStyle="Italic"
+                                    FontWeight="Bold"
+                                    Text="{ns:Loc LblRequiresRestart}"
+                                    Visibility="{Binding RequiresRestart, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            </StackPanel>
+                        </Expander>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
+                Header="{ns:Loc LblCurrentUIColorSchema}">
+
+                <UniformGrid Columns="2">
+                    <StackPanel Orientation="Vertical">
+
+                        <ComboBox
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,5"
+                            DisplayMemberPath="Name"
+                            ItemsSource="{Binding ColorSchemas.Items}"
+                            SelectedItem="{Binding ColorSchema}" />
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPrimary}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.PrimaryColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBorder}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.BorderColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondaryBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.SecondaryBackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.ButtonBackgroundColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForeground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.ButtonForegroundColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarning}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.NotificationWarningColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarningText}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.NotificationWarningTextColor}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,0,0" Orientation="Vertical">
+                        <Button
+                            Width="40"
+                            Height="22"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Source={StaticResource OptionsProxy}, Path=Data.CopyToCustomSchemaCommand}"
+                            DockPanel.Dock="Right">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                            <Button.ToolTip>
+                                <TextBlock Text="{ns:Loc LblCopyColorSchemaToCustom}" />
+                            </Button.ToolTip>
+                        </Button>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondary}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.SecondaryColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.BackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTertiaryBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.TertiaryBackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonHighlight}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.ButtonBackgroundSelectedColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForegroundDisabled}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.ButtonForegroundDisabledColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationError}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.NotificationErrorColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationErrorText}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.NotificationErrorTextColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCrosshair}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding ColorSchema.CrosshairColor}"
+                                ShowStandardColors="False"
+                                ShowTabHeaders="False" />
+                        </StackPanel>
+                    </StackPanel>
+                </UniformGrid>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalAlignment="Top"
+                DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
+                Header="{ns:Loc LblAlternativeUIColorSchema}">
+                <UniformGrid Columns="2">
+                    <StackPanel Orientation="Vertical">
+                        <ComboBox
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,5"
+                            DisplayMemberPath="Name"
+                            ItemsSource="{Binding ColorSchemas.Items}"
+                            SelectedItem="{Binding AltColorSchema}" />
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPrimary}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.PrimaryColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBorder}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.BorderColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondaryBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.SecondaryBackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.ButtonBackgroundColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForeground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.ButtonForegroundColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarning}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.NotificationWarningColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarningText}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.NotificationWarningTextColor}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,0,0" Orientation="Vertical">
+                        <Button
+                            Width="40"
+                            Height="22"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Source={StaticResource OptionsProxy}, Path=Data.CopyToAlternativeCustomSchemaCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                            <Button.ToolTip>
+                                <TextBlock Text="{ns:Loc LblCopyColorSchemaToAlternativeCustom}" />
+                            </Button.ToolTip>
+                        </Button>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondary}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.SecondaryColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.BackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblTertiaryBackground}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.TertiaryBackgroundColor}" />
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonHighlight}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.ButtonBackgroundSelectedColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForegroundDisabled}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.ButtonForegroundDisabledColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationError}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.NotificationErrorColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationErrorText}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.NotificationErrorTextColor}" />
+                        </StackPanel>
+
+                        <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
+                            <TextBlock
+                                Width="170"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCrosshair}" />
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                SelectedColor="{Binding AltColorSchema.CrosshairColor}"
+                                ShowStandardColors="False"
+                                ShowTabHeaders="False" />
+                        </StackPanel>
+                    </StackPanel>
+                </UniformGrid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="2">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontSize="20" Text="{ns:Loc LblAstrometry}" />
+                        <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_AstrometrySettings}}" />
+                    </Grid>
+                </GroupBox.Header>
+                <StackPanel Grid.IsSharedSizeScope="True">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteLatitude}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="°">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Latitude"
+                                        StringFormat="0.######"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:LatitudeRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblObserver}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Observer}" />
+                            <ninactrl:CancellableButton
+                                Grid.Column="2"
+                                Width="40"
+                                Height="21"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                ButtonImage="{StaticResource GPSSVG}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding SiteFromGnssCancelCommand}"
+                                Command="{Binding SiteFromGnssCommand}"
+                                ToolTip="{ns:Loc LblGnssTooltip}" />
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteLongitude}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="°">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Longitude"
+                                        StringFormat="0.######"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:LongitudeRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblObservatory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Observatory}" />
+                            <ninactrl:CancellableButton
+                                Grid.Column="2"
+                                Width="40"
+                                Height="21"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                ButtonImage="{StaticResource GetCoordsSVG}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding SiteFromPlanetariumCancelCommand}"
+                                Command="{Binding SiteFromPlanetariumCommand}"
+                                ToolTip="{ns:Loc LblPlanetariumLocationTooltip}" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSiteElevation}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="m">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding
+                                        Path="Elevation"
+                                        StringFormat="{}{0:0.0}"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="10000.0" Minimum="-1000.0" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label2" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSiteName}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding ActiveProfile.AstrometrySettings.Site}" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Buttons" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblCustomHorizon}" />
+
+                        <TextBox
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="HorizonFilePath" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:FileExistsOrEmptyRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <Button
+                            Grid.Column="2"
+                            Width="40"
+                            Height="21"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenHorizonFilePathDiagCommand}">
+                            <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+
+                    <Expander Margin="0,5,0,0" Header="{ns:Loc LblWorldMap}">
+                        <Viewbox Stretch="Uniform">
+                            <Viewbox.Resources>
+                                <local:LongitudeWorldMapConverter x:Key="LongitudeWorldMapConverter" />
+                                <local:LatitudeWorldMapConverter x:Key="LatitudeWorldMapConverter" />
+                            </Viewbox.Resources>
+                            <Canvas
+                                Width="{Binding ActualWidth, ElementName=Worldmap}"
+                                Height="{Binding ActualHeight, ElementName=Worldmap}"
+                                ClipToBounds="True">
+                                <Path
+                                    x:Name="Worldmap"
+                                    Data="{StaticResource Worldmap_Equirectangular_SVG}"
+                                    Fill="{StaticResource ButtonBackgroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                                <Path
+                                    x:Name="TheArrow"
+                                    Width="75"
+                                    Data="{StaticResource TargetWithArrowSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True">
+                                    <Canvas.Left>
+                                        <MultiBinding Converter="{StaticResource LongitudeWorldMapConverter}" FallbackValue="0">
+                                            <Binding Path="Longitude" />
+                                            <Binding ElementName="Worldmap" Path="ActualWidth" />
+                                            <Binding ElementName="TheArrow" Path="ActualWidth" />
+                                        </MultiBinding>
+                                    </Canvas.Left>
+                                    <Canvas.Top>
+                                        <MultiBinding Converter="{StaticResource LatitudeWorldMapConverter}" FallbackValue="0">
+                                            <Binding Path="Latitude" />
+                                            <Binding ElementName="Worldmap" Path="ActualHeight" />
+                                            <Binding ElementName="TheArrow" Path="ActualHeight" />
+                                        </MultiBinding>
+                                    </Canvas.Top>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+                    </Expander>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Row="2" Grid.Column="1">
+
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="20"
+                            Text="{ns:Loc LblPluginRepositories}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,5,0"
+                            Command="{Binding AddPluginRepositoryCommand}"
+                            Style="{StaticResource BackgroundButton}">
+                            <Path
+                                Data="{StaticResource AddSVG}"
+                                Fill="{StaticResource PrimaryBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </GroupBox.Header>
+
+
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    HeadersVisibility="None"
+                    HorizontalScrollBarVisibility="Disabled"
+                    ItemsSource="{Binding PluginRepositories}"
+                    SelectionMode="Single"
+                    VerticalScrollBarVisibility="Auto">
+                    <i:Interaction.Behaviors>
+                        <behavior:BubbleScrollEvent />
+                    </i:Interaction.Behaviors>
+                    <DataGrid.RowStyle>
+                        <Style BasedOn="{StaticResource StandardDataGridRow}" TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Static plugin:Constants.MainPluginRepository}">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="*" CanUserSort="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Margin="5,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding}"
+                                        TextAlignment="Left" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn
+                            Width="40"
+                            Header=""
+                            IsReadOnly="True">
+
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="25"
+                                        Height="25"
+                                        Margin="5,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DataContext.RemovePluginRepositoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource BackgroundButton}">
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource TrashCanSVG}"
+                                            Fill="{StaticResource PrimaryBrush}"
+                                            Stretch="Uniform"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

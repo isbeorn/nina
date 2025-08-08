@@ -1,0 +1,255 @@
+﻿<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.TabPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:about="clr-namespace:NINA.View.About"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View.Options"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:settings="clr-namespace:NINA.Properties"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <TabControl
+        MinWidth="40"
+        Style="{StaticResource SecondLevelTabControl}"
+        TabStripPlacement="Left">
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid MinWidth="65" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource NINASVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblGeneral}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource NINASVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:GeneralView />
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource TelescopeSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblEquipment}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource TelescopeSVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:EquipmentView />
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource AutoFocusSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblAutoFocus}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource AutoFocusSVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:AutoFocusView />
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource ObservatorySVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblDome}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource ObservatorySVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:DomeView />
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource PictureSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblImaging}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource PictureSVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:ImagingView />
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid Width="40" Height="40">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource PlatesolveSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
+                                    UseLayoutRounding="True" />
+                            </Grid>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource SideBarTextBlock}"
+                            Text="{ns:Loc LblPlateSolving}" />
+                    </Grid>
+                    <Grid Height="25" Visibility="{Binding CollapsedSidebar, Source={x:Static settings:Settings.Default}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Path
+                            Width="25"
+                            Margin="2.5"
+                            Data="{StaticResource PlatesolveSVG}"
+                            Stretch="Uniform"
+                            Style="{StaticResource TabItemPath}"
+                            UseLayoutRounding="True" />
+                    </Grid>
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:PlateSolverView />
+            </TabItem.Content>
+        </TabItem>
+    </TabControl>
+</UserControl>

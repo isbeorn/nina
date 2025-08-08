@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<DrawingBrush x:Key="camera_shutter" Stretch="Uniform">
+		<DrawingBrush.Drawing>
+			<DrawingGroup>
+				<DrawingGroup.Children>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 18.1613,34.8547L 4.53067,12.2307C 1.672,16.46 0,21.5533 0,27.032C 0,29.7507 0.412,32.3813 1.18267,34.8547"/>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 23.8853,15.8027L 50.4587,15.8027C 47.0413,8.54266 40.432,3.07867 32.448,1.236"/>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 15.36,24.0013L 29.068,0.678665C 28.2133,0.594666 27.3547,0.548 26.4787,0.548C 18.584,0.548 11.4893,4.02666 6.636,9.52666"/>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 20.88,52.6787L 29.2653,38.0533L 2.412,38.0533C 5.93733,45.7147 13.0053,51.408 21.5053,53.0373"/>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 34.76,19.0013L 48.1453,42.2307C 51.1773,37.9227 52.964,32.684 52.964,27.0267C 52.964,24.2307 52.5267,21.532 51.7187,19.0013"/>
+					<GeometryDrawing Brush="#FF000000" Geometry="F1 M 37.4893,30.1467L 24.156,53.4027C 24.9213,53.4693 25.6973,53.512 26.4787,53.512C 34.1973,53.512 41.1507,50.1933 45.9947,44.912"/>
+				</DrawingGroup.Children>
+			</DrawingGroup>
+		</DrawingBrush.Drawing>
+	</DrawingBrush>
+</ResourceDictionary>

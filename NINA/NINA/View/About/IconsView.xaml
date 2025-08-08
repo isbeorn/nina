@@ -1,0 +1,232 @@
+﻿<UserControl
+    x:Class="NINA.View.About.IconsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View.About"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ScrollViewer Margin="5" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Margin="5,0,0,0" FontSize="14">
+                Many of the N.I.N.A. Icons are created by Stefan Berg<LineBreak />
+                In addition to that Icons are used from the following authors. Thank you for creating these icons to be commonly used.</TextBlock>
+            <StackPanel
+                Grid.Row="1"
+                Grid.IsSharedSizeScope="True"
+                Orientation="Vertical">
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontWeight="Bold">Author</TextBlock>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        FontWeight="Bold">
+                        Source
+                    </TextBlock>
+                    <TextBlock
+                        Grid.Column="2"
+                        Margin="5,0,0,0"
+                        FontWeight="Bold">
+                        License
+                    </TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="roundicons" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/roundicons" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/roundicons</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="freepik" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.freepik.com/" RequestNavigate="Hyperlink_RequestNavigate">https://www.freepik.com/</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="bogdan-rosu" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/bogdan-rosu" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/bogdan-rosu</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="dave-gandy" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/dave-gandy" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/dave-gandy</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="gregor-cresnar" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/gregor-cresnar" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/gregor-cresnar</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="google" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/google" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/google</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="smashicons" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/smashicons" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/smashicons</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="dave-gandy" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/dave-gandy" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/dave-gandy</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="pixel-perfect" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/pixel-perfect" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/pixel-perfect</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="good-ware" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/good-ware" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/good-ware</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Icongeek26" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/free-icon/pen_1250925" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/free-icon/pen_1250925</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="those-icons" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/those-icons" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/those-icons</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+
+                <Grid Margin="5,5,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto"
+                            MinWidth="150"
+                            SharedSizeGroup="Column1" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column2" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Column3" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="xnimrodx" />
+                    <TextBlock Grid.Column="1" Margin="5,0,0,0"><Hyperlink NavigateUri="https://www.flaticon.com/authors/xnimrodx" RequestNavigate="Hyperlink_RequestNavigate">https://www.flaticon.com/authors/xnimrodx</Hyperlink></TextBlock>
+                    <TextBlock Grid.Column="2" Margin="5,0,0,0"><Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">Creative Commons 3.0</Hyperlink></TextBlock>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

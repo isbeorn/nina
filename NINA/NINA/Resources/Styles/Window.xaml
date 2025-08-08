@@ -1,0 +1,277 @@
+<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:win="clr-namespace:NINA.Core.Utility.WindowService;assembly=NINA.Core">
+
+    <Style x:Key="MainWindow" TargetType="{x:Type Window}">
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome
+                    CaptionHeight="30"
+                    GlassFrameThickness="-1"
+                    UseAeroCaptionButtons="False" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    <AdornerDecorator>
+                        <Border BorderBrush="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <StackPanel
+                                    Margin="2.5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Image
+                                        Width="25"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Source="/NINA;component/Resources/Logo_Nina.png" />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{Binding Source={x:Static coreutil:CoreUtil.Title}}" />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}}" />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text=" - " />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.Name}" />
+                                </StackPanel>
+
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Foreground="Red"
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsNightlyBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    ! NIGHTLY UNSTABLE VERSION !
+                                </TextBlock>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Foreground="Yellow"
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsBetaBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    ! BETA PREVIEW VERSION !
+                                </TextBlock>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Foreground="Green"
+                                    Visibility="{Binding Source={x:Static coreutil:CoreUtil.IsRCBuild}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    RELEASE CANDIDATE
+                                </TextBlock>
+
+                                <StackPanel
+                                    Margin="0,0,2.5,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Height="15"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.VersionCheckVM.ShowDownloadCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.VersionCheckVM.UpdateAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource WindowButtonTextBlock}"
+                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.VersionCheckVM.UpdateAvailableText}" />
+                                            <Path
+                                                Margin="2"
+                                                Data="{StaticResource DownloadSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource WindowButtonPath}"
+                                                UseLayoutRounding="True" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        Width="45"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.AppVM.MinimizeWindowCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <Path
+                                            Width="12"
+                                            Data="{StaticResource MinimizeWindowSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowButtonPath}"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                    <Button
+                                        Width="45"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.AppVM.MaximizeWindowCommand}"
+                                        Style="{StaticResource SecondaryBackgroundButton}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+
+                                        <Path
+                                            Margin="10"
+                                            Data="{StaticResource MaximizeSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowButtonPath}"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                    <Button
+                                        Width="45"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.AppVM.ExitCommand}"
+                                        Style="{StaticResource CloseWindowButton}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <Path
+                                            Margin="10"
+                                            Data="{StaticResource CancelSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowCloseButtonPath}"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                </StackPanel>
+
+                                <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </AdornerDecorator>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ToolTip">
+        <Style.Resources>
+            <Style BasedOn="{StaticResource StandardTextBlock}" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style BasedOn="{StaticResource StandardTextBlock}" TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+        <Setter Property="MaxWidth" Value="600" />
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+    </Style>
+
+    <Style x:Key="NoResizeWindow" TargetType="{x:Type win:CustomWindow}">
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome
+                    CaptionHeight="30"
+                    GlassFrameThickness="-1"
+                    UseAeroCaptionButtons="False" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    <AdornerDecorator>
+                        <Border BorderBrush="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                                            <Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="{StaticResource SecondaryBackgroundBrush}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <StackPanel
+                                    Margin="2.5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Image
+                                        Width="25"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Source="/NINA;component/Resources/Logo_Nina.png" />
+                                    <TextBlock
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
+                                </StackPanel>
+
+                                <StackPanel
+                                    Margin="0,0,2.5,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Name="PART_CloseButton"
+                                        Width="45"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CloseCommand}"
+                                        Style="{StaticResource CloseWindowButton}"
+                                        WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <Path
+                                            Margin="10"
+                                            Data="{StaticResource CancelSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowCloseButtonPath}"
+                                            UseLayoutRounding="True" />
+                                    </Button>
+                                </StackPanel>
+
+                                <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </AdornerDecorator>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
