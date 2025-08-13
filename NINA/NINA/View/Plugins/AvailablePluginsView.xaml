@@ -1,0 +1,507 @@
+﻿<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Plugins.AvailablePluginsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behavior="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Plugins"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:plugin="clr-namespace:NINA.ViewModel.Plugins"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="DllInstallDescription">
+            <TextBlock Text="{ns:Loc LblPluginDllInstallDescription}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SetupInstallDescription">
+            <TextBlock Text="{ns:Loc LblPluginSetupInstallDescription}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="ArchiveInstallDescription">
+            <TextBlock Text="{ns:Loc LblPluginArchiveInstallDescription}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="InstalledIcon">
+            <Path
+                Margin="2"
+                Data="{StaticResource CheckedCircledSVG}"
+                Stretch="Uniform"
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="InstalledAndRequiresRestartIcon">
+            <Path
+                Margin="2"
+                Data="{StaticResource RefreshSVG}"
+                Stretch="Uniform"
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="NotInstalledIcon">
+            <Grid />
+        </DataTemplate>
+
+        <DataTemplate x:Key="UpdateAvailableIcon">
+            <Path
+                Margin="2"
+                Data="{StaticResource DownloadSVG}"
+                Stretch="Uniform"
+                Style="{StaticResource WindowButtonPath}"
+                UseLayoutRounding="True" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="InstalledButton">
+            <Button IsEnabled="False">
+                <TextBlock Text="{ns:Loc LblInstalled}" />
+            </Button>
+        </DataTemplate>
+
+        <DataTemplate x:Key="InstalledAndRequiresRestartButton">
+            <Button Command="{Binding RestartCommand}" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:AvailablePluginsView}}">
+                <TextBlock Text="{ns:Loc LblRequiresRestart}" />
+            </Button>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NotInstalledButton">
+            <ninactrl:AsyncProcessButton
+                ButtonText="{ns:Loc LblInstall}"
+                CancelButtonImage="{StaticResource CancelSVG}"
+                CancelCommand="{Binding CancelInstallPluginCommand}"
+                CancelToolTip="{ns:Loc LblCancel}"
+                Command="{Binding InstallPluginCommand}"
+                DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:AvailablePluginsView}}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="UpdateAvailableButton">
+            <ninactrl:AsyncProcessButton
+                ButtonText="{ns:Loc LblUpdate}"
+                CancelButtonImage="{StaticResource CancelSVG}"
+                CancelCommand="{Binding CancelInstallPluginCommand}"
+                CancelToolTip="{ns:Loc LblCancel}"
+                Command="{Binding UpdatePluginCommand}"
+                DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:AvailablePluginsView}}" />
+        </DataTemplate>
+        <plugin:PluginInstallerDescriptionTemplateSelector
+            x:Key="PluginInstallerDescriptionTemplateSelector"
+            Archive="{StaticResource ArchiveInstallDescription}"
+            DLL="{StaticResource DllInstallDescription}"
+            Setup="{StaticResource SetupInstallDescription}" />
+
+        <plugin:PluginStateToDataTemplateSelector
+            x:Key="PluginStateToIconDataTemplateSelector"
+            Installed="{StaticResource InstalledIcon}"
+            InstalledAndRequiresRestart="{StaticResource InstalledAndRequiresRestartIcon}"
+            NotInstalled="{StaticResource NotInstalledIcon}"
+            UpdateAvailable="{StaticResource UpdateAvailableIcon}" />
+
+        <plugin:PluginStateToDataTemplateSelector
+            x:Key="PluginStateToButtonDataTemplateSelector"
+            Installed="{StaticResource InstalledButton}"
+            InstalledAndRequiresRestart="{StaticResource InstalledAndRequiresRestartButton}"
+            NotInstalled="{StaticResource NotInstalledButton}"
+            UpdateAvailable="{StaticResource UpdateAvailableButton}" />
+
+        <BitmapImage x:Key="DefaultImage" UriSource="/NINA;component/Resources/plugin.png" />
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding FetchPluginsCommand}" CommandParameter="Initial" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MaxWidth="350" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="{ns:Loc LblPlugins}" />
+                    <ListView
+                        Grid.Row="1"
+                        MinWidth="180"
+                        Margin="5,-15,0,0"
+                        BorderThickness="0"
+                        ItemsSource="{Binding AvailablePlugins}"
+                        SelectedItem="{Binding SelectedAvailablePlugin}"
+                        SelectionMode="Single">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border
+                                                    Name="Border"
+                                                    Margin="0,2.5,0,2.5"
+                                                    Padding="2,0,2,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    Background="{StaticResource BackgroundBrush}"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1"
+                                                    UseLayoutRounding="True">
+                                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="false">
+                                                        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Resources>
+                            <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image
+                                                MaxWidth="25"
+                                                MaxHeight="25"
+                                                RenderOptions.BitmapScalingMode="HighQuality"
+                                                Source="{Binding Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Text="{Binding Path=Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto" Header="">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentControl
+                                                Height="25"
+                                                Margin="2.5"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding Path=State}"
+                                                ContentTemplateSelector="{StaticResource PluginStateToIconDataTemplateSelector}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel Grid.Row="2" Orientation="Vertical">
+                        <ninactrl:AsyncProcessButton
+                            Height="25"
+                            Margin="5,0,5,5"
+                            ButtonText="{ns:Loc LblPluginCheckForUpdates}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelFetchPluginsCommand}"
+                            CancelToolTip="{ns:Loc LblPluginCheckForUpdatesCancel}"
+                            Command="{Binding FetchPluginsCommand}"
+                            ToolTip="{ns:Loc LblPluginCheckForUpdatesTooltip}" />
+                        <ninactrl:AsyncProcessButton
+                            Height="25"
+                            Margin="5,0,5,5"
+                            ButtonText="{ns:Loc LblPluginUpdateAll}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelInstallPluginCommand}"
+                            CancelToolTip="{ns:Loc LblPluginUpdateAllCancel}"
+                            Command="{Binding UpdateAllPluginsCommand}"
+                            ToolTip="{ns:Loc LblPluginUpdateAllTooltip}"
+                            Visibility="{Binding AvailablePluginUpdateCount, Converter={StaticResource ZeroToVisibilityConverter}}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Grid
+                Grid.Column="1"
+                Opacity="0.4"
+                Visibility="{Binding AvailablePlugins, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Path
+                        MaxWidth="100"
+                        MaxHeight="100"
+                        Margin="5"
+                        Data="{StaticResource PuzzlePieceSVG}"
+                        Fill="{StaticResource PrimaryBrush}"
+                        Stretch="Uniform"
+                        Style="{StaticResource TabItemPath}"
+                        UseLayoutRounding="True" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontStyle="Italic"
+                        Text="{ns:Loc LblNoPluginsFound}" />
+                </StackPanel>
+            </Grid>
+            <GridSplitter
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+            <Grid
+                Grid.Column="2"
+                Margin="5"
+                DataContext="{Binding SelectedAvailablePlugin}"
+                Visibility="{Binding DataContext.AvailablePlugins, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=local:AvailablePluginsView}}">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
+                                    FontSize="30"
+                                    FontWeight="Bold"
+                                    Text="{Binding Name}"
+                                    TextDecorations="Underline" />
+                                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                    <TextBlock FontSize="16" Text="{ns:Loc LblAuthor}" />
+                                    <TextBlock FontSize="16" Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding Author}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontSize="16" Text="{ns:Loc LblVersion}" />
+                                    <TextBlock FontSize="16" Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding Version.Major}" />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="." />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding Version.Minor}" />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="." />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding Version.Patch}" />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="." />
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding Version.Build}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Homepage, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{ns:Loc LblHomepage}" />
+                                    <TextBlock FontSize="16" Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        TextWrapping="Wrap">
+                                        <Hyperlink NavigateUri="{Binding Homepage, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Text="{Binding Homepage, FallbackValue=''}"
+                                                TextWrapping="Wrap" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding ChangelogURL, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{ns:Loc LblChangelog}" />
+                                    <TextBlock FontSize="16" Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        TextWrapping="Wrap">
+                                        <Hyperlink NavigateUri="{Binding ChangelogURL, FallbackValue=''}" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Text="{Binding ChangelogURL, FallbackValue=''}"
+                                                TextWrapping="Wrap" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                                <TextBlock
+                                    Margin="0,10,0,10"
+                                    FontSize="16"
+                                    FontStyle="Italic"
+                                    Text="{Binding Descriptions.ShortDescription}"
+                                    TextWrapping="Wrap" />
+                                <StackPanel
+                                    Margin="0,0,0,10"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding Tags, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        Text="{ns:Loc LblTags}" />
+                                    <TextBlock FontStyle="Italic" Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontStyle="Italic"
+                                        Text="{Binding Tags, Converter={StaticResource StringCollectionToStringConverter}, ConverterParameter=', '}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ContentControl
+                                    Width="150"
+                                    Height="35"
+                                    VerticalAlignment="Top"
+                                    Content="{Binding Path=State}"
+                                    ContentTemplateSelector="{StaticResource PluginStateToButtonDataTemplateSelector}" />
+
+                                <Image
+                                    Grid.Row="1"
+                                    MaxWidth="150"
+                                    MaxHeight="150"
+                                    Margin="0,10,0,0"
+                                    VerticalAlignment="Top"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    Source="{Binding Descriptions.FeaturedImageURL, Converter={StaticResource NullImageConverter}, TargetNullValue={StaticResource DefaultImage}, FallbackValue={StaticResource DefaultImage}}" />
+                            </Grid>
+                        </Grid>
+
+                        <GroupBox Header="{ns:Loc LblSetup}">
+                            <StackPanel Orientation="Vertical">
+                                <ContentControl Content="{Binding Installer.Type}" ContentTemplateSelector="{StaticResource PluginInstallerDescriptionTemplateSelector}" />
+                                <TextBlock Margin="0,5,0,5" TextWrapping="Wrap">
+                                    <Hyperlink NavigateUri="{Binding Installer.URL}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <TextBlock Text="{Binding Installer.URL}" TextWrapping="Wrap" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="{ns:Loc LblDescription}" Visibility="{Binding Descriptions.LongDescription, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+
+                            <i:Interaction.Behaviors>
+                                <behavior:BubbleScrollEvent />
+                            </i:Interaction.Behaviors>
+                            <mdxam:MarkdownScrollViewer
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                ClickAction="OpenBrowser"
+                                Markdown="{Binding Descriptions.LongDescription}"
+                                MarkdownStyle="{StaticResource MarkdownStyle}"
+                                VerticalScrollBarVisibility="Disabled" />
+                        </GroupBox>
+
+                        <GroupBox Header="{ns:Loc LblSource}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Margin="0,5,0,5" TextWrapping="Wrap">
+                                    <Hyperlink NavigateUri="{Binding Repository}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <TextBlock Text="{Binding Repository}" TextWrapping="Wrap" />
+                                    </Hyperlink>
+                                </TextBlock>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock Text="{ns:Loc LblLicense}" />
+                                    <TextBlock Text=":" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding License}" />
+                                    <TextBlock Margin="5,0,0,0" Text="-" />
+                                    <TextBlock Margin="5,0,0,0" TextWrapping="Wrap">
+                                        <Hyperlink NavigateUri="{Binding LicenseURL}" RequestNavigate="Hyperlink_RequestNavigate">
+                                            <TextBlock Text="{Binding LicenseURL}" TextWrapping="Wrap" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="{ns:Loc LblScreenshots}">
+                            <GroupBox.Visibility>
+                                <MultiBinding Converter="{StaticResource AllNullOrEmptyStringToVisibilityCollapsedMultiConverter}">
+                                    <Binding Path="Descriptions.ScreenshotURL" />
+                                    <Binding Path="Descriptions.AltScreenshotURL" />
+                                </MultiBinding>
+                            </GroupBox.Visibility>
+                            <StackPanel Orientation="Vertical">
+                                <Image
+                                    MaxHeight="1000"
+                                    Margin="5,20,0,0"
+                                    HorizontalAlignment="Left"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    Source="{Binding Descriptions.ScreenshotURL, Converter={StaticResource NullImageConverter}}" />
+                                <Image
+                                    MaxHeight="500"
+                                    Margin="5,20,0,0"
+                                    HorizontalAlignment="Left"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    Source="{Binding Descriptions.AltScreenshotURL, Converter={StaticResource NullImageConverter}}" />
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

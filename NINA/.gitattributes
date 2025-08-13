@@ -1,0 +1,20 @@
+* text=auto
+*.cs text
+*.xaml text
+*.sln text
+*.config text
+*.md text
+*.png binary
+*.sqlite binary
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.lib binary
+*.md3 binary
+*.exe binary
+*.xisf filter=lfs diff=lfs merge=lfs -text
+NINA/External/** filter=lfs diff=lfs merge=lfs -text
+NINA/External/**/* filter=lfs diff=lfs merge=lfs -text
+NINASetupBundle/**/*.exe filter=lfs diff=lfs merge=lfs -text
+NINASetupBundle/*.exe filter=lfs diff=lfs merge=lfs -text
+NINA/Utility/ExifTool/exiftool.exe filter=lfs diff=lfs merge=lfs -text
+NINA/Utility/DCRaw/dcraw.exe filter=lfs diff=lfs merge=lfs -text
+NOVAS31/NOVAS31/CIO_RA.TXT filter=lfs diff=lfs merge=lfs -text

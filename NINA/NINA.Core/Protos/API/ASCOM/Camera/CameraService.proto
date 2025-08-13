@@ -1,0 +1,158 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "NINA.Core.API.ASCOM.Camera";
+
+package NINA.ASCOM.Camera;
+
+import "google/protobuf/empty.proto";
+
+service CameraService {
+	rpc MaxBinY_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc NumX_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc NumX_set (SetIntPropertyRequest) returns (google.protobuf.Empty);
+	rpc NumY_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc NumY_set (SetIntPropertyRequest) returns (google.protobuf.Empty);
+	rpc PixelSizeX_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc PixelSizeY_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc SetCCDTemperature_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc SetCCDTemperature_set (SetDoublePropertyRequest) returns (google.protobuf.Empty);
+	rpc StartX_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc StartX_set (SetIntPropertyRequest) returns (google.protobuf.Empty);
+	rpc StartY_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc StartY_set (SetIntPropertyRequest) returns (google.protobuf.Empty);
+	rpc BayerOffsetX_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc BayerOffsetY_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc CanFastReadout_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc FastReadout_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc FastReadout_set (SetBoolPropertyRequest) returns (google.protobuf.Empty);
+	rpc Gain_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc Gain_set (SetShortPropertyRequest) returns (google.protobuf.Empty);
+	rpc GainMax_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc GainMin_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc Gains_get (google.protobuf.Empty) returns (GetStringArrayReply);
+	rpc PercentCompleted_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc ReadoutMode_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc ReadoutMode_set (SetShortPropertyRequest) returns (google.protobuf.Empty);
+	rpc ReadoutModes_get (google.protobuf.Empty) returns (GetStringArrayReply);
+	rpc SensorName_get (google.protobuf.Empty) returns (GetStringPropertyReply);	
+	rpc SensorType_get (google.protobuf.Empty) returns (GetSensorTypeReply);
+	rpc Offset_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc Offset_set (SetIntPropertyRequest) returns (google.protobuf.Empty);
+	rpc OffsetMin_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc OffsetMax_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc MaxBinX_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc Offsets_get (google.protobuf.Empty) returns (GetStringArrayReply);
+	rpc MaxADU_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc LastExposureDuration_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc BinX_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc BinX_set (SetShortPropertyRequest) returns (google.protobuf.Empty);
+	rpc BinY_get (google.protobuf.Empty) returns (GetShortPropertyReply);
+	rpc BinY_set (SetShortPropertyRequest) returns (google.protobuf.Empty);
+	rpc ExposureMin_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc ExposureMax_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc ExposureResolution_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc CCDTemperature_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc CameraState_get (google.protobuf.Empty) returns (GetCameraStatesReply);
+	rpc CameraXSize_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc CameraYSize_get (google.protobuf.Empty) returns (GetIntPropertyReply);
+	rpc CanAbortExposure_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CanAsymmetricBin_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc LastExposureStartTime_get (google.protobuf.Empty) returns (GetStringPropertyReply);
+	rpc CanPulseGuide_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CanSetCCDTemperature_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CanGetCoolerPower_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CoolerOn_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CoolerOn_set (SetBoolPropertyRequest) returns (google.protobuf.Empty);
+	rpc IsPulseGuiding_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc CanStopExposure_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc ImageArray_get (google.protobuf.Empty) returns (GetImageArrayReply);
+	rpc ImageReady_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc HasShutter_get (google.protobuf.Empty) returns (GetBoolPropertyReply);
+	rpc FullWellCapacity_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc ElectronsPerADU_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc CoolerPower_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc HeatSinkTemperature_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc SubExposureDuration_get (google.protobuf.Empty) returns (GetDoublePropertyReply);
+	rpc SubExposureDuration_set (SetDoublePropertyRequest) returns (google.protobuf.Empty);
+	rpc AbortExposure (google.protobuf.Empty) returns (google.protobuf.Empty);
+	rpc StartExposure (StartExposureRequest) returns (google.protobuf.Empty);
+	rpc StopExposure (google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+message SetShortPropertyRequest {
+    // No 2 byte types in protobuf
+	int32 value = 1;
+}
+
+message SetIntPropertyRequest {
+	int32 value = 1;
+}
+
+message SetBoolPropertyRequest {
+	bool value = 1;
+}
+
+message SetDoublePropertyRequest {
+	double value = 1;
+}
+
+message GetShortPropertyReply {
+	int32 value = 1;
+}
+
+message GetIntPropertyReply {
+	int32 value = 1;
+}
+
+message GetBoolPropertyReply {
+	bool value = 1;
+}
+
+message GetDoublePropertyReply {
+	double value = 1;
+}
+
+message GetStringPropertyReply {
+	string value = 1;
+}
+
+message GetStringArrayReply {
+	repeated string value = 1;
+}
+
+message GetImageArrayReply {
+	bytes data = 1;
+	int32 width = 2;
+	int32 height = 3;
+}
+
+enum SensorType {
+	Monochrome = 0;
+	Color = 1;
+	RGGB = 2;
+	CMYG = 3;
+	CMYG2 = 4;
+	LRGB = 5;
+}
+
+enum CameraStates {
+	cameraIdle = 0;
+	cameraWaiting = 1;
+	cameraExposing = 2;
+	cameraReading = 3;
+	cameraDownload = 4;
+	cameraError = 5;
+}
+
+message GetSensorTypeReply {
+	SensorType value = 1;
+}
+
+message GetCameraStatesReply {
+	CameraStates value = 1;
+}
+
+message StartExposureRequest {
+	double duration = 1;
+	bool light = 2;
+}

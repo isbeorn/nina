@@ -1,0 +1,415 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AnchorableImageHistoryView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:NINA.Core.Utility.Converters;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Contrib.Wpf"
+    xmlns:oxys="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf.Shared"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    x:Name="Control"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <conv:FilenameConverter x:Key="FileConverter" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="5,0,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Margin="1,5,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel
+                        Grid.Column="0"
+                        Margin="5,0,10,10"
+                        Orientation="Vertical">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLeftside}" />
+                        <ComboBox
+                            Name="historyItemsLeft"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:ImageHistoryEnum}}}"
+                            SelectedItem="{Binding ImageHistoryLeftSelected}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="10,0,10,10"
+                        Orientation="Vertical">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                        <ComboBox
+                            Name="historyItemsFilter"
+                            ItemsSource="{Binding FilterList}"
+                            SelectedItem="{Binding SelectedFilter}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Column="2"
+                        Margin="10,0,10,10"
+                        Orientation="Vertical">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRightside}" />
+                        <ComboBox
+                            Name="historyItemsRight"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:ImageHistoryEnum}}}"
+                            SelectedItem="{Binding ImageHistoryRightSelected}" />
+                    </StackPanel>
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Height="25"
+                        MinWidth="50"
+                        MaxWidth="60"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Command="{Binding PlotClearCommand}">
+                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+                    </Button>
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Height="25"
+                        MinWidth="50"
+                        MaxWidth="60"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Command="{Binding PlotSaveCommand}">
+                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSave}" />
+                    </Button>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                        <TextBlock
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblShowSnapshots}" />
+                        <CheckBox IsChecked="{Binding ShowSnapshots}" />
+                    </StackPanel>
+                </Grid>
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SettingsVisible}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+            </StackPanel>
+            <oxy:Plot
+                Grid.Row="1"
+                Background="{StaticResource BackgroundBrush}"
+                PlotAreaBackground="{StaticResource BackgroundBrush}"
+                PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+                <oxy:Plot.Legends>
+                    <oxy:Legend
+                        IsLegendVisible="True"
+                        LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                        LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                        LegendFontSize="12"
+                        LegendMaxHeight="35"
+                        LegendOrientation="Horizontal"
+                        LegendPadding="2"
+                        LegendPlacement="Outside"
+                        LegendPosition="TopLeft"
+                        LegendSymbolLength="10"
+                        LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                </oxy:Plot.Legends>
+                <oxy:Plot.TrackerDefinitions>
+                    <oxys:TrackerDefinition TrackerKey="AutoFocus">
+                        <oxys:TrackerDefinition.TrackerTemplate>
+                            <ControlTemplate>
+                                <oxys:TrackerControl
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    LineExtents="{Binding PlotModel.PlotArea}"
+                                    Position="{Binding Position}">
+                                    <oxys:TrackerControl.Content>
+                                        <StackPanel Orientation="Vertical">
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblNewPosition}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.NewPosition}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblOldPosition}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.OldPosition}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblTemperature}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.Temperature, StringFormat='{}{0:N2}'}" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblTime}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.Time}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblFilter}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.Filter}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </oxys:TrackerControl.Content>
+                                </oxys:TrackerControl>
+                            </ControlTemplate>
+                        </oxys:TrackerDefinition.TrackerTemplate>
+                    </oxys:TrackerDefinition>
+                    <oxys:TrackerDefinition TrackerKey="ImageProperties">
+                        <oxys:TrackerDefinition.TrackerTemplate>
+                            <ControlTemplate>
+                                <oxys:TrackerControl
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    LineExtents="{Binding PlotModel.PlotArea}"
+                                    Position="{Binding Position}">
+                                    <oxys:TrackerControl.Content>
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel
+                                                    Grid.Row="0"
+                                                    Grid.ColumnSpan="2"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblFile}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Filename, Converter={StaticResource FileConverter}}" />
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblTime}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.dateTime, StringFormat='{}{0:HH:mm:ss}'}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblDuration}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Duration}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblHFR}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.HFR, StringFormat='{}{0:N2}'}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblStarCount}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Stars}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="3"
+                                                    Grid.Column="0"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblMedian}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Median, StringFormat='{}{0:N0}'}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="3"
+                                                    Grid.Column="1"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Text="{ns:Loc LblMean}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Mean, StringFormat='{}{0:N0}'}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="4"
+                                                    Grid.Column="0"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal"
+                                                    Visibility="{Binding Item.Temperature, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                                    <TextBlock Text="{ns:Loc LblTemperature}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Temperature, StringFormat='{}{0:N2}'}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="4"
+                                                    Grid.Column="1"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal"
+                                                    Visibility="{Binding Item.Rms, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                                    <TextBlock Text="{ns:Loc LblRms}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.RmsText}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="5"
+                                                    Grid.ColumnSpan="2"
+                                                    Margin="2,0,2,0"
+                                                    Orientation="Horizontal"
+                                                    Visibility="{Binding Item.Filter, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                                                    <TextBlock Text="{ns:Loc LblFilter}" />
+                                                    <TextBlock Text=": " />
+                                                    <TextBlock Text="{Binding Item.Filter}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </oxys:TrackerControl.Content>
+                                </oxys:TrackerControl>
+                            </ControlTemplate>
+                        </oxys:TrackerDefinition.TrackerTemplate>
+                    </oxys:TrackerDefinition>
+                </oxy:Plot.TrackerDefinitions>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis
+                        Key="Left"
+                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        EndPosition="1"
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
+                        MajorGridlineStyle="LongDash"
+                        MaximumPadding="0.1"
+                        MinimumPadding="0.1"
+                        Position="Left"
+                        StartPosition="0"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    <oxy:LinearAxis
+                        Key="Right"
+                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        EndPosition="1"
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
+                        MajorGridlineStyle="LongDash"
+                        MaximumPadding="0.1"
+                        MinimumPadding="0.1"
+                        Position="Right"
+                        StartPosition="0"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    <oxy:LinearAxis
+                        Key="LeftAutofocus"
+                        AxislineColor="Transparent"
+                        EndPosition="1"
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        MajorGridlineColor="Transparent"
+                        Maximum="1"
+                        MaximumPadding="0.1"
+                        Minimum="0"
+                        MinimumPadding="0.1"
+                        MinorGridlineColor="Transparent"
+                        Position="Left"
+                        StartPosition="0"
+                        TextColor="Transparent"
+                        TicklineColor="Transparent"
+                        Visibility="Collapsed" />
+                    <oxy:LinearAxis
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        MaximumPadding="0.1"
+                        MinimumPadding="0.1"
+                        Position="Bottom"
+                        StartPosition="0"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                </oxy:Plot.Axes>
+                <oxy:Plot.Series>
+                    <oxy:LineSeries
+                        Title="{Binding ImageHistoryLeftSelected}"
+                        DataFieldX="Index"
+                        DataFieldY="{Binding ImageHistoryLeftSelectedKey}"
+                        ItemsSource="{Binding ObservableImageHistoryView}"
+                        MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MarkerSize="2"
+                        MarkerType="Circle"
+                        TrackerKey="ImageProperties"
+                        YAxisKey="Left" />
+                    <oxy:LineSeries
+                        Title="{ns:Loc LblAutoFocus}"
+                        DataFieldX="Index"
+                        DataFieldY="Zero"
+                        ItemsSource="{Binding AutoFocusPointsView}"
+                        MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MarkerSize="4"
+                        MarkerType="Triangle"
+                        TrackerKey="AutoFocus"
+                        YAxisKey="LeftAutofocus"
+                        Color="Transparent" />
+                    <oxy:LineSeries
+                        Title="{Binding ImageHistoryRightSelected}"
+                        DataFieldX="Index"
+                        DataFieldY="{Binding ImageHistoryRightSelectedKey}"
+                        ItemsSource="{Binding ObservableImageHistoryView}"
+                        MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                        MarkerSize="2"
+                        MarkerType="Square"
+                        TrackerKey="ImageProperties"
+                        YAxisKey="Right" />
+                </oxy:Plot.Series>
+            </oxy:Plot>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

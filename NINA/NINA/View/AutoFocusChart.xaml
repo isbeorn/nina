@@ -1,0 +1,401 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AutoFocusChart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Contrib.Wpf"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="150" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <oxy:Plot
+            Background="{StaticResource BackgroundBrush}"
+            PlotAreaBackground="{StaticResource BackgroundBrush}"
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    EndPosition="1"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                    MajorGridlineStyle="LongDash"
+                    MaximumPadding="0.1"
+                    MinimumPadding="0.1"
+                    Position="Left"
+                    StartPosition="0"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    EndPosition="1"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                    MajorGridlineStyle="LongDash"
+                    MaximumPadding="0.1"
+                    MinimumPadding="0.1"
+                    Position="Bottom"
+                    StartPosition="0"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:ScatterErrorSeries
+                    DataFieldX="FocusPosition"
+                    DataFieldY="HFR"
+                    ErrorBarColor="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    ErrorBarStopWidth="2"
+                    ErrorBarStrokeThickness="2"
+                    ItemsSource="{Binding FocusPoints}"
+                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    MarkerType="Circle" />
+                <oxy:LineSeries
+                    DataFieldX="FocusPosition"
+                    DataFieldY="HFR"
+                    ItemsSource="{Binding PlotFocusPoints}"
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+            </oxy:Plot.Series>
+            <oxy:Plot.Annotations>
+                <oxy:LineAnnotation Intercept="{Binding TrendlineFitting.LeftTrend.Offset}" Slope="{Binding TrendlineFitting.LeftTrend.Slope}">
+                    <oxy:LineAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:LineAnnotation.Color>
+                </oxy:LineAnnotation>
+                <oxy:LineAnnotation Intercept="{Binding TrendlineFitting.RightTrend.Offset}" Slope="{Binding TrendlineFitting.RightTrend.Slope}">
+                    <oxy:LineAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:LineAnnotation.Color>
+                </oxy:LineAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding QuadraticFitting.Fitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding HyperbolicFitting.Fitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding GaussianFitting.Fitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
+                <oxy:PointAnnotation
+                    Fill="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    Shape="Diamond"
+                    Stroke="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    X="{Binding FinalFocusPoint.X}"
+                    Y="{Binding FinalFocusPoint.Y}" />
+                <oxy:PointAnnotation
+                    Shape="Circle"
+                    X="{Binding QuadraticFitting.Minimum.X}"
+                    Y="{Binding QuadraticFitting.Minimum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
+                <oxy:PointAnnotation
+                    Shape="Circle"
+                    X="{Binding HyperbolicFitting.Minimum.X}"
+                    Y="{Binding HyperbolicFitting.Minimum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
+                <oxy:PointAnnotation
+                    Shape="Circle"
+                    X="{Binding GaussianFitting.Maximum.X}"
+                    Y="{Binding GaussianFitting.Maximum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
+                <oxy:PointAnnotation
+                    Shape="Circle"
+                    X="{Binding TrendlineFitting.Intersection.X}"
+                    Y="{Binding TrendlineFitting.Intersection.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToColorConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="AutoFocusChartMethod" />
+                            <Binding Path="AutoFocusChartCurveFitting" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
+            </oxy:Plot.Annotations>
+        </oxy:Plot>
+        <StackPanel
+            Grid.Row="1"
+            Margin="10,5,10,10"
+            DataContext="{Binding LastAutoFocusPoint}"
+            Orientation="Vertical">
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblTime}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblPosition}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat={}{0:F0}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblHFR}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat={}{0:0.00}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblTemperature}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Temperature, Converter={StaticResource UnitConverter}, ConverterParameter=' °C|2'}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblFilter}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Filter}" />
+                </UniformGrid>
+            </Border>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="2"
+            Margin="10,5,10,10"
+            Orientation="Vertical">
+
+            <UniformGrid VerticalAlignment="Center" Columns="2">
+                <UniformGrid.Visibility>
+                    <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                        <Binding>
+                            <Binding.Source>
+                                <s:String>QuadraticFitting</s:String>
+                            </Binding.Source>
+                        </Binding>
+                        <Binding Path="AutoFocusChartMethod" />
+                        <Binding Path="AutoFocusChartCurveFitting" />
+                    </MultiBinding>
+                </UniformGrid.Visibility>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{ns:Loc LblParabolic}" />
+                    <TextBlock Text=" R²" />
+                </StackPanel>
+                <TextBlock Margin="5,0,0,0" Text="{Binding QuadraticFitting.RSquared, StringFormat={}{0:0.00}}" />
+            </UniformGrid>
+            <UniformGrid VerticalAlignment="Center" Columns="2">
+                <UniformGrid.Visibility>
+                    <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                        <Binding>
+                            <Binding.Source>
+                                <s:String>HyperbolicFitting</s:String>
+                            </Binding.Source>
+                        </Binding>
+                        <Binding Path="AutoFocusChartMethod" />
+                        <Binding Path="AutoFocusChartCurveFitting" />
+                    </MultiBinding>
+                </UniformGrid.Visibility>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{ns:Loc LblHyperbolic}" />
+                    <TextBlock Text=" R²" />
+                </StackPanel>
+                <TextBlock Margin="5,0,0,0" Text="{Binding HyperbolicFitting.RSquared, StringFormat={}{0:0.00}}" />
+            </UniformGrid>
+            <UniformGrid VerticalAlignment="Center" Columns="2">
+                <UniformGrid.Visibility>
+                    <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                        <Binding>
+                            <Binding.Source>
+                                <s:String>Trendline</s:String>
+                            </Binding.Source>
+                        </Binding>
+                        <Binding Path="AutoFocusChartMethod" />
+                        <Binding Path="AutoFocusChartCurveFitting" />
+                    </MultiBinding>
+                </UniformGrid.Visibility>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{ns:Loc LblTrendLines}" />
+                    <TextBlock Text=" R²" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.LeftTrend.RSquared, StringFormat={}{0:0.00}}" />
+                    <TextBlock Margin="5,0,0,0" Text="|" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TrendlineFitting.RightTrend.RSquared, StringFormat={}{0:0.00}}" />
+                </StackPanel>
+            </UniformGrid>
+            <UniformGrid
+                VerticalAlignment="Center"
+                Columns="2"
+                Visibility="{Binding AutoFocusDuration, Converter={StaticResource TimeSpanZeroToVisibilityConverter}}">
+                <TextBlock Text="{ns:Loc LblAutoFocusDuration}" />
+                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusDuration, Converter={StaticResource TimeSpanToStringConverter}}" />
+            </UniformGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

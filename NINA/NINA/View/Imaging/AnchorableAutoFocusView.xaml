@@ -1,0 +1,79 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.AnchorableAutoFocusView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:NINA.View.Imaging"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:view="clr-namespace:NINA.View"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="BuiltIn" DataType="{x:Type UserControl}">
+                <view:AutoFocusChart />
+            </DataTemplate>
+            <local:AutoFocusDataTemplateSelector
+                x:Key="TemplateSelector"
+                BuiltIn="{StaticResource BuiltIn}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="5,0,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="45" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <ContentControl
+                Content="{Binding}"
+                ContentTemplateSelector="{StaticResource TemplateSelector}"
+                DataContext="{Binding AutoFocusVM}" /> 
+
+            <ComboBox
+                Name="PART_FocusChartComboBox"
+                Grid.Row="2"
+                Height="25"
+                MinWidth="0"
+                Margin="10,0,2,0"
+                IsEnabled="{Binding ChartListSelectable}"
+                ItemsSource="{Binding ChartList}"
+                SelectedValue="{Binding SelectedChart}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <ninactrl:CancellableButton
+                Grid.Row="3"
+                Height="25"
+                Margin="10,0,2,0"
+                ButtonText="{ns:Loc LblStartAutoFocus}"
+                CancelButtonImage="{StaticResource CancelSVG}"
+                CancelCommand="{Binding CancelAutoFocusCommand}"
+                CancelToolTip="{ns:Loc LblCancel}"
+                Command="{Binding StartAutoFocusCommand}" />
+        </Grid>
+    </ScrollViewer>
+</UserControl>

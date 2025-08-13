@@ -1,0 +1,814 @@
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Core.Enum;
+using NINA.Core.Model.Equipment;
+using NINA.Profile.Interfaces;
+using System;
+using System.Runtime.Serialization;
+
+namespace NINA.Profile {
+
+    [Serializable()]
+    [DataContract]
+    public class CameraSettings : Settings, ICameraSettings {
+
+        [OnDeserializing]
+        public void OnDeserializing(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        protected override void SetDefaultValues() {
+            id = "No_Device";
+            lastDeviceName = "";
+            pixelSize = 3.8;
+            bulbMode = CameraBulbModeEnum.NATIVE;
+            serialPort = "COM1";
+            bitDepth = 16;
+            bayerPattern = BayerPatternEnum.Auto;
+            rawConverter = RawConverterEnum.FREEIMAGE;
+            minFlatExposureTime = 0.2;
+            maxFlatExposureTime = 20;
+            fileCameraFolder = string.Empty;
+            fileCameraAlwaysListen = false;
+            bitScaling = true;
+            timeout = 60;
+            dewHeaterOn = false;
+
+            fliEnableFloodFlush = false;
+            fliFloodDuration = 1;
+            fliFlushCount = 2;
+            fliEnableSnapshotFloodFlush = false;
+
+            qhyIncludeOverscan = false;
+            ascomAllowUnevenPixelSize = true;
+            mirrorLockupDelay = 0;
+
+            atikGainPreset = 0;
+            atikExposureSpeed = 0;
+            atikWindowHeaterPowerLevel = 0;
+
+            binAverageEnabled = false;
+            trackingCameraASCOMServerEnabled = false;
+            trackingCameraASCOMServerPipeName = "NINA.ASCOM.Camera.SBIG.Tracker";
+            sbigUseExternalCcdTracker = false;
+            trackingCameraASCOMServerLoggingEnabled = false;
+
+
+            touptekAlikeUltraMode = true;
+            touptekAlikeHighFullwell = false;
+            touptekAlikeDewHeaterStrength = -1;
+            touptekAlikeLEDLights = true;
+
+            genericCameraDewHeaterStrength = 10;
+            genericCameraFanSpeed = 70;
+
+            badPixelCorrection = true;
+            badPixelCorrectionThreshold = 60;
+
+            zwoAsiMonoBinMode = false;
+
+            ascomCreate32BitData = false;
+        }
+
+        private string id;
+
+        [DataMember]
+        public string Id {
+            get => id;
+            set {
+                if (id != value) {
+                    id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double pixelSize;
+
+        [DataMember]
+        public double PixelSize {
+            get => pixelSize;
+            set {
+                if (pixelSize != value) {
+                    pixelSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private BayerPatternEnum bayerPattern;
+
+        [DataMember]
+        public BayerPatternEnum BayerPattern {
+            get => bayerPattern;
+            set {
+                if (bayerPattern != value) {
+                    bayerPattern = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private CameraBulbModeEnum bulbMode;
+
+        [DataMember]
+        public CameraBulbModeEnum BulbMode {
+            get => bulbMode;
+            set {
+                if (bulbMode != value) {
+                    bulbMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string serialPort;
+
+        [DataMember]
+        public string SerialPort {
+            get => serialPort;
+            set {
+                if (serialPort != value) {
+                    serialPort = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double bitDepth;
+
+        [DataMember]
+        public double BitDepth {
+            get => bitDepth;
+            set {
+                if (bitDepth != value) {
+                    bitDepth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private RawConverterEnum rawConverter;
+
+        [DataMember]
+        public RawConverterEnum RawConverter {
+            get => rawConverter;
+            set {
+                if (rawConverter != value) {
+                    rawConverter = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double minFlatExposureTime;
+
+        [DataMember]
+        public double MinFlatExposureTime {
+            get => minFlatExposureTime;
+            set {
+                if (minFlatExposureTime != value) {
+                    minFlatExposureTime = value;
+                    if (MaxFlatExposureTime < minFlatExposureTime) {
+                        MaxFlatExposureTime = minFlatExposureTime;
+                    }
+
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double maxFlatExposureTime;
+
+        [DataMember]
+        public double MaxFlatExposureTime {
+            get => maxFlatExposureTime;
+            set {
+                if (maxFlatExposureTime != value) {
+                    maxFlatExposureTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string fileCameraFolder;
+
+        [DataMember]
+        public string FileCameraFolder {
+            get => fileCameraFolder;
+            set {
+                if (fileCameraFolder != value) {
+                    fileCameraFolder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string fileCameraExtension;
+
+        [DataMember]
+        public string FileCameraExtension {
+            get => fileCameraExtension;
+            set {
+                if (fileCameraExtension != value) {
+                    fileCameraExtension = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fileCameraUseBulbMode;
+
+        [DataMember]
+        public bool FileCameraUseBulbMode {
+            get => fileCameraUseBulbMode;
+            set {
+                if (fileCameraUseBulbMode != value) {
+                    fileCameraUseBulbMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fileCameraIsBayered;
+
+        [DataMember]
+        public bool FileCameraIsBayered {
+            get => fileCameraIsBayered;
+            set {
+                if (fileCameraIsBayered != value) {
+                    fileCameraIsBayered = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fliEnableFloodFlush;
+
+        [DataMember]
+        public bool FLIEnableFloodFlush {
+            get => fliEnableFloodFlush;
+            set {
+                if (fliEnableFloodFlush != value) {
+                    fliEnableFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double fliFloodDuration;
+
+        [DataMember]
+        public double FLIFloodDuration {
+            get => fliFloodDuration;
+            set {
+                if (fliFloodDuration != value) {
+                    fliFloodDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private uint fliFlushCount;
+
+        [DataMember]
+        public uint FLIFlushCount {
+            get => fliFlushCount;
+            set {
+                if (fliFlushCount != value) {
+                    fliFlushCount = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private BinningMode fliFloodBin;
+
+        [DataMember]
+        public BinningMode FLIFloodBin {
+            get => fliFloodBin;
+            set {
+                if (fliFloodBin != value) {
+                    fliFloodBin = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fliEnableSnapshotFloodFlush;
+
+        [DataMember]
+        public bool FLIEnableSnapshotFloodFlush {
+            get => fliEnableSnapshotFloodFlush;
+            set {
+                if (fliEnableSnapshotFloodFlush != value) {
+                    fliEnableSnapshotFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool bitScaling;
+
+        [DataMember]
+        public bool BitScaling {
+            get => bitScaling;
+            set {
+                if (bitScaling != value) {
+                    bitScaling = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double coolingDuration;
+
+        [DataMember]
+        public double CoolingDuration {
+            get => coolingDuration;
+            set {
+                if (coolingDuration != value) {
+                    coolingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double warmingDuration;
+
+        [DataMember]
+        public double WarmingDuration {
+            get => warmingDuration;
+            set {
+                if (warmingDuration != value) {
+                    warmingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double? temperature;
+
+        [DataMember]
+        public double? Temperature {
+            get => temperature;
+            set {
+                if (temperature != value) {
+                    temperature = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningX;
+
+        [DataMember]
+        public short? BinningX {
+            get => binningX;
+            set {
+                if (binningX != value) {
+                    binningX = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningY;
+
+        [DataMember]
+        public short? BinningY {
+            get => binningY;
+            set {
+                if (binningY != value) {
+                    binningY = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? gain;
+
+        [DataMember]
+        public int? Gain {
+            get => gain;
+            set {
+                if (gain != value) {
+                    gain = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? offset;
+
+        [DataMember]
+        public int? Offset {
+            get => offset;
+            set {
+                if (offset != value) {
+                    offset = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? usbLimit;
+
+        [DataMember]
+        public int? USBLimit {
+            get => usbLimit;
+            set {
+                if (usbLimit != value) {
+                    usbLimit = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutMode;
+
+        [DataMember]
+        public short? ReadoutMode {
+            get => readoutMode;
+            set {
+                if (readoutMode != value && value >= 0) {
+                    readoutMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForSnapImages;
+
+        [DataMember]
+        public short? ReadoutModeForSnapImages {
+            get => readoutModeForSnapImages;
+            set {
+                if (readoutModeForSnapImages != value && value >= 0) {
+                    readoutModeForSnapImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForNormalImages;
+
+        [DataMember]
+        public short? ReadoutModeForNormalImages {
+            get => readoutModeForNormalImages;
+            set {
+                if (readoutModeForNormalImages != value && value >= 0) {
+                    readoutModeForNormalImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool qhyIncludeOverscan;
+
+        [DataMember]
+        public bool QhyIncludeOverscan {
+            get => qhyIncludeOverscan;
+            set {
+                if (qhyIncludeOverscan != value) {
+                    qhyIncludeOverscan = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int timeout;
+
+        [DataMember]
+        public int Timeout {
+            get => timeout;
+            set {
+                if (timeout != value) {
+                    timeout = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? dewHeaterOn;
+
+        [DataMember]
+        public bool? DewHeaterOn {
+            get => dewHeaterOn;
+            set {
+                if (dewHeaterOn != value) {
+                    dewHeaterOn = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool ascomAllowUnevenPixelSize;
+
+        [DataMember]
+        public bool ASCOMAllowUnevenPixelDimension {
+            get => ascomAllowUnevenPixelSize;
+            set {
+                if (ascomAllowUnevenPixelSize != value) {
+                    ascomAllowUnevenPixelSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double mirrorLockupDelay;
+
+        [DataMember]
+        public double MirrorLockupDelay {
+            get => mirrorLockupDelay;
+            set {
+                if (mirrorLockupDelay != value) {
+                    mirrorLockupDelay = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ushort? atikGainPreset;
+
+        [DataMember]
+        public ushort? AtikGainPreset {
+            get => atikGainPreset;
+            set {
+                if (atikGainPreset != value) {
+                    atikGainPreset = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ushort? atikExposureSpeed;
+
+        [DataMember]
+        public ushort? AtikExposureSpeed {
+            get => atikExposureSpeed;
+            set {
+                if (atikExposureSpeed != value) {
+                    atikExposureSpeed = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? atikWindowHeaterPowerLevel;
+
+        [DataMember]
+        public int? AtikWindowHeaterPowerLevel {
+            get => atikWindowHeaterPowerLevel;
+            set {
+                if (atikWindowHeaterPowerLevel != value) {
+                    atikWindowHeaterPowerLevel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? binAverageEnabled;
+
+        [DataMember]
+        public bool? BinAverageEnabled {
+            get => binAverageEnabled;
+            set {
+                if (binAverageEnabled != value) {
+                    binAverageEnabled = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? trackingCameraASCOMServerEnabled;
+
+        [DataMember]
+        public bool? TrackingCameraASCOMServerEnabled {
+            get => trackingCameraASCOMServerEnabled;
+            set {
+                if (trackingCameraASCOMServerEnabled != value) {
+                    trackingCameraASCOMServerEnabled = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string trackingCameraASCOMServerPipeName;
+
+        [DataMember]
+        public string TrackingCameraASCOMServerPipeName {
+            get => trackingCameraASCOMServerPipeName;
+            set {
+                if (trackingCameraASCOMServerPipeName != value) {
+                    trackingCameraASCOMServerPipeName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fileCameraAlwaysListen;
+
+        [DataMember]
+        public bool FileCameraAlwaysListen {
+            get => fileCameraAlwaysListen;
+            set {
+                if (fileCameraAlwaysListen != value) {
+                    fileCameraAlwaysListen = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int fileCameraDownloadDelay;
+
+        [DataMember]
+        public int FileCameraDownloadDelay {
+            get => fileCameraDownloadDelay;
+            set {
+                if (fileCameraDownloadDelay != value) {
+                    fileCameraDownloadDelay = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool sbigUseExternalCcdTracker;
+
+        [DataMember]
+        public bool SBIGUseExternalCcdTracker {
+            get => sbigUseExternalCcdTracker;
+            set {
+                if (sbigUseExternalCcdTracker != value) {
+                    sbigUseExternalCcdTracker = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? trackingCameraASCOMServerLoggingEnabled;
+
+        [DataMember]
+        public bool? TrackingCameraASCOMServerLoggingEnabled {
+            get => trackingCameraASCOMServerLoggingEnabled;
+            set {
+                if (trackingCameraASCOMServerLoggingEnabled != value) {
+                    trackingCameraASCOMServerLoggingEnabled = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? zwoAsiMonoBinMode;
+
+        [DataMember]
+        public bool? ZwoAsiMonoBinMode {
+            get => zwoAsiMonoBinMode;
+            set {
+                if (zwoAsiMonoBinMode != value) {
+                    zwoAsiMonoBinMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool ascomCreate32BitData;
+
+        [DataMember]
+        public bool ASCOMCreate32BitData {
+            get => false; //ascomCreate32BitData;
+            set {
+                //if(ascomCreate32BitData != value) {
+                //    ascomCreate32BitData = value;
+                //    RaisePropertyChanged();
+                //}
+            }
+        }
+
+        #region GenericCamera
+
+        private int genericCameraDewHeaterStrength;
+        [DataMember]
+        public int GenericCameraDewHeaterStrength {
+            get => genericCameraDewHeaterStrength;
+            set {
+                if (genericCameraDewHeaterStrength != value) {
+                    genericCameraDewHeaterStrength = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private int genericCameraFanSpeed;
+        [DataMember]
+        public int GenericCameraFanSpeed {
+            get => genericCameraFanSpeed;
+            set {
+                if (genericCameraFanSpeed != value) {
+                    genericCameraFanSpeed = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region SVBony
+        private bool badPixelCorrection;
+        [DataMember]
+        public bool BadPixelCorrection {
+            get => badPixelCorrection;
+            set {
+                if (badPixelCorrection != value) {
+                    badPixelCorrection = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private int badPixelCorrectionThreshold;
+        [DataMember]
+        public int BadPixelCorrectionThreshold {
+            get => badPixelCorrectionThreshold;
+            set {
+                if (badPixelCorrectionThreshold != value) {
+                    badPixelCorrectionThreshold = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region TouptekAlike
+        private bool touptekAlikeUltraMode;
+        [DataMember]
+        public bool TouptekAlikeUltraMode {
+            get => touptekAlikeUltraMode;
+            set {
+                if (touptekAlikeUltraMode != value) {
+                    touptekAlikeUltraMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private bool touptekAlikeHighFullwell;
+        [DataMember]
+        public bool TouptekAlikeHighFullwell {
+            get => touptekAlikeHighFullwell;
+            set {
+                if (touptekAlikeHighFullwell != value) {
+                    touptekAlikeHighFullwell = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private int touptekAlikeDewHeaterStrength;
+        [DataMember]
+        public int TouptekAlikeDewHeaterStrength {
+            get => touptekAlikeDewHeaterStrength;
+            set {
+                if (touptekAlikeDewHeaterStrength != value) {
+                    touptekAlikeDewHeaterStrength = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private bool touptekAlikeLEDLights;
+        [DataMember]
+        public bool TouptekAlikeLEDLights {
+            get => touptekAlikeLEDLights;
+            set {
+                if (touptekAlikeLEDLights != value) {
+                    touptekAlikeLEDLights = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+    }
+}

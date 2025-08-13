@@ -1,0 +1,109 @@
+<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:af="clr-namespace:NINA.WPF.Base.ViewModel.AutoFocus;assembly=NINA.WPF.Base"
+    xmlns:camera="clr-namespace:NINA.Equipment.Equipment.MyCamera;assembly=NINA.Equipment"
+    xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:flatdevice="clr-namespace:NINA.Equipment.Equipment.MyFlatDevice;assembly=NINA.Equipment"
+    xmlns:focuser="clr-namespace:NINA.Equipment.Equipment.MyFocuser;assembly=NINA.Equipment"
+    xmlns:framing="clr-namespace:NINA.ViewModel.FramingAssistant"
+    xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard"
+    xmlns:guider="clr-namespace:NINA.Equipment.Equipment.MyGuider;assembly=NINA.Equipment"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:phd2="clr-namespace:NINA.Equipment.Equipment.MyGuider.PHD2;assembly=NINA.Equipment"
+    xmlns:rotator="clr-namespace:NINA.Equipment.Equipment.MyRotator;assembly=NINA.Equipment"
+    xmlns:safety="clr-namespace:NINA.WPF.Base.Model.Equipment.MySafetyMonitor.Simulator;assembly=NINA.WPF.Base"
+    xmlns:simulator="clr-namespace:NINA.WPF.Base.Model.Equipment.MyCamera.Simulator;assembly=NINA.WPF.Base"
+    xmlns:skyguard="clr-namespace:NINA.Equipment.Equipment.MyGuider.SkyGuard;assembly=NINA.Equipment"
+    xmlns:switchview="clr-namespace:NINA.View.Equipment.Switch"
+    xmlns:telescope="clr-namespace:NINA.WPF.Base.ViewModel.Equipment.Telescope;assembly=NINA.WPF.Base"
+    xmlns:view="clr-namespace:NINA.View"
+    xmlns:vm="clr-namespace:NINA.ViewModel"
+    xmlns:vm2="clr-namespace:NINA.WPF.Base.ViewModel;assembly=NINA.WPF.Base">
+
+    <DataTemplate DataType="{x:Type vm2:MeridianFlipVM}">
+        <view:MeridianFlipView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:VersionCheckVM}">
+        <view:VersionCheckView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ProfileSelectVM}">
+        <view:ProfileSelectView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type af:AutoFocusVM}">
+        <view:AutoFocusChart />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm2:PlateSolvingStatusVM}">
+        <view:PlateSolveView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type rotator:ManualRotator}">
+        <view:ManualRotatorView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type telescope:TelescopeLatLongSyncVM}">
+        <equip:TelescopeLatLongSyncView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
+        <view:FlatWizardFilterSettingsWrapperView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type simulator:SimulatorCamera}">
+        <simulator:SetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type camera:FileCamera}">
+        <equip:FileCameraSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type camera:FLICamera}">
+        <equip:FLICameraSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type phd2:PHD2Guider}">
+        <equip:PHD2SetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type guider:MetaGuideGuider}">
+        <equip:MetaGuideSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type guider:MGENGuider}">
+        <equip:MGenSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type flatdevice:AlnitakFlatDevice}">
+        <equip:AlnitakSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type flatdevice:PegasusAstroFlatMaster}">
+        <equip:PegasusAstroFlatMasterSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type flatdevice:ArteskyFlatBox}">
+        <equip:ArteskyFlatBoxSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type safety:SafetyMonitorSimulator}">
+        <safety:SafetyMonitorSimulatorSetup />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type skyguard:SkyGuardGuider}">
+        <equip:SkyGuardSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type framing:FramingPlateSolveParameter}">
+        <view:FramingPlateSolvePromptView />
+    </DataTemplate>
+</ResourceDictionary>

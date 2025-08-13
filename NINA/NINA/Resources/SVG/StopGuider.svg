@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4229"
+   version="1.1"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   width="218"
+   height="218"
+   viewBox="0 0 218 218"
+   sodipodi:docname="StopGuider.svg">
+  <metadata
+     id="metadata4235">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4233" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     id="namedview4231"
+     showgrid="false"
+     inkscape:zoom="3.061967"
+     inkscape:cx="85.541032"
+     inkscape:cy="96.126266"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Layer 1"
+     style="display:inline">
+    <path
+       style="display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 70.381044,2.1454661 C 36.032059,2.1449218 8.1862657,29.98984 8.1857305,64.338825 8.1851854,98.688574 36.031295,126.53468 70.381044,126.53414 104.73003,126.5336 132.57495,98.68781 132.5744,64.338825 132.57386,29.990604 104.72926,2.1460029 70.381044,2.1454661 Z m -0.97656,4.8535151 0,30.6113288 c -13.956435,0.516498 -25.172757,11.671601 -25.76563,25.625 l -30.580078,0 C 13.666632,32.38974 38.557791,7.5469004 69.404484,6.9989812 Z m 1.95117,0.013672 C 102.20325,7.5520389 127.10161,32.389136 127.71698,63.23531 l -30.613286,0 C 96.518368,49.283071 85.310258,38.122569 71.355654,37.596638 Z m -58.312502,58.4335938 30.611332,0 c 0.585395,13.952964 11.794631,25.113737 25.75,25.638672 l 0,30.582031 C 38.557628,121.1276 13.659562,96.29166 13.043152,65.446247 Z m 84.078122,0 30.580076,0 C 127.09346,96.29256 102.20115,121.1357 71.353694,121.68258 l 0,-30.611333 c 13.957196,-0.515506 25.174639,-11.670879 25.76758,-25.625 z"
+       id="rect4787-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ssssscccccccccccccccccccc" />
+    <path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="m 32.560547,16.955078 -7.289063,6.845703 81.882816,87.179689 7.28906,-6.8457 z"
+       id="path12408"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

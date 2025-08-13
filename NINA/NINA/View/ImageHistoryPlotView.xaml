@@ -1,0 +1,85 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.ImageHistoryPlotView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Contrib.Wpf"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid>
+        <oxy:Plot
+            Background="{StaticResource BackgroundBrush}"
+            PlotAreaBackground="{StaticResource BackgroundBrush}"
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+            <oxy:Plot.Legends>
+                <oxy:Legend
+                    LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                    LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                    LegendOrientation="Vertical"
+                    LegendPosition="LeftTop"
+                    LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+            </oxy:Plot.Legends>
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IntervalLength="25"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                    MajorGridlineStyle="Solid"
+                    Maximum="10"
+                    Minimum="0"
+                    Position="Left"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                <oxy:LinearAxis
+                    Key="Secondary"
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IntervalLength="25"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                    MajorGridlineStyle="Solid"
+                    Maximum="400"
+                    Minimum="0"
+                    Position="Right"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IntervalLength="100"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Position="Bottom"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries
+                    Title="{ns:Loc LblHFR}"
+                    DataFieldX="Id"
+                    DataFieldY="HFR"
+                    ItemsSource="{Binding LimitedImageHistoryStack}"
+                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    MarkerType="Circle" />
+                <oxy:LineSeries
+                    Title="{ns:Loc LblDetectedStars}"
+                    DataFieldX="Id"
+                    DataFieldY="DetectedStars"
+                    ItemsSource="{Binding LimitedImageHistoryStack}"
+                    MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    MarkerType="Circle"
+                    YAxisKey="Secondary" />
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

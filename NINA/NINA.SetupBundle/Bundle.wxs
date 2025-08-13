@@ -1,0 +1,37 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+	<?if $(var.Platform) = x64 ?>
+	<?define SetupMsiName = "NINASetup.msi" ?>
+	<?define Win64 = "always64"?>
+	<?define SetupSource = "$(var.NINA.Setup.TargetDir)" ?>
+	<?define DefaultInstallDir = "[ProgramFiles64Folder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
+	<?else?>
+	<?define SetupMsiName = "NINASetup.msi" ?>
+	<?define Win64 = "always32"?>
+	<?define SetupSource = "$(var.NINA.Setup.TargetDir)" ?>
+	<?define DefaultInstallDir = "[ProgramFilesFolder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
+	<?endif?>
+	<Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="!(bind.packageVersion.NINASetup)" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
+		<BootstrapperApplication>
+			<bal:WixStandardBootstrapperApplication ThemeFile="$(var.ProjectDir)\RtfTheme.xml" LogoFile="$(var.ProjectDir)\ninasplash-small.png" LicenseFile="..\RELEASE_NOTES.rtf" LicenseUrl="http://mozilla.org/MPL/2.0/" ShowVersion="yes" Theme="rtfLicense" />
+		</BootstrapperApplication>
+		<Variable Name="InstallFolder" Type="formatted" Value="$(var.DefaultInstallDir)" />
+		<util:RegistrySearch Id="PreviousInstallFolderSearch" Root="HKLM" Key="SOFTWARE\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Value="InstallFolder" Variable="PreviousInstallFolder" Bitness="$(var.Win64)" />
+		<util:DirectorySearch Path="[PreviousInstallFolder]" Variable="InstallFolder" After="PreviousInstallFolderSearch" Condition="PreviousInstallFolder" />
+		<Variable Name="LaunchTarget" Value="[InstallFolder]\NINA.exe" Type="formatted" />
+    
+		<Chain DisableSystemRestore="yes">
+			<MsiPackage Id="NINASetup" Name="$(var.SetupMsiName)" SourceFile="$(var.SetupSource)" bal:DisplayInternalUICondition="1">
+				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+			</MsiPackage>
+		</Chain>
+	</Bundle>
+</Wix>

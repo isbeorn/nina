@@ -1,0 +1,110 @@
+#Exclude external DLL files
+NINA/External/*/Altair
+NINA/External/*/Canon
+NINA/External/*/Nikon
+NINA/External/**/*.lib
+NINA/External/**/*.exe
+
+# Exclude nuget.exe
+/publish/nuget.exe
+
+# User-specific files
+*.rsuser
+*.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# Jetbrains Rider
+.idea/
+
+# Visual Studio 2017 auto generated files
+Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUNIT
+*.VisualState.xml
+TestResult.xml
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# AxoCover is a Code Coverage Tool
+.axoCover/*
+!.axoCover/settings.json
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+
+# Others
+RELEASE_NOTES.html
+ClientBin/
+~$*
+*~
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+/NINA/Resources/SVG/ArrowRight.ai
+/NINA/Resources/StaticResources/ArrowRight.xaml
+/NINA/Resources/StaticResources/ArrowLeft.xaml
+hooks/
+lfs/
+/NINA.Setup/.wix/
+# the bundled .net runtime - it will be automatically downloaded from the ms page. no need to include this in source control
+/NINA.SetupBundle/dotnet-windowsdesktop-runtime-win-x64.exe

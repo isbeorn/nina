@@ -1,0 +1,160 @@
+<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:NINA.Core.Utility.Converters;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.CustomControlLibrary">
+
+    <converters:InverseNullToVisibilityCollapsedConverter x:Key="InverseNullToVisibilityCollapsedConverter" />
+    <converters:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
+
+    <Style TargetType="{x:Type local:StepperControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:StepperControl}">
+                    <Grid x:Name="LayoutRoot">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25" />
+                        </Grid.ColumnDefinitions>
+                        <Button Name="PART_Decrement" Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding SubstractSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <ContentControl
+                            Name="PART_ContentControl"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Content="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <local:UnitTextBox
+                            x:Name="PART_Textbox"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Text="{Binding Value, StringFormat=\{0:0.00\}, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource TemplatedParent}}"
+                            TextAlignment="Center"
+                            Unit="{Binding Unit, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                        <Button
+                            Name="PART_Increment"
+                            Grid.Column="2"
+                            Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding AddSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type local:PrecisionStepperControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:PrecisionStepperControl}">
+                    <Grid x:Name="LayoutRoot">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25" />
+                        </Grid.ColumnDefinitions>
+                        <Button Name="PART_Decrement" Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding SubstractSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <ContentControl
+                            Name="PART_ContentControl"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Content="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <local:UnitTextBox
+                            x:Name="PART_Textbox"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Text="{Binding Value, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource TemplatedParent}}"
+                            TextAlignment="Center"
+                            Unit="{Binding Unit, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{Binding InnerContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                        <Button
+                            Name="PART_Increment"
+                            Grid.Column="2"
+                            Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding AddSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type local:IntStepperControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:IntStepperControl}">
+                    <Grid x:Name="LayoutRoot">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25" />
+                        </Grid.ColumnDefinitions>
+                        <Button Name="PART_Decrement" Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding SubstractSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                        <local:UnitTextBox
+                            x:Name="PART_Textbox"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Text="{Binding Value, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource TemplatedParent}}"
+                            TextAlignment="Center"
+                            Unit="{Binding Unit, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Button
+                            Name="PART_Increment"
+                            Grid.Column="2"
+                            Height="25">
+                            <Path
+                                Margin="5"
+                                Data="{TemplateBinding AddSVG}"
+                                Fill="{TemplateBinding ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

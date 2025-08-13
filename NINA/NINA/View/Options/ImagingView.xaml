@@ -1,0 +1,1269 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.ImagingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:nina="clr-namespace:NINA"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    Name="UC"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <util:BindingProxy x:Key="OptionsProxy" Data="{Binding}" />
+    </UserControl.Resources>
+    <UniformGrid Columns="2" DataContext="{Binding ActiveProfile}">
+        <GroupBox DataContext="{Binding ImageFileSettings}">
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="20" Text="{ns:Loc LblFileSettings}" />
+                    <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_FileSettings}}" />
+                </Grid>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSaveImageAs}" />
+                <ComboBox
+                    Name="cbFileTypes"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    ItemsSource="{Binding DataContext.FileTypes, ElementName=UC}"
+                    SelectedItem="{Binding FileType}" />
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="25"
+                        Margin="5"
+                        Data="{StaticResource ExclamationCircledSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveImageAsDSLRNote}" />
+                </StackPanel>
+
+                <GroupBox
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3">
+                    <GroupBox.Header>
+                        <TextBlock FontSize="12" Text="{ns:Loc LblFileFormatOptions}" />
+                    </GroupBox.Header>
+
+                    <!--  TIFF  -->
+                    <Grid>
+                        <StackPanel>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="TIFF">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCompression}" />
+                                <ComboBox
+                                    MinWidth="150"
+                                    Margin="0,0,0,0"
+                                    ItemsSource="{Binding DataContext.TIFFCompressionTypes, ElementName=UC}"
+                                    SelectedItem="{Binding TIFFCompressionType}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="FITS">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+
+                            <!--  FITS  -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblUseCfitsio}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanConverter}}">
+                                        <CheckBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblUseCfitsioTooltip}" />
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Margin="0,5,0,0"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblCompression}" />
+                                    <ComboBox
+                                        MinWidth="100"
+                                        Margin="5,0,0,0"
+                                        ItemsSource="{Binding DataContext.FITSCompressionTypes, ElementName=UC}"
+                                        SelectedItem="{Binding FITSCompressionType}" />
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5,5,0,0"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding FITSUseLegacyWriter, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAddFzExtension}" />
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding FITSAddFzExtension}">
+                                        <CheckBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAddFzExtensionTooltip}" />
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <!--  XISF  -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="XISF">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCompression}" />
+                                <ComboBox
+                                    MinWidth="150"
+                                    Margin="5,0,0,0"
+                                    ItemsSource="{Binding DataContext.XISFCompressionTypes, ElementName=UC}"
+                                    SelectedItem="{Binding XISFCompressionType}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="20,0,0,0"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblByteShuffling}" />
+                                <CheckBox
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding XISFByteShuffling}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Row="1"
+                                Margin="0,5,0,0"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblChecksum}" />
+                                <ComboBox
+                                    MinWidth="150"
+                                    Margin="5,0,0,0"
+                                    ItemsSource="{Binding DataContext.XISFChecksumTypes, ElementName=UC}"
+                                    SelectedItem="{Binding XISFChecksumType}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblImageFilePath}" />
+                <TextBox
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Text="{Binding FilePath}" />
+                <Button
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Width="40"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding DataContext.OpenImageFileDiagCommand, ElementName=UC}">
+                    <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                </Button>
+
+
+
+                <Expander
+                    Grid.Row="4"
+                    Grid.ColumnSpan="3"
+                    IsExpanded="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternsExpanded, UpdateSourceTrigger=PropertyChanged}">
+                    <Expander.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" SharedSizeGroup="ImagingFileColumn1" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblImageFilePattern}" />
+                            <TextBox
+                                x:Name="ImageFilePatternTextBox"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                AllowDrop="True"
+                                DragEnter="TextBox_DragEnter"
+                                Drop="TextBox_Drop"
+                                PreviewDragOver="TextBox_PreviewDragOver"
+                                Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePattern, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="115" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Margin="20,5,0,0"
+                                VerticalAlignment="Center"
+                                Text="FLAT" />
+                            <ninactrl:HintTextBox
+                                x:Name="FilePatternFLATTextBox"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Height="Auto"
+                                Margin="5,5,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Stretch"
+                                AllowDrop="True"
+                                DragEnter="TextBox_DragEnter"
+                                Drop="TextBox_Drop"
+                                HintText="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePattern, UpdateSourceTrigger=PropertyChanged}"
+                                PreviewDragOver="TextBox_PreviewDragOver"
+                                Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternFLAT, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="20,5,0,0"
+                                VerticalAlignment="Center"
+                                Text="DARK" />
+                            <ninactrl:HintTextBox
+                                x:Name="FilePatternDARKTextBox"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Height="Auto"
+                                Margin="5,5,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Stretch"
+                                AllowDrop="True"
+                                DragEnter="TextBox_DragEnter"
+                                Drop="TextBox_Drop"
+                                HintText="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePattern, UpdateSourceTrigger=PropertyChanged}"
+                                PreviewDragOver="TextBox_PreviewDragOver"
+                                Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARK, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Margin="20,5,0,0"
+                                VerticalAlignment="Center"
+                                Text="BIAS" />
+                            <ninactrl:HintTextBox
+                                x:Name="FilePatternBIASTextBox"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Height="Auto"
+                                Margin="5,5,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Stretch"
+                                AllowDrop="True"
+                                DragEnter="TextBox_DragEnter"
+                                Drop="TextBox_Drop"
+                                HintText="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePattern, UpdateSourceTrigger=PropertyChanged}"
+                                PreviewDragOver="TextBox_PreviewDragOver"
+                                Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternBIAS, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                    </Expander.Content>
+                </Expander>
+
+
+
+                <Grid Grid.Row="5" Grid.ColumnSpan="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblImagePatternPreview}" />
+                    <TextBox
+                        x:Name="ImagePatternPreviewTextBox"
+                        Grid.Column="1"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        IsReadOnly="True"
+                        Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreview, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="20,5,0,0"
+                        VerticalAlignment="Center"
+                        Text="FLAT"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternFLAT, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                    <TextBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        IsReadOnly="True"
+                        Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreviewFLAT, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternFLAT, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="20,5,0,0"
+                        VerticalAlignment="Center"
+                        Text="DARK"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARK, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                    <TextBox
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        IsReadOnly="True"
+                        Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreviewDARK, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternDARK, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+
+
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Margin="20,5,0,0"
+                        VerticalAlignment="Center"
+                        Text="BIAS"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternBIAS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                    <TextBox
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        IsReadOnly="True"
+                        Text="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternPreviewBIAS, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.FilePatternBIAS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}" />
+                </Grid>
+
+                <Grid
+                    Grid.Row="6"
+                    Grid.ColumnSpan="3"
+                    Margin="0,5,0,0">
+                    <Grid.Resources>
+                        <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataContext.ImagePatterns.Items, ElementName=UC}">
+                            <CollectionViewSource.GroupDescriptions>
+                                <PropertyGroupDescription PropertyName="Category" />
+                            </CollectionViewSource.GroupDescriptions>
+                        </CollectionViewSource>
+                    </Grid.Resources>
+                    <ListView
+                        x:Name="ImagePatternList"
+                        ItemsSource="{Binding Source={StaticResource GroupedPatterns}}"
+                        SelectionMode="Single">
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn
+                                    Width="Auto"
+                                    DisplayMemberBinding="{Binding Key}"
+                                    Header="{ns:Loc LblPatternName}" />
+                                <GridViewColumn
+                                    Width="Auto"
+                                    DisplayMemberBinding="{Binding Description}"
+                                    Header="{ns:Loc LblDescription}" />
+                            </GridView>
+                        </ListView.View>
+
+                        <ListView.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
+                                <EventSetter Event="PreviewMouseDoubleClick" Handler="ListViewItem_PreviewMouseDoubleClick" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Grid>
+
+            </Grid>
+        </GroupBox>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <GroupBox DataContext="{Binding MeridianFlipSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblAutoMeridianFlip}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_MeridianFlip}}" />
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMinutesAfterMeridian}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="min">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMaxMinutesAfterMeridian}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="min">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="MaxMinutesAfterMeridian" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUseSideOfPier}" />
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseSideOfPier}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblRecenterAfterFlip}" />
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Recenter}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblScopeSettleTimeAfterFlip}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="s">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPauseTimeBeforeMeridian}" />
+                            <ninactrl:UnitTextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="min">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusAfterFlip}" />
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding AutoFocusAfterFlip}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblRotateImageAfterFlip}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblRotateImageAfterFlipTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding RotateImageAfterFlip}">
+                                <CheckBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblRotateImageAfterFlipTooltip}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox DataContext="{Binding ImageSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblImageOptions}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_ImageOptions}}" />
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAnnotateImage}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAnnotateImageTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding AnnotateImage}" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            IsEnabled="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64}"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDebayerImage}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDebayerImageTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DebayerImage}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUnavailableForX86}"
+                                Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            IsEnabled="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64}"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDebayeredHFR}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDebayeredHFRTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DebayeredHFR}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUnavailableForX86}"
+                                Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            IsEnabled="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64}"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUnlinkedStretch}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblUnlinkedStretchTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UnlinkedStretch}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUnavailableForX86}"
+                                Visibility="{Binding Source={StaticResource OptionsProxy}, Path=Data.IsX64, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{Binding DataContext.PluggableStarDetection.Behaviors, ElementName=UC, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblStarDetector}" />
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding DataContext.PluggableStarDetection.Behaviors, ElementName=UC}"
+                                SelectedItem="{Binding DataContext.PluggableStarDetection.SelectedBehavior, ElementName=UC}"
+                                SelectedValuePath="Name" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{Binding DataContext.PluggableStarAnnotator.Behaviors, ElementName=UC, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblStarAnnotator}" />
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding DataContext.PluggableStarAnnotator.Behaviors, ElementName=UC}"
+                                SelectedItem="{Binding DataContext.PluggableStarAnnotator.SelectedBehavior, ElementName=UC}"
+                                SelectedValuePath="Name" />
+                        </StackPanel>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{Binding DataContext.PluggableAutoFocusVMFactory.Behaviors, ElementName=UC, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocus}" />
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding DataContext.PluggableAutoFocusVMFactory.Behaviors, ElementName=UC}"
+                                SelectedItem="{Binding DataContext.PluggableAutoFocusVMFactory.SelectedBehavior, ElementName=UC}"
+                                SelectedValuePath="Name" />
+                        </StackPanel>
+                        <Border
+                            Margin="0,10,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,1,0,1">
+                            <Expander Header="{ns:Loc LblAdvancedSettings}">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblAutoStretchFactor}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblAutoStretchFactorTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <TextBox
+                                            MinWidth="75"
+                                            MinHeight="20"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center">
+                                            <TextBox.Text>
+                                                <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:GreaterZeroRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            MinWidth="200"
+                                            MinHeight="20"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblBlackClipping}">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{ns:Loc LblLblBlackClippingTooltip}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <TextBox
+                                            MinWidth="75"
+                                            MinHeight="20"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center">
+                                            <TextBox.Text>
+                                                <Binding Path="BlackClipping" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:DoubleRangeRule>
+                                                            <rules:DoubleRangeRule.ValidRange>
+                                                                <rules:DoubleRangeChecker Maximum="0" Minimum="-10" />
+                                                            </rules:DoubleRangeRule.ValidRange>
+                                                        </rules:DoubleRangeRule>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+
+                                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                            <TextBlock
+                                                MinWidth="200"
+                                                MinHeight="20"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblStarSensitivity}">
+                                                <TextBlock.ToolTip>
+                                                    <TextBlock Text="{ns:Loc LblStarSensitivityTooltip}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <ComboBox
+                                                MinWidth="150"
+                                                Margin="0,0,0,0"
+                                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:StarSensitivityEnum}}}"
+                                                SelectedItem="{Binding StarSensitivity}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                            <TextBlock
+                                                MinWidth="200"
+                                                MinHeight="20"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblNoiseReduction}">
+                                                <TextBlock.ToolTip>
+                                                    <TextBlock Text="{ns:Loc LblNoiseReductionTooltip}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <ComboBox
+                                                MinWidth="150"
+                                                Margin="0,0,0,0"
+                                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:NoiseReductionEnum}}}"
+                                                SelectedItem="{Binding NoiseReduction}" />
+                                        </StackPanel>
+                                        <StackPanel
+                                            Margin="0,5,0,0"
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding AnnotateImage, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <TextBlock
+                                                MinWidth="200"
+                                                MinHeight="20"
+                                                VerticalAlignment="Center"
+                                                Text="{ns:Loc LblAnnotateUnlimitedStars}">
+                                                <TextBlock.ToolTip>
+                                                    <TextBlock Text="{ns:Loc LblAnnotateUnlimitedStarsTooltip}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <CheckBox
+                                                Height="25"
+                                                HorizontalAlignment="Left"
+                                                IsChecked="{Binding AnnotateUnlimitedStars}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Expander>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox DataContext="{Binding SequenceSettings}">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblSequence}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_Sequence}}" />
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDefaultSequenceFolder}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="DefaultSequenceFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceFolderDiagCommand, ElementName=UC}">
+                                <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDefaultSequenceFolderTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequenceTemplateFolder}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SequencerTemplatesFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceTemplateFolderDiagCommand, ElementName=UC}">
+                                <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSequenceTemplateFolderTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc Lbl_OldSequencer_Template}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="TemplatePath" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsOrEmptyRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceTemplateDiagCommand, ElementName=UC}">
+                                <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSequenceTemplateTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblStartupSequenceTemplate}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="StartupSequenceTemplate" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsOrEmptyRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenStartupSequenceTemplateDiagCommand, ElementName=UC}">
+                                <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblStartupSequenceTemplateTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequencerTargetsFolder}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SequencerTargetsFolder" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenTargetsFolderDiagCommand, ElementName=UC}">
+                                <Path
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSequencerTargetsFolderTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="230"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCollapseSequencerTemplatesByDefault}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblCollapseSequencerTemplatesByDefaultTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding CollapseSequencerTemplatesByDefault}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="230"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDisableSimpleSequencer}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDisableSimpleSequencerTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DisableSimpleSequencer}" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox>
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="20" Text="{ns:Loc LblLayout}" />
+                            <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_Layout}}" />
+                        </Grid>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblResetDockLayout}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="75"
+                            Height="30"
+                            HorizontalAlignment="Left"
+                            Command="{Binding DataContext.DockManagerVM.ResetDockLayoutCommand, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type nina:MainWindow}, Mode=FindAncestor}}"
+                            ToolTip="{ns:Loc LblResetDockLayout}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource ResetSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBackupDockLayout}" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="75"
+                            Height="30"
+                            Margin="0,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding DataContext.DockManagerVM.BackupDockLayoutCommand, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type nina:MainWindow}, Mode=FindAncestor}}"
+                            ToolTip="{ns:Loc LblBackupDockLayoutTooltip}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource SaveAsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,5,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblRestoreDockLayoutFromFile}" />
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Width="75"
+                            Height="30"
+                            Margin="0,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding DataContext.DockManagerVM.RestoreDockLayoutFromFileCommand, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type nina:MainWindow}, Mode=FindAncestor}}"
+                            ToolTip="{ns:Loc LblRestoreDockLayoutFromFileTooltip}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource LoadSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Button>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </UniformGrid>
+</UserControl>

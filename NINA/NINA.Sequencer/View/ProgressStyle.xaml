@@ -1,0 +1,82 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.View.Sequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary">
+    <DataTemplate x:Key="CreatedItem">
+        <Grid />
+    </DataTemplate>
+    <DataTemplate x:Key="RunningItem">
+        <ninactrl:LoadingControl
+            Width="15"
+            Height="15"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            LoadingImageBrush="{StaticResource ButtonForegroundBrush}" />
+    </DataTemplate>
+    <DataTemplate x:Key="CompletedItem">
+        <Path
+            Width="15"
+            Height="15"
+            Data="{StaticResource CheckedSVG}"
+            Fill="{StaticResource PrimaryBrush}"
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
+    </DataTemplate>
+    <DataTemplate x:Key="FailedItem">
+        <Border
+            Width="15"
+            Height="15"
+            Background="{StaticResource NotificationErrorBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="10">
+            <Path
+                Data="{StaticResource CancelCircledSVG}"
+                Fill="{StaticResource PrimaryBrush}"
+                Stretch="Uniform"
+                UseLayoutRounding="True" />
+        </Border>
+    </DataTemplate>
+    <DataTemplate x:Key="SkippedItem">
+        <Path
+            Width="15"
+            Height="15"
+            Data="{StaticResource SkipSVG}"
+            Fill="{StaticResource PrimaryBrush}"
+            Stretch="Uniform"
+            UseLayoutRounding="True" />
+    </DataTemplate>
+    <Style x:Key="ProgressPresenter" TargetType="ContentPresenter">
+        <Setter Property="ContentTemplate" Value="{StaticResource CreatedItem}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Status}" Value="1">
+                <Setter Property="ContentTemplate" Value="{StaticResource RunningItem}" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Status}" Value="2">
+                <Setter Property="ContentTemplate" Value="{StaticResource CompletedItem}" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Status}" Value="3">
+                <Setter Property="ContentTemplate" Value="{StaticResource FailedItem}" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Status}" Value="4">
+                <Setter Property="ContentTemplate" Value="{StaticResource SkippedItem}" />
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Status}" Value="5">
+                <Setter Property="ContentTemplate" Value="{StaticResource SkippedItem}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

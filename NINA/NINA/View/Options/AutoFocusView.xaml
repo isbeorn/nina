@@ -1,0 +1,839 @@
+﻿<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.AutoFocusView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.View.Options"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <util:BindingProxy x:Key="CameraInfo" Data="{Binding DeviceConsumer.CameraInfo}" />
+        <util:BindingProxy x:Key="FocuserInfo" Data="{Binding DeviceConsumer.FocuserInfo}" />
+        <util:BindingProxy x:Key="DataContext" Data="{Binding}" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid DataContext="{Binding ActiveProfile}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0" DataContext="{Binding FocuserSettings}">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontSize="20" Text="{ns:Loc LblAutoFocus}" />
+                        <wpfbase:BrowserPopupButton
+                            Grid.Column="1"
+                            Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_Autofocus}}"
+                            WindowWidthFraction="2" />
+                    </Grid>
+                </GroupBox.Header>
+                <StackPanel>
+                    <UniformGrid Columns="2">
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox HorizontalAlignment="Left" IsChecked="{Binding UseFilterWheelOffsets}" />
+                        </UniformGrid>
+
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{ns:Loc LblFocuserAutoFocusStepSize}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{Binding AutoFocusStepSize}" />
+                        </UniformGrid>
+
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{Binding AutoFocusInitialOffsetSteps}" />
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDefaultAutoFocusExposureTime}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ninactrl:UnitTextBox
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Unit="s">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusMethod}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusMethodTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                Name="cbAFMeasurementMethod"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AFMethodEnum}}}"
+                                SelectedItem="{Binding AutoFocusMethod}" />
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource ProfileService}, Converter={StaticResource AutoFocusHFRToCollapsedVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblContrastMethod}" />
+                            <ComboBox
+                                Name="cbAContrastDetectionMethod"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:ContrastDetectionMethodEnum}}}"
+                                SelectedItem="{Binding ContrastDetectionMethod}" />
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDisableAFGuiding}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDisableAFGuidingTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding AutoFocusDisableGuiding}" />
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource ProfileService}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblCurveFittingMethod}" />
+                            <ComboBox
+                                Name="cbAFCurveFitting"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AFCurveFittingEnum}}}"
+                                SelectedItem="{Binding AutoFocusCurveFitting}" />
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserSettleTime}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ninactrl:UnitTextBox
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Unit="s">
+                                <ninactrl:UnitTextBox.Text>
+                                    <Binding Path="FocuserSettleTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </ninactrl:UnitTextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource ProfileService}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusTotalNumberOfAttempts" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:StrictGreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusNumberOfFramesPerPoint" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:StrictGreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource ProfileService}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAFUseBrightestStars}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusUseBrightestStars" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusInnerCropRatio}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusInnerCropRatioTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusInnerCropRatio" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FocuserSettings.AutoFocusOuterCropRatio}" Minimum="0.2" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,5,0,0"
+                            Columns="2"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource ProfileService}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusOuterCropRatio}" />
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusOuterCropRatio" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="1" Minimum="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio}" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserBacklashMethod}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserBacklashMethodTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                Name="cbBacklashMethod"
+                                IsEnabled="{Binding Source={StaticResource FocuserInfo}, Path=Data.Connected, Converter={StaticResource InverseBooleanConverter}, FallbackValue=true}"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BacklashCompensationModel}}}"
+                                SelectedItem="{Binding BacklashCompensationModel}">
+                                <ComboBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserBacklashMethodTooltip}" />
+                                </ComboBox.ToolTip>
+                            </ComboBox>
+                        </UniformGrid>
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBinning}" />
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:StrictGreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                        <UniformGrid Margin="5,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserBacklash}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserBacklashTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <UniformGrid Margin="0,0,0,0" Columns="2">
+                                <TextBox>
+                                    <TextBox.Text>
+                                        <Binding Path="BacklashIn" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBox Margin="5,0,0,0">
+                                    <TextBox.Text>
+                                        <Binding Path="BacklashOut" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                        </UniformGrid>
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusCorrelationCoefficientThreshold}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusCorrelationCoefficientThresholdTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="RSquaredThreshold" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="0.99" Minimum="0" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                                <TextBox.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusCorrelationCoefficientThresholdTooltip}" />
+                                </TextBox.ToolTip>
+                            </TextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                DataContext="{Binding FilterWheelSettings}"
+                Header="{ns:Loc LblAutoFocusFilterSettings}">
+                <StackPanel>
+                    <DataGrid
+                        MaxHeight="300"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Disabled"
+                        ItemsSource="{Binding FilterWheelFilters}"
+                        SelectedItem="{Binding DataContext.SelectedFilter, ElementName=UC}"
+                        SelectionMode="Single"
+                        VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblPosition}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Position, Converter={StaticResource AddToNumberConverter}, ConverterParameter=1}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblName}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblFocusOffset}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblAutoFocusExposureTime}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ninactrl:HintTextBox
+                                            MinWidth="40"
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Foreground="{StaticResource PrimaryBrush}"
+                                            TextAlignment="Center">
+                                            <ninactrl:HintTextBox.HintText>
+                                                <Binding
+                                                    Converter="{StaticResource CameraDefaultValueConverter}"
+                                                    Mode="OneWay"
+                                                    Path="ActiveProfile.FocuserSettings.AutoFocusExposureTime"
+                                                    Source="{StaticResource ProfileService}"
+                                                    UpdateSourceTrigger="PropertyChanged" />
+                                            </ninactrl:HintTextBox.HintText>
+                                            <ninactrl:HintTextBox.Text>
+                                                <Binding
+                                                    Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                                    Mode="TwoWay"
+                                                    Path="AutoFocusExposureTime"
+                                                    UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:DoubleRangeRule>
+                                                            <rules:DoubleRangeRule.ValidRange>
+                                                                <rules:DoubleRangeChecker Maximum="600" Minimum="-1" />
+                                                            </rules:DoubleRangeRule.ValidRange>
+                                                        </rules:DoubleRangeRule>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ninactrl:HintTextBox.Text>
+                                        </ninactrl:HintTextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                                    <Binding
+                                                        Mode="TwoWay"
+                                                        Path="AutoFocusExposureTime"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                    <Binding
+                                                        Mode="OneWay"
+                                                        Path="ActiveProfile.FocuserSettings.AutoFocusExposureTime"
+                                                        Source="{StaticResource ProfileService}"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblAutoFocusFilter}"
+                                Visibility="{Binding ActiveProfile.FocuserSettings.UseFilterWheelOffsets, Source={StaticResource ProfileService}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox
+                                            Width="20"
+                                            Height="20"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Center"
+                                            BorderBrush="Transparent"
+                                            IsChecked="{Binding AutoFocusFilter, FallbackValue=False, Mode=OneWay}"
+                                            IsEnabled="False"
+                                            Style="{StaticResource CheckmarkCheckbox}"
+                                            Visibility="{Binding AutoFocusFilter, Converter={StaticResource VisibilityConverter}}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblBinning}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ComboBox
+                                            DisplayMemberPath="Name"
+                                            ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+                                            SelectedItem="{Binding AutoFocusBinning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedValuePath="Name" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding AutoFocusBinning}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!--  List of ISOs  -->
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblGain}">
+                                <DataGridTemplateColumn.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                            Path="Data.Gains"
+                                            Source="{StaticResource CameraInfo}" />
+                                        <Binding
+                                            Converter="{StaticResource BooleanToVisibilityCollapsedConverter}"
+                                            Path="Data.Connected"
+                                            Source="{StaticResource CameraInfo}" />
+                                    </PriorityBinding>
+                                </DataGridTemplateColumn.Visibility>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ComboBox
+                                            Grid.Column="1"
+                                            DisplayMemberPath="Text"
+                                            IsSynchronizedWithCurrentItem="True"
+                                            SelectedValuePath="Text">
+                                            <ComboBox.ItemsSource>
+                                                <CompositeCollection>
+                                                    <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                                    <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                                                </CompositeCollection>
+                                            </ComboBox.ItemsSource>
+                                            <ComboBox.SelectedValue>
+                                                <MultiBinding
+                                                    Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                                    Mode="TwoWay"
+                                                    UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding
+                                                        Mode="TwoWay"
+                                                        Path="AutoFocusGain"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                    <Binding
+                                                        Mode="OneWay"
+                                                        Path="Data.DefaultGain"
+                                                        Source="{StaticResource CameraInfo}"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                </MultiBinding>
+                                            </ComboBox.SelectedValue>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                                    <Binding
+                                                        Mode="TwoWay"
+                                                        Path="AutoFocusGain"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                    <Binding
+                                                        Mode="OneWay"
+                                                        Path="Data.DefaultGain"
+                                                        Source="{StaticResource CameraInfo}"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!--  Free Gain Setting  -->
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblGain}">
+                                <DataGridTemplateColumn.Visibility>
+                                    <PriorityBinding FallbackValue="Visible">
+                                        <Binding
+                                            Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                                            Path="Data.Gains"
+                                            Source="{StaticResource CameraInfo}" />
+                                    </PriorityBinding>
+                                </DataGridTemplateColumn.Visibility>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ninactrl:HintTextBox
+                                            MinWidth="40"
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Foreground="{StaticResource PrimaryBrush}"
+                                            TextAlignment="Center">
+                                            <ninactrl:HintTextBox.HintText>
+                                                <Binding
+                                                    Converter="{StaticResource CameraDefaultValueConverter}"
+                                                    Mode="OneWay"
+                                                    Path="Data.DefaultGain"
+                                                    Source="{StaticResource CameraInfo}"
+                                                    UpdateSourceTrigger="PropertyChanged" />
+                                            </ninactrl:HintTextBox.HintText>
+                                            <ninactrl:HintTextBox.Text>
+                                                <Binding
+                                                    Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                                    Mode="TwoWay"
+                                                    Path="AutoFocusGain"
+                                                    UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <util:ShortRangeRule>
+                                                            <util:ShortRangeRule.ValidRange>
+                                                                <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                            </util:ShortRangeRule.ValidRange>
+                                                        </util:ShortRangeRule>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ninactrl:HintTextBox.Text>
+                                        </ninactrl:HintTextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                                    <Binding
+                                                        Mode="TwoWay"
+                                                        Path="AutoFocusGain"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                    <Binding
+                                                        Mode="OneWay"
+                                                        Path="Data.DefaultGain"
+                                                        Source="{StaticResource CameraInfo}"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!--  Free Offset Setting  -->
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblOffset}">
+                                <DataGridTemplateColumn.Visibility>
+                                    <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                                        <Binding
+                                            Converter="{StaticResource InverseBooleanConverter}"
+                                            Path="Data.Connected"
+                                            Source="{StaticResource CameraInfo}" />
+                                        <Binding Path="Data.CanSetOffset" Source="{StaticResource CameraInfo}" />
+                                    </MultiBinding>
+                                </DataGridTemplateColumn.Visibility>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ninactrl:HintTextBox
+                                            MinWidth="40"
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Foreground="{StaticResource PrimaryBrush}"
+                                            TextAlignment="Center">
+                                            <ninactrl:HintTextBox.HintText>
+                                                <Binding
+                                                    Converter="{StaticResource CameraDefaultValueConverter}"
+                                                    Mode="OneWay"
+                                                    Path="Data.DefaultOffset"
+                                                    Source="{StaticResource CameraInfo}"
+                                                    UpdateSourceTrigger="PropertyChanged" />
+                                            </ninactrl:HintTextBox.HintText>
+                                            <ninactrl:HintTextBox.Text>
+                                                <Binding
+                                                    Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                                    Mode="TwoWay"
+                                                    Path="AutoFocusOffset"
+                                                    UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <util:ShortRangeRule>
+                                                            <util:ShortRangeRule.ValidRange>
+                                                                <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                                            </util:ShortRangeRule.ValidRange>
+                                                        </util:ShortRangeRule>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </ninactrl:HintTextBox.Text>
+                                        </ninactrl:HintTextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                                    <Binding
+                                                        Mode="TwoWay"
+                                                        Path="AutoFocusOffset"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                    <Binding
+                                                        Mode="OneWay"
+                                                        Path="Data.DefaultOffset"
+                                                        Source="{StaticResource CameraInfo}"
+                                                        UpdateSourceTrigger="PropertyChanged" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button
+                        Grid.Column="2"
+                        Width="200"
+                        Height="50"
+                        Margin="5"
+                        Command="{Binding Path=DataContext.SetAutoFocusFilterCommand, ElementName=UC}"
+                        Visibility="{Binding ActiveProfile.FocuserSettings.UseFilterWheelOffsets, Source={StaticResource ProfileService}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <Button.Content>
+                            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetAutoFocusFilter}" />
+                        </Button.Content>
+                        <Button.ToolTip>
+                            <TextBlock Text="{ns:Loc LblSetAutoFocusFilterTooltip}" />
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

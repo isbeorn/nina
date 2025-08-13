@@ -1,0 +1,287 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Equipment.SkyGuardSetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:utility="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    MinWidth="400"
+    MinHeight="150"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center">
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyGuardPath}" />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center">
+                    <TextBox.Text>
+                        <Binding
+                            Path="ActiveProfile.GuiderSettings.SkyGuardPath"
+                            Source="{StaticResource ProfileService}"
+                            UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:FileExistsRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <Button
+                    Grid.Column="2"
+                    Width="40"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding OpenSkyGuardDiagCommand}">
+                    <Path
+                        Margin="12,10,12,0"
+                        Data="{StaticResource DotsSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+            </Grid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardServerUrl}" />
+                <TextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Text="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings.SkyGuardServerUrl}" />
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardServerPort}" />
+                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="ActiveProfile.GuiderSettings.SkyGuardServerPort" Source="{StaticResource ProfileService}">
+                            <Binding.ValidationRules>
+                                <rules:IsValidIpPortRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardCallbackPort}" />
+                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="ActiveProfile.GuiderSettings.SkyGuardCallbackPort" Source="{StaticResource ProfileService}">
+                            <Binding.ValidationRules>
+                                <rules:IsValidIpPortRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardTimeLapsChecked}" />
+                <CheckBox
+                    x:Name="cbxTimeLaps"
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding SkyGuardTimeLapsChecked}" />
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}"
+                IsEnabled="{Binding ElementName=cbxTimeLaps, Path=IsChecked}">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardValueMaxGuiding}" />
+                <ninactrl:UnitTextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Unit="in plot unit">
+                    <TextBox.Text>
+                        <Binding Path="SkyGuardValueMaxGuiding" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:GreaterZeroRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </ninactrl:UnitTextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}"
+                IsEnabled="{Binding ElementName=cbxTimeLaps, Path=IsChecked}">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardTimeLapsGuiding}"
+                    TextWrapping="Wrap" />
+                <ninactrl:UnitTextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Unit="s">
+                    <TextBox.Text>
+                        <Binding Path="SkyGuardTimeLapsGuiding" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:GreaterThanZeroRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </ninactrl:UnitTextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}"
+                FlowDirection="LeftToRight">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardTimeLapsDitherChecked}" />
+                <CheckBox
+                    x:Name="cbxTimeLapsDither"
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding SkyGuardTimeLapsDitherChecked}" />
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}"
+                FlowDirection="LeftToRight"
+                IsEnabled="{Binding ElementName=cbxTimeLapsDither, Path=IsChecked}">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardValueMaxGuiding}" />
+                <ninactrl:UnitTextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Unit="in plot unit">
+                    <TextBox.Text>
+                        <Binding Path="SkyGuardValueMaxDithering" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:GreaterZeroRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </ninactrl:UnitTextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}"
+                FlowDirection="LeftToRight"
+                IsEnabled="{Binding ElementName=cbxTimeLapsDither, Path=IsChecked}">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardTimeLapsGuiding}"
+                    TextWrapping="Wrap" />
+                <ninactrl:UnitTextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Unit="s">
+                    <TextBox.Text>
+                        <Binding Path="SkyGuardTimeLapsDithering" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:GreaterThanZeroRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </ninactrl:UnitTextBox>
+            </UniformGrid>
+            <UniformGrid
+                Margin="0,5,0,0"
+                VerticalAlignment="Center"
+                Columns="2"
+                DataContext="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.GuiderSettings}">
+                <TextBlock
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblSkyGuardTimeOutGuiding}" />
+                <ninactrl:UnitTextBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Unit="min">
+                    <TextBox.Text>
+                        <Binding Path="SkyGuardTimeOutGuiding" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <rules:GreaterZeroRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </ninactrl:UnitTextBox>
+            </UniformGrid>
+
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="5"
+                VerticalAlignment="Bottom"
+                utility:ButtonHelper.DialogResult="True">
+                <Button.Content>
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

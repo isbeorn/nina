@@ -1,0 +1,1032 @@
+<!--
+    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Options.PlateSolverView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:coreutil="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:filter="clr-namespace:NINA.Core.Model;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.View.Options"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbase="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
+    Name="UC"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid DataContext="{Binding ActiveProfile.PlateSolveSettings}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GroupBox>
+            <GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="20" Text="{ns:Loc LblPlateSolving}" />
+                    <wpfbase:BrowserPopupButton Grid.Column="1" Source="{Binding Source={x:Static coreutil:DocumentationIndex.Tabs_Options_PlateSolving}}" />
+                </Grid>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlateSolver}" />
+                        <ComboBox
+                            MinWidth="150"
+                            MaxHeight="30"
+                            Margin="10,0,0,0"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlateSolverEnum}}}"
+                            SelectedItem="{Binding PlateSolverType}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBlindSolver}" />
+                        <ComboBox
+                            MinWidth="150"
+                            MaxHeight="30"
+                            Margin="10,0,0,0"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BlindSolverEnum}}}"
+                            SelectedItem="{Binding BlindSolverType}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBlindSolveFailoverEnabled}" />
+
+                        <CheckBox
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding BlindFailoverEnabled}" />
+
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.RowSpan="2" Grid.Column="1">
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblExposureTime}" />
+                        <ninactrl:UnitTextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalContentAlignment="Center"
+                            Unit="s">
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="ExposureTime">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFilter}" />
+                        <ComboBox
+                            Height="25"
+                            MinWidth="120"
+                            DisplayMemberPath="Name"
+                            SelectedItem="{Binding Filter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                            SelectedValuePath="Name">
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <x:Static Member="filter:NullFilter.Instance" />
+                                    <CollectionContainer Collection="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBinning}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="Binning">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblGain}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Text="{Binding Gain, UpdateSourceTrigger=LostFocus, Converter={StaticResource MinusOneToEmptyStringConverter}}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPointingTolerance}" />
+                        <ninactrl:UnitTextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="arcmin">
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="Threshold">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblRotationTolerance}" />
+                        <ninactrl:UnitTextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="°">
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="RotationTolerance">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlateSolveNbOfAttempts}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblPlateSolveNbOfAttemptsTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="NumberOfAttempts">
+                                    <Binding.ValidationRules>
+                                        <rules:StrictGreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlateSolveFailedDelay}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblPlateSolveFailedDelayTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="min">
+                            <ninactrl:UnitTextBox.Text>
+                                <Binding Mode="TwoWay" Path="ReattemptDelay">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:UnitTextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <DataTemplate x:Key="AstrometryNetTemplate">
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AstrometryQuestion_Label" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAPIKey}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Text="{Binding AstrometryAPIKey}" />
+
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="">
+                                <Hyperlink Command="{Binding DataContext.OpenWebRequestCommand, ElementName=UC}" CommandParameter="http://nova.astrometry.net/api_help">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Astrometry_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AstrometryQuestion_Label" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblURL}" />
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Text="{Binding AstrometryURL}" />
+                        </Grid>
+
+                        <StackPanel MaxHeight="150" Margin="0,15,0,6">
+                            <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
+                            <TextBlock MaxHeight="73" HorizontalAlignment="Left">
+                                <Hyperlink Command="{Binding DataContext.OpenWebRequestCommand, ElementName=UC}" CommandParameter="http://nova.astrometry.net/">
+                                    <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="LocalPlateSolverTemplate">
+                    <Grid DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="LocalPlatesolver_Label" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCygwinDirectory}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="130"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="CygwinLocation" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:DirectoryExistsRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <Button
+                                    Grid.Column="2"
+                                    Width="40"
+                                    Height="20"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DataContext.OpenCygwinFileDiagCommand, ElementName=UC}">
+                                    <Path
+                                        Margin="12,10,12,0"
+                                        Data="{StaticResource DotsSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        UseLayoutRounding="True" />
+                                </Button>
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="LocalPlatesolver_Label" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblSearchRadius}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="55"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="SearchRadius" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="LocalPlatesolver_Label" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblDownSampleFactor}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="55"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="DownSampleFactor" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:DoubleRangeRule>
+                                                    <rules:DoubleRangeRule.ValidRange>
+                                                        <rules:DoubleRangeChecker Maximum="4" Minimum="1" />
+                                                    </rules:DoubleRangeRule.ValidRange>
+                                                </rules:DoubleRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="LocalPlatesolver_Label" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblMaxObjects}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="55"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="MaxObjects" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </Grid>
+                        </StackPanel>
+                        <Grid Grid.Row="1" Margin="5,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="25" />
+                            </Grid.RowDefinitions>
+                            <ListView ItemsSource="{Binding DataContext.IndexFiles, ElementName=UC}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="Auto"
+                                            DisplayMemberBinding="{Binding}"
+                                            Header="{ns:Loc LblIndexFile}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <Button Grid.Row="1" Command="{Binding DataContext.DownloadIndexesCommand, ElementName=UC}">
+                                <Button.Content>
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDownloadMoreIndexFiles}" />
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+
+                <DataTemplate x:Key="Platesolve2Template">
+
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PS2_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPlatesolve2Directory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="PS2Location" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenPS2FileDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="12,10,12,0"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PS2_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblRegions}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="Regions" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="Platesolve3Template">
+                    <StackPanel DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}" Orientation="Vertical">
+                        <Grid Margin="0,6,0,6" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPlatesolve3Directory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="PS3Location" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenPS3FileDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="12,10,12,0"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="ASPSTemplate">
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASPS_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblASPSDirectory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="AspsLocation" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="3"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenASPSFileDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="12,10,12,0"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASPS_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSearchRadius}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SearchRadius" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="ASTAPTemplate">
+
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASTAP_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblASTAPDirectory}" />
+                            <TextBox
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="ASTAPLocation" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="3"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenASTAPFileDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="12,10,12,0"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </Button>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASTAP_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSearchRadius}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SearchRadius" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASTAP_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDownSampleFactor}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="DownSampleFactor" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="4" Minimum="0" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ASTAP_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMaxObjects}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="MaxObjects" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="TSXTemplate">
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="TSX_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTSXHost}" />
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Text="{Binding TheSkyXHost}" />
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="TSX_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTSXPort}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{Binding TheSkyXPort}" />
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="PinpointTemplate">
+
+
+                    <StackPanel
+                        DataContext="{Binding DataContext.ActiveProfile.PlateSolveSettings, ElementName=UC}"
+                        Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointCatType}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding DataContext.Dc3PoinPointCatalogs, ElementName=UC}"
+                                SelectedItem="{Binding PinPointCatalogType, Mode=TwoWay}" />
+                        </Grid>
+
+                        <Grid Margin="0,6,0,0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointCatalogRoot}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="PinPointCatalogRoot" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button
+                                Grid.Column="3"
+                                Width="40"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenPinPointCatalogDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="12,10,12,0"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    UseLayoutRounding="True" />
+                            </Button>
+                        </Grid>
+
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointMaxMagnitude}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                ToolTip="{ns:Loc LblPinPointMaxMagnitudeToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="PinPointMaxMagnitude" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="20" Minimum="2" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+
+
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointExpansion}" />
+                            <ninactrl:UnitTextBox
+                                Grid.Column="1"
+                                MinWidth="55"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                ToolTip="{ns:Loc LblPinPointExpansionToolTip}"
+                                Unit="%">
+                                <TextBox.Text>
+                                    <Binding Path="PinPointExpansion" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="80" Minimum="0" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </ninactrl:UnitTextBox>
+                        </Grid>
+
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointAllSkyApiKey}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Text="{Binding PinPointAllSkyApiKey}"
+                                ToolTip="{ns:Loc LblPinPointAllSkyApiKeyToolTip}" />
+                        </Grid>
+
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pinpoint_Label" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPinPointAllSkyApiHost}" />
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="130"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Text="{Binding PinPointAllSkyApiHost}"
+                                ToolTip="{ns:Loc LblPinPointAllSkyApiHostToolTip}" />
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+
+                <local:BlindSolverSettingsVisibilityConverter x:Key="BlindSolverSettingsVisibilityConverter" />
+                <local:PlateSolverSettingsTemplateSelector
+                    x:Key="PlateSolveSettingSelector"
+                    ASPSTemplate="{StaticResource ASPSTemplate}"
+                    ASTAPTemplate="{StaticResource ASTAPTemplate}"
+                    AstrometryNetTemplate="{StaticResource AstrometryNetTemplate}"
+                    LocalPlateSolverTemplate="{StaticResource LocalPlateSolverTemplate}"
+                    PinpointTemplate="{StaticResource PinpointTemplate}"
+                    Platesolve2Template="{StaticResource Platesolve2Template}"
+                    Platesolve3Template="{StaticResource Platesolve3Template}"
+                    TSXTemplate="{StaticResource TSXTemplate}" />
+            </Grid.Resources>
+            <GroupBox Margin="0,10,0,0" Header="{ns:Loc LblPlateSolveSettings}">
+                <ContentControl Content="{Binding PlateSolverType}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
+            </GroupBox>
+            <GroupBox
+                Grid.Column="1"
+                Margin="0,10,0,0"
+                Header="{ns:Loc LblBlindSolveSettings}">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BlindSolverSettingsVisibilityConverter}">
+                        <Binding Path="PlateSolverType" />
+                        <Binding Path="BlindSolverType" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+                <ContentControl Content="{Binding BlindSolverType}" ContentTemplateSelector="{StaticResource PlateSolveSettingSelector}" />
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

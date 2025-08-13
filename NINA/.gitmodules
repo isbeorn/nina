@@ -1,0 +1,8 @@
+[submodule "NINA/External"]
+	path = NINA/External
+	url = https://github.com/isbeorn/nina.external.git
+	branch = develop
+[submodule "NINA.Docs"]
+	path = NINA.Docs
+	url = https://github.com/isbeorn/nina.docs.git
+	branch = develop

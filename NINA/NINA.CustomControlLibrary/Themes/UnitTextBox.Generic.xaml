@@ -1,0 +1,68 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.CustomControlLibrary"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <Style TargetType="local:UnitTextBox">
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:UnitTextBox}">
+                    <Grid Width="{TemplateBinding Width}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="PART_TextBox"
+                            Grid.Column="0"
+                            Height="{TemplateBinding Height}"
+                            MaxWidth="{TemplateBinding MaxWidth}"
+                            MaxHeight="{TemplateBinding MaxHeight}"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Background="{TemplateBinding Background}"
+                            Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:UnitTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Right" />
+                        <TextBox
+                            x:Name="PART_SecondTextBox"
+                            Grid.Column="1"
+                            Height="{TemplateBinding Height}"
+                            MaxHeight="{TemplateBinding MaxHeight}"
+                            Padding="{TemplateBinding Padding}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            AcceptsTab="False"
+                            Background="{TemplateBinding Background}"
+                            IsReadOnly="True"
+                            IsTabStop="False"
+                            KeyboardNavigation.TabNavigation="None"
+                            Text="{Binding Unit, RelativeSource={RelativeSource AncestorType={x:Type local:UnitTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Left">
+                            <TextBox.Foreground>
+                                <SolidColorBrush Opacity="0.4" Color="{Binding Foreground.Color, RelativeSource={RelativeSource AncestorType={x:Type local:UnitTextBox}}}" />
+                            </TextBox.Foreground>
+                            <TextBox.BorderBrush>
+                                <SolidColorBrush Color="{Binding BorderBrush.Color, ElementName=PART_TextBox}" />
+                            </TextBox.BorderBrush>
+                        </TextBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

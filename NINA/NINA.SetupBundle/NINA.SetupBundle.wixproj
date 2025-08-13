@@ -1,0 +1,63 @@
+﻿<Project>
+  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <PropertyGroup>
+    <OutputName>NINASetupBundle</OutputName>
+    <OutputType>Bundle</OutputType>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <Name>NINA.SetupBundle</Name>
+    <Configurations>Debug;Release;SignedRelease</Configurations>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x86' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <SignOutput>True</SignOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SignedRelease|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <SignOutput>True</SignOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NINASetupBundle.wax" />
+    <Content Include="ninasplash-small.png" />
+    <Content Include="RtfTheme.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NINA.Setup\NINA.Setup.wixproj">
+      <Name>NINA.Setup</Name>
+      <Project>{35733d26-70e1-4ce8-a1fd-fb9b4c1a464c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <!--<Target Name="SignBundleEngine">
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundleEngine)&quot;" />
+  </Target>
+  <Target Name="SignBundle">
+    <Exec Command="signtool.exe sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 &quot;@(SignBundle)&quot;" />
+  </Target>-->
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="%LOCALAPPDATA%\Pandoc\pandoc.exe &quot;$(SolutionDir)RELEASE_NOTES.md&quot; -f markdown -t rtf -s -o &quot;$(SolutionDir)RELEASE_NOTES.rtf&quot;&#xD;&#xA;%LOCALAPPDATA%\Pandoc\pandoc.exe &quot;$(SolutionDir)RELEASE_NOTES.md&quot; -f markdown -t html -s -o &quot;$(SolutionDir)RELEASE_NOTES.html&quot; --template &quot;$(SolutionDir)md-template.html&quot; --metadata title=&quot;Nighttime Imaging 'N' Astronomy&quot;" Condition="'$(SolutionDir)' != '*Undefined*'" />
+  </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del $(SolutionDir)RELEASE_NOTES.rtf&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.pdb&quot; &quot;$(TargetDir)NINA.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Astrometry.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Astrometry.pdb&quot; &quot;$(TargetDir)NINA.Astrometry.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Core.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Core.pdb&quot; &quot;$(TargetDir)NINA.Core.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Equipment.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Equipment.pdb&quot; &quot;$(TargetDir)NINA.Equipment.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Image.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Image.pdb&quot; &quot;$(TargetDir)NINA.Image.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.MGEN.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.MGEN.pdb&quot; &quot;$(TargetDir)NINA.MGEN.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.PlateSolving.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Platesolving.pdb&quot; &quot;$(TargetDir)NINA.PlateSolving.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Profile.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Profile.pdb&quot; &quot;$(TargetDir)NINA.Profile.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Sequencer.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Sequencer.pdb&quot; &quot;$(TargetDir)NINA.Sequencer.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.WPF.Base.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.WPF.Base.pdb&quot; &quot;$(TargetDir)NINA.WPF.Base.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINACustomControlLibrary.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.CustomControlLibrary.pdb&quot; &quot;$(TargetDir)NINA.CustomControlLibrary.pdb&quot; /Y&#xD;&#xA;&#xD;&#xA;echo &quot;Copy NINA.Plugin.pdb to setup output&quot;&#xD;&#xA;copy &quot;$(SolutionDir)NINA\bin\$(ConfigurationName)\net8.0-windows\win-x64\NINA.Plugin.pdb&quot; &quot;$(TargetDir)NINA.Plugin.pdb&quot; /Y" Condition="'$(SolutionDir)' != '*Undefined*'" />
+  </Target>
+</Project>

@@ -1,0 +1,144 @@
+﻿<!--
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+<UserControl
+    x:Class="NINA.View.Sequencer.MiniSequencer.MiniSequenceItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:NINA.View.Sequencer.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Core.Enum;assembly=NINA.Core"
+    xmlns:local="clr-namespace:NINA.View.Sequencer.MiniSequencer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sequencer="clr-namespace:NINA.Sequencer"
+    xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    x:Name="UC"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/ProfileService.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/SVGDictionary.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Brushes.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/StaticResources/Converters.xaml" />
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ContentControl>
+        <ContentControl.Template>
+            <ControlTemplate>
+                <Grid x:Name="PART_Grid" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Viewbox
+                        Grid.Column="0"
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Center">
+                        <ContentPresenter Content="{Binding}" Style="{StaticResource ProgressPresenter}" />
+                    </Viewbox>
+                    <Path
+                        x:Name="PART_Icon"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Center"
+                        Data="{Binding Icon}"
+                        Fill="{StaticResource PrimaryBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                    <TextBlock
+                        x:Name="PART_Name"
+                        Grid.Column="2"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Name}" />
+                    <ContentPresenter
+                        x:Name="PART_Content"
+                        Grid.Column="4"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        Content="{Binding SequenceItemContent, ElementName=UC}">
+                        <ContentPresenter.Resources>
+                            <Style BasedOn="{x:Null}" TargetType="{x:Type TextBlock}" />
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                    <ContentPresenter
+                        x:Name="PART_Progress"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Grid.ColumnSpan="4"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        Content="{Binding SequenceItemProgressContent, ElementName=UC}">
+                        <ContentPresenter.Resources>
+                            <Style BasedOn="{x:Null}" TargetType="{x:Type TextBlock}" />
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.RUNNING}">
+                        <Setter TargetName="PART_Grid" Property="Background" Value="{StaticResource SecondaryBrush}" />
+                        <Setter TargetName="PART_Name" Property="FontWeight" Value="Bold" />
+                        <Setter TargetName="PART_Icon" Property="Fill" Value="{StaticResource ButtonForegroundBrush}" />
+                        <Setter TargetName="PART_Name" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.FontWeight" Value="Bold" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.FontWeight" Value="Bold" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.CREATED}">
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.FINISHED}">
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.FAILED}">
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Setter TargetName="PART_Grid" Property="Background" Value="{StaticResource NotificationErrorBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.SKIPPED}">
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PART_Progress" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                        <Setter TargetName="PART_Content" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Status}" Value="{x:Static enum:SequenceEntityStatus.DISABLED}">
+                        <Setter TargetName="PART_Progress" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PART_Content" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PART_Name" Property="TextDecorations" Value="Strikethrough" />
+
+                        <Setter TargetName="PART_Icon" Property="Opacity" Value="0.4" />
+                        <Setter TargetName="PART_Progress" Property="Opacity" Value="0.4" />
+                        <Setter TargetName="PART_Content" Property="Opacity" Value="0.4" />
+                        <Setter TargetName="PART_Name" Property="Opacity" Value="0.4" />
+                    </DataTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </ContentControl.Template>
+    </ContentControl>
+</UserControl>

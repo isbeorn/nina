@@ -1,0 +1,146 @@
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Astrometry;
+using NINA.Astrometry.RiseAndSet;
+using NUnit.Framework;
+using NUnit.Framework.Legacy;
+using OxyPlot.Axes;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static NINA.Astrometry.AstroUtil;
+
+namespace NINA.Test {
+
+    [TestFixture]
+    public class NighttimeDataTest {
+        private DateTime date;
+        private DateTime referenceDate;
+        private double latitude;
+        private double longitude;
+        private RiseAndSetEvent twilightRiseAndSet;
+        private RiseAndSetEvent nauticalTwilightRiseAndSet;
+        private RiseAndSetEvent civilTwilightRiseAndSet;
+        private RiseAndSetEvent moonRiseAndSet;
+        private RiseAndSetEvent sunRiseAndSet;
+        private MoonPhase moonPhase;
+        private double? illumination;
+
+        [SetUp]
+        public void Setup() {
+            date = new DateTime(2020, 5, 5, 14, 0, 0);
+            referenceDate = NighttimeCalculator.GetReferenceDate(date);
+            latitude = 41.0;
+            longitude = 70.3;
+            civilTwilightRiseAndSet = AstroUtil.GetCivilNightTimes(referenceDate, latitude, longitude, 0);
+            nauticalTwilightRiseAndSet = AstroUtil.GetNauticalNightTimes(referenceDate, latitude, longitude, 0);
+            twilightRiseAndSet = AstroUtil.GetNightTimes(referenceDate, latitude, longitude, 0);
+            moonRiseAndSet = AstroUtil.GetMoonRiseAndSet(referenceDate, latitude, longitude, 0);
+            sunRiseAndSet = AstroUtil.GetSunRiseAndSet(referenceDate, latitude, longitude, 0);
+            moonPhase = MoonPhase.FullMoon;
+            illumination = 100.0;
+        }
+
+        public NighttimeData GetData() {
+            return new NighttimeData(date, referenceDate, moonPhase, illumination, twilightRiseAndSet, nauticalTwilightRiseAndSet, sunRiseAndSet, moonRiseAndSet, civilTwilightRiseAndSet);
+        }
+
+        public List<OxyPlot.DataPoint> GetExpectedTwilightDuration() {
+            if (twilightRiseAndSet == null) {
+                return new List<OxyPlot.DataPoint>();
+            }
+            var twilightSet = twilightRiseAndSet.Set.Value > twilightRiseAndSet.Rise.Value ? twilightRiseAndSet.Set.Value.AddDays(-1) : twilightRiseAndSet.Set.Value;
+            if (sunRiseAndSet == null) {
+                return new List<OxyPlot.DataPoint>() {
+                    new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90),
+                    new OxyPlot.DataPoint(Axis.ToDouble(twilightRiseAndSet.Rise), 90) };
+            }
+            var sunRiseSet = sunRiseAndSet.Set.Value > sunRiseAndSet.Rise.Value ? sunRiseAndSet.Set.Value.AddDays(-1) : sunRiseAndSet.Set.Value;
+            return new List<OxyPlot.DataPoint>() {
+                new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90),
+                new OxyPlot.DataPoint(Axis.ToDouble(sunRiseSet), 90),
+                new OxyPlot.DataPoint(Axis.ToDouble(sunRiseSet), 0),
+                new OxyPlot.DataPoint(Axis.ToDouble(sunRiseAndSet.Rise), 0),
+                new OxyPlot.DataPoint(Axis.ToDouble(sunRiseAndSet.Rise), 90),
+                new OxyPlot.DataPoint(Axis.ToDouble(twilightRiseAndSet.Rise), 90) };
+        }
+
+        public List<OxyPlot.DataPoint> GetExpectedNightDuration() {
+            if (twilightRiseAndSet == null) {
+                return new List<OxyPlot.DataPoint>();
+            }
+            var twilightSet = twilightRiseAndSet.Set.Value > twilightRiseAndSet.Rise.Value ? twilightRiseAndSet.Set.Value.AddDays(-1) : twilightRiseAndSet.Set.Value;
+            return new List<OxyPlot.DataPoint>() {
+                new OxyPlot.DataPoint(Axis.ToDouble(twilightRiseAndSet.Rise), 90),
+                new OxyPlot.DataPoint(Axis.ToDouble(twilightSet), 90) };
+        }
+
+        [Test]
+        public void AllSetTest() {
+            var data = GetData();
+            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
+            ClassicAssert.AreEqual(illumination, data.Illumination);
+            ClassicAssert.AreEqual(date, data.Date);
+            ClassicAssert.AreEqual(referenceDate, data.ReferenceDate);
+            ClassicAssert.AreEqual(twilightRiseAndSet, data.TwilightRiseAndSet);
+            ClassicAssert.AreEqual(moonRiseAndSet, data.MoonRiseAndSet);
+            ClassicAssert.AreEqual(sunRiseAndSet, data.SunRiseAndSet);
+            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
+            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+        }
+
+        [Test]
+        public void MoonPhaseChangedTest() {
+            moonPhase = MoonPhase.LastQuarter;
+            var data = GetData();
+            ClassicAssert.AreEqual(moonPhase, data.MoonPhase);
+        }
+
+        [Test]
+        public void IlluminationChangedTest() {
+            illumination = null;
+            var data = GetData();
+            ClassicAssert.IsFalse(data.Illumination.HasValue);
+        }
+
+        [Test]
+        public void TwilightNotSetTest() {
+            twilightRiseAndSet = null;
+            var data = GetData();
+            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
+            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+        }
+
+        [Test]
+        public void SunriseNotSetTest() {
+            sunRiseAndSet = null;
+            var data = GetData();
+            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
+            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+        }
+
+        [Test]
+        public void TwilightAndSunriseNotSetTest() {
+            twilightRiseAndSet = null;
+            sunRiseAndSet = null;
+            var data = GetData();
+            CollectionAssert.AreEqual(GetExpectedNightDuration(), data.NightDuration.ToImmutableList());
+            CollectionAssert.AreEqual(GetExpectedTwilightDuration(), data.TwilightDuration.ToImmutableList());
+        }
+    }
+}
