@@ -14,20 +14,21 @@
 
 using FluentAssertions;
 using Moq;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem.Utility;
-using NINA.Core.Utility;
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
+using NINA.Sequencer.SequenceItem.Utility;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using NINA.Core.Model;
-using NINA.Profile;
 
 namespace NINA.Test.Sequencer.SequenceItem.Utility {
 
@@ -86,6 +87,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 }
             );
 
+            //var sut = new WaitUntilAboveHorizon(profileServiceMock.Object);
             sut.AttachNewParent(parentMock.Object);
 
             sut.Data.Coordinates.Coordinates.RA.Should().Be(coordinates.RA);
@@ -99,6 +101,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, mockDateProvider.Object);
 
             sut.Data.Coordinates.Coordinates = coordinates;
+            sut.Data.Offset = 0;
 
             using (var cts = new CancellationTokenSource()) {
                 cts.CancelAfter(1000);
@@ -119,6 +122,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, mockDateProvider.Object);
 
             sut.Data.Coordinates.Coordinates = coordinates;
+            sut.Data.Offset = 0;
 
             using (var cts = new CancellationTokenSource()) {
                 cts.CancelAfter(1000);
@@ -142,6 +146,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, mockDateProvider.Object);
 
             sut.Data.Coordinates.Coordinates = coordinates;
+            sut.Coordinates = sut.Data.Coordinates;
+            sut.Data.Offset = 0;
 
             using (var cts = new CancellationTokenSource()) {
                 cts.CancelAfter(1000);
@@ -168,6 +174,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, mockDateProvider.Object);
 
             sut.Data.Coordinates.Coordinates = coordinates;
+            sut.Data.Offset = 0;
 
             await sut.Run(default, default);
 
