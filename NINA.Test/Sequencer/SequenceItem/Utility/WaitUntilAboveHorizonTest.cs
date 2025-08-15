@@ -87,11 +87,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
                 }
             );
 
-            //var sut = new WaitUntilAboveHorizon(profileServiceMock.Object);
             sut.AttachNewParent(parentMock.Object);
 
-            sut.Data.Coordinates.Coordinates.RA.Should().Be(coordinates.RA);
-            sut.Data.Coordinates.Coordinates.Dec.Should().Be(coordinates.Dec);
+            sut.Coordinates.Coordinates.RA.Should().Be(coordinates.RA);
+            sut.Coordinates.Coordinates.Dec.Should().Be(coordinates.Dec);
         }
 
         [Test]
