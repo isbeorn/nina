@@ -177,7 +177,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                                 CanPark = Dome.CanPark,
                                 CanFindHome = Dome.CanFindHome,
                                 AtPark = Dome.AtPark,
-                                AtHome = Dome.AtPark,
+                                AtHome = Dome.AtHome,
                                 DriverFollowing = Dome.DriverFollowing,
                                 Slewing = Dome.Slewing,
                                 Azimuth = Dome.Azimuth,
