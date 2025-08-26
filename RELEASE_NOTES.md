@@ -22,6 +22,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ### **Device Management**
 - **Device Chooser Enhancements**  
   - A stored device ID that is currently unavailable will now appear as an "Offline Device" instead of "No Device," differentiating between having no device selected and an unavailable saved device.  
+  - On upgrad to this version you should ensure that each device is still selected properly as the device ID handling has changed for some devices.
 - **ZWO EAF Native Driver**  
   - The ZWO EAF is now available as a native driver.  
 - **New SVBony Camera Driver**
