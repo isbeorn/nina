@@ -67,8 +67,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 try {
                     var asiCameras = ASICameras.Count;
                     Logger.Info($"Found {asiCameras} ASI Cameras");
-                    for (int i = 0; i < asiCameras; i++) {
-                        var cam = ASICameras.GetCamera(i, profileService, exposureDataFactory);
+                    for (int cameraIndex = 0; cameraIndex < asiCameras; cameraIndex++) {
+                        var cam = ASICameras.GetCamera(cameraIndex, profileService, exposureDataFactory);
                         if (!string.IsNullOrEmpty(cam.Name)) {
                             Logger.Trace(string.Format("Adding {0}", cam.Name));
                             devices.Add(cam);
