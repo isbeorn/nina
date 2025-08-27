@@ -34,7 +34,7 @@
     
 
     <!--https://learn.microsoft.com/en-us/windows/win32/msi/reinstallmode-->
-    <Property Id="REINSTALLMODE" Value="dmus" />
+    <Property Id="REINSTALLMODE" Value="amus" />
         
     <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
     <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
