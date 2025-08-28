@@ -50,12 +50,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.exposureDataFactory = exposureDataFactory;
             this.sdk = sdk;
             this.internalId = deviceInfo.id;
-            if (sdk is ToupTekAlike.AltairSDKWrapper || sdk is ToupTekAlike.ToupTekSDKWrapper) {
-                // Altair cams hava a distinct id in contrast to other touptek brands and the original touptek brand doesn't need the category filter
-                this.Id = deviceInfo.id;
-            } else {
-                this.Id = Category + "_" + deviceInfo.id;
-            }
+            this.Id = Category + "_" + deviceInfo.id;
 
             this.Name = deviceInfo.displayname;
 
