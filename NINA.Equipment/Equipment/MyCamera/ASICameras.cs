@@ -23,11 +23,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public static int Count => ASICameraDll.GetNumOfConnectedCameras();
 
-        public static ASICamera GetCamera(int cameraId, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
-            if (cameraId >= Count || cameraId < 0)
+        public static ASICamera GetCamera(int cameraIndex, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
+            if (cameraIndex >= Count || cameraIndex < 0)
                 throw new IndexOutOfRangeException();
 
-            return new ASICamera(cameraId, profileService, exposureDataFactory);
+            return new ASICamera(cameraIndex, profileService, exposureDataFactory);
         }
     }
 }

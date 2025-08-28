@@ -36,9 +36,14 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 throw new Exception($"EAF: Unable to get focuser properties for EAF at index {idx}: {rv}");
             }
 
+            focuserAlias = GetAlias();
+
+            Logger.Debug($"EAF: Focuser ID/Alias: {focuserAlias}");
+
             Name = eafInfo.Name;
 
             this.profileService = profileService;
+            SetId();
         }
         public bool IsMoving { 
             get {
@@ -123,34 +128,19 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 }
             }
         }
+        public string Id { get; private set; }
+        private void SetId() {
+            Id = $"{Category}_{Name}_{FocuserAlias}";
+        }
 
-        public string Id => string.IsNullOrEmpty(FocuserAlias) ? $"{Name} #{id}" : Name;        
-        
-        // ZWO device alias is limited to 8 ASCII characters. Initialize with something longer to know we haven't yet asked the device for it
-        private string focuserAlias = "%%UNINITIALIZED%%";
+        private string focuserAlias;
 
         public string FocuserAlias {
             get {
-                if (focuserAlias.Equals("%%UNINITIALIZED%%")) {
-                    // We must connect to the focuser to get its ID. Quickly do this if we are not (such as during building the Chooser list)
-                    if (!Connected) {
-                        ASIEAF.Open(eafInfo.ID);
-                    }
-
-                    focuserAlias = GetAlias();
-
-                    if (!Connected) {
-                        ASIEAF.Close(eafInfo.ID);
-                    }
-
-                    Logger.Debug($"EAF: Focuser ID/Alias: {focuserAlias}");
-                }
-
                 return focuserAlias;
             }
 
             set {
-
                 Logger.Debug($"EAF: Setting Focuser ID/Alias to: {value}");
 
                 ASIEAF.SetID(eafInfo.ID, value);
@@ -158,6 +148,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
                 _ = ASIEAF.GetProperty(eafInfo.ID, out eafInfo);
                 Name = eafInfo.Name;
+                SetId();
 
                 Logger.Info($"EAF: Focuser ID/Alias set to: {focuserAlias}");
 
