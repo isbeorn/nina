@@ -914,7 +914,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     var domeInfo = this.domeMediator.GetInfo();
                     if (domeInfo.Connected && domeInfo.CanSetAzimuth) {
                         if (this.domeMediator.IsFollowingScope || this.profileService.ActiveProfile.DomeSettings.SyncSlewDomeWhenMountSlews) {
-                            var targetSideOfPier = Astrometry.MeridianFlip.ExpectedPierSide(coords.Coordinates, Angle.ByHours(this.TelescopeInfo.SiderealTime));
+                            var targetSideOfPier = TargetSideOfPierForCoordinates(coords.Coordinates);
                             domeSyncTask = Task.Run(async () => {
                                 try {
                                     return await this.domeMediator.SyncToScopeCoordinates(coords.Coordinates, targetSideOfPier, timeoutCts.Token);
@@ -949,6 +949,17 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
+        }
+
+        private PierSide TargetSideOfPierForCoordinates(Coordinates coordinates) {
+            try {
+                if (Telescope?.Connected == true) {
+                    return Telescope.DestinationSideOfPier(coordinates);
+                }
+            } catch (Exception e) {
+                Logger.Warning($"Failed to get DestinationSideOfPier from telescope. Falling back to default calculation. Error: {e.Message}");
+            }
+            return Astrometry.MeridianFlip.ExpectedPierSide(coordinates, Angle.ByHours(this.TelescopeInfo.SiderealTime));
         }
 
         [RelayCommand]
