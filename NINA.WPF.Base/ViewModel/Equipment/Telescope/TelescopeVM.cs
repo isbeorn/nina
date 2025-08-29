@@ -953,7 +953,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         private PierSide TargetSideOfPierForCoordinates(Coordinates coordinates) {
             try {
-                if (Telescope?.Connected == true) {
+                if (Telescope?.Connected == true && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                     return Telescope.DestinationSideOfPier(coordinates);
                 }
             } catch (Exception e) {
