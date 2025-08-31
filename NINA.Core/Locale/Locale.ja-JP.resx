@@ -7279,4 +7279,10 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>Failed to prepare image for display: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Day Rollover Time</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+  </data>
 </root>
