@@ -225,14 +225,31 @@
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblTimeOffset}"
                             ToolTip="{ns:Loc LblTimeOffsetTooltip}" />
-                        <TextBox
+                        <ninactrl:UnitTextBox
                             MinWidth="40"
                             Margin="5,0,0,0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            Text="{Binding MinutesOffset}" />
-                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                            Text="{Binding MinutesOffset}"
+                            Unit="m" />
+                    </StackPanel>
+                    <TextBlock
+                        Margin="5,0,5,0"
+                        VerticalAlignment="Center"
+                        Text="|" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDayRolloverTime}"
+                            ToolTip="{ns:Loc LblDayRolloverTimeTooltip}" />
+                        <TextBlock
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding RolloverTime, StringFormat={}{0:HH}:{0:mm}:{0:ss}}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
