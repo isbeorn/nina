@@ -568,9 +568,9 @@ Filtro: {3}</value>
     <value>Cambiar</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>La secuencia para el (los) objetivo(s) '{0}' se ha modificado desde la última vez que se guardó (o aún no se ha guardado).
+    <value>La secuencia ha sido modificada desde la última vez que fue guardada (cambia a {0}).
         
-¿Quieres cerrar la secuencia y perder los cambios de todos modos?</value>
+¿Quieres continuar y perder los cambios de todos modos?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Cerrando secuencia modificada</value>
@@ -1280,7 +1280,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
     <value>Habilita escalado de bits</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guardar imágenes de 10/12/14 bits con escalado de 16 bits. (Solo relevante para las cámaras Altair, Omegon, SVBony, RisingCam y ToupTek, al usar el controlador nativo)</value>
+    <value>Guarda imágenes de 8, 10, 12 y 14 bits con escalado a 16 bits. Solo es aplicable a los controladores nativos de Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony y ToupTek.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Habilitado</value>
@@ -1442,7 +1442,7 @@ Cuando este disparador está desactivado, la aplicación se saltará "empezar ex
     <value>Se ha conectado un panel de flats pero la tapa no está abierta.</value>
   </data>
   <data name="LblFlatDeviceCover" xml:space="preserve">
-    <value>Cubierta</value>
+    <value>Tapa</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
     <value>Actualmente</value>
@@ -2596,7 +2596,7 @@ HFR calculada: {2}
     <value>Conversor Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Especifica qué herramienta se usará para la conversion de archivos RAW de DSLR</value>
+    <value>Los archivos raw de la DSLR se convierten con LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Read Noise en e</value>
@@ -2689,10 +2689,10 @@ HFR calculada: {2}
     <value>Volver al Objetivo</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
-    <value>Retomar Autoguiado</value>
+    <value>Reemprender Autoguiado</value>
   </data>
   <data name="LblResumeGuiding" xml:space="preserve">
-    <value>Retomar Guiado</value>
+    <value>Reemprender Guiado</value>
   </data>
   <data name="LblResumeSettleTime" xml:space="preserve">
     <value>Tiempo de Espera tras reanudar</value>
@@ -4101,7 +4101,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Tiempo de espera del AE en la secuencia</value>
   </data>
   <data name="LblAutoFocusTimeoutTooltip" xml:space="preserve">
-    <value>Cantidad de tiempo, en segundos, que se esperará para hacer autoenfoque durante una secuencia antes de cancelar para continuar</value>
+    <value>Cantidad de tiempo, en segundos, que se esperará para hacer autoenfoque durante una secuencia antes de cancelarlo para continuar</value>
   </data>
   <data name="LblMetaGuideLowIntensityStopGuiding" xml:space="preserve">
     <value>Guiado detenido debido a la baja intensidad de las estrellas. Puede haber nubes.</value>
@@ -4314,10 +4314,10 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Cambiar filtro</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Description" xml:space="preserve">
-    <value>Cierra la cubierta del panel de flats</value>
+    <value>Cierra la tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_CloseCover_Name" xml:space="preserve">
-    <value>Cerrar cubierta de panel de flats</value>
+    <value>Cerrar tapa de panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description" xml:space="preserve">
     <value>Mueve el enfocador a la posición absoluta dada</value>
@@ -4515,7 +4515,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Reanuda el guiado si había sido interrumpido previamente</value>
   </data>
   <data name="Lbl_SequenceTrigger_Guider_RestoreGuidings_Name" xml:space="preserve">
-    <value>Retomar Guiado</value>
+    <value>Reemprender Guiado</value>
   </data>
   <data name="LblEvaluteAfterExposures" xml:space="preserve">
     <value>Evaluar tras las exposiciones</value>
@@ -4599,7 +4599,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Crea una secuencia para el conjunto de objetivos planificados</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeManyExposures_Description" xml:space="preserve">
-    <value>Toma exposiciones en la cantidad, duración, ganancia y offset dados. Los activadores y condiciones se evalúan entre las exposiciones.</value>
+    <value>Toma exposiciones en la cantidad, duración, ganancia y offset establecidos. Los activadores y condiciones se evalúan entre las exposiciones.</value>
   </data>
   <data name="Lbl_SequenceItem_Imaging_TakeManyExposures_Name" xml:space="preserve">
     <value>Tomar muchas exposiciones</value>
@@ -4614,10 +4614,10 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Guardar secuencia completa en un nuevo archivo JSON</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Description" xml:space="preserve">
-    <value>Abre la cubierta del panel de flats</value>
+    <value>Abre la tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_OpenCover_Name" xml:space="preserve">
-    <value>Abrir cubierta del panel de flats</value>
+    <value>Abrir tapa del panel de flats</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SetBrightness_Description" xml:space="preserve">
     <value>Establece el brillo del panel de flats al valor especificado</value>
@@ -5369,7 +5369,7 @@ Para condiciones que cambian rápidamente, un menor tamaño de muestra ayudará 
     <value>Mueve el rotador al ángulo mecánico especificado</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotar por ángulo mecánico</value>
+    <value>Rotar a ángulo mecánico</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridiano</value>
@@ -7314,6 +7314,9 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializando</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
     <value>Tendencia HFR por filtro</value>
   </data>
@@ -7321,12 +7324,6 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
     <value>Cuando está desactivada, la tendencia del HFR se evalúa con una combinación de todos los filtros.
 Esto puede ayudar a que el activador del autofocus se produzca antes, en particular cuando fotografiamos con frecuentes cambios de filtro y ópticas sensibles a la temperatura en un ambiente en que la misma cambie rápidamente.
 Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea pequeña.</value>
-  </data>
-  <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
-  </data>
-  <data name="LblSlewFailed" xml:space="preserve">
-    <value>Ha fallado el desplazamiento</value>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Número de dispositivo</value>
@@ -7345,25 +7342,28 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
     <value>Tipo de servicio</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
-  <data name="LblCompressionZStandard" xml:space="preserve">
-    <value>ZStandard</value>
-  </data>
-  <data name="LblTransitTime" xml:space="preserve">
-    <value>Tiempo de tránsito</value>
-  </data>
-  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>No se ha podido guardar la imagen. Es posible que el destino no tenga espacio libre en disco.</value>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Ha fallado el desplazamiento</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
     <value>Norte</value>
   </data>
-  <data name="LblSouth" xml:space="preserve">
-    <value>Sur</value>
-  </data>
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>Sur</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
   <data name="LblCopyURL" xml:space="preserve">
     <value>Copy URL</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>No se ha podido guardar la imagen. Es posible que el destino no tenga espacio libre en disco.</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Tiempo de tránsito</value>
   </data>
 </root>

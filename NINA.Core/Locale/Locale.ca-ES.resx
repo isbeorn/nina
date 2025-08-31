@@ -572,9 +572,9 @@ capaç de compensar les variacions de la temperatura ambient</value>
     <value>Canviar</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>La seqüència de l'objectiu(s) "{0}" s'ha modificat des que es va desar per darrera vegada (o encara no s'ha desat).
+    <value>La seqüència s'ha modificat des de l'última vegada que es va desar (canvia a {0}).
 
-Voleu tancar la seqüència i perdre els canvis de totes maneres?</value>
+Voleu continuar i perdre els canvis de totes maneres?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Tancant la seqüència seleccionada</value>
@@ -1285,7 +1285,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
     <value>Activar escalat de bit</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Guarda imatges de 10/12/14 bits amb escala a 16 bits. (Només rellevant per a les càmeres Altair, Omegon, SVBony, RisingCam i ToupTek quan s'utilitza el controlador natiu)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Activat</value>
@@ -2600,7 +2600,7 @@ HFR calculat: {2}    </value>
     <value>Convertidor fitxers Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Especifica quina eina s'ha d'utilitzar per a la conversió de fitxers en format DSLR</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Soroll de lectura en e</value>
@@ -5372,7 +5372,7 @@ Per a condicions de canvi sobtat, una mida de mostra més petita ajudarà a resp
     <value>Mou el rotador a l’angle mecànic especificat</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotar l'angle mecànic</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridià</value>
@@ -7318,6 +7318,9 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicialització</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
     <value>Tendència HFR per filtre</value>
   </data>
@@ -7325,12 +7328,6 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
     <value>Quan està desactivada, la tendència HFR s'avalua en tots els filtres combinats.
 Això pot ajudar a activar l'enfocament automàtic abans, sobretot quan es fan imatges amb canvis de filtre freqüents i una òptica sensible a la temperatura, en una temperatura ambient que canvia ràpidament.
 Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vostra configuració siguin petites.</value>
-  </data>
-  <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
-  </data>
-  <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Número de dispositiu</value>
@@ -7349,25 +7346,28 @@ Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vos
     <value>Tipus de servei</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
-  <data name="LblCompressionZStandard" xml:space="preserve">
-    <value>ZSstandar</value>
-  </data>
-  <data name="LblTransitTime" xml:space="preserve">
-    <value>Temps de transició</value>
-  </data>
-  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
     <value>Nord</value>
   </data>
-  <data name="LblSouth" xml:space="preserve">
-    <value>Sud</value>
-  </data>
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>Sud</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZSstandar</value>
+  </data>
   <data name="LblCopyURL" xml:space="preserve">
     <value>Copy URL</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Temps de transició</value>
   </data>
 </root>

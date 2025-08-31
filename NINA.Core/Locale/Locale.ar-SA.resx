@@ -576,9 +576,9 @@ Dec: {1}</value>
     <value>تغيير</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>تم تعديل برنامج تصوير الهدف ''{0}' منذ أن تم حفظه آخر مرة (أو لم يتم حفظه بعد).
+    <value>The sequence has been modified since it was last saved (changes to {0}).
         
-هل تريد إغلاق برنامج التصوير وفقدان التغييرات على أية حال؟</value>
+Do you want to continue and lose the changes anyway?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>إغلاق برنامج التصوير المعدل</value>
@@ -1289,7 +1289,7 @@ Dec: {1}</value>
     <value>تمكين تحجيم البت</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>حفظ صور 10/12/14 بت بالتحجيم إلى 16 بت. (فقط ذات صلة بكاميرات Altair و Omegon و SVBony و RisingCam و ToupTek عند استخدام المشغل الأصلي)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>تمكين</value>
@@ -2605,7 +2605,7 @@ HFR المحسوب: {2}
     <value>محول للصور من نوع Raw</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>حدد الأداة التي ينبغي استخدامها لتحويل ملفات raw الكاميرا الرقمية</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>قراءة الشوشرة في e</value>
@@ -5377,7 +5377,7 @@ For quickly changing conditions a smaller sample size will help to respond more 
     <value>Moves the rotator to the specified mechanical angle</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Rotate by mechanical angle</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Meridian</value>
@@ -7322,20 +7322,17 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
     <value>HFR trend per filter</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>When disabled, the HFR trend is evaluated across all filters combined. 
+    <value>When disabled, the HFR trend is evaluated across all filters combined.
 This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
-and a temperature sensitive optics on a quickly changing ambient temperature. 
+and a temperature sensitive optics on a quickly changing ambient temperature.
 Note: This mode requires that HFR differences between filters in your setup are small.</value>
-  </data>
-  <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
-  </data>
-  <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Device Number</value>
@@ -7354,25 +7351,28 @@ Note: This mode requires that HFR differences between filters in your setup are 
     <value>Service Type</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
-  <data name="LblCompressionZStandard" xml:space="preserve">
-    <value>ZStandard</value>
-  </data>
-  <data name="LblTransitTime" xml:space="preserve">
-    <value>Transit time</value>
-  </data>
-  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
     <value>North</value>
   </data>
-  <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
-  </data>
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
   <data name="LblCopyURL" xml:space="preserve">
     <value>Copy URL</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Transit time</value>
   </data>
 </root>

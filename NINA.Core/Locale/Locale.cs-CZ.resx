@@ -571,9 +571,9 @@ Filtr: {3}</value>
     <value>Změna</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>Pořadí cíle(ů) v sekvenci '{0}'  bylo od posledního uložení změněno (nebo ještě nebylo uloženo).
+    <value>Sekvence byla od posledního uložení změněna (změny v {0}).
         
-Chcete sekvenci zavřít a o změny tak přijít?</value>
+Chcete pokračovat a změny přesto ztratit?</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>Uzavření změněné sekvence</value>
@@ -1282,7 +1282,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
     <value>Povolit bitové měřítko</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>10/12/14 bit obraz je rozšířen na 16 bitů a uložen. (Pouze pro kamery Altair, Omegon, SVBony, RisingCam, ToupTek, s nativními ovladači)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>Povoleno</value>
@@ -2599,7 +2599,7 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Raw konvertor</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Určí, který nástroj má být použit pro převod souborů DSLR raw</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>Čtecí šum v e</value>
@@ -5374,7 +5374,7 @@ Menší číslo pomůže rychleji reagovat na změnu ohniska, například u tepl
     <value>Přesune rotátor do zadaného mechanického úhlu</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>Otočit o mechanický úhel</value>
+    <value>Otočit na mechanický úhel</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>Poledník</value>
@@ -7319,20 +7319,17 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializace</value>
   </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
     <value>Trend HFR podle filtru</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-    <value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady. 
+    <value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady.
 To může pomoci spustit automatické zaostřování dříve, zejména při snímání s častými změnami filtrů
-a optikou citlivou na teplotu v rychle se měnící okolní teplotě. 
+a optikou citlivou na teplotu v rychle se měnící okolní teplotě.
 Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastavení byly malé.</value>
-  </data>
-  <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
-  </data>
-  <data name="LblSlewFailed" xml:space="preserve">
-    <value>Selhání pohybu</value>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Číslo Zařízení</value>
@@ -7351,25 +7348,28 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
     <value>Typ Služby</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
-  <data name="LblCompressionZStandard" xml:space="preserve">
-    <value>ZStandard</value>
-  </data>
-  <data name="LblTransitTime" xml:space="preserve">
-    <value>Čas přechodu</value>
-  </data>
-  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Selhání pohybu</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
     <value>Sever</value>
   </data>
-  <data name="LblSouth" xml:space="preserve">
-    <value>Jih</value>
-  </data>
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>Jih</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
   <data name="LblCopyURL" xml:space="preserve">
     <value>Copy URL</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>Čas přechodu</value>
   </data>
 </root>

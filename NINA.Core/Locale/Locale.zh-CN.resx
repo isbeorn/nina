@@ -576,8 +576,8 @@
     <value>修改</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>目标 {0} 的序列是一个从未保存的序列，或者设置与上次保存时不同。
-你希望直接关闭本序列么？</value>
+    <value>本序列自上次保存后有修改 ({0} 已改变)
+确定要放弃所有改动并直接关闭？</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
     <value>关闭已修改的序列</value>
@@ -1288,7 +1288,7 @@
     <value>开启位扩增</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>将10/12/14位图像扩展至16位后保存。(仅支持使用原生驱动的Altair、Omegon、SVBony、RisingCam和ToupTek相机)</value>
+    <value>Save 8/10/12/14 bit images with scaling to 16 bits. Relevant only for native Altair, Canon, Moravian, Nikon, Omegon, RisingCam, SVBony and ToupTek drivers.</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
     <value>已启用</value>
@@ -1783,7 +1783,7 @@
     <value>ID</value>
   </data>
   <data name="LblIllumination" xml:space="preserve">
-    <value>光照</value>
+    <value>月相</value>
   </data>
   <data name="LblImage" xml:space="preserve">
     <value>图像</value>
@@ -2435,7 +2435,7 @@
     <value>星图偏好设置</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Import the currently selected planetarium object to update name and coordinates</value>
+    <value>从星图软件中导入选中的天体对象，更新以下名称和坐标信息</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>来自选定目标的坐标</value>
@@ -2600,7 +2600,7 @@
     <value>Raw格式转换器</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>指定应该使用哪个工具进行DSLR RAW转换</value>
+    <value>DSLR raw files are converted with LibRaw.</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
     <value>读出噪声（e）</value>
@@ -5373,7 +5373,7 @@
     <value>将旋转器转到指定的机械角度</value>
   </data>
   <data name="Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Name" xml:space="preserve">
-    <value>旋转到指定角度</value>
+    <value>Rotate to mechanical angle</value>
   </data>
   <data name="LblMeridian" xml:space="preserve">
     <value>中天</value>
@@ -6221,7 +6221,7 @@
     <value>任意</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
-    <value>任意持续时间</value>
+    <value>任意可见时间</value>
   </data>
   <data name="LblFromTime" xml:space="preserve">
     <value>从</value>
@@ -6663,7 +6663,7 @@
     <value>位置同步</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>关键词</value>
+    <value>提示</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
     <value>同步到应用程序</value>
@@ -6925,14 +6925,14 @@
     <value>设定使用 HTTP 或 HTTPS 进行 ASCOM Alpaca 设备搜寻 (默认：关闭)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>使用IPv4</value>
+    <value>使用 IPv4</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
     <value>使用IPv4来搜寻 ASCOM Alpaca 设备(默认：开启)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>使用IPv6</value>
+    <value>使用 IPv6</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
@@ -7179,144 +7179,147 @@
     <value>Civil dawn</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>天窗未打开时不要解除停放</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>当圆顶天窗或屋顶未打开时，无法解除停放</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>如果天窗或屋顶状态处于：已关闭、关闭中、打开中或错误时，拒绝解除停放支架。 只有在天窗或屋顶报告已打开状态时才允许解除停放</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>你所在的位置今天没有民用晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>你所在的位置今天没有民用昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>你所在的位置今天没有天文晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>你所在的位置今天没有天文昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>你所在的位置今天没有航海晨光。</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>你所在的位置今天没有航海昏影。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>你所在的位置今天没有日出。</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>你所在的位置今天没有日落。</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
-    <value>Unable to connect to {0}</value>
+    <value>无法连接到 {0}</value>
     <comment>Parameters: {0}=Url or device etc</comment>
   </data>
   <data name="LblCameraNoSupport16bit" xml:space="preserve">
-    <value>Camera does not support 16 bit mode</value>
+    <value>相机不支持16位</value>
   </data>
   <data name="LblExposureInProgress" xml:space="preserve">
-    <value>Another exposure still in progress. Cancel it to start another.</value>
+    <value>某次曝光仍在进行中。取消以开始新的曝光。</value>
   </data>
   <data name="LblFailedToConnectDevice" xml:space="preserve">
-    <value>Failed to connect {0}, {1}</value>
+    <value>连接到 {0}, {1} 失败</value>
     <comment>Parameters: 0=Device ID, 1=error message</comment>
   </data>
   <data name="LblGenericCameraError" xml:space="preserve">
-    <value>Camera reported a generic error and needs to be reconnected!</value>
+    <value>相机出现一般性错误，需重新连接！</value>
   </data>
   <data name="LblCameraDisconnected" xml:space="preserve">
-    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+    <value>相机断开连接！USB连接可能已中断。</value>
   </data>
   <data name="LblMetaGuideListenerError" xml:space="preserve">
-    <value>MetaGuide Listener Error: {0}</value>
+    <value>MetaGuide 监听器错误: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPostFailed" xml:space="preserve">
-    <value>Failed to post {0} message</value>
+    <value>发布 {0} 消息失败</value>
     <comment>Parameters: {0}=message type</comment>
   </data>
   <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
-    <value>Guiding is not active. Unable to dither</value>
+    <value>导星未启动。无法抖动</value>
   </data>
   <data name="LblFailedCommsMGENDither" xml:space="preserve">
-    <value>Failed to communicate to MGEN during dithering</value>
+    <value>抖动时无法和 MGEN 通信</value>
   </data>
   <data name="LblPHDError" xml:space="preserve">
-    <value>PHD Error: {0}
-CODE: {1}</value>
+    <value>PHD 错误: {0}
+代码: {1}</value>
     <comment>Parameters: {0}=error message, {1}=error code</comment>
   </data>
   <data name="LblPHDErrorMsg" xml:space="preserve">
-    <value>PHD Error: {0}</value>
+    <value>PHD 错误: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblTWCNoAPIKey" xml:space="preserve">
-    <value>There is no TheWeatherCompany API key configured.</value>
+    <value>未配置 TheWeatherCompany API 密钥。</value>
   </data>
   <data name="LblFileNotExist" xml:space="preserve">
-    <value>File {0} does not exist</value>
+    <value>文件 {0} 不存在</value>
     <comment>Parameters: {0}=file path</comment>
   </data>
   <data name="LblASTAPNoOutputFile" xml:space="preserve">
-    <value>ASTAP - Plate solve failed. No output file found.</value>
+    <value>ASTAP - 解析失败。未输出文件。</value>
   </data>
   <data name="LblASTAPSolveFailed" xml:space="preserve">
-    <value>ASTAP - Plate solve failed.
+    <value>ASTAP - 解析失败。
 {0}
 {1}</value>
     <comment>Parameters: {0}=warning, {1}=error</comment>
   </data>
   <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
-    <value>Error plate solving with Astrometry.net. {0}</value>
+    <value>使用 Astrometry.net 解析时出错。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblExposureOverMax" xml:space="preserve">
-    <value>The predicted exposure of {0}s is longer than the maximum allowed.
-Stopping sky flat acquisition.</value>
+    <value>预计曝光时间 ({0}s) 大于允许的最大值。
+停止天空平场拍摄。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblExposureUnderMin" xml:space="preserve">
-    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
-Stopping sky flat acquisition.</value>
+    <value>预计曝光时间 ({0}s) 小于允许的最小值。
+停止天空平场拍摄。</value>
     <comment>Parameters: {0}=exposure time</comment>
   </data>
   <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
-    <value>Skyflat correction did not work and is outside of tolerance:
-first exposure time {0:#.####}
-current exposure time {1:#.####}
-elapsed time: {2:#.##}
-mean adu: {3:#.##}.
-The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <value>天空平场拍摄失败，某些量超出了允许值：
+第一次曝光时间 {0:#.####}
+当前曝光时间 {1:#.####}
+经过时间： {2:#.##}
+平均 ADU： {3:#.##}
+将重新曝光以确定天空平场曝光时间。</value>
     <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
   </data>
   <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
-    <value>Failed to restore previous filter position: {0}</value>
+    <value>恢复初始滤镜失败： {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblFailedToChangeFilter" xml:space="preserve">
-    <value>Failed to change filter: {0}</value>
+    <value>更换滤镜失败: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>设置偏移速率失败。 {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
-    <value>Failed to prepare image for display: {0}</value>
+    <value>准备待显示图像失败: {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>日期变更时刻</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>由于该指令未指定具体日期，将在显示的日期变更时刻切换日期到新的一天。</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>正在初始化</value>
+  </data>
+  <data name="LblTooltipResetTargetSet" xml:space="preserve">
+    <value>Reset progress of all targets in the current Target Set</value>
   </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
     <value>分滤镜计算 HFR 趋势</value>
@@ -7324,12 +7327,6 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
     <value>禁用后，将所有滤镜合并以计算 HFR 趋势。这有助于加快自动对焦触发，尤其适用于成像过程中频繁更换滤镜，或对温度敏感的光学系统处于温度快速变化环境的场景。
 注意：禁用该功能后，需确保不同滤镜间的 HFR 差异较小。</value>
-  </data>
-  <data name="LblTooltipResetTargetSet" xml:space="preserve">
-    <value>Reset progress of all targets in the current Target Set</value>
-  </data>
-  <data name="LblSlewFailed" xml:space="preserve">
-    <value>Slew failed</value>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>设备编号</value>
@@ -7348,25 +7345,28 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>服务协议类型</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
-  <data name="LblCompressionZStandard" xml:space="preserve">
-    <value>ZStandard</value>
-  </data>
-  <data name="LblTransitTime" xml:space="preserve">
-    <value>中天时间</value>
-  </data>
-  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
-    <value>Failed to save image. The destination may be out of free disk space.</value>
+  <data name="LblSlewFailed" xml:space="preserve">
+    <value>Slew failed</value>
   </data>
   <data name="LblNorth" xml:space="preserve">
     <value>North</value>
   </data>
-  <data name="LblSouth" xml:space="preserve">
-    <value>South</value>
-  </data>
   <data name="LblReadout" xml:space="preserve">
     <value>Readout</value>
   </data>
+  <data name="LblSouth" xml:space="preserve">
+    <value>South</value>
+  </data>
+  <data name="LblCompressionZStandard" xml:space="preserve">
+    <value>ZStandard</value>
+  </data>
   <data name="LblCopyURL" xml:space="preserve">
     <value>Copy URL</value>
+  </data>
+  <data name="LblSaveFileFailedDiskFull" xml:space="preserve">
+    <value>Failed to save image. The destination may be out of free disk space.</value>
+  </data>
+  <data name="LblTransitTime" xml:space="preserve">
+    <value>中天时间</value>
   </data>
 </root>
