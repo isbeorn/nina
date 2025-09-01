@@ -112,6 +112,7 @@ namespace NINA.PlateSolving.Solvers {
                 //var errorMessage = $"Error plate solving with TheSkyX Imagelink. {ex.Message}";
                 progress?.Report(new ApplicationStatus() { Status = ex.Message });
                 if (!parameter.DisableNotifications) {
+                    Logger.Error(ex.Message);
                     Notification.ShowError(ex.Message);
                 }
             }
