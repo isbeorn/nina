@@ -7306,9 +7306,9 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>Hora para la transferencia de día</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>Como no hay ningún día asociado a la instrucción, la transferencia a un nuevo día se producirá a la hora de transferencia mostrada.</value>
   </data>
 </root>
