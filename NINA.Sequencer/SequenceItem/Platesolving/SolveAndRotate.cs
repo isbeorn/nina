@@ -159,10 +159,10 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
 
                     rotationDistance = targetRotation - orientation;
 
-                    // For FULL range, use the direct distance without any 180° flip consideration
-                    // No normalization needed - let the rotator handle the full 360° movement
-
-
+                    if (profileService.ActiveProfile.RotatorSettings.RangeType == Core.Enum.RotatorRangeTypeEnum.FULL) {
+                        // For FULL range, normalize to [-180, 180) range but don't consider camera flip
+                        rotationDistance = AstroUtil.EuclidianModulus(rotationDistance + 180, 360) - 180;
+                    }
                     if (profileService.ActiveProfile.RotatorSettings.RangeType == Core.Enum.RotatorRangeTypeEnum.HALF) {
                         // If the full rotation range is allowed, then consider the 180-degree rotated orientation as well in case it is closer
                         var movement = AstroUtil.EuclidianModulus(rotationDistance, 180);
