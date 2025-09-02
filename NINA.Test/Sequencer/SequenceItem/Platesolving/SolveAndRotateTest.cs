@@ -280,7 +280,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
-        [TestCase(160, 260, -80)]
+        [TestCase(160, 260, 100)]
         [TestCase(160, 170, 10)]
         public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
             var service = new Mock<IWindowService>();

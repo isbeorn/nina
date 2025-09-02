@@ -307,7 +307,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
-        [TestCase(160, 260, -80)]
+        [TestCase(160, 260, 100)]
         [TestCase(160, 170, 10)]
         public async Task Execute_FullRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
             var service = new Mock<IWindowService>();
@@ -411,9 +411,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
         }
 
         [Test]
-        [TestCase(160, 260, 100)]
+        [TestCase(160, 260, -80)]
         [TestCase(160, 170, 10)]
-        [TestCase(173, 355, 182)]
+        [TestCase(173, 355, 2)]
         public async Task Execute_HalfRotatorRange_PlateSolveSuccess_RotationOffOneTime_NoException(double first, double second, double movement) {
             var service = new Mock<IWindowService>();
             var coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(20), Epoch.J2000);
