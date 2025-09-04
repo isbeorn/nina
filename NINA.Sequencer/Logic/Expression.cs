@@ -668,8 +668,8 @@ namespace NINA.Sequencer.Logic {
                         args.Result = -1;
                     }
                 } else if (name == "strConcat") {
-                    var e = args.Parameters[0].Evaluate();
-                    var i = args.Parameters[1].Evaluate();
+                    var e = args.Parameters[0].Evaluate().ToString();
+                    var i = args.Parameters[1].Evaluate().ToString();
                     if (e is string es && i is string iss) {
                         args.Result = String.Concat(es, iss);
                     } else {
