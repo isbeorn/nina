@@ -153,8 +153,6 @@ namespace NINA.Equipment.Equipment.MyTelescope {
 
         public double FocalLength => GetProperty(nameof(Telescope.FocalLength), -1d);
 
-        public short InterfaceVersion => GetProperty<short>(nameof(Telescope.InterfaceVersion), -1);
-
         public double RightAscension => GetProperty(nameof(Telescope.RightAscension), -1d);
 
         public string RightAscensionString => AstroUtil.HoursToHMS(RightAscension);
@@ -794,7 +792,7 @@ namespace NINA.Equipment.Equipment.MyTelescope {
         private Epoch DetermineEquatorialSystem() {
             Epoch epoch = Epoch.JNOW;
 
-            if (device.InterfaceVersion > 1) {
+            if (InterfaceVersion > 1) {
                 EquatorialCoordinateType mountEqSystem = device.EquatorialSystem;
 
                 switch (mountEqSystem) {
