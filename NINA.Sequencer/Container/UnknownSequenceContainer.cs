@@ -25,12 +25,12 @@ using System.Threading.Tasks;
 
 namespace NINA.Sequencer.Container {
 
-    internal class UnknownSequenceContainer : SequenceContainer, IValidatable {
+    internal class UnknownSequenceContainer : SequentialContainer, IValidatable {
 
-        public UnknownSequenceContainer() : base(new SequentialStrategy()) {
+        public UnknownSequenceContainer() : base() {
         }
 
-        public UnknownSequenceContainer(string token) : base(new SequentialStrategy()) {
+        public UnknownSequenceContainer(string token) : base() {
             base.Name = token;
         }
 

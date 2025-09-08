@@ -144,19 +144,35 @@ namespace NINA.Sequencer.Container {
         public InputTarget Target {
             get => target;
             set {
-                if (Target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.RemoveHandler(Target, nameof(Target.CoordinatesChanged), Target_OnCoordinatesChanged);
+                if (ReferenceEquals(target, value)) return;
+                if (target != null) {
+                    WeakEventManager<InputTarget, EventArgs>.RemoveHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
                 }
                 target = value;
-                if (Target != null) {
-                    WeakEventManager<InputTarget, EventArgs>.AddHandler(Target, nameof(Target.CoordinatesChanged), Target_OnCoordinatesChanged);
+                if (target != null) {
+                    WeakEventManager<InputTarget, EventArgs>.AddHandler(target, nameof(InputTarget.CoordinatesChanged), Target_OnCoordinatesChanged);
                 }
                 RaisePropertyChanged();
             }
         }
 
+        private int coordinatesChangedEventDepth;
+        private const int maxCoordinatesChangedEventDepth = 5;
         private void Target_OnCoordinatesChanged(object sender, EventArgs e) {
-            AfterParentChanged();
+            int d = System.Threading.Interlocked.Increment(ref coordinatesChangedEventDepth);
+            if (d > maxCoordinatesChangedEventDepth) {
+                Logger.Error(
+                    $"Re-entrant CoordinatesChanged ignored (depth={d}). " +
+                    $"Possible stack overflow prevented.{Environment.NewLine}{Environment.StackTrace}"
+                );
+                System.Threading.Interlocked.Decrement(ref coordinatesChangedEventDepth);
+                return;
+            }
+            try {
+                AfterParentChanged();
+            } finally {
+                System.Threading.Interlocked.Decrement(ref coordinatesChangedEventDepth);
+            }
         }
 
         public override object Clone() {

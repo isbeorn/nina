@@ -23,6 +23,7 @@ using NINA.Core.Utility.Http;
 using NINA.Astrometry;
 using System.Collections.Generic;
 using NINA.Equipment.Equipment.MyGuider.PHD2;
+using System.Globalization;
 
 namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
 {
@@ -487,14 +488,14 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
 
                 if (callbackItem.Data.Units.Equals("arcSeconds"))
                 {
-                    guideStep.DECDistanceRaw = callbackItem.Data.GuidingErrorY == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorY) / _pixelScale;
-                    guideStep.RADistanceRaw = callbackItem.Data.GuidingErrorX == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorX) / _pixelScale;
+                    guideStep.DECDistanceRaw = callbackItem.Data.GuidingErrorY == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorY, CultureInfo.InvariantCulture) / _pixelScale;
+                    guideStep.RADistanceRaw = callbackItem.Data.GuidingErrorX == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorX, CultureInfo.InvariantCulture) / _pixelScale;
 
                 }
                 else
                 {
-                    guideStep.DECDistanceRaw = callbackItem.Data.GuidingErrorY == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorY);
-                    guideStep.RADistanceRaw = callbackItem.Data.GuidingErrorX == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorX);
+                    guideStep.DECDistanceRaw = callbackItem.Data.GuidingErrorY == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorY, CultureInfo.InvariantCulture);
+                    guideStep.RADistanceRaw = callbackItem.Data.GuidingErrorX == null ? 0 : Convert.ToDouble(callbackItem.Data.GuidingErrorX, CultureInfo.InvariantCulture);
                 }
 
                 if (!callbackItem.Data.GuidingNoCorrectionY)
@@ -822,7 +823,7 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
                     string cameraPixelScale = ExecuteWebRequest($"{SKSS_Uri}/SKSS_GetGuiderCameraPixelScale");
                     var pixelScaleStatus = JsonConvert.DeserializeObject<SkyGuardStatusMessage>(cameraPixelScale);
 
-                    PixelScale = float.Parse(pixelScaleStatus.Data);
+                    PixelScale = float.Parse(pixelScaleStatus.Data, CultureInfo.InvariantCulture);
 
                     _connected = RunListener(token);
                 }
@@ -927,8 +928,8 @@ namespace NINA.Equipment.Equipment.MyGuider.SkyGuard
                 var getX = JsonConvert.DeserializeObject<SkyGuardStatusMessage>(ditheringOffsetX);
                 var getY = JsonConvert.DeserializeObject<SkyGuardStatusMessage>(ditheringOffsetY);
 
-                double ditherX = Convert.ToDouble(getX.Data);
-                double ditherY = Convert.ToDouble(getY.Data);
+                double ditherX = Convert.ToDouble(getX.Data, CultureInfo.InvariantCulture);
+                double ditherY = Convert.ToDouble(getY.Data, CultureInfo.InvariantCulture);
 
                 ExecuteWebRequest($"{SKSS_Uri}/SKSS_SetDitheringOffsets?X={ditherX}&Y={ditherY}");
 

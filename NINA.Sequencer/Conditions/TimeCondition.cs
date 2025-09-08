@@ -12,20 +12,21 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Utility.DateTimeProvider;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Utility;
+using NINA.Sequencer.Utility.DateTimeProvider;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using NINA.Sequencer.Utility;
-using NINA.Core.Enum;
-using NINA.Sequencer.Validations;
-using NINA.Core.Locale;
-using NINA.Astrometry;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -35,7 +36,7 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TimeCondition : SequenceCondition, IValidatable {
+    public partial class TimeCondition : SequenceCondition, IValidatable {
         private IList<IDateTimeProvider> dateTimeProviders;
         private int hours;
         private int minutes;
@@ -181,19 +182,22 @@ namespace NINA.Sequencer.Conditions {
             }
         }
 
+        [ObservableProperty]
+        private TimeOnly rolloverTime;
+
         private DateTime CalculateRemainingTime() {
             var now = DateTime.Now;
             var then = new DateTime(now.Year, now.Month, now.Day, Hours, Minutes, Seconds);
 
-            var rollover = SelectedProvider.GetRolloverTime(this);
+            RolloverTime = SelectedProvider.GetRolloverTime(this);
             var timeOnlyNow = TimeOnly.FromDateTime(now);
             var timeOnlyThen = TimeOnly.FromDateTime(then);
 
-            if (timeOnlyNow < rollover && timeOnlyThen >= rollover) {
+            if (timeOnlyNow < RolloverTime && timeOnlyThen >= RolloverTime) {
                 then = then.AddDays(-1);
             }
 
-            if (timeOnlyNow >= rollover && timeOnlyThen < rollover) {
+            if (timeOnlyNow >= RolloverTime && timeOnlyThen < RolloverTime) {
                 then = then.AddDays(1);
             }
 

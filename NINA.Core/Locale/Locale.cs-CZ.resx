@@ -2434,7 +2434,7 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Předvolby Planetária</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Získá souřadnice z Planetária</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Souřadnice podle vybraného objektu</value>
@@ -7180,37 +7180,37 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
     <value>Občanský úsvit</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
-    <value>Refuse mount unpark if shutter is not open</value>
+    <value>Odmítnout odpojení montáže, pokud není otevřená štěrbina</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
-    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+    <value>Nelze odpojit montáž, pokud není otevřená kopule nebo střecha</value>
   </data>
   <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
-    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+    <value>Odmítnout pokusy o odpojení montáže, pokud je stav štěrbiny nebo střechy Uzavřeno, Zavírání, Otevírání nebo Chyba. Odpojení montáže bude povoleno pouze v případě, že štěrbina nebo střecha hlásí stav Otevřeno</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
-    <value>There is no civil dawn at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává občanský úsvit.</value>
   </data>
   <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
-    <value>There is no civil dusk at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává občanský soumrak.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
-    <value>There is no astronomical dawn at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává astronomický úsvit.</value>
   </data>
   <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
-    <value>There is no astronomical dusk at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává astronomický soumrak.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
-    <value>There is no nautical dawn at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává námořní svítání.</value>
   </data>
   <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
-    <value>There is no nautical dusk at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává námořní soumrak.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
-    <value>There is no sunrise at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává svítání.</value>
   </data>
   <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
-    <value>There is no sunset at your location today.</value>
+    <value>Dnes ve vaší lokalitě nenastává západ Slunce.</value>
   </data>
   <data name="LblUnableToConnectTo" xml:space="preserve">
     <value>Nepodařilo se připojit k {0}</value>
@@ -7303,11 +7303,17 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblSetShiftRateFailed" xml:space="preserve">
-    <value>Set shift rate failed. {0}</value>
+    <value>Nastavení rychlosti posunu se nezdařilo. {0}</value>
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Nepodařilo se připravit obrázek k zobrazení: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Čas Překlopení Dne</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Protože v instrukci není přiřazen žádný den, přechod na nový den proběhne v zobrazeném čase překlopení.</value>
   </data>
 </root>
