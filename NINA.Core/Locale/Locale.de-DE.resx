@@ -2440,7 +2440,7 @@ Berechneter HFR: {2}
     <value>Planetarium Einstellungen</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Koordinaten von der Planetariumsoftware erhalten</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Koordinaten des ausgewählten Objekts</value>

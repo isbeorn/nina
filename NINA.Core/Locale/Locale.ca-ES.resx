@@ -2435,7 +2435,7 @@ HFR calculat: {2}    </value>
     <value>Preferències del Planetari</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Obtenir coordenades del programa Planetari</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordenades de l'objecte seleccionat</value>
@@ -7310,9 +7310,9 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <comment>Parameters: {0}=error message</comment>
   </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
-    <value>Day Rollover Time</value>
+    <value>Hora de renovació del dia</value>
   </data>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
-    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+    <value>Com que no hi ha cap dia adjunt a la instrucció, la transferència per a un nou dia es produeix a l'hora de transferència que es mostra.</value>
   </data>
 </root>
