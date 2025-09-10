@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using ASCOM;
+using ASCOM.Com.DriverAccess;
 using ASCOM.Common;
 using ASCOM.Common.DeviceInterfaces;
 using NINA.Core.Locale;
@@ -69,6 +70,8 @@ namespace NINA.Equipment.Equipment {
         public bool HasSetupDialog => !ShouldBeConnected;
 
         public string Id { get; }
+
+        public short InterfaceVersion => GetProperty<short>(nameof(InterfaceVersion), 1, TimeSpan.FromDays(1));
 
         private string name;
         public string Name => name ?? ascomRegistrationName;
