@@ -128,7 +128,7 @@ namespace NINA.Equipment.Equipment {
             }
             if (!device.Connected) {
                 throw new NotConnectedException();
-            }            
+            }
             Logger.Info($"{Name} reconnection successful");
             return true;
         }
@@ -290,7 +290,7 @@ namespace NINA.Equipment.Equipment {
                         } catch {
                             HasDeviceStates = false;
                         }
-                        
+
                         if (name == null && !IsAlpacaDevice()) {
                             try {
                                 // Update name of ASCOM after connection
@@ -399,7 +399,7 @@ namespace NINA.Equipment.Equipment {
                 try {
                     Dispose();
                 } catch { }
-                
+
             }
         }
 
@@ -440,6 +440,7 @@ namespace NINA.Equipment.Equipment {
             var type = device.GetType();
 
             if (HasDeviceStates && deviceStateKeys.Contains(propertyName.ToLower())) {
+                var state = lastDeviceState;
                 if ((DateTimeOffset.UtcNow - lastDeviceStatePoll) > cacheInterval) {
                     for (int i = 0; i < 3; i++) {
                         try {
@@ -447,8 +448,9 @@ namespace NINA.Equipment.Equipment {
                                 Thread.Sleep(interval);
                                 Logger.Info($"Retrying to GET {type.Name}.{propertyName} - Attempt {i + 1} / 3");
                             }
-                            Logger.Trace($"GET {type.Name}.DeviceState");
+                            Logger.Trace($"GET {type.Name}.DeviceState");                            
                             lastDeviceState = device.DeviceState;
+                            state = lastDeviceState;
                             lastDeviceStatePoll = DateTimeOffset.UtcNow;
                             break;
                         } catch (Exception ex) {
@@ -457,81 +459,84 @@ namespace NINA.Equipment.Equipment {
                         }
                     }
                 }
-                var value = (PropT)lastDeviceState.FirstOrDefault(x => x.Name == propertyName)?.Value ?? defaultValue;
-                Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
-                return value;
-            } else {
 
-                if (!propertyGETMemory.TryGetValue(propertyName, out var memory)) {
-                    memory = new PropertyMemory(type.GetProperty(propertyName), cacheInterval.Value);
-                    lock (propertyGETMemory) {
-                        propertyGETMemory[propertyName] = memory;
-                    }
-                }
-
-                // Retry three times in normal conditions - disable retry when consecutive errors exceed threshold as it will not likely succeed on a retry anyways
-                var retries = memory.ConsecutiveErrors >= memory.ConsecutiveErrorThreshold ? 1 : 3;
-
-                for (int i = 0; i < retries; i++) {
-                    try {
-                        if (i > 0) {
-                            Thread.Sleep(interval);
-                            Logger.Info($"Retrying to GET {type.Name}.{propertyName} - Attempt {i + 1} / {retries}");
-                        }
-
-                        if (memory.IsImplemented) {
-                            PropT value = (PropT)memory.GetValue(device);
-
-                            Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
-                            memory.ConsecutiveErrors = 0;
-                            return (PropT)memory.LastValue;
-                        } else {
-                            return defaultValue;
-                        }
-                    } catch (Exception ex) {
-                        if (rethrow) { throw; }
-
-                        memory.ConsecutiveErrors++;
-                        if (memory.ConsecutiveErrors == memory.ConsecutiveErrorThreshold) {
-                            Logger.Warning($"GET of {type.Name}.{propertyName} encountered {memory.ConsecutiveErrorThreshold} consecutive errors. Further logs for this property access are logged on TRACE level until the property access is successful again");
-                        }
-
-                        if (ex is PropertyNotImplementedException || ex.InnerException is PropertyNotImplementedException
-                            || ex is ASCOM.NotImplementedException || ex.InnerException is ASCOM.NotImplementedException
-                            || ex is System.NotImplementedException || ex.InnerException is System.NotImplementedException) {
-                            Logger.Info($"Property {type.Name}.{propertyName} GET is not implemented in this driver ({Name})");
-
-                            memory.IsImplemented = false;
-                            return defaultValue;
-                        }
-
-                        var logEx = ex.InnerException ?? ex;
-
-                        if (ex is NotConnectedException || ex.InnerException is NotConnectedException) {
-                            if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
-                                Logger.Trace($"{Name} is not connected {logEx}");
-                            } else {
-                                Logger.Error($"{Name} is not connected ", logEx);
-                            }
-                        }
-
-                        if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
-                            Logger.Trace($"An unexpected exception occurred during GET of {type.Name}.{propertyName} - Consecutive Errors: {memory.ConsecutiveErrors} - Error: {logEx.Message} {logEx.StackTrace}");
-                        } else {
-                            Logger.Error($"An unexpected exception occurred during GET of {type.Name}.{propertyName}: ", logEx);
-                        }
-                    }
-                }
-
-                // Polling the property failed for all retries
-                var val = useLastKnownValueOnError ? (PropT)memory.LastValue : errorValue;
-                if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
-                    Logger.Trace($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
-                } else {
-                    Logger.Info($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
-                }
-                return val;
+                if (state != null) {
+                    var value = state?.FirstOrDefault(x => x?.Name == propertyName)?.Value is PropT v ? v : defaultValue;
+                    Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
+                    return value;
+                }                
             }
+
+            // Get property without device state
+            if (!propertyGETMemory.TryGetValue(propertyName, out var memory)) {
+                memory = new PropertyMemory(type.GetProperty(propertyName), cacheInterval.Value);
+                lock (propertyGETMemory) {
+                    propertyGETMemory[propertyName] = memory;
+                }
+            }
+
+            // Retry three times in normal conditions - disable retry when consecutive errors exceed threshold as it will not likely succeed on a retry anyways
+            var retries = memory.ConsecutiveErrors >= memory.ConsecutiveErrorThreshold ? 1 : 3;
+
+            for (int i = 0; i < retries; i++) {
+                try {
+                    if (i > 0) {
+                        Thread.Sleep(interval);
+                        Logger.Info($"Retrying to GET {type.Name}.{propertyName} - Attempt {i + 1} / {retries}");
+                    }
+
+                    if (memory.IsImplemented) {
+                        PropT value = (PropT)memory.GetValue(device);
+
+                        Logger.Trace($"GET {type.Name}.{propertyName}: {value}");
+                        memory.ConsecutiveErrors = 0;
+                        return (PropT)memory.LastValue;
+                    } else {
+                        return defaultValue;
+                    }
+                } catch (Exception ex) {
+                    if (rethrow) { throw; }
+
+                    memory.ConsecutiveErrors++;
+                    if (memory.ConsecutiveErrors == memory.ConsecutiveErrorThreshold) {
+                        Logger.Warning($"GET of {type.Name}.{propertyName} encountered {memory.ConsecutiveErrorThreshold} consecutive errors. Further logs for this property access are logged on TRACE level until the property access is successful again");
+                    }
+
+                    if (ex is PropertyNotImplementedException || ex.InnerException is PropertyNotImplementedException
+                        || ex is ASCOM.NotImplementedException || ex.InnerException is ASCOM.NotImplementedException
+                        || ex is System.NotImplementedException || ex.InnerException is System.NotImplementedException) {
+                        Logger.Info($"Property {type.Name}.{propertyName} GET is not implemented in this driver ({Name})");
+
+                        memory.IsImplemented = false;
+                        return defaultValue;
+                    }
+
+                    var logEx = ex.InnerException ?? ex;
+
+                    if (ex is NotConnectedException || ex.InnerException is NotConnectedException) {
+                        if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                            Logger.Trace($"{Name} is not connected {logEx}");
+                        } else {
+                            Logger.Error($"{Name} is not connected ", logEx);
+                        }
+                    }
+
+                    if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                        Logger.Trace($"An unexpected exception occurred during GET of {type.Name}.{propertyName} - Consecutive Errors: {memory.ConsecutiveErrors} - Error: {logEx.Message} {logEx.StackTrace}");
+                    } else {
+                        Logger.Error($"An unexpected exception occurred during GET of {type.Name}.{propertyName}: ", logEx);
+                    }
+                }
+            }
+
+            // Polling the property failed for all retries
+            var val = useLastKnownValueOnError ? (PropT)memory.LastValue : errorValue;
+            if (memory.ConsecutiveErrors > memory.ConsecutiveErrorThreshold) {
+                Logger.Trace($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
+            } else {
+                Logger.Info($"GET {type.Name}.{propertyName} failed - Returning {(useLastKnownValueOnError ? "last known" : "error")} value {val}");
+            }
+            return val;
         }
 
         protected void InvalidatePropertyCache() {
