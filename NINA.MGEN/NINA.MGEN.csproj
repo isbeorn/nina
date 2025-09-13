@@ -38,7 +38,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.2005-beta</Version>
+    <Version>3.2.0.2008-beta</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>Interfaces to communicate with Lacerta MGEN2 and MGEN3 Autoguider Units</Description>
