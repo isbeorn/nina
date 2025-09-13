@@ -13,6 +13,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:ut="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     Title="{x:Static ut:CoreUtil.Title}"
@@ -119,12 +120,11 @@
             Grid.ColumnSpan="2"
             Margin="0,5,0,0"
             VerticalAlignment="Stretch">
-            <Button
+            <ninactrl:AsyncProcessButton
                 Height="40"
                 VerticalAlignment="Bottom"
-                ut:ButtonHelper.DialogResult="True">
-                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
-            </Button>
+                ButtonText="{ns:Loc LblLoadProfile}"
+                Command="{Binding SelectProfileCommand}" />
         </Grid>
     </Grid>
 </Window>
