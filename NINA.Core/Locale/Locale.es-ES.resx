@@ -7311,4 +7311,7 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
     <value>Como no hay ningún día asociado a la instrucción, la transferencia a un nuevo día se producirá a la hora de transferencia mostrada.</value>
   </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
+  </data>
 </root>
