@@ -7316,4 +7316,7 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
     <value>Protože v instrukci není přiřazen žádný den, přechod na nový den proběhne v zobrazeném čase překlopení.</value>
   </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicializace</value>
+  </data>
 </root>
