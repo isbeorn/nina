@@ -7315,4 +7315,7 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
     <value>Com que no hi ha cap dia adjunt a la instrucció, la transferència per a un nou dia es produeix a l'hora de transferència que es mostra.</value>
   </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
+  </data>
 </root>
