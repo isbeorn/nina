@@ -207,13 +207,9 @@ namespace NINA {
                     return;
                 }
                 profileSelectionWindow.IsEnabled = false;
-                await Task.Run(() => {
-                    _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
-                });
-            } else {
-                _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
+                await Task.Delay(100);
             }
-
+            _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
             mainWindow.DataContext = _mainWindowViewModel;
