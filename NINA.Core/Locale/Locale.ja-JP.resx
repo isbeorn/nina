@@ -7285,4 +7285,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
     <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
   </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
+  </data>
 </root>
