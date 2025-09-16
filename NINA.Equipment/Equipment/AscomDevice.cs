@@ -500,7 +500,7 @@ namespace NINA.Equipment.Equipment {
                     // ValueNotSetException is not fully fatal.
                     // For read-only properties, It can mean that the property is implemented but the driver cannot provide a value for it at the moment.
                     // In such cases, the property's default value will be returned.
-                    // Example: ObervingConditions.StarFWHM when no stars are visible during the daytime or due to clouds.
+                    // Example: ObservingConditions.StarFWHM when no stars are visible during the daytime or due to clouds.
                     if (ex is ASCOM.ValueNotSetException || ex.InnerException is ASCOM.ValueNotSetException) {
                         var log = $"Property {type.Name}.{propertyName} GET value is not set by this driver ({Name})";
 
