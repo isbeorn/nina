@@ -7312,6 +7312,6 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
     <value>Ponieważ w instrukcji nie podano żadnej daty, ustawienie nowego dnia nastąpi o podanej godzinie.</value>
   </data>
   <data name="LblInitializing" xml:space="preserve">
-    <value>Initializing</value>
+    <value>Inicjalizacja</value>
   </data>
 </root>
