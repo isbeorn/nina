@@ -497,6 +497,25 @@ namespace NINA.Equipment.Equipment {
                 } catch (Exception ex) {
                     if (rethrow) { throw; }
 
+                    // ValueNotSetException is not fully fatal.
+                    // For read-only properties, It can mean that the property is implemented but the driver cannot provide a value for it at the moment.
+                    // In such cases, the property's default value will be returned.
+                    // Example: ObservingConditions.StarFWHM when no stars are visible during the daytime or due to clouds.
+                    if (ex is ASCOM.ValueNotSetException || ex.InnerException is ASCOM.ValueNotSetException) {
+                        var log = $"Property {type.Name}.{propertyName} GET value is not set by this driver ({Name})";
+
+                        if (!string.IsNullOrEmpty(ex.Message)) {
+                            log += $"; Reason: {ex.Message}";
+                        }
+
+                        if (!string.IsNullOrEmpty(ex.InnerException?.Message)) {
+                            log += $"; Inner Reason: {ex.InnerException.Message}";
+                        }
+
+                        Logger.Trace(log);
+                        return defaultValue;
+                    }
+
                     memory.ConsecutiveErrors++;
                     if (memory.ConsecutiveErrors == memory.ConsecutiveErrorThreshold) {
                         Logger.Warning($"GET of {type.Name}.{propertyName} encountered {memory.ConsecutiveErrorThreshold} consecutive errors. Further logs for this property access are logged on TRACE level until the property access is successful again");
