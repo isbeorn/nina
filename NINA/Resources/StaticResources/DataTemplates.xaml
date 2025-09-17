@@ -10,8 +10,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:af="clr-namespace:NINA.WPF.Base.ViewModel.AutoFocus;assembly=NINA.WPF.Base"
+    xmlns:alpaca="clr-namespace:ASCOM.Common.Alpaca;assembly=ASCOM.Common"
     xmlns:camera="clr-namespace:NINA.Equipment.Equipment.MyCamera;assembly=NINA.Equipment"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:equipment="clr-namespace:NINA.Equipment.Equipment;assembly=NINA.Equipment"
     xmlns:flatdevice="clr-namespace:NINA.Equipment.Equipment.MyFlatDevice;assembly=NINA.Equipment"
     xmlns:focuser="clr-namespace:NINA.Equipment.Equipment.MyFocuser;assembly=NINA.Equipment"
     xmlns:framing="clr-namespace:NINA.ViewModel.FramingAssistant"
@@ -26,6 +28,7 @@
     xmlns:skyguard="clr-namespace:NINA.Equipment.Equipment.MyGuider.SkyGuard;assembly=NINA.Equipment"
     xmlns:switchview="clr-namespace:NINA.View.Equipment.Switch"
     xmlns:telescope="clr-namespace:NINA.WPF.Base.ViewModel.Equipment.Telescope;assembly=NINA.WPF.Base"
+    xmlns:utility="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     xmlns:vm2="clr-namespace:NINA.WPF.Base.ViewModel;assembly=NINA.WPF.Base">
@@ -105,5 +108,81 @@
 
     <DataTemplate DataType="{x:Type framing:FramingPlateSolveParameter}">
         <view:FramingPlateSolvePromptView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type equipment:AlpacaDirectSettings}">
+        <Grid Margin="5" Grid.IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="Service Type" />
+                <ComboBox
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    SelectedItem="{Binding ServiceType, Mode=TwoWay}">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="{x:Type alpaca:ServiceType}">
+                            <alpaca:ServiceType>Http</alpaca:ServiceType>
+                            <alpaca:ServiceType>Https</alpaca:ServiceType>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+            </Grid>
+            <Grid Grid.Row="1" Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="IpAddress" />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding IpAddress}" />
+            </Grid>
+            <Grid Grid.Row="2" Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="Port" />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding Port}" />
+            </Grid>
+            <Grid Grid.Row="3" Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Text="Device Number" />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding DeviceNumber}" />
+            </Grid>
+            <Button
+                Grid.Row="4"
+                Margin="5"
+                VerticalAlignment="Bottom"
+                utility:ButtonHelper.DialogResult="True">
+                <Button.Content>
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}" />
+                </Button.Content>
+            </Button>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>
