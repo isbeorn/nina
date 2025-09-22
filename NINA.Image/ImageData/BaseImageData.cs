@@ -601,6 +601,7 @@ namespace NINA.Image.ImageData {
                     case ".dng":
                     case ".arw":
                     case ".orf":
+                    case ".rw2":
                         return await RawToImageArray(path, bitDepth, rawConverter, ct);
 
                     default:
