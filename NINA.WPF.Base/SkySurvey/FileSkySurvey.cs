@@ -40,7 +40,7 @@ namespace NINA.WPF.Base.SkySurvey {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.cr3;*.nef;*.fit;*.fts;*.fits;*.fit.fz;*.fits.fz;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.cr3;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits;*.fit.fz;*.fits.fz";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.cr3;*.nef;*.raw;*.raf;*.pef;*.dng;*.arw;*.orf;*.rw2;*.fit;*.fts;*.fits;*.fit.fz;*.fits.fz;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.cr3;*.nef;*.raw;*.raf;*.pef;*.dng;*.arw;*.orf;*.rw2|XISF Files|*.xisf|FITS Files|*.fit;*.fits;*.fit.fz;*.fits.fz";
 
             if (dialog.ShowDialog() == true) {
                 var arr = await imageDataFactory.CreateFromFile(dialog.FileName, 16, false, RawConverterEnum.FREEIMAGE, ct);
