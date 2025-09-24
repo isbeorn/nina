@@ -49,13 +49,14 @@ using System.Reflection;
 //Release Candidate: 1.8.0.3001 (Displayed as "1.8 RC1")
 //Beta: 1.8.0.2004 (Displayed as "1.8 BETA004")
 //Develop: 1.8.0.1022 (Displayed as "1.8 NIGHTLY #022")
-[assembly: AssemblyVersion("3.2.0.3006")]
-[assembly: AssemblyFileVersion("3.2.0.3006")]
-[assembly: AssemblyInformationalVersion("3.2.0.3006-rc")]
+[assembly: AssemblyVersion("3.2.0.3007")]
+[assembly: AssemblyFileVersion("3.2.0.3007")]
+[assembly: AssemblyInformationalVersion("3.2.0.3007-rc")]
 
 // The PluginMinimumApplicationVersion specifies the minimum application version the plugin needs to specify in order to be compatible
 // Plugins that have a version specified that is below this version are marked as incompatible
 [assembly: AssemblyMetadata("PluginMinimumApplicationVersion", "3.0.0.0")]
+
 
 
 
