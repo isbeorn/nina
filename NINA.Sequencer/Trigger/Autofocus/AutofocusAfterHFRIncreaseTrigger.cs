@@ -116,6 +116,18 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
+        private bool trendPerFilter = true; // default true to keep the original behaviour creating a trend per filter 
+
+        [JsonProperty]
+        public bool TrendPerFilter {
+            get => trendPerFilter;
+            private set {
+                trendPerFilter = value;
+                RaisePropertyChanged();
+
+            }
+        }
+
         private double originalHFR;
 
         public double OriginalHFR {
@@ -153,16 +165,6 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             private set {
                 filter = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        private bool trendPerFilter = true; // default true to keep the original behaviour to create a trend per filter 
-        public bool TrendPerFilter {
-            get => trendPerFilter;
-            private set {
-                trendPerFilter = value;
-                RaisePropertyChanged();
-                
             }
         }
 
@@ -250,7 +252,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}";
+            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}, TrendPerFilter: {TrendPerFilter}";
         }
 
         public bool Validate() {
