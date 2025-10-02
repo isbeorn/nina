@@ -156,6 +156,16 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             }
         }
 
+        private bool trendPerFilter = true; // default true to keep the original behaviour to create a trend per filter 
+        public bool TrendPerFilter {
+            get => trendPerFilter;
+            private set {
+                trendPerFilter = value;
+                RaisePropertyChanged();
+                
+            }
+        }
+
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             await TriggerRunner.Run(progress, token);
         }
@@ -177,7 +187,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 imageHistory = imageHistory.Where(point => point.Id > lastAF.Id).ToList();
             }
 
-            if (fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
+            if (fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null && TrendPerFilter == true) {
                 //Further filter the history to only considere items by the current filter
                 Filter = fwInfo.SelectedFilter.Name;
 

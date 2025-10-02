@@ -139,6 +139,14 @@
                         Text="{Binding Amount}"
                         TextAlignment="Right"
                         Unit="%" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblHFRTrendPerFilter}" />
+                    <CheckBox
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding TrendPerFilter}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
