@@ -1,6 +1,4 @@
-﻿//#define _upgrade
-
-#region "copyright"
+﻿#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -56,7 +54,6 @@ namespace NINA.Sequencer.Serialization {
                                          JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null) return null;
 
-#if _upgrade
             // There's got to be a better way to do this...
             if (this is JsonCreationConverter<ISequenceContainer> c) {
                 PowerupsUpgrader.RegisterContainerConverter(c);
@@ -67,13 +64,12 @@ namespace NINA.Sequencer.Serialization {
             } else if (this is JsonCreationConverter<ISequenceTrigger> t) {
                 PowerupsUpgrader.RegisterTriggerConverter(t);
             }
-#endif
 
+            // Load JObject from stream
+            JObject jObject = JObject.Load(reader);
             T target = default(T);
 
             try {
-                // Load JObject from stream
-                JObject jObject = JObject.Load(reader);
                 if (jObject != null) {
                     if (jObject["$ref"] != null) {
                         string id = (jObject["$ref"] as JValue).Value as string;
@@ -83,7 +79,6 @@ namespace NINA.Sequencer.Serialization {
                         jObject.TryGetValue("$type", out token);
                         string originalType = token.ToString();
 
-#if _upgrade
                         Upgrade lite = Upgrade.NINA;
                         (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
@@ -91,13 +86,11 @@ namespace NINA.Sequencer.Serialization {
                             // Substitute with Powerups Lite class
                             jObject["$type"] = token;
                         }
-#endif
 
                         // Create target object based on JObject
                         target = Create(objectType, jObject);
 
 
-#if _upgrade
                         if (lite == Upgrade.Lite) {
                             // Fix up name of the upgraded instruction (this doesn't persist)
                             ((ISequenceEntity)target).Name += " [Lite";
@@ -107,11 +100,9 @@ namespace NINA.Sequencer.Serialization {
                             ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
                             return target;
                         }
-#endif
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
-#if _upgrade
                         if (jObject.TryGetValue("$type", out token)) {
                             string ts = token.ToString();
                             if (ts.EndsWith(", WhenPlugin")) {
@@ -129,20 +120,24 @@ namespace NINA.Sequencer.Serialization {
                                 }
                             }
                         }
-#else
-                        if (jObject.TryGetValue("$type", out token)) {
-                            string ts = token.ToString();
-                            if (ts.EndsWith(", WhenPlugin")) {
-                                ((ISequenceEntity)target).Name += " [Powerups";
-                            }
-                        }
-#endif
-                            }
-                        }
+                    }
+                }
 
                 return target;
             } catch (Exception ex) {
-                return target;
+                Logger.Error("Failed to deserialize sequence entity", ex);
+                var unknownEntityName = "";
+                if (jObject.TryGetValue("$type", out var token)) {
+                    unknownEntityName = token?.ToString() ?? "";
+                }
+                switch (objectType) {
+                    case ISequenceTrigger:
+                        return new UnknownSequenceTrigger(unknownEntityName);
+                    case ISequenceCondition:
+                        return new UnknownSequenceCondition(unknownEntityName);
+                    default:
+                        return new UnknownSequenceItem(unknownEntityName);
+                }
             }
         }
 

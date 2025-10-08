@@ -94,18 +94,18 @@ namespace NINA {
             } catch (ConfigurationErrorsException configException) {
                 try {
                     userSettingsException = configException;
-                    if(configException?.Filename != null && File.Exists(configException.Filename)) {
+                    if (configException?.Filename != null && File.Exists(configException.Filename)) {
                         File.Delete(configException.Filename);
                     }
-                    if(backupWasRestored) {
+                    if (backupWasRestored) {
                         // Backup was restored but it still failed to load. Both files must be corrupted
-                        if(File.Exists(originalFileName)) {
+                        if (File.Exists(originalFileName)) {
                             File.Delete(originalFileName);
                         }
-                        if(File.Exists(backupFileName)) {
+                        if (File.Exists(backupFileName)) {
                             File.Delete(backupFileName);
                         }
-                        
+
                     }
 
                     // App restart is required, as even after deleting the configuration files the configuration manager still tries to use the old values
@@ -185,23 +185,39 @@ namespace NINA {
                 RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
             }
 
+            ProfileSelectView profileSelectionWindow = null;
+            ProfileSelectVM profileSelection = null;
             if (_profileService.Profiles.Count > 1 && !NINA.Properties.Settings.Default.UseSavedProfileSelection && !_profileService.ProfileWasSpecifiedFromCommandLineArgs) {
+                profileSelectionWindow = new ProfileSelectView();
+                profileSelection = new ProfileSelectVM(_profileService);
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                var profileSelection = new ProfileSelectVM(_profileService);
-                var profileSelectionWindow = new ProfileSelectView();
                 profileSelectionWindow.DataContext = profileSelection;
-                var result = profileSelectionWindow.ShowDialog() ?? false;
-                if(!result) {
+                profileSelectionWindow.Show();
+                profileSelectionWindow.Closed +=
+                    (s, ev) => {
+                        if (!profileSelection.ProfileIsSelected) {
+                            Shutdown();
+                            return;
+                        }
+                    };
+                try {
+                    profileSelection.WaitForSelection();
+                } catch (Exception) {
                     Shutdown();
                     return;
                 }
+                profileSelectionWindow.IsEnabled = false;
+                profileSelection.Wait100msNonBlocking();
             }
-
             _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
             mainWindow.DataContext = _mainWindowViewModel;
             mainWindow.Show();
+            if (profileSelectionWindow?.IsVisible == true) {
+                profileSelection?.Close();
+                profileSelectionWindow?.Close();
+            }
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             ProfileService.ActivateInstanceWatcher(_profileService, mainWindow);
 
@@ -252,7 +268,7 @@ namespace NINA {
 
         [SecurityCritical]
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
-            lock(lockObj) { 
+            lock (lockObj) {
                 Logger.Error($"An unhandled exception has occurred of type {e.Exception.GetType()}");
                 if (e.Exception.InnerException != null) {
                     var message = $"{e.Exception.Message}{Environment.NewLine}{e.Exception.StackTrace}{Environment.NewLine}Inner Exception of type {e.Exception.InnerException.GetType()}: {Environment.NewLine}{e.Exception.InnerException}{e.Exception.StackTrace}";

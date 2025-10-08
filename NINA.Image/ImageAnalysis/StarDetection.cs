@@ -337,17 +337,15 @@ namespace NINA.Image.ImageAnalysis {
                     double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
                     int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(state._originalBitmapSource.PixelWidth, state._originalBitmapSource.PixelHeight) / 1000d);
 
-                    if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
-                        sumRadius += s.Radius;
-                        sumSquares += s.Radius * s.Radius;
+                    if (s.MeanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) {
                         s.Calculate(pixelDataList);
+                        //It's a local maximum, and has enough bright pixels, so likely to be a star.                        
                         if (s.Position.X > (s.Rectangle.X + 1) && s.Position.Y > (s.Rectangle.Y + 1) && s.Position.X < (s.Position.X + s.Rectangle.Width - 2) && s.Position.Y < (s.Position.Y + s.Rectangle.Height - 2)) {
                             // Only add star when centroid is not touching the rectangle edges
+                            sumRadius += s.Radius;
+                            sumSquares += s.Radius * s.Radius;
                             starList.Add(s);
                         }
-
-
-                        
                     }
                 }
 
