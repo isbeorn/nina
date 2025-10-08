@@ -21,10 +21,13 @@ using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
+using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.ViewModel {
 
-    public class ProfileSelectVM : BaseINPC {
+    public partial class ProfileSelectVM : BaseINPC {
 
         public ProfileSelectVM(IProfileService profileService) {
             this.profileService = profileService;
@@ -73,6 +76,30 @@ namespace NINA.ViewModel {
                 Properties.Settings.Default.UseSavedProfileSelection = value;
                 CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
             }
+        }
+
+
+        private TaskCompletionSource<bool> selectProfileTCS = new TaskCompletionSource<bool>();
+        private TaskCompletionSource<bool> initializeAppTCS = new TaskCompletionSource<bool>();
+        [ObservableProperty]
+        private bool profileIsSelected;
+
+        [ObservableProperty]
+        private string selectProfileText = Loc.Instance["LblLoadProfile"];
+
+        public async Task WaitForSelection() {
+            await selectProfileTCS.Task;
+        }
+
+        public void Close() {
+            initializeAppTCS.TrySetResult(true);
+        }
+
+        [RelayCommand]
+        private async Task SelectProfile() {
+            ProfileIsSelected = true;
+            selectProfileTCS.TrySetResult(true);
+            await initializeAppTCS.Task;
         }
     }
 }

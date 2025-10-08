@@ -445,8 +445,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool ImageReady => GetProperty(nameof(Camera.ImageReady), false, cacheInterval: TimeSpan.Zero);
 
-        public short InterfaceVersion => GetProperty<short>(nameof(Camera.InterfaceVersion), -1);
-
         public bool IsPulseGuiding => GetProperty(nameof(Camera.IsPulseGuiding), false);
 
         private bool _hasLastExposureInfo;

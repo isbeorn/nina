@@ -65,7 +65,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
 
         public float Position => AstroUtil.EuclidianModulus(MechanicalPosition + offset, 360);
 
-        public float MechanicalPosition => GetProperty(nameof(Rotator.MechanicalPosition), float.NaN);
+        public float MechanicalPosition => InterfaceVersion < 3 ? GetProperty(nameof(Rotator.Position), float.NaN) : GetProperty(nameof(Rotator.MechanicalPosition), float.NaN);
 
         public float StepSize => GetProperty(nameof(Rotator.StepSize), float.NaN);
 
