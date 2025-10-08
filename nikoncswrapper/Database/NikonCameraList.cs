@@ -491,7 +491,7 @@ namespace Nikon {
                 },
                 LiveView = new NikonCameraModel.LiveViewConfig {
                     OnStatus = 3U,
-                    ImageHeaderSize = 512
+                    ImageHeaderSize = 1024
                 }
             },
 
@@ -503,7 +503,7 @@ namespace Nikon {
                 },
                 LiveView = new NikonCameraModel.LiveViewConfig {
                     OnStatus = 3U,
-                    ImageHeaderSize = 512
+                    ImageHeaderSize = 1024
                 }
             },
 

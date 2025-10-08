@@ -125,7 +125,7 @@ namespace NINA {
             _ = new EarthRotationParameterUpdater().Update();
         }
 
-        protected override async void OnStartup(StartupEventArgs e) {
+        protected override void OnStartup(StartupEventArgs e) {
             AttachConsole(ATTACH_PARENT_PROCESS);
             _commandLineOptions = new CommandLineOptions(e.Args);
             FreeConsole(ATTACH_PARENT_PROCESS);
@@ -201,19 +201,15 @@ namespace NINA {
                         }
                     };
                 try {
-                    await profileSelection.WaitForSelection();
+                    profileSelection.WaitForSelection();
                 } catch (Exception) {
                     Shutdown();
                     return;
                 }
                 profileSelectionWindow.IsEnabled = false;
-                await Task.Run(() => {
-                    _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
-                });
-            } else {
-                _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
+                profileSelection.Wait100msNonBlocking();
             }
-
+            _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
             mainWindow.DataContext = _mainWindowViewModel;

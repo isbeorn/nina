@@ -135,7 +135,7 @@ namespace NINA.Equipment.Equipment.MyDome {
         public async Task SlewToAzimuth(double azimuth, CancellationToken ct) {
             if (ShouldBeConnected) {
                 if (CanSetAzimuth) {
-                    using (ct.Register(async () => await StopSlewing())) {
+                    using (ct.Register(() => device?.AbortSlew())) {
                         await (device?.SlewToAzimuthAsync(azimuth, ct) ?? Task.CompletedTask);
                         InvalidatePropertyCache();
                     }

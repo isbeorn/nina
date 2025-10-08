@@ -120,11 +120,35 @@
             Grid.ColumnSpan="2"
             Margin="0,5,0,0"
             VerticalAlignment="Stretch">
-            <ninactrl:AsyncProcessButton
+            <Button
                 Height="40"
                 VerticalAlignment="Bottom"
-                ButtonText="{ns:Loc LblLoadProfile}"
-                Command="{Binding SelectProfileCommand}" />
+                Command="{Binding SelectProfileCommand}"
+                Visibility="{Binding SelectProfileCommand.IsRunning, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
+            </Button>
+            <Grid
+                Height="40"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding SelectProfileCommand.IsRunning, Converter={StaticResource VisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Path
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    Data="{StaticResource HourglassSVG}"
+                    Fill="{StaticResource PrimaryBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblInitializing}" />
+            </Grid>
         </Grid>
     </Grid>
 </Window>
