@@ -780,6 +780,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     await waitForUpdate;
                     var timeoutEnds = DateTime.UtcNow + TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime);
                     while (telescopeInfo.Coordinates.RADegrees != transform.RADegrees || telescopeInfo.Coordinates.Dec != transform.Dec) {
+                        Logger.Info("Waiting for telescope to update its position after a sync command");
                         if (DateTime.UtcNow > timeoutEnds) {
                             Logger.Warning("Timed out waiting for telescope to update its position after a sync command");
                             break;
