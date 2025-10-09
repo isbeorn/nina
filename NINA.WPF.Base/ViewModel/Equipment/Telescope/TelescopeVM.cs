@@ -144,7 +144,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         if (!Telescope.AtPark) {
                             progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToPark"] });
                             await Telescope.Park(timeoutCts.Token);
-                            
+
                             await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                         } else {
                             Logger.Info("Mount commanded to park but it is already parked");
@@ -307,7 +307,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 try {
                                     progress?.Report(new ApplicationStatus { Status = Loc.Instance["LblWaitingForTelescopeToFindHome"] });
                                     await Telescope.FindHome(timeoutCts.Token);
-                                                                        
+
                                     await updateTimer.WaitForNextUpdate(timeoutCts.Token);
                                     // We are home
                                     success = true;
@@ -542,7 +542,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                     } catch (OperationCanceledException ex) {
                         if (telescope?.Connected == true) {
-                            await Disconnect(); 
+                            await Disconnect();
                         }
                         Notification.ShowError(ex.Message);
                         return false;
@@ -764,21 +764,45 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public async Task<bool> Sync(Coordinates coordinates) {
             try {
-                var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
+                Logger.Debug($"Starting sync to coordinates {coordinates.Transform(Epoch.JNOW)}");
                 if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSync"] });
+                    var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
 
                     if (transform.RA < 0) {
                         var mod24Ra = AstroUtil.EuclidianModulus(transform.RA, 24);
                         Logger.Info($"RA value {transform.RA} is less than zero: applying Euclidean % 24 to RA for sync.");
                         transform.RA = mod24Ra;
                     }
+
                     var position = GetCurrentPosition();
+                    Logger.Debug($"Initial delta between current position {position} and sync target {transform} is {transform - position}");
                     bool result = Telescope.Sync(transform);
-                    Logger.Info($"{(result ? string.Empty : "FAILED - ")}Syncing scope from {position} to {transform}");
-                    var waitForUpdate = updateTimer.WaitForNextUpdate(default);
-                    await Task.Delay(TimeSpan.FromSeconds(Math.Max(2, profileService.ActiveProfile.TelescopeSettings.SettleTime)));
-                    await waitForUpdate;
+                    if (!result) {
+                        Logger.Info($"FAILED - Syncing scope from {position} to {transform}");
+                        return false;
+                    }
+                    Logger.Info($"Syncing scope from {position} to {transform}");
+                    using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(
+                        Math.Max(0, profileService.ActiveProfile.TelescopeSettings.SettleTime)));
+                    try {
+                        while (true) {
+                            // Bound the poll itself as a driver can stop reporting updates.
+                            await updateTimer.WaitForNextUpdate(timeout.Token).WaitAsync(timeout.Token);
+                            if (!TelescopeInfo.Connected || Telescope?.Connected != true) {
+                                return false;
+                            }
+                            position = GetCurrentPosition();
+                            var error = position == null ? double.NaN : (position - transform).Distance.ArcSeconds;
+                            if (double.IsFinite(error) && Math.Abs(error) <= 1.0) {
+                                break;
+                            }
+                            Logger.Debug($"Waiting for telescope position after sync to {transform}. Error: {error} arcsec");
+                            await Task.Delay(10, timeout.Token);
+                        }
+                    } catch (OperationCanceledException) when (timeout.IsCancellationRequested) {
+                        Logger.Debug($"Timed out waiting for telescope position after sync to {transform}");
+                    }
                     return result;
                 } else {
                     return false;
@@ -1037,22 +1061,22 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public bool SetTrackingMode(TrackingMode trackingMode) {
-            if(TelescopeInfo?.Connected != true) {
+            if (TelescopeInfo?.Connected != true) {
                 Logger.Warning("Cannot set tracking mode as the mount is not connected");
                 return false;
             }
 
-            if(TelescopeInfo.AtPark) {
+            if (TelescopeInfo.AtPark) {
                 Logger.Warning("Cannot set tracking mode as the mount is parked");
                 return false;
             }
 
-            if(trackingMode == TrackingMode.Custom) {
+            if (trackingMode == TrackingMode.Custom) {
                 Logger.Warning("Cannot set tracking mode as the tracking rate is custom");
                 return false;
             }
 
-            
+
             Telescope.TrackingMode = trackingMode;
             if (trackingMode != TrackingMode.Stopped && (Telescope.CanSetDeclinationRate || Telescope.CanSetRightAscensionRate)) {
                 try {
