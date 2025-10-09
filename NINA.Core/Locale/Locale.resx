@@ -7325,4 +7325,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
   </data>
+  <data name="LblPlateSolveSyncFailureTooLargeOffset" xml:space="preserve">
+    <value>Aborting centering - sync is unavailable and calculated offset is too large: {}° / {}°</value>
+  </data>
 </root>
