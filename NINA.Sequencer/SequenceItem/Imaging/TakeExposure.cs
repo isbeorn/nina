@@ -91,7 +91,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(Default = 60, Range = [0, 3600, ExpressionRange.MIN_EXCLUSIVE])]
+        [IsExpression(Default = 60, Range = [0, 3600])]
         private double exposureTime;
 
 
