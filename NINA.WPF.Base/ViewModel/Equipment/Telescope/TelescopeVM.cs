@@ -777,8 +777,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     bool result = Telescope.Sync(transform);
                     Logger.Info($"{(result ? string.Empty : "FAILED - ")}Syncing scope from {position} to {transform}");
                     var waitForUpdate = updateTimer.WaitForNextUpdate(default);
-                    await Task.Delay(TimeSpan.FromSeconds(Math.Max(2, profileService.ActiveProfile.TelescopeSettings.SettleTime)));
                     await waitForUpdate;
+                    var timeoutEnds = DateTime.UtcNow + TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime);
+                    while (telescopeInfo.Coordinates.RADegrees != transform.RADegrees || telescopeInfo.Coordinates.Dec != transform.Dec) {
+                        if (DateTime.UtcNow > timeoutEnds) {
+                            Logger.Warning("Timed out waiting for telescope to update its position after a sync command");
+                            break;
+                        }
+                        var waitForSyncCompletetion = updateTimer.WaitForNextUpdate(default);
+                        await waitForSyncCompletetion;
+                    }
                     return result;
                 } else {
                     return false;
