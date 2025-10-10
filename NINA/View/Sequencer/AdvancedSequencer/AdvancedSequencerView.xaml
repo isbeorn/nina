@@ -35,10 +35,6 @@
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/TextBox.xaml" />
                 <wpfutil:SharedResourceDictionary Source="/NINA.WPF.Base;component/Resources/Styles/Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type ToolTip}">
-                <Setter Property="Background" Value="DarkGreen" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
@@ -225,22 +221,26 @@
                 Name="SymbolButton"
                 Width="80"
                 Margin="15,5,5,5"
-                Command="{Binding ShowDataSymbolsCommand}" 
-                MouseEnter="ShowSymbols"
-                >
-                 <Path
+                Command="{Binding ShowDataSymbolsCommand}"
+                MouseEnter="ShowSymbols">
+                <Path
                     Margin="5"
                     Data="{StaticResource LightBulbSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
                     Stretch="Uniform"
                     UseLayoutRounding="True" />
             </Button>
-            <Popup x:Name="SymbolPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=SymbolButton}" Placement="Top" Closed="SymbolPopupClosed">
+            <Popup
+                x:Name="SymbolPopup"
+                Closed="SymbolPopupClosed"
+                Placement="Top"
+                PlacementTarget="{Binding ElementName=SymbolButton}"
+                StaysOpen="False">
                 <StackPanel Orientation="Horizontal">
                     <Grid
                         Grid.Row="0"
-                        Background="{StaticResource BackgroundBrush}"
-                        Margin="0,5,0,0">
+                        Margin="0,5,0,0"
+                        Background="{StaticResource BackgroundBrush}">
                         <Grid.Resources>
                             <CollectionViewSource x:Key="GroupedPatterns" Source="{Binding DataSymbols}">
                                 <CollectionViewSource.GroupDescriptions>
@@ -248,9 +248,7 @@
                                 </CollectionViewSource.GroupDescriptions>
                             </CollectionViewSource>
                         </Grid.Resources>
-                        <ListView
-                            x:Name="SymbolList"
-                            ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
+                        <ListView x:Name="SymbolList" ItemsSource="{Binding Source={StaticResource GroupedPatterns}}">
                             <ListView.GroupStyle>
                                 <GroupStyle>
                                     <GroupStyle.ContainerStyle>
