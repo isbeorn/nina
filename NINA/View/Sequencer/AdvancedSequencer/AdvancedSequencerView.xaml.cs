@@ -28,8 +28,6 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
     /// </summary>
     public partial class AdvancedSequencerView : UserControl {
 
-        private Sequence2VM _sequencer;
-
         public AdvancedSequencerView() {
             InitializeComponent();
         }
