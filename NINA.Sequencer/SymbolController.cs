@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Logic;
+using Parlot.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -106,5 +107,7 @@ namespace NINA.Sequencer {
             }
 
         }
+
+        public IList<Symbol> GetHiddenSymbols(string category) => SymbolBroker.GetHiddenSymbols(category) ?? Array.Empty<Symbol>();
     }
 }
