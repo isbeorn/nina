@@ -33,10 +33,10 @@ namespace NINA.View.Sequencer.Converter {
                     return string.Format(Loc.Instance["Lbl_SymbolBroker_NoCategoryData"], category);
                 }
 
-                var sb = new StringBuilder(Loc.Instance["Lbl_SymbolBroker_AdditionalData"] + " ");
+                var sb = new StringBuilder(Loc.Instance["Lbl_SymbolBroker_AdditionalData"] + Environment.NewLine);
                 for (int i = 0; i < syms.Count; i++) {
-                    sb.Append(syms[i].Key).Append('=').Append(syms[i].Value);
-                    if (i < syms.Count - 1) sb.Append("; ");
+                    sb.Append(syms[i].Key).Append(" = ").Append(syms[i].Value);
+                    if (i < syms.Count - 1) sb.Append(Environment.NewLine);
                 }
                 return sb.ToString();
             }

@@ -330,13 +330,29 @@ namespace NINA.Sequencer.Logic {
 
         private IList<string> Providers = new List<string>();
 
-        private static Symbol[] PierConstants = new Symbol[] { new Symbol("PierUnknown", -1), new Symbol("PierEast", 0), new Symbol("PierWest", 1) };
+        private static Symbol[] PierConstants = new Symbol[] { 
+            new Symbol("PierUnknown", -1), 
+            new Symbol("PierEast", 0), 
+            new Symbol("PierWest", 1) 
+        };
 
-        private static Symbol[] ShutterConstants = new Symbol[] { new Symbol("ShutterUnknown", -1), new Symbol("ShutterOpen", 0), new Symbol("ShutterClosed", 1), new Symbol("ShutterOpening", 2), new Symbol("ShutterClosing", 3),
-            new Symbol("ShutterError", 4) };
+        private static Symbol[] ShutterConstants = new Symbol[] { 
+            new Symbol("ShutterUnknown", -1), 
+            new Symbol("ShutterOpen", 0), 
+            new Symbol("ShutterClosed", 1), 
+            new Symbol("ShutterOpening", 2), 
+            new Symbol("ShutterClosing", 3),
+            new Symbol("ShutterError", 4) 
+        };
 
-        private static Symbol[] CoverConstants = new Symbol[] { new Symbol("CoverUnknown", 0), new Symbol("CoverNeitherOpenNorClosed", 1), new Symbol("CoverClosed", 2), new Symbol("CoverOpen", 3),
-            new Symbol("CoverError", 4), new Symbol("CoverNotPresent", 5) };
+        private static Symbol[] CoverConstants = new Symbol[] { 
+            new Symbol("CoverUnknown", 0), 
+            new Symbol("CoverNeitherOpenNorClosed", 1), 
+            new Symbol("CoverClosed", 2), 
+            new Symbol("CoverOpen", 3),
+            new Symbol("CoverError", 4), 
+            new Symbol("CoverNotPresent", 5) 
+        };
 
         public IEnumerable<ConcurrentDictionary<string, object>> GetEquipmentKeys() {
             return (IEnumerable<ConcurrentDictionary<string, object>>)DataSymbols;
@@ -395,20 +411,20 @@ namespace NINA.Sequencer.Logic {
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
             TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
 
-            AddSymbol("NINA", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
-            AddSymbol("NINA", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-            AddSymbol("NINA", "SunAltitude", tc.Altitude.Degree);
-            AddSymbol("NINA", "SunAzimuth", tc.Azimuth.Degree);
+            AddSymbol("N.I.N.A.", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
+            AddSymbol("N.I.N.A.", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, Observer));
+            AddSymbol("N.I.N.A.", "SunAltitude", tc.Altitude.Degree);
+            AddSymbol("N.I.N.A.", "SunAzimuth", tc.Azimuth.Degree);
 
             double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
             if (lst < 0) {
                 lst = AstroUtil.EuclidianModulus(lst, 24);
             }
-            AddSymbol("NINA", "LocalSiderealTime", lst);
+            AddSymbol("N.I.N.A.", "LocalSiderealTime", lst);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddSymbol("NINA", "TIME", timeSeconds);
+            AddSymbol("N.I.N.A.", "ApplicationUptime", timeSeconds);
 
             return Task.CompletedTask;
         }
@@ -456,27 +472,26 @@ namespace NINA.Sequencer.Logic {
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Telescope", "Altitude", deviceInfo.Altitude);
-                AddSymbol("Telescope", "Azimuth", deviceInfo.Azimuth);
-                AddSymbol("Telescope", "AtPark", deviceInfo.AtPark);
+                AddSymbol("Mount", "Altitude", deviceInfo.Altitude);
+                AddSymbol("Mount", "Azimuth", deviceInfo.Azimuth);
+                AddSymbol("Mount", "AtPark", deviceInfo.AtPark);
 
                 Coordinates c = deviceInfo.Coordinates.Transform(Epoch.J2000);
-                AddSymbol("Telescope", "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                AddSymbol("Telescope", "Declination", c.Dec); // telescopeInfo.Declination);
+                AddSymbol("Mount", "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                AddSymbol("Mount", "Declination", c.Dec); // telescopeInfo.Declination);
 
-                AddSymbol("Telescope", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
+                AddSymbol("Mount", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
             } else {
-                RemoveSymbol("Telescope", "Altitude");
-                RemoveSymbol("Telescope", "Azimuth");
-                RemoveSymbol("Telescope", "AtPark");
-                RemoveSymbol("Telescope", "RightAscension");
-                RemoveSymbol("Telescope", "Declination");
-                RemoveSymbol("Telescope", "SideOfPier");
+                RemoveSymbol("Mount", "Altitude");
+                RemoveSymbol("Mount", "Azimuth");
+                RemoveSymbol("Mount", "AtPark");
+                RemoveSymbol("Mount", "RightAscension");
+                RemoveSymbol("Mount", "Declination");
+                RemoveSymbol("Mount", "SideOfPier");
             }
         }
 
         public void Dispose() {
-            //throw new NotImplementedException();
         }
 
         public void UpdateDeviceInfo(SwitchInfo deviceInfo) {

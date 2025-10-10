@@ -20,12 +20,12 @@ namespace NINA.View.Sequencer.Converter {
 
             if (values[1] is SymbolController vm) {
                 if (symbol.Constants != null) {
-                    StringBuilder sb = new StringBuilder(Loc.Instance["Lbl_SymbolBroker_SymbolOptions"] + " ");
+                    StringBuilder sb = new StringBuilder(Loc.Instance["Lbl_SymbolBroker_SymbolOptions"] + Environment.NewLine);
                     Symbol[] cList = symbol.Constants;
                     for (int i = 0; i < cList.Length; i++) {
                         sb.Append(cList[i].Key);
                         if (i != cList.Length - 1) {
-                            sb.Append("; ");
+                            sb.Append(Environment.NewLine);
                         }
                     }
                     return sb.ToString();
