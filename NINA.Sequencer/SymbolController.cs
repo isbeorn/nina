@@ -1,4 +1,5 @@
 ﻿using Accord.Math;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Utility;
 using NINA.Profile.Interfaces;
@@ -15,14 +16,15 @@ using System.Windows;
 using System.Windows.Data;
 
 namespace NINA.Sequencer {
-    public class SymbolController : BaseINPC {
+    public partial class SymbolController : BaseINPC {
         public SymbolController(ISymbolBroker symbolBroker, IProfileService profileService) {
             SymbolBroker = symbolBroker;
             ProfileService = profileService;
 
-            DataSymbols = new ObservableCollection<Symbol>(SymbolBroker.GetSymbols());
+            dataSymbols = new ObservableCollection<Symbol>(SymbolBroker.GetSymbols());
             symbolsView = new CollectionViewSource { Source = DataSymbols };
             symbolsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Symbol.Category)));
+            SymbolsView.Filter += new Predicate<object>(ApplyViewFilter);
 
             _cts = new CancellationTokenSource();
             _refreshInterval = TimeSpan.FromSeconds(5);
@@ -30,20 +32,25 @@ namespace NINA.Sequencer {
 
         }
 
+        private bool ApplyViewFilter(object obj) {
+            return (obj as Symbol).Key.IndexOf(ViewFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         private CollectionViewSource symbolsView;
         public ICollectionView SymbolsView => symbolsView.View;
         public ISymbolBroker SymbolBroker { get; }
         public IProfileService ProfileService { get; }
 
+        [ObservableProperty]
         private ObservableCollection<Symbol> dataSymbols;
 
-        public ObservableCollection<Symbol> DataSymbols {
-            get => dataSymbols;
-            set {
-                dataSymbols = value;
-                RaisePropertyChanged();
-            }
+        [ObservableProperty]
+        private string viewFilter = string.Empty;
+
+        partial void OnViewFilterChanged(string value) {
+            SymbolsView.Refresh();
         }
+
 
         private readonly CancellationTokenSource _cts;
         private readonly TimeSpan _refreshInterval;

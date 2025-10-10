@@ -1307,14 +1307,82 @@
                         Text="{ns:Loc LblSymbols}" />
                 </StackPanel>
             </TabItem.Header>
-            <Grid Margin="5">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <Grid Margin="0,5,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ninactrl:HintTextBox
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Foreground="{StaticResource PrimaryBrush}"
+                        HintText="{ns:Loc LblSearch}"
+                        Text="{Binding SymbolController.ViewFilter, UpdateSourceTrigger=PropertyChanged}">
+                        <ninactrl:HintTextBox.Background>
+                            <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                        </ninactrl:HintTextBox.Background>
+                    </ninactrl:HintTextBox>
+                    <ToggleButton
+                        Grid.Column="1"
+                        Width="20"
+                        Height="20"
+                        Margin="2.5"
+                        IsChecked="{Binding Source={x:Reference ExpandAll}, Path=IsChecked, Mode=TwoWay}">
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource StaticToggleButton}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="3.5"
+                                                    Data="{StaticResource CollapseAllSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <ToolTip ToolTipService.ShowOnDisabled="True">
+                                                    <TextBlock Text="{ns:Loc LblCollapseAll}" />
+                                                </ToolTip>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="3.5"
+                                                    Data="{StaticResource ExpandAllSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform"
+                                                    UseLayoutRounding="True" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <ToolTip ToolTipService.ShowOnDisabled="True">
+                                                    <TextBlock Text="{ns:Loc LblExpandAll}" />
+                                                </ToolTip>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </Grid>
                 <ListBox
                     x:Name="SymbolList"
                     Grid.Row="1"
+                    Margin="5"
                     Background="{StaticResource BackgroundBrush}"
                     BorderThickness="0"
                     DataContext="{Binding SymbolController}"
