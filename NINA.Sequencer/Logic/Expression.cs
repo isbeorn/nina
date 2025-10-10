@@ -48,7 +48,7 @@ namespace NINA.Sequencer.Logic {
         public static readonly bool STRING_VALUES_ALLOWED = true;
         public static readonly bool DATE_VALUES_ALLOWED = true;
 
-        public ISymbolBrokerVM SymbolBroker;
+        public ISymbolBroker SymbolBroker;
 
         public bool HasError => string.IsNullOrEmpty(Error);
  

@@ -715,7 +715,7 @@ namespace NINA.ViewModel.FramingAssistant {
         private NighttimeData nighttimeData;
         private IImageDataFactory imageDataFactory;
         private IWindowServiceFactory windowServiceFactory;
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
 
         public NighttimeData NighttimeData {
             get => nighttimeData;

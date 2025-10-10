@@ -52,7 +52,7 @@ namespace NINA.Sequencer.Conditions {
 
         public string Name { get; set; }
 
-        public ISymbolBrokerVM SymbolBroker { get; set; }
+        public ISymbolBroker SymbolBroker { get; set; }
         public virtual bool AllowMultiplePerSet => false;
 
         public string Description { get; set; }

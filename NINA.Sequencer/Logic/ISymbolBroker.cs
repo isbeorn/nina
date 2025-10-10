@@ -16,7 +16,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using System.Collections.Generic;
 
 namespace NINA.Sequencer.Logic {
-    public interface ISymbolBrokerVM : IDockableVM {
+    public interface ISymbolBroker : IDockableVM {
         public bool TryGetValue(string key, out object value);
         public bool TryGetSymbol(string key, out Symbol symbol);
         public List<Symbol> GetSymbols();

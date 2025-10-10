@@ -62,7 +62,7 @@ namespace NINA.ViewModel.Sequencer {
             IApplicationStatusMediator applicationStatusMediator,
             ICameraMediator cameraMediator,
             ISequencerFactory factory,
-            ISymbolBrokerVM symbolBroker
+            ISymbolBroker symbolBroker
             ) : base(profileService) {
 
             this.commandLineOptions = commandLineOptions;
@@ -107,7 +107,7 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        public ISymbolBrokerVM SymbolBroker;
+        public ISymbolBroker SymbolBroker { get; }
 
         private ISequencer sequencer;
         public ISequencer Sequencer {

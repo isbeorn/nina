@@ -10,9 +10,9 @@ namespace NINA.Sequencer.Logic {
 
         private string friendlyName;
         public string code;
-        ISymbolBrokerVM broker;
+        ISymbolBroker broker;
 
-        public SymbolProvider(string friendlyName, string code, ISymbolBrokerVM broker) {
+        public SymbolProvider(string friendlyName, string code, ISymbolBroker broker) {
             this.friendlyName = friendlyName;
             this.code = code;
             this.broker = broker;

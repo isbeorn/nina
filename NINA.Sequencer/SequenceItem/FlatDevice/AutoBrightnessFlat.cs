@@ -41,7 +41,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {

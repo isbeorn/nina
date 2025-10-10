@@ -31,7 +31,7 @@ namespace NINA.Sequencer {
         GeometryGroup Icon { get; set; }
         string Category { get; set; }
 
-        ISymbolBrokerVM SymbolBroker { get; set; }
+        ISymbolBroker SymbolBroker { get; set; }
 
         /// <summary>
         /// Indicator that the item is currently active and running

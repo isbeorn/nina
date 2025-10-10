@@ -98,7 +98,7 @@ namespace NINA.Plugin {
                               IExposureDataFactory exposureDataFactory,
                               ITwilightCalculator twilightCalculator,
                               IMessageBroker messageBroker,
-                              ISymbolBrokerVM symbolBroker) {
+                              ISymbolBroker symbolBroker) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.telescopeMediator = telescopeMediator;
@@ -588,7 +588,7 @@ namespace NINA.Plugin {
         private readonly IExposureDataFactory exposureDataFactory;
         private readonly ITwilightCalculator twilightCalculator;
         private readonly IMessageBroker messageBroker;
-        private readonly ISymbolBrokerVM symbolBroker;
+        private readonly ISymbolBroker symbolBroker;
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
             // Split resolver name by comma in case there is version or other info in the name - we just have one version of each plugin anyways
             var parts = args?.Name?.Split(',');

@@ -50,7 +50,7 @@ namespace NINA.Sequencer.SequenceItem {
             ErrorBehavior = cloneMe.ErrorBehavior;
         }
 
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
         private string name;
         private bool showMenu;
         private SequenceEntityStatus status = SequenceEntityStatus.CREATED;
@@ -71,7 +71,7 @@ namespace NINA.Sequencer.SequenceItem {
             
         });
 
-        public ISymbolBrokerVM SymbolBroker {
+        public ISymbolBroker SymbolBroker {
             get => symbolBroker;
             set {
                 symbolBroker = value;

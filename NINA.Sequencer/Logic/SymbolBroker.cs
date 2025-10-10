@@ -41,14 +41,15 @@ using static NINA.Sequencer.Logic.Symbol;
 using NINA.Core.Model;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Sequencer.Logic {
-    public class SymbolBrokerVM : DockableVM, ISymbolBrokerVM, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
+    public class SymbolBroker : DockableVM, ISymbolBroker, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
         IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
 
-        public static SymbolBrokerVM INSTANCE { get; set; }
+        public static SymbolBroker INSTANCE { get; set; }
         
-        public SymbolBrokerVM(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
+        public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
             SwitchMediator = switchMediator;

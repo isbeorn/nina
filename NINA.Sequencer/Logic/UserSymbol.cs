@@ -380,7 +380,7 @@ namespace NINA.Sequencer.Logic {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expression exp = be.ResolvedSource as Expression;
-            ISymbolBrokerVM broker = exp.SymbolBroker;
+            ISymbolBroker broker = exp.SymbolBroker;
 
             if (exp == null) {
                 UserSymbol s = be.ResolvedSource as UserSymbol;

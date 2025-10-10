@@ -55,7 +55,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IImageSaveMediator imageSaveMediator;
         private ITwilightCalculator twilightCalculator;
         private ITelescopeMediator telescopeMediator;
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
 
         private bool cameraIsLinear = true;
 

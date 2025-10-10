@@ -42,7 +42,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
 
 
         private bool cameraIsLinear = true;

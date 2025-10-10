@@ -60,7 +60,7 @@ namespace NINA.Sequencer.Trigger {
         }
 
 
-        public ISymbolBrokerVM SymbolBroker { get; set; }
+        public ISymbolBroker SymbolBroker { get; set; }
 
         public string Name { get; set; }
 

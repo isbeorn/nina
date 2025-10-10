@@ -99,7 +99,7 @@ namespace NINA.Utility {
 
                 services.AddSingleton<IMessageBroker, MessageBroker>();
                 
-                services.AddSingleton<ISymbolBrokerVM, SymbolBrokerVM>();
+                services.AddSingleton<ISymbolBroker, SymbolBroker>();
 
                 services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 
@@ -255,7 +255,7 @@ namespace NINA.Utility {
                 services.AddSingleton<IImageHistoryVM, ImageHistoryVM>();
                 services.AddSingleton<IImageStatisticsVM, ImageStatisticsVM>();
 
-                services.AddSingleton<ISymbolBrokerVM, SymbolBrokerVM>();
+                services.AddSingleton<ISymbolBroker, SymbolBroker>();
 
                 services.AddSingleton<ITwilightCalculator, TwilightCalculator>();
                 services.AddSingleton<IMicroCacheFactory, DefaultMicroCacheFactory>();

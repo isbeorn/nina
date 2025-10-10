@@ -136,7 +136,7 @@ namespace NINA {
                 };
 
                 sw = Stopwatch.StartNew();
-                var symbolBroker = serviceProvider.GetService<ISymbolBrokerVM>();
+                var symbolBroker = serviceProvider.GetService<ISymbolBroker>();
                 Debug.Print($"Time to create SymbolBrokerVM {sw.Elapsed}");
 
                 Debug.Print($"Time to create MainWindowVM {sw.Elapsed}");

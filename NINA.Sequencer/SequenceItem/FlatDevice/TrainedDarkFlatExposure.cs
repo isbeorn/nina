@@ -51,7 +51,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [JsonObject(MemberSerialization.OptIn)]
     public class TrainedDarkFlatExposure : SequentialContainer, IImmutableContainer {
 
-        private ISymbolBrokerVM symbolBroker;
+        private ISymbolBroker symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
