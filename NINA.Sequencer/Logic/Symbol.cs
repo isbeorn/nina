@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using Google.Protobuf.WellKnownTypes;
+using NINA.Core.Utility;
 using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ using System.Windows.Input;
 
 namespace NINA.Sequencer.Logic {
 
-    public class Symbol {
+    public class Symbol : BaseINPC {
         // The name of the Symbol
         private string key;
         // The Symbol's current value
@@ -65,6 +66,7 @@ namespace NINA.Sequencer.Logic {
             }
             set {
                 this.value = (object)value;
+                RaisePropertyChanged(nameof(Value));
             }
         }
         public SymbolType Type { get { return type; } }

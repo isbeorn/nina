@@ -41,7 +41,8 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 // Yeah, this shouldn't reference SymbolBrokerVM directly...
                 vm.DataSymbols = vm.SymbolBroker.GetSymbols();
                 SymbolPopup.IsOpen = true;
-            }        }
+            }
+        }
 
         public void HideSymbols(object sender, RoutedEventArgs e) {
             if (SymbolPopup.IsOpen) {
@@ -77,7 +78,7 @@ namespace NINA.View.Sequencer.AdvancedSequencer {
                 CollectionViewGroup group = (CollectionViewGroup)item.DataContext;
                 string name = (string)group.Name;
                 // Get list of hidden values
-                if (_sequencer!= null) {
+                if (_sequencer != null) {
                     // Yeah, this shouldn't reference SymbolBrokerVM directly...
                     IList<Symbol> syms = _sequencer.SymbolBroker.GetHiddenSymbols(name);
                     if (syms == null || syms.Count == 0) {

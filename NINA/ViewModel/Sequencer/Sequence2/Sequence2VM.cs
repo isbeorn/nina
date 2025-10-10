@@ -200,6 +200,7 @@ namespace NINA.ViewModel.Sequencer {
                     SequenceJsonConverter = new SequenceJsonConverter(SequencerFactory);
                     TemplateController = new TemplateController(SequenceJsonConverter, profileService);
                     TargetController = new TargetController(SequenceJsonConverter, profileService);
+                    SymbolController = new SymbolController(SymbolBroker, profileService);
 
                     var rootContainer = SequencerFactory.GetContainer<SequenceRootContainer>();
                     rootContainer.Name = Loc.Instance["LblAdvancedSequenceTitle"];
@@ -481,7 +482,7 @@ namespace NINA.ViewModel.Sequencer {
 
         public TemplateController TemplateController { get; private set; }
         public TargetController TargetController { get; private set; }
-
+        public SymbolController SymbolController { get; private set; }
         public SequenceJsonConverter SequenceJsonConverter { get; private set; }
 
         private bool isRunning;

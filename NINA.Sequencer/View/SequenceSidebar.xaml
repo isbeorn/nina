@@ -1279,5 +1279,70 @@
                 </Grid>
             </util:DeferredContent.Content>
         </TabItem>
+
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Path
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,10,0"
+                        Data="{StaticResource AddSVG}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource ButtonForegroundBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TabItemTextBox}"
+                        Text="{ns:Loc LblSymbols}" />
+                </StackPanel>
+            </TabItem.Header>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ListBox
+                    x:Name="SymbolList"
+                    Grid.Row="1"
+                    Background="{StaticResource BackgroundBrush}"
+                    BorderThickness="0"
+                    DataContext="{Binding SymbolController}"
+                    Grid.IsSharedSizeScope="True"
+                    ItemContainerStyle="{StaticResource ListBoxItemNoHighlight}"
+                    ItemsSource="{Binding SymbolsView}"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                    <ItemsControl.GroupStyle>
+                        <GroupStyle ContainerStyle="{StaticResource ContainerStyle}" />
+                    </ItemsControl.GroupStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="SymbolKey" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Key}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="15,0,0,0"
+                                    Text="{Binding Value, StringFormat={}{0:0.######}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </TabItem>
     </TabControl>
 </UserControl>
