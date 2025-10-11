@@ -31,7 +31,6 @@ using NINA.PlateSolving;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces.Mediator;
-using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Platesolving;
 using NINA.WPF.Base.Behaviors;
 using NINA.WPF.Base.Exceptions;
@@ -715,7 +714,6 @@ namespace NINA.ViewModel.FramingAssistant {
         private NighttimeData nighttimeData;
         private IImageDataFactory imageDataFactory;
         private IWindowServiceFactory windowServiceFactory;
-        private ISymbolBroker symbolBroker;
 
         public NighttimeData NighttimeData {
             get => nighttimeData;
