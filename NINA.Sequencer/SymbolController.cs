@@ -92,21 +92,35 @@ namespace NINA.Sequencer {
         }
 
         private void ApplySymbols(IReadOnlyList<Symbol> latest) {
-            var latestByCatKey = latest.ToDictionary(s => (s.Category, s.Key));
+            // Build lookup of the latest symbols by (Category, Key).
+            // If there are duplicates in 'latest', keep the last one.
+            var latestByCatKey = latest
+                .GroupBy(s => (s.Category, s.Key))
+                .ToDictionary(g => g.Key, g => g.Last());
 
-            foreach (var cur in DataSymbols) {
-                if (latestByCatKey.TryGetValue((cur.Category, cur.Key), out var src)) {
+            // Update existing symbols or remove if they no longer exist in latest
+            for (int i = 0; i < DataSymbols.Count; i++) {
+                var cur = DataSymbols[i];
+                var key = (cur.Category, cur.Key);
+
+                if (latestByCatKey.TryGetValue(key, out var src)) {
                     if (!Equals(cur.Value, src.Value))
                         cur.Value = src.Value;
+                } else {
+                    // Not present in latest -> remove
+                    DataSymbols.RemoveAt(i);
+                    i--;
                 }
             }
 
+            // Add any symbols that are in latest but missing in DataSymbols
             foreach (var kv in latestByCatKey) {
-                if (!DataSymbols.Any(s => s.Category == kv.Key.Category && s.Key == kv.Key.Key))
+                if (!DataSymbols.Any(s => s.Category == kv.Key.Category && s.Key == kv.Key.Key)) {
                     DataSymbols.Add(kv.Value);
+                }
             }
-
         }
+
 
         public IList<Symbol> GetHiddenSymbols(string category) => SymbolBroker.GetHiddenSymbols(category) ?? Array.Empty<Symbol>();
     }
