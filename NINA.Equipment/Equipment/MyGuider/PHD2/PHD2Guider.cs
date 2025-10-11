@@ -786,37 +786,26 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             return SendMessage<GenericPhdMethodResponse>(msg, receiveTimeout);
         }
 
-        private static readonly SemaphoreSlim phd2SendLock = new(1, 1);
-
-        public async Task<T> SendMessage<T>(Phd2Method msg, int receiveTimeout = 60000)
-            where T : PhdMethodResponse {
-            await phd2SendLock.WaitAsync(receiveTimeout);
+        public async Task<T> SendMessage<T>(Phd2Method msg, int receiveTimeout = 60000) where T : PhdMethodResponse {
             try {
-                var serializedMessage = JsonConvert.SerializeObject(
-                    msg,
-                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }
-                );
+                var serializedMessage = JsonConvert.SerializeObject(msg, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
                 Logger.Debug($"Phd2 - Sending message '{serializedMessage}'");
 
-                using var client = new TcpClient {
+                using var client = new TcpClient() {
                     ReceiveTimeout = receiveTimeout,
                     SendTimeout = receiveTimeout,
                     NoDelay = true,
                 };
 
-                try {
-                    await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                } catch (SocketException sx) when (sx.SocketErrorCode == SocketError.AddressAlreadyInUse) {
-                    await Task.Delay(300);
-                    await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                }
-
+                await client.ConnectAsync(phd2Ip, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
                 var stream = client.GetStream();
                 var data = Encoding.ASCII.GetBytes(serializedMessage + Environment.NewLine);
+
                 await stream.WriteAsync(data);
 
                 using var reader = new StreamReader(stream, Encoding.UTF8);
                 string line;
+
                 while ((line = await reader.ReadLineAsync()) != null) {
                     var o = JObject.Parse(line);
                     string phdevent = "";
@@ -832,14 +821,12 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error("Phd2 error while sending message", ex);
-            } finally {
-                phd2SendLock.Release();
+                Logger.Error("Phd2 error while sending messge", ex);
             }
 
             var genericError = (T)Activator.CreateInstance(typeof(T));
             genericError.id = msg.Id.ToString();
-            genericError.error = new PhdError { code = -1, message = "Unable to get response from PHD2" };
+            genericError.error = new PhdError() { code = -1, message = "Unable to get response from phd2" };
             return genericError;
         }
 
