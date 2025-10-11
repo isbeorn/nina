@@ -13,13 +13,11 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
