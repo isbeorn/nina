@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Sequencer.Logic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,6 +34,12 @@ namespace NINA.View.Sequencer {
 
         public SequenceSidebar() {
             InitializeComponent();
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (sender is FrameworkElement fe && fe.DataContext is Symbol item) { 
+                Clipboard.SetText((item.Category?.ToString() ?? string.Empty) + SymbolBroker.DELIMITER + (item.Key?.ToString() ?? string.Empty));
+            }
         }
     }
 }

@@ -1339,6 +1339,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid Margin="0,5,0,5">
@@ -1408,9 +1409,24 @@
                         </ToggleButton.Style>
                     </ToggleButton>
                 </Grid>
+                <Border
+                    Grid.Row="1"
+                    Margin="10,10,10,10"
+                    Background="{StaticResource SecondaryBackgroundBrush}"
+                    BorderThickness="0"
+                    DockPanel.Dock="Top">
+                    <TextBlock
+                        Padding="10"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource ButtonForegroundBrush}"
+                        Text="{ns:Loc Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard}"
+                        TextAlignment="Center"
+                        TextBlock.FontStyle="Italic"
+                        TextWrapping="Wrap" />
+                </Border>
                 <ListBox
                     x:Name="SymbolsList"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="5"
                     Background="{StaticResource BackgroundBrush}"
                     BorderThickness="0"
@@ -1433,7 +1449,7 @@
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="SymbolKey" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Key}">
+                                <TextBlock MouseDown="TextBlock_MouseDown" Text="{Binding Key}">
                                     <TextBlock.ToolTip>
                                         <MultiBinding Converter="{StaticResource SymbolToTooltipConverter}">
                                             <Binding />
@@ -1444,6 +1460,7 @@
                                 <TextBlock
                                     Grid.Column="1"
                                     Margin="15,0,0,0"
+                                    MouseDown="TextBlock_MouseDown"
                                     Text="{Binding Value, StringFormat={}{0:0.######}}">
                                     <TextBlock.ToolTip>
                                         <MultiBinding Converter="{StaticResource SymbolToTooltipConverter}">

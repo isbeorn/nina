@@ -86,7 +86,7 @@ namespace NINA.Sequencer.Logic {
 
         private static ConcurrentDictionary<string, IList<Symbol>> HiddenSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
 
-        private const char DELIMITER = '_';
+        public static readonly char DELIMITER = '_';
 
         public bool TryGetSymbol(string key, out Symbol symbol) {
             Symbol sym;
@@ -402,20 +402,20 @@ namespace NINA.Sequencer.Logic {
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
             TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation);
 
-            AddOrUpdateSymbol("N.I.N.A.", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, observer));
-            AddOrUpdateSymbol("N.I.N.A.", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, observer));
-            AddOrUpdateSymbol("N.I.N.A.", "SunAltitude", tc.Altitude.Degree);
-            AddOrUpdateSymbol("N.I.N.A.", "SunAzimuth", tc.Azimuth.Degree);
+            AddOrUpdateSymbol("NINA", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, observer));
+            AddOrUpdateSymbol("NINA", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, observer));
+            AddOrUpdateSymbol("NINA", "SunAltitude", tc.Altitude.Degree);
+            AddOrUpdateSymbol("NINA", "SunAzimuth", tc.Azimuth.Degree);
 
             double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
             if (lst < 0) {
                 lst = AstroUtil.EuclidianModulus(lst, 24);
             }
-            AddOrUpdateSymbol("N.I.N.A.", "LocalSiderealTime", lst);
+            AddOrUpdateSymbol("NINA", "LocalSiderealTime", lst);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddOrUpdateSymbol("N.I.N.A.", "ApplicationUptime", timeSeconds);
+            AddOrUpdateSymbol("NINA", "ApplicationUptime", timeSeconds);
 
             return Task.CompletedTask;
         }
