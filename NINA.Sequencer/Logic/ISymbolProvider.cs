@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace NINA.Sequencer.Logic
 {
     public interface ISymbolProvider {
-        public void AddSymbol(string name, object value);
+        public void AddOrUpdateSymbol(string name, object value);
 
-        public void AddSymbol(string name, object value, Symbol[] values);
+        public void AddOrUpdateSymbol(string name, object value, Symbol[] values);
 
         public bool RemoveSymbol(string name);
 

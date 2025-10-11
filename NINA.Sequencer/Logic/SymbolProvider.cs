@@ -29,12 +29,12 @@ namespace NINA.Sequencer.Logic {
         }
 
         // Allow constants to be added at some point (like CoverStatus, PierSide)
-        public void AddSymbol(string name, object value) {
-            broker.AddSymbol(this, name, value);
+        public void AddOrUpdateSymbol(string name, object value) {
+            broker.AddOrUpdateSymbol(this, name, value);
         }
 
-        public void AddSymbol(string name, object value, Symbol[] values) {
-            broker.AddSymbol(this, name, value, values);
+        public void AddOrUpdateSymbol(string name, object value, Symbol[] values) {
+            broker.AddOrUpdateSymbol(this, name, value, values);
         }
 
         public bool RemoveSymbol(string name) {

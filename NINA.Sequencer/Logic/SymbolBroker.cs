@@ -12,8 +12,12 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using Namotion.Reflection;
 using NINA.Astrometry;
+using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
 using NINA.Equipment.Equipment.MyFlatDevice;
@@ -22,33 +26,28 @@ using NINA.Equipment.Equipment.MyRotator;
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Equipment.MyTelescope;
+using NINA.Equipment.Equipment.MyWeatherData;
+using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageData;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
+using NINA.WPF.Base.ViewModel;
+using Parlot.Fluent;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using NINA.Core.Utility;
-using NINA.WPF.Base.ViewModel;
-using NINA.Equipment.Equipment.MyWeatherData;
-using System.Reflection;
-using NINA.Equipment.Interfaces;
-using System.Linq;
 using static NINA.Sequencer.Logic.Symbol;
-using NINA.Core.Model;
-using NINA.Image.ImageData;
-using Namotion.Reflection;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.Sequencer.Logic {
     public class SymbolBroker : DockableVM, ISymbolBroker, ITelescopeConsumer, ISwitchConsumer, IWeatherDataConsumer, IFocuserConsumer, IFilterWheelConsumer,
         IDomeConsumer, ISafetyMonitorConsumer, ICameraConsumer, IFlatDeviceConsumer, IRotatorConsumer {
 
-        public static SymbolBroker INSTANCE { get; set; }
-        
         public SymbolBroker(IProfileService profileService, ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
             IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator) : base(profileService) {
@@ -81,9 +80,6 @@ namespace NINA.Sequencer.Logic {
             CameraMediator.RegisterConsumer(this);
             FlatMediator.RegisterConsumer(this);
             RotatorMediator.RegisterConsumer(this);
-
-            INSTANCE = this;
-
         }
 
         private static ConcurrentDictionary<string, IList<Symbol>> DataSymbols = new ConcurrentDictionary<string, IList<Symbol>>();
@@ -199,8 +195,6 @@ namespace NINA.Sequencer.Logic {
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
 
-        private static ObserverInfo Observer = null;
-
         public static Object SYMBOL_LOCK = new object();
 
         private static HashSet<string> LoggedOnce = new HashSet<string>();
@@ -225,21 +219,21 @@ namespace NINA.Sequencer.Logic {
             return syms;
         }
 
-        public void AddSymbol(string source, string token, object value) {
-            AddSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
+        public void AddOrUpdateSymbol(string source, string token, object value) {
+            AddOrUpdateSymbol(source, token, value, null, SymbolType.SYMBOL_NORMAL);
         }
-        public void AddSymbol(string source, string token, object value, SymbolType type) {
-            AddSymbol(source, token, value, null, type);
+        public void AddOrUpdateSymbol(string source, string token, object value, SymbolType type) {
+            AddOrUpdateSymbol(source, token, value, null, type);
         }
-        private void AddSymbol(string source, string token, object value, Symbol[] values) {
-            AddSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
+        private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values) {
+            AddOrUpdateSymbol(source, token, value, values, SymbolType.SYMBOL_NORMAL);
         }
-        private void AddSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
-            IList<Symbol> list;
+        private void AddOrUpdateSymbol(string source, string token, object value, Symbol[] values, SymbolType type) {
             if (!Providers.Contains(source)) {
                 Providers.Add(source);
             }
-            if (!DataSymbols.ContainsKey(token)) {
+
+            if (!DataSymbols.TryGetValue(token, out IList<Symbol> list)) {
                 list = new List<Symbol>();
                 DataSymbols[token] = list;
                 Symbol sym = new Symbol(token, value, source, values, type);
@@ -248,7 +242,6 @@ namespace NINA.Sequencer.Logic {
                 }
                 list.Add(sym);
             } else {
-                list = DataSymbols[token];
                 bool found = false;
                 for (int idx = 0; idx < list.Count; idx++) {
                     Symbol s = list[idx];
@@ -267,7 +260,7 @@ namespace NINA.Sequencer.Logic {
             // Defined constants...
             if (values != null) {
                 foreach (Symbol d in values) {
-                    AddSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
+                    AddOrUpdateSymbol(source, d.Key, d.Value, null, SymbolType.SYMBOL_CONSTANT);
                 }
             }
         }
@@ -362,7 +355,7 @@ namespace NINA.Sequencer.Logic {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
                 if (v is double vDouble) {
-                    AddSymbol("Image", name, Math.Round(vDouble, 2));
+                    AddOrUpdateSymbol("Image", name, Math.Round(vDouble, 2));
                 }
             }
         }
@@ -383,14 +376,14 @@ namespace NINA.Sequencer.Logic {
                 rms = recordedRMS.Total;
             }
 
-            AddSymbol("Image", "HFR", Math.Round(a.HFR, 3));
-            AddSymbol("Image", "StarCount", a.DetectedStars);
-            AddSymbol("Image", "ImageId", imageMetaData.Image.Id);
-            AddSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
-            AddSymbol("Image", "RMS", rms);
-            AddSymbol("Image", "Gain", imageMetaData.Camera.Gain);
-            AddSymbol("Image", "Offset", imageMetaData.Camera.Offset);
-            AddSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
+            AddOrUpdateSymbol("Image", "HFR", Math.Round(a.HFR, 3));
+            AddOrUpdateSymbol("Image", "StarCount", a.DetectedStars);
+            AddOrUpdateSymbol("Image", "ImageId", imageMetaData.Image.Id);
+            AddOrUpdateSymbol("Image", "ExposureTime", imageMetaData.Image.ExposureTime);
+            AddOrUpdateSymbol("Image", "RMS", rms);
+            AddOrUpdateSymbol("Image", "Gain", imageMetaData.Camera.Gain);
+            AddOrUpdateSymbol("Image", "Offset", imageMetaData.Camera.Offset);
+            AddOrUpdateSymbol("Image", "ImageType", imageMetaData.Image.ImageType);
 
             // Add these if they exist (from Hocus Focus at this time)
             AddOptionalImageSymbol(a, "Eccentricity");
@@ -399,32 +392,30 @@ namespace NINA.Sequencer.Logic {
 
         private Task UpdateNINASymbols() {
 
-            if (Observer == null) {
-                Observer = new ObserverInfo() {
-                    Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
-                    Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
-                    Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
-                };
-            }
+            var observer = new ObserverInfo() {
+                Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
+                Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude,
+                Elevation = ProfileService.ActiveProfile.AstrometrySettings.Elevation
+            };
 
-            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
+            NOVAS.SkyPosition sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), observer);
             Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
-            TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude), Observer.Elevation);
+            TopocentricCoordinates tc = sunCoords.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation);
 
-            AddSymbol("N.I.N.A.", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
-            AddSymbol("N.I.N.A.", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, Observer));
-            AddSymbol("N.I.N.A.", "SunAltitude", tc.Altitude.Degree);
-            AddSymbol("N.I.N.A.", "SunAzimuth", tc.Azimuth.Degree);
+            AddOrUpdateSymbol("N.I.N.A.", "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, observer));
+            AddOrUpdateSymbol("N.I.N.A.", "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now, observer));
+            AddOrUpdateSymbol("N.I.N.A.", "SunAltitude", tc.Altitude.Degree);
+            AddOrUpdateSymbol("N.I.N.A.", "SunAzimuth", tc.Azimuth.Degree);
 
             double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
             if (lst < 0) {
                 lst = AstroUtil.EuclidianModulus(lst, 24);
             }
-            AddSymbol("N.I.N.A.", "LocalSiderealTime", lst);
+            AddOrUpdateSymbol("N.I.N.A.", "LocalSiderealTime", lst);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             double timeSeconds = Math.Floor(time.TotalSeconds);
-            AddSymbol("N.I.N.A.", "ApplicationUptime", timeSeconds);
+            AddOrUpdateSymbol("N.I.N.A.", "ApplicationUptime", timeSeconds);
 
             return Task.CompletedTask;
         }
@@ -436,18 +427,18 @@ namespace NINA.Sequencer.Logic {
             return new SymbolProvider(friendlyName, prefix, this);
         }
 
-        public void AddSymbol(ISymbolProvider provider, string token, object value) {
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            AddSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value);
+            AddOrUpdateSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value);
         }
 
-        public void AddSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
+        public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            AddSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value, values);
+            AddOrUpdateSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value, values);
         }
         
         public bool RemoveSymbol(ISymbolProvider provider, string token) {
@@ -472,21 +463,21 @@ namespace NINA.Sequencer.Logic {
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Mount", "Altitude", deviceInfo.Altitude);
-                AddSymbol("Mount", "Azimuth", deviceInfo.Azimuth);
-                AddSymbol("Mount", "AtPark", deviceInfo.AtPark);
+                AddOrUpdateSymbol("Mount", "Altitude", deviceInfo.Altitude);
+                AddOrUpdateSymbol("Mount", "Azimuth", deviceInfo.Azimuth);
+                AddOrUpdateSymbol("Mount", "AtPark", deviceInfo.AtPark);
 
                 Coordinates c = deviceInfo.Coordinates.Transform(Epoch.J2000);
-                AddSymbol("Mount", "RightAscension", c.RA); // telescopeInfo.RightAscension);
-                AddSymbol("Mount", "Declination", c.Dec); // telescopeInfo.Declination);
+                AddOrUpdateSymbol("Mount", "RightAscensionJ2000", c.RA);
+                AddOrUpdateSymbol("Mount", "DeclinationJ2000", c.Dec);
 
-                AddSymbol("Mount", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
+                AddOrUpdateSymbol("Mount", "SideOfPier", (int)deviceInfo.SideOfPier, PierConstants);
             } else {
                 RemoveSymbol("Mount", "Altitude");
                 RemoveSymbol("Mount", "Azimuth");
                 RemoveSymbol("Mount", "AtPark");
-                RemoveSymbol("Mount", "RightAscension");
-                RemoveSymbol("Mount", "Declination");
+                RemoveSymbol("Mount", "RightAscensionJ2000");
+                RemoveSymbol("Mount", "DeclinationJ2000");
                 RemoveSymbol("Mount", "SideOfPier");
             }
         }
@@ -498,11 +489,11 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 foreach (ISwitch sw in deviceInfo.ReadonlySwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Gauge", key, sw.Value);
+                    AddOrUpdateSymbol("Gauge", key, sw.Value);
                 }
                 foreach (ISwitch sw in deviceInfo.WritableSwitches) {
                     string key = RemoveSpecialCharacters(sw.Name);
-                    AddSymbol("Switch", key, sw.Value);
+                    AddOrUpdateSymbol("Switch", key, sw.Value);
                 }
             } else {
                 RemoveAllSymbols("Gauge");
@@ -519,7 +510,7 @@ namespace NINA.Sequencer.Logic {
                         if (val is double t && !Double.IsNaN(t)) {
                             t = Math.Round(t, 2);
                             string key = RemoveSpecialCharacters(dataName);
-                            AddSymbol("Weather", RemoveSpecialCharacters(dataName), t);
+                            AddOrUpdateSymbol("Weather", RemoveSpecialCharacters(dataName), t);
                         }
                     }
                 }
@@ -535,8 +526,8 @@ namespace NINA.Sequencer.Logic {
 
         public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Focuser", "Position", deviceInfo.Position);
-                AddSymbol("Focuser", "Temperature", deviceInfo.Temperature);
+                AddOrUpdateSymbol("Focuser", "Position", deviceInfo.Position);
+                AddOrUpdateSymbol("Focuser", "Temperature", deviceInfo.Temperature);
             } else {
                 RemoveSymbol("Focuser", "Position");
                 RemoveSymbol("Focuser", "Temperature");
@@ -548,54 +539,75 @@ namespace NINA.Sequencer.Logic {
             if (deviceInfo.Connected) {
                 var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (FilterInfo filterInfo in f) {
-                    AddSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                    AddOrUpdateSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                 }
 
                 if (deviceInfo.SelectedFilter != null) {
-                    AddSymbol("FilterWheel", "CurrentFilter", deviceInfo.SelectedFilter.Position);
+                    AddOrUpdateSymbol("FilterWheel", "CurrentFilterIndex", deviceInfo.SelectedFilter.Position);
                 }
+            } else {
+                var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (FilterInfo filterInfo in f) {
+                    RemoveSymbol("Filter", RemoveSpecialCharacters(filterInfo.Name));
+                }
+                RemoveSymbol("FilterWheel", "CurrentFilterIndex");
             }
         }
 
         public void UpdateDeviceInfo(DomeInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
-                AddSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth);
+                AddOrUpdateSymbol("Dome", "ShutterStatus", (int)deviceInfo.ShutterStatus, ShutterConstants);
+                AddOrUpdateSymbol("Dome", "DomeAzimuth", deviceInfo.Azimuth);
+                AddOrUpdateSymbol("Dome", "DomeAltitude", deviceInfo.Altitude);
             } else {
                 RemoveSymbol("Dome", "ShutterStatus");
                 RemoveSymbol("Dome", "DomeAzimuth");
+                RemoveSymbol("Dome", "DomeAltitude");
             }
         }
 
         public void UpdateDeviceInfo(SafetyMonitorInfo deviceInfo) {
-            AddSymbol("Safety", "IsSafe", deviceInfo.Connected && deviceInfo.IsSafe);
+            if (profileService.ActiveProfile.SafetyMonitorSettings.Id != "No_Device") {
+                AddOrUpdateSymbol("Safety", "IsSafe", deviceInfo.Connected && deviceInfo.IsSafe);
+            } else {
+                RemoveSymbol("Safety", "IsSafe");
+            }
         }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Camera", "Temperature", deviceInfo.Temperature);
+                AddOrUpdateSymbol("Camera", "Temperature", deviceInfo.Temperature);
                 // Hidden
-                AddSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
-                AddSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
-                AddSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
+                AddOrUpdateSymbol("Camera", "PixelSize", deviceInfo.PixelSize, SymbolType.SYMBOL_HIDDEN);
+                AddOrUpdateSymbol("Camera", "XSize", deviceInfo.XSize, SymbolType.SYMBOL_HIDDEN);
+                AddOrUpdateSymbol("Camera", "YSize", deviceInfo.YSize, SymbolType.SYMBOL_HIDDEN);
             } else {
                 RemoveSymbol("Camera", "Temperature");
+                RemoveSymbol("Camera", "PixelSize");
+                RemoveSymbol("Camera", "XSize");
+                RemoveSymbol("Camera", "YSize");
             }
         }
 
         public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("FlatPanel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
+                AddOrUpdateSymbol("FlatPanel", "LightOn", deviceInfo.LightOn);
+                AddOrUpdateSymbol("FlatPanel", "Brightness", deviceInfo.Brightness);
+                AddOrUpdateSymbol("FlatPanel", "CoverState", (int)deviceInfo.CoverState, CoverConstants);
             } else {
+                RemoveSymbol("FlatPanel", "LightOn");
+                RemoveSymbol("FlatPanel", "Brightness");
                 RemoveSymbol("FlatPanel", "CoverState");
             }
         }
 
         public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
             if (deviceInfo.Connected) {
-                AddSymbol("Rotator", "Position", deviceInfo.MechanicalPosition);
+                AddOrUpdateSymbol("Rotator", "Position", deviceInfo.Position);
+                AddOrUpdateSymbol("Rotator", "MechanicalPosition", deviceInfo.MechanicalPosition);
             } else {
                 RemoveSymbol("Rotator", "Position");
+                RemoveSymbol("Rotator", "MechanicalPosition");
             }
         }
     }
