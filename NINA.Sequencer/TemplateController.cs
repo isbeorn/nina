@@ -33,7 +33,6 @@ using NINA.Core.Utility.Notification;
 using NINA.Core.Locale;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Threading;
 
 namespace NINA.Sequencer {
 
