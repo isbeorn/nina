@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace NINA.Sequencer.Generators {
@@ -171,7 +172,7 @@ namespace NINA.Sequencer.Generators {
                 if (fieldType == "Int32") fieldType = "int";
 
                 cloneSource += $@"
-                {propNameExpression} = new Expression ({propNameExpression}),";
+                {propNameExpression} = new Expression (this.{propNameExpression}),";
 
                 propertiesSource += $@"
 
@@ -202,10 +203,10 @@ namespace NINA.Sequencer.Generators {
                             r = (double)values[2].Value;
                         }
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = new double[] {{{min}, {max}, {r}}};";
+                {propNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
                     } else if (kvp.Key == "Default") {
                         propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = {kvp.Value.Value};";
+                {propNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
                         hasDefault = true;
                     } else if (kvp.Key == "DefaultString") {
                         propertiesSource += $@"
@@ -238,7 +239,7 @@ namespace NINA.Sequencer.Generators {
         public {fieldType} {propName} {{
             get => {proxy};
             set {{
-                {propNameExpression}.Definition = value.ToString();
+                {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
                 {proxy} = {propNameExpression}.Value;
             }}
         }}
@@ -251,11 +252,11 @@ namespace NINA.Sequencer.Generators {
             set {{
                 ";
                     if (!hasDefault) {
-                        propertiesSource += $@"{propNameExpression}.Definition = (value == null) ? """" : value.ToString(); 
+                        propertiesSource += $@"{propNameExpression}.Definition = (value == null) ? """" : Convert.ToString(value, CultureInfo.InvariantCulture); 
             }}
         }}";
                     } else {
-                        propertiesSource += $@"if (value != {propNameExpression}.Default) {propNameExpression}.Definition = value.ToString(); 
+                        propertiesSource += $@"if (value != {propNameExpression}.Default) {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture); 
             }}
         }}";
                     }
@@ -270,7 +271,7 @@ namespace NINA.Sequencer.Generators {
                     }
                     propertiesSource += $@";
             set {{
-                {propNameExpression}.Definition = value.ToString();
+                {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
             }}
         }}
 ";
