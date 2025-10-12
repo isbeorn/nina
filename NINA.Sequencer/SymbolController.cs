@@ -25,6 +25,9 @@ namespace NINA.Sequencer {
             dataSymbols = new ObservableCollection<Symbol>(SymbolBroker.GetSymbols());
             symbolsView = new CollectionViewSource { Source = DataSymbols };
             symbolsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Symbol.Category)));
+            symbolsView.SortDescriptions.Add(new SortDescription(nameof(Symbol.Category), ListSortDirection.Ascending));
+            symbolsView.SortDescriptions.Add(new SortDescription(nameof(Symbol.Key), ListSortDirection.Ascending));
+
             SymbolsView.Filter += new Predicate<object>(ApplyViewFilter);
 
             _cts = new CancellationTokenSource();
