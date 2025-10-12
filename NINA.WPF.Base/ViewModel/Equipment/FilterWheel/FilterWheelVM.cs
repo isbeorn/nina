@@ -172,8 +172,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 } else {
                     await Disconnect();
                 }
-            } catch(OperationCanceledException) {
-                if(token.IsCancellationRequested == true) {
+            } catch (OperationCanceledException) {
+                if (token.IsCancellationRequested == true) {
                     throw;
                 } else {
                     Logger.Error("Switching filter timed out after 5 Minutes");
@@ -343,6 +343,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         private FilterWheelInfo filterWheelInfo;
 
         public event Func<object, EventArgs, Task> Connected;
+
         public event Func<object, EventArgs, Task> Disconnected;
 
         public FilterWheelInfo FilterWheelInfo {
@@ -395,6 +396,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 FW.SendCommandBlind(command, raw);
             }
         }
+
         public IDevice GetDevice() {
             return FW;
         }
