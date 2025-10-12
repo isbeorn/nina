@@ -165,9 +165,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                             Notification.ShowError(string.Format(Loc.Instance["LblFilterChangeFailed"], filter.Name, filter.Position + 1));
                             throw new Exception(string.Format(Loc.Instance["LblFilterChangeFailed"], filter.Name, filter.Position + 1));
                         }
+
+                        FilterWheelInfo.SelectedFilter = filter;
+                        await (FilterChanged?.InvokeAsync(this, new FilterChangedEventArgs(from: prevFilter, to: filter)) ?? Task.CompletedTask);
                     }
-                    FilterWheelInfo.SelectedFilter = filter;
-                    await (FilterChanged?.InvokeAsync(this, new FilterChangedEventArgs(from: prevFilter, to: filter)) ?? Task.CompletedTask);
                 } else {
                     await Disconnect();
                 }
