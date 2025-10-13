@@ -178,16 +178,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             var info = cameraMediator.GetInfo();
             ObservableRectangle rect = null;
-            if(info.CanSubSample && ROI < 100 && ROI > 0) {
+            if(info.CanSubSample && ROI < 1 && ROI > 0) {
                 var centerX = info.XSize / 2d;
                 var centerY = info.YSize / 2d;
-                var subWidth = info.XSize * ROI / 100;
-                var subHeight = info.YSize * ROI / 100;
+                var subWidth = info.XSize * ROI;
+                var subHeight = info.YSize * ROI;
                 var startX = centerX - subWidth / 2d;
                 var startY = centerY - subHeight / 2d;
                 rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
             }
-            if (!info.CanSubSample && ROI < 100) {
+            if (!info.CanSubSample && ROI < 1) {
                 Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
             }
 

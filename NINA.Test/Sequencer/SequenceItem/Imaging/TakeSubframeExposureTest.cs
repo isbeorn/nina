@@ -165,10 +165,10 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
         }
 
         [Test]
-        [TestCase(100, 10, 20, 1, "LIGHT", 100d, true, true, 1)]
-        [TestCase(5.2, 1, 3, 2, "SNAPSHOT", 50d, true, true, 1)]
-        [TestCase(100, 10, 20, 1, "DARK", 200d, null, false, 0)]
-        [TestCase(100, 10, 20, 1, "FLAT", -100, null, false, 0)]
+        [TestCase(100, 10, 20, 1, "LIGHT", 1d, true, true, 1)]
+        [TestCase(5.2, 1, 3, 2, "SNAPSHOT", 0.5d, true, true, 1)]
+        [TestCase(100, 10, 20, 1, "DARK", 2d, null, false, 0)]
+        [TestCase(100, 10, 20, 1, "FLAT", -1, null, false, 0)]
         public async Task Execute_NoIssues_CanSubsample_LogicCalled(double exposuretime, int gain, int offset, short binning, string imageType, double roi, bool? expectedStretch, bool? expectedDetect, int historycalls) {
             var imageMock = new Mock<IExposureData>();
             var imageDataMock = new Mock<IImageData>();
@@ -206,7 +206,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
                             && cs.ImageType == imageType
                             && cs.ProgressExposureCount == 0
                             && cs.TotalExposureCount == 1
-                            && cs.EnableSubSample == (0 < roi && roi < 100)
+                            && cs.EnableSubSample == (0 < roi && roi < 1)
                     ),
                     It.IsAny<CancellationToken>(),
                     It.IsAny<IProgress<ApplicationStatus>>(),
