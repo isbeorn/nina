@@ -43,11 +43,12 @@ namespace NINA.Test.Sequencer.Conditions {
             var sut = new AboveHorizonCondition(profileServiceMock.Object);
             sut.Icon = new System.Windows.Media.GeometryGroup();
             sut.Data.Coordinates = new InputCoordinates(new Coordinates(20, 20, Epoch.J2000, Coordinates.RAType.Degrees));
+            sut.Data.Offset = 10;
             var item2 = (AboveHorizonCondition)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Data.Offset.Should().Be(0);  // OffsetExpression.Default
+            item2.Data.Offset.Should().Be(10);
             item2.Data.Coordinates.Should().NotBeSameAs(sut.Data.Coordinates);
             item2.Data.Coordinates.Coordinates.RA.Should().Be(sut.Data.Coordinates.Coordinates.RA);
             item2.Data.Coordinates.Coordinates.Dec.Should().Be(sut.Data.Coordinates.Coordinates.Dec);

@@ -13,6 +13,7 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -43,10 +44,10 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             // Fix up Ra and Dec Expressions (auto-update to existing sequences)
             Coordinates c = Coordinates.Coordinates;
             if (DecExpression.Definition.Length == 0 && c.Dec != 0) {
-                DecExpression.Definition = c.Dec.ToString();
+                DecExpression.Definition = c.Dec.ToString(CultureInfo.InvariantCulture);
             }
             if (RaExpression.Definition.Length == 0 && c.RA != 0) {
-                RaExpression.Definition = c.RA.ToString();
+                RaExpression.Definition = c.RA.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -155,9 +156,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (Protect) return;
 
             if (c.RA != lastRA) {
-                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
+                RaExpression.Definition = Math.Round(c.RA, 7).ToString(CultureInfo.InvariantCulture);
             } else if (c.Dec != lastDec) {
-                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+                DecExpression.Definition = Math.Round(c.Dec, 7).ToString(CultureInfo.InvariantCulture);
             }
 
             lastRA = c.RA;

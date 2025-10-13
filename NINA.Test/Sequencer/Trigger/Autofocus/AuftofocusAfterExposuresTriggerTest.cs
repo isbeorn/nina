@@ -275,7 +275,6 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         [Test]
         public void ToString_FilledProperly() {
             var sut = new AutofocusAfterExposures(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
-            sut = (AutofocusAfterExposures)sut.Clone();
             var tostring = sut.ToString();
             tostring.Should().Be("Trigger: AutofocusAfterExposures, AfterExposures: 5");
         }

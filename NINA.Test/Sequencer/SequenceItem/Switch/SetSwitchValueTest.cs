@@ -51,12 +51,14 @@ namespace NINA.Test.Sequencer.SequenceItem.Switch {
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
             item2.SwitchIndex.Should().Be(sut.SwitchIndex);
-            item2.Value.Should().Be(1); // ValueExpression.Default
+            item2.Value.Should().Be(sut.Value);
         }
 
         [Test]
         public void Validate_NoIssues() {
-            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { new Mock<IWritableSwitch>().Object }) });
+            var dummy = new Mock<IWritableSwitch>();
+            dummy.SetupGet(x => x.Maximum).Returns(1);
+            switchMediatorMock.Setup(x => x.GetInfo()).Returns(new SwitchInfo() { Connected = true, WritableSwitches = new System.Collections.ObjectModel.ReadOnlyCollection<IWritableSwitch>(new List<IWritableSwitch>() { dummy.Object }) });
 
             var sut = new SetSwitchValue(switchMediatorMock.Object);
             sut.SwitchIndex = 0;

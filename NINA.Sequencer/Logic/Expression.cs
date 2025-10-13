@@ -12,6 +12,7 @@ using NINA.Sequencer.SequenceItem.Expressions;
 using System.Text;
 using NINA.Sequencer.SequenceItem;
 using OxyPlot;
+using System.Globalization;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
@@ -327,8 +328,8 @@ namespace NINA.Sequencer.Logic {
 
                 definition = value;
 
-                if (Double.TryParse(value, out result)) {
-                    definition = String.Format("{0:0.#######}", result);
+                if (Double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out result)) {
+                    definition = String.Format(CultureInfo.InvariantCulture, "{0:0.#######}", result);
                     Error = null;
                     IsExpression = false;
                     Value = result;

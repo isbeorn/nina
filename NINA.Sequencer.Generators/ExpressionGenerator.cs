@@ -176,49 +176,53 @@ namespace NINA.Sequencer.Generators {
 
                 propertiesSource += $@"
 
-        private Expression {fieldNameExpression} = new Expression(null, null);
+        private Expression {fieldNameExpression};
         [JsonProperty]
         public Expression {propNameExpression} {{
-            get => {fieldNameExpression};
+            get {{
+                if ({fieldNameExpression} == null) {{
+                    {fieldNameExpression} = new Expression(null, null);
+                    {propNameExpression}.Context = this;
+                    {propNameExpression}.Type = ""{fieldType}"";
+                    {propNameExpression}.SymbolBroker = SymbolBroker;";
+                    foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
+
+                        if (kvp.Key == "HasValidator") {
+                            hasValidator = true;
+                        } else if (kvp.Key == "Proxy") {
+                            proxy = (string)kvp.Value.Value;
+                            jsonIgnore = true;
+                        } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
+                            var values = kvp.Value.Values;
+                            double min = Convert.ToDouble(values[0].Value, CultureInfo.InvariantCulture);
+                            double max = Convert.ToDouble(values[1].Value, CultureInfo.InvariantCulture);
+                        double r = 0;
+                            if (values.Length > 2) {
+                                r = Convert.ToDouble(values[2].Value, CultureInfo.InvariantCulture);
+                            }
+                            propertiesSource += $@"
+                    {propNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
+                        } else if (kvp.Key == "Default") {
+                            propertiesSource += $@"
+                    {propNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
+                            hasDefault = true;
+                        } else if (kvp.Key == "DefaultString") {
+                            propertiesSource += $@"
+                    {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
+                        }
+                    }
+
+                    if (hasValidator) {
+                        propertiesSource += $@"
+                        {propNameExpression}.Validator = {propNameExpression}Validator;";
+                    }
+                propertiesSource += $@"
+                }}
+                return {fieldNameExpression};
+            }}
             set {{
                 {fieldNameExpression} = value;
-                if (value == null) return;
-                {propNameExpression}.Context = this;
-                {propNameExpression}.Type = ""{fieldType}"";
-                {propNameExpression}.SymbolBroker = SymbolBroker;";
-
-                foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
-
-                    if (kvp.Key == "HasValidator") {
-                        hasValidator = true;
-                    } else if (kvp.Key == "Proxy") {
-                        proxy = (string)kvp.Value.Value;
-                        jsonIgnore = true;
-                    } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
-                        var values = kvp.Value.Values;
-                        double min = (double)values[0].Value;
-                        double max = (double)values[1].Value;
-                        double r = 0;
-                        if (values.Length > 2) {
-                            r = (double)values[2].Value;
-                        }
-                        propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
-                    } else if (kvp.Key == "Default") {
-                        propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
-                        hasDefault = true;
-                    } else if (kvp.Key == "DefaultString") {
-                        propertiesSource += $@"
-                {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
-                    }
-                }
-
-                if (hasValidator) {
-                    propertiesSource += $@"
-                {propNameExpression}.Validator = {propNameExpression}Validator;";
-                }
-
+                if (value == null) return;";
                 propertiesSource += $@"
                 RaisePropertyChanged();
             }}

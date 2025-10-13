@@ -43,6 +43,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
 
     [TestFixture]
     public class CenterAndRotateTest {
+        private static Angle TOLERANCE_EPSILON = Angle.ByDegree(AstroUtil.ArcsecToDegree(0.01));
         private Mock<IProfileService> profileServiceMock;
         private Mock<ITelescopeMediator> telescopeMediatorMock;
         private Mock<IImagingMediator> imagingMediatorMock;
@@ -181,8 +182,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             sut.AfterParentChanged();
 
             sut.HasDsoParent.Should().BeTrue();
-            sut.Coordinates.Coordinates.RADegrees.Should().Be(10);
-            sut.Coordinates.Coordinates.Dec.Should().Be(20);
+            sut.Coordinates.Coordinates.RADegrees.Should().BeApproximately(10, TOLERANCE_EPSILON.Degree);
+            sut.Coordinates.Coordinates.Dec.Should().BeApproximately(20, TOLERANCE_EPSILON.Degree);
         }
 
         [Test]

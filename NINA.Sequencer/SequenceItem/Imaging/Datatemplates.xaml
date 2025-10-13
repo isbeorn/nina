@@ -26,7 +26,10 @@
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
-        <logic:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding ExposureTimeExpression}" Unit="s" />
+        <logic:ExprControl
+            Exp="{Binding ExposureTimeExpression}"
+            Label="{ns:Loc LblTime}"
+            Unit="s" />
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"
@@ -104,7 +107,7 @@
         </WrapPanel>
 
         <!--  Free Gain  -->
-        <WrapPanel Orientation="Horizontal" MinWidth="40">
+        <WrapPanel MinWidth="40" Orientation="Horizontal">
             <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding
@@ -118,7 +121,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <logic:ExprControl Label="{ns:Loc LblGain}" Exp="{Binding GainExpression, Mode=TwoWay}"/>
+            <logic:ExprControl Exp="{Binding GainExpression, Mode=TwoWay}" Label="{ns:Loc LblGain}" />
         </WrapPanel>
 
         <!--  Offset  -->
@@ -137,7 +140,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" />
+            <logic:ExprControl Exp="{Binding OffsetExpression}" Label="{ns:Loc LblOffset}" />
         </WrapPanel>
     </WrapPanel>
 
@@ -191,7 +194,7 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
+                    <logic:ExprControl Exp="{Binding Conditions[0].IterationsExpression}" Label="#" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -244,13 +247,13 @@
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:SmartExposure}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="#" Exp="{Binding Conditions[0].IterationsExpression}" />
+                    <logic:ExprControl Exp="{Binding Conditions[0].IterationsExpression}" Label="#" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -267,37 +270,35 @@
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
-                    <TextBlock DataContext="{Binding Items[0].XfilterExpression}" Margin="5,2,0,0"
-                        Text="&#x26A0;" 
-                        Foreground="{Binding InfoButtonColor}"
+                    <TextBlock
+                        Margin="5,2,0,0"
+                        DataContext="{Binding Items[0].XfilterExpression}"
                         FontSize="18"
-                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
-                     />
+                        Foreground="{Binding InfoButtonColor}"
+                        Text="&#x26A0;"
+                        Visibility="{Binding Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
                     <ComboBox
-                       Margin="5,0,0,0"
-                       IsEditable="True"
-                       Text="{Binding Items[0].ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                       SelectionChanged="FilterSelectionChanged">
-                       <ComboBox.Resources>
-                           <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
-                       </ComboBox.Resources>
-                       <ComboBox.ItemsSource>
-                           <CompositeCollection>
-                               <x:Static Member="filter:NullFilter.Instance" />
-                               <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
-                           </CompositeCollection>
-                       </ComboBox.ItemsSource>
-                   </ComboBox>
-                   <logic:ExprComboControl
-                       Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" 
-                       Combo="{Binding Path=Items[0].FilterNames}"
-                       />
+                        Margin="5,0,0,0"
+                        IsEditable="True"
+                        SelectionChanged="FilterSelectionChanged"
+                        Text="{Binding Items[0].ComboBoxText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <x:Static Member="filter:NullFilter.Instance" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <logic:ExprComboControl Combo="{Binding Path=Items[0].FilterNames}" Exp="{Binding Path=Items[0].XfilterExpression, Mode=TwoWay}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <logic:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding Triggers[0].AfterExposuresExpression}" />
+                    <logic:ExprControl Exp="{Binding Triggers[0].AfterExposuresExpression}" Label="{ns:Loc LblDitherEveryNoFrame}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
@@ -335,7 +336,11 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <logic:ExprControl Label="{ns:Loc LblROI}" Exp="{Binding ROIExpression}" Unit="%" ToolTip="{ns:Loc LblROIPercentageTooltip}"/>
+                    <!--  TODO - Show as a percentage - it is stored as a fraction in code  -->
+                    <logic:ExprControl
+                        Exp="{Binding ROIExpression}"
+                        Label="{ns:Loc LblROI}"
+                        ToolTip="{ns:Loc LblROIPercentageTooltip}" />
                 </WrapPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

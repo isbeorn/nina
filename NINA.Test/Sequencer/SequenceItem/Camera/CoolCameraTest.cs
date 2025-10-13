@@ -50,8 +50,8 @@ namespace NINA.Test.Sequencer.SequenceItem.Camera {
             item2.Name.Should().BeSameAs(sut.Name);
             item2.Description.Should().BeSameAs(sut.Description);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Temperature.Should().Be(0);  // TemperatureExpression.Default
-            item2.Duration.Should().Be(0);  // DurationExpression.Default
+            item2.Temperature.Should().Be(sut.Temperature);
+            item2.Duration.Should().Be(sut.Duration);
         }
 
         [Test]

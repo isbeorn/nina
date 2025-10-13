@@ -34,7 +34,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             item2.Should().NotBeSameAs(sut);
             item2.Icon.Should().BeSameAs(sut.Icon);
-            item2.Iterations.Should().Be(2);  // IterationsExpression.Default
+            item2.Iterations.Should().Be(sut.Iterations);
         }
 
         [Test]

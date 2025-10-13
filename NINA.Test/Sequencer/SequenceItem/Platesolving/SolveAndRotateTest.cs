@@ -133,13 +133,6 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             sut.Issues.Count.Should().Be(0);
         }
 
-        //[Test]
-        //public void ToString_Migration_Test() {
-        //    sut.Category = "TestCategory";
-        //    sut.DeprecatedRotation = 100;
-        //    sut.ToString().Should().Be("Category: TestCategory, Item: SolveAndRotate, Position Angle: 260°");
-        //}
-
         [Test]
         public void ToString_Test() {
             sut.Category = "TestCategory";

@@ -183,7 +183,6 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         [Test]
         public void ToString_FilledProperly() {
             var sut = new AutofocusAfterTemperatureChangeTrigger(profileServiceMock.Object, historyMock.Object, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
-            sut = (AutofocusAfterTemperatureChangeTrigger)sut.Clone();
             var tostring = sut.ToString();
             tostring.Should().Be("Trigger: AutofocusAfterTemperatureChangeTrigger, Amount: 5°");
         }

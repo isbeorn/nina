@@ -99,7 +99,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int gain;
 
         partial void GainExpressionValidator(Expression expr) {
-            if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
+            if (CameraInfo != null && CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
                 expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain);
             }
         }
@@ -108,7 +108,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private int offset;
 
         partial void OffsetExpressionValidator(Expression expr) {
-            if (CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
+            if (CameraInfo != null && CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
                 expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset);
             }
         }
