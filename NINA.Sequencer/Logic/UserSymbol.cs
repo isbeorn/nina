@@ -397,7 +397,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
 
-            Dictionary<string, UserSymbol> syms = exp.Resolved;
+            IReadOnlyDictionary<string, UserSymbol> syms = exp.Resolved;
             int cnt = syms.Count;
             if (cnt == 0) {
                 if (exp.References.Count == 1) {

@@ -1,25 +1,23 @@
-﻿using Newtonsoft.Json;
+﻿using NCalc;
+using NCalc.Handlers;
+using Newtonsoft.Json;
 using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Expressions;
+using OxyPlot;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
-using NCalc;
+using System.Threading;
 using System.Windows.Media;
 using static NINA.Sequencer.Logic.UserSymbol;
-using System.Threading;
-using NCalc.Handlers;
-using NINA.Sequencer.SequenceItem.Expressions;
-using System.Text;
-using NINA.Sequencer.SequenceItem;
-using OxyPlot;
-using System.Globalization;
 
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-
-        public Expression() {
-        }
 
         public Expression (Expression cloneMe) {
             Definition = cloneMe.Definition;
@@ -51,7 +49,7 @@ namespace NINA.Sequencer.Logic {
 
         public ISymbolBroker SymbolBroker;
 
-        public bool HasError => string.IsNullOrEmpty(Error);
+        public bool HasError => !string.IsNullOrEmpty(Error);
  
         private string _error;
         public virtual string Error {
@@ -59,12 +57,12 @@ namespace NINA.Sequencer.Logic {
             set {
                 if (value != _error) {
                     _error = value;
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("IsExpression");
-                    RaisePropertyChanged("IsAnnotated");
-                    RaisePropertyChanged("Error");
-                    RaisePropertyChanged("StringValue");
-                    RaisePropertyChanged("InfoButtonColor");
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(IsExpression));
+                    RaisePropertyChanged(nameof(IsAnnotated));
+                    RaisePropertyChanged(nameof(Error));
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(InfoButtonColor));
                 }
             }
         }
@@ -94,7 +92,7 @@ namespace NINA.Sequencer.Logic {
                 if (Double.IsNaN(Default) && Definition.Length == 0) {
                     return "";
                 } else if (defaultString == null) {
-                    return Default.ToString();
+                    return Default.ToString(CultureInfo.InvariantCulture);
                 } else {
                     return defaultString;
                 }
@@ -134,26 +132,27 @@ namespace NINA.Sequencer.Logic {
                             value = Double.Floor(value);
                             ForceAnnotated = true;
                         }
-                        RaisePropertyChanged("IsAnnotated");
+                        RaisePropertyChanged(nameof(IsAnnotated));
                     }
                     _value = value;
                     if (Range != null) {
-                        CheckRange((double)value, Range);
+                        CheckRange((double)value);
                     } 
                     if (Validator != null) {
                         Validator(this);
                     }
-                    RaisePropertyChanged("StringValue");
-                    RaisePropertyChanged("Value");
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("IsExpression");
-                    ////RaisePropertyChanged("DockableValue");
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(Value));
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(IsExpression));
                 }
             }
         }
 
-        private void CheckRange(double value, double[] range) {
-            int r = Convert.ToInt32(Range[2]);
+        private void CheckRange(double value) {
+            if (Range?.Length < 3) { return; }
+
+            int r = Convert.ToInt32(Range[2], CultureInfo.InvariantCulture);
             double min = Range[0] + (((r & ExpressionRange.MIN_EXCLUSIVE) == ExpressionRange.MIN_EXCLUSIVE) ? 1e-8 : 0);
             double max = Range[1] - (((r & ExpressionRange.MAX_EXCLUSIVE) == ExpressionRange.MAX_EXCLUSIVE) ? 1e-8 : 0);
             if (value < min || (max != 0 && value > max)) {
@@ -255,33 +254,38 @@ namespace NINA.Sequencer.Logic {
                 long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
                 long end = start + (2 * ONE_YEAR);
                 if (DATE_VALUES_ALLOWED && Value > start && Value < end) {
-                    DateTime dt = ConvertFromUnixTimestamp(Value).ToLocalTime();
-                    if (dt.Day == DateTime.Now.Day + 1) {
-                        return dt.ToShortTimeString() + " tomorrow";
-                    } else if (dt.Day == DateTime.Now.Day - 1) {
-                        return dt.ToShortTimeString() + " yesterday";
+                    var local = ConvertFromUnixTimestamp(Value).ToLocalTime();
+                    var today = DateTime.Today;
+                    if (local.Date == today.AddDays(1)) {
+                        return local.ToShortTimeString() + " tomorrow";
+                    } else if (local.Date == today.AddDays(-1)) {
+                        return local.ToShortTimeString() + " yesterday";
+                    } else if (local.Date == today) {
+                        return local.ToShortTimeString();
                     } else
-                        return dt.ToShortTimeString();
+                        return local.ToString(CultureInfo.CurrentCulture);
                 } else {
                     if (!double.IsNaN(Default) && Value == Default) {
                         return DefaultString;
                     }
 
-                    return Value.ToString();
+                    return Value.ToString(CultureInfo.InvariantCulture);
                 }
             }
             set { }
         }
 
         // References are the parsed tokens used in the Expr
-        public HashSet<string> References { get; set; } = new HashSet<string>();
+        private HashSet<string> references { get; set; } = new HashSet<string>();
+        public IReadOnlyCollection<string> References => references;
 
         // Resolved are the Symbol's that have been found (from the References)
-        public Dictionary<string, UserSymbol> Resolved = new Dictionary<string, UserSymbol>();
+        private Dictionary<string, UserSymbol> resolved = new Dictionary<string, UserSymbol>();
+        public IReadOnlyDictionary<string, UserSymbol> Resolved => resolved.AsReadOnly();
 
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
-        public Dictionary<string, object> Parameters = new Dictionary<string, object>();
-
+        private Dictionary<string, object> parameters = new Dictionary<string, object>();
+        public IReadOnlyDictionary<string, object> Parameters => parameters.AsReadOnly();
 
         private string definition = "";
         [JsonProperty]
@@ -302,13 +306,13 @@ namespace NINA.Sequencer.Logic {
                         Value = Double.NaN;
                     }
                     definition = value;
-                    Parameters.Clear();
-                    Resolved.Clear();
-                    References.Clear();
+                    parameters.Clear();
+                    resolved.Clear();
+                    references.Clear();
                     Error = null;
                     ForceAnnotated = false;
-                    RaisePropertyChanged("Error");
-                    RaisePropertyChanged("IsAnnotated");
+                    RaisePropertyChanged(nameof(Error));
+                    RaisePropertyChanged(nameof(IsAnnotated));
                     return;
                 }
 
@@ -322,8 +326,8 @@ namespace NINA.Sequencer.Logic {
                             symKvp.Value.RemoveConsumer(this);
                         }
                     }
-                    Resolved.Clear();
-                    Parameters.Clear();
+                    resolved.Clear();
+                    parameters.Clear();
                 }
 
                 definition = value;
@@ -364,49 +368,49 @@ namespace NINA.Sequencer.Logic {
                     }
 
                     // Find the parameters used
-                    References.Clear();
+                    references.Clear();
 
                     foreach (var p in e.GetParameterNames()) {
-                        References.Add(p);
+                        references.Add(p);
                     }
 
                     // References now holds all of the CV's used in the expression
-                    Parameters.Clear();
-                    Resolved.Clear();
+                    parameters.Clear();
+                    resolved.Clear();
                     Evaluate();
                     if (Symbol != null) {
                         UserSymbol.SymbolDirty(Symbol);
                         Symbol.Validate();
                     }
                 }
-                RaisePropertyChanged("Definition");
-                RaisePropertyChanged("Value");
-                RaisePropertyChanged("ValueString");
-                RaisePropertyChanged("StringValue");
-                RaisePropertyChanged("IsAnnotated");
+                RaisePropertyChanged(nameof(Definition));
+                RaisePropertyChanged(nameof(Value));
+                RaisePropertyChanged(nameof(ValueString));
+                RaisePropertyChanged(nameof(StringValue));
+                RaisePropertyChanged(nameof(IsAnnotated));
             }
         }
         public void RemoveParameter(string identifier) {
-            Parameters.Remove(identifier);
-            Resolved.Remove(identifier);
+            parameters.Remove(identifier);
+            resolved.Remove(identifier);
             Evaluate();
         }
 
         public void ReferenceRemoved(UserSymbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
-            Parameters.Remove(identifier);
-            Resolved.Remove(identifier);
+            parameters.Remove(identifier);
+            resolved.Remove(identifier);
             Evaluate();
         }
         private void AddParameter(string reference, object value) {
-            Parameters.Add(reference, value);
+            parameters.Add(reference, value);
         }
         private void Resolve(string reference, UserSymbol sym) {
-            Parameters.Remove(reference);
-            Resolved.Remove(reference);
+            parameters.Remove(reference);
+            resolved.Remove(reference);
             if (sym.Expr.Error == null) {
-                Resolved.Add(reference, sym);
+                resolved.Add(reference, sym);
                 if (sym.Expr.Value == double.NegativeInfinity) {
                     AddParameter(reference, sym.Expr.StringValue);
                 } else
@@ -416,8 +420,8 @@ namespace NINA.Sequencer.Logic {
             }
         }
         public void Refresh() {
-            Parameters.Clear();
-            Resolved.Clear();
+            parameters.Clear();
+            resolved.Clear();
             Evaluate();
         }
 
@@ -440,10 +444,10 @@ namespace NINA.Sequencer.Logic {
             }
             if (Definition.Length == 0) {
                 IsExpression = false;
-                RaisePropertyChanged("Value");
-                RaisePropertyChanged("ValueString");
-                RaisePropertyChanged("StringValue");
-                RaisePropertyChanged("IsExpression");
+                RaisePropertyChanged(nameof(Value));
+                RaisePropertyChanged(nameof(ValueString));
+                RaisePropertyChanged(nameof(StringValue));
+                RaisePropertyChanged(nameof(IsExpression));
                 return;
             }
             if (Context == null) return;
@@ -459,8 +463,8 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
                 foreach (string key in volatiles) {
-                    Resolved.Remove(key);
-                    Parameters.Remove(key);
+                    resolved.Remove(key);
+                    parameters.Remove(key);
                 }
             }
 
@@ -471,8 +475,8 @@ namespace NINA.Sequencer.Logic {
             StringValue = null;
 
             if (Parameters.Count < Resolved.Count) {
-                Parameters.Clear();
-                Resolved.Clear();
+                parameters.Clear();
+                resolved.Clear();
             }
 
             // External, don't report error during validation
@@ -506,9 +510,9 @@ namespace NINA.Sequencer.Logic {
                         object val = null;
                         if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
                             // We don't want these resolved, just added to Parameters
-                            Resolved.Remove(symReference);
-                            Resolved.Add(symReference, null);
-                            Parameters.Remove(symReference);
+                            resolved.Remove(symReference);
+                            resolved.Add(symReference, null);
+                            parameters.Remove(symReference);
                             AddParameter(symReference, val);
                             Volatile = true;
                         } else if (val is AmbiguousSymbol a) {
@@ -531,7 +535,7 @@ namespace NINA.Sequencer.Logic {
 
             NCalc.Expression e = new NCalc.Expression(Definition, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
             e.EvaluateFunction += ExtensionFunction;
-            e.Parameters = Parameters;
+            e.Parameters = parameters;
 
             if (e.HasErrors()) {
                 Error = "Syntax Error";
@@ -559,10 +563,10 @@ namespace NINA.Sequencer.Logic {
                             }
                         }
                     }
-                    RaisePropertyChanged("Error");
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("StringValue");
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(nameof(Error));
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(Value));
                 } else {
                     Error = null;
                     object eval = e.Evaluate();
@@ -571,7 +575,7 @@ namespace NINA.Sequencer.Logic {
                         Value = b ? 1 : 0;
                     } else {
                         try {
-                            Value = Convert.ToDouble(eval);
+                            Value = Convert.ToDouble(eval, CultureInfo.InvariantCulture);
                         } catch (Exception) {
                             string str = eval as string;
                             if (STRING_VALUES_ALLOWED) {
@@ -586,10 +590,10 @@ namespace NINA.Sequencer.Logic {
                             }
                         }
                     }
-                    RaisePropertyChanged("Error");
-                    RaisePropertyChanged("StringValue");
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(nameof(Error));
+                    RaisePropertyChanged(nameof(StringValue));
+                    RaisePropertyChanged(nameof(ValueString));
+                    RaisePropertyChanged(nameof(Value));
                 }
 
             } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
@@ -652,15 +656,10 @@ namespace NINA.Sequencer.Logic {
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     args.Result = SymbolBroker.TryGetValue(str, out _);
-                } else if (name == "dateString") {
-                    if (args.Parameters.Length < 2) {
-                        throw new ArgumentException();
-                    }
-                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
                 } else if (name == "startsWith") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate());
-                    string f = Convert.ToString(args.Parameters[1].Evaluate());
-                    args.Result = str.StartsWith(f);
+                    string str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                    string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                    args.Result = str.StartsWith(f, StringComparison.Ordinal);
                 } else if (name == "strLength") {
                     var e = args.Parameters[0].Evaluate();
                     if (e is string es) {
