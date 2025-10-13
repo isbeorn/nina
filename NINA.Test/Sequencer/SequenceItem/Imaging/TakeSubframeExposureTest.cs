@@ -185,7 +185,6 @@ namespace NINA.Test.Sequencer.SequenceItem.Imaging {
             imagingMediatorMock.Setup(x => x.PrepareImage(It.IsAny<IImageData>(), It.IsAny<PrepareImageParameters>(), It.IsAny<CancellationToken>())).Returns(prepareTask);
 
             var sut = new TakeSubframeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, historyMock.Object);
-            sut = (TakeSubframeExposure)sut.Clone();
             sut.ExposureTime = exposuretime;
             sut.Gain = gain;
             sut.Offset = offset;
