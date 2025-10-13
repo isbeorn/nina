@@ -214,7 +214,7 @@ namespace NINA.Sequencer.Generators {
 
                     if (hasValidator) {
                         propertiesSource += $@"
-                        {propNameExpression}.Validator = {propNameExpression}Validator;";
+                    {propNameExpression}.Validator = {propNameExpression}Validator;";
                     }
                 propertiesSource += $@"
                 }}
@@ -297,11 +297,13 @@ namespace {namespaceName}
         public override object Clone() {{
             var clone = new {className}(this) {{{cloneSource}
             }};
+            AfterClone(this, clone);
             AfterClone(clone);
             return clone;
         }}
 
         partial void AfterClone({className} clone);
+        partial void AfterClone({className} original, {className} clone);
 {propertiesSource}
 {methodsSource}
     }}
