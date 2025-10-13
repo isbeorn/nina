@@ -163,7 +163,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
             rotatorMediatorMock.Setup(x => x.GetInfo()).Returns(new RotatorInfo { Connected = false });
 
             sut.AfterParentChanged();
-            sut.HasDsoParent.Should().BeFalse();
+            sut.Inherited.Should().BeFalse();
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Platesolving {
 
             sut.AfterParentChanged();
 
-            sut.HasDsoParent.Should().BeTrue();
+            sut.Inherited.Should().BeTrue();
             sut.Coordinates.Coordinates.RADegrees.Should().BeApproximately(10, TOLERANCE_EPSILON.Degree);
             sut.Coordinates.Coordinates.Dec.Should().BeApproximately(20, TOLERANCE_EPSILON.Degree);
         }

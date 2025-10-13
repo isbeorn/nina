@@ -27,7 +27,7 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="Expression" Exp="{Binding Path=PredicateExpression, Mode=TwoWay}"/>
+                    <logic:ExprControl Exp="{Binding Path=PredicateExpression, Mode=TwoWay}" Label="Expression" />
                 </StackPanel>
 
             </view:SequenceBlockView.SequenceItemContent>
@@ -121,7 +121,10 @@
     <DataTemplate DataType="{x:Type local:WaitForTimeSpan}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="{ns:Loc LblDelay}" Exp="{Binding TimeExpression}" Unit="s"/>
+                <logic:ExprControl
+                    Exp="{Binding TimeExpression}"
+                    Label="{ns:Loc LblDelay}"
+                    Unit="s" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -350,9 +353,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
                         <ComboBox
-                           Margin="5,0,0,0"
-                           SelectedValue="{Binding AboveOrBelow}"
-                           SelectedValuePath="Content">
+                            Margin="5,0,0,0"
+                            SelectedValue="{Binding AboveOrBelow}"
+                            SelectedValuePath="Content">
                             <ComboBoxItem>
                                 <s:String>&lt;</s:String>
                             </ComboBoxItem>
@@ -360,13 +363,13 @@
                                 <s:String>&gt;</s:String>
                             </ComboBoxItem>
                         </ComboBox>
-                        <logic:ExprControl Exp="{Binding OffsetExpression}" Unit="°"/>
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" Unit="°" />
                         <TextBlock
                             Margin="7.5,-2,7.5,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="|" />
-                        <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
+                        <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding Inherited}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -402,7 +405,7 @@
                             Margin="5,0,0,0"
                             ItemsSource="{Binding Data.ComparisonOperators}"
                             SelectedValue="{Binding Data.Comparator}" />
-                        <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" />
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" Label="{ns:Loc LblOffset}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -438,7 +441,7 @@
                             Margin="5,0,10,0"
                             ItemsSource="{Binding Data.ComparisonOperators}"
                             SelectedValue="{Binding Data.Comparator}" />
-                        <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" />
+                        <logic:ExprControl Exp="{Binding OffsetExpression}" Label="{ns:Loc LblOffset}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -465,8 +468,14 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="{ns:Loc LblOffset}" Exp="{Binding OffsetExpression}" Unit="°"/>
-                    <logic:CoordinatesControl Margin="10,0,0,0" Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
+                    <logic:ExprControl
+                        Exp="{Binding OffsetExpression}"
+                        Label="{ns:Loc LblOffset}"
+                        Unit="°" />
+                    <logic:CoordinatesControl
+                        Margin="10,0,0,0"
+                        Coords="{Binding Coordinates}"
+                        Inherited="{Binding Inherited}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>

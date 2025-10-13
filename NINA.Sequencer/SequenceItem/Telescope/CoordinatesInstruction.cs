@@ -134,13 +134,13 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         [JsonProperty]
         public WaitLoopData Data { get; set; }
 
-        private bool hasDsoParent;
+        private bool inherited;
 
         [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
+        public bool Inherited {
+            get => inherited;
             set {
-                hasDsoParent = value;
+                inherited = value;
                 RaisePropertyChanged();
             }
         }
@@ -172,9 +172,9 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             if (coordinates != null) {
                 Coordinates.Coordinates = coordinates.Coordinates;
                 PositionAngle = coordinates.PositionAngle;
-                HasDsoParent = true;
+                Inherited = true;
             } else {
-                HasDsoParent = false;
+                Inherited = false;
             }
 
             if (Coordinates != null) {

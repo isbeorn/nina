@@ -16,11 +16,11 @@
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:view="clr-namespace:NINA.View.Sequencer">
-    
+
     <DataTemplate DataType="{x:Type local:Center}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
+                <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding Inherited}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -28,9 +28,9 @@
     <DataTemplate DataType="{x:Type local:CenterAndRotate}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                    <StackPanel Orientation="Horizontal">
-                        <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding Inherited}" />
+                </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
@@ -39,7 +39,10 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                    <logic:ExprControl Label="{ns:Loc LblRotation}" Exp="{Binding PositionAngleExpression}" Unit="°" />
+                    <logic:ExprControl
+                        Exp="{Binding PositionAngleExpression}"
+                        Label="{ns:Loc LblRotation}"
+                        Unit="°" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

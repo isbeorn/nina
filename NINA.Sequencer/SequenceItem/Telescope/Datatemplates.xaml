@@ -18,11 +18,11 @@
     <DataTemplate DataType="{x:Type local:SlewScopeToRaDec}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding HasDsoParent}" />
+                <logic:CoordinatesControl Coords="{Binding Coordinates}" Inherited="{Binding Inherited}" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:SlewScopeToAltAz}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -71,7 +71,12 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
-                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AltExpression, Mode=TwoWay}" />
+                    <logic:ExprControl
+                        Margin="5,0,0,0"
+                        DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+                        Exp="{Binding AltExpression, Mode=TwoWay}"
+                        Label="(Decimal "
+                        Unit=")" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -121,7 +126,12 @@
                         </TextBox.Text>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center">s</TextBlock>
-                    <logic:ExprControl Margin="5,0,0,0" Label="(Decimal " Unit=")" DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}" Exp="{Binding AzExpression, Mode=TwoWay}" />
+                    <logic:ExprControl
+                        Margin="5,0,0,0"
+                        DataContext="{Binding Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type view:SequenceBlockView}}, Path=DataContext}"
+                        Exp="{Binding AzExpression, Mode=TwoWay}"
+                        Label="(Decimal "
+                        Unit=")" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>

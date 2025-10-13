@@ -23,7 +23,7 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <logic:ExprControl Label="Expression:" Exp="{Binding Path=PredicateExpression, Mode=TwoWay}"/>
+                    <logic:ExprControl Exp="{Binding Path=PredicateExpression, Mode=TwoWay}" Label="Expression:" />
                 </StackPanel>
 
             </view:SequenceBlockView.SequenceItemContent>
@@ -292,7 +292,10 @@
     <DataTemplate DataType="{x:Type local:LoopCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <logic:ExprControl Label="" Unit=" Iterations" Exp="{Binding IterationsExpression}" />
+                <logic:ExprControl
+                    Exp="{Binding IterationsExpression}"
+                    Label=""
+                    Unit=" Iterations" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -344,7 +347,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
-  
+
     <DataTemplate DataType="{x:Type local:LoopWhileUnsafe}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -440,7 +443,7 @@
                             Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
-                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
+                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding Inherited}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
@@ -470,7 +473,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:MoonAltitudeCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -521,7 +524,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
- 
+
     <DataTemplate DataType="{x:Type local:MoonIlluminationCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -578,7 +581,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
- 
+
     <DataTemplate DataType="{x:Type local:SunAltitudeCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -618,7 +621,7 @@
             </mini:MiniCondition.ConditionProgressContent>
         </mini:MiniCondition>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:AboveHorizonCondition}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
@@ -631,7 +634,7 @@
                             Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
-                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
+                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding Inherited}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
