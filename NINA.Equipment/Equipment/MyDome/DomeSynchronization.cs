@@ -24,8 +24,8 @@ using NINA.Core.Utility.Notification;
 namespace NINA.Equipment.Equipment.MyDome {
 
     public class DomeSynchronization : IDomeSynchronization {
-        private static double TWO_PI = 2.0 * Math.PI;
-        private static double HALF_PI = Math.PI / 2.0;
+        private const double TWO_PI = 2.0 * Math.PI;
+        private const double HALF_PI = Math.PI / 2.0;
 
         private readonly IProfileService profileService;
 
@@ -42,7 +42,6 @@ namespace NINA.Equipment.Equipment.MyDome {
             PierSide sideOfPier) {
             return TargetDomeCoordinates(scopeCoordinates: scopeCoordinates, localSiderealTime: localSiderealTime, siteLatitude: siteLatitude, siteLongitude: siteLongitude, siteElevation: 0, sideOfPier: sideOfPier);
         }
-
 
         /// <summary>
         /// Gets the dome coordinates required so the scope points directly out of the shutter. This works for Alt-Az, EQ mounts, and fork mounts on a wedge
@@ -77,16 +76,17 @@ namespace NINA.Equipment.Equipment.MyDome {
             PierSide sideOfPier) {
             scopeCoordinates = scopeCoordinates.Transform(Epoch.JNOW);
             var domeSettings = profileService.ActiveProfile.DomeSettings;
+
             // To calculate the effect of rotations in the southern hemisphere we augment a few of the rotations to pretend as if it were the northern hemisphere,
             // and then add 180 degrees to the final result
-
             var origin = new Vector4(0, 0, 0, 1);
-            Matrix4x4 scopeOriginTranslation;
-            if (domeSettings.MountType == MountTypeEnum.EQUATORIAL) {
-                scopeOriginTranslation = CalculateGEM(scopeCoordinates, localSiderealTime, siteLatitude, sideOfPier);
-            } else {
-                scopeOriginTranslation = CalculateForkOnWedge(scopeCoordinates, localSiderealTime, siteLatitude);
-            }
+
+            var scopeOriginTranslation = domeSettings.MountType switch {
+                MountTypeEnum.EQUATORIAL => CalculateGEM(scopeCoordinates, localSiderealTime, siteLatitude, sideOfPier),
+                MountTypeEnum.FORK_ON_WEDGE => CalculateForkOnWedge(scopeCoordinates, localSiderealTime, siteLatitude),
+                MountTypeEnum.ALT_AZ => CalculateAltAz(scopeCoordinates, siteLatitude, siteLongitude),
+                _ => throw new NotSupportedException($"Unsupported mount type: {domeSettings.MountType}"),
+            };
 
             var scopeApertureOrigin = scopeOriginTranslation * origin;
 
@@ -206,6 +206,44 @@ namespace NINA.Equipment.Equipment.MyDome {
                     (float)domeSettings.GemAxis_mm));
 
             return mountOffset * latitudeAdjustment * raRotationAdjustment * decRotationAdjustment * gemAdjustment;
+        }
+
+        private Matrix4x4 CalculateAltAz(
+            Coordinates scopeCoordinates,
+            Angle siteLatitude,
+            Angle siteLongitude) {
+            var domeSettings = profileService.ActiveProfile.DomeSettings;
+
+            // Alt-Az mounts rotate in altitude (around the y-axis) and azimuth (around the z-axis)
+            // Altitude is Dec, Azimuth is Azimuth derived from RA/Dec + LST
+
+            // Convert scope RA/Dec to horizontal coordinates (Alt/Az)
+            var topocentric = scopeCoordinates.Transform(siteLatitude, siteLongitude, 0d); // elevation not critical here
+
+            // Altitude rotation: scope tilts up from horizontal
+            var altitudeRotation = Matrix4x4.CreateRotationY((float)(topocentric.Altitude.Radians));
+
+            // Azimuth rotation: scope rotates around the dome's vertical axis (z-axis)
+            var azimuthRotation = Matrix4x4.CreateRotationZ((float)(-topocentric.Azimuth.Radians));
+
+            // Determine hemisphere direction
+            var latitudeFactor = siteLatitude.Radians >= 0 ? 1.0 : -1.0;
+
+            // Mount offset from dome center
+            var mountOffset = Matrix4x4.CreateTranslation(new Vector3(
+                (float)(domeSettings.ScopePositionNorthSouth_mm * latitudeFactor),   // X: North
+                (float)(-domeSettings.ScopePositionEastWest_mm * latitudeFactor),    // Y: East
+                (float)domeSettings.ScopePositionUpDown_mm                           // Z: Up
+            ));
+
+            // Account for any lateral axis and vertical axis offsets to accomodate side-by-side or piggyback telescopes
+            var offsets = Matrix4x4.CreateTranslation(new Vector3(
+                0.0f,
+                -(float)domeSettings.LateralAxis_mm,
+                (float)domeSettings.GemAxis_mm  // Reusing GemAxis_mm for vertical offset in Alt-Az mounts since the basic meaning is the same
+            ));
+
+            return mountOffset * (azimuthRotation * altitudeRotation * offsets);
         }
     }
 }

@@ -152,6 +152,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="1">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </UniformGrid.Style>
@@ -182,6 +185,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="0">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </UniformGrid.Style>
@@ -200,6 +206,39 @@
                             VerticalAlignment="Center"
                             VerticalContentAlignment="Center"
                             Text="{Binding DecOffsetHorizontal_mm, UpdateSourceTrigger=LostFocus}"
+                            Unit="mm" />
+                    </UniformGrid>
+                    <UniformGrid
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Center"
+                        Columns="2">
+                        <UniformGrid.Style>
+                            <Style TargetType="{x:Type UniformGrid}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_MountTypeList, Path=SelectedItem}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </UniformGrid.Style>
+                        <TextBlock
+                            Width="250"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDomeVerticalAxisLength}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDomeVerticalAxisLengthTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            MinWidth="80"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding GemAxis_mm, UpdateSourceTrigger=LostFocus}"
                             Unit="mm" />
                     </UniformGrid>
                     <UniformGrid
