@@ -120,7 +120,7 @@ namespace NINA.Test.Sequencer.Conditions {
             var sut = new AltitudeCondition(profileServiceMock.Object);
             sut.AttachNewParent(parentMock.Object);
 
-            sut.Inherited.Should().BeTrue();
+            sut.HasDsoParent.Should().BeTrue();
             sut.Data.Coordinates.Coordinates.RA.Should().Be(coordinates.RA);
             sut.Data.Coordinates.Coordinates.Dec.Should().Be(coordinates.Dec);
         }

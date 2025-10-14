@@ -11,33 +11,31 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     using NINA.Core.Utility;
     using NINA.Profile.Interfaces;
     using NINA.Sequencer.Conditions;
-    using NINA.Sequencer.SequenceItem.Telescope;
     using NINA.Sequencer.Utility;
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
-    public abstract class LoopForAltitudeBase : CoordinatesCondition {
+    public abstract class LoopForAltitudeBase : SequenceCondition {
 
         private IList<string> issues = new List<string>();
 
         public LoopForAltitudeBase(IProfileService profileService, bool useCustomHorizon) {
             ProfileService = profileService;
-            Data = new WaitLoopData(profileService, useCustomHorizon, CalculateExpectedTime, GetType().Name);
-            ConditionWatchdog = new ConditionWatchdog(Interrupt, TimeSpan.FromSeconds(5)); 
+            Data = new WaitLoopData(profileService, useCustomHorizon, GetType().Name);
+            ConditionWatchdog = new ConditionWatchdog(Interrupt, TimeSpan.FromSeconds(5));
         }
 
-        //[JsonProperty]
-        //public WaitLoopData Data { get; set; }
+        [JsonProperty]
+        public WaitLoopData Data { get; set; }
         public IProfileService ProfileService { get; set; }
- 
+
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             RunWatchdogIfInsideSequenceRoot();
         }
 
         public override void AfterParentChanged() {
-            base.AfterParentChanged();
             RunWatchdogIfInsideSequenceRoot();
         }
 
@@ -53,6 +51,14 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public string InterruptReason { get; set; }
+
+        public IList<string> Issues {
+            get => issues;
+            set {
+                issues = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public abstract void CalculateExpectedTime();
 
@@ -77,26 +83,26 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         public ComparisonOperatorEnum Comparator { get; set; }
 
         [JsonProperty(propertyName: "UserMoonAltitude")]
-        private double DeprecatedUserMoonAltitude { set => Data.Offset = value; }
+        private double DeprecatedUserMoonAltitude { set { Data.Offset = value; } }
         [Obsolete]
         [JsonIgnore]
         public double UserMoonAltitude { get; set; }
 
         [JsonProperty(propertyName: "UserSunAltitude")]
-        private double DeprecatedUserSunAltitude { set => Data.Offset = value; }
+        private double DeprecatedUserSunAltitude { set { Data.Offset = value; } }
         [Obsolete]
         [JsonIgnore]
         public double UserSunAltitude { get; set; }
 
         [JsonProperty(propertyName: "AltitudeOffset")]
-        private double DeprecatedAltitudeOffset { set => Data.Offset = value; }
+        private double DeprecatedAltitudeOffset { set { Data.Offset = value; } }
 
         [Obsolete]
         [JsonIgnore]
         public double AltitudeOffset { get; set; }
 
         [JsonProperty(propertyName: "Coordinates")]
-        private InputCoordinates DeprecatedCoordinates { set => Data.Coordinates = value; }
+        private InputCoordinates DeprecatedCoordinates { set { Data.Coordinates = value; } }
 
         [Obsolete]
         [JsonIgnore]

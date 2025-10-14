@@ -443,7 +443,7 @@
                             Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
-                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding Inherited}" />
+                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
@@ -627,14 +627,14 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitude}" />
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             Text="&lt;" />
                         <logic:ExprControl Exp="{Binding OffsetExpression}" />
                     </StackPanel>
-                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding Inherited}" />
+                    <logic:CoordinatesControl Coords="{Binding Data.Coordinates}" Inherited="{Binding HasDsoParent}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>

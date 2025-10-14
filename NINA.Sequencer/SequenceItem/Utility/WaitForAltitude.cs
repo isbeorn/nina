@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
  
         [ImportingConstructor]
         public WaitForAltitude(IProfileService profileService) :base() {
-            Data = new WaitLoopData(profileService, false, CalculateExpectedTime, GetType().Name);
+            Data = new WaitLoopData(profileService, false, GetType().Name);
             Data.Offset = 30;
             AboveOrBelow = ">";
             ProfileService = profileService;

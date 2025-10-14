@@ -71,11 +71,11 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
         }
 
         public void UpdateExpressions(CoordinatesInstruction clone, CoordinatesInstruction cloned) {
-            clone.RaExpression = new Expression(RaExpression);
-            clone.DecExpression = new Expression(DecExpression);
-            clone.PositionAngleExpression = new Expression(PositionAngleExpression);
+            clone.RaExpression = new Expression(RaExpression, cloned.Parent, cloned.RaExpressionValidator);
+            clone.DecExpression = new Expression(DecExpression, cloned.Parent, cloned.DecExpressionValidator);
+            clone.PositionAngleExpression = new Expression(PositionAngleExpression, cloned.Parent, cloned.PositionAngleExpressionValidator);
             clone.Coordinates = cloned.Coordinates?.Clone();
-            clone.OffsetExpression = new Expression(OffsetExpression);
+            clone.OffsetExpression = new Expression(OffsetExpression, cloned.Parent, cloned.OffsetExpressionValidator);
         }
 
         [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]

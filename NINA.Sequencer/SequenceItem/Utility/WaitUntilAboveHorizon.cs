@@ -44,7 +44,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         [ImportingConstructor]
         public WaitUntilAboveHorizon(IProfileService profileService) : base() {
-            Data = new WaitLoopData(profileService, true, CalculateExpectedTime, GetType().Name);
+            Data = new WaitLoopData(profileService, true, GetType().Name);
             Data.Offset = 30;
             ProfileService = profileService;
         }

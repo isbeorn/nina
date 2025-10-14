@@ -22,11 +22,10 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         private string expectedTime;
         private string approximate = "";
         private DateTime expectedDateTime = DateTime.Now;
-        private Action calculateExpectedTime;
         private ComparisonOperatorEnum comparator;
         private IProfileService profileService;
 
-        public WaitLoopData(IProfileService profileService, bool useCustomHorizon, Action calculateExpectedTime, string name) {
+        public WaitLoopData(IProfileService profileService, bool useCustomHorizon, string name) {
             this.profileService = profileService;
             Latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             Longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
@@ -37,10 +36,12 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             Coordinates = new InputCoordinates();
             Name = name;
             UseCustomHorizon = useCustomHorizon;
-            this.calculateExpectedTime = calculateExpectedTime;
         }
 
-        private WaitLoopData(WaitLoopData cloneMe) : this(cloneMe.profileService, cloneMe.UseCustomHorizon, cloneMe.calculateExpectedTime, cloneMe.Name) {
+        [Obsolete("Don't pass in the delegate. Use the other ctor instead")]
+        public WaitLoopData(IProfileService profileService, bool useCustomHorizon, Action calculateExpectedTime, string name) : this(profileService, useCustomHorizon, name) { }
+
+        private WaitLoopData(WaitLoopData cloneMe) : this(cloneMe.profileService, cloneMe.UseCustomHorizon, cloneMe.Name) {
         }
 
         public WaitLoopData Clone() {
@@ -70,7 +71,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 } else {
                     TargetAltitude = value;
                 }
-                calculateExpectedTime();
                 RaisePropertyChanged();
             }
         }
@@ -88,7 +88,6 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 if (comparator == value) return;
                 comparator = value;
                 RaisePropertyChanged();
-                calculateExpectedTime();
             }
         }
 

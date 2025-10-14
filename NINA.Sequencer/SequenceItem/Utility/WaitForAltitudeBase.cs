@@ -15,7 +15,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public WaitForAltitudeBase(IProfileService profileService, bool useCustomHorizon) {
             ProfileService = profileService;
-            Data = new WaitLoopData(profileService, useCustomHorizon, CalculateExpectedTime, GetType().Name);
+            Data = new WaitLoopData(profileService, useCustomHorizon, GetType().Name);
         }
 
         public IProfileService ProfileService { get; set; }
