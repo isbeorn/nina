@@ -141,6 +141,7 @@ namespace NINA.Sequencer.Generators {
         private static string GeneratePartialClass(string namespaceName, string className, IGrouping<string, PropertyInfo?> properties, string broker) {
             // Build the partial class with one method per property
             var cloneSource = string.Empty;
+            var expressionClones = string.Empty;
             var propertiesSource = string.Empty;
             var methodsSource = string.Empty;
 
@@ -170,9 +171,6 @@ namespace NINA.Sequencer.Generators {
                 IFieldSymbol fieldSymbol = (IFieldSymbol)prop.PropertySymbol;
                 string fieldType = fieldSymbol.Type.Name;
                 if (fieldType == "Int32") fieldType = "int";
-
-                cloneSource += $@"
-                {propNameExpression} = new Expression (this.{propNameExpression}),";
 
                 propertiesSource += $@"
 
@@ -214,8 +212,12 @@ namespace NINA.Sequencer.Generators {
 
                     if (hasValidator) {
                         propertiesSource += $@"
-                    {propNameExpression}.Validator = {propNameExpression}Validator;";
+                {propNameExpression}.Validator = {propNameExpression}Validator;";
                     }
+
+                expressionClones += $@"
+                {propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"{propNameExpression}Validator" : "null")});";
+
                 propertiesSource += $@"
                 }}
                 return {fieldNameExpression};
@@ -297,6 +299,7 @@ namespace {namespaceName}
         public override object Clone() {{
             var clone = new {className}(this) {{{cloneSource}
             }};
+            {expressionClones}
             AfterClone(this, clone);
             AfterClone(clone);
             return clone;

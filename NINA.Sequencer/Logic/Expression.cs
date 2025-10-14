@@ -19,14 +19,14 @@ namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
 
-        public Expression (Expression cloneMe) {
+        public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
-            Context = cloneMe.Context;
             SymbolBroker = cloneMe.SymbolBroker;
             Symbol = cloneMe.Symbol;
-            Validator = cloneMe.Validator;
             Range = cloneMe.Range;
             Default = cloneMe.Default;
+            Validator = validator;
+            Context = context;
         }
 
         public Expression(string definition, ISequenceEntity context) {
@@ -70,7 +70,7 @@ namespace NINA.Sequencer.Logic {
         public bool Dirty { get; set; }
         public ISequenceEntity Context { get; set; }
 
-        public Action<Expression>? Validator;
+        public Action<Expression> Validator;
 
         private double _default = Double.NaN;
         public double Default {
