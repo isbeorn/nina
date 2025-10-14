@@ -216,7 +216,7 @@ namespace NINA.Sequencer.Generators {
                     }
 
                 expressionClones += $@"
-                {propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"{propNameExpression}Validator" : "null")});";
+                clone.{propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"{propNameExpression}Validator" : "null")});";
 
                 propertiesSource += $@"
                 }}
