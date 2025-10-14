@@ -95,7 +95,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         private double exposureTime;
 
 
-        [IsExpression(Default = -1, DefaultString = "{Camera}", HasValidator = true)]
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
         private int gain;
 
         partial void GainExpressionValidator(Expression expr) {
@@ -104,7 +104,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        [IsExpression(Default = -1, DefaultString = "{Camera}", HasValidator = true)]
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
         private int offset;
 
         partial void OffsetExpressionValidator(Expression expr) {

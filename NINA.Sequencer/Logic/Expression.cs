@@ -92,11 +92,12 @@ namespace NINA.Sequencer.Logic {
             get {
                 if (Double.IsNaN(Default) && Definition.Length == 0) {
                     return "";
-                } else if (defaultString == null) {
+                } else if (string.IsNullOrWhiteSpace(defaultString)) {
                     return Default.ToString(CultureInfo.InvariantCulture);
-                } else {
-                    return defaultString;
+                } else if (defaultString.StartsWith("Lbl")) {
+                    return $"{{{Core.Locale.Loc.Instance[defaultString]}}}";
                 }
+                return defaultString;
             }
             set {
                 defaultString = value;
