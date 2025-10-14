@@ -25,6 +25,7 @@ namespace NINA.Sequencer.Logic {
             Symbol = cloneMe.Symbol;
             Range = cloneMe.Range;
             Default = cloneMe.Default;
+            DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
         }
