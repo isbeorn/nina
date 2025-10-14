@@ -30,5 +30,21 @@ namespace NINA.CustomControlLibrary {
             get => (string)GetValue(HintTextProperty);
             set => SetValue(HintTextProperty, value);
         }
+
+        public static readonly DependencyProperty HintTextOpacityProperty =
+           DependencyProperty.Register(nameof(HintTextOpacity), typeof(double), typeof(HintTextBox), new UIPropertyMetadata(0.4));
+
+        public double HintTextOpacity {
+            get => (double)GetValue(HintTextOpacityProperty);
+            set => SetValue(HintTextOpacityProperty, value);
+        }
+
+        public static readonly DependencyProperty HintTextMarginProperty =
+           DependencyProperty.Register(nameof(HintTextMargin), typeof(Thickness), typeof(HintTextBox), new UIPropertyMetadata(new Thickness(5, 0, 0, 0)));
+
+        public Thickness HintTextMargin {
+            get => (Thickness)GetValue(HintTextMarginProperty);
+            set => SetValue(HintTextMarginProperty, value);
+        }
     }
 }
