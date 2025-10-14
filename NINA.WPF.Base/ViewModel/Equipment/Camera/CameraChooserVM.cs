@@ -83,6 +83,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var altairCameras = Altair.Altaircam.EnumV2();
                     Logger.Info($"Found {altairCameras?.Length} Altair Cameras");
                     foreach (var instance in altairCameras) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
                         var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new AltairSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }

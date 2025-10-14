@@ -191,11 +191,33 @@
                         </StackPanel>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="ToupTekAlike">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel Margin="0,0,0,6">
+                                <TextBlock
+                                    MinWidth="100"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblUnidirectional}" />
+                                <CheckBox HorizontalAlignment="Right" IsChecked="{Binding Unidirectional}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,6">
+                                <ninactrl:AsyncProcessButton
+                                    Width="150"
+                                    Height="25"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblCalibrate}"
+                                    Command="{Binding CalibrateAfwCommand}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
                     <local:FilterWheelTemplateSelector
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FilterWheelSettings}"
+                        ToupTekAlike="{StaticResource ToupTekAlike}"
                         Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
                 <ContentControl
