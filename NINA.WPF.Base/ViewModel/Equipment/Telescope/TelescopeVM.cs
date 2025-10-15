@@ -774,13 +774,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         transform.RA = mod24Ra;
                     }
                     var position = GetCurrentPosition();
+                    var syncSent = DateTime.UtcNow;
                     bool result = Telescope.Sync(transform);
+                    position = GetCurrentPosition();
                     Logger.Info($"{(result ? string.Empty : "FAILED - ")}Syncing scope from {position} to {transform}");
                     var waitForUpdate = updateTimer.WaitForNextUpdate(default);
                     await waitForUpdate;
-                    position = GetCurrentPosition();
                     var timeoutEnds = DateTime.UtcNow + TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime);
-                    while (position.ToString() != transform.ToString()) {
+                    while (position.Transform(Epoch.JNOW).ToString() != transform.Transform(Epoch.JNOW).ToString()) {
                         //using string comparison to avoid issues with very small differences in the coordinates
                         Logger.Info($"Waiting for telescope to update its position from {position} to {transform} after a sync command");
                         if (DateTime.UtcNow > timeoutEnds) {
