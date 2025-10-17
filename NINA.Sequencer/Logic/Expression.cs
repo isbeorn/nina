@@ -18,7 +18,10 @@ using static NINA.Sequencer.Logic.UserSymbol;
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-
+        /// <summary>
+        /// Used by the JSON serializer
+        /// </summary>
+        public Expression() { }
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
             SymbolBroker = cloneMe.SymbolBroker;
