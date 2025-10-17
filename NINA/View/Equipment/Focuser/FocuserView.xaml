@@ -387,6 +387,219 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Button
+                                  Grid.ColumnSpan="2"
+                                  Width="200"
+                                  Height="25"
+                                  HorizontalAlignment="Left"
+                                  Command="{Binding ResetPositionCommand}">
+                                  <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoResetZeroPosition}" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Oasis">
+                        <StackPanel
+                            VerticalAlignment="Top"
+                            Grid.IsSharedSizeScope="True"
+                            Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoDeviceId}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    MaxLength="8"
+                                    Text="{Binding FocuserAlias}">
+                                    <TextBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblDeviceIdTooltip}" />
+                                        </ToolTip>
+                                    </TextBox.ToolTip>
+                                </TextBox>
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoSetMaxStep}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding TargetMaxStep}" />
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoReversed}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Reversed}" />
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBeepOnStartup}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding BeepOnStartup}" />
+                            </Grid>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBeepOnMove}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding BeepOnMove}" />
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisHeating}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Heating}" />
+                            </Grid>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisHeatingTemperature}" />
+                                <ninactrl:UnitTextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Unit="°C">
+                                    <TextBox.Text>
+                                        <Binding Path="HeatingTemperature">
+                                            <Binding.ValidationRules>
+                                                <rules:IntRangeRule>
+                                                    <rules:IntRangeRule.ValidRange>
+                                                        <rules:IntRangeChecker Maximum="40" Minimum="-40" />
+                                                    </rules:IntRangeRule.ValidRange>
+                                                </rules:IntRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </ninactrl:UnitTextBox>
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisStallDetection}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding StallDetection}" />
+                            </Grid>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisIsStalled}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding IsStalled, FallbackValue=False, Mode=OneWay}"
+                                    IsEnabled="False"
+                                    Style="{StaticResource InvertedCheckmarkCheckbox}" />
+                            </Grid>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    Grid.ColumnSpan="2"
+                                    Width="200"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding ClearStallCommand}">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisClearStall}" />
+                                </Button>
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisUSBCapacity}" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    Width="80"
+                                    HorizontalAlignment="Left"
+                                    ItemsSource="{Binding USBCapacities}"
+                                    SelectedIndex="{Binding USBCapacity}" />
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisSpeed}" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    Width="80"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding HasMotorSpeedControl}"
+                                    ItemsSource="{Binding MotorSpeeds}"
+                                    SelectedIndex="{Binding MotorSpeed}" />
+                            </Grid>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
                                     Grid.ColumnSpan="2"
                                     Width="200"
                                     Height="25"
@@ -408,6 +621,7 @@
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
+                        Oasis="{StaticResource Oasis}"
                         Postfix="{x:Static wpfutil:DataTemplatePostfix.FocuserSettings}"
                         Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
