@@ -68,7 +68,14 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
                 Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
-            
+
+            if (Inherited) {
+                var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
+                if (contextCoordinates != null) {
+                    Coordinates.Coordinates = contextCoordinates.Coordinates;
+                }
+            }
+
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
             if (stoppedGuiding) {
