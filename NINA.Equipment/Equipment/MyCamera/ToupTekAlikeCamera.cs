@@ -654,11 +654,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         HasHighFullwell = false;
                     }
 
-                    if(CanSetLEDLights) {
-                        SupportedActions.Add(ToupTekActions.LEDLights);
-                        LEDLights = profile.TouptekAlikeLEDLights;
-                    }                    
-
                     ReadoutModes = new List<string> { "Low Conversion Gain" };
 
                     if ((this.flags & ToupTekAlikeFlag.FLAG_CG) != 0) {
@@ -685,6 +680,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     if (!sdk.StartPullModeWithCallback(new ToupTekAlikeCallback(OnEventCallback))) {
                         throw new Exception($"{Category} - Could not start pull mode");
+                    }
+
+                    if (CanSetLEDLights) {
+                        SupportedActions.Add(ToupTekActions.LEDLights);
+                        LEDLights = profile.TouptekAlikeLEDLights;
                     }
 
                     if (!sdk.put_Option(ToupTekAlikeOption.OPTION_FLUSH, 3)) {
