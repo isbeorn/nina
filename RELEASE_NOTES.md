@@ -19,6 +19,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
 - Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
+- Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
  
 ### **Device Management**
 - **Device Chooser Enhancements**  
