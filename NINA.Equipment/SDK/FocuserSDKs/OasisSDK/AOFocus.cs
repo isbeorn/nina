@@ -1,9 +1,9 @@
 ﻿using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Astroasis.AstroasisSDK {
     public class AOFocus {
@@ -116,9 +116,9 @@ namespace Astroasis.AstroasisSDK {
 
         [SecurityCritical]
         public static AOReturn FocuserGetProductModel(int id, out string model) {
-            byte[] buf = new byte[256];
+            StringBuilder buf = new StringBuilder(AO_FOCUSER_NAME_LEN);
             var err = AOFocuserGetProductModel(id, buf);
-            model = Encoding.ASCII.GetString(buf).TrimEnd('\0');
+            model = buf.ToString();
             return err;
         }
 
@@ -129,36 +129,23 @@ namespace Astroasis.AstroasisSDK {
 
         [SecurityCritical]
         public static AOReturn FocuserGetSerialNumber(int id, out string sn) {
-            byte[] buf = new byte[256];
+            StringBuilder buf = new StringBuilder(AO_FOCUSER_VERSION_LEN);
             var err = AOFocuserGetSerialNumber(id, buf);
-            sn = Encoding.ASCII.GetString(buf).TrimEnd('\0');
+            sn = buf.ToString();
             return err;
         }
 
         [SecurityCritical]
         public static AOReturn FocuserGetFriendlyName(int id, out string name) {
-            byte[] buf = new byte[256];
+            StringBuilder buf = new StringBuilder(AO_FOCUSER_NAME_LEN);
             var err = AOFocuserGetFriendlyName(id, buf);
-            name = Encoding.ASCII.GetString(buf).TrimEnd('\0');
+            name = buf.ToString();
             return err;
         }
 
         [SecurityCritical]
         public static AOReturn FocuserSetFriendlyName(int id, string name) {
             return AOFocuserSetFriendlyName(id, name);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FocuserGetBluetoothName(int id, out string name) {
-            byte[] buf = new byte[256];
-            var err = AOFocuserGetBluetoothName(id, buf);
-            name = Encoding.ASCII.GetString(buf).TrimEnd('\0');
-            return err;
-        }
-
-        [SecurityCritical]
-        public static AOReturn FocuserSetBluetoothName(int id, string name) {
-            return AOFocuserSetBluetoothName(id, name);
         }
 
         [SecurityCritical]
@@ -212,20 +199,10 @@ namespace Astroasis.AstroasisSDK {
         }
 
         [SecurityCritical]
-        public static AOReturn FocuserUpgrade(int id) {
-            return AOFocuserUpgrade(id);
-        }
-
-        [SecurityCritical]
-        public static AOReturn FocuserFirmwareUpgrade(int id, in byte[] data, int len) {
-            return AOFocuserFirmwareUpgrade(id, data, len);
-        }
-
-        [SecurityCritical]
         public static AOReturn FocuserGetSDKVersion(out string version) {
-            byte[] buf = new byte[256];
+            StringBuilder buf = new StringBuilder(AO_FOCUSER_VERSION_LEN);
             var err = AOFocuserGetSDKVersion(buf);
-            version = Encoding.ASCII.GetString(buf).TrimEnd('\0');
+            version = buf.ToString();
             return err;
         }
 
@@ -244,25 +221,21 @@ namespace Astroasis.AstroasisSDK {
         private static extern AOReturn AOFocuserClose(int id);
 
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetProductModel", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserGetProductModel(int id, [Out] byte[] model);
+        private static extern AOReturn AOFocuserGetProductModel(int id, StringBuilder model);
 
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetVersion", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn AOFocuserGetVersion(int id, out AOFocuserVersion version);
 
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetSerialNumber", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserGetSerialNumber(int id, [Out] byte[] sn);
+        private static extern AOReturn AOFocuserGetSerialNumber(int id, StringBuilder sn);
 
+        // AOReturn AOFocuserGetFriendlyName(int id, char* name);
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetFriendlyName", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserGetFriendlyName(int id, [Out] byte[] name);
+        private static extern AOReturn AOFocuserGetFriendlyName(int id, StringBuilder name);
 
+        // AOReturn AOFocuserSetFriendlyName(int id, const char* name);
         [DllImport(DLLNAME, EntryPoint = "AOFocuserSetFriendlyName", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn AOFocuserSetFriendlyName(int id, string name);
-
-        [DllImport(DLLNAME, EntryPoint = "AOFocuserGetBluetoothName", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserGetBluetoothName(int id, [Out] byte[] name);
-
-        [DllImport(DLLNAME, EntryPoint = "AOFocuserSetBluetoothName", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserSetBluetoothName(int id, string name);
 
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetConfig", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn AOFocuserGetConfig(int id, out AOFocuserConfig config);
@@ -294,14 +267,8 @@ namespace Astroasis.AstroasisSDK {
         [DllImport(DLLNAME, EntryPoint = "AOFocuserClearStall", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn AOFocuserClearStall(int id);
 
-        [DllImport(DLLNAME, EntryPoint = "AOFocuserUpgrade", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserUpgrade(int id);
-
-        [DllImport(DLLNAME, EntryPoint = "AOFocuserFirmwareUpgrade", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserFirmwareUpgrade(int id, byte[] data, int len);
-
         [DllImport(DLLNAME, EntryPoint = "AOFocuserGetSDKVersion", CallingConvention = CallingConvention.Cdecl)]
-        private static extern AOReturn AOFocuserGetSDKVersion([Out] byte[] version);
+        private static extern AOReturn AOFocuserGetSDKVersion(StringBuilder version);
 
         [DllImport(DLLNAME, EntryPoint = "AOFocuserSetLogLevel", CallingConvention = CallingConvention.Cdecl)]
         private static extern AOReturn AOFocuserSetLogLevel(int level);

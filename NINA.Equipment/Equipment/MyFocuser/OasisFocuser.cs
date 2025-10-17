@@ -20,20 +20,19 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public OasisFocuser(int id, IProfileService profileService) {
             this.profileService = profileService;
-
             this.id = id;
 
+            // Grab model and alias
             FocuserGetProductModel(id, out var model);
-
             focuserAlias = GetAlias();
 
             Logger.Debug($"Oasis: Focuser ID/Alias: {focuserAlias}");
 
-            Name = model;
+            Name = $"{model} ({focuserAlias})";
 
             SetId();
         }
-        public bool IsMoving { 
+        public bool IsMoving {
             get {
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
@@ -98,8 +97,8 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
                     if (status.temperatureDetection == 0) {
-                        // Ambient probe not connected, display internal temperature
-                        return status.temperatureInt / 100.0;
+                        // Ambient probe not connected
+                        return double.NaN;
                     } else {
                         return status.temperatureExt / 100.0;
                     }
@@ -121,20 +120,18 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         }
 
         private string focuserAlias;
-
         public string FocuserAlias {
             get {
                 return focuserAlias;
             }
-
             set {
                 Logger.Debug($"Oasis: Setting Focuser ID/Alias to: {value}");
 
                 FocuserSetFriendlyName(id, value);
                 focuserAlias = GetAlias();
 
-                FocuserGetFriendlyName(id, out var name);
-                Name = new string(name);
+                FocuserGetProductModel(id, out var model);
+                Name = $"{model} ({focuserAlias})";
                 SetId();
 
                 Logger.Info($"Oasis: Focuser ID/Alias set to: {focuserAlias}");
@@ -149,16 +146,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         private string GetAlias() {
             FocuserGetFriendlyName(id, out var name);
-            var strName = new string(name);
-
-            if (strName.Contains('(') && strName.Contains(')') && strName.EndsWith(")")) {
-                var openparen = strName.IndexOf('(');
-                var closeparen = strName.LastIndexOf(')');
-                var alias = closeparen - openparen;
-                return strName.Substring(openparen + 1, alias - 1);
-            } else {
-                return string.Empty;
-            }
+            return name;
         }
 
         public string Name { get; private set; }
@@ -172,8 +160,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         [ObservableProperty]
         private bool reversed = false;
 
-        partial void OnReversedChanged(bool value)
-        {
+        partial void OnReversedChanged(bool value) {
             AOFocuserConfig config = new AOFocuserConfig();
             config.mask = (uint)AOConfig.MASK_REVERSE_DIRECTION;
             config.reverseDirection = value ? 1 : 0;
@@ -196,10 +183,20 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         [RelayCommand]
         public void ResetPosition() {
             if (MyMessageBox.Show(Loc.Instance["LblZwoResetZeroPositionPrompt"], "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                if(Position > 0) {
+                if (Position > 0) {
                     FocuserSetZeroPosition(id);
                     RaisePropertyChanged(nameof(Position));
                 }
+            }
+        }
+
+        [RelayCommand]
+        public void ClearStall() {
+            if (MyMessageBox.Show(Loc.Instance["LblOasisClearStallPrompt"], "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                FocuserClearStall(id);
+                IsStalled = false;
+                RaisePropertyChanged(nameof(Position));
+                RaisePropertyChanged(nameof(IsStalled));
             }
         }
 
@@ -224,6 +221,10 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
                     TargetMaxStep = config.maxStep;
 
+                    // Clear stall
+                    FocuserClearStall(id);
+                    IsStalled = false;
+
                     Connected = true;
                     return true;
                 } else {
@@ -236,7 +237,15 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         private string GetFwVersionString() {
             AOFocuserVersion version = new AOFocuserVersion();
             _ = FocuserGetVersion(id, out version);
-            return version.firmware.ToString();
+
+            uint major = (version.firmware >> 24) & 0xFF;
+            uint minor = (version.firmware >> 16) & 0xFF;
+            uint patch = (version.firmware >> 8) & 0xFF;
+
+            // All firmware newer than 2.0.5 have motor speed control
+            hasMotorSpeedControl = (major > 2) || (major == 2 && minor > 0) || (major == 2 && minor == 0 && patch >= 5);
+
+            return $"{major}.{minor}.{patch}";
         }
 
         public void Disconnect() {
@@ -248,13 +257,50 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             FocuserStopMove(id);
         }
 
-        public async Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        private bool isStalled;
+        public bool IsStalled {
+            get => isStalled;
+            private set {
+                if (isStalled != value) {
+                    isStalled = value;
+                    RaisePropertyChanged();
+                    if (isStalled == true) {
+                        Notification.ShowWarning(Loc.Instance["LblOasisFocuserStalledWarning"]);
+                        Logger.Info("Oasis focuser is stalled");
+                    }
+                }
+            }
+        }
 
+        public async Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
             var lastPosition = int.MinValue;
             int samePositionCount = 0;
             var lastMovementTime = DateTime.Now;
             while (position != Position && !ct.IsCancellationRequested) {
-                FocuserMoveTo(id, position);
+                // Issue move command
+                var err = FocuserMoveTo(id, position);
+                if (err != AOReturn.AO_SUCCESS) {
+                    Logger.Error($"Oasis failed to issue move command {err}");
+                    throw new Exception($"Failed to move focuser {err}");
+                }
+
+                await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), ct);
+                AOFocuserStatus status;
+                do {
+                    err = FocuserGetStatus(id, out status);
+
+                    if (err != AOReturn.AO_SUCCESS) {
+                        if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                            DisconnectOnRemovedError();
+                        } else {
+                            Logger.Error($"Oasis communication error to get moving state {err}");
+                        }
+
+                        throw new Exception($"Focuser communication error {err}");
+                    }
+
+                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), ct);
+                } while (status.moving == 1 && !ct.IsCancellationRequested);
 
                 if (lastPosition == Position) {
                     ++samePositionCount;
@@ -270,16 +316,217 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                     lastMovementTime = DateTime.Now;
                 }
 
-                FocuserGetStatus(id, out var status);
                 lastPosition = status.position;
+                IsStalled = status.stallDetection == 1;
             }
         }
+
+        public bool BeepOnMove {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.beepOnMove == 1;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_BEEP_ON_MOVE;
+                config.beepOnMove = value ? 1 : 0;
+
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Beep on move set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set beep on move");
+                }
+            }
+        }
+
+        public bool BeepOnStartup {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.beepOnStartup == 1;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_BEEP_ON_STARTUP;
+                config.beepOnStartup = value ? 1 : 0;
+
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Beep on startup set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set beep on startup");
+                }
+            }
+        }
+
+        public bool StallDetection {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.stallDetection == 1;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_STALL_DETECTION;
+                config.stallDetection = value ? 1 : 0;
+
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Stall detection set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set stall detection");
+                }
+            }
+        }
+
+        public bool Heating {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.heatingOn == 1;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_HEATING_ON;
+                config.heatingOn = value ? 1 : 0;
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Heating set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set heating");
+                }
+            }
+        }
+
+        public int HeatingTemperature {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.heatingTemperature / 100;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return 0;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_HEATING_TEMPERATURE;
+                config.heatingTemperature = value * 100;
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Heating temperature set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set heating temperature");
+                }
+            }
+        }
+
+        public List<string> USBCapacities { get; } = new() { "500mA", ">1000mA" };
+        public int USBCapacity {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.usbPowerCapacity;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return 0;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_USB_POWER_CAPACITY;
+                config.usbPowerCapacity = value;
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: USB capacity set to: {USBCapacities[value]}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set USB capacity");
+                }
+            }
+        }
+
+        private bool hasMotorSpeedControl = false;
+        public bool HasMotorSpeedControl => hasMotorSpeedControl;
+
+        public List<string> MotorSpeeds { get; } = new() { "1.0x", "2.0x", "2.5x" };
+        public int MotorSpeed {
+            get {
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.speed;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return 0;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_SPEED;
+                config.speed = value;
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Motor speed set to: {MotorSpeeds[value]}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis communication error to set motor speed");
+                }
+            }
+        }
+
+
+
 
 
         #region Unsupported
         public bool TempCompAvailable => false;
         public bool TempComp { get; set; }
         public bool HasSetupDialog => false;
+
         public IList<string> SupportedActions => new List<string>();
         public void SetupDialog() {
         }
