@@ -6549,6 +6549,9 @@ ASCOM 카메라 드라이버를 사용할 때만 관련이 있습니다!</value>
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>연결된 ZWO 장치에 할당할 수 있는 ASCII 8자 이름입니다. 이를 통해 동일한 장치 모델을 고유하게 식별 할 수 있습니다.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value />
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>단방향</value>
   </data>
@@ -7340,5 +7343,38 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value />
   </data>
 </root>

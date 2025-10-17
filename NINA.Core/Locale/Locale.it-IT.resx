@@ -6532,6 +6532,9 @@ Quando è disabilitato, il pannello di Plate Solving nella scheda di Acquisizion
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>È possibile assegnare un nome fino a otto caratteri ASCII al dispositivo ZWO connesso. Questo ti aiuta a identificare in modo univoco più dispositivi dello stesso modello.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value />
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidirezionale</value>
   </data>
@@ -7323,5 +7326,38 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -6525,6 +6525,9 @@ Això només s'ha de desactivar quan es disposa d'un bon model del cel i no s'ha
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Un nom de 8 caràcters ASCII que podeu assignar al dispositiu ZWO connectat. Això us permet identificar de manera única diverses peces del mateix model de dispositiu.</value>
   </data>
+  <data name="LblDeviceIdTooltip" xml:space="preserve">
+    <value />
+  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidireccional</value>
   </data>
@@ -7317,5 +7320,38 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicialització</value>
+  </data>
+  <data name="LblOasisClearStallPrompt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnStartup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblBeepOnMove" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeating" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisHeatingTemperature" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisStallDetection" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisIsStalled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisUSBCapacity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisSpeed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LblOasisClearStall" xml:space="preserve">
+    <value />
   </data>
 </root>
