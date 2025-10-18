@@ -56,7 +56,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.3008-rc</Version>
+    <Version>3.2.0.3011-rc</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the Image components of N.I.N.A.</Description>
