@@ -42,7 +42,8 @@
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
                       MinWidth="40"
-                      Margin="5,5,10,-2"
+                      Height="20"
+                      Margin="5,-1,10,-2"
                       Text="{Binding Identifier}"
                       TextAlignment="Center" />
                     <logic:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
@@ -58,8 +59,9 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Variable:" />
                     <TextBox
+                      Height="20" 
                       MinWidth="40"
-                      Margin="5,5,10,-2"
+                      Margin="5,-1,10,-2"
                       Text="{Binding Variable}"
                       TextAlignment="Center" />
                     <logic:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
@@ -74,6 +76,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Variable:" />
                     <TextBox
+                       Height="20"
                        MinWidth="40"
                        Margin="5,1,10,-2"
                        Text="{Binding Variable}"

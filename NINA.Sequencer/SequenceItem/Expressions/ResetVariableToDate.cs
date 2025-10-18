@@ -247,7 +247,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
 
             var i = new List<string>();
             if (Variable == null || Variable.Length == 0) {
-                i.Add("The variable and new value expression must both be specified");
+                i.Add("The variable must be specified");
             } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, UserSymbol.VALID_SYMBOL)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
             } else {
