@@ -36,6 +36,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
 - ** Switch Polling**
     - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
+- **Oasis Focuser Native Driver**
+  - The Oasis focuser is now available as a native driver.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
