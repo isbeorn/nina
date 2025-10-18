@@ -764,23 +764,26 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public async Task<bool> Sync(Coordinates coordinates) {
             try {
-                var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
                 if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSync"] });
+                    var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
 
                     if (transform.RA < 0) {
                         var mod24Ra = AstroUtil.EuclidianModulus(transform.RA, 24);
                         Logger.Info($"RA value {transform.RA} is less than zero: applying Euclidean % 24 to RA for sync.");
                         transform.RA = mod24Ra;
                     }
+
                     var position = GetCurrentPosition();
+                    var initialDelta = transform - position;
+                    Logger.Info($"Initial delta between current position {position} and sync target {transform} is {initialDelta}");
                     var timeoutEnds = DateTime.UtcNow + TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime);
                     bool result = Telescope.Sync(transform);
                     Logger.Info($"{(result ? string.Empty : "FAILED - ")}Syncing scope from {position} to {transform}");
                     var waitForUpdate = updateTimer.WaitForNextUpdate(default);
                     await waitForUpdate;
                     position = GetCurrentPosition();
-                    while ((position - transform).Distance.Degree > profileService.ActiveProfile.PlateSolveSettings.Threshold) {
+                    while (initialDelta.Distance.Degree <= (position - transform).Distance.Degree) {
                         Logger.Info($"Waiting for telescope to update its position from {position} to {transform} after a sync command");
                         if (DateTime.UtcNow > timeoutEnds) {
                             Logger.Warning($"Timed out waiting for telescope to update its position from {position} to {transform} after a sync command");
