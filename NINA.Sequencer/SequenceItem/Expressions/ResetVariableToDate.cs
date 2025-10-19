@@ -259,10 +259,10 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
                 }
             }
             if (HasFixedTimeProvider) {
-                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
-                if (lastReferenceDate != referenceDate) {
+                //var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                //if (lastReferenceDate != referenceDate) {
                     UpdateTime();
-                }
+                //}
             } else {
                 DateTime today = System.DateTime.Today;
                 today = today.AddHours(Hours);

@@ -198,6 +198,10 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             var sw = GetSwitchFilter();
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
+            var lc = GetLoopCondition();
+
+            lc.Validate();
+            issues.AddRange(lc.Issues);
 
             te.Validate();
             issues.AddRange(te.Issues);
