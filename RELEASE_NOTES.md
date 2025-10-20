@@ -3,6 +3,14 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.3
+
+## Bugfixes
+
+## Improvements
+
+## Features
+
 # Version 3.2
 
 ## Bugfixes
@@ -18,6 +26,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Sunrise, sunset, moonrise, and moonset now account for your location's elevation for increased accuracy.
 - Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
 - Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
+- In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
+- Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
  
 ### **Device Management**
 - **Device Chooser Enhancements**  
