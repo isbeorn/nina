@@ -3,6 +3,14 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.3
+
+## Bugfixes
+
+## Improvements
+
+## Features
+
 # Version 3.2
 
 ## Bugfixes
