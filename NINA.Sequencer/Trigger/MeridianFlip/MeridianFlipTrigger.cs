@@ -208,11 +208,6 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 return false;
             }
 
-            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
-            Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Skip flip evaluation.");
-                return false;
-            }
-
             // When side of pier is disabled - check if the last flip time was less than 11 hours ago and further check if the current position is similar to the last flip position. If all are true, no flip is required.
             if (UseSideOfPier == false && (DateTime.Now - lastFlipTime) < TimeSpan.FromHours(11) && lastFlipCoordiantes != null && (lastFlipCoordiantes - telescopeInfo.Coordinates).Distance.ArcMinutes < 20) {
                 //A flip for the same target is only expected every 12 hours on planet earth and
@@ -236,7 +231,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
             if (minimumTimeRemaining <= TimeSpan.Zero && maximumTimeRemaining > TimeSpan.Zero) {
                 Logger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
-                return true;
+                return EnsureSafe(shouldFlip: true);
             } else {
                 if (UseSideOfPier && telescopeInfo.SideOfPier == PierSide.pierUnknown) {
                     Logger.Error("Side of Pier usage is enabled, however the side of pier reported by the driver is unknown. Ignoring side of pier to calculate the flip time");
@@ -262,7 +257,13 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Current pier side {telescopeInfo.SideOfPier} - expected pier side {targetSideOfPier}. Flip should happen now");
                             }
                             Logger.Info($"Meridian Flip - No more remaining time available before flip. Current pier side {telescopeInfo.SideOfPier} - expected pier side {targetSideOfPier}. Flip should happen now");
-                            return true;
+
+                            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
+                                Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Flip should happen but it is unsafe. Stopping tracking instead.");
+                                telescopeMediator.SetTrackingEnabled(false);
+                                return false;
+                            }
+                            return EnsureSafe(shouldFlip: true);
                         }
                     } else {
                         // There is still time remaining. A flip is likely not required. Double check by checking the current expected side of pier with the actual side of pier
@@ -286,7 +287,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                             if (delayedFlip) {
                                 Logger.Info($"Meridian Flip - Flip seems to not have happened in time as pier side is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now");
                             }
-                            return delayedFlip;
+                            return EnsureSafe(shouldFlip: delayedFlip);
                         }
                     }
                 } else {
@@ -299,13 +300,22 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                         } else {
                             Logger.Info($"Meridian Flip - (Side of Pier usage is disabled) No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                         }
-                        return true;
+                        return EnsureSafe(shouldFlip: true);
                     } else {
                         Logger.Info($"Meridian Flip - (Side of Pier usage is disabled) There is still time remaining. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}");
                         return false;
                     }
                 }
             }
+        }
+
+        private bool EnsureSafe(bool shouldFlip) {
+            if (shouldFlip && safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
+                Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Flip should happen but it is unsafe. Stopping tracking instead.");
+                telescopeMediator.SetTrackingEnabled(false);
+                return false;
+            }
+            return shouldFlip;
         }
 
         protected virtual void UpdateMeridianFlipTimeTriggerValues(TimeSpan minimumTimeRemaining, TimeSpan maximumTimeRemaining, TimeSpan pauseBeforeMeridian, TimeSpan maximumTimeAfterMeridian) {
