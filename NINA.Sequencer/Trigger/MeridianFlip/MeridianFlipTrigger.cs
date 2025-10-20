@@ -12,32 +12,34 @@
 
 #endregion "copyright"
 
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.Astrometry;
-using NINA.Equipment.Interfaces.Mediator;
 using NINA.ViewModel;
+using NINA.WPF.Base.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
+using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Enum;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.WPF.Base.ViewModel;
-using NINA.Sequencer.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Interfaces;
 
 namespace NINA.Sequencer.Trigger.MeridianFlip {
 
@@ -54,22 +56,23 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
         protected ICameraMediator cameraMediator;
         protected IFocuserMediator focuserMediator;
         protected IMeridianFlipVMFactory meridianFlipVMFactory;
-
+        protected readonly ISafetyMonitorMediator safetyMonitorMediator;
         protected DateTime lastFlipTime = DateTime.MinValue;
         protected Coordinates lastFlipCoordiantes;
 
         [ImportingConstructor]
         public MeridianFlipTrigger(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator,
-            IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator, IMeridianFlipVMFactory meridianFlipVMFactory) : base() {
+            IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator, IMeridianFlipVMFactory meridianFlipVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             this.cameraMediator = cameraMediator;
             this.focuserMediator = focuserMediator;
             this.meridianFlipVMFactory = meridianFlipVMFactory;
+            this.safetyMonitorMediator = safetyMonitorMediator;
         }
 
-        protected MeridianFlipTrigger(MeridianFlipTrigger cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.telescopeMediator, cloneMe.focuserMediator, cloneMe.applicationStatusMediator, cloneMe.meridianFlipVMFactory) {
+        protected MeridianFlipTrigger(MeridianFlipTrigger cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.telescopeMediator, cloneMe.focuserMediator, cloneMe.applicationStatusMediator, cloneMe.meridianFlipVMFactory, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -202,6 +205,12 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 EarliestFlipTime = DateTime.MinValue;
                 LatestFlipTime = DateTime.MinValue;
                 Logger.Info("Meridian Flip - Telescope is not tracking. Skip flip evaluation");
+                return false;
+            }
+
+            var safety = safetyMonitorMediator.GetInfo();
+            if (safety != null && safety.Connected && !safety.IsSafe) {
+            Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Skip flip evaluation.");
                 return false;
             }
 

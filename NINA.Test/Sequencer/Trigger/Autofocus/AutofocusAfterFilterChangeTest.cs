@@ -51,6 +51,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         private Mock<IFilterWheelMediator> filterWheelMediatorMock;
         private Mock<IFocuserMediator> focuserMediatorMock;
         private Mock<IAutoFocusVMFactory> autoFocusVMFactoryMock;
+        private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
         private AutofocusAfterFilterChange sut;
 
         [SetUp]
@@ -62,6 +63,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             filterWheelMediatorMock = new Mock<IFilterWheelMediator>();
             focuserMediatorMock = new Mock<IFocuserMediator>();
             autoFocusVMFactoryMock = new Mock<IAutoFocusVMFactory>();
+            safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusExposureTime).Returns(2);
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps).Returns(4);
@@ -70,7 +72,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo { Connected = true });
             focuserMediatorMock.Setup(x => x.GetInfo()).Returns(new FocuserInfo { Connected = true });
-            sut = new AutofocusAfterFilterChange(profileServiceMock.Object, historyMock.Object, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            sut = new AutofocusAfterFilterChange(profileServiceMock.Object, historyMock.Object, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
         }
 
         [Test]

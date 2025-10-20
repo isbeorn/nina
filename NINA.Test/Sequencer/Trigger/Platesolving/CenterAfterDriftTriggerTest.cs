@@ -42,6 +42,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
         private Mock<IImageSaveMediator> imageSaveMediatorMock;
         private Mock<IDomeMediator> domeMediatorMock;
         private Mock<IDomeFollower> domeFollowerMock;
+        private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
 
         [SetUp]
         public void Setup() {
@@ -55,6 +56,7 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
             imageSaveMediatorMock = new Mock<IImageSaveMediator>();
             domeMediatorMock = new Mock<IDomeMediator>();
             domeFollowerMock = new Mock<IDomeFollower>();
+            safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
         }
 
         [Test]
@@ -75,7 +77,8 @@ namespace NINA.Test.Sequencer.Trigger.Platesolving {
                 domeMediatorMock.Object,
                 domeFollowerMock.Object,
                 imageSaveMediatorMock.Object,
-                applicationStatusMediatorMock.Object);
+                applicationStatusMediatorMock.Object,
+                safetyMonitorMediatorMock.Object);
 
             sut.DistanceArcMinutes = arcmin;
 

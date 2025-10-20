@@ -54,6 +54,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
         private Mock<IFocuserMediator> focuserMediatorMock;
         private Mock<IAutoFocusVMFactory> autoFocusVMFactoryMock;
         private Mock<IImageSaveMediator> imageSaveMediatorMock;
+        private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
 
         private ImageHistoryVM imagehistory;
 
@@ -67,6 +68,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             cameraMediatorMock.Setup(x => x.GetInfo()).Returns(new CameraInfo { Connected = true });
             focuserMediatorMock.Setup(x => x.GetInfo()).Returns(new FocuserInfo { Connected = true });
             imageSaveMediatorMock = new Mock<IImageSaveMediator>();
+            safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
 
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusExposureTime).Returns(2);
             profileServiceMock.SetupGet(x => x.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps).Returns(4);
@@ -82,7 +84,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
         [Test]
         public void CloneTest() {
-            var initial = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var initial = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             initial.Icon = new System.Windows.Media.GeometryGroup();
             initial.SampleSize = 15;
             initial.Amount = 33;
@@ -105,7 +107,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
                 imagehistory.Add(imagehistory.GetNextImageId(), null, "LIGHT");
             }
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.Amount = 1;
 
             var trigger = sut.ShouldTrigger(null, null);
@@ -130,7 +132,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
                 imagehistory.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = 1, HFR = hfrs[i] }, MetaData = new ImageMetaData() { Image = new ImageParameter() { Id = id } } });
             }
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.Amount = changeAmount;
 
             var itemMock = new Mock<IExposureItem>();
@@ -155,7 +157,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
                 imagehistory.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = 1, HFR = hfrs[i] }, MetaData = new ImageMetaData() { Image = new ImageParameter() { Id = id } } });
             }
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.SampleSize = 4;
             sut.Amount = changeAmount;
 
@@ -193,7 +195,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
                 imagehistory.AppendImageProperties(new ImageSavedEventArgs() { StarDetectionAnalysis = new StarDetectionAnalysis() { DetectedStars = 1 + 5, HFR = hfrs[i] }, MetaData = new ImageMetaData() { Image = new ImageParameter() { Id = id } } });
             }
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.Amount = changeAmount;
 
             var itemMock = new Mock<IExposureItem>();
@@ -210,7 +212,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var filter = new FilterInfo() { Position = 0 };
             filterWheelMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { SelectedFilter = filter });
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
 
             await sut.Execute(default, default, default);
 
@@ -220,7 +222,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
         [Test]
         public void ToString_FilledProperly() {
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             var tostring = sut.ToString();
             tostring.Should().Be("Trigger: AutofocusAfterHFRIncreaseTrigger, Amount: 5");
         }
@@ -251,7 +253,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             filterWheelMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true, SelectedFilter = new FilterInfo() { Name = "TestFilter" } });
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.Amount = changeAmount;
 
             var itemMock = new Mock<IExposureItem>();

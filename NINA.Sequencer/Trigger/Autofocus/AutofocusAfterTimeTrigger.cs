@@ -12,15 +12,25 @@
 
 #endregion "copyright"
 
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Autofocus;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -29,13 +39,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.Sequencer.Utility;
-using NINA.Core.Utility;
-using NINA.Sequencer.Interfaces;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Interfaces;
 
 namespace NINA.Sequencer.Trigger.Autofocus {
 
@@ -52,22 +55,24 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private IFilterWheelMediator filterWheelMediator;
         private IFocuserMediator focuserMediator;
         private IAutoFocusVMFactory autoFocusVMFactory;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
         private DateTime initialTime;
         private bool initialized = false;
 
         [ImportingConstructor]
-        public AutofocusAfterTimeTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory) : base() {
+        public AutofocusAfterTimeTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.history = history;
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.filterWheelMediator = filterWheelMediator;
             this.focuserMediator = focuserMediator;
             this.autoFocusVMFactory = autoFocusVMFactory;
+            this.safetyMonitorMediator = safetyMonitorMediator;
             Amount = 30;
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
-        private AutofocusAfterTimeTrigger(AutofocusAfterTimeTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory) {
+        private AutofocusAfterTimeTrigger(AutofocusAfterTimeTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -124,6 +129,8 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
+            var safety = safetyMonitorMediator.GetInfo();
+            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
 
             bool shouldTrigger = false;
             var lastAF = history.AutoFocusPoints.LastOrDefault();

@@ -12,36 +12,38 @@
 
 #endregion "copyright"
 
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
+using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.Interfaces;
+using NINA.PlateSolving;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Platesolving;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
+using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.WPF.Base.ViewModel;
-using NINA.Astrometry;
-using NINA.Sequencer.SequenceItem.Platesolving;
-using NINA.Core.Utility;
-using System.IO;
-using NINA.Core.Utility.Notification;
-using NINA.Sequencer.Utility;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Enum;
-using NINA.PlateSolving;
-using NINA.Core.Utility.WindowService;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.Sequencer.Interfaces;
 
 namespace NINA.Sequencer.Trigger.Platesolving {
 
@@ -61,6 +63,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         private IDomeMediator domeMediator;
         private IDomeFollower domeFollower;
         private readonly IApplicationStatusMediator applicationStatusMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
         private readonly IImageSaveMediator imageSaveMediator;
         private PlatesolvingImageFollower platesolvingImageFollower;
         private PlateSolvingStatusVM plateSolveStatusVM = new PlateSolvingStatusVM();
@@ -69,7 +72,7 @@ namespace NINA.Sequencer.Trigger.Platesolving {
         public CenterAfterDriftTrigger(
             IProfileService profileService, ITelescopeMediator telescopeMediator, IFilterWheelMediator filterWheelMediator, IGuiderMediator guiderMediator,
             IImagingMediator imagingMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator, IDomeFollower domeFollower, IImageSaveMediator imageSaveMediator,
-            IApplicationStatusMediator applicationStatusMediator) : base() {
+            IApplicationStatusMediator applicationStatusMediator, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.filterWheelMediator = filterWheelMediator;
@@ -80,12 +83,13 @@ namespace NINA.Sequencer.Trigger.Platesolving {
             this.domeFollower = domeFollower;
             this.imageSaveMediator = imageSaveMediator;
             this.applicationStatusMediator = applicationStatusMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
             DistanceArcMinutes = 10;
             AfterExposures = 1;
             Coordinates = new InputCoordinates();
         }
 
-        private CenterAfterDriftTrigger(CenterAfterDriftTrigger cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.filterWheelMediator, cloneMe.guiderMediator, cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator) {
+        private CenterAfterDriftTrigger(CenterAfterDriftTrigger cloneMe) : this(cloneMe.profileService, cloneMe.telescopeMediator, cloneMe.filterWheelMediator, cloneMe.guiderMediator, cloneMe.imagingMediator, cloneMe.cameraMediator, cloneMe.domeMediator, cloneMe.domeFollower, cloneMe.imageSaveMediator, cloneMe.applicationStatusMediator, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -209,6 +213,8 @@ namespace NINA.Sequencer.Trigger.Platesolving {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
+            var safety = safetyMonitorMediator.GetInfo();
+            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
 
             if (LastDistanceArcMinutes >= DistanceArcMinutes) {
                 Logger.Info($"Drift exceeded threshold: {LastDistanceArcMinutes} / {DistanceArcMinutes} arc minutes");

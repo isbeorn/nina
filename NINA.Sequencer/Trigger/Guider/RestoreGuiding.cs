@@ -13,23 +13,24 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility.Notification;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Guider;
+using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Validations;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.Core.Utility.Notification;
-using NINA.Sequencer.SequenceItem.Imaging;
-using NINA.Sequencer.Interfaces;
 
 namespace NINA.Sequencer.Trigger.Guider {
 
@@ -41,14 +42,16 @@ namespace NINA.Sequencer.Trigger.Guider {
     [JsonObject(MemberSerialization.OptIn)]
     public class RestoreGuiding : SequenceTrigger, IValidatable {
         private readonly IGuiderMediator guiderMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
-        public RestoreGuiding(IGuiderMediator guiderMediator) : base() {
+        public RestoreGuiding(IGuiderMediator guiderMediator, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.guiderMediator = guiderMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
             TriggerRunner.Add(new StartGuiding(guiderMediator) { ForceCalibration = false });
         }
 
-        private RestoreGuiding(RestoreGuiding cloneMe) : this(cloneMe.guiderMediator) {
+        private RestoreGuiding(RestoreGuiding cloneMe) : this(cloneMe.guiderMediator, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -73,6 +76,9 @@ namespace NINA.Sequencer.Trigger.Guider {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            var safety = safetyMonitorMediator.GetInfo();
+            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
+
             if (nextItem is IExposureItem) {
                 var takeExposure = (IExposureItem)nextItem;
                 return takeExposure.ImageType == "LIGHT";
