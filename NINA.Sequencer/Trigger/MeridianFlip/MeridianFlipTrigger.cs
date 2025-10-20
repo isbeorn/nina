@@ -208,8 +208,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                 return false;
             }
 
-            var safety = safetyMonitorMediator.GetInfo();
-            if (safety != null && safety.Connected && !safety.IsSafe) {
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
             Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Skip flip evaluation.");
                 return false;
             }

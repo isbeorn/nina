@@ -125,8 +125,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
-            var safety = safetyMonitorMediator.GetInfo();
-            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) { return false; }
 
             if (history.ImageHistory == null) { return false; }
             if (history.ImageHistory.Count == 0) { return false; }

@@ -109,8 +109,7 @@ namespace NINA.Sequencer.Trigger.Guider {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
-            var safety = safetyMonitorMediator.GetInfo();
-            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) { return false; }
 
             RaisePropertyChanged(nameof(ProgressExposures));
             if(lastTriggerId > history.ImageHistory.Count) { 

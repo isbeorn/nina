@@ -39,6 +39,7 @@ using NINA.Core.Utility;
 using NINA.WPF.Base.Model;
 using NINA.Core.Model;
 using static NINA.Equipment.Equipment.MyGPS.PegasusAstro.UnityApi.DriverUranusReport;
+using NINA.Equipment.Equipment.MySafetyMonitor;
 
 namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
@@ -136,6 +137,66 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             var itemMock = new Mock<IExposureItem>();
             itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+            var result = sut.ShouldTrigger(null, itemMock.Object);
+
+            result.Should().BeTrue();
+        }
+
+        [Test]
+        public void Test_ShouldTrigger_WhenChangeButUnsafe_NoTrigger() {
+            var filterWheelInfo = new FilterWheelInfo();
+            var filterInfo = new FilterInfo() {
+                Name = "Test1"
+            };
+            filterWheelInfo.SelectedFilter = filterInfo;
+
+            var nextFilterWheelInfo = new FilterWheelInfo();
+            var nextFilterInfo = new FilterInfo() {
+                Name = "Test2"
+            };
+            nextFilterWheelInfo.SelectedFilter = nextFilterInfo;
+
+            filterWheelMediatorMock.SetupSequence(m => m.GetInfo())
+                .Returns(filterWheelInfo)
+                .Returns(nextFilterWheelInfo);
+
+            sut.Initialize();
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            safetyMonitorMediatorMock.Setup(m => m.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = false });
+
+            var result = sut.ShouldTrigger(null, itemMock.Object);
+
+            result.Should().BeFalse();
+        }
+
+        [Test]
+        public void Test_ShouldTrigger_WhenChangeAndSafe_Triggers() {
+            var filterWheelInfo = new FilterWheelInfo();
+            var filterInfo = new FilterInfo() {
+                Name = "Test1"
+            };
+            filterWheelInfo.SelectedFilter = filterInfo;
+
+            var nextFilterWheelInfo = new FilterWheelInfo();
+            var nextFilterInfo = new FilterInfo() {
+                Name = "Test2"
+            };
+            nextFilterWheelInfo.SelectedFilter = nextFilterInfo;
+
+            filterWheelMediatorMock.SetupSequence(m => m.GetInfo())
+                .Returns(filterWheelInfo)
+                .Returns(nextFilterWheelInfo);
+
+            sut.Initialize();
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            safetyMonitorMediatorMock.Setup(m => m.GetInfo()).Returns(new SafetyMonitorInfo() { Connected = true, IsSafe = true });
+
             var result = sut.ShouldTrigger(null, itemMock.Object);
 
             result.Should().BeTrue();

@@ -76,8 +76,7 @@ namespace NINA.Sequencer.Trigger.Guider {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
-            var safety = safetyMonitorMediator.GetInfo();
-            if (safety != null && safety.Connected && !safety.IsSafe) { return false; }
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) { return false; }
 
             if (nextItem is IExposureItem) {
                 var takeExposure = (IExposureItem)nextItem;
