@@ -364,10 +364,10 @@ namespace NINA.ViewModel.Sequencer {
 
             // Don't ask if this is an empty sequence
             if (!isEmpty) {
-                if (ShouldStopForChanges(SavePath ?? "", "*")) {
+                if (ShouldStopForChanges(SavePath ?? "", SequenceEntityINPC.defaultChangeSet)) {
                     return;
                 }
-                if (!Sequencer.MainContainer.HasChanges["*"])
+                if (!Sequencer.MainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet])
                     if (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges) {
                         if (ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures")) {
                             return;

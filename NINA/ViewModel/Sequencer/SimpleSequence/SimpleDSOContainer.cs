@@ -707,7 +707,7 @@ namespace NINA.Sequencer.Container {
 
         public Dictionary<string, bool> HasChanges { get => hasChanges;  }
 
-        private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { "*", false } };
+        private Dictionary<string, bool> hasChanges = new Dictionary<string, bool>() { { SequenceEntityINPC.defaultChangeSet, false } };
 
         public void ClearHasChanged() {
             foreach (string key in HasChanges.Keys) {
@@ -718,7 +718,7 @@ namespace NINA.Sequencer.Container {
         public bool DoesHaveChanges(string hasChangeSet) {
             return HasChanges.ContainsKey(hasChangeSet) && HasChanges[hasChangeSet];
         }
-        public void SetChanged(string changedSet = "*") {
+        public void SetChanged(string changedSet = SequenceEntityINPC.defaultChangeSet) {
             if (HasChanges.ContainsKey(changedSet))
                 HasChanges[changedSet] = true;
             else

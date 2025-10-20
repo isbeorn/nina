@@ -60,13 +60,13 @@ namespace NINA.Sequencer {
             get => mainContainer;
             set {
                 if(mainContainer != null && mainContainer != value){
-                    bool saveChangeStatus = mainContainer.HasChanges["*"];
+                    bool saveChangeStatus = mainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet];
                     // when a new sequence is loaded, allow existing sequence elements to detect that
                     // they are no longer part of the sequence root container.
                     foreach (var item in mainContainer.GetItemsSnapshot()){
                         item.Detach();
                     }
-                    mainContainer.HasChanges["*"] = saveChangeStatus;
+                    mainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet] = saveChangeStatus;
                 }
                 mainContainer = value;
                 RaisePropertyChanged();

@@ -556,10 +556,10 @@ namespace NINA.ViewModel {
         /// will return false if there are no changes or the user has opted not to save the changes</returns>
         public bool ShouldStopForChanges() {
             // check the general items
-            if (ShouldStopForChanges(null, "*"))
+            if (ShouldStopForChanges(null, SequenceEntityINPC.defaultChangeSet))
                 return true;
 
-            if ((!Sequencer.MainContainer.HasChanges["*"]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+            if ((!Sequencer.MainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
                 if (ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures"))
                     return true;    // we want to stop to save
             }

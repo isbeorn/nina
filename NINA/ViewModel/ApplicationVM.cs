@@ -41,6 +41,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using NINA.WPF.Base.View;
 using System.Threading.Tasks;
+using NINA.Sequencer;
 
 namespace NINA.ViewModel {
 
@@ -228,11 +229,11 @@ namespace NINA.ViewModel {
             Sequencer.ISequenceNavigationVM vm = ((Interfaces.IMainWindowVM)Application.Current.MainWindow.DataContext).SequenceNavigationVM;
             if (vm.Initialized) {
                 // check for changes to the sequence
-                if (vm.Sequence2VM.ShouldStopForChanges(vm.Sequence2VM.Sequencer.MainContainer.Name, "*")) {
+                if (vm.Sequence2VM.ShouldStopForChanges(vm.Sequence2VM.Sequencer.MainContainer.Name, SequenceEntityINPC.defaultChangeSet)) {
                     return;
                 }
                 // if main HasChanged flag isn't set (no actual edits to the sequence), check the exposure count
-                if ((!vm.Sequence2VM.Sequencer.MainContainer.HasChanges["*"]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
+                if ((!vm.Sequence2VM.Sequencer.MainContainer.HasChanges[SequenceEntityINPC.defaultChangeSet]) && (!ActiveProfile.SequenceSettings.ExcludeExposureCountFromHasChanges)) {
                     if (vm.Sequence2VM.ShouldStopForChanges(Loc.Instance["LblExposureCount"], "Exposures")) {
                         return;
                     }

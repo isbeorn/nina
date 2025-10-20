@@ -38,6 +38,6 @@ namespace NINA.Sequencer.Container {
 
         public Dictionary<string, bool> HasChanges { get; }
         bool DoesHaveChanges(string hasChangeSet);
-        void SetChanged(string changedSet="*");
+        void SetChanged(string changedSet=SequenceEntityINPC.defaultChangeSet);
     }
 }
