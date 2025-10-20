@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -246,7 +246,8 @@ namespace NINA.WPF.Base.SkySurvey {
                 double maxSize = 600;
 
                 var l = new List<CacheImage>();
-                foreach (var entry in cache.Cache.Elements("Image")) {
+                var cacheDoc = cache?.GetActiveCacheElement();
+                foreach (var entry in cacheDoc?.Elements("Image") ?? Enumerable.Empty<System.Xml.Linq.XElement>()) {
                     double fovW = double.Parse(entry.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                     double fovH = double.Parse(entry.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
 
@@ -257,7 +258,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     double ra = double.Parse(entry.Attribute("RA").Value, CultureInfo.InvariantCulture);
                     double dec = double.Parse(entry.Attribute("Dec").Value, CultureInfo.InvariantCulture);
                     double rotation = double.Parse(entry.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                    string path = Path.Combine(cache.framingAssistantCachePath, entry.Attribute("FileName").Value);
+                    string path = Path.Combine(cache.ActiveCachePath, entry.Attribute("FileName").Value);
 
                     if (AstroUtil.ArcminToArcsec(fovW) > minSize && AstroUtil.ArcminToArcsec(fovH) > minSize) {
                         var existing = cacheImages.FirstOrDefault(x => x.Coordinates.RA == ra && x.Coordinates.Dec == dec);

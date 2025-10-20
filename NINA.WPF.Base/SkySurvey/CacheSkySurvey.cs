@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -15,6 +15,7 @@
 using NINA.Astrometry;
 using NINA.Core.Utility;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -27,12 +28,22 @@ using System.Xml.Linq;
 namespace NINA.WPF.Base.SkySurvey {
 
     public class CacheSkySurvey {
+        public const string Default = "Default";
+        
         public readonly string framingAssistantCachePath;
         private string framingAssistantCachInfo;
+        private Dictionary<string, XElement> cachesBySource;
+        private Dictionary<string, string> cachePathsBySource;
+        private string activeSource = Default;
+        private string activeCachePath;
+
+        public string ActiveCachePath => string.IsNullOrEmpty(activeCachePath) ? framingAssistantCachePath : activeCachePath;
 
         public CacheSkySurvey(string framingAssistantCachePath) {
             this.framingAssistantCachePath = framingAssistantCachePath;
             this.framingAssistantCachInfo = Path.Combine(framingAssistantCachePath, "CacheInfo.xml");
+            this.cachesBySource = new Dictionary<string, XElement>();
+            this.cachePathsBySource = new Dictionary<string, string>();
             Initialize();
         }
 
@@ -79,12 +90,18 @@ namespace NINA.WPF.Base.SkySurvey {
 
 
         public void DeleteFromCache(XElement element) {
-            if(Cache != null && element != null) {
+            if(element != null) {
+                // Determine active cache document and paths
+                var doc = GetActiveCacheElement();
+                var basePath = ActiveCachePath;
+                var infoPath = (activeSource == Default || string.IsNullOrEmpty(activeSource))
+                    ? framingAssistantCachInfo
+                    : Path.Combine(ActiveCachePath, "CacheInfo.xml");
 
                 var fileNameAttribute = element.Attribute("FileName");
 
                 if(fileNameAttribute != null) {
-                    var fullFileName = Path.Combine(framingAssistantCachePath, fileNameAttribute.Value);                 
+                    var fullFileName = Path.Combine(basePath, fileNameAttribute.Value);
                     var thumbnailBig = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.BigThumbnailSize);
                     var thumbnailMedium = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.MediumThumbnailSize);
                     var thumbnailSmall = CacheImage.GetImagePathForThumbnail(fullFileName, CacheImage.SmallThumbnailSize);
@@ -101,11 +118,10 @@ namespace NINA.WPF.Base.SkySurvey {
                     if (File.Exists(thumbnailSmall)) {
                         try { File.Delete(thumbnailSmall); } catch { }
                     }
-
                 }
 
                 element.Remove();
-                Cache.Save(framingAssistantCachInfo);
+                doc?.Save(infoPath);
             }
         }
 
@@ -219,6 +235,7 @@ namespace NINA.WPF.Base.SkySurvey {
         /// <returns></returns>
         public Task<SkySurveyImage> GetImage(string source, double ra, double dec, double rotation, double fov) {
             return Task.Run(() => {
+                // Online sources and file cache are stored in the default cache (root)
                 var element =
                     Cache
                     .Elements("Image")
@@ -230,7 +247,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     .FirstOrDefault();
 
                 if (element != null) {
-                    return Load(element);
+                    return Load(element, framingAssistantCachePath);
                 }
 
                 return null;
@@ -246,7 +263,7 @@ namespace NINA.WPF.Base.SkySurvey {
                         x => x.Attribute("Id").Value == id.ToString()
                     ).FirstOrDefault();
                 if (element != null) {
-                    return Load(element);
+                    return Load(element, framingAssistantCachePath);
                 } else {
                     return null;
                 }
@@ -254,7 +271,11 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private SkySurveyImage Load(XElement element) {
-            var img = LoadJpg(element.Attribute("FileName").Value);
+            return Load(element, framingAssistantCachePath);
+        }
+
+        private SkySurveyImage Load(XElement element, string cachePath) {
+            var img = LoadJpg(element.Attribute("FileName").Value, cachePath);
             Guid id = Guid.Parse(element.Attribute("Id").Value);
             var fovW = double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
             var fovH = double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
@@ -277,8 +298,12 @@ namespace NINA.WPF.Base.SkySurvey {
         }
 
         private BitmapSource LoadJpg(string filename) {
+            return LoadJpg(filename, framingAssistantCachePath);
+        }
+
+        private BitmapSource LoadJpg(string filename, string cachePath) {
             if (!Path.IsPathRooted(filename)) {
-                filename = Path.Combine(framingAssistantCachePath, filename);
+                filename = Path.Combine(cachePath, filename);
             }
 
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
@@ -296,6 +321,92 @@ namespace NINA.WPF.Base.SkySurvey {
             }
 
             return image;
+        }
+
+        /// <summary>
+        /// Scans subdirectories for cache sources and returns list of available sources
+        /// </summary>
+        public List<string> GetAvailableCacheSources() {
+            var sources = new List<string> { Default };
+            
+            try {
+                if (Directory.Exists(framingAssistantCachePath)) {
+                    var subdirs = Directory.GetDirectories(framingAssistantCachePath);
+                    foreach (var subdir in subdirs) {
+                        var dirName = Path.GetFileName(subdir);
+                        var cacheInfoPath = Path.Combine(subdir, "CacheInfo.xml");
+                        
+                        // Only add if it has a CacheInfo.xml file
+                        if (File.Exists(cacheInfoPath)) {
+                            sources.Add(dirName);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error("Error scanning cache sources", ex);
+            }
+
+            return sources;
+        }
+
+        /// <summary>
+        /// Loads cache from a specific source (subdirectory or default)
+        /// </summary>
+        public void LoadCacheSource(string source) {
+            try {
+                string cachePath;
+                string cacheInfoPath;
+
+                if (source == Default || string.IsNullOrEmpty(source)) {
+                    cachePath = framingAssistantCachePath;
+                    cacheInfoPath = framingAssistantCachInfo;
+                } else {
+                    cachePath = Path.Combine(framingAssistantCachePath, source);
+                    cacheInfoPath = Path.Combine(cachePath, "CacheInfo.xml");
+                }
+
+                if (!Directory.Exists(cachePath)) {
+                    Directory.CreateDirectory(cachePath);
+                }
+
+                XElement cacheElement;
+                if (!File.Exists(cacheInfoPath)) {
+                    cacheElement = new XElement("ImageCacheInfo");
+                    cacheElement.Save(cacheInfoPath);
+                } else {
+                    cacheElement = XElement.Load(cacheInfoPath);
+
+                    // Ensure Backwards compatibility
+                    var elements = cacheElement.Elements("Image").Where(x => x.Attribute("Id") == null);
+                    foreach (var element in elements) {
+                        element.Add(new XAttribute("Id", Guid.NewGuid()));
+                    }
+                    elements = cacheElement.Elements("Image").Where(x => x.Attribute("Source") == null);
+                    foreach (var element in elements) {
+                        if (element.Attribute("Rotation").Value != "0") {
+                            element.Add(new XAttribute("Source", nameof(FileSkySurvey)));
+                        } else {
+                            element.Add(new XAttribute("Source", nameof(NASASkySurvey)));
+                        }
+                    }
+                }
+
+                cachesBySource[source] = cacheElement;
+                cachePathsBySource[source] = cachePath;
+
+                // set active source context
+                activeSource = string.IsNullOrEmpty(source) ? Default : source;
+                activeCachePath = cachePath;
+            } catch (Exception ex) {
+                Logger.Error($"Error loading cache source {source}", ex);
+            }
+        }
+
+        public XElement GetActiveCacheElement() {
+            if (activeSource == Default || !cachesBySource.ContainsKey(activeSource)) {
+                return Cache;
+            }
+            return cachesBySource[activeSource];
         }
     }
 }
