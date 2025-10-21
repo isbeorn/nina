@@ -3,6 +3,15 @@
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
+# Version 3.3
+
+## Bugfixes
+- ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
+
+### **Device Management**
+- **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
+  - The ToupTek based filter wheels are now available as a native driver.
+
 # Version 3.2
 
 ## Bugfixes
@@ -19,7 +28,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
 - Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
-- ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
  
 ### **Device Management**
 - **Device Chooser Enhancements**  
@@ -37,8 +45,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
 - ** Switch Polling**
     - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
-- **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
-  - The ToupTek based filter wheels are now available as a native driver.
 
 ### **User Interface & Usability**
 - **Framing Assistant Improvements**  
