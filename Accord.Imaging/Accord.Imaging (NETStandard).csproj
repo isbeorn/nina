@@ -15,6 +15,14 @@
     <RepositoryUrl>https://github.com/accord-net/framework</RepositoryUrl>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
     <FileVersion>3.8.3.6155</FileVersion>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSource>true</IncludeSource>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='SignedRelease|netstandard2.0|AnyCPU'">
