@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -21,7 +22,6 @@ using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 namespace NINA.Equipment.Equipment.MyFilterWheel {
 
     public partial class ToupTekAlikeFilterWheel : BaseINPC, IFilterWheel {
-        private readonly ToupTekAlikeFlag flags;
         private readonly string internalId;
         private IToupTekAlikeCameraSDK sdk;
 
@@ -52,10 +51,6 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 var tail = match.Groups[3].Value;
                 this.Description += $" Vendor ID: {vid}, Product ID: {pid}, Filterwheel ID: {tail}";
             }
-
-            this.flags = (ToupTekAlikeFlag)deviceInfo.model.flag;
-
-            CalibrateAfwCommand = new AsyncCommand<bool>(CalibrateAfw);
         }
 
         [GeneratedRegex(@"vid_([0-9a-fA-F]+)&pid_([0-9a-fA-F]+)#([^\\]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
@@ -162,11 +157,14 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     // Initialize filter wheel with number of positions
                     sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_SLOT, slotNum);
 
+                    // Initially reset filter wheel
+                    sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, -1);
+
+                    // Wait for calibration to finish
+                    await WaitForReadyState(ct);
+
                     // Connected flag
                     Connected = true;
-
-                    // Initial calibration
-                    await CalibrateAfw(null);
 
                     success = true;
                     var profile = profileService.ActiveProfile.FilterWheelSettings;
@@ -181,33 +179,43 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             });
         }
 
-        private async Task<bool> CalibrateAfw(object arg) {
+        private async Task WaitForReadyState(CancellationToken ct) {
+            int readyState = -1;
+            while (readyState == -1) {
+                ct.ThrowIfCancellationRequested();
+                sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, out readyState);
+                await Task.Delay(TimeSpan.FromSeconds(2), ct);
+            }
+        }
+
+        [RelayCommand]
+        private async Task<bool> CalibrateAfw(object arg, CancellationToken ct) {
             return await Task.Run(async () => {
                 if (Connected) {
                     var currentPostion = Position;
 
-                    sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, -1);
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                    var ct = cts.Token;
 
-                    // Wait for calibration to finish
-                    int position = -1;
-                    while (position == -1) {
-                        sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, out position);
-                        await Task.Delay(TimeSpan.FromSeconds(2));
+                    try {
+                        sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, -1);
+
+                        // Wait for calibration to finish
+                        await WaitForReadyState(ct);
+
+                        // Set initial position
+                        sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, currentPostion);
+
+                        // Wait for position to be set
+                        await WaitForReadyState(ct);
+
+                        return true;
+                    } catch (OperationCanceledException) {
+                        Logger.Error("Calibration of filter wheel timed out.");
+                        Notification.ShowError("Calibration of filter wheel timed out.");
                     }
-
-                    // Set initial position
-                    sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, currentPostion);
-
-                    position = -1;
-                    while (position == -1) {
-                        sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, out position);
-                        await Task.Delay(TimeSpan.FromSeconds(2));
-                    }
-
-                    return true;
-                } else {
-                    return false;
                 }
+                return false;
             });
         }
 
@@ -215,8 +223,6 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             this.Connected = false;
             sdk.Close();
         }
-
-        public IAsyncCommand CalibrateAfwCommand { get; }
 
         public void SetupDialog() {
         }
