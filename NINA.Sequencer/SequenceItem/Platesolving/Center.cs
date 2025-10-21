@@ -129,6 +129,14 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
+
+            if (Inherited) {
+                var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
+                if (contextCoordinates != null) {
+                    Coordinates.Coordinates = contextCoordinates.Coordinates;
+                }
+            }
+
             progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblSlew"] });
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);            
 
