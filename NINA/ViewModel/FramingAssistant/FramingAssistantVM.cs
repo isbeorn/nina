@@ -980,6 +980,8 @@ namespace NINA.ViewModel.FramingAssistant {
                             SkyMapAnnotator?.ClearImagesForViewport();
                             SkyMapAnnotator?.UpdateSkyMap();
                         } catch { }
+
+                        LoadImage();
                     }
                     RaisePropertyChanged();
                 }
