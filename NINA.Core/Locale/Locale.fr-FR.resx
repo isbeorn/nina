@@ -6527,9 +6527,6 @@ Cette fonction ne doit être désactivée que lorsqu'on dispose d'un bon modèle
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Un nom d'une longueur maximale de 8 caractères ASCII que vous pouvez attribuer au dispositif ZWO connecté. Cela vous permet d'identifier de manière unique plusieurs exemplaires du même modèle d'appareil.</value>
   </data>
-  <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value />
-  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidirectionnel</value>
   </data>
@@ -7320,38 +7317,5 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
-  </data>
-  <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblBeepOnStartup" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblBeepOnMove" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisHeating" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisStallDetection" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisIsStalled" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisSpeed" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisClearStall" xml:space="preserve">
-    <value />
   </data>
 </root>

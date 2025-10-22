@@ -6533,9 +6533,6 @@ This should only be disabled when having a good pointing model that must not be 
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
   </data>
-  <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
-  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Unidirectional</value>
   </data>
@@ -7327,38 +7324,5 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
-  </data>
-  <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value>Clear stall?</value>
-  </data>
-  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value>Focuser stalled. You need to manually clear stall.</value>
-  </data>
-  <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on Startup</value>
-  </data>
-  <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on Move</value>
-  </data>
-  <data name="LblOasisHeating" xml:space="preserve">
-    <value>Board heating</value>
-  </data>
-  <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value>Min board temp.</value>
-  </data>
-  <data name="LblOasisStallDetection" xml:space="preserve">
-    <value>Stall detection</value>
-  </data>
-  <data name="LblOasisIsStalled" xml:space="preserve">
-    <value>Is stalled</value>
-  </data>
-  <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value>USB capacity</value>
-  </data>
-  <data name="LblOasisSpeed" xml:space="preserve">
-    <value>Speed</value>
-  </data>
-  <data name="LblOasisClearStall" xml:space="preserve">
-    <value>Clear stall</value>
   </data>
 </root>

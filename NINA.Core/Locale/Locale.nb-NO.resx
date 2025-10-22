@@ -6515,9 +6515,6 @@ Dette bør bare deaktiveres hvis monteringen allerede har en pekemodell som man 
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
     <value>Et navn med inntil 8 tegn som kan brukes til å entydig identifisere flere enheter av samme modell.</value>
   </data>
-  <data name="LblDeviceIdTooltip" xml:space="preserve">
-    <value />
-  </data>
   <data name="LblUnidirectional" xml:space="preserve">
     <value>Kun en dreieretning</value>
   </data>
@@ -7308,38 +7305,5 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
-  </data>
-  <data name="LblOasisClearStallPrompt" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisFocuserStalledWarning" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblBeepOnStartup" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblBeepOnMove" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisHeating" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisHeatingTemperature" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisStallDetection" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisIsStalled" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisUSBCapacity" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisSpeed" xml:space="preserve">
-    <value />
-  </data>
-  <data name="LblOasisClearStall" xml:space="preserve">
-    <value />
   </data>
 </root>
