@@ -7335,10 +7335,10 @@ The sky flat exposure time will be determined again and the exposure will be rep
     <value>Focuser stalled. You need to manually clear stall.</value>
   </data>
   <data name="LblBeepOnStartup" xml:space="preserve">
-    <value>Beep on Startup</value>
+    <value>Beep on startup</value>
   </data>
   <data name="LblBeepOnMove" xml:space="preserve">
-    <value>Beep on Move</value>
+    <value>Beep on move</value>
   </data>
   <data name="LblOasisHeating" xml:space="preserve">
     <value>Heating</value>
@@ -7360,5 +7360,17 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblOasisClearStall" xml:space="preserve">
     <value>Clear stall</value>
+  </data>
+  <data name="LblOasisDcPower" xml:space="preserve">
+    <value>DC power</value>
+  </data>
+  <data name="LblOasisBoardHeating" xml:space="preserve">
+    <value>Board heating</value>
+  </data>
+  <data name="LblOasisHeatingPower" xml:space="preserve">
+    <value>Heating power</value>
+  </data>
+  <data name="LblOasisBoardTemperature" xml:space="preserve">
+    <value>Board temperature</value>
   </data>
 </root>
