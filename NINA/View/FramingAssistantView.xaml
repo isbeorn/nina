@@ -301,13 +301,13 @@
                                       VerticalAlignment="Center"
                                       Visibility="{Binding AvailableCacheSources, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel"/>
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock VerticalAlignment="Center" Text="Cache source" />
                                     <ComboBox
                                         Grid.Column="1"
-                                        Margin="5,0,0,0"
+                                        Margin="10,0,0,0"
                                         ItemsSource="{Binding AvailableCacheSources}"
                                         SelectedItem="{Binding SelectedCacheSource}" />
                                 </Grid>
