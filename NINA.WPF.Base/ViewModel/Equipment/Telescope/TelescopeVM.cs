@@ -764,6 +764,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         public async Task<bool> Sync(Coordinates coordinates) {
             try {
+                Logger.Debug($"Starting sync to coordinates {coordinates.Transform(Epoch.JNOW)}");
                 if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
                     progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSync"] });
                     var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
@@ -775,16 +776,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     }
 
                     var position = GetCurrentPosition();
-                    var initialDelta = transform - position;
-                    Logger.Info($"Initial delta between current position {position} and sync target {transform} is {initialDelta}");
+                    Logger.Debug($"Initial delta between current position {position} and sync target {transform} is {transform - position}");
                     var timeoutEnds = DateTime.UtcNow + TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime);
+                    var syncStartTime = DateTime.UtcNow;
                     bool result = Telescope.Sync(transform);
-                    Logger.Info($"{(result ? string.Empty : "FAILED - ")}Syncing scope from {position} to {transform}");
+                    if (!result) {
+                        Logger.Info($"FAILED - Syncing scope from {position} to {transform}");
+                        return false;
+                    }
+                    Logger.Info($"Syncing scope from {position} to {transform}");
                     var waitForUpdate = updateTimer.WaitForNextUpdate(default);
                     await waitForUpdate;
                     position = GetCurrentPosition();
-                    while (initialDelta.Distance.Degree <= (position - transform).Distance.Degree) {
-                        Logger.Info($"Waiting for telescope to update its position from {position} to {transform} after a sync command");
+                    Logger.Debug($"Position error immediately after sync request from {position} to {transform}. " +
+                        $"Error: {(position - transform).Distance}");
+
+                    while (Math.Abs((position - transform).Distance.ArcSeconds) > (1.0)) {
+                        Logger.Debug($"Waiting for telescope to update its position from {position} to {transform} after a sync command. " +
+                            $"Error: {(position - transform).Distance.ArcSeconds}, Sync Threshold: {1.0 + (DateTime.UtcNow - syncStartTime).TotalSeconds}");
                         if (DateTime.UtcNow > timeoutEnds) {
                             Logger.Warning($"Timed out waiting for telescope to update its position from {position} to {transform} after a sync command");
                             break;
