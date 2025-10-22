@@ -182,7 +182,7 @@
                     <Border
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0"
-                        IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}">
+                        Visibility="{Binding FocuserInfo.TempCompAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
