@@ -5,7 +5,24 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>3.3.0.1000-nightly</Version>
+    <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
+    <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
+    <Description>This assembly contains the Generators for Sequencer Extensions of N.I.N.A. and the plugin definitions.</Description>
+    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
+    <PackageIcon>ninasplash.png</PackageIcon>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
+    <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\NINA\Resources\ninasplash.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
