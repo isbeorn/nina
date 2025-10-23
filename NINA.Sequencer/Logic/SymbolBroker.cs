@@ -420,32 +420,32 @@ namespace NINA.Sequencer.Logic {
             return Task.CompletedTask;
         }
         
-        public ISymbolProvider RegisterSymbolProvider(string friendlyName, string prefix) {
-            if (Providers.Contains(prefix)) {
-                throw new ArgumentException("Symbol Provider code is already registered.");
+        public ISymbolProvider RegisterSymbolProvider(string name) {
+            if (Providers.Contains(name)) {
+                throw new ArgumentException("Symbol Provider name is already registered.");
             }
-            return new SymbolProvider(friendlyName, prefix, this);
+            return new SymbolProvider(name, this);
         }
 
         public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            AddOrUpdateSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value);
+            AddOrUpdateSymbol(provider.GetProviderName(), token, value);
         }
 
         public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            AddOrUpdateSymbol(provider.GetProviderFriendlyName(), provider.GetProviderCode() + DELIMITER + token, value, values);
+            AddOrUpdateSymbol(provider.GetProviderName(), token, value, values);
         }
         
         public bool RemoveSymbol(ISymbolProvider provider, string token) {
             if (provider == null) {
                 throw new ArgumentNullException(nameof(provider));
             }
-            return RemoveSymbol(provider.GetProviderCode() + DELIMITER + token);
+            return RemoveSymbol(provider.GetProviderName() + DELIMITER + token);
         }
 
         public List<Symbol> GetSymbols() {

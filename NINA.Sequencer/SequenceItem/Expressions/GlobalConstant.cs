@@ -7,7 +7,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Description", "Creates a Global Constant whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Expressions")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public class GlobalConstant : Constant {

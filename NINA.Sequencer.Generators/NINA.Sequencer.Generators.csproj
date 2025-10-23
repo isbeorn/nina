@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.3.0.1000-nightly</Version>
+    <Version>3.3.0.1000-preview2</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the Generators for Sequencer Extensions of N.I.N.A. and the plugin definitions.</Description>

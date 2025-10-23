@@ -35,7 +35,7 @@
         </TextBlock>
         <ninactrl:HintTextBox
             MinWidth="32"
-            Margin="5,0,0,0"
+            Margin="5,4,0,0"
             VerticalAlignment="Center"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
