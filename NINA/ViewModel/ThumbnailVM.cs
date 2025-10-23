@@ -1,6 +1,7 @@
 #region "copyright"
+
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -8,7 +9,9 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+
 #endregion "copyright"
+
 using NINA.Profile.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -87,7 +90,7 @@ namespace NINA.ViewModel {
 
         private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
             return Task.Run(async () => {
-                if(msg.Image != null) { 
+                if (msg.Image != null) {
                     var factor = 100 / msg.Image.Width;
 
                     var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
@@ -137,6 +140,7 @@ namespace NINA.ViewModel {
             frame.Freeze();
             return frame;
         }
+
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
         private readonly IImageDataFactory imageDataFactory;
@@ -157,6 +161,5 @@ namespace NINA.ViewModel {
                 return false;
             }
         }
-
     }
 }
