@@ -55,7 +55,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.3.0.1000-nightly</Version>
+    <Version>3.3.0.1000-preview2</Version>
     <Company>$(Authors)</Company>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the astronomy components of N.I.N.A.</Description>

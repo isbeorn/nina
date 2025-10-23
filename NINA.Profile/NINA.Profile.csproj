@@ -62,7 +62,7 @@
   <PropertyGroup>
     <Description>This assembly contains the profile related components of N.I.N.A.</Description>
     <Title>$(AssemblyName)</Title>
-    <Version>3.3.0.1000-nightly</Version>
+    <Version>3.3.0.1000-preview2</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>

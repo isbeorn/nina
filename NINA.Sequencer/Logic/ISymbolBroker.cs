@@ -20,7 +20,7 @@ namespace NINA.Sequencer.Logic {
         public bool TryGetValue(string key, out object value);
         public bool TryGetSymbol(string key, out Symbol symbol);
         public List<Symbol> GetSymbols();
-        public ISymbolProvider RegisterSymbolProvider(string friendlyName, string code);
+        public ISymbolProvider RegisterSymbolProvider(string name);
         public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value);
         public void AddOrUpdateSymbol(ISymbolProvider provider, string token, object value, Symbol[] values);
         public bool RemoveSymbol(ISymbolProvider provider, string token);
