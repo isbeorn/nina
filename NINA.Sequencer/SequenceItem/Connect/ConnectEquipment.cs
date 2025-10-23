@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,13 @@ namespace NINA.Sequencer.SequenceItem.Connect {
         private IWeatherDataMediator weatherDataMediator;
         private IDomeMediator domeMediator;
         private ISafetyMonitorMediator safetyMonitorMediator;
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (SelectedDevice == "Telescope") {
+                SelectedDevice = "Mount";
+            }
+        }
 
         [ImportingConstructor]
         public ConnectEquipment(IProfileService profileService,
