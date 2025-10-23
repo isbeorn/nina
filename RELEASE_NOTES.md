@@ -6,7 +6,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 # Version 3.3
 
 ## Bugfixes
-- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 
 ## Improvements
 
