@@ -487,6 +487,10 @@ namespace NINA.Sequencer.Logic {
             // External, don't report error during validation
             bool ext = false;
 
+            if (SymbolBroker == null && Context != null) {
+                SymbolBroker = Context.SymbolBroker;
+            }
+
             // First, validate References
             foreach (string sRef in References) {
                 UserSymbol sym;
@@ -501,17 +505,13 @@ namespace NINA.Sequencer.Logic {
                     if (!found) {
                         sym = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                     }
-                    if (SymbolBroker == null) {
-                        // Not critical, but I'm unclear why this happens
-                        SymbolBroker = Context.SymbolBroker;
-                    }
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolve(symReference, sym);
                         sym.AddConsumer(this);
                     } else if (SymbolBroker != null) {
                         found = false;
-                        // Try in the old Switch/Weather keys
+                        // Try SymbolBroker
                         object val = null;
                         if (!found && SymbolBroker.TryGetValue(symReference, out val)) {
                             // We don't want these resolved, just added to Parameters
@@ -661,6 +661,8 @@ namespace NINA.Sequencer.Logic {
                 } else if (name == "defined") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     args.Result = SymbolBroker.TryGetValue(str, out _);
+                    // Always check again on validation
+                    GlobalVolatile = true;
                 } else if (name == "startsWith") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
                     string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
