@@ -40,6 +40,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public bool IsMoving {
             get {
+                if (!Connected) {
+                    return false;
+                }
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
                     return status.moving == 1;
@@ -61,6 +64,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public int MaxStep {
             get {
+                if (!Connected) {
+                    return -1;
+                }
                 var err = FocuserGetConfig(id, out var config);
                 if (err == AOReturn.AO_SUCCESS) {
                     return config.maxStep;
@@ -73,6 +79,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public int Position {
             get {
+                if (!Connected) {
+                    return -1;
+                }
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
                     return status.position;
@@ -102,6 +111,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public double Temperature {
             get {
+                if (!Connected) {
+                    return double.NaN;
+                }
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
                     if (status.temperatureDetection == 0 || status.temperatureExt == TEMPERATURE_INVALID) {
@@ -367,6 +379,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public bool BeepOnMove {
             get {
+                if (!Connected) {
+                    return false;
+                }
                 var err = FocuserGetConfig(id, out var config);
                 if (err == AOReturn.AO_SUCCESS) {
                     return config.beepOnMove == 1;
@@ -395,6 +410,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public bool BeepOnStartup {
             get {
+                if (!Connected) {
+                    return false;
+                }
                 var err = FocuserGetConfig(id, out var config);
                 if (err == AOReturn.AO_SUCCESS) {
                     return config.beepOnStartup == 1;
@@ -424,7 +442,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public bool StallDetection {
             get {
-                if (!isFocuserRose) {
+                if (!isFocuserRose || !Connected) {
                     return false;
                 }
                 var err = FocuserGetConfig(id, out var config);
@@ -458,7 +476,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public bool Heating {
             get {
-                if (!isFocuserRose) {
+                if (!isFocuserRose || !Connected) {
                     return false;
                 }
                 var err = FocuserGetConfig(id, out var config);
@@ -491,7 +509,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public int HeatingTemperature {
             get {
-                if (!isFocuserRose) {
+                if (!isFocuserRose || !Connected) {
                     return 0;
                 }
                 var err = FocuserGetConfig(id, out var config);
@@ -569,7 +587,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         public List<string> USBCapacities { get; } = new() { "500mA", ">1000mA" };
         public int USBCapacity {
             get {
-                if (!isFocuserRose) {
+                if (!isFocuserRose || !Connected) {
                     return 0;
                 }
                 var err = FocuserGetConfig(id, out var config);
@@ -606,6 +624,9 @@ namespace NINA.Equipment.Equipment.MyFocuser {
         public List<string> MotorSpeeds { get; } = new() { "1.0x", "2.0x", "2.5x" };
         public int MotorSpeed {
             get {
+                if (!Connected) {
+                    return 0;
+                }
                 var err = FocuserGetConfig(id, out var config);
                 if (err == AOReturn.AO_SUCCESS) {
                     return config.speed;
