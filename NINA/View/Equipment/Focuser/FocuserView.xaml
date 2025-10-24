@@ -692,11 +692,7 @@
                                     <TextBox.Text>
                                         <Binding Path="SyncPosition">
                                             <Binding.ValidationRules>
-                                                <rules:IntRangeRule>
-                                                    <rules:IntRangeRule.ValidRange>
-                                                        <rules:IntRangeChecker Minimum="0" />
-                                                    </rules:IntRangeRule.ValidRange>
-                                                </rules:IntRangeRule>
+                                                <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
