@@ -104,7 +104,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             get {
                 var err = FocuserGetStatus(id, out var status);
                 if (err == AOReturn.AO_SUCCESS) {
-                    if (status.temperatureDetection == 0) {
+                    if (status.temperatureDetection == 0 || status.temperatureExt == TEMPERATURE_INVALID) {
                         // Ambient probe not connected
                         return double.NaN;
                     } else {
@@ -631,10 +631,6 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 }
             }
         }
-
-
-
-
 
         #region Unsupported
         public bool TempCompAvailable => false;
