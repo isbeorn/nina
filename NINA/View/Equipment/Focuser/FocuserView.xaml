@@ -677,6 +677,47 @@
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoResetZeroPosition}" />
                                 </Button>
                             </Grid>
+
+                            <Grid Margin="0,6,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisSyncPosition}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left">
+                                    <TextBox.Text>
+                                        <Binding Path="SyncPosition">
+                                            <Binding.ValidationRules>
+                                                <rules:IntRangeRule>
+                                                    <rules:IntRangeRule.ValidRange>
+                                                        <rules:IntRangeChecker Minimum="0" />
+                                                    </rules:IntRangeRule.ValidRange>
+                                                </rules:IntRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </Grid>
+                            <Grid Margin="0,6,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Grid.ColumnSpan="2"
+                                    Width="200"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding SyncToPositionCommand}">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOasisSyncPosition}" />
+                                </Button>
+                            </Grid>
                         </StackPanel>
                     </DataTemplate>
                     <DataTemplate x:Key="Failed">

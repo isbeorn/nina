@@ -7373,4 +7373,10 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblOasisBoardTemperature" xml:space="preserve">
     <value>Board temperature</value>
   </data>
+  <data name="LblOasisSyncPosition" xml:space="preserve">
+    <value>Sync position</value>
+  </data>
+  <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
+    <value>Set current position to sync position?</value>
+  </data>
 </root>

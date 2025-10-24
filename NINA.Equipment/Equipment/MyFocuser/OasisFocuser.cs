@@ -210,6 +210,27 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             }
         }
 
+        private int syncPosition;
+        public int SyncPosition {
+            get => syncPosition;
+            set {
+                if (syncPosition != value) {
+                    syncPosition = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [RelayCommand]
+        public void SyncToPosition() {
+            if (MyMessageBox.Show(Loc.Instance["LblOasisSyncPositionPrompt"], "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                if (Position != SyncPosition) {
+                    FocuserSyncPosition(id, SyncPosition);
+                    RaisePropertyChanged(nameof(Position));
+                }
+            }
+        }
+
         [RelayCommand]
         public void ClearStall() {
             if (isFocuserRose) {
@@ -273,6 +294,8 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                             }
                         }, propertyMonitor.Token);
                     }
+
+                    RaisePropertyChanged(nameof(MaxStep));
 
                     Connected = true;
                     return true;
