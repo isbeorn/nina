@@ -6,7 +6,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 # Version 3.3
 
 ## Bugfixes
-- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 
 ## Improvements
 
@@ -30,6 +29,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
 - Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
 - Resolved an issue where the EAF focusers move function would repeatedly call the ASI EAF SDK without waiting for the previous move command to complete.
+- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 
 ## Features
  
