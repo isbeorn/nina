@@ -85,7 +85,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             // When the decimal value changes, we update the HMS values
             InputCoordinates ic = new InputCoordinates();
             Protect = true;
-            ic.Coordinates.RA = RaExpression.Value;
+            ic.Coordinates.RA = expr.Value;
             Coordinates.RAHours = ic.RAHours;
             Coordinates.RAMinutes = ic.RAMinutes;
             Coordinates.RASeconds = ic.RASeconds;
@@ -99,7 +99,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
             // When the decimal value changes, we update the HMS values
             InputCoordinates ic = new InputCoordinates();
             Protect = true;
-            ic.Coordinates.Dec = DecExpression.Value;
+            ic.Coordinates.Dec = expr.Value;
             Coordinates.DecDegrees = ic.DecDegrees;
             Coordinates.DecMinutes = ic.DecMinutes;
             Coordinates.DecSeconds = ic.DecSeconds;
