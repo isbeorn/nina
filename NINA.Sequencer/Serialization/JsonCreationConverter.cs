@@ -48,6 +48,17 @@ namespace NINA.Sequencer.Serialization {
 
         public override bool CanWrite => false;
 
+        /*
+         * There are a number of upgrade cases:
+         * 1) Upgrading NINA 3.2 instructions to NINA 3.3
+         *    This is automatically done in the generated partial classes (converting properties into Expressions)
+         * 2) Upgrading Powerups 3.2 + instructions into newly created NINA 3.3 instructions
+         *    These would be LoopWhile and WaitUntil
+         * 3) Upgrading Powerups 3.2 instructions without Expressions to Powerups 3.3 instructions
+         * 4) Upgrading Powerups 3.2 instructions with Expressions to Powerups 3.3 instructions
+         *    
+         */
+
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
@@ -107,17 +118,11 @@ namespace NINA.Sequencer.Serialization {
                             string ts = token.ToString();
                             if (ts.EndsWith(", WhenPlugin")) {
                                 ISequenceEntity oldTarget = target as ISequenceEntity;
-                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target) as ISequenceEntity;
+                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target, jObject) as ISequenceEntity;
                                 if (newTarget.Parent == null) {
                                     newTarget.AttachNewParent(oldTarget.Parent);
                                 }
                                 target = (T)newTarget;
-                            } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
-                                // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
-                                Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
-                                if (jObject["IfExpr"] != null) {
-                                    expr.Definition = jObject["IfExpr"]["Expression"].ToString();
-                                }
                             }
                         }
                     }

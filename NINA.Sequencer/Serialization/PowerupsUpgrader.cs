@@ -3,6 +3,7 @@ using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Namotion.Reflection;
+using Newtonsoft.Json.Linq;
 using Nikon;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
@@ -110,7 +111,7 @@ namespace NINA.Sequencer.Serialization {
             expr.Definition = value;
         }
 
-        public static object UpgradeInstruction(object obj) {
+        public static object UpgradeInstruction(object obj, JObject jObject) {
 
             try {
                 ISequenceItem item = obj as ISequenceItem;
@@ -391,6 +392,27 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Name += " [Lite";
                             return newObj;
                         }
+
+                    case "IfConstant":
+                    case "IfThenElse":
+                    case "WhenSwitch":
+                        Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
+                        if (jObject["IfExpr"] != null) {
+                            e.Definition = jObject["IfExpr"]["Expression"].ToString();
+                        }
+                        break;
+
+                    case "DoFlip":
+                    case "DIYMeridianFlip":
+                    case "PassMeridian":
+                    case "RotateImage":
+
+                    case "WaitIndefinitely":
+                    case "Breakpoint":
+                    case "EndSequence":
+                    case "IfFailed":
+                        // Unchanged (no Expressions)
+                        break;
                     default: {
                             item.Name += " *MANUAL UPGRADE REQUIRED*";
                             break;
