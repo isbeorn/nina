@@ -351,12 +351,8 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "InitializeArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.InitializeArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            return obj;
                         }
                     case "ForEachInArray": {
                             Type tt = Type.GetType("PowerupsLite.When.ForEachInArray, PowerupsLite");

@@ -111,6 +111,18 @@ namespace NINA.Sequencer.Serialization {
                             ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
                             return target;
                         }
+
+                        string tss = token.ToString();
+                        switch (tss) {
+                            case "WhenPlugin.When.GetArray, WhenPlugin":
+                                break;
+                            case "WhenPlugin.When.InitializeArray, WhenPlugin":
+                                jObject.Add("iNameExpr", jObject["NameExpr"]);
+                                jObject.Remove("NameExpr");
+                                break;
+                        }
+
+                   
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
