@@ -96,7 +96,6 @@ namespace NINA.Sequencer.Serialization {
                         (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
                         if (lite == Upgrade.Lite) {
-                            // Substitute with Powerups Lite class
                             jObject["$type"] = token;
                         }
 

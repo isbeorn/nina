@@ -115,16 +115,21 @@ namespace NINA.Sequencer.Serialization {
             switch (originalType) {
                 case "WhenPlugin.When.GetArray, WhenPlugin":
                 case "WhenPlugin.When.PutArray, WhenPlugin":
-                    jObject.Add("iNameExpr", jObject["NameExpr"]);
-                    jObject.Remove("NameExpr");
-                    jObject.Add("iIExpr", jObject["IExpr"]);
-                    jObject.Remove("IExpr");
-                    jObject.Add("iVExpr", jObject["VExpr"]);
-                    jObject.Remove("VExpr");
+                    if (jObject.HasProperty("NameExpr")) {
+                        jObject.Add("iNameExpr", jObject["NameExpr"]);
+                        jObject.Remove("NameExpr");
+                        jObject.Add("iIExpr", jObject["IExpr"]);
+                        jObject.Remove("IExpr");
+                        jObject.Add("iVExpr", jObject["VExpr"]);
+                        jObject.Remove("VExpr");
+                    }
                     break;
                 case "WhenPlugin.When.InitializeArray, WhenPlugin":
-                    jObject.Add("iNameExpr", jObject["NameExpr"]);
-                    jObject.Remove("NameExpr");
+                case "WhenPlugin.When.ForEachInArray, WhenPlugin":
+                    if (jObject.HasProperty("NameExpr")) {
+                        jObject.Add("iNameExpr", jObject["NameExpr"]);
+                        jObject.Remove("NameExpr");
+                    }
                     break;
             }
         }
@@ -330,7 +335,9 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Seconds = (int)(pi.GetValue(item) as Int32?);
                             return newObj;
                         }
-                    // The following are updates from Powerups to Powerups Lite
+                    
+                    // The following are updates from Powerups 3.2 to Powerups 3.3
+                    // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
                             Type tt = Type.GetType("PowerupsLite.When.AddImagePattern, PowerupsLite");
                             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
@@ -344,48 +351,19 @@ namespace NINA.Sequencer.Serialization {
                             npi.SetValue(newObj, pi.GetValue(item) as string);
                             return newObj;
                         }
-                    case "IfContainer": {
-                            Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
-                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
-                            ISequenceContainer ifc = (ISequenceContainer)obj;
-                            foreach (ISequenceItem i in ifc.Items) {
-                                ISequenceItem newItem = (ISequenceItem)i.Clone();
-                                newObj.Items.Add(newItem);
-                                newItem.AttachNewParent(newObj);
-                            }
-                            return newObj;
-                        }
-                    case "TemplateContainer": {
-                            Type tt = Type.GetType("PowerupsLite.When.TemplateContainer, PowerupsLite");
-                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
-                            ISequenceContainer ifc = (ISequenceContainer)obj;
-                            foreach (ISequenceItem i in ifc.Items) {
-                                ISequenceItem newItem = (ISequenceItem)i.Clone();
-                                newObj.Items.Add(newItem);
-                                newItem.AttachNewParent(newObj);
-                            }
-                            return newObj;
-                        }
+                    
+                    
                     case "InitializeArray": {
-                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                            item.Name += " [3.2=>3.3";
+                            if (jObject.HasProperty("iNameExpr")) {
+                                PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                                item.Name += " [3.2=>3.3";
+                            }
                             return obj;
                         }
                     case "ForEachInArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.ForEachInArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PropertyInfo pi = t.GetProperty("ValueVariable");
-                            PropertyInfo npi = newObj.GetType().GetProperty("ValueVariable");
-                            npi.SetValue(newObj, (string)pi.GetValue(item));
-                            pi = t.GetProperty("IndexVariable");
-                            npi = newObj.GetType().GetProperty("IndexVariable");
-                            npi.SetValue(newObj, (string)pi.GetValue(item));
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            item.Name += " [3.2=>3.3";
+                            return obj;
                         }
                     case "GetArray": {
                             PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
@@ -402,6 +380,8 @@ namespace NINA.Sequencer.Serialization {
                             return obj;
                         }
 
+                    case "IfContainer":
+                    case "TemplateContainer":
                     case "IfConstant":
                     case "IfThenElse":
                     case "WhenSwitch":
@@ -412,22 +392,18 @@ namespace NINA.Sequencer.Serialization {
                         item.Name += " [3.2=>3.3";
                         break;
 
-                    case "IfTimeout":
-                        item.Name += " [3.2=>3.3";
-                        break;
-
                     // Unchanged (no Expressions)
+                    case "IfTimeout":
                     case "DoFlip":
                     case "DIYMeridianFlip":
                     case "PassMeridian":
                     case "RotateImage":
-
                     case "WaitIndefinitely":
                     case "Breakpoint":
                     case "EndSequence":
                     case "IfFailed":
                     case "WhenUnsafe":
-                        item.Name += " [3.2=>3.3";
+                    case "InterruptTrigger":
                         break;
 
                     default: {
