@@ -111,6 +111,24 @@ namespace NINA.Sequencer.Serialization {
             expr.Definition = value;
         }
 
+        public static void PreUpgradeInstruction(string originalType, JObject jObject) {
+            switch (originalType) {
+                case "WhenPlugin.When.GetArray, WhenPlugin":
+                case "WhenPlugin.When.PutArray, WhenPlugin":
+                    jObject.Add("iNameExpr", jObject["NameExpr"]);
+                    jObject.Remove("NameExpr");
+                    jObject.Add("iIExpr", jObject["IExpr"]);
+                    jObject.Remove("IExpr");
+                    jObject.Add("iVExpr", jObject["VExpr"]);
+                    jObject.Remove("VExpr");
+                    break;
+                case "WhenPlugin.When.InitializeArray, WhenPlugin":
+                    jObject.Add("iNameExpr", jObject["NameExpr"]);
+                    jObject.Remove("NameExpr");
+                    break;
+            }
+        }
+
         public static object UpgradeInstruction(object obj, JObject jObject) {
 
             try {
@@ -352,6 +370,7 @@ namespace NINA.Sequencer.Serialization {
                         }
                     case "InitializeArray": {
                             PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            item.Name += " [3.2=>3.3";
                             return obj;
                         }
                     case "ForEachInArray": {
@@ -369,24 +388,18 @@ namespace NINA.Sequencer.Serialization {
                             return newObj;
                         }
                     case "GetArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.GetArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
-                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
+                            PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
+                            item.Name += " [3.2=>3.3";
+                            return obj;
                         }
                     case "PutArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.PutArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
-                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
+                            PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
+                            item.Name += " [3.2=>3.3";
+                            return obj;
                         }
 
                     case "IfConstant":
@@ -396,8 +409,14 @@ namespace NINA.Sequencer.Serialization {
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
                         }
+                        item.Name += " [3.2=>3.3";
                         break;
 
+                    case "IfTimeout":
+                        item.Name += " [3.2=>3.3";
+                        break;
+
+                    // Unchanged (no Expressions)
                     case "DoFlip":
                     case "DIYMeridianFlip":
                     case "PassMeridian":
@@ -407,8 +426,10 @@ namespace NINA.Sequencer.Serialization {
                     case "Breakpoint":
                     case "EndSequence":
                     case "IfFailed":
-                        // Unchanged (no Expressions)
+                    case "WhenUnsafe":
+                        item.Name += " [3.2=>3.3";
                         break;
+
                     default: {
                             item.Name += " *MANUAL UPGRADE REQUIRED*";
                             break;

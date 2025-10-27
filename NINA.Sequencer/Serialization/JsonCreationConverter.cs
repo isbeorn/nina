@@ -51,12 +51,14 @@ namespace NINA.Sequencer.Serialization {
         /*
          * There are a number of upgrade cases:
          * 1) Upgrading NINA 3.2 instructions to NINA 3.3
-         *    This is automatically done in the generated partial classes (converting properties into Expressions)
+         *    These require PowerupsUpgrader.UpgradeInstruction, which creates and populates the NINA 3.3 instruction
          * 2) Upgrading Powerups 3.2 + instructions into newly created NINA 3.3 instructions
          *    These would be LoopWhile and WaitUntil
          * 3) Upgrading Powerups 3.2 instructions without Expressions to Powerups 3.3 instructions
+         *    These don't require anything
          * 4) Upgrading Powerups 3.2 instructions with Expressions to Powerups 3.3 instructions
-         *    
+         *    These require PowerupsUpgrader.PreUpgradeInstruction to allow the 3.2 instructions to be deserialized
+         *    And then PowerupsUpgrader.UpgradeInstruction to populate Expressions from the old Expr class
          */
 
         public override object ReadJson(JsonReader reader,
@@ -112,16 +114,7 @@ namespace NINA.Sequencer.Serialization {
                             return target;
                         }
 
-                        string tss = token.ToString();
-                        switch (tss) {
-                            case "WhenPlugin.When.GetArray, WhenPlugin":
-                                break;
-                            case "WhenPlugin.When.InitializeArray, WhenPlugin":
-                                jObject.Add("iNameExpr", jObject["NameExpr"]);
-                                jObject.Remove("NameExpr");
-                                break;
-                        }
-
+                        PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
                    
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
