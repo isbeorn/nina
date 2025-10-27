@@ -115,7 +115,8 @@ namespace NINA.Sequencer.Serialization {
             switch (originalType) {
                 case "WhenPlugin.When.GetArray, WhenPlugin":
                 case "WhenPlugin.When.PutArray, WhenPlugin":
-                    if (jObject.HasProperty("NameExpr")) {
+                   
+                    if (jObject.ContainsKey("NameExpr")) {
                         jObject.Add("iNameExpr", jObject["NameExpr"]);
                         jObject.Remove("NameExpr");
                         jObject.Add("iIExpr", jObject["IExpr"]);
@@ -126,9 +127,15 @@ namespace NINA.Sequencer.Serialization {
                     break;
                 case "WhenPlugin.When.InitializeArray, WhenPlugin":
                 case "WhenPlugin.When.ForEachInArray, WhenPlugin":
-                    if (jObject.HasProperty("NameExpr")) {
+                    if (jObject.ContainsKey("NameExpr")) {
                         jObject.Add("iNameExpr", jObject["NameExpr"]);
                         jObject.Remove("NameExpr");
+                    }
+                    break;
+                case "WhenPlugin.When.AddImagePattern, WhenPlugin":
+                    if (jObject.ContainsKey("Expr")) {
+                        jObject.Add("iExpr", jObject["Expr"]);
+                        jObject.Remove("Expr");
                     }
                     break;
             }
@@ -339,24 +346,15 @@ namespace NINA.Sequencer.Serialization {
                     // The following are updates from Powerups 3.2 to Powerups 3.3
                     // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
-                            Type tt = Type.GetType("PowerupsLite.When.AddImagePattern, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PropertyInfo pi = t.GetProperty("Identifier");
-                            PropertyInfo npi = tt.GetProperty("Identifier");
-                            npi.SetValue(newObj, pi.GetValue(item) as string);
-                            PutExpr(tt, newObj, "ExprExpression", GetExpr(t, item, "Expr"));
-                            pi = t.GetProperty("PatternDescription");
-                            npi = tt.GetProperty("PatternDescription");
-                            npi.SetValue(newObj, pi.GetValue(item) as string);
-                            return newObj;
+                            PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
+                            return obj;
                         }
 
                     case "InitializeArray":
                     case "ForEachInArray":
                     case "GetArray":
                     case "PutArray":
-                        if (jObject.HasProperty("iNameExpr")) {
+                        if (jObject.ContainsKey("iNameExpr")) {
                             PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
                             item.Name += " [3.2=>3.3";
                             if (t.Name == "GetArray" || t.Name == "PutArray") {
@@ -392,7 +390,9 @@ namespace NINA.Sequencer.Serialization {
                     case "IfFailed":
                     case "WhenUnsafe":
                     case "InterruptTrigger":
+                    case "AutofocusTrigger":
                     case "LogThis":
+                    case "OnceSafe":
                         break;
 
                     default: {
