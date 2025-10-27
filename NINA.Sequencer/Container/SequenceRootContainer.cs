@@ -31,6 +31,7 @@ using NINA.Core.MyMessageBox;
 using NINA.Core.Locale;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility.Extensions;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Container {
 
@@ -69,6 +70,7 @@ namespace NINA.Sequencer.Container {
                     ClearContainer(Items[0] as ISequenceContainer);
                     ClearContainer(Items[1] as ISequenceContainer);
                     ClearContainer(Items[2] as ISequenceContainer);
+                    UserSymbol.ClearUserSymbols();
                     GC.Collect(2);
                 }
             }
