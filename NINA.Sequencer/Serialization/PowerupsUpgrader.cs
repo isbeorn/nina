@@ -351,35 +351,22 @@ namespace NINA.Sequencer.Serialization {
                             npi.SetValue(newObj, pi.GetValue(item) as string);
                             return newObj;
                         }
-                    
-                    
-                    case "InitializeArray": {
-                            if (jObject.HasProperty("iNameExpr")) {
-                                PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                                item.Name += " [3.2=>3.3";
-                            }
-                            return obj;
-                        }
-                    case "ForEachInArray": {
-                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                            item.Name += " [3.2=>3.3";
-                            return obj;
-                        }
-                    case "GetArray": {
-                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                            PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
-                            PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
-                            item.Name += " [3.2=>3.3";
-                            return obj;
-                        }
-                    case "PutArray": {
-                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                            PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
-                            PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
-                            item.Name += " [3.2=>3.3";
-                            return obj;
-                        }
 
+                    case "InitializeArray":
+                    case "ForEachInArray":
+                    case "GetArray":
+                    case "PutArray":
+                        if (jObject.HasProperty("iNameExpr")) {
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            item.Name += " [3.2=>3.3";
+                            if (t.Name == "GetArray" || t.Name == "PutArray") {
+                                PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
+                                PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
+                            }
+                            item.Name += " [3.2=>3.3";
+                        }
+                        return obj;
+ 
                     case "IfContainer":
                     case "TemplateContainer":
                     case "IfConstant":
@@ -401,9 +388,11 @@ namespace NINA.Sequencer.Serialization {
                     case "WaitIndefinitely":
                     case "Breakpoint":
                     case "EndSequence":
+                    case "EndInstructionSet":
                     case "IfFailed":
                     case "WhenUnsafe":
                     case "InterruptTrigger":
+                    case "LogThis":
                         break;
 
                     default: {
