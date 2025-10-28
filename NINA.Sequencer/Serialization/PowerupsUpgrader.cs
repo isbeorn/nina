@@ -138,6 +138,12 @@ namespace NINA.Sequencer.Serialization {
                         jObject.Remove("Expr");
                     }
                     break;
+                case "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin":
+                    if (jObject.ContainsKey("WaitExpr")) {
+                        jObject.Add("iWaitExpr", jObject["WaitExpr"]);
+                        jObject.Remove("WaitExpr");
+                    }
+                    break;
             }
         }
 
@@ -342,11 +348,16 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Seconds = (int)(pi.GetValue(item) as Int32?);
                             return newObj;
                         }
-                    
+
                     // The following are updates from Powerups 3.2 to Powerups 3.3
                     // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
                             PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
+                            return obj;
+                        }
+
+                    case "RepeatUntilAllSucceed": {
+                            PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
                             return obj;
                         }
 
