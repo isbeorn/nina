@@ -8,7 +8,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 
 ## Improvements
-
+- **Autofocus after HFR Increase Trigger**
+    - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
 ## Features
 
 # Version 3.2
@@ -94,8 +95,6 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
     - Fixed an issue where saving sequences after multi-file load overwrote only one XML file
 - **Time Source Failure Reasons**
     - When a time source fails to provide a value - e.g. that there is no astronomical twilight today - the validation will also include the reason for the failure. This will help to understand why a time source is not providing a value.
-- **Autofocus after HFR Increase Trigger**
-    - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters
 
 ### Guiding & Tracking
 - **Looping Mode Behavior**  
