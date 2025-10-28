@@ -188,7 +188,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 imageHistory = imageHistory.Where(point => point.Id > lastAF.Id).ToList();
             }
 
-            if (fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null && TrendPerFilter == true) {
+            if (TrendPerFilter == true && fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
                 //Further filter the history to only considere items by the current filter
                 Filter = fwInfo.SelectedFilter.Name;
 
