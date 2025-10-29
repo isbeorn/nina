@@ -262,5 +262,69 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             trigger.Should().Be(shouldTrigger);
         }
+
+
+
+        [Test]
+        // stable - 0%
+        [TestCase(new double[] { 2.0, 2.0, 2.0, 2.0, 2.0 }, 4, 2.00, 0.00)]
+        // slight drift - +5%
+        [TestCase(new double[] { 2.0, 2.02, 2.05, 2.07, 2.10 }, 4, 2.10, 5.00)]
+        // linear drift - +20%
+        [TestCase(new double[] { 2.0, 2.1, 2.2, 2.3, 2.4 }, 4, 2.40, 20.00)]
+        // improving - 0% (min baseline)
+        [TestCase(new double[] { 2.5, 2.4, 2.3, 2.2, 2.1 }, 4, 2.10, 0.00)]
+        // stable due to sample size
+        [TestCase(new double[] { 2.2, 2.40, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00 }, 4, 2.0, 0)]
+        // Stable - no change
+        [TestCase(new double[] { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }, 10, 2.00, 0.00)]
+        // Linear slight drift: +0.02 per frame 
+        [TestCase(new double[] { 2.00, 2.02, 2.04, 2.06, 2.08, 2.10, 2.12, 2.14, 2.16, 2.18 }, 10, 2.18, 9.00)]
+        // Linear stronger drift: +0.1 per frame
+        [TestCase(new double[] { 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9 }, 10, 2.90, 45.00)]
+        // Linear improvement: negative not possible w/ min-baseline - 0% 
+        [TestCase(new double[] { 2.9, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 }, 10, 2.00, 0.00)]
+        // Early low outlier lowers the min-baseline - higher % at the end
+        [TestCase(new double[] { 1.80, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00 }, 10, 2.02909, 12.73)]
+        // Slight linear drift from 1.95 to 2.13 (0.02 step, 10 pts)
+        [TestCase(new double[] { 1.95, 1.97, 1.99, 2.01, 2.03, 2.05, 2.07, 2.09, 2.11, 2.13 }, 10, 2.13, 9.23)]
+        public void HFRTrend_And_Percentage_AreComputed_FromWindowAndBaseline(
+            double[] hfrs,
+            int sampleSize,
+            double expectedTrend,
+            double expectedPct) {
+            for (int i = 0; i < hfrs.Length; i++) {
+                var id = imagehistory.GetNextImageId();
+                imagehistory.Add(id, null, "LIGHT");
+                imagehistory.AppendImageProperties(new ImageSavedEventArgs {
+                    StarDetectionAnalysis = new StarDetectionAnalysis {
+                        DetectedStars = 1,
+                        HFR = hfrs[i]
+                    },
+                    MetaData = new ImageMetaData {
+                        Image = new ImageParameter { Id = id }
+                    }
+                });
+            }
+
+            var sut = new AutofocusAfterHFRIncreaseTrigger(
+                profileServiceMock.Object,
+                imagehistory,
+                cameraMediatorMock.Object,
+                filterWheelMediatorMock.Object,
+                focuserMediatorMock.Object,
+                autoFocusVMFactoryMock.Object) {
+                SampleSize = sampleSize,
+                Amount = 0.0
+            };
+
+            var itemMock = new Mock<IExposureItem>();
+            itemMock.SetupGet(x => x.ImageType).Returns("LIGHT");
+
+            _ = sut.ShouldTrigger(null, itemMock.Object);
+
+            sut.HFRTrend.Should().BeApproximately(expectedTrend, 0.01);
+            sut.HFRTrendPercentage.Should().BeApproximately(expectedPct, 0.05);
+        }
     }
 }

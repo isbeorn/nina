@@ -219,7 +219,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
                         Logger.Debug($"Autofocus condition extrapolated original HFR: {OriginalHFR} extrapolated current HFR: {HFRTrend}");
 
-                        HFRTrendPercentage = Math.Round((1 - (OriginalHFR / HFRTrend)) * 100, 2);
+                        HFRTrendPercentage = Math.Round(((HFRTrend / OriginalHFR) - 1.0) * 100.0, 2);
 
                         if (HFRTrendPercentage > Amount) {
                             /* Trigger autofocus after HFR change */

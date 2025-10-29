@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,13 @@ namespace NINA.Sequencer.SequenceItem.Connect {
         private IWeatherDataMediator weatherDataMediator;
         private IDomeMediator domeMediator;
         private ISafetyMonitorMediator safetyMonitorMediator;
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (SelectedDevice == "Telescope") {
+                SelectedDevice = "Mount";
+            }
+        }
 
         [ImportingConstructor]
         public ConnectEquipment(IProfileService profileService,
@@ -64,7 +72,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 "Filter Wheel",
                 "Focuser",
                 "Rotator",
-                "Telescope",
+                "Mount",
                 "Guider",
                 "Switch",
                 "Flat Panel",
@@ -95,6 +103,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 case "Focuser": return focuserMediator;
                 case "Rotator": return rotatorMediator;
                 case "Telescope": return telescopeMediator;
+                case "Mount": return telescopeMediator;
                 case "Guider": return guiderMediator;
                 case "Switch": return switchMediator;
                 case "Flat Panel": return flatDeviceMediator;
@@ -112,6 +121,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 case "Focuser": return profileService.ActiveProfile.FocuserSettings.Id;
                 case "Rotator": return profileService.ActiveProfile.RotatorSettings.Id;
                 case "Telescope": return profileService.ActiveProfile.TelescopeSettings.Id;
+                case "Mount": return profileService.ActiveProfile.TelescopeSettings.Id;
                 case "Guider": return profileService.ActiveProfile.GuiderSettings.GuiderName;
                 case "Switch": return profileService.ActiveProfile.SwitchSettings.Id;
                 case "Flat Panel": return profileService.ActiveProfile.FlatDeviceSettings.Id;
