@@ -115,7 +115,6 @@ namespace NINA.Sequencer.Serialization {
             switch (originalType) {
                 case "WhenPlugin.When.GetArray, WhenPlugin":
                 case "WhenPlugin.When.PutArray, WhenPlugin":
-                   
                     if (jObject.ContainsKey("NameExpr")) {
                         jObject.Add("iNameExpr", jObject["NameExpr"]);
                         jObject.Remove("NameExpr");
@@ -165,7 +164,7 @@ namespace NINA.Sequencer.Serialization {
                     t = item.GetType();
                 }
 
-                Logger.Info("Powerups Upgrade: " + t);
+                //Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
                     // The following are updates from Powerups + instructions to NINA instructions
                     case "DitherAfterExposures": {
@@ -352,12 +351,18 @@ namespace NINA.Sequencer.Serialization {
                     // The following are updates from Powerups 3.2 to Powerups 3.3
                     // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
-                            PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
+                            if (jObject.ContainsKey("iExpr")) {
+                                PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
+                                item.Name += " [3.2=>3.3";
+                            }
                             return obj;
                         }
 
                     case "RepeatUntilAllSucceed": {
-                            PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
+                            if (jObject.ContainsKey("iWaitExpr")) {
+                                PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
+                                item.Name += " [3.2=>3.3";
+                            }
                             return obj;
                         }
 
@@ -367,7 +372,6 @@ namespace NINA.Sequencer.Serialization {
                     case "PutArray":
                         if (jObject.ContainsKey("iNameExpr")) {
                             PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
-                            item.Name += " [3.2=>3.3";
                             if (t.Name == "GetArray" || t.Name == "PutArray") {
                                 PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
                                 PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
@@ -376,8 +380,6 @@ namespace NINA.Sequencer.Serialization {
                         }
                         return obj;
  
-                    case "IfContainer":
-                    case "TemplateContainer":
                     case "IfConstant":
                     case "IfThenElse":
                     case "WhenSwitch":
@@ -389,9 +391,11 @@ namespace NINA.Sequencer.Serialization {
                         break;
 
                     // Unchanged (no Expressions)
+                    case "IfContainer":
+                    case "TemplateContainer":
                     case "IfTimeout":
                     case "DoFlip":
-                    case "DIYMeridianFlip":
+                    case "DIYMeridianFlipTrigger":
                     case "PassMeridian":
                     case "RotateImage":
                     case "WaitIndefinitely":

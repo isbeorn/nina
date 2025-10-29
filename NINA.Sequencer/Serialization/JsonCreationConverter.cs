@@ -102,25 +102,15 @@ namespace NINA.Sequencer.Serialization {
                         // Create target object based on JObject
                         target = Create(objectType, jObject);
 
-
-                        if (lite == Upgrade.Lite) {
-                            // Fix up name of the upgraded instruction (this doesn't persist)
-                            ((ISequenceEntity)target).Name += " [Lite";
+                        if (originalType.EndsWith(", WhenPlugin")) {
+                            PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
                         }
-
-                        if (lite == Upgrade.None) {
-                            ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
-                            return target;
-                        }
-
-                        PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
                    
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
                         if (jObject.TryGetValue("$type", out token)) {
-                            string ts = token.ToString();
-                            if (ts.EndsWith(", WhenPlugin")) {
+                            if (originalType.EndsWith(", WhenPlugin")) {
                                 ISequenceEntity oldTarget = target as ISequenceEntity;
                                 ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target, jObject) as ISequenceEntity;
                                 if (newTarget.Parent == null) {
