@@ -14,18 +14,26 @@
 
 using Accord.Math;
 using Accord.Statistics.Models.Regression.Linear;
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Autofocus;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Core.Utility.WindowService;
-using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.ViewModel.Interfaces;
+using NINA.WPF.Base.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -60,19 +68,21 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         private IFilterWheelMediator filterWheelMediator;
         private IFocuserMediator focuserMediator;
         private IAutoFocusVMFactory autoFocusVMFactory;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
-        public AutofocusAfterHFRIncreaseTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory) : base() {
+        public AutofocusAfterHFRIncreaseTrigger(IProfileService profileService, IImageHistoryVM history, ICameraMediator cameraMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IAutoFocusVMFactory autoFocusVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.history = history;
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
             this.filterWheelMediator = filterWheelMediator;
             this.focuserMediator = focuserMediator;
             this.autoFocusVMFactory = autoFocusVMFactory;
+            this.safetyMonitorMediator = safetyMonitorMediator;
             TriggerRunner.Add(new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator, autoFocusVMFactory));
         }
 
-        private AutofocusAfterHFRIncreaseTrigger(AutofocusAfterHFRIncreaseTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory) {
+        private AutofocusAfterHFRIncreaseTrigger(AutofocusAfterHFRIncreaseTrigger cloneMe) : this(cloneMe.profileService, cloneMe.history, cloneMe.cameraMediator, cloneMe.filterWheelMediator, cloneMe.focuserMediator, cloneMe.autoFocusVMFactory, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -96,6 +106,17 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
         [IsExpression (Default = 10, Range = [3, 1000])]
         private int sampleSize;
+
+        private bool trendPerFilter = true; // default true to keep the original behaviour creating an HFR trend per filter 
+
+        [JsonProperty]
+        public bool TrendPerFilter {
+            get => trendPerFilter;
+            set {
+                trendPerFilter = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private double originalHFR;
 
@@ -145,6 +166,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) { return false; }
 
             bool shouldTrigger = false;
             var fwInfo = this.filterWheelMediator.GetInfo();
@@ -158,7 +180,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 imageHistory = imageHistory.Where(point => point.Id > lastAF.Id).ToList();
             }
 
-            if (fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
+            if (TrendPerFilter == true && fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
                 //Further filter the history to only considere items by the current filter
                 Filter = fwInfo.SelectedFilter.Name;
 
@@ -221,7 +243,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}";
+            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}, TrendPerFilter: {TrendPerFilter}";
         }
 
         public override void AfterParentChanged() {

@@ -10,7 +10,7 @@ namespace NINA.Equipment.Utility {
     internal class FilterManager {
         public FilterManager() { }
 
-        public AsyncObservableCollection<FilterInfo> SyncFiltersWithPositions(AsyncObservableCollection<FilterInfo> filtersList, int wheelPositions) {
+        public ObserveAllCollection<FilterInfo> SyncFiltersWithPositions(ObserveAllCollection<FilterInfo> filtersList, int wheelPositions) {
             RemoveDuplicateFilters(filtersList);
             FillMissingPositions(filtersList, wheelPositions);
             EnsureCorrectNumberOfFilters(filtersList, wheelPositions);

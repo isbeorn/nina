@@ -111,6 +111,11 @@
                                 TextAlignment="Left" />
                         </TextBox.ToolTip>-->
                     <logic:ExprControl Label="{ns:Loc LblAmount}" Exp="{Binding AmountExpression}" Unit="%"/>
+                    <CheckBox
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding TrendPerFilter}"
+                        ToolTip="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>

@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -23,6 +23,7 @@ namespace NINA.View.Equipment {
     internal class FilterWheelTemplateSelector : DataTemplateSelector {
         public DataTemplate Default { get; set; }
         public DataTemplate Zwo { get; set; }
+        public DataTemplate ToupTekAlike { get; set; }
         public DataTemplate FailedToLoadTemplate { get; set; }
 
         public string Postfix { get; set; }
@@ -30,6 +31,8 @@ namespace NINA.View.Equipment {
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             if (item is ASIFilterWheel) {
                 return Zwo;
+            } else if (item is ToupTekAlikeFilterWheel) {
+                return ToupTekAlike;
             } else {
                 var templateKey = item?.GetType().FullName + Postfix;
                 if (item != null && Application.Current.Resources.Contains(templateKey)) {

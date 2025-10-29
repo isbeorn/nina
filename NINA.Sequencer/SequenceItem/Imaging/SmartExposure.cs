@@ -63,12 +63,13 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 IImageSaveMediator imageSaveMediator,
                 IImageHistoryVM imageHistoryVM,
                 IFilterWheelMediator filterWheelMediator,
-                IGuiderMediator guiderMediator) : this(
+                IGuiderMediator guiderMediator,
+                ISafetyMonitorMediator safetyMonitorMediator) : this(
                     null,
                     new SwitchFilter(profileService, filterWheelMediator),
                     new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
                     new LoopCondition(),
-                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService)
+                    new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService, safetyMonitorMediator)
                 ) {
         }
 
