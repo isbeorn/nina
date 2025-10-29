@@ -1,19 +1,20 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem.Connect;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Connect;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Utility;
 
 namespace NINA.Sequencer.Trigger.Connect {
     [ExportMetadata("Name", "Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name")]
@@ -36,6 +37,13 @@ namespace NINA.Sequencer.Trigger.Connect {
         private IDomeMediator domeMediator;
         private ISafetyMonitorMediator safetyMonitorMediator;
         private ConnectEquipment connectEquipmentInstruction;
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (SelectedDevice == "Telescope") {
+                SelectedDevice = "Mount";
+            }
+        }
 
         [ImportingConstructor]
         public ReconnectTrigger(IProfileService profileService,

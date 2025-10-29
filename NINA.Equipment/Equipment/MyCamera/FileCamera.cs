@@ -322,6 +322,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             new FileExtension ("DNG", @"\.dng"),
             new FileExtension ("ARW", @"\.arw"),
             new FileExtension ("ORF", @"\.orf"),
+            new FileExtension ("RW2", @"\.rw2"),
             new FileExtension ("TIFF", @"\.tiff|\.tif"),
             new FileExtension ("PNG", @"\.png"),
             new FileExtension ("JPG", @"\.jpg|\.jpeg"),

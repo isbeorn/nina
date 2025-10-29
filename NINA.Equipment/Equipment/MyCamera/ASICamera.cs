@@ -36,10 +36,20 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
     public class ASICamera : BaseINPC, ICamera {
 
-        public ASICamera(int cameraId, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
+        public ASICamera(int cameraIndex, IProfileService profileService, IExposureDataFactory exposureDataFactory) {
             this.profileService = profileService;
             this.exposureDataFactory = exposureDataFactory;
-            _cameraId = cameraId;
+
+            _info = ASICameraDll.GetCameraProperties(cameraIndex);
+            _cameraId = _info.CameraID;
+
+            ASICameraDll.OpenCamera(_cameraId);
+            // We must connect to the camera to get its ID. Quickly do this if we are not (such as during building the CameraChooser list)
+            cameraAlias = ASICameraDll.GetId(_cameraId);
+            Logger.Debug($"ASI: Camera ID/Alias: {cameraAlias}");
+            ASICameraDll.CloseCamera(_cameraId);
+
+            SetId();
         }
 
         private readonly IProfileService profileService;
@@ -48,28 +58,16 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private bool _liveViewEnabled = false;
 
         public string Category { get; } = "ZWOptical";
-        public string Id => string.IsNullOrEmpty(CameraAlias) ? Name : $"{Name} #{_cameraId}";
+        public string Id { get; private set; }
 
-        private ASICameraDll.ASI_CAMERA_INFO? _info;
-
-        private ASICameraDll.ASI_CAMERA_INFO Info {
-            // [obsolete] info is cached only while camera is open
-            get {
-                if (_info == null) {
-                    // this needs to be called otherwise GetCameraProperties shuts down other instances of the camera
-                    ASICameraDll.OpenCamera(_cameraId);
-                    // at this point we might as well cache the properties anyway
-                    RefreshCameraInfoCache();
-                }
-
-                return _info.Value;
-            }
+        private void SetId() {
+            Id = $"{Category}_{Name}_{CameraAlias}";
         }
 
+        private ASICameraDll.ASI_CAMERA_INFO _info;
+
         private void RefreshCameraInfoCache() {
-            using (MyStopWatch.Measure()) {
-                _info = ASICameraDll.GetCameraProperties(_cameraId);
-            }
+            _info = ASICameraDll.GetCameraProperties(_cameraId);
         }
 
         private string _cachedName;
@@ -107,7 +105,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int SubSampleWidth {
             get {
                 if (subSampleWidth == 0) {
-                    subSampleWidth = Info.MaxWidth;
+                    subSampleWidth = _info.MaxWidth;
                 }
 
                 return subSampleWidth;
@@ -120,7 +118,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int SubSampleHeight {
             get {
                 if (subSampleHeight == 0) {
-                    subSampleHeight = Info.MaxHeight;
+                    subSampleHeight = _info.MaxHeight;
                 }
 
                 return subSampleHeight;
@@ -128,38 +126,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
             set => subSampleHeight = value;
         }
 
-        public string Name => Info.Name;
+        public string Name => _info.Name;
 
         public string DisplayName {
             get {
                 if (!string.IsNullOrEmpty(CameraAlias)) {
-                    return $"{Info.Name} ({CameraAlias})";
+                    return $"{_info.Name} ({CameraAlias})";
                 }
 
-                return Info.Name;
+                return _info.Name;
             }
         }
 
-        // ZWO camera alias is limited to 8 ASCII characters. Initialize with something longer to know we haven't yet asked the camera for it
-        private string cameraAlias = "%%UNINITIALIZED%%";
+        private string cameraAlias;
 
         public string CameraAlias {
             get {
-                if (cameraAlias.Equals("%%UNINITIALIZED%%")) {
-                    // We must connect to the camera to get its ID. Quickly do this if we are not (such as during building the CameraChooser list)
-                    if (!Connected) {
-                        ASICameraDll.OpenCamera(_cameraId);
-                    }
-
-                    cameraAlias = ASICameraDll.GetId(_cameraId);
-
-                    if (!Connected) {
-                        ASICameraDll.CloseCamera(_cameraId);
-                    }
-
-                    Logger.Debug($"ASI: Camera ID/Alias: {cameraAlias}");
-                }
-
                 return cameraAlias;
             }
 
@@ -168,6 +150,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 ASICameraDll.SetId(_cameraId, value);
                 cameraAlias = ASICameraDll.GetId(_cameraId);
+                SetId();
 
                 Logger.Info($"ASI: Camera ID/Alias set to: {cameraAlias}");
 
@@ -179,7 +162,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
         }
 
-        public bool HasShutter => Info.MechanicalShutter != ASICameraDll.ASI_BOOL.ASI_FALSE;
+        public bool HasShutter => _info.MechanicalShutter != ASICameraDll.ASI_BOOL.ASI_FALSE;
 
         private bool _connected;
 
@@ -284,33 +267,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public short BayerOffsetX { get; } = 0;
         public short BayerOffsetY { get; } = 0;
 
-        public int CameraXSize => Info.MaxWidth;
+        public int CameraXSize => _info.MaxWidth;
 
-        public int CameraYSize => Info.MaxHeight;
+        public int CameraYSize => _info.MaxHeight;
 
         public double ExposureMin => (double)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
 
         public double ExposureMax => (double)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
 
-        public double ElectronsPerADU => Info.ElecPerADU;
+        public double ElectronsPerADU => _info.ElecPerADU;
 
         public short MaxBinX {
             get {
-                int[] binlist = Info.SupportedBins;
+                int[] binlist = _info.SupportedBins;
                 return (short)binlist.Max();
             }
         }
 
         public short MaxBinY {
             get {
-                int[] binlist = Info.SupportedBins;
+                int[] binlist = _info.SupportedBins;
                 return (short)binlist.Max();
             }
         }
 
-        public double PixelSizeX => Info.PixelSize;
+        public double PixelSizeX => _info.PixelSize;
 
-        public double PixelSizeY => Info.PixelSize;
+        public double PixelSizeY => _info.PixelSize;
 
         private int minTemperatureSetpoint = 0;
         private int maxTemperatureSetpoint = 0;
@@ -370,12 +353,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
             ASICameraDll.StopExposure(_cameraId);
         }
 
-        private List<ASICameraDll.ASI_IMG_TYPE> SupportedImageTypes => Info.SupportedVideoFormat.TakeWhile(x => x != ASICameraDll.ASI_IMG_TYPE.ASI_IMG_END).ToList();
+        private List<ASICameraDll.ASI_IMG_TYPE> SupportedImageTypes => _info.SupportedVideoFormat.TakeWhile(x => x != ASICameraDll.ASI_IMG_TYPE.ASI_IMG_END).ToList();
 
-        private List<int> SupportedBinFactors => Info.SupportedBins.TakeWhile(x => x != 0).ToList();
+        private List<int> SupportedBinFactors => _info.SupportedBins.TakeWhile(x => x != 0).ToList();
 
-        public void Disconnect() {
-            _info = null;
+        public void Disconnect() {            
             _controls = null;
             Connected = false;
             ASICameraDll.CloseCamera(_cameraId);
@@ -394,9 +376,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public Size Resolution {
-            get {
-                var info = Info;
-                return new Size(info.MaxWidth, info.MaxHeight);
+            get {                
+                return new Size(_info.MaxWidth, _info.MaxHeight);
             }
         }
 
@@ -671,7 +652,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_PATTERN_ADJUST, 0);
 
             // Assumption that all color models support mono binning mode
-            HasZwoAsiMonoBinMode = Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE;
+            HasZwoAsiMonoBinMode = _info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE;
 
             if (HasZwoAsiMonoBinMode && profileService.ActiveProfile.CameraSettings.ZwoAsiMonoBinMode == true) {
                 ZwoAsiMonoBinMode = true;
@@ -712,8 +693,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         private void DetermineAndSetSensorType() {
-            if (Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE) {
-                switch (Info.BayerPattern) {
+            if (_info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE) {
+                switch (_info.BayerPattern) {
                     case ASICameraDll.ASI_BAYER_PATTERN.ASI_BAYER_GB:
                         SensorType = SensorType.GBRG;
                         break;

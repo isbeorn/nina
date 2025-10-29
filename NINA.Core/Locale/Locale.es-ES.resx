@@ -2431,7 +2431,7 @@ HFR calculada: {2}
     <value>Preferencias de Planetario</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Obtiene coordenadas del Software Planetario</value>
+    <value>Importa el objeto del planetario seleccionado actualmente para actualizar nombre y coordenadas</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordenadas del objeto seleccionado</value>
@@ -7304,5 +7304,14 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Error al preparar la imagen para mostrar: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Hora para la transferencia de día</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Como no hay ningún día asociado a la instrucción, la transferencia a un nuevo día se producirá a la hora de transferencia mostrada.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicializando</value>
   </data>
 </root>

@@ -123,7 +123,7 @@
                     <Border
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0"
-                        IsEnabled="{Binding RotatorInfo.CanReverse}">
+                        Visibility="{Binding RotatorInfo.CanReverse, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -135,8 +135,8 @@
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                                 <CheckBox
-                                    Width="120"
-                                    Margin="-25,0,0,0"
+                                    Width="70"
+                                    Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     Command="{Binding ReverseCommand}"
                                     CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"

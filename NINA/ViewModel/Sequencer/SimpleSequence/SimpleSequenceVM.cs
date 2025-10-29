@@ -269,14 +269,9 @@ namespace NINA.ViewModel {
                 cameraMediator.RegisterCaptureBlock(this);
                 Logger.Info("Simple Sequence started");
 
-                //Reset start and end of sequence options in case they were both already done
-                if (Sequencer.MainContainer.Items[0].Status != SequenceEntityStatus.CREATED) {
-                    Sequencer.MainContainer.Items[0].ResetProgress();
-                }
-
-                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {
-                    Sequencer.MainContainer.Items[2].ResetProgress();
-                }
+                //Reset start and end of sequence options in case they were started in a previous run
+                Sequencer.MainContainer.Items[0].ResetProgress();
+                Sequencer.MainContainer.Items[2].ResetProgress();
 
                 //Set base containers to created to rerun
                 Sequencer.MainContainer.Status = SequenceEntityStatus.CREATED;

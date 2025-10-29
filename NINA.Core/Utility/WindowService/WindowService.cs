@@ -36,18 +36,21 @@ namespace NINA.Core.Utility.WindowService {
             dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
                 try {
                     window = GenerateWindow(content, title, resizeMode, windowStyle, null);
-
                     window.Show();
-                } catch(Exception ex) { 
-                    Logger.Error(ex); 
-                }                
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
             }));
         }
 
         public void DelayedClose(TimeSpan t) {
-            Task.Run(async () => {
-                await CoreUtil.Wait(t);
-                await this.Close();
+            _ = Task.Run(async () => {
+                try {
+                    await CoreUtil.Wait(t);
+                    await this.Close();
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
             });
         }
 
@@ -76,22 +79,21 @@ namespace NINA.Core.Utility.WindowService {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Content = content
             };
-
+            
             if (closeCommand == null) {
                 window.CloseCommand = new RelayCommand((object o) => window.Close());
             } else {
                 window.CloseCommand = closeCommand;
             }
 
-
-            window.Closing += (object sender, CancelEventArgs e) => {
-                if ((sender is Window w) && w.IsFocused) {
-                    mainwindow.Focus();
+            window.Closing += (sender, e) => {
+                if (sender is Window cw && cw.IsFocused) {
+                    try { mainwindow.Focus(); } catch { }
                 }
             };
-            window.Closed += (object sender, EventArgs e) => {
-                this.OnClosed?.Invoke(this, null);
-                mainwindow.Focus();
+            window.Closed += (sender, e) => {
+                try { this.OnClosed?.Invoke(this, EventArgs.Empty); } catch { }
+                try { mainwindow.Focus(); } catch { }
             };
 
             return window;
@@ -103,9 +105,12 @@ namespace NINA.Core.Utility.WindowService {
                     window = GenerateWindow(content, title, resizeMode, windowStyle, closeCommand);
 
                     Application.Current.MainWindow.Opacity = 0.8;
-                    var result = window.ShowDialog();
-                    this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
-                    Application.Current.MainWindow.Opacity = 1;
+                    try {
+                        var result = window.ShowDialog();
+                        this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
+                    } finally {
+                        Application.Current.MainWindow.Opacity = 1;
+                    }
                 } catch (Exception e) {
                     Logger.Error(e);
                 }
