@@ -131,11 +131,9 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: nschloe/action-cached-lfs-checkout@v1
       with:
-        ref: ${{ needs.versioning.outputs.commit_sha }}
-        fetch-depth: 0
-        lfs: 'true'
+        ref: ${{ needs.versioning.outputs.commit_sha }}                
         submodules: recursive
 
     - name: Install B2 CLI
