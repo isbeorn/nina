@@ -10,6 +10,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 
 ## Improvements
+- **Autofocus after HFR Increase Trigger**
+    - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
 - When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.
     - In case the meridian should trigger in this scenario, it will stop mount tracking instead to ensure there will be no pier collision. Safety related logic in a sequence needs to handle resuming tracking once it's safe again.
 
