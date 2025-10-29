@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace NINA.Sequencer.Container {
 
@@ -214,7 +215,7 @@ namespace NINA.Sequencer.Container {
                     item.AfterParentChanged();
 
                     IValidatable validatable = (item as IValidatable);
-                    if (validatable != null) {                        
+                    if (validatable != null) {
                         try {
                             validatable.Validate();
                         } catch (Exception ex) {
@@ -286,6 +287,9 @@ namespace NINA.Sequencer.Container {
             return executionTask;
         }
 
+        public ISequenceRootContainer GetRootContainer() {
+            return GetRootContainer(this);
+        }
         public ISequenceRootContainer GetRootContainer(ISequenceContainer container) {
             if (container.Parent == null) {
                 if (!(container is ISequenceRootContainer)) {
@@ -379,6 +383,7 @@ namespace NINA.Sequencer.Container {
                         MoveWithinIntoSequenceBlocks(index, newIndex);
                     }
                 }
+                SetChanged();
             }
         }
 
@@ -410,7 +415,12 @@ namespace NINA.Sequencer.Container {
                         MoveWithinIntoSequenceBlocks(index, newIndex);
                     }
                 }
+                SetChanged();
             }
+        }
+
+        private void SetChanged() {
+            GetRootContainer(this)?.SetChanged();
         }
 
         public void MoveWithinIntoSequenceBlocks(int index, int newIndex) {
@@ -427,6 +437,8 @@ namespace NINA.Sequencer.Container {
                 } else {
                     Items.Insert(newIndex, item);
                 }
+                SetChanged();
+
             }
         }
 
@@ -436,6 +448,8 @@ namespace NINA.Sequencer.Container {
                     item.AttachNewParent(null);
                 }
                 item.Parent?.Remove(item);
+                SetChanged();
+
                 return Items.Remove(item);
             }
         }
@@ -446,6 +460,8 @@ namespace NINA.Sequencer.Container {
                     condition.AttachNewParent(null);
                 }
                 condition.Parent?.Remove(condition);
+                SetChanged();
+
                 return Conditions.Remove(condition);
             }
         }
@@ -456,6 +472,8 @@ namespace NINA.Sequencer.Container {
                     trigger.AttachNewParent(null);
                 }
                 trigger.Parent?.Remove(trigger);
+                SetChanged();
+
                 return Triggers.Remove(trigger);
             }
         }
@@ -512,13 +530,13 @@ namespace NINA.Sequencer.Container {
                 localTriggers = Triggers.ToArray();
             }
             foreach (var trigger in localTriggers) {
-                if(trigger.Status == SequenceEntityStatus.DISABLED) { continue; }
+                if (trigger.Status == SequenceEntityStatus.DISABLED) { continue; }
                 try {
                     if (trigger.ShouldTrigger(previousItem, nextItem)) {
                         var context = nextItem?.Parent ?? previousItem?.Parent ?? this;
                         await trigger.Run(context, progress, token);
                     }
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
                 }
             }
@@ -550,10 +568,10 @@ namespace NINA.Sequencer.Container {
                     if (validatable != null) {
                         try {
                             valid = validatable.Validate() && valid;
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             Logger.Error(ex);
                             valid = false;
-                        }                        
+                        }
                     }
                 }
                 foreach (var item in Conditions) {
@@ -597,7 +615,7 @@ namespace NINA.Sequencer.Container {
                 var items = GetItemsSnapshot();
                 var itemsByStatus = items.GroupBy(x => x.Status);
                 var itemString = string.Empty;
-                foreach(var i in itemsByStatus) {
+                foreach (var i in itemsByStatus) {
                     itemString += $", Items[{i.Key}]: {i.Count()}";
                 }
 
@@ -638,42 +656,5 @@ namespace NINA.Sequencer.Container {
             }
         }
 
-        public override bool HasChanged {
-            get {
-                if (base.HasChanged) {
-                    return true;
-                }
-                foreach (ISequenceItem item in Items) {
-                    if (item.HasChanged) {
-                        return true;
-                    }
-                }
-                foreach (ISequenceTrigger item in Triggers) {
-                    if (item.HasChanged) {
-                        return true;
-                    }
-                }
-                foreach (ISequenceCondition item in Conditions) {
-                    if (item.HasChanged) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            set => base.HasChanged = value;
-        }
-
-        public override void ClearHasChanged() {
-            base.ClearHasChanged();
-            foreach (ISequenceItem item in Items) {
-                item.ClearHasChanged();
-            }
-            foreach (ISequenceTrigger item in Triggers) {
-                item.ClearHasChanged();
-            }
-            foreach (ISequenceCondition item in Conditions) {
-                item.ClearHasChanged();
-            }
-        }
     }
 }
