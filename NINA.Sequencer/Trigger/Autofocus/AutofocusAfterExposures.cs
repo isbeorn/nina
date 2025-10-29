@@ -21,7 +21,9 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
 using NINA.Sequencer.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Autofocus;
 using NINA.Sequencer.Utility;
@@ -38,15 +40,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.Core.Utility;
-using NINA.Sequencer.Utility;
-using NINA.Image.ImageAnalysis;
-using NINA.Sequencer.Interfaces;
-using NINA.WPF.Base.Interfaces;
-using NINA.Sequencer.Generators;
-using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.Trigger.Autofocus {
 
