@@ -997,56 +997,25 @@ namespace NINA.Test.Sequencer.Container {
         }
 
         [Test]
-        [TestCase(false, true, true, true, true)]
-        [TestCase(false, true, true, false, true)]
-        [TestCase(false, true, false, true, true)]
-        [TestCase(false, false, true, true, true)]
-        [TestCase(false, true, false, false, true)]
-        [TestCase(false, false, true, false, true)]
-        [TestCase(false, false, false, true, true)]
-        [TestCase(false, false, false, false, false)]
-        [TestCase(true, true, true, true, true)]
-        [TestCase(true, true, true, false, true)]
-        [TestCase(true, true, false, true, true)]
-        [TestCase(true, false, true, true, true)]
-        [TestCase(true, true, false, false, true)]
-        [TestCase(true, false, true, false, true)]
-        [TestCase(true, false, false, true, true)]
-        [TestCase(true, false, false, false, true)]
-        public void HasChanged(bool baseChanged, bool itemchanged, bool triggerchanged, bool conditionchanged, bool expected) {
+        [TestCase(false, true, true)]
+        [TestCase(false, false, false)]
+        [TestCase(true, true, true)]
+        [TestCase(true, false, true)]
+        public void HasChanged(bool baseChanged, bool itemchanged, bool expected) {
+            var root = new SequenceRootContainer();
             var item = new Mock<ISequenceItem>();
-            item.SetupGet(x => x.HasChanged).Returns(itemchanged);
-            var trigger = new Mock<ISequenceTrigger>();
-            trigger.SetupGet(x => x.HasChanged).Returns(triggerchanged);
-            var condition = new Mock<ISequenceCondition>();
-            condition.SetupGet(x => x.HasChanged).Returns(conditionchanged);
 
-            Sut.HasChanged = baseChanged;
+            root.Add(Sut);
+
+            root.HasChanges[SequenceContainer.defaultChangeSet] = baseChanged;
             Sut.Add(item.Object);
-            Sut.Add(trigger.Object);
-            Sut.Add(condition.Object);
+            if (itemchanged)
+                root.SetChanged();
 
-            Sut.HasChanged.Should().Be(expected);
+            Sut.GetRootContainer().HasChanges[SequenceContainer.defaultChangeSet].Should().Be(expected);
+
+            root.Remove(Sut);
         }
 
-        [Test]
-        public void ClearHasChanged() {
-            var item = new Mock<ISequenceItem>();
-            var trigger = new Mock<ISequenceTrigger>();
-            var condition = new Mock<ISequenceCondition>();
-
-            Sut.Add(item.Object);
-            Sut.Add(trigger.Object);
-            Sut.Add(condition.Object);
-            Sut.HasChanged = true;
-
-            //Act
-            Sut.ClearHasChanged();
-
-            Sut.HasChanged.Should().BeFalse();
-            item.Verify(x => x.ClearHasChanged(), Times.Once);
-            trigger.Verify(x => x.ClearHasChanged(), Times.Once);
-            condition.Verify(x => x.ClearHasChanged(), Times.Once);
-        }
     }
 }

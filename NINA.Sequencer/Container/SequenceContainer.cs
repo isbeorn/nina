@@ -287,6 +287,9 @@ namespace NINA.Sequencer.Container {
             return executionTask;
         }
 
+        public ISequenceRootContainer GetRootContainer() {
+            return GetRootContainer(this);
+        }
         public ISequenceRootContainer GetRootContainer(ISequenceContainer container) {
             if (container.Parent == null) {
                 if (!(container is ISequenceRootContainer)) {
