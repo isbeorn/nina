@@ -6,10 +6,16 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 # Version 3.3
 
 ## Bugfixes
+- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+- ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 
 ## Improvements
 
 ## Features
+
+### **Device Management**
+- **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
+  - The ToupTek based filter wheels are now available as a native driver.
 
 # Version 3.2
 
