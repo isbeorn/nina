@@ -313,7 +313,8 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
                 cameraMediatorMock.Object,
                 filterWheelMediatorMock.Object,
                 focuserMediatorMock.Object,
-                autoFocusVMFactoryMock.Object) {
+                autoFocusVMFactoryMock.Object,
+                safetyMonitorMediatorMock.Object) {
                 SampleSize = sampleSize,
                 Amount = 0.0
             };
