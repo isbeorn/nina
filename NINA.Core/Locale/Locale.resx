@@ -7327,6 +7327,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblPlateSolveSyncFailureTooLargeOffset" xml:space="preserve">
     <value>Aborting centering - sync is unavailable and calculated offset is too large: {}° / {}°</value>
+  </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>ASCOM Alpaca IP Setup</value>
   </data>
