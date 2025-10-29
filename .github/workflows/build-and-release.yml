@@ -131,11 +131,9 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: nschloe/action-cached-lfs-checkout@v1
       with:
-        ref: ${{ needs.versioning.outputs.commit_sha }}
-        fetch-depth: 0
-        lfs: 'true'
+        ref: ${{ needs.versioning.outputs.commit_sha }}                
         submodules: recursive
 
     - name: Install B2 CLI
@@ -279,7 +277,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nugets
-        path: publish/*.nupkg
+        path: |
+          publish/*.nupkg
+          publish/*.snupkg
         retention-days: 1
 
   upload:

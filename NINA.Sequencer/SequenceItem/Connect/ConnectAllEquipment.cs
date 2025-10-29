@@ -64,7 +64,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 "Filter Wheel",
                 "Focuser",
                 "Rotator",
-                "Telescope",
+                "Mount",
                 "Guider",
                 "Switch",
                 "Flat Panel",
@@ -82,6 +82,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 case "Filter Wheel": return fwMediator;
                 case "Focuser": return focuserMediator;
                 case "Rotator": return rotatorMediator;
+                case "Mount": return telescopeMediator;
                 case "Telescope": return telescopeMediator;
                 case "Guider": return guiderMediator;
                 case "Switch": return switchMediator;
@@ -100,6 +101,7 @@ namespace NINA.Sequencer.SequenceItem.Connect {
                 case "Focuser": return profileService.ActiveProfile.FocuserSettings.Id;
                 case "Rotator": return profileService.ActiveProfile.RotatorSettings.Id;
                 case "Telescope": return profileService.ActiveProfile.TelescopeSettings.Id;
+                case "Mount": return profileService.ActiveProfile.TelescopeSettings.Id;
                 case "Guider": return profileService.ActiveProfile.GuiderSettings.GuiderName;
                 case "Switch": return profileService.ActiveProfile.SwitchSettings.Id;
                 case "Flat Panel": return profileService.ActiveProfile.FlatDeviceSettings.Id;

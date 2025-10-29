@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -83,6 +83,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     var altairCameras = Altair.Altaircam.EnumV2();
                     Logger.Info($"Found {altairCameras?.Length} Altair Cameras");
                     foreach (var instance in altairCameras) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
                         var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new AltairSDKWrapper(), profileService, exposureDataFactory);
                         devices.Add(cam);
                     }
