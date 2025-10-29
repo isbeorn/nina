@@ -149,6 +149,7 @@
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource BackgroundBrush}"
                                                     FontSize="12"
+                                                    Visibility="{Binding Filter, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"
                                                     Text="{ns:Loc LblFilter}" />
                                                 <TextBlock
                                                     Grid.Row="2"
@@ -158,6 +159,7 @@
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource BackgroundBrush}"
                                                     FontSize="12"
+                                                    Visibility="{Binding Filter, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}"
                                                     Text="{Binding Filter}" />
                                                 <TextBlock
                                                     Grid.Row="4"
