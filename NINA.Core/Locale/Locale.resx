@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4459,6 +4459,15 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>AF After HFR Increase</value>
   </data>
+<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>HFR trend per filter</value>
+</data>
+<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>When disabled, the HFR trend is evaluated across all filters combined. 
+This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
+and a temperature sensitive optics on a quickly changing ambient temperature. 
+Note: This mode requires that HFR differences between filters in your setup are small.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>A trigger to initiate an autofocus run after the temperature has changed by the given amount in degrees since the last autofocus run or start of sequence</value>
   </data>
@@ -5190,15 +5199,6 @@ There the sequence can be planned from scratch using fine granular instructions,
 Large sample sizes can help prevent short term issues like wind gusts or guiding issues to trigger an autofocus.
 For quickly changing conditions a smaller sample size will help to respond more quickly to shifting focus, for example for temperature sensitive optics on a quickly changing ambient temperature.</value>
   </data>
-<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-<value>HFR trend per filter</value>
-</data>
-<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-<value>When disabled, the HFR trend is evaluated across all filters combined. 
-This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes 
-and a temperature sensitive optics on a quickly changing ambient temperature. 
-Note: This mode requires that HFR differences between filters in your setup are small.</value>
-</data>
   <data name="Lbl_SequenceItem_Validation_NoWritableSwitch" xml:space="preserve">
     <value>No writable switch available</value>
   </data>
