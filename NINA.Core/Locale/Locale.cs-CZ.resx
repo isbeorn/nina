@@ -7334,4 +7334,21 @@ Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastav
   <data name="LblSlewFailed" xml:space="preserve">
     <value>Selhání pohybu</value>
   </data>
+  <data name="LblAlpacaDeviceNumber" xml:space="preserve">
+    <value>Číslo Zařízení</value>
+  </data>
+  <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
+    <value>ASCOM Alpaca IP Nastavení</value>
+  </data>
+  <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
+    <value>IP Adresa</value>
+  </data>
+  <data name="LblAlpacaDirectPort" xml:space="preserve">
+    <value>Port</value>
+    <comment>The IP Port to use for an alpaca direct device</comment>
+  </data>
+  <data name="LblAlpacaDirectServiceType" xml:space="preserve">
+    <value>Typ Služby</value>
+    <comment>The service type for alpaca devices - e.g. http or https</comment>
+  </data>
 </root>

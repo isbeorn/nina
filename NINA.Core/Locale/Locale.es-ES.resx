@@ -7328,4 +7328,21 @@ Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea peque�
   <data name="LblSlewFailed" xml:space="preserve">
     <value>Ha fallado el desplazamiento</value>
   </data>
+  <data name="LblAlpacaDeviceNumber" xml:space="preserve">
+    <value>Número de dispositivo</value>
+  </data>
+  <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
+    <value>Configuración IP de ASCOM Alpaca</value>
+  </data>
+  <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
+    <value>Dirección IP</value>
+  </data>
+  <data name="LblAlpacaDirectPort" xml:space="preserve">
+    <value>Puerto</value>
+    <comment>The IP Port to use for an alpaca direct device</comment>
+  </data>
+  <data name="LblAlpacaDirectServiceType" xml:space="preserve">
+    <value>Tipo de servicio</value>
+    <comment>The service type for alpaca devices - e.g. http or https</comment>
+  </data>
 </root>

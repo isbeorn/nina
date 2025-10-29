@@ -7346,4 +7346,30 @@ Note: This mode requires that HFR differences between filters in your setup are 
   <data name="LblSlewFailed" xml:space="preserve">
     <value>Slew failed</value>
   </data>
+  <data name="LblAlpacaDeviceNumber" xml:space="preserve">
+    <value>Device Number</value>
+  </data>
+  <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
+    <value>ASCOM Alpaca IP Setup</value>
+  </data>
+  <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="LblAlpacaDirectPort" xml:space="preserve">
+    <value>Port</value>
+    <comment>The IP Port to use for an alpaca direct device</comment>
+  </data>
+  <data name="LblAlpacaDirectServiceType" xml:space="preserve">
+    <value>Service Type</value>
+    <comment>The service type for alpaca devices - e.g. http or https</comment>
+  </data>
+  <data name="LblAlpacaDirectInvalidAddress" xml:space="preserve">
+    <value>Enter a valid IPv4 or IPv6 address for the Alpaca device.</value>
+  </data>
+  <data name="LblAlpacaDirectInvalidPort" xml:space="preserve">
+    <value>The Alpaca port must be between 1 and 65535.</value>
+  </data>
+  <data name="LblAlpacaDirectInvalidDeviceNumber" xml:space="preserve">
+    <value>The Alpaca device number must be zero or greater.</value>
+  </data>
 </root>

@@ -7328,4 +7328,21 @@ Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie był
   <data name="LblSlewFailed" xml:space="preserve">
     <value>Slew failed</value>
   </data>
+  <data name="LblAlpacaDeviceNumber" xml:space="preserve">
+    <value>Numer urządzenia</value>
+  </data>
+  <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
+    <value>Ustawienia IP ASCOM Alpaca</value>
+  </data>
+  <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
+    <value>Adres IP</value>
+  </data>
+  <data name="LblAlpacaDirectPort" xml:space="preserve">
+    <value>Port</value>
+    <comment>The IP Port to use for an alpaca direct device</comment>
+  </data>
+  <data name="LblAlpacaDirectServiceType" xml:space="preserve">
+    <value>Typ usługi</value>
+    <comment>The service type for alpaca devices - e.g. http or https</comment>
+  </data>
 </root>
