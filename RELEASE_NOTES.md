@@ -16,6 +16,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Features
 
 ### **Device Management**
+- **ASCOM Alpaca Direct Drivers**
+    - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
 

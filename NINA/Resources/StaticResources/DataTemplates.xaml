@@ -124,7 +124,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" Text="Service Type" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAlpacaDirectServiceType}" />
                 <ComboBox
                     Grid.Column="1"
                     Margin="5,0,0,0"
@@ -143,7 +143,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" Text="IpAddress" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAlpacaDirectIpAddress}" />
                 <TextBox
                     Grid.Column="1"
                     Margin="5,0,0,0"
@@ -155,7 +155,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" Text="Port" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAlpacaDirectPort}" />
                 <TextBox
                     Grid.Column="1"
                     Margin="5,0,0,0"
@@ -167,7 +167,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" Text="Device Number" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAlpacaDeviceNumber}" />
                 <TextBox
                     Grid.Column="1"
                     Margin="5,0,0,0"
