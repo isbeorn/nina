@@ -7319,4 +7319,13 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializace</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+    <value>Trend HFR podle filtru</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+    <value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady. 
+To může pomoci spustit automatické zaostřování dříve, zejména při snímání s častými změnami filtrů
+a optikou citlivou na teplotu v rychle se měnící okolní teplotě. 
+Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastavení byly malé.</value>
+  </data>
 </root>

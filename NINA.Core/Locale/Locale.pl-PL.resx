@@ -7314,4 +7314,12 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicjalizacja</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+    <value>Trend zmian HFR dla filtra</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+    <value>Gdy wyłączone, trend zmian HFR jest oceniany łącznie dla wszystkich filtrów. 
+Może to pomóc w wcześniejszym uruchamianiu autofocusa, szczególnie podczas pracy z częstymi zmianami filtrów oraz przy optyce wrażliwej na temperaturę w warunkach szybko zmieniających się. 
+Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie były niewielkie.</value>
+  </data>
 </root>

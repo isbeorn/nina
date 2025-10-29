@@ -78,6 +78,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             return new AutofocusAfterHFRIncreaseTrigger(this) {
                 Amount = Amount,
                 SampleSize = SampleSize,
+                TrendPerFilter = TrendPerFilter,
                 TriggerRunner = (SequentialContainer)TriggerRunner.Clone()
             };
         }
@@ -113,6 +114,17 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                     sampleSize = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        private bool trendPerFilter = true; // default true to keep the original behaviour creating an HFR trend per filter
+
+        [JsonProperty]
+        public bool TrendPerFilter {
+            get => trendPerFilter;
+            set {
+                trendPerFilter = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -177,7 +189,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
                 imageHistory = imageHistory.Where(point => point.Id > lastAF.Id).ToList();
             }
 
-            if (fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
+            if (TrendPerFilter == true && fwInfo != null && fwInfo.Connected && fwInfo.SelectedFilter != null) {
                 //Further filter the history to only considere items by the current filter
                 Filter = fwInfo.SelectedFilter.Name;
 
@@ -240,7 +252,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}";
+            return $"Trigger: {nameof(AutofocusAfterHFRIncreaseTrigger)}, Amount: {Amount}, TrendPerFilter: {TrendPerFilter}";
         }
 
         public bool Validate() {

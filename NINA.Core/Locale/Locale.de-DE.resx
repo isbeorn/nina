@@ -7317,4 +7317,13 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+    <value>HFR-Trend pro Filter</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+    <value>Wenn deaktiviert, wird der HFR-Trend über alle Filter zusammen ausgewertet.
+Dies kann helfen, Autofokusläufe früher auszulösen, insbesondere bei Aufnahmen mit häufigen Filterwechseln
+und temperaturempfindlicher Optik bei schnell wechselnder Umgebungstemperatur.
+Hinweis: Dieser Modus setzt voraus, dass die HFR-Unterschiede zwischen den Filtern Ihres Setups gering sind.</value>
+  </data>
 </root>

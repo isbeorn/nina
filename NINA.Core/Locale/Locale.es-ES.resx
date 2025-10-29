@@ -7314,4 +7314,12 @@ El tiempo de exposición de los flats de cierlo será recalculado y se repetirá
   <data name="LblInitializing" xml:space="preserve">
     <value>Inicializando</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+    <value>Tendencia HFR por filtro</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+    <value>Cuando está desactivada, la tendencia del HFR se evalúa con una combinación de todos los filtros.
+Esto puede ayudar a que el activador del autofocus se produzca antes, en particular cuando fotografiamos con frecuentes cambios de filtro y ópticas sensibles a la temperatura en un ambiente en que la misma cambie rápidamente.
+Nota: Esto modo requiere que las diferencias de HFR entre los filtros sea pequeña.</value>
+  </data>
 </root>
