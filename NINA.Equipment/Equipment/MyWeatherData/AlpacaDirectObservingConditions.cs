@@ -1,4 +1,5 @@
 ﻿using ASCOM.Alpaca.Discovery;
+using NINA.Core.Locale;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Equipment.MySwitch.Ascom;
 using NINA.Equipment.Equipment.MyTelescope;
@@ -86,7 +87,13 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
         private IWindowService windowService = new WindowService();
 
         public void SetupDialog() {
-            windowService.ShowDialog(settings, "ASCOM Alpaca IP Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            windowService.OnDialogResultChanged -= WindowService_OnDialogResultChanged;
+            windowService.ShowDialog(settings, Loc.Instance["LblAlpacaDirectIPSetup"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            windowService.OnDialogResultChanged += WindowService_OnDialogResultChanged;
+        }
+
+        private void WindowService_OnDialogResultChanged(object sender, EventArgs e) {
+            RaisePropertyChanged(nameof(DisplayName));
         }
 
         public double AveragePeriod => ((IWeatherData)device).AveragePeriod;
