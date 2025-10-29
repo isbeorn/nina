@@ -8,6 +8,8 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 
 ## Improvements
+- When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.
+    - In case the meridian should trigger in this scenario, it will stop mount tracking instead to ensure there will be no pier collision. Safety related logic in a sequence needs to handle resuming tracking once it's safe again.
 
 ## Features
 
