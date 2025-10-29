@@ -123,7 +123,7 @@ namespace NINA.Image {
 
         public DateTime Date { get; set; } = DateTime.Now;
 
-        public string Filter { get; set; }
+        public string Filter { get; set; } = string.Empty;
 
         public double Duration { get; set; }
 

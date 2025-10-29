@@ -37,7 +37,9 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     var positions = info.PositionCount;
 
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }

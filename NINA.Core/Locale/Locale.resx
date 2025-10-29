@@ -2443,7 +2443,7 @@ Calculated HFR: {2}
     <value>Planetarium Preferences</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Get coordinates from the Planetarium Software</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordinates from selected object</value>
@@ -7327,5 +7327,13 @@ The sky flat exposure time will be determined again and the exposure will be rep
 You'll normally be prompted to save the sequence to save the changed exposure count.
 
 If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Day Rollover Time</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
   </data>
 </root>

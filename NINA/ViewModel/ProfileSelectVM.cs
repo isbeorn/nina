@@ -9,22 +9,26 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #endregion "copyright"
-using NINA.Utility;
-using NINA.Profile.Interfaces;
-using System;
-using System.Globalization;
-using System.Threading;
-using System.Collections.Generic;
-using System.Linq;
-using NINA.Core.Utility.WindowService;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Core.Utility.WindowService;
 using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.Utility;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    public class ProfileSelectVM : BaseINPC {
+    public partial class ProfileSelectVM : BaseINPC {
 
         public ProfileSelectVM(IProfileService profileService) {
             this.profileService = profileService;
@@ -73,6 +77,50 @@ namespace NINA.ViewModel {
                 Properties.Settings.Default.UseSavedProfileSelection = value;
                 CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
             }
+        }
+
+
+        private TaskCompletionSource<bool> selectProfileTCS = new TaskCompletionSource<bool>();
+        private TaskCompletionSource<bool> initializeAppTCS = new TaskCompletionSource<bool>();
+        [ObservableProperty]
+        private bool profileIsSelected;
+
+        [ObservableProperty]
+        private string selectProfileText = Loc.Instance["LblLoadProfile"];
+
+        public void WaitForSelection() {
+            if (selectProfileTCS.Task.IsCompleted) return;
+
+            var frame = new DispatcherFrame();
+            selectProfileTCS.Task.ContinueWith(
+                _ => frame.Continue = false,
+                TaskScheduler.FromCurrentSynchronizationContext());
+
+            Dispatcher.PushFrame(frame);
+        }
+
+        public void Wait100msNonBlocking() {
+            var frame = new DispatcherFrame();
+            var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100),
+                DispatcherPriority.Background,
+                (s, e) => {
+                    ((DispatcherTimer)s).Stop();
+                    frame.Continue = false;
+                },
+                Dispatcher.CurrentDispatcher);
+
+            Dispatcher.PushFrame(frame);
+        }
+
+        public void Close() {
+            initializeAppTCS.TrySetResult(true);
+        }
+
+        [RelayCommand]
+        private async Task SelectProfile() {
+            ProfileIsSelected = true;
+            selectProfileTCS.TrySetResult(true);
+            await initializeAppTCS.Task;
         }
     }
 }

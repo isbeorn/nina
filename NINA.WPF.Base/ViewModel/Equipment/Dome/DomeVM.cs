@@ -177,7 +177,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
                                 CanPark = Dome.CanPark,
                                 CanFindHome = Dome.CanFindHome,
                                 AtPark = Dome.AtPark,
-                                AtHome = Dome.AtPark,
+                                AtHome = Dome.AtHome,
                                 DriverFollowing = Dome.DriverFollowing,
                                 Slewing = Dome.Slewing,
                                 Azimuth = Dome.Azimuth,
@@ -445,7 +445,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Dome {
 
                     // 5. Open the shutter/roof
                     try {
-                        Logger.Info($"Opening dome shutter. Shutter state after opening {DomeInfo.ShutterStatus}");
+                        Logger.Info($"Opening dome shutter. Shutter state before opening {DomeInfo.ShutterStatus}");
                         progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblDomeShutterOpen"] });
                         await Dome.OpenShutter(cancellationToken); 
                         var waitForUpdate = updateTimer.WaitForNextUpdate(cancellationToken);

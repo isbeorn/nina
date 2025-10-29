@@ -2431,7 +2431,7 @@ Obliczone HFR: {2}</value>
     <value>Ustawienia Planetarium</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Pobierz współrzędne z oprogramowania Planetarium</value>
+    <value>Importuj aktualnie wybrany obiekt planetarium, aby zaktualizować nazwę i współrzędne</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Współrzędne z wybranego obiektu</value>
@@ -7304,5 +7304,14 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
   <data name="LblPrepareImageFailed" xml:space="preserve">
     <value>Nie udało się przygotować podglądu obrazu: {0}</value>
     <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Czas przestawienia dnia</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Ponieważ w instrukcji nie podano żadnej daty, ustawienie nowego dnia nastąpi o podanej godzinie.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicjalizacja</value>
   </data>
 </root>

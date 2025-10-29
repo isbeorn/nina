@@ -1,7 +1,21 @@
 ﻿# N.I.N.A. - Nighttime Imaging 'N' Astronomy Changelog
 
-If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
+If N.I.N.A. helps you on your journey to capture amazing deep sky images, please consider a donation. Every contribution helps keep the project alive and active.  
 More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
+
+# Version 3.3
+
+## Bugfixes
+- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+- ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
+
+## Improvements
+
+## Features
+
+### **Device Management**
+- **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
+  - The ToupTek based filter wheels are now available as a native driver.
 
 # Version 3.2
 
@@ -11,17 +25,23 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Added support for latest version of SkyGuard (SkySurveyor, SkyGuard, SkyGuide, SkyWave depending on license)
 - In Options > Imaging the sequence startup template can now be set to be empty again
 - FITS keywords with boolean/logical values are now properly rendered as FITS logicals instead of as strings when using CFITSIO
-- Imaging is now possible during slewing to a target, but not centering, from the framing wizard
+- Imaging is now possible during slewing to a target inside the Framing Assistant
 - PlayerOne Filter Wheel native driver will no longer incorrectly log an error while the wheel is moving
-- Ascom device instances that fail to connect are now properly disposed
+- ASCOM device instances that fail to connect are now properly disposed
 - When Smart Exposure was interrupted and the filter was manually changed afterwards, the instruction will now make sure the filter is set to the correct one before proceeding with the next exposure
 - Sunrise, sunset, moonrise, and moonset now account for your location's elevation for increased accuracy.
-- Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below horizon.
+- Sequencer conditions and instructions now better handle transitions near the horizon, preventing sudden jumps in sun and moon altitude caused by atmospheric refraction effects breaking down below the horizon.
 - Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
+- In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
+- Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
+- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+
+## Features
  
-### **Device Management**
+### Device Management
 - **Device Chooser Enhancements**  
   - A stored device ID that is currently unavailable will now appear as an "Offline Device" instead of "No Device," differentiating between having no device selected and an unavailable saved device.  
+  - On upgrade to this version you should ensure that each device is still selected properly as the device ID handling has changed for some devices.
 - **ZWO EAF Native Driver**  
   - The ZWO EAF is now available as a native driver.  
 - **New SVBony Camera Driver**
@@ -29,17 +49,17 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **ASCOM Device Name Query**  
   - N.I.N.A. now queries the ASCOM device name after connecting to the driver.  
 - **ASCOM Device State**
-    - For drivers that implement the new ASCOM 7 Device State the application will now use the state when possible instead of polling individual fields
-- ** Dome/Roof safety **
+    - For drivers that implement the new ASCOM 7 Device State, the application will now use the state when possible instead of polling individual fields
+- **Dome/Roof Safety**
     - Optionally disallow the mount to be unparked if the dome or roof controller reports a shutter state other than Open.
-- ** Switch Polling**
-    - Switches are now polled sequentially instead of in parallel for their status update, to accommodate drivers that do not handle concurrent access properly.
+- **Switch Polling**
+    - Switches are now polled sequentially instead of in parallel for their status updates, to accommodate drivers that do not handle concurrent access properly.
 
-### **User Interface & Usability**
+### User Interface & Usability
 - **Framing Assistant Improvements**  
   - Sky annotation options are now saved to the active profile.  
-  - After determining the rotation from camera, the rotation value is now automatically synced to the rotator if available.  
-  - Sending a target from Sky Atlas to Framing Assistant will now also use the last rotation that was set in framing
+  - After determining the rotation from the camera, the rotation value is now automatically synced to the rotator if available.  
+  - Sending a target from Sky Atlas to Framing Assistant will now also use the last rotation that was set in Framing
 - **Plate Solver UI Improvements**  
   - Settings for the selected Plate Solver and Blind Solver are now displayed exclusively, making setup verification more intuitive.  
 - **Message Box and Annotation Instructions**  
@@ -58,7 +78,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
       - It shows "Connect All" only when no devices are connected.
       - When at least one device is connected it will change to "Disconnect All".
  
-### **Sequencer & Imaging**
+### Sequencer & Imaging
 - **Sequencer Enhancements**  
   - Added **lock and unlock buttons** to disable manual input and drag-and-drop.  
   - Added **drag-and-drop disable and enable buttons**.  
@@ -71,17 +91,17 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
   - **Floating undocked windows remain unaffected** and can still be re-docked even when the layout is locked.  
 - **Metadata & Files**
   - Added `MJD-OBS` and `MJD-AVG` keywords to FITS headers and the `$$MJD$$` file pattern. The file pattern prints the Modified Julian Date out to 8 decimal places
-- **Time sources**
+- **Time Sources**
     - Civil dawn and dusk can now be selected for time based conditions
     - The altitude charts now also show the civil dawn and dusk times
 - **Trained Dark Exposure**
     - The instruction will no longer switch the filter but will only use the filter information to do the lookup instead
 - **Legacy Sequencer Multiple File Load**
-    - Fix issue where saving sequences after multi-file load overwrote only one XML
-- **Time source failure reasons**
+    - Fixed an issue where saving sequences after multi-file load overwrote only one XML file
+- **Time Source Failure Reasons**
     - When a time source fails to provide a value - e.g. that there is no astronomical twilight today - the validation will also include the reason for the failure. This will help to understand why a time source is not providing a value.
 
-### **Guiding & Tracking**
+### Guiding & Tracking
 - **Looping Mode Behavior**  
   - Looping mode will no longer start automatically when N.I.N.A. connects to PHD2.  
 - **"Mount Dither" Renaming**  
@@ -92,44 +112,44 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - **Guiding RMS Calculation Improvements**  
   - Enhanced numerical stability and **prevented long-term floating-point error accumulation**.  
 
-### **Astrometry & Plate Solving**
+### Astrometry & Plate Solving
 - **GNSS Support**  
   - Added support for **GPSD** as a GNSS source to obtain site location information.  
 - **Center and Rotate Improvements**  
   - "Center and Rotate" and "Solve and Rotate" will now give up after **10 unsuccessful rotation attempts**.  
 
-### **Autofocus & Star Detection**
+### Autofocus & Star Detection
 - **Star Detector Enhancements**  
   - The N.I.N.A. Star Detector now properly calculates star centroids.  
   - Centroids are now annotated in the N.I.N.A. Star Annotator.  
 - **Autofocus Report Enhancements**  
   - The determined step number is now displayed as an integer instead of a floating-point number.  
 
-### **Weather & Environmental Data**
+### Weather & Environmental Data
 - **OpenWeatherMap Client Improvements**  
   - Added **Wind Gust** and **Rain Rate** metrics.  
   - **Air pressure is now adjusted to QFE (local)** based on site elevation rather than QNH (mean sea level), aligning with ASCOM conventions.  
   - **Authentication failures** with OpenWeatherMap API now result in a hard error.  
-  - **Singular query failures** no longer disconnect the weather client.  
+  - **Single query failures** no longer disconnect the weather client.  
 - **Added OpenMeteo device**
-    - Supports temperature, pressure, wind direction/gusts/speed, humidity
+    - Supports temperature, pressure, wind direction/gusts/speed, humidity.
     
-### **Automation & Scripting**
+### Automation & Scripting
 - **Sky Flat Instructions**  
   - Added separate options for **dither pixel size** and **dither settle time** parameters.  
 - **Flat Wizard Customization**  
   - Added an **"Open Cover When Done"** option to set the desired cover state after completing the flat wizard.  
-  - When exposure determiniation fails for auto brightness and auto exposure flat routine the flat panel will be turned off.  
+  - When exposure determination fails for auto brightness and auto exposure flat routine the flat panel will be turned off.  
 - **External Script Execution**  
   - Now runs in a separate context using `UseShellExecute`, allowing scripts to start applications without waiting for them to close.  
 
-### **Data Integrity & Reliability**
+### Data Integrity & Reliability
 - **Profile Saving Reliability**  
   - Improved with **atomic journal-based updates** and **automatic recovery from backups**.  
-- Profiles on startup now load much quicker by only reading essential information upfront. Full details are only loaded when a profile is actually used.
+- Profiles on startup now load much more quickly by only reading essential information upfront. Full details are only loaded when a profile is actually used.
 
-## Commandline Options
-The following command line options have been added
+### Command-Line Options
+The following command-line option has been added
 ```
 -g, --disable-hardware-acceleration        Disables UI hardware acceleration
 ```
@@ -144,7 +164,7 @@ The following command line options have been added
 
 ### AssemblyLoadContext
 - Plugins are now loaded within separate [AssemblyLoadContexts](https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext)
-    - This change will isolate third party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues
+    - This change will isolate third-party plugin dependencies so that one plugin having a different version of the same third party library will no longer cause issues
     - No changes to existing plugins are required
 
 
