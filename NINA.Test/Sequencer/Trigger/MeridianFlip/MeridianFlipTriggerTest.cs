@@ -44,6 +44,7 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
         private Mock<IFocuserMediator> focuserMediatorMock;
         private Mock<ICameraMediator> cameraMediatorMock;
         private Mock<IMeridianFlipVMFactory> meridianFlipVMFactoryMock;
+        private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
 
         [SetUp]
         public void Setup() {
@@ -53,10 +54,11 @@ namespace NINA.Test.Sequencer.Trigger.MeridianFlip {
             cameraMediatorMock = new Mock<ICameraMediator>();
             focuserMediatorMock = new Mock<IFocuserMediator>();
             meridianFlipVMFactoryMock = new Mock<IMeridianFlipVMFactory>();
+            safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
         }
 
         private MeridianFlipTrigger CreateSUT() {
-            return new MeridianFlipTrigger(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object, applicationStatusMediatorMock.Object, meridianFlipVMFactoryMock.Object);
+            return new MeridianFlipTrigger(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object, applicationStatusMediatorMock.Object, meridianFlipVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
         }
 
         [Test]

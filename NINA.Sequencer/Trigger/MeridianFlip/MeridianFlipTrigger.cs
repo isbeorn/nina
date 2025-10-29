@@ -12,32 +12,34 @@
 
 #endregion "copyright"
 
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Image.ImageAnalysis;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.Astrometry;
-using NINA.Equipment.Interfaces.Mediator;
 using NINA.ViewModel;
+using NINA.WPF.Base.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
+using NINA.WPF.Base.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Enum;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
-using NINA.WPF.Base.ViewModel;
-using NINA.Sequencer.Interfaces;
-using NINA.Equipment.Interfaces;
-using NINA.Image.ImageAnalysis;
-using NINA.WPF.Base.Interfaces;
 
 namespace NINA.Sequencer.Trigger.MeridianFlip {
 
@@ -54,22 +56,23 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
         protected ICameraMediator cameraMediator;
         protected IFocuserMediator focuserMediator;
         protected IMeridianFlipVMFactory meridianFlipVMFactory;
-
+        protected readonly ISafetyMonitorMediator safetyMonitorMediator;
         protected DateTime lastFlipTime = DateTime.MinValue;
         protected Coordinates lastFlipCoordiantes;
 
         [ImportingConstructor]
         public MeridianFlipTrigger(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator,
-            IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator, IMeridianFlipVMFactory meridianFlipVMFactory) : base() {
+            IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator, IMeridianFlipVMFactory meridianFlipVMFactory, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             this.cameraMediator = cameraMediator;
             this.focuserMediator = focuserMediator;
             this.meridianFlipVMFactory = meridianFlipVMFactory;
+            this.safetyMonitorMediator = safetyMonitorMediator;
         }
 
-        protected MeridianFlipTrigger(MeridianFlipTrigger cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.telescopeMediator, cloneMe.focuserMediator, cloneMe.applicationStatusMediator, cloneMe.meridianFlipVMFactory) {
+        protected MeridianFlipTrigger(MeridianFlipTrigger cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.telescopeMediator, cloneMe.focuserMediator, cloneMe.applicationStatusMediator, cloneMe.meridianFlipVMFactory, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -228,7 +231,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
 
             if (minimumTimeRemaining <= TimeSpan.Zero && maximumTimeRemaining > TimeSpan.Zero) {
                 Logger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
-                return true;
+                return EnsureSafe(shouldFlip: true);
             } else {
                 if (UseSideOfPier && telescopeInfo.SideOfPier == PierSide.pierUnknown) {
                     Logger.Error("Side of Pier usage is enabled, however the side of pier reported by the driver is unknown. Ignoring side of pier to calculate the flip time");
@@ -254,7 +257,13 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Current pier side {telescopeInfo.SideOfPier} - expected pier side {targetSideOfPier}. Flip should happen now");
                             }
                             Logger.Info($"Meridian Flip - No more remaining time available before flip. Current pier side {telescopeInfo.SideOfPier} - expected pier side {targetSideOfPier}. Flip should happen now");
-                            return true;
+
+                            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
+                                Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Flip should happen but it is unsafe. Stopping tracking instead.");
+                                telescopeMediator.SetTrackingEnabled(false);
+                                return false;
+                            }
+                            return EnsureSafe(shouldFlip: true);
                         }
                     } else {
                         // There is still time remaining. A flip is likely not required. Double check by checking the current expected side of pier with the actual side of pier
@@ -278,7 +287,7 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                             if (delayedFlip) {
                                 Logger.Info($"Meridian Flip - Flip seems to not have happened in time as pier side is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now");
                             }
-                            return delayedFlip;
+                            return EnsureSafe(shouldFlip: delayedFlip);
                         }
                     }
                 } else {
@@ -291,13 +300,22 @@ namespace NINA.Sequencer.Trigger.MeridianFlip {
                         } else {
                             Logger.Info($"Meridian Flip - (Side of Pier usage is disabled) No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                         }
-                        return true;
+                        return EnsureSafe(shouldFlip: true);
                     } else {
                         Logger.Info($"Meridian Flip - (Side of Pier usage is disabled) There is still time remaining. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}");
                         return false;
                     }
                 }
             }
+        }
+
+        private bool EnsureSafe(bool shouldFlip) {
+            if (shouldFlip && safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
+                Logger.Info("Meridian Flip - Safety Monitor connected and reports unsafe conditions. Flip should happen but it is unsafe. Stopping tracking instead.");
+                telescopeMediator.SetTrackingEnabled(false);
+                return false;
+            }
+            return shouldFlip;
         }
 
         protected virtual void UpdateMeridianFlipTimeTriggerValues(TimeSpan minimumTimeRemaining, TimeSpan maximumTimeRemaining, TimeSpan pauseBeforeMeridian, TimeSpan maximumTimeAfterMeridian) {
