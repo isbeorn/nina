@@ -795,7 +795,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         Logger.Debug($"Waiting for telescope to update its position from {position} to {transform} after a sync command. " +
                             $"Error: {(position - transform).Distance.ArcSeconds}");
                         if (DateTime.UtcNow > timeoutEnds) {
-                            Logger.Warning($"Timed out waiting for telescope to update its position from {position} to {transform} after a sync command");
+                            Logger.Debug($"Timed out waiting for telescope to update its position from {position} to {transform} after a sync command");
                             break;
                         }
                         var waitForSyncCompletetion = updateTimer.WaitForNextUpdate(default);
