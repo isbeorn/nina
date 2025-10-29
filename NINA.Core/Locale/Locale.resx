@@ -7327,6 +7327,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
 You'll normally be prompted to save the sequence to save the changed exposure count.
 
 If exposure count is not important to you, enable this option to avoid having to save the sequence after a run.</value>
+  </data>
   <data name="LblDayRolloverTime" xml:space="preserve">
     <value>Day Rollover Time</value>
   </data>
