@@ -10,10 +10,14 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 
 ## Improvements
+- When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.
+    - In case the meridian should trigger in this scenario, it will stop mount tracking instead to ensure there will be no pier collision. Safety related logic in a sequence needs to handle resuming tracking once it's safe again.
 
 ## Features
 
 ### **Device Management**
+- **ASCOM Alpaca Direct Drivers**
+    - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
 - **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
   - The ToupTek based filter wheels are now available as a native driver.
 

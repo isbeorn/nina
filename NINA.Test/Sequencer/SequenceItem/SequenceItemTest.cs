@@ -15,14 +15,16 @@
 using FluentAssertions;
 using Moq;
 using NINA.Core.Enum;
+using NINA.Core.Model;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
-using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -384,15 +386,37 @@ namespace NINA.Test.Sequencer.SequenceItem {
             sut.ErrorBehavior = NINA.Sequencer.Utility.InstructionErrorBehavior.SkipToSequenceEndInstructions;
 
             await sut.Run(default, default);
-            await Task.Delay(100);
 
             //Assert
             sut.Status.Should().Be(SequenceEntityStatus.FAILED);
-            parent.Verify(x => x.Interrupt(), Times.Never);
-            root.Verify(x => x.Interrupt(), Times.Never);
-            start.Verify(x => x.Interrupt(), Times.Once);
-            target.Verify(x => x.Interrupt(), Times.Once);
-            end.Verify(x => x.Interrupt(), Times.Never);
+
+            await WaitUntilVerifiedAsync(parent, x => x.Interrupt(), Times.Exactly(0), TimeSpan.FromSeconds(1));
+            await WaitUntilVerifiedAsync(root, x => x.Interrupt(), Times.Exactly(0), TimeSpan.FromSeconds(1));
+            await WaitUntilVerifiedAsync(start, x => x.Interrupt(), Times.Exactly(1), TimeSpan.FromSeconds(1));
+            await WaitUntilVerifiedAsync(target, x => x.Interrupt(), Times.Exactly(1), TimeSpan.FromSeconds(1));
+            await WaitUntilVerifiedAsync(end, x => x.Interrupt(), Times.Exactly(0), TimeSpan.FromSeconds(1));
         }
+
+        public static async Task WaitUntilVerifiedAsync<T>(
+            Mock<T> mock,
+            Expression<Action<T>> expression,
+            Times times,
+            TimeSpan timeout,
+            int pollIntervalMs = 10)
+            where T : class {
+            var sw = Stopwatch.StartNew();
+            while (sw.Elapsed < timeout) {
+                try {
+                    mock.Verify(expression, times);
+                    return;
+                } catch (MockException) {
+                    await Task.Delay(pollIntervalMs);
+                }
+            }
+
+            // Fail after timeout
+            mock.Verify(expression, times);
+        }
+
     }
 }
