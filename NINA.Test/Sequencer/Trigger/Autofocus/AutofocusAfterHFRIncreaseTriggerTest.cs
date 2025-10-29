@@ -1,4 +1,4 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
     Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
@@ -287,7 +287,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
 
             filterWheelMediatorMock.Setup(x => x.GetInfo()).Returns(new FilterWheelInfo() { Connected = true, SelectedFilter = new FilterInfo() { Name = "TestFilter" } });
 
-            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object);
+            var sut = new AutofocusAfterHFRIncreaseTrigger(profileServiceMock.Object, imagehistory, cameraMediatorMock.Object, filterWheelMediatorMock.Object, focuserMediatorMock.Object, autoFocusVMFactoryMock.Object, safetyMonitorMediatorMock.Object);
             sut.Amount = changeAmount;
             sut.TrendPerFilter = trendPerFilter;
 
@@ -296,6 +296,7 @@ namespace NINA.Test.Sequencer.Trigger.Autofocus {
             var trigger = sut.ShouldTrigger(null, itemMock.Object);
 
             trigger.Should().Be(shouldTrigger);
+        }
 
 
         [Test]
