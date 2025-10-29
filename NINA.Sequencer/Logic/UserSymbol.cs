@@ -26,6 +26,7 @@ using System.Windows.Data;
 using System.Collections.Concurrent;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem.Expressions;
+using System.Windows.Documents;
 
 namespace NINA.Sequencer.Logic {
 
@@ -351,6 +352,17 @@ namespace NINA.Sequencer.Logic {
             return FindGlobalSymbol(identifier);
         }
 
+        private ISequenceRootContainer BoundRoot { get; set; } = null;
+
+        private static ISequenceRootContainer GetRoot (ISequenceEntity e) {
+            ISequenceContainer p = e.Parent;
+            while (p != null) {
+                if (p is ISequenceRootContainer r) return r;
+                p = p.Parent;
+            }
+            return null;
+        }
+
         public static UserSymbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             UserSymbol global = null;
@@ -362,7 +374,10 @@ namespace NINA.Sequencer.Logic {
                     UserSymbol sym = kvp.Value;
                     ISequenceEntity context = sym.Expr.Context;
 
-                    if (context == null || !IsAttachedToRoot(context)) {
+                    // Set a root container for this symbol
+                    if (context != null && sym.BoundRoot == null) {
+                        sym.BoundRoot = GetRoot(context);
+                    } else if (context == null || (sym.BoundRoot != null && sym.BoundRoot != GetRoot(context))) {
                         cached.TryRemove(kvp.Key, out _);
                         Logger.Info("Removing " + kvp.Key + " from GlobalSymbols");
                     }
