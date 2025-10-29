@@ -92,6 +92,9 @@ namespace NINA.Sequencer.Logic {
             if (Debugging) {
                 Logger.Info("SymbolDirty: " + sym);
             }
+
+            if (sym == null || String.IsNullOrEmpty(sym.Identifier)) return;
+
             // Prevent cycles
             List<UserSymbol> dirtyList = new List<UserSymbol>();
             iSymbolDirty(sym, dirtyList);
@@ -358,6 +361,7 @@ namespace NINA.Sequencer.Logic {
                 foreach (var kvp in cached) {
                     UserSymbol sym = kvp.Value;
                     ISequenceEntity context = sym.Expr.Context;
+
                     if (context == null || !IsAttachedToRoot(context)) {
                         cached.TryRemove(kvp.Key, out _);
                         Logger.Info("Removing " + kvp.Key + " from GlobalSymbols");
