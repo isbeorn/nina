@@ -4451,6 +4451,14 @@ En cas que calgui una durada més llarga, es pot especificar una durada i l’ap
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>EA després increment de HFR</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>Tendència HFR per filtre</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>Quan està desactivada, la tendència HFR s'avalua en tots els filtres combinats.
+Això pot ajudar a activar l'enfocament automàtic abans, sobretot quan es fan imatges amb canvis de filtre freqüents i una òptica sensible a la temperatura, en una temperatura ambient que canvia ràpidament.
+Nota: Aquest mode requereix que les diferències HFR entre els filtres de la vostra configuració siguin petites.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Un activador per iniciar l'enfocament automàtic després que la temperatura hagi augmentat la quantitat donada en graus des de la darrera execució d’enfocament automàtic o inici de la seqüència</value>
   </data>
@@ -7319,20 +7327,20 @@ El temps d'exposició de flats es determinarà de nou i es repetirà l'exposici�
     <value>Inicialització</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>Configuració IP d'ASCOM Alpaca</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Tipus de servei</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>Adreça IP</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>Port</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Número de dispositiu</value>
   </data>
 </root>
