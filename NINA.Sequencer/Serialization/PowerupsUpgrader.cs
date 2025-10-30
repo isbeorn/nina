@@ -143,6 +143,12 @@ namespace NINA.Sequencer.Serialization {
                         jObject.Remove("WaitExpr");
                     }
                     break;
+                case "WhenPlugin.When.ConditionalTrigger, WhenPlugin":
+                    if (jObject.ContainsKey("IfExpr")) {
+                        jObject.Add("iIfExpr", jObject["IfExpr"]);
+                        jObject.Remove("IfExpr");
+                    }
+                    break;
             }
         }
 
@@ -379,15 +385,22 @@ namespace NINA.Sequencer.Serialization {
                             item.Name += " [3.2=>3.3";
                         }
                         return obj;
- 
+
+                    case "ConditionalTrigger":
+                        if (jObject.ContainsKey("iIfExpr")) {
+                            PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
+                            item.Name += " [3.2=>3.3";
+                        }
+                        return obj;
+
                     case "IfConstant":
                     case "IfThenElse":
                     case "WhenSwitch":
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            item.Name += " [3.2=>3.3";
                         }
-                        item.Name += " [3.2=>3.3";
                         break;
 
                     // Unchanged (no Expressions)
