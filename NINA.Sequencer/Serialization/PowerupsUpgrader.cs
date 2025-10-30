@@ -46,7 +46,7 @@ namespace NINA.Sequencer.Serialization {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             ISequenceItem newItem = (ISequenceItem)newObj;
-            newItem.Name += " [Was " + item.Name;
+            newItem.Name += " [Powerups=>NINA " + item.Name;
             newItem.Attempts = item.Attempts;
             newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
@@ -54,21 +54,21 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewContainer<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
-            ((ISequenceContainer)newObj).Name += " [Was " + oldName;
+            ((ISequenceContainer)newObj).Name += " [Powerups=>NINA " + oldName;
             return newObj;
         }
 
         private static T CreateNewCondition<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
-            ((ISequenceCondition)newObj).Name += " [Was " + oldName;
+            ((ISequenceCondition)newObj).Name += " [Powerups=>NINA " + oldName;
             return newObj;
         }
 
         private static T CreateNewTrigger<T>(string oldName) {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
-            ((ISequenceTrigger)newObj).Name += " [Was " + oldName;
+            ((ISequenceTrigger)newObj).Name += " [Powerups=>NINA " + oldName;
             return newObj;
         }
 
@@ -359,7 +359,7 @@ namespace NINA.Sequencer.Serialization {
                     case "AddImagePattern": {
                             if (jObject.ContainsKey("iExpr")) {
                                 PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
-                                item.Name += " [3.2=>3.3";
+                                item.Name += " [Powerups 3=>4";
                             }
                             return obj;
                         }
@@ -367,7 +367,7 @@ namespace NINA.Sequencer.Serialization {
                     case "RepeatUntilAllSucceed": {
                             if (jObject.ContainsKey("iWaitExpr")) {
                                 PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
-                                item.Name += " [3.2=>3.3";
+                                item.Name += " [Powerups 3=>4";
                             }
                             return obj;
                         }
@@ -382,14 +382,14 @@ namespace NINA.Sequencer.Serialization {
                                 PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
                                 PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
                             }
-                            item.Name += " [3.2=>3.3";
+                            item.Name += " [Powerups 3=>4";
                         }
                         return obj;
 
                     case "ConditionalTrigger":
                         if (jObject.ContainsKey("iIfExpr")) {
                             PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
-                            item.Name += " [3.2=>3.3";
+                            item.Name += " [Powerups 3=>4";
                         }
                         return obj;
 
@@ -399,7 +399,7 @@ namespace NINA.Sequencer.Serialization {
                         Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
                         if (jObject["IfExpr"] != null) {
                             e.Definition = jObject["IfExpr"]["Expression"].ToString();
-                            item.Name += " [3.2=>3.3";
+                            item.Name += " [Powerups 3=>4";
                         }
                         break;
 
@@ -426,7 +426,7 @@ namespace NINA.Sequencer.Serialization {
                         break;
 
                     default: {
-                            item.Name += " *MANUAL UPGRADE REQUIRED*";
+                            item.Name += " *NOT AVAILABLE IN POWERUPS 4";
                             break;
                         }
                 }
