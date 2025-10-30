@@ -421,6 +421,7 @@ namespace NINA.Sequencer.Serialization {
                     case "AutofocusTrigger":
                     case "LogThis":
                     case "OnceSafe":
+                    case "TemplateByReference":
                         break;
 
                     default: {
