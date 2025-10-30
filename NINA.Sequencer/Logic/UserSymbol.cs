@@ -73,6 +73,7 @@ namespace NINA.Sequencer.Logic {
         public static void ClearUserSymbols() {
             SymbolDictionary cached;
             if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
+                Logger.Info("Cleared UserSymbols");
                 cached.Clear();
             }
         }
