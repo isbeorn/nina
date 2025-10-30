@@ -405,6 +405,7 @@ namespace NINA.Sequencer.Serialization {
 
                     // Unchanged (no Expressions)
                     case "IfContainer":
+                    case "FlipRotator":
                     case "TemplateContainer":
                     case "IfTimeout":
                     case "DoFlip":
