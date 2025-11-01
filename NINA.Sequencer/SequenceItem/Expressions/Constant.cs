@@ -17,6 +17,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -64,19 +65,8 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
             }
         }
 
-        protected ISequenceRootContainer FindRoot() {
-            ISequenceContainer p = Parent;
-            while (p != null) {
-                if (p is SequenceRootContainer) {
-                    return (ISequenceRootContainer)p;
-                }
-                p = p.Parent;
-            }
-            return null;
-        }
-
         public override bool Validate() {
-            ISequenceRootContainer root = FindRoot();
+            ISequenceRootContainer root = ItemUtility.GetRootContainer(Parent);
 
             if (root == null) {
                 return true;
