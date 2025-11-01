@@ -7300,4 +7300,21 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblInitializing" xml:space="preserve">
     <value>Initializing</value>
   </data>
+  <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
+    <value>ASCOM Alpaca IP Setup</value>
+  </data>
+  <data name="LblAlpacaDirectServiceType" xml:space="preserve">
+    <value>Service Type</value>
+    <comment>The service type for alpaca devices - e.g. http or https</comment>
+  </data>
+  <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="LblAlpacaDirectPort" xml:space="preserve">
+    <value>Port</value>
+    <comment>The IP Port to use for an alpaca direct device</comment>
+  </data>
+  <data name="LblAlpacaDeviceNumber" xml:space="preserve">
+    <value>Device Number</value>
+  </data>
 </root>

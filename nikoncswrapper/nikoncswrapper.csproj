@@ -10,7 +10,6 @@
     <Version>3.3.0.1000-preview2</Version>
     <Description>A patched version for N.I.N.A. of the original module</Description>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
-
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>

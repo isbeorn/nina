@@ -15,9 +15,8 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: nschloe/action-cached-lfs-checkout@v1
       with:
-        lfs: 'true'
         submodules: recursive
 
     - name: Setup .NET 8

@@ -12,15 +12,22 @@
 
 #endregion "copyright"
 
+using ASCOM.Com.DriverAccess;
 using Newtonsoft.Json;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Guider;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.ViewModel.Interfaces;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -51,17 +58,19 @@ namespace NINA.Sequencer.Trigger.Guider {
         private IGuiderMediator guiderMediator;
         private IImageHistoryVM history;
         private IProfileService profileService;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
-        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService) : base() {
+        public DitherAfterExposures(IGuiderMediator guiderMediator, IImageHistoryVM history, IProfileService profileService, ISafetyMonitorMediator safetyMonitorMediator) : base() {
             this.guiderMediator = guiderMediator;
             this.history = history;
             this.profileService = profileService;
+            this.safetyMonitorMediator = safetyMonitorMediator;
             AfterExposures = 1;
             TriggerRunner.Add(new Dither(guiderMediator, profileService));
         }
 
-        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService) {
+        private DitherAfterExposures(DitherAfterExposures cloneMe) : this(cloneMe.guiderMediator, cloneMe.history, cloneMe.profileService, cloneMe.safetyMonitorMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -100,6 +109,7 @@ namespace NINA.Sequencer.Trigger.Guider {
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
+            if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) { return false; }
 
             RaisePropertyChanged(nameof(ProgressExposures));
             if(lastTriggerId > history.ImageHistory.Count) { 

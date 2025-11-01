@@ -1,6 +1,7 @@
 #region "copyright"
+
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -8,7 +9,9 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+
 #endregion "copyright"
+
 using NINA.Profile.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -62,8 +65,8 @@ namespace NINA.ViewModel {
 
         private Task<bool> GradeImage(Thumbnail arg) {
             return Task.Run(async () => {
-                if (arg is Thumbnail) {
-                    var selected = arg as Thumbnail;
+                if (arg is not null) {
+                    var selected = arg;
                     //Order is from "" -> "BAD" -> ""
                     switch (selected.Grade) {
                         case "": {
@@ -87,7 +90,7 @@ namespace NINA.ViewModel {
 
         private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
             return Task.Run(async () => {
-                if(msg.Image != null) { 
+                if (msg.Image != null) {
                     var factor = 100 / msg.Image.Width;
 
                     var scaledBitmap = CreateResizedImage(msg.Image, (int)(msg.Image.Width * factor), (int)(msg.Image.Height * factor), 0);
@@ -121,11 +124,17 @@ namespace NINA.ViewModel {
 
             var group = new DrawingGroup();
             RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.HighQuality);
-            group.Children.Add(new ImageDrawing(source, rect));
+
+            var img = new ImageDrawing(source, rect);
+            if (img.CanFreeze) img.Freeze();
+
+            group.Children.Add(img);
+            if (group.CanFreeze) group.Freeze();
 
             var drawingVisual = new DrawingVisual();
-            using (var drawingContext = drawingVisual.RenderOpen())
+            using (var drawingContext = drawingVisual.RenderOpen()) {
                 drawingContext.DrawDrawing(group);
+            }
 
             var resizedImage = new RenderTargetBitmap(
                 width, height,         // Resized dimensions
@@ -133,12 +142,16 @@ namespace NINA.ViewModel {
                 PixelFormats.Default); // Default pixel format
             resizedImage.Render(drawingVisual);
 
+            if (resizedImage.CanFreeze) resizedImage.Freeze();
+
             var frame = BitmapFrame.Create(resizedImage);
-            frame.Freeze();
+            if (frame.CanFreeze) frame.Freeze();
+
             return frame;
         }
-        private IImagingMediator imagingMediator;
-        private IImageSaveMediator imageSaveMediator;
+
+        private readonly IImagingMediator imagingMediator;
+        private readonly IImageSaveMediator imageSaveMediator;
         private readonly IImageDataFactory imageDataFactory;
 
         public ICommand SelectCommand { get; set; }
@@ -157,6 +170,5 @@ namespace NINA.ViewModel {
                 return false;
             }
         }
-
     }
 }
