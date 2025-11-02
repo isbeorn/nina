@@ -3,6 +3,7 @@ using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Namotion.Reflection;
+using Newtonsoft.Json.Linq;
 using Nikon;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
@@ -45,7 +46,7 @@ namespace NINA.Sequencer.Serialization {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             ISequenceItem newItem = (ISequenceItem)newObj;
-            newItem.Name += " [Was " + item.Name;
+            newItem.Name += "[" + item.Name + " Powerups=>NINA";
             newItem.Attempts = item.Attempts;
             newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
@@ -53,21 +54,21 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewContainer<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
-            ((ISequenceContainer)newObj).Name += " [Was " + oldName;
+            ((ISequenceContainer)newObj).Name += "[" + oldName + " Powerups=>NINA";
             return newObj;
         }
 
         private static T CreateNewCondition<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
-            ((ISequenceCondition)newObj).Name += " [Was " + oldName;
+            ((ISequenceCondition)newObj).Name += "[" + oldName + " Powerups=>NINA";
             return newObj;
         }
 
         private static T CreateNewTrigger<T>(string oldName) {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
-            ((ISequenceTrigger)newObj).Name += " [Was " + oldName;
+            ((ISequenceTrigger)newObj).Name += "[" + oldName + " Powerups=>NINA";
             return newObj;
         }
 
@@ -110,7 +111,48 @@ namespace NINA.Sequencer.Serialization {
             expr.Definition = value;
         }
 
-        public static object UpgradeInstruction(object obj) {
+        public static void PreUpgradeInstruction(string originalType, JObject jObject) {
+            switch (originalType) {
+                case "WhenPlugin.When.GetArray, WhenPlugin":
+                case "WhenPlugin.When.PutArray, WhenPlugin":
+                    if (jObject.ContainsKey("NameExpr")) {
+                        jObject.Add("iNameExpr", jObject["NameExpr"]);
+                        jObject.Remove("NameExpr");
+                        jObject.Add("iIExpr", jObject["IExpr"]);
+                        jObject.Remove("IExpr");
+                        jObject.Add("iVExpr", jObject["VExpr"]);
+                        jObject.Remove("VExpr");
+                    }
+                    break;
+                case "WhenPlugin.When.InitializeArray, WhenPlugin":
+                case "WhenPlugin.When.ForEachInArray, WhenPlugin":
+                    if (jObject.ContainsKey("NameExpr")) {
+                        jObject.Add("iNameExpr", jObject["NameExpr"]);
+                        jObject.Remove("NameExpr");
+                    }
+                    break;
+                case "WhenPlugin.When.AddImagePattern, WhenPlugin":
+                    if (jObject.ContainsKey("Expr")) {
+                        jObject.Add("iExpr", jObject["Expr"]);
+                        jObject.Remove("Expr");
+                    }
+                    break;
+                case "WhenPlugin.When.RepeatUntilAllSucceed, WhenPlugin":
+                    if (jObject.ContainsKey("WaitExpr")) {
+                        jObject.Add("iWaitExpr", jObject["WaitExpr"]);
+                        jObject.Remove("WaitExpr");
+                    }
+                    break;
+                case "WhenPlugin.When.ConditionalTrigger, WhenPlugin":
+                    if (jObject.ContainsKey("IfExpr")) {
+                        jObject.Add("iIfExpr", jObject["IfExpr"]);
+                        jObject.Remove("IfExpr");
+                    }
+                    break;
+            }
+        }
+
+        public static object UpgradeInstruction(object obj, JObject jObject) {
 
             try {
                 ISequenceItem item = obj as ISequenceItem;
@@ -128,7 +170,7 @@ namespace NINA.Sequencer.Serialization {
                     t = item.GetType();
                 }
 
-                Logger.Info("Powerups Upgrade: " + t);
+                //Logger.Info("Powerups Upgrade: " + t);
                 switch (t.Name) {
                     // The following are updates from Powerups + instructions to NINA instructions
                     case "DitherAfterExposures": {
@@ -311,88 +353,80 @@ namespace NINA.Sequencer.Serialization {
                             newObj.Seconds = (int)(pi.GetValue(item) as Int32?);
                             return newObj;
                         }
-                    // The following are updates from Powerups to Powerups Lite
+
+                    // The following are updates from Powerups 3.2 to Powerups 3.3
+                    // Primarily this is changing from Powerups Expr class to NINA Expression class
                     case "AddImagePattern": {
-                            Type tt = Type.GetType("PowerupsLite.When.AddImagePattern, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PropertyInfo pi = t.GetProperty("Identifier");
-                            PropertyInfo npi = tt.GetProperty("Identifier");
-                            npi.SetValue(newObj, pi.GetValue(item) as string);
-                            PutExpr(tt, newObj, "ExprExpression", GetExpr(t, item, "Expr"));
-                            pi = t.GetProperty("PatternDescription");
-                            npi = tt.GetProperty("PatternDescription");
-                            npi.SetValue(newObj, pi.GetValue(item) as string);
-                            return newObj;
-                        }
-                    case "IfContainer": {
-                            Type tt = Type.GetType("PowerupsLite.When.IfContainer, PowerupsLite");
-                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
-                            ISequenceContainer ifc = (ISequenceContainer)obj;
-                            foreach (ISequenceItem i in ifc.Items) {
-                                ISequenceItem newItem = (ISequenceItem)i.Clone();
-                                newObj.Items.Add(newItem);
-                                newItem.AttachNewParent(newObj);
+                            if (jObject.ContainsKey("iExpr")) {
+                                PutExpr(t, item, "ExprExpression", GetExpr(t, item, "iExpr"));
+                                item.Name += " [Powerups 3=>4";
                             }
-                            return newObj;
+                            return obj;
                         }
-                    case "TemplateContainer": {
-                            Type tt = Type.GetType("PowerupsLite.When.TemplateContainer, PowerupsLite");
-                            var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceContainer newObj = (ISequenceContainer)method.Invoke(containerFactory, null);
-                            ISequenceContainer ifc = (ISequenceContainer)obj;
-                            foreach (ISequenceItem i in ifc.Items) {
-                                ISequenceItem newItem = (ISequenceItem)i.Clone();
-                                newObj.Items.Add(newItem);
-                                newItem.AttachNewParent(newObj);
+
+                    case "RepeatUntilAllSucceed": {
+                            if (jObject.ContainsKey("iWaitExpr")) {
+                                PutExpr(t, item, "WaitExpression", GetExpr(t, item, "iWaitExpr"));
+                                item.Name += " [Powerups 3=>4";
                             }
-                            return newObj;
+                            return obj;
                         }
-                    case "InitializeArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.InitializeArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+
+                    case "InitializeArray":
+                    case "ForEachInArray":
+                    case "GetArray":
+                    case "PutArray":
+                        if (jObject.ContainsKey("iNameExpr")) {
+                            PutExpr(t, item, "NameExprExpression", GetExpr(t, item, "iNameExpr"));
+                            if (t.Name == "GetArray" || t.Name == "PutArray") {
+                                PutExpr(t, item, "IExprExpression", GetExpr(t, item, "iIExpr"));
+                                PutExpr(t, item, "VExprExpression", GetExpr(t, item, "iVExpr"));
+                            }
+                            item.Name += " [Powerups 3=>4";
                         }
-                    case "ForEachInArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.ForEachInArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PropertyInfo pi = t.GetProperty("ValueVariable");
-                            PropertyInfo npi = newObj.GetType().GetProperty("ValueVariable");
-                            npi.SetValue(newObj, (string)pi.GetValue(item));
-                            pi = t.GetProperty("IndexVariable");
-                            npi = newObj.GetType().GetProperty("IndexVariable");
-                            npi.SetValue(newObj, (string)pi.GetValue(item));
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                        return obj;
+
+                    case "ConditionalTrigger":
+                        if (jObject.ContainsKey("iIfExpr")) {
+                            PutExpr(t, trigger, "PredicateExpression", GetExpr(t, trigger, "iIfExpr"));
+                            item.Name += " [Powerups 3=>4";
                         }
-                    case "GetArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.GetArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
-                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
+                        return obj;
+
+                    case "IfConstant":
+                    case "IfThenElse":
+                    case "WhenSwitch":
+                        Expression e = (Expression)item.GetType().GetProperty("PredicateExpression").GetValue(item, null);
+                        if (jObject["IfExpr"] != null) {
+                            e.Definition = jObject["IfExpr"]["Expression"].ToString();
+                            item.Name += " [Powerups 3=>4";
                         }
-                    case "PutArray": {
-                            Type tt = Type.GetType("PowerupsLite.When.PutArray, PowerupsLite");
-                            var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { tt });
-                            ISequenceItem newObj = (ISequenceItem)method.Invoke(itemFactory, null);
-                            PutExpr(tt, newObj, "NameExprExpression", GetExpr(t, item, "NameExpr"));
-                            PutExpr(tt, newObj, "IExprExpression", GetExpr(t, item, "IExpr"));
-                            PutExpr(tt, newObj, "VExprExpression", GetExpr(t, item, "VExpr"));
-                            newObj.Name += " [Lite";
-                            return newObj;
-                        }
+                        break;
+
+                    // Unchanged (no Expressions)
+                    case "IfContainer":
+                    case "FlipRotator":
+                    case "TemplateContainer":
+                    case "IfTimeout":
+                    case "DoFlip":
+                    case "DIYMeridianFlipTrigger":
+                    case "PassMeridian":
+                    case "RotateImage":
+                    case "WaitIndefinitely":
+                    case "Breakpoint":
+                    case "EndSequence":
+                    case "EndInstructionSet":
+                    case "IfFailed":
+                    case "WhenUnsafe":
+                    case "InterruptTrigger":
+                    case "AutofocusTrigger":
+                    case "LogThis":
+                    case "OnceSafe":
+                    case "TemplateByReference":
+                        break;
+
                     default: {
-                            item.Name += " *MANUAL UPGRADE REQUIRED*";
+                            item.Name += " *NOT AVAILABLE IN POWERUPS 4";
                             break;
                         }
                 }

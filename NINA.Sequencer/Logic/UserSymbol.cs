@@ -26,6 +26,7 @@ using System.Windows.Data;
 using System.Collections.Concurrent;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem.Expressions;
+using System.Windows.Documents;
 
 namespace NINA.Sequencer.Logic {
 
@@ -69,6 +70,14 @@ namespace NINA.Sequencer.Logic {
             Logger.Warning(str);
         }
 
+        public static void ClearUserSymbols() {
+            SymbolDictionary cached;
+            if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
+                Logger.Info("Cleared UserSymbols");
+                cached.Clear();
+            }
+        }
+
         protected ISequenceContainer LastSParent { get; set; }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
@@ -92,6 +101,9 @@ namespace NINA.Sequencer.Logic {
             if (Debugging) {
                 Logger.Info("SymbolDirty: " + sym);
             }
+
+            if (sym == null || String.IsNullOrEmpty(sym.Identifier)) return;
+
             // Prevent cycles
             List<UserSymbol> dirtyList = new List<UserSymbol>();
             iSymbolDirty(sym, dirtyList);
@@ -353,17 +365,6 @@ namespace NINA.Sequencer.Logic {
             UserSymbol global = null;
 
             if (SymbolCache.TryGetValue(GlobalSymbols, out cached)) {
-
-                // Prune orphaned global symbols
-                foreach (var kvp in cached) {
-                    UserSymbol sym = kvp.Value;
-                    ISequenceEntity context = sym.Expr.Context;
-                    if (context == null || !IsAttachedToRoot(context)) {
-                        cached.TryRemove(kvp.Key, out _);
-                        Logger.Info("Removing " + kvp.Key + " from GlobalSymbols");
-                    }
-                }
-
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
                     // Don't find symbols that aren't part of the current sequence

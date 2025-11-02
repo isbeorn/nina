@@ -343,10 +343,8 @@ namespace NINA.Sequencer.Logic {
                     IsExpression = false;
                     Value = result;
 
-                    
-
                     // Notify consumers
-                    if (Symbol != null) {
+                    if (Symbol != null && !String.IsNullOrEmpty(Symbol.Identifier)) {
                         UserSymbol.SymbolDirty(Symbol);
                         Symbol.Validate();
                     } else {

@@ -48,6 +48,19 @@ namespace NINA.Sequencer.Serialization {
 
         public override bool CanWrite => false;
 
+        /*
+         * There are a number of upgrade cases:
+         * 1) Upgrading NINA 3.2 instructions to NINA 3.3
+         *    These require PowerupsUpgrader.UpgradeInstruction, which creates and populates the NINA 3.3 instruction
+         * 2) Upgrading Powerups 3.2 + instructions into newly created NINA 3.3 instructions
+         *    These would be LoopWhile and WaitUntil
+         * 3) Upgrading Powerups 3.2 instructions without Expressions to Powerups 3.3 instructions
+         *    These don't require anything
+         * 4) Upgrading Powerups 3.2 instructions with Expressions to Powerups 3.3 instructions
+         *    These require PowerupsUpgrader.PreUpgradeInstruction to allow the 3.2 instructions to be deserialized
+         *    And then PowerupsUpgrader.UpgradeInstruction to populate Expressions from the old Expr class
+         */
+
         public override object ReadJson(JsonReader reader,
                                         Type objectType,
                                          object existingValue,
@@ -83,41 +96,27 @@ namespace NINA.Sequencer.Serialization {
                         (lite, token) = PowerupsLiteSimpleMigration(token?.ToString());
 
                         if (lite == Upgrade.Lite) {
-                            // Substitute with Powerups Lite class
                             jObject["$type"] = token;
                         }
 
                         // Create target object based on JObject
                         target = Create(objectType, jObject);
 
-
-                        if (lite == Upgrade.Lite) {
-                            // Fix up name of the upgraded instruction (this doesn't persist)
-                            ((ISequenceEntity)target).Name += " [Lite";
+                        if (originalType.EndsWith(", WhenPlugin")) {
+                            PowerupsUpgrader.PreUpgradeInstruction(originalType, jObject);
                         }
-
-                        if (lite == Upgrade.None) {
-                            ((ISequenceEntity)target).Name += " [CANNOT UPGRADE";
-                            return target;
-                        }
+                   
                         // Populate the object properties
                         serializer.Populate(jObject.CreateReader(), target);
 
                         if (jObject.TryGetValue("$type", out token)) {
-                            string ts = token.ToString();
-                            if (ts.EndsWith(", WhenPlugin")) {
+                            if (originalType.EndsWith(", WhenPlugin")) {
                                 ISequenceEntity oldTarget = target as ISequenceEntity;
-                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target) as ISequenceEntity;
+                                ISequenceEntity newTarget = (T)PowerupsUpgrader.UpgradeInstruction(target, jObject) as ISequenceEntity;
                                 if (newTarget.Parent == null) {
                                     newTarget.AttachNewParent(oldTarget.Parent);
                                 }
                                 target = (T)newTarget;
-                            } else if (ts == "PowerupsLite.When.IfConstant, PowerupsLite" || ts == "PowerupsLite.When.IfThenElse, PowerupsLite" || ts == "PowerupsLite.When.WhenSwitch, PowerupsLite") {
-                                // Instruction is already upgraded, along with the contents of its instruction sets; need to get the predicate
-                                Expression expr = (Expression)target.GetType().GetProperty("PredicateExpression").GetValue(target, null);
-                                if (jObject["IfExpr"] != null) {
-                                    expr.Definition = jObject["IfExpr"]["Expression"].ToString();
-                                }
                             }
                         }
                     }

@@ -12,17 +12,19 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using System.ComponentModel.Composition;
-using System.Threading;
-using System.Text.RegularExpressions;
-using NINA.Sequencer.Validations;
+using NINA.Core.Utility;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Local Constant")]
@@ -64,7 +66,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
         }
 
         public override bool Validate() {
-            if (!IsAttachedToRoot()) return true;
+            ISequenceRootContainer root = ItemUtility.GetRootContainer(Parent);
+
+            if (root == null) {
+                return true;
+            }
 
             IList<string> i = new List<string>();
 
