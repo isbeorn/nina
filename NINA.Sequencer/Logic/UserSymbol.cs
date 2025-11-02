@@ -360,17 +360,6 @@ namespace NINA.Sequencer.Logic {
             return FindGlobalSymbol(identifier);
         }
 
-        private ISequenceRootContainer BoundRoot { get; set; } = null;
-
-        private static ISequenceRootContainer GetRoot (ISequenceEntity e) {
-            ISequenceContainer p = e.Parent;
-            while (p != null) {
-                if (p is ISequenceRootContainer r) return r;
-                p = p.Parent;
-            }
-            return null;
-        }
-
         public static UserSymbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             UserSymbol global = null;
