@@ -107,6 +107,7 @@
       <ComponentGroupRef Id="External_x64_PlayerOne_files" />
       <ComponentGroupRef Id="External_x64_ASTPAN_files" />
       <ComponentGroupRef Id="External_x64_OGMA_files" />
+      <ComponentGroupRef Id="External_x64_Oasis_files" />
       <ComponentGroupRef Id="Utility_DCRaw_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
       <ComponentGroupRef Id="Database_Initial_files" />
@@ -239,6 +240,7 @@
               <Directory Id="External_x64_PlayerOne" Name="PlayerOne" />
               <Directory Id="External_x64_ASTPAN" Name="ASTPAN" />
               <Directory Id="External_x64_OGMA" Name="OGMA" />
+              <Directory Id="External_x64_Oasis" Name="Oasis" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -2239,6 +2241,13 @@
     <ComponentGroup Id="External_x64_OGMA_files" Directory="External_x64_OGMA">
       <Component Id="External_x64_OGMA_ogmacam.dll" Guid="c51d0029-b4e9-4dc4-bb57-f77a22346ea0" Bitness="$(var.Win64)">
         <File Id="External_x64_OGMA_ogmacam.dll" Name="ogmacam.dll" Source="$(var.NINA_TargetDir)External\x64\OGMA\ogmacam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_Oasis_files" Directory="External_x64_Oasis">
+      <Component Id="External_x64_Oasis_OasisFocuser.dll" Guid="8e45b1b1-e320-484b-97b5-cd5512a7f9bd" Bitness="$(var.Win64)">
+        <File Id="External_x64_Oasis_OasisFocuser.dll" Name="OasisFocuser.dll" Source="$(var.NINA_ProjectDir)External\x64\Oasis\OasisFocuser.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
