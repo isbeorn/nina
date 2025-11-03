@@ -7387,6 +7387,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="LblOasisSyncPositionPrompt" xml:space="preserve">
     <value>Set current position to sync position?</value>
+  </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
     <value>ASCOM Alpaca IP Setup</value>
   </data>
