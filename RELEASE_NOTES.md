@@ -41,6 +41,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
 - Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+- Fixed an issue where the rotation imported from planetarium software was overwritten by the previous target rotation when pressing the “Load Image” button in the Framing Assistant.
 
 ## Features
  
