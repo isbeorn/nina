@@ -494,6 +494,20 @@
                                     IsChecked="{Binding BeepOnMove}" />
                             </Grid>
 
+                            <Grid Margin="0,6,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBluetooth}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Bluetooth}" />
+                            </Grid>
+
                             <Grid Margin="0,6,0,6" Visibility="{Binding IsFocuserRose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="OasisLabelColumn" />

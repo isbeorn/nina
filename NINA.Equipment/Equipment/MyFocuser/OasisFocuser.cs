@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Astroasis.AstroasisSDK;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
@@ -8,6 +9,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static Astroasis.AstroasisSDK.AOFocus;
@@ -256,6 +258,14 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public Task<bool> Connect(CancellationToken token) {
             return Task.Run(() => {
+                // Verify, the focuser id actually exists
+                int[] ids = new int[AO_FOCUSER_MAX_NUM];
+                FocuserScan(out var count, ids);
+                if (!ids.Take(count).Contains(id)) {
+                    Notification.ShowError(Loc.Instance["LblOasisFocuserNotAvailableError"]);
+                    Logger.Error("Selected Oasis focuser not available (disconnected?)");
+                    return false;
+                }
                 if (FocuserOpen(id) == AOReturn.AO_SUCCESS) {
                     DriverInfo = $"SDK: {DriverVersion}; FW: {GetFwVersionString()}";
 
@@ -672,6 +682,37 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                     RaisePropertyChanged();
                 } else {
                     Logger.Error($"Oasis error to set motor speed");
+                }
+            }
+        }
+
+        public bool Bluetooth {
+            get {
+                if (!Connected) {
+                    return false;
+                }
+                var err = FocuserGetConfig(id, out var config);
+                if (err == AOReturn.AO_SUCCESS) {
+                    return config.bluetoothOn == 1;
+                } else {
+                    if (err == AOReturn.AO_ERROR_COMMUNICATION) {
+                        DisconnectOnRemovedError();
+                    } else {
+                        Logger.Error($"Oasis communication error to get config {err}");
+                    }
+                    return false;
+                }
+            }
+            set {
+                AOFocuserConfig config = new AOFocuserConfig();
+                config.mask = (uint)AOConfig.MASK_BLUETOOTH;
+                config.bluetoothOn = value ? 1 : 0;
+
+                if (FocuserSetConfig(id, ref config) == AOReturn.AO_SUCCESS) {
+                    Logger.Info($"Oasis: Bluetooth set to: {value}");
+                    RaisePropertyChanged();
+                } else {
+                    Logger.Error($"Oasis error to set bluetooth");
                 }
             }
         }
