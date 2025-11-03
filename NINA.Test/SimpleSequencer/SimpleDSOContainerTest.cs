@@ -35,6 +35,7 @@ namespace NINA.Test.SimpleSequencer {
         private Mock<IImagingMediator> imagingMediatorMock;
         private Mock<IImageHistoryVM> imageHistoryVMMock;
         private Mock<IGuiderMediator> guiderMediatorMock;
+        private Mock<ISafetyMonitorMediator> safetyMonitorMediatorMock;
 
         [SetUp]
         public void Setup() {
@@ -50,6 +51,7 @@ namespace NINA.Test.SimpleSequencer {
             imagingMediatorMock = new Mock<IImagingMediator>();
             imageHistoryVMMock = new Mock<IImageHistoryVM>();
             guiderMediatorMock = new Mock<IGuiderMediator>();
+            safetyMonitorMediatorMock = new Mock<ISafetyMonitorMediator>();
 
             profileServiceMock.Setup(m => m.ActiveProfile.AstrometrySettings.Latitude).Returns(33.005699);
             profileServiceMock.Setup(m => m.ActiveProfile.AstrometrySettings.Longitude).Returns(-117.103254);
@@ -62,7 +64,7 @@ namespace NINA.Test.SimpleSequencer {
             factoryMock.Setup(x => x.GetCondition<LoopCondition>()).Returns(() => new LoopCondition());
             factoryMock.Setup(x => x.GetItem<SwitchFilter>()).Returns(() => new SwitchFilter(profileServiceMock.Object, filterWheelMediatorMock.Object));
             factoryMock.Setup(x => x.GetItem<TakeExposure>()).Returns(() => new TakeExposure(profileServiceMock.Object, cameraMediatorMock.Object, imagingMediatorMock.Object, imageSaveMediatorMock.Object, imageHistoryVMMock.Object));
-            factoryMock.Setup(x => x.GetTrigger<DitherAfterExposures>()).Returns(() =>   new DitherAfterExposures(guiderMediatorMock.Object, imageHistoryVMMock.Object, profileServiceMock.Object));
+            factoryMock.Setup(x => x.GetTrigger<DitherAfterExposures>()).Returns(() =>   new DitherAfterExposures(guiderMediatorMock.Object, imageHistoryVMMock.Object, profileServiceMock.Object, safetyMonitorMediatorMock.Object));
         }
 
         [Test]

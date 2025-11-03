@@ -1,5 +1,6 @@
 ﻿using ASCOM.Alpaca.Discovery;
 using ASCOM.Common;
+using ASCOM.Common.Alpaca;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyDome;
@@ -12,6 +13,7 @@ using NINA.Equipment.Equipment.MySwitch.Ascom;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces;
+using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using System;
@@ -51,6 +53,8 @@ namespace NINA.Equipment.Utility {
                 }
             }
 
+            l.Add(new AlpacaDirectCamera(profileService, exposureDataFactory));
+
             return l;
         }
 
@@ -74,6 +78,8 @@ namespace NINA.Equipment.Utility {
                     Logger.Error("An error ocurred during creation of Alpaca Device", ex);
                 }
             }
+
+            l.Add(new AlpacaDirectTelescope(profileService));
 
             return l;
         }
@@ -99,6 +105,8 @@ namespace NINA.Equipment.Utility {
                 }
             }
 
+            l.Add(new AlpacaDirectFilterWheel(profileService));
+
             return l;
         }
 
@@ -122,6 +130,8 @@ namespace NINA.Equipment.Utility {
                     Logger.Error("An error ocurred during creation of Alpaca Device", ex);
                 }
             }
+
+            l.Add(new AlpacaDirectRotator(profileService));
 
             return l;
         }
@@ -147,6 +157,8 @@ namespace NINA.Equipment.Utility {
                 }
             }
 
+            l.Add(new AlpacaDirectSafetyMonitor(profileService));
+
             return l;
         }
 
@@ -170,6 +182,8 @@ namespace NINA.Equipment.Utility {
                     Logger.Error("An error ocurred during creation of Alpaca Device", ex);
                 }
             }
+
+            l.Add(new AlpacaDirectFocuser(profileService));
 
             return l;
         }
@@ -195,6 +209,8 @@ namespace NINA.Equipment.Utility {
                 }
             }
 
+            l.Add(new AlpacaDirectSwitch(profileService));
+
             return l;
         }
 
@@ -218,6 +234,8 @@ namespace NINA.Equipment.Utility {
                     Logger.Error("An error ocurred during creation of Alpaca Device", ex);
                 }
             }
+
+            l.Add(new AlpacaDirectDome(profileService));
 
             return l;
         }
@@ -243,6 +261,8 @@ namespace NINA.Equipment.Utility {
                 }
             }
 
+            l.Add(new AlpacaDirectCoverCalibrator(profileService));
+
             return l;
         }
 
@@ -266,6 +286,8 @@ namespace NINA.Equipment.Utility {
                     Logger.Error("An error ocurred during creation of Alpaca Device", ex);
                 }
             }
+
+            l.Add(new AlpacaDirectObservingConditions(profileService));
 
             return l;
         }

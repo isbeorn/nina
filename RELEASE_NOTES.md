@@ -7,12 +7,21 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 ## Bugfixes
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+- ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
 
 ## Improvements
+- **Autofocus after HFR Increase Trigger**
+    - new Trend per Filter checkbox to consider HFR Trend per filter (default) or across all filters to earlier trigger autofocus runs when imaging with continues filter loops 
+- When a safety monitor is connected and is reporting unsafe conditions, the imaging related core triggers will no longer fire as the conditions aren't safe anyways to execute them.
+    - In case the meridian should trigger in this scenario, it will stop mount tracking instead to ensure there will be no pier collision. Safety related logic in a sequence needs to handle resuming tracking once it's safe again.
 
 ## Features
 
-### Device Management
+### **Device Management**
+- **ASCOM Alpaca Direct Drivers**
+    - In case your ASCOM Alpaca specific device has a static IP or doesn't offer Alpaca Discovery a new static entry is available for each device type to pick from where you can specify the address to connect to instead of having to rely on discovery
+- **Altair, Mallincam, Ogma, Omegon, Risingcam, SvBony and ToupTek Filterwheel Native Driver**
+  - The ToupTek based filter wheels are now available as a native driver.
 - **Oasis Focuser Native Driver**
   - The Oasis focuser is now available as a native driver.
 
@@ -33,6 +42,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Direct guider will now wait for "IsPulseGuiding" flag to become false before continuing.
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
 - Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
+- Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 
 ## Features
  
