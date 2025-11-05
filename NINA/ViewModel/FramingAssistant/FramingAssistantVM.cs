@@ -349,7 +349,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     };
 
                     var captureSolver = new CaptureSolver(plateSolver, blindSolver, imagingMediator, filterWheelMediator);
-                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);                    
+                    var result = await captureSolver.Solve(seq, parameter, default, _statusUpdate, getRotationTokenSource.Token);
 
                     if (result.Success) {
                         RectangleTotalRotation = 360 - result.PositionAngle;
@@ -1518,6 +1518,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                         if (!double.IsNaN(rotationAngle)) {
                             RectangleRotation = 360 - rotationAngle;
+                            RectangleTotalRotation = 360 - rotationAngle;
                         }
                     }
                 }
