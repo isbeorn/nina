@@ -43,6 +43,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - Fixed an issue where the rotation imported from planetarium software was overwritten by the previous target rotation when pressing the “Load Image” button in the Framing Assistant.
 - Homing the mount while already at home will no longer raise a warning
+- When having an autofocus step size of 1 the fine focus buttons will now move by 1 step instead of rounding it to 0
 
 ## Features
  
