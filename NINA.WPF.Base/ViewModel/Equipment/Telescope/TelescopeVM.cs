@@ -333,9 +333,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 reason = "it is parked";
                             }
                         } else {
-                            // AtHome == true
-                            Notification.ShowWarning(Loc.Instance["LblTelescopeAtHomeWarn"]);
-                            reason = "it is already at the home position";
+                            Logger.Info("Mount ordered to home but it is already at home");
+                            success = true;
                         }
                     } else {
                         // CanFindHome == false
