@@ -93,7 +93,9 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             get {
                 lock (lockObj) {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, SlotNum);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, SlotNum);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }
