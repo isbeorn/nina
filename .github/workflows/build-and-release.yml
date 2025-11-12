@@ -151,10 +151,10 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Set up .NET 8.0 SDK
+    - name: Set up .NET 10.0 SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
 
     - name: Install MkDocs and plugins
       run: |
@@ -183,8 +183,8 @@ jobs:
     - name: Copy Canon and Nikon DLLs to build output
       shell: cmd
       run: |
-        xcopy NINA\External\x64\Canon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
-        xcopy NINA\External\x64\Nikon NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
+        xcopy NINA\External\x64\Canon NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\External\x64\Canon /h/i/c/k/e/r/y
+        xcopy NINA\External\x64\Nikon NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\External\x64\Nikon /h/i/c/k/e/r/y
 
     - name: Build MkDocs documentation
       run: |
@@ -193,8 +193,8 @@ jobs:
     - name: Copy MkDocs output to setup target dir
       shell: cmd
       run: |
-        mkdir NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs
-        xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64\docs" /h/i/c/k/e/r/y
+        mkdir NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\docs
+        xcopy "NINA.Docs\site" "NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64\docs" /h/i/c/k/e/r/y
 
     - name: Build WiX Setup Bundle
       run: dotnet msbuild NINA.SetupBundle\NINA.SetupBundle.wixproj /p:Configuration=${{ env.BUILD_CONFIG }} /p:Platform=x64 /p:AllowUnsafeBlocks=true
@@ -202,7 +202,7 @@ jobs:
     - name: Copy .pdb files to setup output folder
       run: |
         $solutionDir = "$(Resolve-Path .)"
-        $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net8.0-windows\win-x64"
+        $pdbSource = "$solutionDir\NINA\bin\${{ env.BUILD_CONFIG }}\net10.0-windows\win-x64"
         $pdbTarget = "$solutionDir\NINA.SetupBundle\bin\x64\${{ env.BUILD_CONFIG }}"
 
         Remove-Item "$solutionDir\RELEASE_NOTES.rtf" -Force -ErrorAction SilentlyContinue
