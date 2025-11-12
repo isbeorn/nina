@@ -440,7 +440,7 @@ namespace NINA.Sequencer.Logic {
             Evaluate(false);
         }
 
-        public void Evaluate(bool validateOnly) {
+        public void Evaluate(bool ignoreRoot) {
             if (!IsExpression) {
                 //Error = null;
                 return;
@@ -454,7 +454,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             if (Context == null) return;
-            if (!UserSymbol.IsAttachedToRoot(Context)) {
+            if (!ignoreRoot && !UserSymbol.IsAttachedToRoot(Context)) {
                 return;
             }
 
@@ -558,11 +558,11 @@ namespace NINA.Sequencer.Logic {
                             } else if (r.StartsWith("_")) {
                                 AddError("Reference: " + r);
                             } else {
-                                if (r.StartsWith('$') && ext && validateOnly) {
-                                    AddError("External: " + symReference);
-                                } else {
+//                                if (r.StartsWith('$') && ext && validateOnly) {
+//                                    AddError("External: " + symReference);
+//                                } else {
                                     AddError("Undefined: " + r);
-                                }
+//                                }
                             }
                         }
                     }
