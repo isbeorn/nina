@@ -51,7 +51,7 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
   <PropertyGroup>
-    <Version>3.2.0.3014-rc</Version>
+    <Version>3.2.0.9001</Version>
     <Title>N.I.N.A. Custom Control Library</Title>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
