@@ -89,7 +89,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>N.I.N.A. Core Library</Title>
-    <Version>3.2.0.9000</Version>
+    <Version>3.2.0.9001</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
     <Description>This assembly contains the core components of N.I.N.A.</Description>
