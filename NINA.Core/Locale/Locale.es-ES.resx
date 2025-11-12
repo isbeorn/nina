@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1096,11 +1096,11 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Duración de Guiado Directo</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Duración del dither de la montura</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Duración típica de la guía de pulso en segundos</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Duración típica del pulso en segundos</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Velocidad de guiado en Ascensión Recta</value>
@@ -1114,11 +1114,11 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Velocidad de guiado en Declinación Recta en arcosegundos por segundo</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>El Guiado directo no puede conectarse a la montura</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>El dither no se ha podido conectar a la montura</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>La montura se ha desconectado. El Guiado directo se desconectará. ¡El dither ya no será efectivo!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>La montura se ha desconectado. El dither de la montura se desconectará. ¡El dither ya no será efectivo!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>¡No se ha econtrado el directorio para guardar la imagen!</value>
@@ -1156,7 +1156,7 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Píxeles en el dither</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Número típico de píxeles a usar. Dithering sigue una distribución normal centrada en el objetivo, siendo este valor la desviación estándar. El 67% de los dither estará a esta distancia</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -1197,9 +1197,6 @@ En caso de que se necesite una duración mas larga, se puede especificar esa dur
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>En posición inicial (home)</value>
-  </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>La cúpula sigue al telescopio</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girando</value>
@@ -1363,7 +1360,7 @@ También puedes calcular el bias haciendo clic en el botón con el dibujo del di
     <value>Esta cámara simulada permitirá el uso de cámaras que carecen de un SDK, mientras sigue utilizando todo el flujo de trabajo de N.I.N.A.
 Esta cámara simulada mostrará la carpeta especificada para los archivos recién creados. Estos archivos se almacenarán dentro de una cola interna.
 Cada vez que la aplicación quiera descargar una exposición de la cámara, el primer elemento de esta cola de archivos se resuelve y se carga en N.I.N.A.
-Además, se puede activar un disparador manual de Modo Bulb, así que usará el modo Bulb seleccionado en Configuración-&gt;Equipamiento-&gt;Cámara al empezar la exposición.
+Además, se puede activar un disparador manual de Modo Bulb, así que usará el modo Bulb seleccionado en Configuración->Equipamiento->Cámara al empezar la exposición.
 Cuando este disparador está desactivado, la aplicación se saltará "empezar exposición" y simplemente esperará a que otro archivo entre en la carpeta especificada</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
@@ -1877,7 +1874,7 @@ HFR calculada: {2}
     <value>Cargar Perfil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>No puede cargar perfil. ¡Está siendo usado por otra instancia de N.I.N.A!</value>
+    <value>El perfil seleccionado está siendo utilizado actualmente por otra instancia de N.I.N.A. o no se pudo cargar debido a un problema desconocido. Para más detalles, compruebe el archivo de registro.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Cargar Secuencia</value>
@@ -2271,6 +2268,12 @@ HFR calculada: {2}
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Cliente interno de NINA para el API de OpenWeatherMap</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Usa el API actual de Forecast Weather. La infomación del clima se actualiza cada 10 minutos.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Cliente interno de NINA para el API de OpenMeteo</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opciones</value>
   </data>
@@ -2428,7 +2431,7 @@ HFR calculada: {2}
     <value>Preferencias de Planetario</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Obtiene coordenadas del Software Planetario</value>
+    <value>Importa el objeto del planetario seleccionado actualmente para actualizar nombre y coordenadas</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordenadas del objeto seleccionado</value>
@@ -5828,6 +5831,12 @@ Consulta el manual de la cámara para ver la localización de este ajuste</value
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} ha sido desconectado por el ordenador. Comprueba tanto su conexión USB como la fuente de alimentación</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} ya está siendo usado por otro programa. Por favor, cierra ese programa antes de intentar volver a conectar, o vuelve a conectar la cámara al PC.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} ya está siendo usado por EOS Utility. Por favor, cierre la utilidad de EOS, incluyendo cualquier tarea en segundo plano, antes de intentar reconectar.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>El SDK de Canon ha sufrido un error interno. Puede provocar un comportamiento no fiable de la cámara</value>
   </data>
@@ -7006,5 +7015,303 @@ Además, es esencial que el controlador ASCOM utilizado también admita esta pro
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>La ruta es inválida</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>No hay ninguna clave API configurada para Weather Underground.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>No hay ninguna estación de Weather Underground configurada.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>La API de Weather Underground no ha respondido.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>La solicitud de la API de Weather Underground ha fallado: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Establecer posición actual como cero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Invertir</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Establecer paso máx.</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>¿Establecer posición actual como cero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Punto de mira</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Error al resolver {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No se ha especificado ningún host en la configuración</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Ajustes de solución ciega (platesolve)</value>
+  </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Aviso: "Usar el lado del pie del telescopior" en la configuración del cambio de meridiano está desactivado y puede causar problemas de alineación en monturas ecuatoriales con cúpulas cerca del meridiano. La cúpula asumirá que un cambio de meridiano se produce precisamente en el meridiano, lo que potencialmente conducirá a un mal alineamiento si la montura aún no se ha dado la vuelta.</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Duración total</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Bloquea el secuenciador para evitar cualquier edición manual o de arrastrar y soltar</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Desbloquea el secuenciador para permitir editar manualmente o mediante arrastrar y soltar</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Deshabilita todas las acciones de arrastrar y soltar en el secuenciador y la barra lateral</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Habilita las acciones de arrastrar y soltar en el secuenciador y la barra lateral</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>¡Longitud focal no válida!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>No se puede cargar la imagen - por favor, introduce la longitud focal efectiva del telescopio en la sección de parámetros de la cámara.</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Nombre de la ubicación</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatorio</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observador</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Siguiendo</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Cúpula siguiendo vía N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>vía Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapamundi</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Conectar equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Para el dispositivo seleccionado, se conectará el dispositivo guardado en el perfil.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Desconectar equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Desconecta el dispositivo seleccionado</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Conectar todo el equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Conectar todos los dispositivos guardados en el perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Desconectar todo el equipo</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Desconecta todos los dispositivos conectados actualmente</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Reconectar la cámara tras fallo en la descarga</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>Un activador se accionará cuando la cámara no haya podido descargar una exposición e intentará volver a conectar la cámara. Cuando se reconecte, también se reconectará tanto el enfriador de la cámara como la cinta calentadora antirrocío al mismo estado en el que estaban.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Reconectar el equipo</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Un activador que se ejecutará cuando el dispositivo seleccionado se desconecte e intentará reconectarlo.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Cambiar el Perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Desconecta todos los dispositivos que están conectados actualmente, cambia al perfil especificado y reconecta todos los dispositivos del perfil especificado.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>No se pudo encontrar la rotación tras {0} intentos . ¿Has establecido correctamente la marca de reverso del rotador?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Bloquea los paneles para evitar su cierre o reorganización, o los desbloquea para ajustarlos.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>La coordenada actual está en 2D. Se requiere en 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Fecha Juliana Modificada</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Descubre el telescopio cuando acabes</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Crepúsculo civil</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Amanecer civil</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Rechazar desaparcar la montura si la ventana del domo  no está abierta</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>No se puede desaparcar la montura mientras la ventana del domo o el tejado no estén abiertos</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Rechazar los intentos de desaparcar la montura si la ventana del domo o el estado del techo es Cerrado, Cerrando, Abriendo o Erróneo. Desaparcar la montura solo se permitirá si la ventana del domo o el tejado se reportan como Abierto</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>Hoy no hay amanecer civil en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>Hoy no hay atardecer civil en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>Hoy no hay amanecer astronómico en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>Hoy no hay atardecer astronómico en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>Hoy no hay amanecer civil en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>Hoy no hay atardecer náutico en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>Hoy no hay amanecer en su localización.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>Hoy no hay ocaso en su localización.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>No es posible conectarse con {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>La cámara no soporta el modo de 16 bits</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Aún hay otra exposición en progreso. Cancélala para empezar otra.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Error al conectar {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>¡La cámara informa de un error genérico y necesita ser reconectada!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>¡Cámara desconectada! Tal vez se haya interrumpido la conexión USB.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>Error del oyente de MetaGuide: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Error al enviar {0} mensaje</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>El guiado no está activo. Imposible hacer dither</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Error al comunicarse con MGEN durante el dither</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>Error PHD: {0}
+CÓDIGO: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>Error PHD: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>No hay ninguna clave API configurada para TheWeatherCompany.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>El archivo {0} no existe</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Resolución de placas fallida. No se encontró archivo de salida.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Resolución de placas fallida.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Error en la resolución de placas con Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>La exposición prevista de {0}s es más larga que el máximo permitido.
+Deteniendo la adquisición de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>La exposición prevista de {0}s es más corta que la mínima permitida.
+Deteniendo la adquisición de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>La corrección de flats de cielo no funcionó y está fuera del rango de tolerancia:
+primer tiempo de exposición {0:#.####}
+tiempo actual de exposición {1:#.####}
+tiempo transcurrido: {2:#.##}
+Media Adu: {3:#.##}.
+El tiempo de exposición de los flats de cierlo será recalculado y se repetirá la exposición.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Error al restaurar la posición anterior del filtro: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Error al cambiar el filtro: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Error al ajustar la tasa de cambio. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Error al preparar la imagen para mostrar: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Hora para la transferencia de día</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Como no hay ningún día asociado a la instrucción, la transferencia a un nuevo día se producirá a la hora de transferencia mostrada.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicializando</value>
   </data>
 </root>

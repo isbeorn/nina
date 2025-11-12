@@ -12,111 +12,80 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Astrometry;
+using NINA.Core.Locale;
 using NINA.Equipment.Interfaces;
 using System.Collections.Generic;
 
 namespace NINA.Equipment.Equipment.MyDome {
 
-    public class DomeInfo : DeviceInfo {
+    public partial class DomeInfo : DeviceInfo {
+        [ObservableProperty]
         private ShutterState shutterStatus = ShutterState.ShutterNone;
 
-        public ShutterState ShutterStatus {
-            get => shutterStatus;
-            set { if (shutterStatus != value) { shutterStatus = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool driverCanFollow = false;
 
-        public bool DriverCanFollow {
-            get => driverCanFollow;
-            set { if (driverCanFollow != value) { driverCanFollow = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canSetShutter = false;
 
-        public bool CanSetShutter {
-            get => canSetShutter;
-            set { if (canSetShutter != value) { canSetShutter = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canSetPark = false;
 
-        public bool CanSetPark {
-            get => canSetPark;
-            set { if (canSetPark != value) { canSetPark = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canSetAzimuth = false;
 
-        public bool CanSetAzimuth {
-            get => canSetAzimuth;
-            set { if (canSetAzimuth != value) { canSetAzimuth = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canSyncAzimuth = false;
 
-        public bool CanSyncAzimuth {
-            get => canSyncAzimuth;
-            set { if (canSyncAzimuth != value) { canSyncAzimuth = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canPark = false;
 
-        public bool CanPark {
-            get => canPark;
-            set { if (canPark != value) { canPark = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool canFindHome = false;
 
-        public bool CanFindHome {
-            get => canFindHome;
-            set { if (canFindHome != value) { canFindHome = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool atPark = false;
 
-        public bool AtPark {
-            get => atPark;
-            set { if (atPark != value) { atPark = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
         private bool atHome = false;
 
-        public bool AtHome {
-            get => atHome;
-            set { if (atHome != value) { atHome = value; RaisePropertyChanged(); } }
-        }
-
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FollowingType))]
         private bool driverFollowing = false;
 
-        public bool DriverFollowing {
-            get => driverFollowing;
-            set { if (driverFollowing != value) { driverFollowing = value; RaisePropertyChanged(); } }
-        }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FollowingType))]
+        private bool applicationFollowing = false;
 
-        private bool slewing = false;
-
-        public bool Slewing {
-            get => slewing;
-            set { if (slewing != value) { slewing = value; RaisePropertyChanged(); } }
-        }
-
-        private double azimuth = double.NaN;
-
-        public double Azimuth {
-            get => azimuth;
-            set { if (azimuth != value) { azimuth = value; RaisePropertyChanged(); } }
-        }
-
-        private IList<string> supportedActions = [];
-
-        public IList<string> SupportedActions {
-            get => supportedActions;
-            set {
-                supportedActions = value;
-                RaisePropertyChanged();
+        public string FollowingType {
+            get {
+                if (DriverFollowing) {
+                    return Loc.Instance["LblDomeFollowingViaDriver"];
+                } if (ApplicationFollowing) {
+                    return Loc.Instance["LblDomeFollowingViaNINA"];
+                }
+                return Loc.Instance["LblOff"];
             }
         }
+
+        [ObservableProperty]
+        private bool slewing = false;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(AzimuthDMS))]
+        private double azimuth = double.NaN;
+        public string AzimuthDMS => double.IsNaN(Azimuth) ? "" : AstroUtil.DegreesToDMS(Azimuth);
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(AltitudeDMS))]
+        private double altitude = double.NaN;
+
+        public string AltitudeDMS => double.IsNaN(Altitude) ? "" : AstroUtil.DegreesToDMS(Altitude);
+
+        [ObservableProperty]
+        private IList<string> supportedActions = [];
+
     }
 }

@@ -56,6 +56,7 @@ namespace NINA.Test.Dome {
         private bool domeCanPark;
         private bool domeCanFindHome;
         private double domeAzimuth;
+        private double domeAltitude;
         private Angle domeTargetAzimuth;
         private Angle domeTargetAltitude;
         private bool domeAtPark;
@@ -75,7 +76,8 @@ namespace NINA.Test.Dome {
             domeCanSyncAzimuth = true;
             domeCanPark = true;
             domeCanFindHome = true;
-            domeAzimuth = 0.0;
+            domeAzimuth = 20.0;
+            domeAltitude = 10.0;
             domeTargetAzimuth = Angle.ByDegree(0.0);
             domeTargetAltitude = Angle.ByDegree(0.0);
             domeAtPark = true;
@@ -91,11 +93,11 @@ namespace NINA.Test.Dome {
             mockSafetyMonitorMediator = new Mock<ISafetyMonitorMediator>();
             mockDomeFollower = new Mock<IDomeFollower>();
             mockDomeFollower.Setup(x => x.GetSynchronizedDomeCoordinates(It.IsAny<TelescopeInfo>())).Returns(
-                () => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: Angle.ByDegree(0), longitude: Angle.ByDegree(0)));
+                () => new TopocentricCoordinates(azimuth: domeTargetAzimuth, altitude: domeTargetAltitude, latitude: Angle.ByDegree(0), longitude: Angle.ByDegree(0), elevation: 0));
             mockDeviceUpdateTimer = new Mock<IDeviceUpdateTimer>();
             mockDeviceUpdateTimerFactory = new Mock<IDeviceUpdateTimerFactory>();
             mockDeviceUpdateTimerFactory
-                .Setup(x => x.Create(It.IsAny<Func<Dictionary<string, object>>>(), It.IsAny<Action<Dictionary<string, object>>>(), It.IsAny<double>()))
+                .Setup(x => x.Create(It.IsAny<Func<Dictionary<string, object>>>(), It.IsAny<Action<Dictionary<string, object>>>(), It.IsAny<double>(), It.IsAny<string>()))
                 .Returns(mockDeviceUpdateTimer.Object);
             mockResourceDictionary = new Mock<IApplicationResourceDictionary>();
             mockProfileService.SetupProperty(p => p.ActiveProfile.DomeSettings.Id);
@@ -120,6 +122,7 @@ namespace NINA.Test.Dome {
             mockDome.SetupGet(x => x.CanPark).Returns(() => domeCanPark);
             mockDome.SetupGet(x => x.CanFindHome).Returns(() => domeCanFindHome);
             mockDome.SetupGet(x => x.Azimuth).Returns(() => domeAzimuth);
+            mockDome.SetupGet(x => x.Altitude).Returns(() => domeAltitude);
             mockDome.SetupGet(x => x.AtPark).Returns(() => domeAtPark);
             mockDome.SetupGet(x => x.AtHome).Returns(() => domeAtHome);
             mockDome.SetupGet(x => x.Slewing).Returns(() => domeSlewing);
@@ -150,6 +153,7 @@ namespace NINA.Test.Dome {
         [Test]
         public async Task Test_DomeDisconnected_DomeFollowEnabled_NoStart() {
             var sut = await CreateSUT();
+            await sut.Disconnect();
             domeConnected = false;
             sut.FollowEnabled = true;
             mockDomeFollower.Verify(x => x.Start(), Times.Never);

@@ -76,9 +76,23 @@
                     Color2="Transparent"
                     DataFieldX="Key"
                     DataFieldY="Value"
+                    ItemsSource="{Binding Source={StaticResource proxy}, Path=Data.ReferenceDateSpan, UpdateSourceTrigger=PropertyChanged}"
+                    TrackerFormatString="X: {2:HH:mm}h"
+                    Color="Transparent" />
+                <oxy:AreaSeries
+                    Color2="Transparent"
+                    DataFieldX="Key"
+                    DataFieldY="Value"
                     ItemsSource="{Binding Source={StaticResource proxy}, Path=Data.TwilightDuration, UpdateSourceTrigger=PropertyChanged}"
                     TrackerFormatString="X: {2:HH:mm}h"
                     Color="#FF73737E" />
+                <oxy:AreaSeries
+                    Color2="Transparent"
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding Source={StaticResource proxy}, Path=Data.CivilTwilightDuration, UpdateSourceTrigger=PropertyChanged}"
+                    TrackerFormatString="X: {2:HH:mm}h"
+                    Color="#FF757E8C" />
                 <oxy:AreaSeries
                     Color2="Transparent"
                     DataFieldX="Key"

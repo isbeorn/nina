@@ -25,12 +25,13 @@ namespace NINA.Equipment.Equipment {
     public class GuideStepsHistory : BaseINPC {
 
         public GuideStepsHistory(int historySize, GuiderScaleEnum scale, double maxY) {
+            overallGuideSteps = new LinkedList<HistoryStep>();
+            selectedGuideSteps = new LinkedList<HistoryStep>();
             RMS = new RMS();
             PixelScale = 1;
             HistorySize = historySize;
             MaxY = maxY;
             Scale = scale;
-            GuideSteps = new AsyncObservableLimitedSizedStack<HistoryStep>(historySize);
             MaxDurationY = 1;
         }
 
@@ -43,6 +44,16 @@ namespace NINA.Equipment.Equipment {
             private set {
                 rMS = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private ulong changeId;
+        public ulong ChangeId {
+            get => changeId; 
+            private set {
+                changeId = value; 
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(GuideSteps));
             }
         }
 
@@ -77,17 +88,18 @@ namespace NINA.Equipment.Equipment {
 
         public double MinDurationY => -MaxDurationY;
 
-        private LinkedList<HistoryStep> overallGuideSteps = new LinkedList<HistoryStep>();
+        private LinkedList<HistoryStep> overallGuideSteps;
 
-        private AsyncObservableLimitedSizedStack<HistoryStep> guideSteps;
+        private LinkedList<HistoryStep> selectedGuideSteps;
 
-        public AsyncObservableLimitedSizedStack<HistoryStep> GuideSteps {
-            get => guideSteps;
-            set {
-                guideSteps = value;
-                RaisePropertyChanged();
+        public IEnumerable<HistoryStep> GuideSteps {
+            get {
+                lock (lockObj) {
+                    return selectedGuideSteps?.ToArray() ?? Array.Empty<HistoryStep>();
+                }
             }
         }
+
 
         private int historySize;
 
@@ -118,15 +130,16 @@ namespace NINA.Equipment.Equipment {
                         collection.AddLast(p);
                     }
 
-                    GuideSteps = new AsyncObservableLimitedSizedStack<HistoryStep>(historySize, collection);
+                    selectedGuideSteps = new LinkedList<HistoryStep>(collection);
 
                     CalculateMaximumDurationY();
+                    ChangeId++;
                 }
             }
         }
 
         private void CalculateMaximumDurationY() {
-            MaxDurationY = Math.Abs(GuideSteps.Max((x) => Math.Max(Math.Abs(x.RADuration), Math.Abs(x.DECDuration))));
+            MaxDurationY = Math.Abs(selectedGuideSteps.Max((x) => Math.Max(Math.Abs(x.RADuration), Math.Abs(x.DECDuration))));
         }
 
         private double pixelScale;
@@ -154,10 +167,11 @@ namespace NINA.Equipment.Equipment {
         public void Clear() {
             lock (lockObj) {
                 overallGuideSteps.Clear();
-                GuideSteps.Clear();
+                selectedGuideSteps.Clear();
                 RMS.Clear();
                 MaxDurationY = 1;
                 HistoryStep.ResetIdProvider();
+                ChangeId++;
             }
         }
 
@@ -166,7 +180,7 @@ namespace NINA.Equipment.Equipment {
                 var historyStep = HistoryStep.FromGuideStep(step, Scale == GuiderScaleEnum.PIXELS ? 1 : PixelScale);
                 overallGuideSteps.AddLast(historyStep);
 
-                if (GuideSteps.Count == HistorySize) {
+                if (selectedGuideSteps.Count == HistorySize) {
                     var elementIdx = overallGuideSteps.Count - HistorySize - 1;
                     if (elementIdx >= 0) {
                         var stepToRemove = overallGuideSteps.ElementAt(elementIdx);
@@ -176,8 +190,17 @@ namespace NINA.Equipment.Equipment {
 
                 RMS.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
 
-                GuideSteps.Add(historyStep);
+                selectedGuideSteps.AddLast(historyStep);
+                if (selectedGuideSteps.Count > HistorySize) {
+                    selectedGuideSteps.RemoveFirst();
+                }
                 CalculateMaximumDurationY();
+                ChangeId++;
+
+                if (ChangeId % (ulong)HistorySize == 0) {
+                    // Prevent accumulation of floating point errors by rebuilding the history occasionally
+                    RebuildGuideHistoryList();
+                }
             }
         }
 
@@ -186,7 +209,8 @@ namespace NINA.Equipment.Equipment {
                 var dither = HistoryStep.GenerateDitherStep();
                 overallGuideSteps.AddLast(dither);
 
-                GuideSteps.Add(dither);
+                selectedGuideSteps.AddLast(dither);
+                ChangeId++;
             }
         }
 

@@ -46,10 +46,11 @@ using NINA.Plugin.Interfaces;
 using System.Diagnostics;
 using System.Threading;
 using NINA.Core.Utility.Notification;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.ViewModel {
 
-    internal class DockManagerVM : BaseVM, IDockManagerVM {
+    internal partial class DockManagerVM : BaseVM, IDockManagerVM {
 
         public DockManagerVM(IProfileService profileService,
                              ICameraVM cameraVM,
@@ -129,6 +130,8 @@ namespace NINA.ViewModel {
 
             profileService.BeforeProfileChanging += ProfileService_BeforeProfileChanging; ;
             profileService.ProfileChanged += ProfileService_ProfileChanged;
+
+            isLocked = profileService.ActiveProfile.DockPanelSettings.IsLocked;
 
             Task.Run(async () => {
                 await pluginProvider.Load();
@@ -241,6 +244,13 @@ namespace NINA.ViewModel {
                     Notification.ShowInformation(Loc.Instance["LblDockLayoutReset"]);
                 }
             }
+        }
+
+        [ObservableProperty]
+        private bool isLocked = false;
+
+        partial void OnIsLockedChanged(bool value) {
+            profileService.ActiveProfile.DockPanelSettings.IsLocked = value;
         }
 
         private List<IDockableVM> _anchorables;

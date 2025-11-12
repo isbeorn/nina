@@ -35,7 +35,6 @@ applies to:
     - CsvHelper
     - Dirkster.Avalondock
     - Wpf Extended Toolkit
-    - ToggleSwitch
 -----------------------------------------------------------------------------
 
 Ms-PL

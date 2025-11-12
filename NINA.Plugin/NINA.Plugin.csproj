@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
@@ -7,6 +7,13 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Configurations>Debug;Release;SignedRelease</Configurations>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSource>true</IncludeSource>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
     <OutputPath>bin\SignedRelease\</OutputPath>
@@ -45,19 +52,22 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NJsonSchema" Version="11.0.0" />
-    <PackageReference Include="Trinet.Core.IO.Ntfs" Version="4.1.1" />
+    <PackageReference Include="NJsonSchema" Version="11.3.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageReference Include="Trinet.Core.IO.Ntfs" Version="4.1.2" />
   </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>3.1.2.9001</Version>
+    <Version>3.2.0.9000</Version>
     <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
     <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
-    <Copyright>Copyright ©  2016 - 2024 Stefan Berg and the N.I.N.A. contributors</Copyright>
+    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
     <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
     <PackageIcon>ninasplash.png</PackageIcon>
-    <RepositoryUrl>https://www.bitbucket.org/Isbeorn/nina.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>

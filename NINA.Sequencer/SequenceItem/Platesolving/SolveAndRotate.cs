@@ -140,6 +140,7 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 var targetRotation = (float)PositionAngle;
 
                 /* Loop until the rotation is within tolerances*/
+                var attempts = 0;
                 do {
                     var solveResult = await Solve(progress, token);
                     if (!solveResult.Success) {
@@ -178,6 +179,11 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                         await rotatorMediator.MoveRelative(rotationDistance, token);
                         progress?.Report(new ApplicationStatus() { Status = string.Empty });
                         token.ThrowIfCancellationRequested();
+                    }
+
+                    attempts++;
+                    if (attempts >= 10) {
+                        throw new SequenceEntityFailedException(string.Format(Loc.Instance["Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts"], 10));
                     }
                 } while (!Angle.ByDegree(rotationDistance).Equals(Angle.Zero, Angle.ByDegree(profileService.ActiveProfile.PlateSolveSettings.RotationTolerance), true));
             } finally {

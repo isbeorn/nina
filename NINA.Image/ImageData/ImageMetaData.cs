@@ -54,6 +54,9 @@ namespace NINA.Image.ImageData {
             Observer.Latitude = profile.AstrometrySettings.Latitude;
             Observer.Longitude = profile.AstrometrySettings.Longitude;
             Observer.Elevation = profile.AstrometrySettings.Elevation;
+            Observer.Name= profile.AstrometrySettings.Observer;
+            Observer.Observatory = profile.AstrometrySettings.Observatory;
+            Observer.Site = profile.AstrometrySettings.Site;
         }
 
         public SensorType StringToSensorType(string pattern) {
@@ -88,6 +91,18 @@ namespace NINA.Image.ImageData {
         public string Comment { get; }
 
         public IntMetaDataHeader(string key, int value, string comment = "") {
+            Key = key;
+            Value = value;
+            Comment = comment;
+        }
+    }
+
+    public class UIntMetaDataHeader : IGenericMetaDataHeader<uint> {
+        public string Key { get; }
+        public uint Value { get; }
+        public string Comment { get; }
+
+        public UIntMetaDataHeader(string key, uint value, string comment = "") {
             Key = key;
             Value = value;
             Comment = comment;
@@ -137,6 +152,14 @@ namespace NINA.Image.ImageData {
         public string Binning { get; set; } = string.Empty;
         public double ExposureTime { get; set; } = double.NaN;
         public RMS RecordedRMS { get; set; } = null;
+
+        public void SetExposureTimes(DateTime startTime, DateTime endTime) {
+            if (startTime == DateTime.MinValue ||  startTime == DateTime.MaxValue) { return; }
+            ExposureStart = startTime;
+            if (endTime == DateTime.MinValue || endTime == DateTime.MaxValue) { return; }
+            var midpointDateTime = startTime + TimeSpan.FromTicks((endTime - startTime).Ticks / 2);            
+            ExposureMidPoint = midpointDateTime;
+        }
     }
 
     public class CameraParameter {
@@ -223,6 +246,9 @@ namespace NINA.Image.ImageData {
         public double Latitude { get; set; } = double.NaN;
         public double Longitude { get; set; } = double.NaN;
         public double Elevation { get; set; } = double.NaN;
+        public string Name { get; set; } = string.Empty;
+        public string Observatory { get; set; } = string.Empty;
+        public string Site { get; set; } = string.Empty;
     }
 
     public class WeatherDataParameter {

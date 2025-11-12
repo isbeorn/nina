@@ -114,7 +114,7 @@
                     Grid.Column="1"
                     Margin="5,5,0,0"
                     FontSize="14">
-                    <Hyperlink NavigateUri="https://bitbucket.org/Isbeorn/nina/" RequestNavigate="Hyperlink_RequestNavigate">https://bitbucket.org/Isbeorn/nina/</Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/isbeorn/nina/" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/isbeorn/nina/</Hyperlink>
                 </TextBlock>
 
                 <TextBlock
@@ -169,7 +169,7 @@
                 Margin="5,0,0,0"
                 VerticalAlignment="Top"
                 Orientation="Horizontal">
-                <TextBlock FontSize="16" Text="Copyright © 2016 - 2024 Stefan Berg " />
+                <TextBlock FontSize="16" Text="Copyright © 2016 - 2025 Stefan Berg " />
                 <TextBlock FontSize="16">
                     <Hyperlink NavigateUri="mailto:isbeorn86+NINA@googlemail.com" RequestNavigate="Hyperlink_RequestNavigate">
                         &lt;isbeorn86+NINA@googlemail.com&gt;

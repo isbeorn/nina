@@ -5,6 +5,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Equipment.MyFlatDevice;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
+using NINA.Image.ImageData;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.SequenceItem.FlatDevice;
@@ -39,6 +40,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             imageHistoryVM = new Mock<IImageHistoryVM>();
             filterWheelMediator = new Mock<IFilterWheelMediator>();
 
+
             profileService.Setup(x => x.ActiveProfile.ImageFileSettings).Returns(new Mock<IImageFileSettings>().Object);
             cameraMediator.Setup(x => x.GetInfo()).Returns(new CameraInfo());
             flatDeviceMediator.Setup(x => x.GetInfo()).Returns(new FlatDeviceInfo());
@@ -57,7 +59,7 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             sut.MaxExposure = 222;
             sut.HistogramTargetPercentage = 0.7;
             sut.HistogramTolerancePercentage = 0.3;
-            
+
 
             var item2 = (AutoExposureFlat)sut.Clone();
 
@@ -80,11 +82,13 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var exposureData = new Mock<IExposureData>();
             exposureData.SetupGet(x => x.BitDepth).Returns(16);
             var imageData = new Mock<IImageData>();
+            var imageProps = new ImageProperties(100, 100, 16, true, 100, 0);
             var statistics = new Mock<IImageStatistics>();
             statistics.SetupGet(x => x.Mean).Returns(30000);
 
             imagingMediator.Setup(x => x.CaptureImage(It.IsAny<CaptureSequence>(), It.IsAny<CancellationToken>(), It.IsAny<IProgress<ApplicationStatus>>(), "")).ReturnsAsync(exposureData.Object);
             imageData.Setup(x => x.Statistics).Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics.Object));
+            imageData.Setup(x => x.Properties).Returns(imageProps);
             exposureData.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(imageData.Object);
 
             await sut.Execute(default, default);
@@ -101,12 +105,13 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var exposureData = new Mock<IExposureData>();
             exposureData.SetupGet(x => x.BitDepth).Returns(16);
             var imageData = new Mock<IImageData>();
+            var imageProps = new ImageProperties(100, 100, 16, true, 100, 0);
 
             var statistics1 = new Mock<IImageStatistics>();
-            statistics1.SetupGet(x => x.Mean).Returns(10000);
+            statistics1.SetupGet(x => x.Mean).Returns(6000);
 
             var statistics2 = new Mock<IImageStatistics>();
-            statistics2.SetupGet(x => x.Mean).Returns(20000);
+            statistics2.SetupGet(x => x.Mean).Returns(28100);
 
             var statistics3 = new Mock<IImageStatistics>();
             statistics3.SetupGet(x => x.Mean).Returns(30000);
@@ -116,11 +121,12 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics1.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics2.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics3.Object));
+            imageData.Setup(x => x.Properties).Returns(imageProps);
             exposureData.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(imageData.Object);
 
             await sut.Execute(default, default);
 
-            sut.GetExposureItem().ExposureTime.Should().Be(8.75);
+            sut.GetExposureItem().ExposureTime.Should().BeApproximately(8.75, 0.01);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -132,15 +138,16 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var exposureData = new Mock<IExposureData>();
             exposureData.SetupGet(x => x.BitDepth).Returns(16);
             var imageData = new Mock<IImageData>();
+            var imageProps = new ImageProperties(100, 100, 16, true, 100, 0);
 
             var statistics1 = new Mock<IImageStatistics>();
-            statistics1.SetupGet(x => x.Mean).Returns(10000);
+            statistics1.SetupGet(x => x.Mean).Returns(100);
 
             var statistics2 = new Mock<IImageStatistics>();
-            statistics2.SetupGet(x => x.Mean).Returns(20000);
+            statistics2.SetupGet(x => x.Mean).Returns(25000);
 
             var statistics3 = new Mock<IImageStatistics>();
-            statistics3.SetupGet(x => x.Mean).Returns(50000);
+            statistics3.SetupGet(x => x.Mean).Returns(39500);
 
             var statistics4 = new Mock<IImageStatistics>();
             statistics4.SetupGet(x => x.Mean).Returns(30000);
@@ -151,11 +158,12 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics2.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics3.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics4.Object));
+            imageData.Setup(x => x.Properties).Returns(imageProps);
             exposureData.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(imageData.Object);
 
             await sut.Execute(default, default);
 
-            sut.GetExposureItem().ExposureTime.Should().Be(8.125);
+            sut.GetExposureItem().ExposureTime.Should().BeApproximately(8.15, 0.01);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -167,12 +175,13 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var exposureData = new Mock<IExposureData>();
             exposureData.SetupGet(x => x.BitDepth).Returns(16);
             var imageData = new Mock<IImageData>();
+            var imageProps = new ImageProperties(100, 100, 16, true, 100, 0);
 
             var statistics1 = new Mock<IImageStatistics>();
-            statistics1.SetupGet(x => x.Mean).Returns(50000);
+            statistics1.SetupGet(x => x.Mean).Returns(65000);
 
             var statistics2 = new Mock<IImageStatistics>();
-            statistics2.SetupGet(x => x.Mean).Returns(40000);
+            statistics2.SetupGet(x => x.Mean).Returns(63000);
 
             var statistics3 = new Mock<IImageStatistics>();
             statistics3.SetupGet(x => x.Mean).Returns(30000);
@@ -182,11 +191,12 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics1.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics2.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics3.Object));
+            imageData.Setup(x => x.Properties).Returns(imageProps);
             exposureData.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(imageData.Object);
 
             await sut.Execute(default, default);
 
-            sut.GetExposureItem().ExposureTime.Should().Be(1.25);
+            sut.GetExposureItem().ExposureTime.Should().BeApproximately(1.25, 0.01);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -198,15 +208,16 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
             var exposureData = new Mock<IExposureData>();
             exposureData.SetupGet(x => x.BitDepth).Returns(16);
             var imageData = new Mock<IImageData>();
+            var imageProps = new ImageProperties(100, 100, 16, true, 100, 0);
 
             var statistics1 = new Mock<IImageStatistics>();
-            statistics1.SetupGet(x => x.Mean).Returns(50000);
+            statistics1.SetupGet(x => x.Mean).Returns(65535);
 
             var statistics2 = new Mock<IImageStatistics>();
-            statistics2.SetupGet(x => x.Mean).Returns(40000);
+            statistics2.SetupGet(x => x.Mean).Returns(60000);
 
             var statistics3 = new Mock<IImageStatistics>();
-            statistics3.SetupGet(x => x.Mean).Returns(10000);
+            statistics3.SetupGet(x => x.Mean).Returns(21900);
 
             var statistics4 = new Mock<IImageStatistics>();
             statistics4.SetupGet(x => x.Mean).Returns(30000);
@@ -217,11 +228,12 @@ namespace NINA.Test.Sequencer.SequenceItem.FlatDevice {
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics2.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics3.Object))
                 .Returns(new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => statistics4.Object));
+            imageData.Setup(x => x.Properties).Returns(imageProps);
             exposureData.Setup(x => x.ToImageData(It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>())).ReturnsAsync(imageData.Object);
 
             await sut.Execute(default, default);
 
-            sut.GetExposureItem().ExposureTime.Should().Be(1.875);
+            sut.GetExposureItem().ExposureTime.Should().BeApproximately(1.875, 0.01);
             imageSaveMediator.Verify(x => x.Enqueue(imageData.Object, It.IsAny<Task<IRenderedImage>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }

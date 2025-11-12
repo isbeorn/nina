@@ -38,8 +38,8 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
             var customDateTimeMock = new Mock<ICustomDateTime>();
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
-            var riseAndSetEvent = new CustomRiseAndSet(referenceDate, 0, 0);
-            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, riseAndSetEvent, null, null, null);
+            var riseAndSetEvent = new CustomRiseAndSet(referenceDate, 0, 0, 0);
+            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, riseAndSetEvent, null, null, null, null);
 
             var nightTimeCalculatorMock = new Mock<INighttimeCalculator>();
             nightTimeCalculatorMock.Setup(x => x.Calculate(It.IsAny<DateTime?>())).Returns(nighttimeData);
@@ -61,7 +61,7 @@ namespace NINA.Test.Sequencer.Utility.DateTimeProvider {
             customDateTimeMock.SetupGet(x => x.Now).Returns(referenceDate);
 
             var riseAndSetEvent = new CustomRiseAndSet(null, customDusk);
-            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, riseAndSetEvent, null, null, null);
+            var nighttimeData = new NighttimeData(referenceDate, referenceDate, AstroUtil.MoonPhase.Unknown, null, riseAndSetEvent, null, null, null, null);
 
             var nightTimeCalculatorMock = new Mock<INighttimeCalculator>();
             nightTimeCalculatorMock.Setup(x => x.Calculate(It.IsAny<DateTime?>())).Returns(nighttimeData);

@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyCopyright("Copyright ©  2016 - 2024 Stefan Berg and the NINA contributors")]
+[assembly: AssemblyCopyright("Copyright ©  2016 - 2025 Stefan Berg and the NINA contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

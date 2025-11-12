@@ -78,7 +78,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                     new PegasusAstroFlatMaster(profileService)
                 });
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.FlatDeviceSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.FlatDeviceSettings.Id, profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

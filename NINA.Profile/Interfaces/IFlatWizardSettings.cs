@@ -23,6 +23,7 @@ namespace NINA.Profile.Interfaces {
         double HistogramTolerance { get; set; }
         int DarkFlatCount { get; set; }
         bool OpenForDarkFlats { get; set; }
+        bool OpenWhenDone { get; set; }
         AltitudeSite AltitudeSite { get; set; }
         FlatWizardMode FlatWizardMode { get; set; }
     }

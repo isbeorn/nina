@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1098,11 +1098,11 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Čas Přímé Pointace</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Doba trvání montáže ditheringu</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Typická doba trvání pointačních pulzů v sekundách</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Typická délka pulzu v sekundách</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Míra Pointace Rektascenze</value>
@@ -1116,11 +1116,11 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Míra pointace deklinace v obloukových sekundách za sekundu</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Přímé Navádění se nepodařilo navázat spojení s Mountáží</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Montáž nemohla provést dithering</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Montáž byla odpojena. Přímé navádění se odpojí. Dithering již není účinný!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Montáž byla odpojena. Dithering montáž bude odpojen, protože již nebude účinný!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Adresář pro uložení obrázku nebyl nalezen!</value>
@@ -1158,7 +1158,7 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Dithering Pixely</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Typický počet pixelů ditheringu. Dithering následuje normální rozdělení zaměřené na cíl a tato hodnota se považuje za směrodatnou odchylku. 67% ditheringu bude v této oblasti</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -1199,9 +1199,6 @@ V případě, že je nutné provádět chlazení déle, lze určit čas trvání
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>Ve výchozí pozici</value>
-  </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Kopule sleduje dalekohled</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Přejíždění</value>
@@ -1880,7 +1877,7 @@ Přeskočit.</value>
     <value>Načíst Profil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Profil nelze načíst. Je již používán jinou spuštěnou N.I.N.A. aplikací!</value>
+    <value>Vybraný profil je v současné době používán jinou instancí N.I.N.A. nebo jej nebylo možné načíst z důvodu neznámých problémů. Podrobnější informace naleznete v log souboru.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Načíst Sekvenci</value>
@@ -2274,6 +2271,12 @@ Přeskočit.</value>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Interní klient NINA OpenWeatherMap API</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Používá rozhraní API pro předpověď počasí společnosti OpenMeteo. Data o počasí se obnovují každých 10 minut.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Interní klient OpenMeteo API v NINA</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Možnosti</value>
   </data>
@@ -2431,7 +2434,7 @@ Klient odpojen od synchronizované služby PHD2.
     <value>Předvolby Planetária</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Získá souřadnice z Planetária</value>
+    <value>Importujte aktuálně vybraný objekt planetária a aktualizujte jeho název a souřadnice</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Souřadnice podle vybraného objektu</value>
@@ -5833,6 +5836,12 @@ Umístění tohoto nastavení naleznete v příručce k fotoaparátu</value>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>Aplikace {0} byla odpojena od počítače. Zkontrolujte jeho připojení USB a zdroj napájení</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} je již používán jiným programem. Před pokusem o opětovné připojení tento program zavřete nebo znovu připojte kameru k počítači.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} je již používán programem EOS Utility. Před pokusem o opětovné připojení ukončete program EOS Utility, včetně všech úloh na pozadí.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>V sadě Canon SDK došlo k vnitřní chybě. Může dojít k nespolehlivému provozu fotoaparátu</value>
   </data>
@@ -7011,5 +7020,303 @@ Navíc je nezbytné, aby použitý ovladač ASCOM tuto 32bitovou hloubku také p
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
     <value>Cesta k souboru je neplatná</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>Není nakonfigurován žádný klíč API služby Weather Underground.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>Není nakonfigurována žádná stanice Weather Underground.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Rozhraní API služby Weather Underground neodpovědělo.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Požadavek API Weather Underground selhal: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Nastavení aktuální polohy na nulu</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Otočit</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Nastavení max kroku</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Nastavení aktuální polohy na nulu?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Vlasový Kříž</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Selhalo řešení {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>V nastavení není zadán žádný host</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Nastavení Slepého Řešení</value>
+  </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Varování: „Použít dalekohled na straně pilíře“ v nastavení poledníku je vypnuto a může způsobit problémy se zarovnáním u rovníkových montáží s kopulí v blízkosti poledníku. Kopule bude předpokládat, že k poledníkovému překlopení dojde přesně na poledníku, což může vést k chybnému zarovnání, pokud montáž ještě nebyla překlopena.</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Celková délka</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Uzamknout sekvencer pro blokování ručních úprav a přetahování</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Odemknout sekvencer pro ruční úpravy a přetahování</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Zakázat přetahování v sekvenceru a postranním panelu</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Povolit přetahování v sekvenceru a postranním panelu</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Nesprávná ohnisková vzdálenost!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>Obrázek nelze načíst – zadejte prosím skutečnou ohniskovou vzdálenost dalekohledu v nastavení parametrů kamery!</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Název stanoviště</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatoř</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Pozorovatel</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Sleduje</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Sledování kopule přes N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>přes Ovladač</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapa Světa</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Připojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Pro vybrané zařízení bude připojeno zařízení uložené v profilu.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Připojit</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Odpojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Odpojí vybrané zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Připojit Všechna Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Připojit se ke všem zařízením, která jsou uložena v profilu</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Odpojit Veškerá Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Odpojí všechna aktuálně připojená zařízení</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Znovu Připojit Kameru Při Selhání Stahování</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>Spouštěč, který se aktivuje, když se kameře nepodaří stáhnout expozici, a pokusí se ji znovu připojit. Při opětovném připojení bude také obnoven stav chladiče a rosného ohřívače.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Znovu Připojit Zařízení</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Spouštěč, který se aktivuje, když je vybrané zařízení odpojeno, a pokusí se k němu znovu připojit.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Přepnout Profil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Odpojí všechna zařízení, která jsou momentálně připojena, přepne na určený profil a znovu připojí všechna zařízení tohoto profilu.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Rotaci se nepodařilo zjistit po {0} pokusech. Je parametr obrácení směru nastaven správně?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Uzamkne panely, aby nedošlo k jejich zavření nebo přesunutí, případně je odemkne pro úpravy.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Aktuální oprava je ve 2D. Je nutná oprava ve 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Upravené Juliánské Datum</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Po dokončení otevřete kryt</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Občanský soumrak</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Občanský úsvit</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Odmítnout odpojení montáže, pokud není otevřená štěrbina</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Nelze odpojit montáž, pokud není otevřená kopule nebo střecha</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Odmítnout pokusy o odpojení montáže, pokud je stav štěrbiny nebo střechy Uzavřeno, Zavírání, Otevírání nebo Chyba. Odpojení montáže bude povoleno pouze v případě, že štěrbina nebo střecha hlásí stav Otevřeno</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává občanský úsvit.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává občanský soumrak.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává astronomický úsvit.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává astronomický soumrak.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává námořní svítání.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává námořní soumrak.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává svítání.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>Dnes ve vaší lokalitě nenastává západ Slunce.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>Nepodařilo se připojit k {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>Kamera nepodporuje 16 bitový režim</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Stále probíhá další expozice. Zrušte ji a začněte jinou.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Nepodařilo se připojit {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>Kamera ohlásila souhrnnou chybu a je třeba ji znovu připojit!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>Kamera odpojena! Možná bylo přerušeno připojení USB.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>Chyba MetaGuide Listener: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Nepodařilo se odeslat {0} zprávu</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>Pointace není aktivní. Nelze ditherovat</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Nepodařilo se komunikovat s MGEN během ditheringu</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>Chyba PHD: {0}
+KÓDE: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>Chyba PHD: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>Není nakonfigurován žádný klíč API služby Weather Underground.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>Soubor {0} neexistuje</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Řešení astrometrie se nezdařilo. Nebyl nalezen žádný výstupní soubor.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Astrometrie se nezdařila.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Chyba řešení astrometrie pomocí Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>Předpokládaná expozice {0}s je delší než maximální povolená.
+Zastavení pořízení flatu oblohy.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>Předpokládaná expozice {0}s je kratší než minimální povolená doba.
+Zastavení pořízení flatu oblohy.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>Korekce Skyflat nefungovala a je mimo toleranci:
+čas první expozice {0:#.####}
+aktuální čas expozice {1:#.####}
+uplynulý čas: {2:#.##}
+průměr adu: {3:#.##}.
+Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Nepodařilo se obnovit předchozí pozici filtru: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Nepodařilo se změnit filtr: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Nastavení rychlosti posunu se nezdařilo. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Nepodařilo se připravit obrázek k zobrazení: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Čas Překlopení Dne</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Protože v instrukci není přiřazen žádný den, přechod na nový den proběhne v zobrazeném čase překlopení.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicializace</value>
   </data>
 </root>

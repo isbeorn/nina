@@ -26,7 +26,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyRotator {
 
-    internal class AscomRotator : AscomDevice<IRotatorV3>, IRotator, IDisposable {
+    internal class AscomRotator : AscomDevice<IRotatorV4>, IRotator, IDisposable {
 
         public AscomRotator(string id, string name) : base(id, name) {
         }
@@ -65,7 +65,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
 
         public float Position => AstroUtil.EuclidianModulus(MechanicalPosition + offset, 360);
 
-        public float MechanicalPosition => GetProperty(nameof(Rotator.Position), float.NaN);
+        public float MechanicalPosition => InterfaceVersion < 3 ? GetProperty(nameof(Rotator.Position), float.NaN) : GetProperty(nameof(Rotator.MechanicalPosition), float.NaN);
 
         public float StepSize => GetProperty(nameof(Rotator.StepSize), float.NaN);
 
@@ -85,7 +85,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> Move(float angle, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 if (angle >= 360) {
                     angle = AstroUtil.EuclidianModulus(angle, 360);
                 }
@@ -103,7 +103,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> MoveAbsoluteMechanical(float targetPosition, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 var movement = targetPosition - MechanicalPosition;
                 return await Move(movement, ct);
             }
@@ -111,7 +111,7 @@ namespace NINA.Equipment.Equipment.MyRotator {
         }
 
         public async Task<bool> MoveAbsolute(float targetPosition, CancellationToken ct) {
-            if (Connected) {
+            if (ShouldBeConnected) {
                 return await Move(targetPosition - Position, ct);
             }
             return false;
@@ -123,8 +123,8 @@ namespace NINA.Equipment.Equipment.MyRotator {
             return Task.CompletedTask;
         }
 
-        protected override IRotatorV3 GetInstance() {
-            if (deviceMeta == null) {
+        protected override IRotatorV4 GetInstance() {
+            if (!IsAlpacaDevice()) {
                 return new Rotator(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaRotator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

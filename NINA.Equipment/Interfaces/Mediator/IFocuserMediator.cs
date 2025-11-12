@@ -14,6 +14,7 @@
 
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces.ViewModel;
+using OxyPlot;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +31,9 @@ namespace NINA.Equipment.Interfaces.Mediator {
         Task<int> MoveFocuserByTemperatureRelative(double temperature, double Slope, CancellationToken ct);
 
         void BroadcastSuccessfulAutoFocusRun(AutoFocusInfo info);
+        void BroadcastNewAutoFocusPoint(DataPoint dataPoint);
 
         void BroadcastUserFocused(FocuserInfo info);
+        void BroadcastAutoFocusRunStarting();
     }
 }

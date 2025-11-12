@@ -31,15 +31,6 @@ namespace EDSDKLib {
         public static void Initialize() {
             lock (lockObj) {
                 if (!initialized) {
-                    if (!DllLoader.IsX86()) {
-                        //When EOS Utility by Canon is open in the background the EDSDK.EdsInitializeSDK throws an uncatchable AccessViolation Exception
-                        //Therefore the system processes are scanned for this program and if found the initialization is prevented
-                        var eosUtil = System.Diagnostics.Process.GetProcessesByName("EOS Utility");
-                        if (eosUtil.Length > 0) {
-                            throw new Exception("Cannot initialize Canon SDK. EOS Utiltiy is preventing the DLL to load. Please close EOS Utility first to be able to connect to your Canon Camera!");
-                        }
-                    }
-
                     var err = EDSDK.EdsInitializeSDK();
                     if (err > 0) {
                         throw new Exception($"Canon EdsInitializeSDK failed with code {err}");
@@ -370,5 +361,163 @@ namespace EDSDKLib {
             {0x00008D08, "EDS_ERR_TAKE_PICTURE_CARD_PROTECT_NG"},
             {0x000000F5, "EDS_ERR_LAST_GENERIC_ERROR_PLUS_ONE"}
       };
+
+        /*
+       * EDSDK PropertyEvents code dictionary
+       * This should be kept in sync with the PropertyEvents codes defined by EDSDK.
+       * This dictionary exists to map PropertyEvents codes to the EDSDK-provided descriptive name.
+       */
+
+        public static Dictionary<uint, string> PropertyEvents = new Dictionary<uint, string> {
+            {0x00000100, "ALL"},
+            {0x00000101, "PROPERTY_CHANGED"},
+            {0x00000102, "PROPERTY_DESC_CHANGED"}
+      };
+
+        /*
+        * EDSDK ObjectEvents code dictionary
+        * This should be kept in sync with the ObjectEvents codes defined by EDSDK.
+        * This dictionary exists to map ObjectEvents codes to the EDSDK-provided descriptive name.
+        */
+
+        public static Dictionary<uint, string> ObjectEvents = new Dictionary<uint, string> {
+            {0x00000200, "ALL"},
+            {0x00000201, "VOLUME_INFO_CHANGED"},
+            {0x00000202, "VOLUME_UPDATE_ITEMS"},
+            {0x00000203, "FOLDER_UPDATE_ITEMS"},
+            {0x00000204, "DIR_ITEM_CREATED"},
+            {0x00000208, "DIR_ITEM_REQUEST_TRANSFER"}
+            //TODO: extend to all codes
+      };
+
+        /*
+        * EDSDK StateEvents code dictionary
+        * This should be kept in sync with the StateEvents codes defined by EDSDK.
+        * This dictionary exists to map StateEvents codes to the EDSDK-provided descriptive name.
+        */
+
+        public static Dictionary<uint, string> StateEvents = new Dictionary<uint, string> {
+            {0x00000300, "ALL"},
+            {0x00000301, "SHUTDOWN"},
+            {0x00000302, "JOB_STATE_CHANGED"},
+            {0x00000303, "SHUTDOWN_SOON"},
+            {0x00000304, "SHUTDOWN_TIMER_UPDATE"},
+            {0x00000305, "CAPTURE_ERROR"},
+            {0x00000306, "INTERNAL_ERROR"},
+            {0x00000309, "AF_RESULT"},
+            {0x00000310, "BLUB_EXPOSURE_TIME"}
+      };
+
+        /*
+        * EDSDK PropertyIDs code dictionary
+        * This should be kept in sync with the PropertyIDs codes defined by EDSDK.
+        * This dictionary exists to map PropertyIDs codes to the EDSDK-provided descriptive name.
+        */
+
+
+        public static Dictionary<uint, string> PropertyIDs = new Dictionary<uint, string> {
+            {0x0000ffff, "PropID_Unknown"},
+            {0x00000002, "PropID_ProductName"},
+            {0x00000015, "PropID_BodyIDEx"},
+            {0x00000004, "PropID_OwnerName"},
+            {0x00000005, "PropID_MakerName"},
+            {0x00000006, "PropID_DateTime"},
+            {0x00000007, "PropID_FirmwareVersion"},
+            {0x00000008, "PropID_BatteryLevel"},
+            {0x00000009, "PropID_CFn"},
+            {0x0000000b, "PropID_SaveTo"},
+            {0x0000000c, "kEdsPropID_CurrentStorage"},
+            {0x0000000d, "kEdsPropID_CurrentFolder"},
+            {0x00000010, "PropID_BatteryQuality"},
+            {0x00000100, "PropID_ImageQuality"},
+            {0x00000102, "PropID_Orientation"},
+            {0x00000103, "PropID_ICCProfile"},
+            {0x00000104, "PropID_FocusInfo"},
+            {0x00000106, "PropID_WhiteBalance"},
+            {0x00000107, "PropID_ColorTemperature"},
+            {0x00000108, "PropID_WhiteBalanceShift"},
+            {0x0000010d, "PropID_ColorSpace"},
+            {0x00000114, "PropID_PictureStyle"},
+            {0x00000115, "PropID_PictureStyleDesc"},
+            {0x00000200, "PropID_PictureStyleCaption"},
+            {0x00000400, "PropID_AEMode"},
+            {0x00000436, "PropID_AEModeSelect"},
+            {0x00000401, "PropID_DriveMode"},
+            {0x00000402, "PropID_ISOSpeed"},
+            {0x00000403, "PropID_MeteringMode"},
+            {0x00000404, "PropID_AFMode"},
+            {0x00000405, "PropID_Av"},
+            {0x00000406, "PropID_Tv"},
+            {0x00000407, "PropID_ExposureCompensation"},
+            {0x00000409, "PropID_FocalLength"},
+            {0x0000040a, "PropID_AvailableShots"},
+            {0x0000040b, "PropID_Bracket"},
+            {0x0000040c, "PropID_WhiteBalanceBracket"},
+            {0x0000040d, "PropID_LensName"},
+            {0x0000040e, "PropID_AEBracket"},
+            {0x0000040f, "PropID_FEBracket"},
+            {0x00000410, "PropID_ISOBracket"},
+            {0x00000411, "PropID_NoiseReduction"},
+            {0x00000412, "PropID_FlashOn"},
+            {0x00000413, "PropID_RedEye"},
+            {0x00000414, "PropID_FlashMode"},
+            {0x00000416, "PropID_LensStatus"},
+            {0x00000418, "PropID_Artist"},
+            {0x00000419, "PropID_Copyright"},
+            {0x00000500, "PropID_Evf_OutputDevice"},
+            {0x00000501, "PropID_Evf_Mode"},
+            {0x00000502, "PropID_Evf_WhiteBalance"},
+            {0x00000503, "PropID_Evf_ColorTemperature"},
+            {0x00000504, "PropID_Evf_DepthOfFieldPreview"},
+            {0x00000507, "PropID_Evf_Zoom"},
+            {0x00000508, "PropID_Evf_ZoomPosition"},
+            {0x0000050B, "PropID_Evf_ImagePosition"},
+            {0x0000050C, "PropID_Evf_HistogramStatus"},
+            {0x0000050E, "PropID_Evf_AFMode"},
+            {0x00000515, "PropID_Evf_HistogramY"},
+            {0x00000516, "PropID_Evf_HistogramR"},
+            {0x00000517, "PropID_Evf_HistogramG"},
+            {0x00000518, "PropID_Evf_HistogramB"},
+            {0x00000540, "PropID_Evf_CoordinateSystem"},
+            {0x00000541, "PropID_Evf_ZoomRect"},
+            {0x00000510, "PropID_Record"},
+            {0x00000800, "PropID_GPSVersionID"},
+            {0x00000801, "PropID_GPSLatitudeRef"},
+            {0x00000802, "PropID_GPSLatitude"},
+            {0x00000803, "PropID_GPSLongitudeRef"},
+            {0x00000804, "PropID_GPSLongitude"},
+            {0x00000805, "PropID_GPSAltitudeRef"},
+            {0x00000806, "PropID_GPSAltitude"},
+            {0x00000807, "PropID_GPSTimeStamp"},
+            {0x00000808, "PropID_GPSSatellites"},
+            {0x00000809, "PropID_GPSStatus"},
+            {0x00000812, "PropID_GPSMapDatum"},
+            {0x0000081D, "PropID_GPSDateStamp"},
+            {0x00000600, "PropID_DC_Zoom"},
+            {0x00000601, "PropID_DC_Strobe"},
+            {0x00000605, "PropID_LensBarrelStatus"},
+            {0x01000415, "PropID_TempStatus"},
+            {0x01000544, "PropID_Evf_RollingPitching"},
+            {0x01000422, "PropID_FixedMovie"},
+            {0x01000423, "PropID_MovieParam"},
+            {0x01000431, "PropID_Aspect"},
+            {0x01000506, "PropID_Evf_ClickWBCoeffs"},
+            {0x01000546, "PropID_Evf_VisibleRect"},
+            {0x01000204, "PropID_ManualWhiteBalanceData"},
+            {0x01000438, "PropID_MirrorUpSetting"},
+            {0x01000421, "PropID_MirrorLockUpState"},
+            {0x01000016, "PropID_UTCTime"},
+            {0x01000017, "PropID_TimeZone"},
+            {0x01000018, "PropID_SummerTimeSetting"},
+            {0x0100045e, "PropID_AutoPowerOffSetting"},
+            {0x01000470, "PropID_StillMovieDivideSetting"},
+            {0x01000471, "PropID_CardExtension"},
+            {0x01000472, "PropID_MovieCardExtension"},
+            {0x01000473, "PropID_StillCurrentMedia"},
+            {0x01000474, "PropID_MovieCurrentMedia"},
+            {0x0100045d, "PropID_MovieHFRSetting"},
+            {0x01000457, "PropID_FocusShiftSetting"}
+        };
+
     }
 }

@@ -51,7 +51,7 @@ namespace NINA.Equipment.Interfaces {
 
         double GetMinExposureTime();
 
-        void StartExposure(double exposureTime, int width, int height);
+        DateTime StartExposure(double exposureTime, int width, int height);
         void StopExposure();
 
         bool SetROI(int startX, int startY, int width, int height, int binning);

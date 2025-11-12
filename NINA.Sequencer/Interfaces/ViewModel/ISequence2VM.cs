@@ -30,6 +30,9 @@ namespace NINA.ViewModel.Sequencer {
         NINA.Sequencer.ISequencer Sequencer { get; }
         NINA.Sequencer.ISequencerFactory SequencerFactory { get; }
 
+        bool IsLocked { get; set; }
+        bool CanDragAndDrop { get; set; }
+
         bool IsRunning { get; }
 
         Task Initialize();

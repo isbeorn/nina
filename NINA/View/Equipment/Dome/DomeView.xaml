@@ -118,13 +118,25 @@
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2"
-                                    Visibility="{Binding DomeInfo.Azimuth, Converter={StaticResource NaNToVisibilityCollapsedConverter}}">
-                                    <TextBlock Text="{ns:Loc LblDomeAzimuth}" />
+                                    Visibility="{Binding DomeInfo.AzimuthDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock Text="{ns:Loc LblAzimuth}" />
                                     <TextBlock
                                         Margin="5,0,0,0"
-                                        Text="{Binding DomeInfo.Azimuth, Converter={StaticResource UnitConverter}, ConverterParameter='°|2'}"
+                                        Text="{Binding DomeInfo.AzimuthDMS}"
                                         TextWrapping="WrapWithOverflow" />
                                 </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding DomeInfo.AltitudeDMS, Converter={StaticResource NullOrEmptyStringToVisibilityCollapsedConverter}}">
+                                    <TextBlock Text="{ns:Loc LblAltitude}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.AltitudeDMS}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                            <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -132,6 +144,14 @@
                                     Visibility="{Binding DomeInfo.ShutterStatus, Converter={StaticResource ShutterStatusToVisibilityConverter}}">
                                     <TextBlock Text="{ns:Loc LblDomeShutterStatus}" />
                                     <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.ShutterStatus}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding DomeInfo.Connected, Converter={StaticResource VisibilityConverter}}">
+                                    <TextBlock Text="{ns:Loc LblDomeFollowing}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DomeInfo.FollowingType}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -185,10 +205,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="80" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="80" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Border
                             Grid.Row="0"
@@ -197,15 +217,36 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
                             IsEnabled="{Binding TelescopeInfo.Connected}">
-                            <UniformGrid Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowing}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDomeFollowingViaNINA}" />
                                 <CheckBox
+                                    Grid.Column="1"
                                     Width="120"
                                     Height="25"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding FollowEnabled}" />
-                            </UniformGrid>
+                            </Grid>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            Visibility="{Binding FollowEnabled, Converter={StaticResource VisibilityConverter}}">
+                            <Grid Visibility="{Binding ActiveProfile.MeridianFlipSettings.UseSideOfPier, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontStyle="Italic"
+                                    Text="{ns:Loc LblDomeFollowingSideOfPierDisabled}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
                         </Border>
                         <Grid
                             Grid.Row="0"
@@ -220,7 +261,10 @@
                                     Margin="5"
                                     Command="{Binding SyncCommand}"
                                     Visibility="{Binding DomeInfo.CanSyncAzimuth, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeSyncAzimuth}" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblDomeSyncAzimuth}"
+                                        TextWrapping="Wrap" />
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
                                             <TextBlock Text="{ns:Loc LblDomeSyncAzimuthTooltip}" />
@@ -234,7 +278,10 @@
                                     Command="{Binding FindHomeCommand}"
                                     IsEnabled="{Binding DomeInfo.AtHome, Converter={StaticResource InverseBooleanConverter}}"
                                     Visibility="{Binding DomeInfo.CanFindHome, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDomeFindHome}" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblDomeFindHome}"
+                                        TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -250,7 +297,7 @@
                 <GroupBox Grid.Row="1" Header="{ns:Loc LblManualControl}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="180" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
@@ -381,9 +428,9 @@
                                         </TextBox.Text>
                                     </ninactrl:UnitTextBox>
                                     <Button
-                                        Width="40"
+                                        Width="80"
                                         Height="40"
-                                        Margin="5"
+                                        Margin="10,5,5,5"
                                         HorizontalAlignment="Right"
                                         Command="{Binding ManualSlewCommand}">
                                         <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
@@ -431,7 +478,7 @@
                                 </Button>
                                 <Button
                                     Width="80"
-                                    Height="40"
+                                    Height="80"
                                     Margin="5"
                                     Command="{Binding SetParkPositionCommand}"
                                     IsEnabled="{Binding DomeInfo.AtPark, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}"
@@ -441,7 +488,10 @@
                                             <TextBlock Text="{ns:Loc LblSetParkToolTip}" />
                                         </ToolTip>
                                     </Button.ToolTip>
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" />
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblSetPark}"
+                                        TextWrapping="Wrap" />
                                 </Button>
                             </StackPanel>
                         </Grid>

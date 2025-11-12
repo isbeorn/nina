@@ -103,7 +103,21 @@ namespace NINA.ViewModel {
         }
 
         private void Update(object o) {
-            InvokeProcess.CreateProcess(Path.Combine(setupLocation, "NINASetupBundle.exe"));
+            var setupPath = Path.Combine(setupLocation, "NINASetupBundle.exe");
+            try {
+                // Use native method to not spawn a process as a child process without any handles attached. Otherwise the setup will be unable to update some files and needs a reboot.
+                InvokeProcess.CreateProcess(setupPath);
+            } catch {
+                // On some environments the create process native method fails with a bad image format exception. Try it again with the built in method
+                ProcessStartInfo info = new ProcessStartInfo();
+                info.WindowStyle = ProcessWindowStyle.Hidden;
+                info.CreateNoWindow = true;
+                info.FileName = @"cmd";
+                info.Arguments = $"/C start \"\" \"{setupPath}\"";
+                Process.Start(info);
+            }
+
+            Logger.Info("Shutting down application for update");
             System.Windows.Application.Current.Shutdown();
         }
 

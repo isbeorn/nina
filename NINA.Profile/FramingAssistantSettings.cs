@@ -12,10 +12,10 @@
 
 #endregion "copyright"
 
-using System;
-using System.Runtime.Serialization;
 using NINA.Core.Enum;
 using NINA.Profile.Interfaces;
+using System;
+using System.Runtime.Serialization;
 
 namespace NINA.Profile {
 
@@ -36,6 +36,10 @@ namespace NINA.Profile {
             opacity = 0.2;
             lastRotationAngle = 0;
             saveImageInOfflineCache = false;
+            annotateConstellationBoundaries = false;
+            annotateConstellations = false;
+            annotateDSO = true;
+            annotateGrid = true;
         }
 
         private SkySurveySource lastSelectedImageSource;
@@ -122,8 +126,60 @@ namespace NINA.Profile {
         public bool SaveImageInOfflineCache {
             get => saveImageInOfflineCache;
             set {
-                if(saveImageInOfflineCache != value) {
+                if (saveImageInOfflineCache != value) {
                     saveImageInOfflineCache = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool annotateConstellationBoundaries;
+
+        [DataMember]
+        public bool AnnotateConstellationBoundaries {
+            get => annotateConstellationBoundaries;
+            set {
+                if (annotateConstellationBoundaries != value) {
+                    annotateConstellationBoundaries = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool annotateConstellations;
+
+        [DataMember]
+        public bool AnnotateConstellations {
+            get => annotateConstellations;
+            set {
+                if (annotateConstellations != value) {
+                    annotateConstellations = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool annotateDSO;
+
+        [DataMember]
+        public bool AnnotateDSO {
+            get => annotateDSO;
+            set {
+                if (annotateDSO != value) {
+                    annotateDSO = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool annotateGrid;
+
+        [DataMember]
+        public bool AnnotateGrid {
+            get => annotateGrid;
+            set {
+                if (annotateGrid != value) {
+                    annotateGrid = value;
                     RaisePropertyChanged();
                 }
             }

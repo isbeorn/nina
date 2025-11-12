@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NINA.Equipment.Equipment;
 
 namespace NINA.WPF.Base.ViewModel.Equipment {
 
@@ -94,13 +95,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment {
             }
         }
 
-        protected void DetermineSelectedDevice(IList<IDevice> d, string id) {
+        protected void DetermineSelectedDevice(IList<IDevice> d, string id, string name) {
             if (d.Count > 0) {
                 var items = (from device in d where device.Id == id select device);
                 if (items.Any()) {
                     SelectedDevice = items.First();
                 } else {
-                    SelectedDevice = d.First();
+                    var offlineDevice = new OfflineDevice(id, name);
+                    d.Insert(0, offlineDevice);
+                    SelectedDevice = offlineDevice;
                 }
             }
             Devices = d;

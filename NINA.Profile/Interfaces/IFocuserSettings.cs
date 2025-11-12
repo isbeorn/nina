@@ -21,6 +21,7 @@ namespace NINA.Profile.Interfaces {
         int AutoFocusInitialOffsetSteps { get; set; }
         int AutoFocusStepSize { get; set; }
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         bool UseFilterWheelOffsets { get; set; }
         bool AutoFocusDisableGuiding { get; set; }
         int FocuserSettleTime { get; set; }

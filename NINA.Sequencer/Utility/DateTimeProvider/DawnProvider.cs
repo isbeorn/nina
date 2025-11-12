@@ -39,7 +39,7 @@ namespace NINA.Sequencer.Utility.DateTimeProvider {
         public DateTime GetDateTime(ISequenceEntity context) {
             var dawn = nighttimeCalculator.Calculate().TwilightRiseAndSet.Rise;
             if (!dawn.HasValue) {
-                throw new Exception("No astronomical dawn");
+                throw new TimeProviderException("No astronomical dawn", Loc.Instance["Lbl_TimeProvider_NoAstronomicalDawn"]);
             }
             return dawn.Value;
         }

@@ -32,13 +32,22 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return (ToupTekAlikeEvent)Enum.Parse(typeof(ToupCam.eEVENT), info.ToString());
         }
 
-        public static ToupTekAlikeFrameInfo ToFrameInfo(this ToupCam.FrameInfoV2 info) {
+        public static ToupTekAlikeFrameInfo ToFrameInfo(this ToupCam.FrameInfoV4 info) {
             var ttInfo = new ToupTekAlikeFrameInfo();
-            ttInfo.flag = info.flag;
-            ttInfo.height = info.height;
-            ttInfo.width = info.width;
-            ttInfo.timestamp = info.timestamp;
-            ttInfo.seq = info.seq;
+            ttInfo.flag = info.v3.flag;
+            ttInfo.height = info.v3.height;
+            ttInfo.width = info.v3.width;
+            ttInfo.timestamp = info.v3.timestamp;
+            ttInfo.seq = info.v3.seq;
+            ttInfo.expotime = info.v3.expotime;
+            ttInfo.hasgps = (info.v3.flag & (uint)ToupCam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.hasexpotime = (info.v3.flag & (uint)ToupCam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_EXPOTIME) != 0;
+            ttInfo.gps.utcstart = info.gps.utcstart;
+            ttInfo.gps.utcend = info.gps.utcend;
+            ttInfo.gps.longitude = info.gps.longitude;
+            ttInfo.gps.latitude = info.gps.latitude;
+            ttInfo.gps.altitude = info.gps.altitude;
+            ttInfo.gps.satellite = info.gps.satellite;
             return ttInfo;
         }
 
@@ -121,10 +130,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             sdk.get_Temperature(out temp);
         }
 
-        public bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            ToupCam.FrameInfoV2 toupcampInfo;
-            var result = sdk.PullImageV2(data, bitDepth, out toupcampInfo);
-            info = toupcampInfo.ToFrameInfo();
+        public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+            ToupCam.FrameInfoV4 toupcamInfo;
+            var result = sdk.PullImage(data, 0, bitDepth, 0, out toupcamInfo);
+            sdk.get_Option(ToupCam.eOPTION.OPTION_GPS, out var hasGps);
+            info = toupcamInfo.ToFrameInfo();
+            info.hasgps = hasGps > 0;
             return result;
         }
 

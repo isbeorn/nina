@@ -268,14 +268,9 @@ namespace NINA.ViewModel {
                 cameraMediator.RegisterCaptureBlock(this);
                 Logger.Info("Simple Sequence started");
 
-                //Reset start and end of sequence options in case they were both already done
-                if (Sequencer.MainContainer.Items[0].Status != SequenceEntityStatus.CREATED) {
-                    Sequencer.MainContainer.Items[0].ResetProgress();
-                }
-
-                if (Sequencer.MainContainer.Items[2].Status != SequenceEntityStatus.CREATED) {                    
-                    Sequencer.MainContainer.Items[2].ResetProgress();
-                }
+                //Reset start and end of sequence options in case they were started in a previous run
+                Sequencer.MainContainer.Items[0].ResetProgress();
+                Sequencer.MainContainer.Items[2].ResetProgress();
 
                 //Set base containers to created to rerun
                 Sequencer.MainContainer.Status = SequenceEntityStatus.CREATED;
@@ -414,7 +409,7 @@ namespace NINA.ViewModel {
                                 if (csv.TryGetField("pane", out name)) {
                                     var ra = AstroUtil.HMSToDegrees(csv.GetField("ra"));
                                     var dec = AstroUtil.DMSToDegrees(csv.GetField("dec"));
-                                                                        
+
                                     var angle = AstroUtil.EuclidianModulus(csv.GetField<double>("position angle (east)"), 360);
 
                                     var template = GetTemplate();
@@ -425,14 +420,21 @@ namespace NINA.ViewModel {
                                     this.Targets.Add(template);
                                 } else if (csv.TryGetField<string>("familiar name", out name)) {
                                     var catalogue = csv.GetField("catalogue entry");
-                                    var ra = AstroUtil.HMSToDegrees(csv.GetField("right ascension"));
-                                    var dec = AstroUtil.DMSToDegrees(csv.GetField("declination"));
+
+                                    if (!csv.TryGetField("right ascension", out string raHMS)) {
+                                        raHMS = csv.GetField("right ascension (j2000)");
+                                    }
+                                    var ra = AstroUtil.HMSToDegrees(raHMS);
+                                    if (!csv.TryGetField("right ascension", out string decHMS)) {
+                                        decHMS = csv.GetField("declination (j2000)");
+                                    }
+                                    var dec = AstroUtil.DMSToDegrees(decHMS);
 
                                     var template = GetTemplate();
                                     template.Name = string.IsNullOrWhiteSpace(name) ? catalogue : name; ;
                                     template.Target.TargetName = string.IsNullOrWhiteSpace(name) ? catalogue : name; ;
                                     template.Target.InputCoordinates.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
-                                    if (csv.TryGetField<string>("position angle (east)", out var stringAngle) && !string.IsNullOrWhiteSpace(stringAngle)) {                                        
+                                    if (csv.TryGetField<string>("position angle (east)", out var stringAngle) && !string.IsNullOrWhiteSpace(stringAngle)) {
                                         var angle = AstroUtil.EuclidianModulus(csv.GetField<double>("position angle (east)"), 360);
                                         template.Target.PositionAngle = angle;
                                     } else {
@@ -446,6 +448,9 @@ namespace NINA.ViewModel {
                             }
                         }
                     }
+                } catch (IOException ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Loc.Instance["LblUnknownImportFormat"]);
@@ -595,7 +600,7 @@ namespace NINA.ViewModel {
                     );
                     if (l != null) {
                         var transform = MigrateFromCaptureSequenceList(l);
-                        transform.FileName = dialog.FileName;
+                        transform.FileName = fileName;
                         this.Targets.Add(transform);
 
                         // set the last one loaded as the current sequence
@@ -765,10 +770,15 @@ namespace NINA.ViewModel {
             }
 
             var targetArea = factory.GetContainer<TargetAreaContainer>();
-            foreach (var item in Targets.GetItemsSnapshot()) {
-                var target = item as SimpleDSOContainer;
+            var itemSnapshot = Targets.GetItemsSnapshot();
+            foreach (var item in itemSnapshot) {
+                var target = item as SimpleDSOContainer;                
                 if (target.Status == SequenceEntityStatus.CREATED) {
-                    targetArea.Add(target.TransformToDSOContainer());
+                    var dsoContainer = target.TransformToDSOContainer();
+                    if (itemSnapshot.First() != target) {
+                        dsoContainer.IsExpanded = false;
+                    }
+                    targetArea.Add(dsoContainer);
                 }
             }
 

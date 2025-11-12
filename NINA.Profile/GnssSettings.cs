@@ -30,6 +30,9 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             gnssSource = GnssSourceEnum.NmeaSerial;
+
+            gpsdHost = string.Empty;
+            gpsdPort = 2947;
         }
 
         private GnssSourceEnum gnssSource;
@@ -40,6 +43,32 @@ namespace NINA.Profile {
             set {
                 if (gnssSource != value) {
                     gnssSource = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string gpsdHost;
+
+        [DataMember]
+        public string GpsdHost {
+            get => gpsdHost;
+            set {
+                if (gpsdHost != value) {
+                    gpsdHost = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ushort gpsdPort;
+
+        [DataMember]
+        public ushort GpsdPort {
+            get => gpsdPort;
+            set {
+                if (gpsdPort != value) {
+                    gpsdPort = value;
                     RaisePropertyChanged();
                 }
             }

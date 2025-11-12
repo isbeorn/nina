@@ -266,21 +266,21 @@
             DataContext="{Binding UpdateSourceTrigger=PropertyChanged}" />
     </HierarchicalDataTemplate>
 
-    <DataTemplate DataType="{x:Type local:ParallelContainer}">
-        <view:SequenceContainerView>
-            <view:SequenceContainerView.SequenceContainerContent>
+    <HierarchicalDataTemplate DataType="{x:Type local:ParallelContainer}" ItemsSource="{Binding Items}">
+        <view:HierarchicalSequenceContainerView>
+            <view:HierarchicalSequenceContainerView.SequenceContainerContent>
                 <TextBlock
                     Margin="5,5,0,0"
                     VerticalAlignment="Center"
                     FontStyle="Italic"
                     Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
-            </view:SequenceContainerView.SequenceContainerContent>
-        </view:SequenceContainerView>
-    </DataTemplate>
+            </view:HierarchicalSequenceContainerView.SequenceContainerContent>
+        </view:HierarchicalSequenceContainerView>
+    </HierarchicalDataTemplate>
 
-    <DataTemplate DataType="{x:Type local:DeepSkyObjectContainer}">
-        <view:SequenceContainerView>
-            <view:SequenceContainerView.SequenceContainerContent>
+    <HierarchicalDataTemplate DataType="{x:Type local:DeepSkyObjectContainer}" ItemsSource="{Binding Items}">
+        <view:HierarchicalSequenceContainerView>
+            <view:HierarchicalSequenceContainerView.SequenceContainerContent>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -796,7 +796,7 @@
                                                 Margin="5,0,5,0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Command="{Binding DataContext.DeleteExposureInfoCommand, RelativeSource={RelativeSource AncestorType={x:Type view:SequenceContainerView}}}"
+                                                Command="{Binding DataContext.DeleteExposureInfoCommand, RelativeSource={RelativeSource AncestorType={x:Type view:HierarchicalSequenceContainerView}}}"
                                                 CommandParameter="{Binding}"
                                                 Style="{StaticResource BackgroundButton}">
                                                 <Grid>
@@ -815,12 +815,12 @@
                         </DataGrid>
                     </ninactrl:DetachingExpander>
                 </Grid>
-            </view:SequenceContainerView.SequenceContainerContent>
-        </view:SequenceContainerView>
-    </DataTemplate>
-    <DataTemplate DataType="{x:Type local:SequenceContainer}">
-        <view:SequenceContainerView />
-    </DataTemplate>
+            </view:HierarchicalSequenceContainerView.SequenceContainerContent>
+        </view:HierarchicalSequenceContainerView>
+    </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate DataType="{x:Type local:SequenceContainer}" ItemsSource="{Binding Items}">
+        <view:HierarchicalSequenceContainerView />
+    </HierarchicalDataTemplate>
 
     <HierarchicalDataTemplate DataType="{x:Type local:TargetAreaContainer}" ItemsSource="{Binding Items}">
         <StackPanel Margin="-19,0,0,0" Orientation="Vertical">

@@ -307,12 +307,12 @@ namespace NINA.Equipment.Equipment.MyGuider {
                     });
                 } else {
                     Logger.Error("Guiding is not active. Unable to dither");
-                    Notification.ShowError("Guiding is not active. Unable to dither");
+                    Notification.ShowError(Loc.Instance["LblGuidingNotActiveNoDither"]);
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError("Failed to communicate to MGEN during dithering");
+                Notification.ShowError(Loc.Instance["LblFailedCommsMGENDither"]);
             } finally {
                 progress.Report(new ApplicationStatus { Status = string.Empty });
             }

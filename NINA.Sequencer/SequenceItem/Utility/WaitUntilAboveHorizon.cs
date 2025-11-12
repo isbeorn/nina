@@ -69,7 +69,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             do {
                 Data.SetTargetAltitudeWithHorizon();
 
-                var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude));
+                var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(Data.Latitude), Angle.ByDegree(Data.Longitude), Data.Elevation);
                 Data.CurrentAltitude = altaz.Altitude.Degree;
                 progress?.Report(new ApplicationStatus() {
                     Status = string.Format(Loc.Instance["Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress"], Math.Round(Data.CurrentAltitude, 2), Math.Round(Data.TargetAltitude, 2))
@@ -85,7 +85,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public double GetCurrentAltitude(DateTime time, ObserverInfo observer) {
-            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), time);
+            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation, time);
             return altaz.Altitude.Degree;
         }
 

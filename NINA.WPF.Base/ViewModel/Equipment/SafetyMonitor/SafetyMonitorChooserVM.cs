@@ -75,7 +75,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
                 devices.Add(new SafetyMonitorSimulator());
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.SafetyMonitorSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.SafetyMonitorSettings.Id, profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

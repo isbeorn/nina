@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright ï¿½ 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -74,8 +74,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                 devices.Add(new OpenWeatherMap(this.profileService));
                 devices.Add(new TheWeatherCompany(this.profileService));
                 devices.Add(new WeatherUnderground(this.profileService));
+                devices.Add(new OpenMeteo(this.profileService));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.WeatherDataSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.WeatherDataSettings.Id, profileService.ActiveProfile.WeatherDataSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

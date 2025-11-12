@@ -16,6 +16,7 @@ using Microsoft.Web.WebView2.Core;
 using NINA.Core.Utility;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,10 +29,25 @@ namespace NINA.WPF.Base.View {
 
         public Browser() {
             InitializeComponent();
-            InitializeWebView2Async();
+            IsVisibleChanged += Browser_IsVisibleChanged;
         }
-        private async void InitializeWebView2Async() {
+
+        private async void Browser_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (!IsLoaded) {
+                await InitializeWebView2Async();
+                webView.Source = Source;
+            }            
+        }
+
+        public async Task InitializeAndSetSource() {
+            await InitializeWebView2Async();
+            webView.Source = Source;
+        }
+
+        private async Task InitializeWebView2Async() {
             try {
+                if (webView.CoreWebView2 != null) { return; }
+
                 string cacheFolder = Path.Combine(CoreUtil.APPLICATIONTEMPPATH, "WebView2Cache");
 
                 var environment = await CoreWebView2Environment.CreateAsync(null, cacheFolder);
@@ -55,6 +71,7 @@ namespace NINA.WPF.Base.View {
         //}
 
         public static DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(Uri), typeof(Browser), new PropertyMetadata(null));
+
         public Uri Source {
             get => (Uri)GetValue(SourceProperty);
             set => SetValue(SourceProperty, value);
@@ -85,7 +102,5 @@ namespace NINA.WPF.Base.View {
             get => (double)GetValue(ZoomFactorProperty);
             set => SetValue(ZoomFactorProperty, value);
         }
-
-
     }
 }

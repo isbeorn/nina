@@ -173,6 +173,50 @@ namespace NINA.Image.FileFormat.FITS {
             CheckStatus("fits_read_key_long", status);
             return value;
         }
+        // fits_read_key_double      ffgkye
+        [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffgkyd", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int _fits_read_key_double(
+            IntPtr fptr,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_KEYWORD)] string keyname,
+            out double value,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_COMMENT)] StringBuilder comm,
+            out int status);
+
+        public static double fits_read_key_double(IntPtr fptr, string keyname) {
+            _fits_read_key_double(fptr, keyname, out var value, null, out var status);
+            CheckStatus("fits_read_key_long", status);
+            return value;
+        }
+
+        // fits_read_key_double      ffgkye
+        [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffgkye", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int _fits_read_key_float(
+            IntPtr fptr,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_KEYWORD)] string keyname,
+            out float value,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_COMMENT)] StringBuilder comm,
+            out int status);
+
+        public static float fits_read_key_float(IntPtr fptr, string keyname) {
+            _fits_read_key_float(fptr, keyname, out var value, null, out var status);
+            CheckStatus("fits_read_key_long", status);
+            return value;
+        }
+
+        // fits_read_key_lng      ffgkyj
+        [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffgkyj", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int _fits_read_key_lng(
+            IntPtr fptr,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_KEYWORD)] string keyname,
+            out long value,
+            [MarshalAs(UnmanagedType.LPStr, SizeConst = FLEN_COMMENT)] StringBuilder comm,
+            out int status);
+
+        public static long fits_read_key_lng(IntPtr fptr, string keyname) {
+            _fits_read_key_lng(fptr, keyname, out var value, null, out var status);
+            CheckStatus("fits_read_key_long", status);
+            return value;
+        }
 
         // void CFITS_API ffgerr(int status, char *errtext);
         [DllImport(DLLNAME, CharSet = CharSet.Ansi, EntryPoint = "ffgerr", CallingConvention = CallingConvention.Cdecl)]
@@ -246,7 +290,7 @@ namespace NINA.Image.FileFormat.FITS {
         private static ushort[] ToUshortArray(float[] src) {
             ushort[] pixels = new ushort[src.Length];
             for (int i = 0; i < src.Length; i++) {
-                pixels[i] = (ushort)(src[i]);
+                pixels[i] = (ushort)(src[i] * ushort.MaxValue);
             }
             return pixels;
         }
@@ -263,6 +307,70 @@ namespace NINA.Image.FileFormat.FITS {
             ushort[] pixels = new ushort[src.Length];
             for (int i = 0; i < src.Length; i++) {
                 pixels[i] = (ushort)((((double)src[i] - int.MinValue) / ((double)int.MaxValue - int.MinValue)) * ushort.MaxValue);
+            }
+            return pixels;
+        }
+
+        public static float[] read_float_pixels(IntPtr filePtr, BITPIX bitPix, int naxes, int nelem) {
+            if (bitPix == BITPIX.BYTE_IMG) {
+                var pixels = read_pixels<byte>(filePtr, naxes, nelem);
+                return ToFloatArray(pixels);
+            } else if (bitPix == BITPIX.DOUBLE_IMG) {
+                var pixels = read_pixels<double>(filePtr, naxes, nelem);
+                return ToFloatArray(pixels);
+            } else if (bitPix == BITPIX.FLOAT_IMG) {
+                var pixels = read_pixels<float>(filePtr, naxes, nelem);
+                return pixels;
+            } else if (bitPix == BITPIX.LONGLONG_IMG) {
+                var pixels = read_pixels<long>(filePtr, naxes, nelem);
+                return ToFloatArray(pixels);
+            } else if (bitPix == BITPIX.LONG_IMG) {
+                var pixels = read_pixels<int>(filePtr, naxes, nelem);
+                return ToFloatArray(pixels);
+            } else if (bitPix == BITPIX.SHORT_IMG) {
+                var pixels = read_pixels<ushort>(filePtr, naxes, nelem);
+                return ToFloatArray(pixels);
+            } else {
+                throw new ArgumentException($"Invalid BITPIX {bitPix}");
+            }
+        }
+
+        private static float[] ToFloatArray(byte[] src) {
+            float[] pixels = new float[src.Length];
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = src[i] / (float)byte.MaxValue;
+            }
+            return pixels;
+        }
+
+        private static float[] ToFloatArray(double[] src) {
+            float[] pixels = new float[src.Length];
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (float)src[i];
+            }
+            return pixels;
+        }
+
+        private static float[] ToFloatArray(ushort[] src) {
+            float[] pixels = new float[src.Length];
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (float)(src[i] / (double)ushort.MaxValue);
+            }
+            return pixels;
+        }
+
+        private static float[] ToFloatArray(long[] src) {
+            float[] pixels = new float[src.Length];
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (float)(((double)src[i] - long.MinValue) / ((double)long.MaxValue - long.MinValue));
+            }
+            return pixels;
+        }
+
+        private static float[] ToFloatArray(int[] src) {
+            float[] pixels = new float[src.Length];
+            for (int i = 0; i < src.Length; i++) {
+                pixels[i] = (float)(((double)src[i] - int.MinValue) / ((double)int.MaxValue - int.MinValue));
             }
             return pixels;
         }
@@ -345,6 +453,8 @@ namespace NINA.Image.FileFormat.FITS {
         public static extern int fits_write_img_uint(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, uint[] array, out int status);
         [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_write_img_float(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, float[] array, out int status);
+        [DllImport(DLLNAME, EntryPoint = "ffppr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_write_img_double(IntPtr fptr, DATATYPE datatype, long fpixel, long nelements, double[] array, out int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr MemReallocDelegate(IntPtr ptr, IntPtr newSize);
@@ -369,6 +479,9 @@ namespace NINA.Image.FileFormat.FITS {
 
         [DllImport(DLLNAME, EntryPoint = "ffukys", CallingConvention = CallingConvention.Cdecl)]
         public static extern int fits_update_key_str(IntPtr fptr, string keyname, string value, string comment, out int status);
+
+        [DllImport(DLLNAME, EntryPoint = "ffukyl", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int fits_update_key_log(IntPtr fptr, string keyname, int value, string comment, out int status);
 
         //[DllImport(DLLNAME, EntryPoint = "ffukyd", CallingConvention = CallingConvention.Cdecl)]
         //public static extern int fits_update_key_dbl(IntPtr fptr, string keyname, double value, int decimals, string comment, out int status);

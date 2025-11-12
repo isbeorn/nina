@@ -71,7 +71,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     Logger.Error(ex);
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.TelescopeSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.TelescopeSettings.Id, profileService.ActiveProfile.TelescopeSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

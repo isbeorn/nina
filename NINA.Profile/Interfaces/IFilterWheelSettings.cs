@@ -20,6 +20,7 @@ namespace NINA.Profile.Interfaces {
     public interface IFilterWheelSettings : ISettings {
         ObserveAllCollection<FilterInfo> FilterWheelFilters { get; set; }
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         bool DisableGuidingOnFilterChange { get; set; }
         bool Unidirectional { get; set; }
     }

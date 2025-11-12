@@ -165,14 +165,15 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                             Notification.ShowError(string.Format(Loc.Instance["LblFilterChangeFailed"], filter.Name, filter.Position + 1));
                             throw new Exception(string.Format(Loc.Instance["LblFilterChangeFailed"], filter.Name, filter.Position + 1));
                         }
+
+                        FilterWheelInfo.SelectedFilter = filter;
+                        await (FilterChanged?.InvokeAsync(this, new FilterChangedEventArgs(from: prevFilter, to: filter)) ?? Task.CompletedTask);
                     }
-                    FilterWheelInfo.SelectedFilter = filter;
-                    await (FilterChanged?.InvokeAsync(this, new FilterChangedEventArgs(from: prevFilter, to: filter)) ?? Task.CompletedTask);
                 } else {
                     await Disconnect();
                 }
-            } catch(OperationCanceledException) {
-                if(token.IsCancellationRequested == true) {
+            } catch (OperationCanceledException) {
+                if (token.IsCancellationRequested == true) {
                     throw;
                 } else {
                     Logger.Error("Switching filter timed out after 5 Minutes");
@@ -217,7 +218,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FilterWheelSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FilterWheelSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -252,6 +258,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
 
                             Notification.ShowSuccess(Loc.Instance["LblFilterwheelConnected"]);
                             profileService.ActiveProfile.FilterWheelSettings.Id = FW.Id;
+                            profileService.ActiveProfile.FilterWheelSettings.LastDeviceName = FW.DisplayName;
                             if (FW.Position > -1) {
                                 FilterWheelInfo.SelectedFilter = FW.Filters[FW.Position];
                             }
@@ -279,9 +286,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                     } catch (OperationCanceledException) {
                         if (fW?.Connected == true) { await Disconnect(); }
                         return false;
-                    } catch (Exception e) {
-                        Logger.Error($"Failed to connect to filter wheel: {e}");
-                        Notification.ShowError(e.Message);
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (FilterWheelInfo.Connected) { await Disconnect(); }
+                        FilterWheelInfo.Connected = false;
                         return false;
                     }
                 } else {
@@ -334,6 +343,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
         private FilterWheelInfo filterWheelInfo;
 
         public event Func<object, EventArgs, Task> Connected;
+
         public event Func<object, EventArgs, Task> Disconnected;
 
         public FilterWheelInfo FilterWheelInfo {
@@ -386,6 +396,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FilterWheel {
                 FW.SendCommandBlind(command, raw);
             }
         }
+
         public IDevice GetDevice() {
             return FW;
         }

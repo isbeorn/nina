@@ -30,12 +30,13 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            lastDeviceName = string.Empty;
             name = string.Empty;
             mountName = string.Empty;
             focalLength = double.NaN;
             focalRatio = double.NaN;
             snapPortStart = ":SNAP1,1#";
-            snapPortStop = "SNAP1,0#";
+            snapPortStop = ":SNAP1,0#";
             settleTime = 5;
             noSync = false;
             timeSync = true;
@@ -50,6 +51,19 @@ namespace NINA.Profile {
             set {
                 if (id != value) {
                     id = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
                     RaisePropertyChanged();
                 }
             }

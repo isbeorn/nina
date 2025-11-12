@@ -31,6 +31,7 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
+            lastDeviceName = string.Empty;
             ditherPixels = 5;
             ditherRAOnly = false;
             settleTime = 10;
@@ -77,6 +78,19 @@ namespace NINA.Profile {
             guideChartRightAscensionColor = Colors.Blue;
             guideChartDeclinationColor = Colors.Red;
             guideChartShowCorrections = true;
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         private double ditherPixels;

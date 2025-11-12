@@ -64,7 +64,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
             updateTimer = new DeviceUpdateTimer(
                 GetMonitorValues,
                 UpdateMonitorValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "SafetyMonitor"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -124,7 +125,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SafetyMonitorSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -163,6 +169,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.SafetyMonitorSettings.Id = sm.Id;
+                            profileService.ActiveProfile.SafetyMonitorSettings.LastDeviceName = sm.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Safety Monitor. Id: {sm.Id} Name: {sm.Name} DisplayName: {sm.DisplayName} Driver Version: {sm.DriverVersion}");
@@ -175,6 +182,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor {
                         }
                     } catch (OperationCanceledException) {
                         if (sm?.Connected == true) { await Disconnect(); }
+                        return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (SafetyMonitorInfo.Connected) { await Disconnect(); }
+                        SafetyMonitorInfo.Connected = false;
                         return false;
                     }
                 } else {

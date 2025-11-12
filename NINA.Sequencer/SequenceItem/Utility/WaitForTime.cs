@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 using NINA.Core.Utility;
 using NINA.Sequencer.Validations;
 using NINA.Core.Locale;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -36,7 +38,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForTime : SequenceItem, IValidatable {
+    public partial class WaitForTime : SequenceItem, IValidatable {
         private IList<IDateTimeProvider> dateTimeProviders;
         private int hours;
         private int minutes;
@@ -89,7 +91,7 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 }
             }
             if (!timeDeterminedSuccessfully) {
-                i.Add(Loc.Instance["LblSelectedTimeSourceInvalid"]);
+                i.Add($"{Loc.Instance["LblSelectedTimeSourceInvalid"]} {failureReason}");
             }
 
             Issues = i;
@@ -155,10 +157,16 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                 }
             }
         }
+
+        [ObservableProperty]
+        private TimeOnly rolloverTime;
+
         private bool timeDeterminedSuccessfully;
+        private string failureReason;
         private DateTime lastReferenceDate;
         private void UpdateTime() {
             try {
+                RolloverTime = SelectedProvider.GetRolloverTime(this);
                 lastReferenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
                 if (HasFixedTimeProvider) {
                     var t = SelectedProvider.GetDateTime(this) + TimeSpan.FromMinutes(MinutesOffset);
@@ -168,8 +176,9 @@ namespace NINA.Sequencer.SequenceItem.Utility {
                     
                 }
                 timeDeterminedSuccessfully = true;
-            } catch(Exception) {
+            } catch(Exception ex) {
                 timeDeterminedSuccessfully = false;
+                failureReason = ex is TimeProviderException tpe ? tpe.LocalizedMessage : ex.Message;
                 Validate();
             }            
         }
@@ -188,15 +197,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             var now = DateTime.Now;
             var then = new DateTime(now.Year, now.Month, now.Day, Hours, Minutes, Seconds);
 
-            var rollover = SelectedProvider.GetRolloverTime(this);
+            RolloverTime = SelectedProvider.GetRolloverTime(this);
             var timeOnlyNow = TimeOnly.FromDateTime(now);
             var timeOnlyThen = TimeOnly.FromDateTime(then);
 
-            if(timeOnlyNow < rollover && timeOnlyThen >= rollover) {
+            if(timeOnlyNow < RolloverTime && timeOnlyThen >= RolloverTime) {
                 then = then.AddDays(-1);
             }
 
-            if (timeOnlyNow >= rollover && timeOnlyThen < rollover) {
+            if (timeOnlyNow >= RolloverTime && timeOnlyThen < RolloverTime) {
                 then = then.AddDays(1);
             }
 

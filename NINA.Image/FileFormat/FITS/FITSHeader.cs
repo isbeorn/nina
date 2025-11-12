@@ -21,7 +21,6 @@ using System.IO;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Image.ImageData;
-using System.Windows.Input;
 
 namespace NINA.Image.FileFormat.FITS {
     public class FITSHeader {
@@ -252,6 +251,18 @@ namespace NINA.Image.FileFormat.FITS {
                 }
 
                 metaData.Observer.Longitude = value;
+            }
+
+            if (_headerCards.TryGetValue("OBSERVER", out card)) {
+                metaData.Observer.Name = card.OriginalValue;
+            }
+
+            if (_headerCards.TryGetValue("OBSERVAT", out card)) {
+                metaData.Observer.Observatory = card.OriginalValue;
+            }
+
+            if (_headerCards.TryGetValue("SITENAME", out card)) {
+                metaData.Observer.Site = card.OriginalValue;
             }
 
             /* Filter Wheel */
@@ -504,12 +515,14 @@ namespace NINA.Image.FileFormat.FITS {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 Add("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
                 Add("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+                Add("MJD-OBS", metaData.Image.ExposureStart.ToMJD(), "Modified Julian Date of observation");
             }
 
             if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
                 // Section 8.4.1 https://fits.gsfc.nasa.gov/standard40/fits_standard40aa-le.pdf
                 // Calendar date of the midpoint of the observation, expressed in the same way as the DATE-OBS keyword.
                 Add("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
+                Add("MJD-AVG", metaData.Image.ExposureMidPoint.ToMJD(), "Modified Julian Date of averaged midpoint");
             }
 
             /* Camera */
@@ -620,6 +633,15 @@ namespace NINA.Image.FileFormat.FITS {
             }
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 Add("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                Add("OBSERVER", metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                Add("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                Add("SITENAME", metaData.Observer.Site, "Observatory site name");
             }
 
             /* Filter Wheel */

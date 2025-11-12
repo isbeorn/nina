@@ -58,6 +58,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             Id = "No_Device";
+            lastDeviceName = string.Empty;
         }
 
         private string id;
@@ -69,6 +70,19 @@ namespace NINA.Profile {
                 if (id == value) return;
                 id = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 

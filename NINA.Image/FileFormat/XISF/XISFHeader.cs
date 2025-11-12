@@ -182,6 +182,18 @@ namespace NINA.Image.FileFormat.XISF {
                 metaData.Observer.Longitude = double.Parse(value, CultureInfo.InvariantCulture);
             }
 
+            if (TryGetImageProperty(XISFImageProperty.Observation.Location.Name, out value)) {
+                metaData.Observer.Site = value;
+            }
+
+            if (TryGetFITSProperty("OBSERVAT", out value)) {
+                metaData.Observer.Observatory = value;
+            }
+
+            if (TryGetImageProperty(XISFImageProperty.Observer.Name, out value)) {
+                metaData.Observer.Name = value;
+            }
+
             /* Telescope */
             if (TryGetImageProperty(XISFImageProperty.Instrument.Telescope.Name, out value)) {
                 metaData.Telescope.Name = value;
@@ -482,6 +494,15 @@ namespace NINA.Image.FileFormat.XISF {
             if (!double.IsNaN(metaData.Observer.Longitude)) {
                 AddImageProperty(XISFImageProperty.Observation.Location.Longitude, metaData.Observer.Longitude, "[deg] Observation site longitude");
             }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddImageProperty(XISFImageProperty.Observer.Name, metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Site)) {
+                AddImageProperty(XISFImageProperty.Observation.Location.Name, metaData.Observer.Site, "Observatory site name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                AddImageFITSKeyword("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
 
             /* Telescope */
             if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
@@ -731,7 +752,7 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void AddImageProperty(string[] property, DateTime value, string comment = "", bool autoaddfits = true) {
-            AddImagePropertyInternal(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment, autoaddfits, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'");
+            AddImagePropertyInternal(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture), comment, autoaddfits, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'");
         }
 
         public void AddImageProperty(string[] property, int value, string comment = "", bool autoaddfits = true) {
@@ -766,7 +787,7 @@ namespace NINA.Image.FileFormat.XISF {
         }
 
         public void AddImageFITSKeyword(string name, DateTime value, string comment = "") {
-            AddImageFITSKeywordInternal(name, "'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + "'", comment);
+            AddImageFITSKeywordInternal(name, "'" + value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'", comment);
         }
 
         public void AddImageFITSKeyword(string name, int value, string comment = "") {

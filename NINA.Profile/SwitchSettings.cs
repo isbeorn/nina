@@ -30,6 +30,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
+            lastDeviceName = string.Empty;
         }
 
         private string id;
@@ -43,6 +44,19 @@ namespace NINA.Profile {
                     RaisePropertyChanged();
                 }
             }
-        }   
+        }
+
+        private string lastDeviceName;
+
+        [DataMember]
+        public string LastDeviceName {
+            get => lastDeviceName;
+            set {
+                if (lastDeviceName != value) {
+                    lastDeviceName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
     }
 }

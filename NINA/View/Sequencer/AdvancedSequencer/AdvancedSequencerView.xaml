@@ -73,6 +73,80 @@
             <Button
                 Width="80"
                 Margin="5"
+                Command="{Binding LockSequenceCommand}"
+                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        <TextBlock Text="{ns:Loc Lbl_Sequencer_LockSequence_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Path
+                    Margin="5"
+                    Data="{StaticResource UnlockSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+            </Button>
+            <Button
+                Width="80"
+                Margin="5"
+                Background="{StaticResource ButtonBackgroundSelectedBrush}"
+                Command="{Binding UnlockSequenceCommand}"
+                Visibility="{Binding IsLocked, Converter={StaticResource VisibilityConverter}}">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        <TextBlock Text="{ns:Loc Lbl_Sequencer_UnlockSequence_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Path
+                    Margin="5"
+                    Data="{StaticResource LockSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+            </Button>
+            <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                <Button
+                    Width="80"
+                    Margin="5"
+                    Command="{Binding DisableDragAndDropCommand}"
+                    Visibility="{Binding CanDragAndDrop, Converter={StaticResource VisibilityConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_DisableDragAndDrop_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource DragDropSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+            </Grid>
+            <Grid Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                <Button
+                    Width="80"
+                    Margin="5"
+                    Background="{StaticResource ButtonBackgroundSelectedBrush}"
+                    Command="{Binding EnableDragAndDropCommand}"
+                    Visibility="{Binding CanDragAndDrop, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc Lbl_Sequencer_EnableDragAndDrop_Tooltip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource DisableDragDropSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Button>
+            </Grid>
+            <Button
+                Width="80"
+                Margin="5"
                 Command="{Binding SwitchToOverviewCommand}"
                 Visibility="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.SequenceSettings.DisableSimpleSequencer, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                 <Button.ToolTip>
@@ -90,7 +164,8 @@
             <Button
                 Width="80"
                 Margin="5"
-                Command="{Binding SaveAsSequenceCommand}">
+                Command="{Binding SaveAsSequenceCommand}"
+                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc Lbl_Sequencer_SaveAsSequence_Tooltip}" />
@@ -107,7 +182,8 @@
                 Width="80"
                 Margin="5"
                 Command="{Binding SaveSequenceCommand}"
-                IsEnabled="{Binding SavePath, Converter={StaticResource InverseNullToBooleanConverter}}">
+                IsEnabled="{Binding SavePath, Converter={StaticResource InverseNullToBooleanConverter}}"
+                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <StackPanel Orientation="Horizontal">
@@ -127,7 +203,8 @@
             <Button
                 Width="80"
                 Margin="5"
-                Command="{Binding LoadSequenceCommand}">
+                Command="{Binding LoadSequenceCommand}"
+                Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc Lbl_Sequencer_LoadSequence_Tooltip}" />
@@ -150,7 +227,8 @@
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Stretch"
-            Background="{StaticResource TertiaryBackgroundBrush}">
+            Background="{StaticResource TertiaryBackgroundBrush}"
+            Visibility="{Binding IsLocked, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
             <i:Interaction.Behaviors>
                 <behaviors:DragOverBehavior DragOverCenterText="{ns:Loc Lbl_Sequencer_DeleteItem}" DragOverDisplayAnchor="Left" />
                 <behaviors:DropIntoBehavior OnDropCommand="DetachCommand" />

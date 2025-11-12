@@ -12,11 +12,27 @@
 
 #endregion "copyright"
 
-using NINA.Equipment.Equipment.MyCamera;
+using Accord.Statistics.Models.Regression.Linear;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Dasync.Collections;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model;
+using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Equipment.Interfaces.Mediator;
+using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces.ViewModel;
+using NINA.Equipment.Model;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,23 +40,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Accord.Statistics.Models.Regression.Linear;
-using Dasync.Collections;
-using NINA.Equipment.Utility;
-using NINA.Core.Model;
-using NINA.Core.Locale;
-using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.MyMessageBox;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Equipment;
-using Nito.AsyncEx;
-using NINA.Core.Enum;
-using NINA.Equipment.Exceptions;
-using NINA.Core.Utility.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
@@ -61,7 +60,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             this.applicationStatusMediator = applicationStatusMediator;
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseCamera), (object o) => DeviceChooserVM.SelectedDevice != null);
-            CancelConnectCommand = new RelayCommand(CancelConnectCamera);
+            CancelConnectCommand = new Core.Utility.RelayCommand(CancelConnectCamera);
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             CoolCamCommand = new AsyncCommand<bool>(() => {
                 _cancelChangeTemperatureCts?.Dispose();
@@ -73,20 +72,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 _cancelChangeTemperatureCts = new CancellationTokenSource();
                 return Task.Run(() => WarmCamera(TimeSpan.FromMinutes(WarmingDuration), new Progress<ApplicationStatus>(p => Status = p), _cancelChangeTemperatureCts.Token));
             }, (object o) => !TempChangeRunning);
-            CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
+            CancelCoolCamCommand = new Core.Utility.RelayCommand(CancelCoolCamera);
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Task.Run(Rescan); return true; }, o => !CameraInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
 
             TempChangeRunning = false;
-            CoolerHistory = new AsyncObservableLimitedSizedStack<CameraCoolingStep>(100);
+            CoolerHistory = new LinkedList<CameraCoolingStep>();
             CoolerHistoryMax = 20;
             coolerHistoryMin = -20;
-            ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
                 UpdateCameraValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Camera"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -332,7 +331,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.CameraSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.CameraSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -354,6 +358,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             CoolerHistory.Clear();
                             CoolerHistoryMax = 20;
                             CoolerHistoryMin = -20;
+                            CoolerHistoryChangeId++;
                             this.Cam = cam;
                             token.ThrowIfCancellationRequested();
 
@@ -407,6 +412,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
+                                HasBattery = Cam.HasBattery,
                                 Battery = Cam.BatteryLevel,
                                 BitDepth = Cam.BitDepth,
                                 ElectronsPerADU = Cam.ElectronsPerADU,
@@ -432,6 +438,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
+                            profileService.ActiveProfile.CameraSettings.LastDeviceName = this.Cam.DisplayName;
                             if (Cam.PixelSizeX > 0) {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }
@@ -490,12 +497,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             set {
                 cameraInfo = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        private void ToggleDewHeaterOn(object o) {
-            if (CameraInfo.Connected) {
-                Cam.DewHeaterOn = (bool)o;
             }
         }
 
@@ -572,7 +573,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.PixelSize), out o);
             CameraInfo.PixelSize = (double)(o ?? 0.0d);
 
-            CoolerHistory.Add(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            CoolerHistory.AddLast(new CameraCoolingStep(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), CameraInfo.Temperature, CameraInfo.CoolerPower));
+            if(CoolerHistory.Count > 100) {
+                CoolerHistory.RemoveFirst();
+            }
+            CoolerHistoryChangeId++;
             CoolerHistoryMax = Math.Max(CameraInfo.Temperature, CoolerHistoryMax);
             CoolerHistoryMin = Math.Min(CameraInfo.Temperature, CoolerHistoryMin);
 
@@ -597,21 +602,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0);
             cameraValues.Add(nameof(CameraInfo.PixelSize), _cam?.PixelSizeX ?? 0);
 
-            if (_cam != null && _cam.CanSetGain) {
+            if (_cam != null && CameraInfo.CanSetGain) {
                 cameraValues.Add(nameof(CameraInfo.Gain), _cam?.Gain ?? -1);
                 cameraValues.Add(nameof(CameraInfo.DefaultGain), DefaultGain);
             }
 
-            if (_cam != null && _cam.CanSetOffset) {
+            if (_cam != null && CameraInfo.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);
                 cameraValues.Add(nameof(CameraInfo.DefaultOffset), DefaultOffset);
             }
 
-            if (_cam != null && _cam.CanSetUSBLimit) {
+            if (_cam != null && CameraInfo.CanSetUSBLimit) {
                 cameraValues.Add(nameof(CameraInfo.USBLimit), _cam?.USBLimit ?? -1);
             }
 
-            if (_cam != null && _cam.HasBattery) {
+            if (_cam != null && CameraInfo.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
             }
 
@@ -852,8 +857,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
+        [RelayCommand]
         public void SetDewHeater(bool onOff) {
             if (CameraInfo.Connected == true && CameraInfo.HasDewHeater == true) {
+                Logger.Info($"Setting camera dew heater to {(onOff ? "on" : "off")}");
                 Cam.DewHeaterOn = onOff;
                 BroadcastCameraInfo();
             }
@@ -914,11 +921,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
             }
         }
 
+        public void SetSubSambleRectangle(ObservableRectangle observableRectangle) {
+            SetSubSampleArea((int)observableRectangle.X, (int)observableRectangle.Y, (int)observableRectangle.Width, (int)observableRectangle.Height);
+            Cam.UpdateSubSampleArea();
+        }
+
         public bool AtTargetTemp => Math.Abs(cameraInfo.Temperature - TargetTemp) <= 2;
 
         public double ExposureMin {
             get {
-                if (Cam?.Connected != true) {
+                if (CameraInfo?.Connected != true) {
                     return 0.0;
                 }
                 // Guard against bad values reported by a driver
@@ -945,7 +957,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public string Action(string actionName, string actionParameters) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.Action(actionName, actionParameters);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + actionName);
@@ -954,7 +966,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public string SendCommandString(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.SendCommandString(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
@@ -963,7 +975,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public bool SendCommandBool(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 return Cam.SendCommandBool(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
@@ -972,7 +984,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public void SendCommandBlind(string command, bool raw = true) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 Cam.SendCommandBlind(command, raw);
             } else {
                 Notification.ShowError(Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
@@ -980,10 +992,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
         }
 
         public IDevice GetDevice() {
+            if (Cam is PersistSettingsCameraDecorator decorator) {
+                return decorator.Camera;
+            }
             return Cam;
         }
 
-        public AsyncObservableLimitedSizedStack<CameraCoolingStep> CoolerHistory { get; private set; }
+        [ObservableProperty]
+        private ulong coolerHistoryChangeId;
+
+        public LinkedList<CameraCoolingStep> CoolerHistory { get; private set; }
 
         [ObservableProperty]
         private double coolerHistoryMax;
@@ -992,7 +1010,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
         public IAsyncCommand CoolCamCommand { get; private set; }
         public IAsyncCommand WarmCamCommand { get; private set; }
-        public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
         private double exposureTime;

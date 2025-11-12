@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Locale;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -76,7 +77,9 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     int positions = (int)sbigFilterWheelInfo.FilterCount;
 
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }
@@ -167,7 +170,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     return true;
                 } catch (Exception e) {
                     Logger.Error($"SBIGFW: Failed to connect {this.queriedDeviceInfo.DeviceId}", e);
-                    Notification.ShowError($"Failed to connect {this.queriedDeviceInfo.DeviceId}, {e}");
+                    Notification.ShowError(String.Format(Loc.Instance["LblFailedToConnectDevice"], this.queriedDeviceInfo.DeviceId, e));
                     if (connectedDevice.HasValue) {
                         sdk.CloseDevice(connectedDevice.Value.DeviceId);
                         connectedDevice = null;

@@ -55,16 +55,19 @@ using NINA.Sequencer.Trigger.Autofocus;
 using NINA.Equipment.Equipment.MyCamera;
 using System.ComponentModel;
 using NINA.Core.Utility.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NINA.ViewModel.Sequencer {
 
-    internal class Sequence2VM : BaseVM, ISequence2VM {
+    internal partial class Sequence2VM : BaseVM, ISequence2VM {
         private ICommandLineOptions commandLineOptions;
         private IApplicationStatusMediator applicationStatusMediator;
         private ISequenceMediator sequenceMediator;
         private IApplicationMediator applicationMediator;
         private ICameraMediator cameraMediator;
-        private DispatcherTimer validationTimer;
+        private CancellationTokenSource backgroundValidationCts;
+        private Task backgroundValidationTask;
 
         public Sequence2VM(
             IProfileService profileService,
@@ -125,6 +128,34 @@ namespace NINA.ViewModel.Sequencer {
                 sequencer = value;
                 AttachSequencerINPC();
             }
+        }
+
+        [ObservableProperty]
+        private bool isLocked;
+
+        [RelayCommand]
+        public void LockSequence() {
+            IsLocked = true;
+            Logger.Info("Sequencer unlocked");
+        }
+        [RelayCommand]
+        public void UnlockSequence() {
+            IsLocked = false;
+            Logger.Info("Sequencer locked");
+        }
+
+        [ObservableProperty]
+        private bool canDragAndDrop = true;
+
+        [RelayCommand]
+        public void DisableDragAndDrop() {
+            CanDragAndDrop = false;
+            Logger.Info("Sequencer drag and drop disabled");
+        }
+        [RelayCommand]
+        public void EnableDragAndDrop() {
+            CanDragAndDrop = true;
+            Logger.Info("Sequencer drag and drop enabled");
         }
 
         private void DetachSequencerINPC() {
@@ -192,11 +223,8 @@ namespace NINA.ViewModel.Sequencer {
                         rootContainer
                     );
 
-                    validationTimer = new DispatcherTimer(DispatcherPriority.Background);
-                    validationTimer.Interval = TimeSpan.FromSeconds(5);
-                    validationTimer.IsEnabled = true;
-                    validationTimer.Tick += (sender, args) => Sequencer.MainContainer.Validate();
-                    validationTimer.Start();
+                    backgroundValidationCts = new CancellationTokenSource();
+                    backgroundValidationTask = RunBackgroundValidationTimer(backgroundValidationCts.Token);
 
                     if (commandLineOptions.SequenceFile == null && File.Exists(profileService.ActiveProfile.SequenceSettings.StartupSequenceTemplate)) {
                         try {
@@ -212,6 +240,26 @@ namespace NINA.ViewModel.Sequencer {
                         TryLoadSequenceFile();
                     }
                 }));
+            });
+        }
+
+        private Task RunBackgroundValidationTimer(CancellationToken token) {
+            return Task.Run(async () => {
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+                try {
+                    while (await timer.WaitForNextTickAsync(token)) {
+                        try {
+                            using (MyStopWatch.Measure()) { 
+                                Sequencer.MainContainer.Validate();
+                            }
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error("BackgroundValidationTimer ran into unexpected exception", ex);
+                }
             });
         }
 
@@ -282,9 +330,19 @@ namespace NINA.ViewModel.Sequencer {
         }
 
         private void LoadSequence(object obj) {
-            if (Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
+            bool isEmpty = true;
+            foreach (ISequenceContainer cont in Sequencer.MainContainer.Items) {
+                if (cont.Items.Count > 0) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            // Don't ask if this is an empty sequence
+            if (!isEmpty && Sequencer.MainContainer.AskHasChanged(SavePath ?? "")) {
                 return;
             }
+
             var initialDirectory = string.Empty;
             if (Directory.Exists(profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder)) {
                 initialDirectory = Path.GetFullPath(profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder);

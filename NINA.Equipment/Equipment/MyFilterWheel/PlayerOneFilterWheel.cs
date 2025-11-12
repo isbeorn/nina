@@ -37,7 +37,9 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     var positions = info.PositionCount;
 
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }
@@ -73,7 +75,9 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 var err = PlayerOneFilterWheelSDK.POAGetCurrentPosition(this.id, out var position);
                 if (err == PlayerOneFilterWheelSDK.PWErrors.PW_OK) {
                     return (short)position;
-                } else {
+                } else if (err == PlayerOneFilterWheelSDK.PWErrors.PW_ERROR_IS_MOVING) {
+                    return -1;
+                } else { 
                     Logger.Error($"PlayerOne FilterWheel Communication error to get position {err}");
                     return -1;
                 }

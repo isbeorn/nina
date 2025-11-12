@@ -64,9 +64,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             DisconnectCommand = new AsyncCommand<bool>(() => Task.Run(DisconnectDiag));
             RescanDevicesCommand = new AsyncCommand<bool>(async o => { await Rescan(); return true; }, o => !FocuserInfo.Connected);
             _ = RescanDevicesCommand.ExecuteAsync(null);
-            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d))), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal((int)Math.Min(-1, Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)))), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
             MoveFocuserInLargeCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
-            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d))), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal((int)Math.Max(1, Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)))), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
             MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserRelativeInternal(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
             MoveFocuserCommand = new AsyncCommand<int>(() => Task.Run(() => MoveFocuserInternal(TargetPosition)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
             HaltFocuserCommand = new RelayCommand((object o) => { try { moveCts?.Cancel(); } catch { } });
@@ -75,7 +75,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             updateTimer = new DeviceUpdateTimer(
                 GetFocuserValues,
                 UpdateFocuserValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Focuser"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -108,7 +109,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
         private void HaltFocuser() {
             Logger.Info("Halting Focuser");
-            if (Focuser?.Connected != true) return;
+            if (FocuserInfo?.Connected != true) return;
             try {
                 Focuser.Halt();
             } catch (Exception ex) {
@@ -129,7 +130,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         private Task<int> MoveFocuserRelativeInternal(int position) {
             moveCts?.Dispose();
             moveCts = new CancellationTokenSource();
-            return MoveFocuserRelative(position, moveCts.Token);
+            var result = MoveFocuserRelative(position, moveCts.Token);
+            BroadcastUserFocused();
+            return result;
         }
 
         public void SetFocusedTemperature(double temp) {
@@ -175,7 +178,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         public async Task<int> MoveFocuserRelative(int offset, CancellationToken ct) {
             await ss.WaitAsync(ct);
             try {
-                if (Focuser?.Connected != true) return -1;
+                if (FocuserInfo?.Connected != true) return -1;
                 var pos = Position + offset;
                 pos = await MoveFocuserInternal(pos, ct);
                 return pos;
@@ -280,7 +283,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FocuserSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FocuserSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblConnecting"] });
@@ -319,6 +327,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
                         TargetPosition = Position;
                         profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
+                        profileService.ActiveProfile.FocuserSettings.LastDeviceName = Focuser.DisplayName;
 
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         Logger.Info($"Successfully connected Focuser. Id: {Focuser.Id} Name: {Focuser.Name} DisplayName: {Focuser.DisplayName} Driver Version: {Focuser.DriverVersion}");
@@ -331,6 +340,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     }
                 } catch (OperationCanceledException) {
                     if (newFocuser?.Connected == true) { await Disconnect(); }
+                    return false;
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                    Logger.Error(ex);
+                    if (FocuserInfo.Connected) { await Disconnect(); }
+                    FocuserInfo.Connected = false;
                     return false;
                 }
             } finally {
@@ -469,6 +484,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             }
         }
         public IDevice GetDevice() {
+            if (Focuser is OvershootBacklashCompensationDecorator overshoot) {
+                return overshoot.Focuser;
+            } else if (Focuser is AbsoluteBacklashCompensationDecorator absolute) {
+                return absolute.Focuser;
+            }
             return Focuser;
         }
 

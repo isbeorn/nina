@@ -34,6 +34,7 @@ using NINA.Equipment.Model;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Utility;
 using System.Runtime.CompilerServices;
+using NINA.Core.Locale;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -328,9 +329,33 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short BayerOffsetY => 0;
 
-        public int CameraXSize => -1;
+        public int CameraXSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResX;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
-        public int CameraYSize => -1;
+        public int CameraYSize {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).ResY;
+                    } catch {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
 
         public double ExposureMin => 0;
 
@@ -342,9 +367,34 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public short MaxBinY => 1;
 
-        public double PixelSizeX => double.NaN;
+        public double PixelSizeX {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeX;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
 
-        public double PixelSizeY => double.NaN;
+        public double PixelSizeY {
+            get {
+                if (Connected) {
+                    try {
+                        return Nikon.NikonCameraDatabase.GetSensorSpecs(_camera.Name).PixelSizeY;
+                    } catch {
+                        return double.NaN;
+                    }
+                } else {
+                    return double.NaN;
+                }
+            }
+        }
+
 
         public bool CanSetTemperature => false;
 
@@ -547,10 +597,14 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public int BatteryLevel {
             get {
-                try {
-                    return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
-                } catch (NikonException ex) {
-                    Logger.Error(ex);
+                if (Connected) {
+                    try {
+                        return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
+                    } catch (NikonException ex) {
+                        Logger.Error(ex);
+                        return -1;
+                    }
+                } else {
                     return -1;
                 }
             }
@@ -619,7 +673,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
                 if (_downloadExposure != null && _downloadExposure.Task.Status <= TaskStatus.Running) {
-                    Notification.ShowWarning("Another exposure still in progress. Cancelling it to start another.");
+                    Notification.ShowWarning(Loc.Instance["LblExposureInProgress"]);
                     Logger.Warning("An exposure was still in progress. Cancelling it to start another.");
                     try { bulbCompletionCTS?.Cancel(); } catch { }
                     _downloadExposure.TrySetCanceled();
@@ -858,6 +912,10 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public void SendCommandBlind(string command, bool raw) {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateSubSampleArea() {
             throw new NotImplementedException();
         }
     }

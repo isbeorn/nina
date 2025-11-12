@@ -74,7 +74,7 @@ namespace NINA.Sequencer.Container {
                 }
 
                 if(sender is TextBox tb) {
-                    var container = tb.FindParent<SequenceContainerView>();
+                    var container = tb.FindParent<HierarchicalSequenceContainerView>();
                     if(container.DataContext is IDeepSkyObjectContainer dsoContainer) {
                         if (double.IsNaN(raDeg)) {
                             // only Dec coordinates in clipboard. Use existing RA

@@ -19,10 +19,8 @@ namespace NINA.Core.Model {
 
     public class RMS : BaseINPC {
         private int datapoints;
-        private double sum_RA;
-        private double sum_RA2;
-        private double sum_Dec;
-        private double sum_Dec2;
+        private double meanRA = 0, meanDec = 0;
+        private double m2RA = 0, m2Dec = 0; // Variance accumulator
         private double ra;
         private double dec;
         private double total;
@@ -87,48 +85,50 @@ namespace NINA.Core.Model {
             }
         }
 
-        public int DataPoints { get => datapoints; } 
+        public int DataPoints { get => datapoints; }
 
         public void AddDataPoint(double raDistance, double decDistance) {
             datapoints++;
-            sum_RA += raDistance;
-            sum_RA2 += (raDistance * raDistance);
-            sum_Dec += decDistance;
-            sum_Dec2 += (decDistance * decDistance);
-            if (Math.Abs(raDistance) > PeakRA) {
-                PeakRA = Math.Abs(raDistance);
-            }
-            if (Math.Abs(decDistance) > PeakDec) {
-                PeakDec = Math.Abs(decDistance);
-            }
+            double deltaRA = raDistance - meanRA;
+            meanRA += deltaRA / datapoints;
+            m2RA += deltaRA * (raDistance - meanRA);
+
+            double deltaDec = decDistance - meanDec;
+            meanDec += deltaDec / datapoints;
+            m2Dec += deltaDec * (decDistance - meanDec);
+
+            PeakRA = Math.Max(PeakRA, Math.Abs(raDistance));
+            PeakDec = Math.Max(PeakDec, Math.Abs(decDistance));
 
             CalculateRMS();
         }
 
         public void RemoveDataPoint(double raDistance, double decDistance) {
+            double deltaRA = raDistance - meanRA;
+            meanRA -= deltaRA / datapoints;
+            m2RA -= deltaRA * (raDistance - meanRA);
+
+            double deltaDec = decDistance - meanDec;
+            meanDec -= deltaDec / datapoints;
+            m2Dec -= deltaDec * (decDistance - meanDec);
+
             datapoints--;
-            sum_RA -= raDistance;
-            sum_RA2 -= (raDistance * raDistance);
-            sum_Dec -= decDistance;
-            sum_Dec2 -= (decDistance * decDistance);
 
             CalculateRMS();
         }
 
         private void CalculateRMS() {
-            var ra = Math.Sqrt(datapoints * sum_RA2 - sum_RA * sum_RA) / datapoints;
-            var dec = Math.Sqrt(datapoints * sum_Dec2 - sum_Dec * sum_Dec) / datapoints;
-            RA = ra;
-            Dec = dec;
-            Total = Math.Sqrt((Math.Pow(dec, 2) + Math.Pow(ra, 2)));
+            RA = (datapoints > 0) ? Math.Sqrt(m2RA / datapoints) : 0;
+            Dec = (datapoints > 0) ? Math.Sqrt(m2Dec / datapoints) : 0;
+            Total = Math.Sqrt(RA * RA + Dec * Dec);
         }
 
         public void Clear() {
             datapoints = 0;
-            sum_RA = 0.0d;
-            sum_RA2 = 0.0d;
-            sum_Dec = 0.0d;
-            sum_Dec2 = 0.0d;
+            meanRA = 0.0d;
+            meanDec = 0.0d;
+            m2RA = 0.0d;
+            m2Dec = 0.0d;
             RA = 0;
             Dec = 0;
             Total = 0;

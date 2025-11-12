@@ -40,7 +40,7 @@ using ASCOM.Alpaca.Discovery;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class AscomCamera : AscomDevice<ICameraV3>, ICamera, IDisposable {
+    public class AscomCamera : AscomDevice<ICameraV4>, ICamera, IDisposable {
 
         public AscomCamera(string cameraId, string name, IProfileService profileService, IExposureDataFactory exposureDataFactory) : base(cameraId, name) {
             this.profileService = profileService;
@@ -201,7 +201,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 bool val = false;
                 try {
-                    if (Connected && _hasCooler) {
+                    if (ShouldBeConnected && _hasCooler) {
                         val = device.CoolerOn;
                     }
                 } catch (Exception) {
@@ -211,7 +211,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             set {
                 try {
-                    if (Connected && _hasCooler) {
+                    if (ShouldBeConnected && _hasCooler) {
                         device.CoolerOn = value;
                         RaisePropertyChanged();
                     }
@@ -286,7 +286,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int Gain {
             get {
                 int val = -1;
-                if (Connected && CanGetGain) {
+                if (ShouldBeConnected && CanGetGain) {
                     try {
                         if (Gains.Count > 0) {
                             val = (int)Gains[device.Gain];
@@ -301,7 +301,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 return val;
             }
             set {
-                if (Connected && CanSetGain) {
+                if (ShouldBeConnected && CanSetGain) {
                     try {
                         if (Gains.Count > 0) {
                             short idx = (short)Gains.IndexOf(value);
@@ -379,7 +379,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int GainMax {
             get {
                 int val = -1;
-                if (Connected) {
+                if (ShouldBeConnected) {
                     if (_canGetGainMinMax) {
                         try {
                             val = device.GainMax;
@@ -403,7 +403,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int GainMin {
             get {
                 int val = -1;
-                if (Connected) {
+                if (ShouldBeConnected) {
                     if (_canGetGainMinMax) {
                         try {
                             val = device.GainMin;
@@ -445,8 +445,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public bool ImageReady => GetProperty(nameof(Camera.ImageReady), false, cacheInterval: TimeSpan.Zero);
 
-        public short InterfaceVersion => GetProperty<short>(nameof(Camera.InterfaceVersion), -1);
-
         public bool IsPulseGuiding => GetProperty(nameof(Camera.IsPulseGuiding), false);
 
         private bool _hasLastExposureInfo;
@@ -455,7 +453,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 double val = -1;
                 try {
-                    if (Connected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureInfo) {
                         val = device.LastExposureDuration;
                     }
                 } catch (ASCOM.InvalidOperationException) {
@@ -470,7 +468,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             get {
                 string val = string.Empty;
                 try {
-                    if (Connected && _hasLastExposureInfo) {
+                    if (ShouldBeConnected && _hasLastExposureInfo) {
                         val = device.LastExposureStartTime;
                     }
                 } catch (ASCOM.InvalidOperationException) {
@@ -521,7 +519,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public short ReadoutMode {
             get => GetProperty<short>(nameof(Camera.ReadoutMode), 0);
             set {
-                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                if (ShouldBeConnected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
                     try {
                         device.ReadoutMode = value;
                     } catch (InvalidValueException ex) {
@@ -615,8 +613,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
                 while (!ImageReady) {
-                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), token);
+                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(10), token);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
             }
         }
 
@@ -630,6 +629,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                         var metaData = new ImageMetaData();
                         metaData.FromCamera(this);
+                        metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
 
                         return exposureDataFactory.CreateFlipped2DExposureData(
                             flipped2DArray: (Array)ImageArray,
@@ -673,6 +673,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS);
 
+            lastExposureStartTime = DateTime.UtcNow;
             device.StartExposure(sequence.ExposureTime, isLightFrame);
         }
 
@@ -711,6 +712,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private IList<int> offsets = new List<int>();
         private bool offsetValueMode = true;
         private bool canSetOffset = false;
+        private DateTime lastExposureEndTime;
+        private DateTime lastExposureStartTime;
 
         public bool CanSetOffset {
             get => canSetOffset;
@@ -723,7 +726,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int OffsetMin {
             get {
                 var offsetMin = 0;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offsetMin = device.OffsetMin;
                     } else {
@@ -739,7 +742,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int OffsetMax {
             get {
                 var offsetMax = 0;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offsetMax = device.OffsetMax;
                     } else {
@@ -757,7 +760,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         public int Offset {
             get {
                 var offset = -1;
-                if (Connected && CanSetOffset) {
+                if (ShouldBeConnected && CanSetOffset) {
                     if (offsetValueMode) {
                         offset = device.Offset;
                     } else {
@@ -768,7 +771,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             }
             set {
                 try {
-                    if (Connected && CanSetOffset) {
+                    if (ShouldBeConnected && CanSetOffset) {
                         if (offsetValueMode) {
                             if (value < OffsetMin) {
                                 value = OffsetMin;
@@ -818,17 +821,20 @@ namespace NINA.Equipment.Equipment.MyCamera {
             throw new System.NotImplementedException();
         }
 
-        protected override Task PostConnect() {
+        public void UpdateSubSampleArea() {
+            throw new System.NotImplementedException();
+        }
+
+        protected override async Task PostConnect() {
             if(device.SensorType == ASCOM.Common.DeviceInterfaces.SensorType.Color) {
                 Disconnect();
                 throw new Exception(Loc.Instance["LblASCOMColorSensorTypeNotSupported"]);
             }
             Initialize();
-            return Task.CompletedTask;
         }
 
-        protected override ICameraV3 GetInstance() {
-            if(deviceMeta == null) {
+        protected override ICameraV4 GetInstance() {
+            if(!IsAlpacaDevice()) {
                 return new Camera(this.Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCamera(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

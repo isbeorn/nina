@@ -14,16 +14,25 @@
 
 using NINA.Core.Enum;
 using NINA.Astrometry;
+using System;
 
 namespace NINA.Equipment.Interfaces {
 
     public interface IDomeSynchronization {
 
+        [Obsolete("Use interface that provides site elevation")]
         TopocentricCoordinates TargetDomeCoordinates(
             Coordinates scopeCoordinates,
             double localSiderealTime,
             Angle siteLatitude,
             Angle siteLongitude,
+            PierSide sideOfPier);
+        TopocentricCoordinates TargetDomeCoordinates(
+            Coordinates scopeCoordinates,
+            double localSiderealTime,
+            Angle siteLatitude,
+            Angle siteLongitude,
+            double siteElevation,
             PierSide sideOfPier);
     }
 }

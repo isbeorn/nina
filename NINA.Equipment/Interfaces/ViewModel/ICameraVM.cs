@@ -13,9 +13,10 @@
 #endregion "copyright"
 
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Model;
 using NINA.Image.Interfaces;
-using NINA.Equipment.Equipment.MyCamera;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -56,6 +57,9 @@ namespace NINA.Equipment.Interfaces.ViewModel {
 
         IDeviceChooserVM DeviceChooserVM { get; set; }
         void SetUSBLimit(int usbLimit);
+
+        void SetSubSambleRectangle(ObservableRectangle observableRectangle);
+
         event Func<object, EventArgs, Task> DownloadTimeout;
     }
 }

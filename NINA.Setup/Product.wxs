@@ -34,7 +34,7 @@
     
 
     <!--https://learn.microsoft.com/en-us/windows/win32/msi/reinstallmode-->
-    <Property Id="REINSTALLMODE" Value="dmus" />
+    <Property Id="REINSTALLMODE" Value="amus" />
         
     <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
     <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
@@ -193,26 +193,26 @@
               <Directory Id="External_x64_Nikon" Name="Nikon">
                 <Directory Id="External_x64_Nikon_Type0001" Name="Type0001" />
                 <Directory Id="External_x64_Nikon_Type0002" Name="Type0002" />
-                <Directory Id="External_x64_Nikon_Type0022" Name="Type0022" />
-                <Directory Id="External_x64_Nikon_Type0021" Name="Type0021" />
-                <Directory Id="External_x64_Nikon_Type0020" Name="Type0020" />
-                <Directory Id="External_x64_Nikon_Type0019" Name="Type0019" />
-                <Directory Id="External_x64_Nikon_Type0018" Name="Type0018" />
-                <Directory Id="External_x64_Nikon_Type0017" Name="Type0017" />
-                <Directory Id="External_x64_Nikon_Type0015" Name="Type0015" />
-                <Directory Id="External_x64_Nikon_Type0016" Name="Type0016" />
-                <Directory Id="External_x64_Nikon_Type0014" Name="Type0014" />
-                <Directory Id="External_x64_Nikon_Type0013" Name="Type0013" />
-                <Directory Id="External_x64_Nikon_Type0012" Name="Type0012" />
-                <Directory Id="External_x64_Nikon_Type0011" Name="Type0011" />
-                <Directory Id="External_x64_Nikon_Type0009" Name="Type0009" />
-                <Directory Id="External_x64_Nikon_Type0010" Name="Type0010" />
-                <Directory Id="External_x64_Nikon_Type0008" Name="Type0008" />
-                <Directory Id="External_x64_Nikon_Type0007" Name="Type0007" />
-                <Directory Id="External_x64_Nikon_Type0006" Name="Type0006" />
-                <Directory Id="External_x64_Nikon_Type0005" Name="Type0005" />
                 <Directory Id="External_x64_Nikon_Type0004" Name="Type0004" />
                 <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
+                <Directory Id="External_x64_Nikon_Type0005" Name="Type0005" />
+                <Directory Id="External_x64_Nikon_Type0006" Name="Type0006" />
+                <Directory Id="External_x64_Nikon_Type0007" Name="Type0007" />
+                <Directory Id="External_x64_Nikon_Type0008" Name="Type0008" />
+                <Directory Id="External_x64_Nikon_Type0009" Name="Type0009" />
+                <Directory Id="External_x64_Nikon_Type0010" Name="Type0010" />
+                <Directory Id="External_x64_Nikon_Type0011" Name="Type0011" />
+                <Directory Id="External_x64_Nikon_Type0012" Name="Type0012" />
+                <Directory Id="External_x64_Nikon_Type0013" Name="Type0013" />
+                <Directory Id="External_x64_Nikon_Type0014" Name="Type0014" />
+                <Directory Id="External_x64_Nikon_Type0015" Name="Type0015" />
+                <Directory Id="External_x64_Nikon_Type0016" Name="Type0016" />
+                <Directory Id="External_x64_Nikon_Type0017" Name="Type0017" />
+                <Directory Id="External_x64_Nikon_Type0018" Name="Type0018" />
+                <Directory Id="External_x64_Nikon_Type0019" Name="Type0019" />
+                <Directory Id="External_x64_Nikon_Type0020" Name="Type0020" />
+                <Directory Id="External_x64_Nikon_Type0021" Name="Type0021" />
+                <Directory Id="External_x64_Nikon_Type0022" Name="Type0022" />
                 <Directory Id="External_x64_Nikon_Type0023" Name="Type0023" />
                 <Directory Id="External_x64_Nikon_Type0024" Name="Type0024" />
                 <Directory Id="External_x64_Nikon_Type0025" Name="Type0025" />
@@ -396,6 +396,9 @@
       </Component>
       <Component Id="ASCOM.Alpaca.dll" Guid="1f88443b-e5bb-4951-a001-72d769aa686c">
         <File Id="ASCOM.Alpaca.dll" Name="ASCOM.Alpaca.dll" Source="$(var.NINA_TargetDir)ASCOM.Alpaca.dll" />
+      </Component>
+      <Component Id="ASCOM.Tools.dll" Guid="de3bf45b-b15e-4b07-8717-b20bec8814c7">
+        <File Id="ASCOM.Tools.dll" Name="ASCOM.Tools.dll" Source="$(var.NINA_TargetDir)ASCOM.Tools.dll" />
       </Component>
       <Component Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f" Bitness="$(var.Win64)">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
@@ -643,6 +646,9 @@
       <Component Id="System.Data.SQLite.EF6.dll" Guid="d4cb4e71-0820-45de-9ce7-ae682bb70840" Bitness="$(var.Win64)">
         <File Id="System.Data.SQLite.EF6.dll" Name="System.Data.SQLite.EF6.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.EF6.dll" />
       </Component>
+      <Component Id="System.IO.Pipelines.dll" Guid="8929bcbb-5b70-46e9-8250-869ec5656d42">
+        <File Id="System.IO.Pipelines.dll" Name="System.IO.Pipelines.dll" Source="$(var.NINA_TargetDir)System.IO.Pipelines.dll" />
+      </Component>
       <Component Id="System.IO.Ports.dll" Guid="00cfbe8b-2e61-43e2-9240-2ffbea5097f6">
         <File Id="System.IO.Ports.dll" Name="System.IO.Ports.dll" Source="$(var.NINA_TargetDir)System.IO.Ports.dll" />
       </Component>
@@ -660,9 +666,6 @@
       </Component>
       <Component Id="ToastNotifications.Messages.dll" Guid="74b98fb4-f2a9-44d8-8c8b-988b83bf09d4" Bitness="$(var.Win64)">
         <File Id="ToastNotifications.Messages.dll" Name="ToastNotifications.Messages.dll" Source="$(var.NINA_TargetDir)ToastNotifications.Messages.dll" />
-      </Component>
-      <Component Id="ToggleSwitch.dll" Guid="b7d48149-e902-402d-86f7-6d08341960c2" Bitness="$(var.Win64)">
-        <File Id="ToggleSwitch.dll" Name="ToggleSwitch.dll" Source="$(var.NINA_TargetDir)ToggleSwitch.dll" />
       </Component>
       <Component Id="Trinet.Core.IO.Ntfs.dll" Guid="194dc6f2-ec04-439a-ab26-b9edbe4daee0" Bitness="$(var.Win64)">
         <File Id="Trinet.Core.IO.Ntfs.dll" Name="Trinet.Core.IO.Ntfs.dll" Source="$(var.NINA_TargetDir)Trinet.Core.IO.Ntfs.dll" />
@@ -763,8 +766,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Guid="164cec36-5833-4a7a-83fb-1f8f7238f695">
-        <File Id="mscordaccore_amd64_amd64_8.0.824.36612.dll" Name="mscordaccore_amd64_amd64_8.0.824.36612.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.824.36612.dll" />
+      <Component Id="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Guid="d294f8fb-b886-47bf-8ea2-187516e37496">
+        <File Id="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Name="mscordaccore_amd64_amd64_8.0.2125.47513.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.2125.47513.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -1712,6 +1715,9 @@
       <Component Id="External_x64_ASI_EFW_filter.dll" Guid="e416c8c9-c2a2-47b9-9b53-d79812ebd9c6" Bitness="$(var.Win64)">
         <File Id="External_x64_ASI_EFW_filter.dll" Name="EFW_filter.dll" Source="$(var.NINA_TargetDir)External\x64\ASI\EFW_filter.dll" />
       </Component>
+      <Component Id="External_x64_ASI_EAF_focuser.dll" Guid="BCF807AB-AB30-4E0A-8B05-A83C7D6A79D2" Bitness="$(var.Win64)">
+        <File Id="External_x64_ASI_EAF_focuser.dll" Name="EAF_focuser.dll" Source="$(var.NINA_TargetDir)External\x64\ASI\EAF_focuser.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
@@ -2097,12 +2103,6 @@
 
   <Fragment>
     <ComponentGroup Id="External_x64_Nikon_Type0030_files" Directory="External_x64_Nikon_Type0030">
-      <Component Id="External_x64_Nikon_Type0030_NkRoyalmile.dll" Guid="CD39EC25-C232-412D-9B71-4B24D01B6A48" Bitness="$(var.Win64)">
-        <File Id="External_x64_Nikon_Type0030_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\NkRoyalmile.dll" />
-      </Component>
-      <Component Id="External_x64_Nikon_Type0030_dnssd.dll" Guid="F7B651C9-6D55-4C94-8CF5-4AC3B97F6902" Bitness="$(var.Win64)">
-        <File Id="External_x64_Nikon_Type0030_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\dnssd.dll" />
-      </Component>
       <Component Id="External_x64_Nikon_Type0030_NkdPTP.dll" Guid="BF6F1E20-83D2-4812-8486-E41AC306A059" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0030_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0030\NkdPTP.dll" />
       </Component>
@@ -2114,12 +2114,6 @@
 
   <Fragment>
     <ComponentGroup Id="External_x64_Nikon_Type0031_files" Directory="External_x64_Nikon_Type0031">
-      <Component Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Guid="7D77D79F-8C10-43A1-9C4B-3E97EB579EA2" Bitness="$(var.Win64)">
-        <File Id="External_x64_Nikon_Type0031_NkRoyalmile.dll" Name="NkRoyalmile.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkRoyalmile.dll" />
-      </Component>
-      <Component Id="External_x64_Nikon_Type0031_dnssd.dll" Guid="2EAA12DF-234B-4865-97F9-72967E5F7815" Bitness="$(var.Win64)">
-        <File Id="External_x64_Nikon_Type0031_dnssd.dll" Name="dnssd.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\dnssd.dll" />
-      </Component>
       <Component Id="External_x64_Nikon_Type0031_NkdPTP.dll" Guid="0C3BECFD-7900-4383-9BE4-678C1BCECDF0" Bitness="$(var.Win64)">
         <File Id="External_x64_Nikon_Type0031_NkdPTP.dll" Name="NkdPTP.dll" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0031\NkdPTP.dll" />
       </Component>
@@ -2200,6 +2194,9 @@
     <ComponentGroup Id="External_x64_SVBony_files" Directory="External_x64_SVBony">
       <Component Id="External_x64_SVBony_SVBCameraSDK.dll" Guid="964cd499-e6e4-4e2c-bc29-58b6aa3f6fc0" Bitness="$(var.Win64)">
         <File Id="External_x64_SVBony_SVBCameraSDK.dll" Name="SVBCameraSDK.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\SVBCameraSDK.dll" />
+      </Component>
+      <Component Id="External_x64_SVBony_svbonycam.dll" Guid="6CFF53A9-CFB6-4D1F-9097-CE79837F4DD5" Bitness="$(var.Win64)">
+        <File Id="External_x64_SVBony_svbonycam.dll" Name="svbonycam.dll" Source="$(var.NINA_TargetDir)External\x64\SVBony\svbonycam.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

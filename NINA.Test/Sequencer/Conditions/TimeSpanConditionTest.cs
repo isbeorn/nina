@@ -68,7 +68,7 @@ namespace NINA.Test.Sequencer.Conditions {
         public void TimeSpanCondition_ResetProgress_RemainingTimeSame() {
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupSequence(x => x.Now)
+                .SetupSequence(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 30))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 30))
@@ -90,7 +90,7 @@ namespace NINA.Test.Sequencer.Conditions {
         public void TimeSpanCondition_Initialized_And_ResetProgress_RemainingTimeCleared() {
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupSequence(x => x.Now)
+                .SetupSequence(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 30));
 
@@ -112,7 +112,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupSequence(x => x.Now)
+                .SetupSequence(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 30));
 
@@ -136,7 +136,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupSequence(x => x.Now)
+                .SetupSequence(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10));
 
             var sut = new TimeSpanCondition();
@@ -158,7 +158,7 @@ namespace NINA.Test.Sequencer.Conditions {
 
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupSequence(x => x.Now)
+                .SetupSequence(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 30))
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 32));
@@ -184,7 +184,7 @@ namespace NINA.Test.Sequencer.Conditions {
         public void TimeSpanCondition_Check_ReturnsCorrectly(int remainingSeconds, int nextItemSeconds, bool expected) {
             var dateMock = new Mock<ICustomDateTime>();
             dateMock
-                .SetupGet(x => x.Now)
+                .SetupGet(x => x.UtcNow)
                 .Returns(new DateTime(2000, 1, 1, 0, 0, 10));
 
             var itemMock = new Mock<ISequenceItem>();

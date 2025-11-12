@@ -54,13 +54,13 @@
 
                     <Trigger Property="Tag" Value="Heading3">
                         <Setter Property="FontSize" Value="14" />
-                        <Setter Property="Foreground" Value="{StaticResource SecondaryBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
                         <Setter Property="FontWeight" Value="Light" />
                     </Trigger>
 
                     <Trigger Property="Tag" Value="Heading4">
                         <Setter Property="FontSize" Value="12" />
-                        <Setter Property="Foreground" Value="{StaticResource SecondaryBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
                         <Setter Property="FontWeight" Value="Light" />
                     </Trigger>
 

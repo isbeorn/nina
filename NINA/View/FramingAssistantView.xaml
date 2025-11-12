@@ -701,8 +701,18 @@
                                     Grid.Column="1"
                                     Margin="5,0,0,0"
                                     VerticalContentAlignment="Center"
-                                    Text="{Binding FocalLength}"
-                                    Unit="mm" />
+                                    Unit="mm">
+                                    <ninactrl:UnitTextBox.Text>
+                                        <Binding
+                                            Converter="{StaticResource NaNToDoubleDashConverter}"
+                                            Path="FocalLength"
+                                            UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterThanZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </ninactrl:UnitTextBox.Text>
+                                </ninactrl:UnitTextBox>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
@@ -1007,6 +1017,7 @@
                                                     <ContextMenu ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
                                                         <ContextMenu.ItemContainerStyle>
                                                             <Style TargetType="MenuItem">
+                                                                <Setter Property="ItemsSource" Value="{x:Null}" />
                                                                 <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                                 <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                                 <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />
@@ -1026,6 +1037,7 @@
                                                 <MenuItem Header="{ns:Loc Lbl_Sequencer_Title}" ItemsSource="{Binding Source={StaticResource Context}, Path=Data.DSOTemplates}">
                                                     <MenuItem.ItemContainerStyle>
                                                         <Style TargetType="MenuItem">
+                                                            <Setter Property="ItemsSource" Value="{x:Null}" />
                                                             <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                             <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                             <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.SetSequencerTargetCommand}" />
@@ -1084,6 +1096,7 @@
 
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
                                                     <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                     <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                     <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.AddTargetToTargetListCommand}" />
@@ -1125,6 +1138,7 @@
 
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="MenuItem">
+                                                    <Setter Property="ItemsSource" Value="{x:Null}" />
                                                     <Setter Property="Header" Value="{StaticResource MenuHeader}" />
                                                     <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
                                                     <Setter Property="Command" Value="{Binding Source={StaticResource Context}, Path=Data.UpdateExistingTargetInSequencerCommand}" />

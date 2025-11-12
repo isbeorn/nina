@@ -14,29 +14,31 @@
 
 using Altair;
 using NINA.Core.Enum;
-using NINA.Image.ImageData;
-using NINA.Profile.Interfaces;
+using NINA.Core.Locale;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
+using NINA.Profile.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Model.Equipment;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces;
-using System.Drawing;
-using System.Collections;
-using System.Linq;
-using NINA.Equipment.Utility;
-using System.Diagnostics.Eventing.Reader;
-using NINA.Equipment.Equipment.MyCamera.ToupTekAlike;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
-    public class ToupTekAlikeCamera : BaseINPC, ICamera {
+    public partial class ToupTekAlikeCamera : BaseINPC, ICamera {
         private ToupTekAlikeFlag flags;
         private IToupTekAlikeCameraSDK sdk;
         private string internalId;
@@ -48,21 +50,30 @@ namespace NINA.Equipment.Equipment.MyCamera {
             this.exposureDataFactory = exposureDataFactory;
             this.sdk = sdk;
             this.internalId = deviceInfo.id;
-            if (sdk is ToupTekAlike.AltairSDKWrapper || sdk is ToupTekAlike.ToupTekSDKWrapper) {
-                // Altair cams hava a distinct id in contrast to other touptek brands and the original touptek brand doesn't need the category filter
-                this.Id = deviceInfo.id;
-            } else {
-                this.Id = Category + "_" + deviceInfo.id;
-            }
+            this.Id = Category + "_" + deviceInfo.id;
 
             this.Name = deviceInfo.displayname;
-            this.Description = deviceInfo.id;
+
+
+            var match = IdExtractorRegex().Match(deviceInfo.id);
+
+            this.Description = $"{Category} camera.";
+            if (match.Success) {
+                var vid = match.Groups[1].Value;
+                var pid = match.Groups[2].Value;
+                var tail = match.Groups[3].Value;
+                this.Description += $" Vendor ID: {vid}, Product ID: {pid}, Camera ID: {tail}";
+            }
+            
             this.MaxFanSpeed = (int)deviceInfo.model.maxfanspeed;
             this.PixelSizeX = Math.Round(deviceInfo.model.xpixsz, 2);
             this.PixelSizeY = Math.Round(deviceInfo.model.ypixsz, 2);
 
             this.flags = (ToupTekAlikeFlag)deviceInfo.model.flag;
         }
+
+        [GeneratedRegex(@"vid_([0-9a-fA-F]+)&pid_([0-9a-fA-F]+)#([^\\]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+        private static partial Regex IdExtractorRegex();
 
         private IProfileService profileService;
         private readonly IExposureDataFactory exposureDataFactory;
@@ -643,11 +654,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         HasHighFullwell = false;
                     }
 
-                    if(CanSetLEDLights) {
-                        SupportedActions.Add(ToupTekActions.LEDLights);
-                        LEDLights = profile.TouptekAlikeLEDLights;
-                    }                    
-
                     ReadoutModes = new List<string> { "Low Conversion Gain" };
 
                     if ((this.flags & ToupTekAlikeFlag.FLAG_CG) != 0) {
@@ -674,6 +680,11 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                     if (!sdk.StartPullModeWithCallback(new ToupTekAlikeCallback(OnEventCallback))) {
                         throw new Exception($"{Category} - Could not start pull mode");
+                    }
+
+                    if (CanSetLEDLights) {
+                        SupportedActions.Add(ToupTekActions.LEDLights);
+                        LEDLights = profile.TouptekAlikeLEDLights;
                     }
 
                     if (!sdk.put_Option(ToupTekAlikeOption.OPTION_FLUSH, 3)) {
@@ -780,7 +791,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         }
 
         public bool CanSetLEDLights {
-            get => sdk is ToupTekSDKWrapper;
+            get => sdk is ToupTekSDKWrapper || sdk is OgmaSDKWrapper;
         }
 
         public bool LEDLights {
@@ -809,6 +820,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                     if (id != -1) {
                         Logger.Trace($"{Category} - Setting DownloadExposure Result on Task {id}");
                         var success = imageReadyTCS?.TrySetResult(true);
+                        lastExposureEndTime = DateTime.UtcNow;
                         Logger.Trace($"{Category} - DownloadExposure Result on Task {id} set successfully: {success}");
                     } else {
                         Logger.Trace($"{Category} - unexpected EVENT_IMAGE returned by camera, likely buggy vendor SDK");
@@ -821,6 +833,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 case ToupTekAlikeEvent.EVENT_STILLIMAGE:
                     Logger.Warning($"{Category} - Still image event received, but not expected to get one!");
                     imageReadyTCS?.TrySetResult(true);
+                    lastExposureEndTime = DateTime.UtcNow;
                     break;
 
                 case ToupTekAlikeEvent.EVENT_NOFRAMETIMEOUT:
@@ -833,13 +846,13 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
                 case ToupTekAlikeEvent.EVENT_ERROR: // Error
                     Logger.Error($"{Category} - Camera reported a generic error!");
-                    Notification.ShowError("Camera reported a generic error and needs to be reconnected!");
+                    Notification.ShowError(Loc.Instance["LblGenericCameraError"]);
                     Disconnect();
                     break;
 
                 case ToupTekAlikeEvent.EVENT_DISCONNECTED:
                     Logger.Warning($"{Category} - Camera disconnected! Maybe USB connection was interrupted.");
-                    Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
+                    Notification.ShowError(Loc.Instance["LblCameraDisconnected"]);
                     OnEventDisconnected();
                     break;
             }
@@ -861,7 +874,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
             var size = width * height;
             var data = new ushort[size];
 
-            if (!sdk.PullImageV2(data, nativeBitDepth, out var info)) {
+            if (!sdk.PullImage(data, nativeBitDepth, out var info)) {
                 Logger.Error($"{Category} - Failed to pull image");
                 return null;
             }
@@ -880,6 +893,34 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             var metaData = new ImageMetaData();
             metaData.FromCamera(this);
+            metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
+            if (info.hasgps) {
+                var locked = info.gps.satellite >= 4;
+                metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_EST", locked ? "locked and valid" : "not locked", "GPS status"));
+
+                if (locked) {
+                    var startTime = new DateTime(CoreUtil.UnixEpochTicks + (long)(info.gps.utcstart / 100L), DateTimeKind.Utc);
+                    var endTime = new DateTime(CoreUtil.UnixEpochTicks + (long)(info.gps.utcend / 100L), DateTimeKind.Utc);
+                    metaData.Image.SetExposureTimes(startTime, endTime);
+
+                    metaData.GenericHeaders.Add(new StringMetaDataHeader("GPS_STAT", $"{info.gps.satellite} sats", "GPS status"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_ALT", info.gps.altitude / 1000d, "Altitude (m)"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_EUTC", endTime, "End shutter time"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_ET", endTime, "End shutter time"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LAT", info.gps.latitude / 1000000d, "Latitude"));
+                    metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LON", info.gps.longitude / 1000000d, "Longitude"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_SUTC", startTime, "Start shutter time"));
+                    metaData.GenericHeaders.Add(new DateTimeMetaDataHeader("GPS_ST", startTime, "Start shutter time"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_SEQ", (int)info.seq, "Sequence number"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_W", width, "Width"));
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_H", height, "Height"));
+                    if (info.hasexpotime) { 
+                        metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_EXPU", (int)info.expotime, "Exposure (microseconds)"));
+                    }
+                    sdk.get_Option(ToupTekAlikeOption.OPTION_LINE_TIME, out int lineTime);
+                    metaData.GenericHeaders.Add(new IntMetaDataHeader("GPS_LP", lineTime, "[ns] linePeriod"));
+                }
+            }  
             var imageData = exposureDataFactory.CreateImageArrayExposureData(
                     input: data,
                     width: width,
@@ -923,6 +964,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             var localCTS = CancellationTokenSource.CreateLinkedTokenSource(token);
+            lastExposureStartTime = DateTime.UtcNow;
             return DownloadExposure(localCTS.Token);
         }
 
@@ -991,6 +1033,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
             SetExposureTime(sequence.ExposureTime);
 
+            lastExposureStartTime = DateTime.UtcNow;
             if (!sdk.Trigger(1)) {
                 throw new Exception($"{Category} - Failed to trigger camera");
             }
@@ -998,6 +1041,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
 
         private TaskCompletionSource<bool> imageReadyTCS;
         private int nativeBitDepth;
+        private DateTime lastExposureStartTime;
+        private DateTime lastExposureEndTime;
+
         public int BitDepth => profileService.ActiveProfile.CameraSettings.BitScaling ? 16 : nativeBitDepth;
 
         private void OnEventDisconnected() {
@@ -1047,6 +1093,22 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
                 LiveViewEnabled = false;
             });
+        }
+
+        public void UpdateSubSampleArea() {
+            if (EnableSubSample) {
+                var rect = GetROI();
+                roiInfo = rect;
+                if (!sdk.put_ROI((uint)rect.X, (uint)rect.Y, (uint)rect.Width, (uint)rect.Height)) {
+                    throw new Exception($"{Category} - Failed to set ROI to {rect.X}x{rect.Y}x{rect.Width}x{rect.Height}");
+                }
+            } else {
+                roiInfo = null;
+                // 0,0,0,0 resets the ROI to original size
+                if (!sdk.put_ROI(0, 0, 0, 0)) {
+                    throw new Exception($"{Category} - Failed to reset ROI");
+                }
+            }
         }
 
         public int USBLimitStep => 1;

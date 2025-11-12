@@ -25,6 +25,9 @@
     
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
@@ -93,10 +96,12 @@
     <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="External\x64\ASI\EAF_focuser.dll" />
     <None Remove="External\x64\Cfitsio\cfitsionative.dll" />
     <None Remove="External\x64\Cfitsio\pthreadVC2.dll" />
     <None Remove="External\x64\Cfitsio\zlib.dll" />
     <None Remove="External\x64\PlayerOne\PlayerOnePW.dll" />
+    <None Remove="External\x64\SVBony\svbonycam.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
@@ -137,6 +142,9 @@
     <Content Include="Database\Migration\10.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\ASI\EAF_focuser.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\ASTPAN\ASTPANCamera.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -165,6 +173,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SBIG\SBIGUDrv.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\SVBony\svbonycam.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <ContentWithTargetPath Include="External\x64\VCRedis\msvcp100.dll">
@@ -367,19 +378,24 @@
     <Folder Include="External\x64\Nikon\Type0028\" />
     <Folder Include="External\x64\Nikon\Type0029\" />
     <Folder Include="External\x64\Nikon\Type0030\" />
+    <Folder Include="External\x64\Nikon\Type0031\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.72.1" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.115" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.124" />
     <PackageReference Include="MdXaml" Version="1.27.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
@@ -423,6 +439,6 @@
     <Optimize>True</Optimize>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetDir)NINA.exe&#xD;&#xA;&#xD;&#xA;  if exist &quot;$(SolutionDir)NINA.Docs&quot; (&#xA;    SET OFFLINE=true&#xA;&#xA;    mkdocs --version &gt; nul 2&gt;&amp;1&#xA;    if errorlevel 1 (&#xA;        echo mkdocs is not installed. Skipping documentation build.&#xA;    ) else (&#xA;        mkdocs build -f &quot;$(SolutionDir)NINA.Docs\mkdocs.yml&quot; -c&#xA;        xcopy &quot;$(SolutionDir)NINA.Docs\site&quot; &quot;$(TargetDir)\docs&quot; /h/i/c/k/e/r/y&#xA;    )&#xA;  )" />
+    <Exec IgnoreExitCode="true" Command="&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Canon&quot; xcopy &quot;$(ProjectDir)External\x64\Canon&quot; &quot;$(TargetDir)\External\x64\Canon&quot; /h/i/c/k/e/r/y&#xD;&#xA;   if exist &quot;$(ProjectDir)External\x64\Nikon&quot; xcopy &quot;$(ProjectDir)External\x64\Nikon&quot; &quot;$(TargetDir)\External\x64\Nikon&quot; /h/i/c/k/e/r/y&#xD;&#xA;&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)&#xD;&#xA;   if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetDir)NINA.exe&#xD;&#xA;&#xD;&#xA;set SOLUTION_DIR=$(SolutionDir)&#xD;&#xA;if not &quot;%25SOLUTION_DIR%25&quot;==&quot;&quot; (&#xD;&#xA;  if exist &quot;$(SolutionDir)NINA.Docs&quot; (&#xA;    SET OFFLINE=true&#xA;&#xA;    mkdocs --version &gt; nul 2&gt;&amp;1&#xA;    if errorlevel 1 (&#xA;        echo mkdocs is not installed. Skipping documentation build.&#xA;    ) else (&#xA;        mkdocs build -f &quot;$(SolutionDir)NINA.Docs\mkdocs.yml&quot; -c&#xA;        xcopy &quot;$(SolutionDir)NINA.Docs\site&quot; &quot;$(TargetDir)\docs&quot; /h/i/c/k/e/r/y&#xA;    )&#xA;  )&#xD;&#xA;) else (&#xA;        echo SolutionDir is not set. Skipping documentation build.&#xA;    )" />
   </Target>
 </Project>

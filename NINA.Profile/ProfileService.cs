@@ -361,7 +361,7 @@ namespace NINA.Profile {
                         }
                         RegisterChangedEventHandlers();
                     } catch (Exception ex) {
-                        Logger.Debug(ex.Message + Environment.NewLine + ex.StackTrace);
+                        Logger.Error(ex);
                         return false;
                     }
                     return true;

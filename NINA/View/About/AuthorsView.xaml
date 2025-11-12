@@ -76,6 +76,8 @@
             <TextBlock Text="Roy Salisbury" />
             <TextBlock Text="Alexander Wrede" />
             <TextBlock Text="Michael J. Kidd" />
+            <TextBlock Text="Henrik E. Riise" />
+            <TextBlock Text="Sebastian Jancke" />
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -34,8 +34,13 @@ namespace NINA.Astrometry {
             RaiseCoordinatesChanged();
         }
 
+        [Obsolete("Use constructor that provides elevation")]
         public InputTopocentricCoordinates(Angle latitude, Angle longitude) {
             Coordinates = new TopocentricCoordinates(Angle.Zero, Angle.Zero, latitude, longitude);
+        }
+
+        public InputTopocentricCoordinates(Angle latitude, Angle longitude, double elevation) {
+            Coordinates = new TopocentricCoordinates(Angle.Zero, Angle.Zero, latitude, longitude, elevation);
         }
 
         public InputTopocentricCoordinates(TopocentricCoordinates coordinates) {
@@ -45,8 +50,13 @@ namespace NINA.Astrometry {
         public InputTopocentricCoordinates Clone() =>
             new InputTopocentricCoordinates(coordinates.Clone());
 
+        [Obsolete("Use SetPosition with elevation")]
         public void SetPosition(Angle latitude, Angle longitude) {
             Coordinates = new TopocentricCoordinates(Coordinates.Azimuth, Coordinates.Altitude, latitude, longitude);
+        }
+
+        public void SetPosition(Angle latitude, Angle longitude, double elevation) {
+            Coordinates = new TopocentricCoordinates(Coordinates.Azimuth, Coordinates.Altitude, latitude, longitude, elevation);
         }
 
         private TopocentricCoordinates coordinates;

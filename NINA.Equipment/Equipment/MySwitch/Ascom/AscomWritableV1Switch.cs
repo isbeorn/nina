@@ -33,11 +33,10 @@ namespace NINA.Equipment.Equipment.MySwitch.Ascom {
             this.TargetValue = this.Value;
         }
 
-        public Task SetValue() {
+        public void SetValue() {
             Logger.Trace($"Try setting value {TargetValue} for switch id {Id}");
             var val = TargetValue == 1 ? true : false;
             ascomSwitchHub.SetSwitch(Id, val);
-            return CoreUtil.Wait(TimeSpan.FromMilliseconds(50));
         }
 
         public double Maximum { get; }

@@ -188,16 +188,15 @@ namespace NINA.Equipment.SDK.CameraSDKs.SVBonySDK {
         private CancellationTokenSource exposureCts;
         private Task<ushort[]> exposureTask;
         private object lockobj = new object();
-        public void StartExposure(double exposureTime, int width, int height) {
-            
-
-
+        public DateTime StartExposure(double exposureTime, int width, int height) {
             lock(lockobj) {
                 var previousExposureToken = exposureCts?.Token;
                 try { exposureCts?.Dispose(); } catch (Exception) { }
 
                 exposureCts = new CancellationTokenSource();
+                DateTime exposureStart = DateTime.UtcNow;
                 exposureTask = GetExposureInternal(exposureTime, width, height, previousExposureToken);
+                return exposureStart;
             }
         }
         

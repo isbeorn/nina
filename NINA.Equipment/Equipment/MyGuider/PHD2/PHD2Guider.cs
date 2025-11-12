@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Profile.Interfaces;
@@ -39,23 +40,19 @@ using NINA.Astrometry;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Net;
+using ASCOM.Common.Helpers;
 
 namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
-    public class PHD2Guider : BaseINPC, IGuider {
+    public partial class PHD2Guider : BaseINPC, IGuider {
 
         public PHD2Guider(IProfileService profileService, IWindowServiceFactory windowServiceFactory) {
             this.profileService = profileService;
             this.windowServiceFactory = windowServiceFactory;
-
-            OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
-            ProfileSelectionChangedCommand = new AsyncCommand<bool>(ProfileSelectionChanged);
         }
 
         private readonly IProfileService profileService;
         private readonly IWindowServiceFactory windowServiceFactory;
-
-        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
 
@@ -194,6 +191,12 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                 hostEntry = DnsHelper.GetIPHostEntryByName(serverHost);
                 phd2Ip = hostEntry.AddressList.First();
             } catch (Exception ex) {
+                if (ex is SocketException se) {
+                    // Error Code 11001 WSAHOST_NOT_FOUND - https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
+                    if (se.ErrorCode == 11001 && IPAddress.TryParse(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, out var address)) {
+                        phd2Ip = address;
+                    }
+                }
                 Logger.Error($"Failed to resolve PHD2 server {serverHost}: {ex.Message}");
                 Notification.ShowError(string.Format(Loc.Instance["LblPhd2ServerHostNotResolved"], serverHost));
                 return connected;
@@ -250,6 +253,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             });
         }
 
+        [RelayCommand]
         private async Task<bool> ProfileSelectionChanged() {
             if (SelectedProfile == null) {
                 Logger.Error("No profile selected");
@@ -382,7 +386,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
 
         private static void CheckPhdError(PhdMethodResponse m) {
             if (m.error != null) {
-                Notification.ShowError("PHDError: " + m.error.message + "\n CODE: " + m.error.code);
+                Notification.ShowError(String.Format(Loc.Instance["LblPHDError"], m.error.message, m.error.code));
                 Logger.Warning("PHDError: " + m.error.message + " CODE: " + m.error.code);
             }
         }
@@ -431,7 +435,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                     int roiWidth = (int)(width * pct);
                     int roiHeight = (int)(height * pct);
 
-                    return new int[] { roiX, roiY, roiWidth, roiHeight };
+                    return [roiX, roiY, roiWidth, roiHeight];
                 }
             }
             return null;
@@ -840,7 +844,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                     Parameters = new Phd2SetLockShiftParamsParameter() {
                         Axes = "RA/Dec",
                         Units = "arcsec/hr",
-                        Rate = new double[] { raArcsecPerHour, decArcsecPerHour }
+                        Rate = [raArcsecPerHour, decArcsecPerHour]
                     }
                 };
                 var lockShiftResponse = await SendMessage(setLockShiftMsg);
@@ -889,8 +893,6 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                 return false;
             }
         }
-
-        public IAsyncCommand ProfileSelectionChangedCommand { get; private set; }
 
         public void Disconnect() {
             initialized = false;
@@ -1048,12 +1050,6 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
                 }
             }
 
-            var appState = await GetAppState();
-            if (appState == PhdAppState.STOPPED) {
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                var loopMsg = new Phd2Loop();
-                await SendMessage(loopMsg);
-            }
             return true;
         }
 
@@ -1071,7 +1067,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         private async Task<bool> StartPHD2Process() {
             // If PHD2 instance is not running start it.
             try {
-                var windowTitleRegex = new Regex(@"PHD2 Guiding\(?#?([0-9]*)\)?");
+                var windowTitleRegex = PHD2WindowTitleRegex();
 
                 // Check if PHD2 is already started with the expected instance number
                 foreach (var p in Process.GetProcessesByName("phd2")) {
@@ -1168,7 +1164,7 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError("PHD2 Error: " + ex.Message);
+                Notification.ShowError(String.Format(Loc.Instance["LblPHDErrorMsg"], ex.Message));
                 throw;
             } finally {
                 Settling = false;
@@ -1185,9 +1181,8 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
             windowService.ShowDialog(this, Loc.Instance["LblPHD2Setup"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
-        public RelayCommand OpenPHD2DiagCommand { get; set; }
-
-        private void OpenPHD2FileDiag(object o) {
+        [RelayCommand]
+        private void OpenPHD2FileDialog(object o) {
             var dialog = CoreUtil.GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.PHD2Path, "phd2.exe", "PHD2|phd2.exe");
             if (dialog.ShowDialog() == true) {
                 this.profileService.ActiveProfile.GuiderSettings.PHD2Path = dialog.FileName;
@@ -1215,5 +1210,8 @@ namespace NINA.Equipment.Equipment.MyGuider.PHD2 {
         public void SendCommandBlind(string command, bool raw) {
             throw new NotImplementedException();
         }
+
+        [GeneratedRegex(@"PHD2 Guiding\(?#?([0-9]*)\)?")]
+        private static partial Regex PHD2WindowTitleRegex();
     }
 }

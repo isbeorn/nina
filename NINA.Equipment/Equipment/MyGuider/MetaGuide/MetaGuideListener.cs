@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using Nito.AsyncEx;
@@ -119,7 +120,7 @@ namespace NINA.Equipment.Equipment.MyGuider.MetaGuide {
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError("MetaGuide Listener Error: " + ex.Message);
+                Notification.ShowError(String.Format(Loc.Instance["LblMetaGuideListenerError"], ex.Message));
             }
         }
 

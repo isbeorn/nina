@@ -81,7 +81,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
             updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
                 UpdateFlatDeviceValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "FlatDevice"
             );
 
             flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
@@ -135,7 +136,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         }
 
         public Task<bool> SetBrightness(int value, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            if (FlatDevice == null || !FlatDevice.Connected) return Task.FromResult(false);
+            if (FlatDevice == null || !FlatDeviceInfo.Connected) return Task.FromResult(false);
             return Task.Run(async () => {
                 try {
                     var from = FlatDeviceInfo.Brightness;
@@ -183,7 +184,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                 if (device == null) return false;
                 if (device.Id == "No_Device") {
                     profileService.ActiveProfile.FlatDeviceSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -229,6 +235,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
                         }
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = newDevice.Id;
+                        profileService.ActiveProfile.FlatDeviceSettings.LastDeviceName = newDevice.DisplayName;
 
                         await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                         Logger.Info(
@@ -247,7 +254,10 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
 
                     return false;
                 } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
                     Logger.Error(ex);
+                    if (FlatDeviceInfo.Connected) { await Disconnect(); }
+                    FlatDeviceInfo.Connected = false;
                     return false;
                 }
             } finally {
@@ -296,8 +306,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         public async Task<bool> OpenCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await ssOpen.WaitAsync(token);
             try {
-                if (FlatDevice.Connected == false) return false;
-                if (!FlatDevice.SupportsOpenClose) return false;
+                if (FlatDeviceInfo.Connected == false) return false;
+                if (!FlatDeviceInfo.SupportsOpenClose) return false;
                 if (FlatDevice.CoverState == CoverState.Open) return true;
                 Logger.Info("Opening Flat Device Cover");
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblOpeningCover"] });
@@ -325,8 +335,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         public async Task<bool> CloseCover(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await ssClose.WaitAsync(token);
             try {
-                if (FlatDevice.Connected == false) return false;
-                if (!FlatDevice.SupportsOpenClose) return false;
+                if (FlatDeviceInfo.Connected == false) return false;
+                if (!FlatDeviceInfo.SupportsOpenClose) return false;
                 if (FlatDevice.CoverState == CoverState.Closed) return true;
                 Logger.Info("Closing Flat Device Cover");
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblClosingCover"] });
@@ -403,7 +413,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.FlatDevice {
         }
 
         public Task<bool> ToggleLight(bool onOff, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            if (FlatDevice == null || FlatDevice.Connected == false) return Task.FromResult(false);
+            if (FlatDevice == null || FlatDeviceInfo.Connected == false) return Task.FromResult(false);
             return Task.Run(async () => {
                 try {
                     if (FlatDevice.LightOn == onOff) {

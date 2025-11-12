@@ -43,7 +43,8 @@ namespace NINA.Sequencer.Serialization {
             }
 
             if (jObject.TryGetValue("$type", out var token)) {
-                var t = GetType(token.ToString());
+                token = PluginMergeMigration(token?.ToString());
+                var t = GetType(token?.ToString());
                 if (t == null) {
                     return new UnknownSequenceItem(token?.ToString());
                 }
@@ -63,5 +64,14 @@ namespace NINA.Sequencer.Serialization {
                 return new UnknownSequenceItem(token?.ToString());
             }
         }
+
+        private string PluginMergeMigration(string token) => token switch {
+            "NINA.Plugins.Connector.Instructions.ConnectAllEquipment, NINA.Plugins.Connector" => "NINA.Sequencer.SequenceItem.Connect.ConnectAllEquipment, NINA.Sequencer",
+            "NINA.Plugins.Connector.Instructions.ConnectEquipment, NINA.Plugins.Connector" => "NINA.Sequencer.SequenceItem.Connect.ConnectEquipment, NINA.Sequencer",
+            "NINA.Plugins.Connector.Instructions.DisconnectEquipment, NINA.Plugins.Connector" => "NINA.Sequencer.SequenceItem.Connect.DisconnectEquipment, NINA.Sequencer",
+            "NINA.Plugins.Connector.Instructions.DisconnectAllEquipment, NINA.Plugins.Connector" => "NINA.Sequencer.SequenceItem.Connect.DisconnectAllEquipment, NINA.Sequencer",
+            "NINA.Plugins.Connector.Instructions.SwitchProfile, NINA.Plugins.Connector" => "NINA.Sequencer.SequenceItem.Connect.SwitchProfile, NINA.Sequencer",
+            _ => token
+        };
     }
 }

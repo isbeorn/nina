@@ -25,6 +25,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
+using NINA.Sequencer.Utility;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.Behaviors {
 
@@ -38,6 +40,13 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         public DragDropBehavior() : this(Application.Current.MainWindow.FindName("RootGrid") as Grid) {
+        }
+
+        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(DragDropBehavior), new PropertyMetadata(true));
+
+        public bool IsEnabled {
+            get => (bool)GetValue(IsEnabledProperty);
+            set => SetValue(IsEnabledProperty, value);
         }
 
         private MouseEventArgs mouseOverEventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0);
@@ -64,6 +73,7 @@ namespace NINA.Sequencer.Behaviors {
         private DateTime lastUpdate = DateTime.Now;
 
         private void AssociatedObject_MouseDown(object sender, MouseEventArgs e) {
+            if (!IsEnabled) return;
             if (IsClone) return;
             // detach all own dropinto behaviors, remove own dragover behavior and remove all visually "below" dragdrop behaviors
 
@@ -148,6 +158,7 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private void AssociatedObject_MouseMove(object sender, MouseEventArgs e) {
+            if (!IsEnabled) return;
             if (!IsClone) return;
             var pos = e.GetPosition(layoutParent);
             movingTransform.X = (pos.X - mouseInElement.X);
@@ -157,6 +168,7 @@ namespace NINA.Sequencer.Behaviors {
         }
 
         private void AssociatedObject_MouseUp(object sender, MouseEventArgs e) {
+            if (!IsEnabled) return;
             if (!IsClone) return;
 
             // remove the draggable clone itself again
@@ -339,15 +351,46 @@ namespace NINA.Sequencer.Behaviors {
             //Debug.WriteLine("++ DragDropBehavior attached to " + AssociatedObject.GetHashCode());
 
             if (AssociatedObject != null) {
+                WeakEventManager<FrameworkElement, KeyEventArgs>.AddHandler(layoutParent, nameof(layoutParent.KeyDown), AssociatedObject_KeyDown);
                 WeakEventManager<FrameworkElement, MouseEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.MouseLeftButtonDown), AssociatedObject_MouseDown);
-                WeakEventManager<FrameworkElement, MouseEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.MouseLeftButtonUp), AssociatedObject_MouseUp);                
+                WeakEventManager<FrameworkElement, MouseEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.MouseLeftButtonUp), AssociatedObject_MouseUp);
                 WeakEventManager<FrameworkElement, MouseEventArgs>.AddHandler(layoutParent, nameof(layoutParent.MouseMove), AssociatedObject_MouseMove);
                 WeakEventManager<FrameworkElement, MouseWheelEventArgs>.AddHandler(AssociatedObject, nameof(AssociatedObject.MouseWheel), AssociatedObject_MouseWheel);
             }
             base.OnAttached();
         }
 
+        private void AssociatedObject_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Escape) {
+                try {
+                    if (!IsClone) return;
+
+
+                    // remove the draggable clone itself again
+                    layoutParent.Children.Remove(dragDropAdorner);
+
+                    // restore previous effect
+                    OriginalParentedObject.Effect = previousEffect;
+
+                    // send mouse leave event to previously dragged over object
+                    HandleLeaveObject();
+
+                    Mouse.OverrideCursor = null;
+                    e.Handled = true;
+
+                    // detach behavior from clone and move to original object
+                    Detach();
+                    Attach(originalObject);
+                    IsClone = false;
+
+                    // reattach previously removed behaviors
+                    AttachPreviouslyUnwantedBehaviors();
+                } catch { }
+            }
+        }
+
         private void AssociatedObject_MouseWheel(object sender, MouseWheelEventArgs e) {
+            if (!IsEnabled) return;
             if (!IsClone) return;
             mouseOverEventArgs = new MouseWheelEventArgs(Mouse.PrimaryDevice, e.Timestamp, e.Delta);
             mouseOverEventArgs.RoutedEvent = UIElement.MouseWheelEvent;

@@ -53,6 +53,9 @@ namespace NINA.Core.Model {
             p = new ImagePattern(ImagePatternKeys.TimeUtc, Locale.Loc.Instance["LblTimeUTCFormatDescription"], Locale.Loc.Instance["LblTime"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.MJD, Locale.Loc.Instance["LblMJDFormatDescription"], Locale.Loc.Instance["LblTime"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.FrameNr, Locale.Loc.Instance["LblFrameNrDescription"], Locale.Loc.Instance["LblImage"]);
             patterns.Add(p.Key, p);
 
@@ -142,8 +145,12 @@ namespace NINA.Core.Model {
         }
 
         public bool Set(string key, double value) {
+            return this.Set(key, value, 2);
+        }
+
+        public bool Set(string key, double value, int precision) {
             if (!double.IsNaN(value)) {
-                return this.Set(key, string.Format(CultureInfo.InvariantCulture, "{0:0.00}", value));
+                return this.Set(key, value.ToString($"F{precision}", CultureInfo.InvariantCulture));
             }
             return false;
         }
@@ -201,6 +208,7 @@ namespace NINA.Core.Model {
             p.Set(ImagePatternKeys.DateTime, "2016-01-01_12-00-00");
             p.Set(ImagePatternKeys.Time, "12-00-00");
             p.Set(ImagePatternKeys.TimeUtc, "12-00-00");
+            p.Set(ImagePatternKeys.MJD, "12345.6789");
             p.Set(ImagePatternKeys.FrameNr, "0001");
             p.Set(ImagePatternKeys.ImageType, "LIGHT");
             p.Set(ImagePatternKeys.Binning, "1x1");
@@ -245,6 +253,7 @@ namespace NINA.Core.Model {
         public static readonly string DateTime = "$$DATETIME$$";
         public static readonly string Time = "$$TIME$$";
         public static readonly string TimeUtc = "$$TIMEUTC$$";
+        public static readonly string MJD = "$$MJD$$";
         public static readonly string FrameNr = "$$FRAMENR$$";
         public static readonly string ImageType = "$$IMAGETYPE$$";
         public static readonly string Binning = "$$BINNING$$";

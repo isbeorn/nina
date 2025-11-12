@@ -491,7 +491,7 @@ namespace NINA.Test {
             var file = await sut.SaveToDisk(fileSaveInfo, default);
             File.Delete(file);
 
-            var expectedPattern = $"#{date.ToLocalTime():yyyy-MM-dd}#{date.ToLocalTime():yyyy-MM-dd}#{date.ToLocalTime():yyyy-MM-dd_HH-mm-ss}#{date.ToLocalTime():HH-mm-ss}#-0001##1x1#########{NINA.Core.Utility.CoreUtil.ApplicationStartDate.ToString("yyyy-MM-dd")}.tif";
+            var expectedPattern = $"#{date.ToLocalTime():yyyy-MM-dd}#{date.AddHours(-12).ToLocalTime():yyyy-MM-dd}#{date.ToLocalTime():yyyy-MM-dd_HH-mm-ss}#{date.ToLocalTime():HH-mm-ss}#-0001##1x1#########{NINA.Core.Utility.CoreUtil.ApplicationStartDate.ToString("yyyy-MM-dd")}.tif";
 
             Path.GetFileName(file).Should().Be($"{expectedPattern}");
         }

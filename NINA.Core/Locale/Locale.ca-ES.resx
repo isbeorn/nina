@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -518,7 +518,7 @@ capaç de compensar les variacions de la temperatura ambient</value>
     <value>Opcions de la càmera</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Paràmetre de la càmera</value>
+    <value>Paràmetres de la Càmera</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Estat de la Càmera</value>
@@ -1101,11 +1101,11 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital Sky Survey</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Durada del Guiat Directe</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Durada Dither de la muntura</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Durada típica de la guia de pols en segons</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Durada típica del pols en segons</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>Velocitat de Guiatge en Ascensió Recta</value>
@@ -1119,11 +1119,11 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Velocitat de Guiatge en Declinació en arcsegons per segons</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider no s'ha pogut connectar a la muntura</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>El Dither no s'ha pogut connectar a la Muntura</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>La muntura s'ha desconnectat. Direct Guider es desconnectarà. El dithering ja no és efectiu!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>La Muntura s'ha desconnectat. El Dither es desconnectarà. El dithering ja no és efectiu!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>No s'ha trobat el directori per desar la Imatge!</value>
@@ -1161,7 +1161,7 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Pixels en el Dither</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Nombre típic de píxels per utilitzar. El Dithering segueix una distribució normal centrada a l'objectiu, essent aquest valor la desviació estàndard. El 67% dels dithers estaran a aquesta distància</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -1202,9 +1202,6 @@ Quan les marques no estan alineades, significa que hi ha un error d'Alineació P
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>En la posició inicial (home)</value>
-  </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>La cúpula segueix al Telescopi</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Girant</value>
@@ -1674,7 +1671,7 @@ HFR calculat: {2}    </value>
     <value>No s'ha detectat cap dispositiu {0}</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Importa la ubicació des d'un dispositiu GNSS</value>
+    <value>Informa la ubicació des d'un dispositiu GNSS</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Guiatge</value>
@@ -1881,7 +1878,7 @@ HFR calculat: {2}    </value>
     <value>Carregar Perfil</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>No es pot carregar el perfil. Ja l’utilitza un altre instància de N.I.N.A.!</value>
+    <value>El perfil seleccionat està essent utilitzat actualment per una altra instancia de N.I.N.A. o no es pot carregar per un problema desconegut. Per més detalls, comprovi l'arxiu del registre.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Carregar Seqüència</value>
@@ -2275,6 +2272,12 @@ HFR calculat: {2}    </value>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Client intern de NINA per a l'API de OpenWeatherMap</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Utilitza l'API de previsió meteorològica d'OpenMeteo. Les dades meteorològiques s'actualitzen cada 10 minuts.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>Client intern de l'API d'OpenMeteo de NINA</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opcions</value>
   </data>
@@ -2354,7 +2357,7 @@ HFR calculat: {2}    </value>
     <value>Port del Servidor de PHD2</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>Nom del servidor de PHD2</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>Configuració de PHD2</value>
@@ -2432,7 +2435,7 @@ HFR calculat: {2}    </value>
     <value>Preferències del Planetari</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Obtenir coordenades del programa Planetari</value>
+    <value>Importa l'objecte del planetari seleccionat actualment per actualitzar el nom i les coordenades</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Coordenades de l'objecte seleccionat</value>
@@ -5831,6 +5834,12 @@ Consulteu el manual de la càmera per conèixer la ubicació d'aquesta configura
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} s'ha desconnectat de la computadora. Comprova si el USB està i el voltatge suficient</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} ja està en ús per un altre programa. Si us plau, tanqueu aquest programa abans de tornar a connectar-lo o torneu a connectar la càmera a l'ordinador.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} ja està utilitzant EOS Utility. Tanqueu EOS Utility, incloses les tasques en segon pla, abans de tornar a connectar-vos.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>El Canon SDK ha experimentat un error intern. Es pot produir un funcionament poc fiable de la càmera</value>
   </data>
@@ -6987,28 +6996,326 @@ A més, és essencial que el controlador ASCOM utilitzat també admeti aquesta p
     <value>El moviment del focus s'ha esgotat després de {0} minuts.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>Fallada en resoldre el nom del servit PHD2: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>No s'ha establert nom de servidor PHD2</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>Còpia els colors de l'actual esquema de color a l'esquema ajustable de color "Personalització "alternativa"</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>Còpia els colors de l’esquema de color a l'esquema ajustable de color "Personalitza"</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Llum</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>Guarda la seqüència actual en la ruta especificada</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Desar la Seqüència</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>La ruta és invalida</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>No hi ha cap clau API de Werther Underground configurada.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>No hi ha cap estació de Weather Underground configurada.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>L' API de Weather Underground no respon.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>La sol·licitud de l'API Weather Underground ha fallat: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Estableix la posició actual a zero</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Invertir</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Estableix el pas màxim</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Voleu posar la posició actual a zero?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Punt de mira</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>Error resolent {0} host: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>No s'ha especificat cap host en la configuració</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Configuració d'Astrometria Cega</value>
+  </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Avís: l'opció "Utilitza el costat del moll del telescopi" a la configuració de canvi de meridià està desactivada i pot provocar problemes d'alineació per a muntatges equatorials amb cúpules a prop del meridià. La cúpula suposarà que un gir del meridià es produeix precisament al meridià, que pot provocar una desalineació si la muntura encara no s'ha girat.</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Durada total</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Bloqueja el seqüenciador per evitar edicions manuals o d'arrossegar i deixar anar</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Desbloqueja el seqüenciador per evitar edicions manuals o d'arrossegar i deixar anar</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Desactiva totes les accions d'arrossegar i deixar anar al seqüenciador i a la barra lateral</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Activa totes les accions d'arrossegar i deixar anar al seqüenciador i a la barra lateral</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Distància focal no vàlida!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>No es pot carregar la imatge: introduïu la distància focal efectiva del vostre telescopi a la secció de paràmetres de la càmera!</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Nom del lloc</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatori</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observador</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Seguint</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Cúpula seguint via N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>via Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>Mapa del món</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Connecta equip</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>Per al dispositiu seleccionat, es connectarà el dispositiu desat al perfil.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Connectar</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Desconnecta equip</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Desconnecta el dispositiu seleccionat</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Connecta tot l'equip</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Connecta tots els dispositius desats en el perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Desconnecta tot l'equip</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Desconnecta tots els dispositius connectats actualment</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Desconnecta la Càmera després d'una fallada en la descàrrega</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>Un activador s'accionarà quan la càmera no pugui descarregar una exposició i intentarà tornar a connectar la càmera. Quan es reconnecti, també es reconnectarà el refrigerador de la càmera i la cinta escalfadora antirosada al mateix estat en el qual estaven.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Reconnecta l'equip</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>Un activador que s'executarà quan el dispositiu seleccionat es desconnecti i intentarà reconnectar-ho.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Canvia el perfil</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Desconnecta tots els dispositius que estiguin connectats actualment, canvia el perfil especificat i reconnecta tots els dispositius del perfil especificat.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>No es pot trobar la rotació després de {0} intentos. Has determinat correctament la marca de revers del rotador?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Bloqueja els panells per evitar el tancament o la reordenació, o els desbloqueja per ajustar-los.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>La coordenada actual està en 2D. És necessari en 3D</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Data Juliana modificada</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Obre la tapa quan estigui</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Vespre civil</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Alba civil</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Rebutjar desaparcar la muntura si la finestra de la cúpula no està oberta</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>No es pot desaparcar el suport mentre a finestra de la cúpula o el sostre no estan oberts</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Rebutja els intents de desaparcar la muntura si l'estat de la cúpula o del sostre està Tancat, Tancant, Obrint-se o amb errors. Només es permetrà desaparcar la muntura si la cúpula o el sostre indica un estat Obert</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>Avui no hi ha alba civil a la vostra ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>Avui no hi ha crepuscle civil a la vostra ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>Avui no hi ha alba astronòmica a la vostra ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>Avui no hi ha capvespre astronòmic a la vostra ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>Avui no hi ha alba nàutica a la teva ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>Avui no hi ha capvespre nàutic a la teva ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>Avui no hi ha sortida del sol a la teva ubicació.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>Avui no hi ha posta de sol a la teva ubicació.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>Impossible connectar-se a {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>La càmera no suporta el mode de 16 bits</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Encara hi ha una exposició en marxa. Cancel·la per continuar.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Error en connectar {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>La Càmera ha generat un error genèric i necessita ser reconnectada!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>Càmera desconnectada! Potser la connexió de l'USB s'ha interromput.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>Error del receptor Metaguide: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>No s'ha pogut enviar el missatge {0}</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>El guiatge no està activat. No es pot fer el dithering</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>No s'ha pogut comunicar amb MGEN durant el dithering</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>PHD Error: {0}
+CODI: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>PHD Error: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>No hi ha cap clau API de TheWeatherCompany configurada.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>El fitxer {0} no existeix</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - La resolució de la placa ha fallat. No s'ha trobat cap fitxer de sortida.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Error en la resolució de la placa.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Error en la resolució de plaques amb Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>L'exposició prevista de {0}s és més llarga que el màxim permès.
+S'està aturant l'adquisició de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>L'exposició prevista de {0}s és més curta que el mínim permès.
+S'atura l'adquisició de flats.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>La correcció de flats no ha funcionat i està fora de la tolerància:
+primer temps d'exposició {0:#.####}
+temps d'exposició actual {1:#.####}
+temps transcorregut: {2:#.##}
+adu mitjana: {3:#.##}.
+El temps d'exposició de flats es determinarà de nou i es repetirà l'exposició.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>No s'ha pogut restaurar la posició anterior del filtre: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>No s'ha pogut canviar el filtre: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>No s'ha pogut establir la velocitat de canvi. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>No s'ha pogut preparar la imatge per a la visualització: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Hora de renovació del dia</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>Com que no hi ha cap dia adjunt a la instrucció, la transferència per a un nou dia es produeix a l'hora de transferència que es mostra.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Inicialització</value>
   </data>
 </root>

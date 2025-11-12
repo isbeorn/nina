@@ -76,12 +76,19 @@ namespace NINA.Sequencer.Conditions {
         }
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
+            if (HasDsoParent) {
+                var coordinates = RetrieveContextCoordinates(this.Parent)?.Coordinates;
+                if (coordinates != null) {
+                    Data.Coordinates.Coordinates = coordinates;
+                }
+            }
+
             CalculateExpectedTime();
             return Data.IsRising || Data.CurrentAltitude >= Data.Offset;
         }
 
         public double GetCurrentAltitude(DateTime time, ObserverInfo observer) {
-            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), time);
+            var altaz = Data.Coordinates.Coordinates.Transform(Angle.ByDegree(observer.Latitude), Angle.ByDegree(observer.Longitude), observer.Elevation, time);
             return altaz.Altitude.Degree;
         }
 

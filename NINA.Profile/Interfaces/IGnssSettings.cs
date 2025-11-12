@@ -18,5 +18,8 @@ namespace NINA.Profile.Interfaces {
 
     public interface IGnssSettings : ISettings {
         GnssSourceEnum GnssSource { get; set; }
+
+        string GpsdHost { get; set; }
+        ushort GpsdPort { get; set; }
     }
 }

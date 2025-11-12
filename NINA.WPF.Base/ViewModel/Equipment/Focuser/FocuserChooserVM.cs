@@ -15,6 +15,7 @@
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment;
+using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -23,6 +24,7 @@ using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ZWOptical.ASISDK;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
 
@@ -50,6 +52,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     }
                 }
 
+                /* ZWO focusers */
+                try {
+                    Logger.Trace("Adding ZWOptical Focusers");
+
+                    var focusers = ASIEAF.GetNum();
+
+                    for (int i = 0; i < focusers; i++) {
+                        var focuser = new ASIFocuser(i, profileService);
+                        Logger.Debug($"Adding ZWOptical Focuser: {focuser.Name}");
+                        devices.Add(focuser);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+
                 try {
                     var ascomInteraction = new ASCOMInteraction(profileService);
                     devices.AddRange(ascomInteraction.GetFocusers());
@@ -69,7 +86,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                     Logger.Error(ex);
                 }
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.FocuserSettings.Id, profileService.ActiveProfile.FocuserSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

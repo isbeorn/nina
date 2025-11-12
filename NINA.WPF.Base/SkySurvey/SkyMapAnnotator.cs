@@ -18,6 +18,7 @@ using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.ImageAnalysis;
+using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.Model.FramingAssistant;
 using System;
@@ -50,6 +51,7 @@ namespace NINA.WPF.Base.SkySurvey {
         private Graphics g;
         private Graphics dsoImageGraphics;
         private ITelescopeMediator telescopeMediator;
+        private readonly IProfileService profileService;
         private CacheSkySurvey cache;
 
         public SkyMapAnnotator() {
@@ -63,8 +65,10 @@ namespace NINA.WPF.Base.SkySurvey {
             annotateGrid = true;
         }
 
-        public SkyMapAnnotator(ITelescopeMediator mediator) : this() {
+        public SkyMapAnnotator(ITelescopeMediator mediator, IProfileService profileService) : this() {
             this.telescopeMediator = mediator;
+            this.profileService = profileService;
+            LoadSettings();
         }
 
         public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CacheSkySurvey cache, CancellationToken ct) {
@@ -84,7 +88,7 @@ namespace NINA.WPF.Base.SkySurvey {
             }
 
             if (dbDSOs == null) {
-                dbDSOs = (await dbInstance.GetDeepSkyObjects(string.Empty, null, new DatabaseInteraction.DeepSkyObjectSearchParams(), ct)).ToDictionary(x => x.Id, y => y);                
+                dbDSOs = (await dbInstance.GetDeepSkyObjects(string.Empty, null, new DatabaseInteraction.DeepSkyObjectSearchParams(), ct)).ToDictionary(x => x.Id, y => y);
             }
 
             if (ActiveCatalogues == null) {
@@ -172,6 +176,34 @@ namespace NINA.WPF.Base.SkySurvey {
         [ObservableProperty]
         private BitmapSource skyMapOverlay;
 
+        partial void OnAnnotateConstellationBoundariesChanged(bool _, bool newValue) {
+            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries != newValue)
+                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries = newValue;
+        }
+
+        partial void OnAnnotateConstellationsChanged(bool _, bool newValue) {
+            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations != newValue)
+                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations = newValue;
+        }
+
+        partial void OnAnnotateDSOChanged(bool _, bool newValue) {
+            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO != newValue)
+                profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO = newValue;
+        }
+
+        partial void OnAnnotateGridChanged(bool _, bool newValue) {
+            if (profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid != newValue)
+                profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid = newValue;
+        }
+
+        private void LoadSettings() {
+            AnnotateConstellationBoundaries =
+                profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellationBoundaries;
+            AnnotateConstellations = profileService.ActiveProfile.FramingAssistantSettings.AnnotateConstellations;
+            AnnotateDSO = profileService.ActiveProfile.FramingAssistantSettings.AnnotateDSO;
+            AnnotateGrid = profileService.ActiveProfile.FramingAssistantSettings.AnnotateGrid;
+        }
+
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current viewport
         /// </summary>
@@ -190,14 +222,14 @@ namespace NINA.WPF.Base.SkySurvey {
 
             return dbDSOs
                 .Where(d => (d.Value.Size != null && d.Value.Size > minSize && d.Value.Size < maxSize) || ViewportFoV.VFoV <= 10)
-                .Where(dso => !filteredCatalogues.Any(dso.Value.Name.StartsWith))              
+                .Where(dso => !filteredCatalogues.Any(dso.Value.Name.StartsWith))
                 .Where(dso => ViewportFoV.ContainsCoordinates(dso.Value.Coordinates))
                 .ToDictionary(x => x.Key, y => y.Value);
         }
 
         public void ClearImagesForViewport() {
-            if(cacheImages != null) { 
-                foreach(var image in cacheImages) {
+            if (cacheImages != null) {
+                foreach (var image in cacheImages) {
                     image.Dispose();
                 }
                 cacheImages.Clear();
@@ -238,13 +270,13 @@ namespace NINA.WPF.Base.SkySurvey {
                 }
 
                 l = l.Where(x => {
-                        var distance = x.Coordinates - ViewportFoV.CenterCoordinates;
-                        return distance.Distance.Degree < Math.Max(ViewportFoV.HFoV, ViewportFoV.VFoV) + AstroUtil.ArcminToDegree(Math.Max(x.FoVH, x.FoVW));
-                    })
+                    var distance = x.Coordinates - ViewportFoV.CenterCoordinates;
+                    return distance.Distance.Degree < Math.Max(ViewportFoV.HFoV, ViewportFoV.VFoV) + AstroUtil.ArcminToDegree(Math.Max(x.FoVH, x.FoVW));
+                })
                     //Order in descending order so that smallest field of view is drawn on top, as it most likely contains most details
                     .OrderByDescending(x => x.FoVW)
                     .ToList();
-                
+
                 return l;
             }
         }
@@ -409,7 +441,7 @@ namespace NINA.WPF.Base.SkySurvey {
                         }
                     }
                     ct.ThrowIfCancellationRequested();
-                    
+
                     Render();
                 } catch (Exception) {
                 } finally {
@@ -472,13 +504,13 @@ namespace NINA.WPF.Base.SkySurvey {
                     while (renderTask != null && (renderTask.Status < TaskStatus.RanToCompletion)) {
                     }
                 } catch (Exception) {
-                }                
+                }
 
                 oldCenter = ViewportFoV.CenterCoordinates;
                 oldFoV = ViewportFoV.HFoV;
                 oldUseCachedImages = UseCachedImages;
 
-                if (needFullRedraw) { 
+                if (needFullRedraw) {
                     dsoImageGraphics.Clear(Color.Transparent);
                 }
                 Render();
@@ -490,7 +522,7 @@ namespace NINA.WPF.Base.SkySurvey {
                     renderTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(200));
                     var token = renderCts.Token;
                     _ = Task.Run(async () => {
-                        try { 
+                        try {
                             while (await renderTimer.WaitForNextTickAsync(token)) {
                                 Render();
                             }
@@ -528,7 +560,7 @@ namespace NINA.WPF.Base.SkySurvey {
                 var coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
                 if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.01 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.01) {
                     telescopeCoordinates = coordinates;
-                    if(ViewportFoV.ContainsCoordinates(coordinates)) {
+                    if (ViewportFoV.ContainsCoordinates(coordinates)) {
                         UpdateSkyMap();
                     }
                 }

@@ -23,6 +23,7 @@ namespace NINA.Profile {
             rotatorInfoOnly = false;
             switchInfoOnly = false;
             flatDeviceInfoOnly = false;
+            isLocked = false;
         }
         private bool showImagingHistogram;
 
@@ -110,6 +111,19 @@ namespace NINA.Profile {
             set {
                 if (flatDeviceInfoOnly != value) {
                     flatDeviceInfoOnly = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool isLocked;
+
+        [DataMember]
+        public bool IsLocked {
+            get => isLocked;
+            set {
+                if (isLocked != value) {
+                    isLocked = value;
                     RaisePropertyChanged();
                 }
             }

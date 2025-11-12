@@ -725,7 +725,7 @@ namespace NINA.Test {
 
             var expectedProperties = new[] {
                 new { Id = "Instrument:ExposureTime", Type = "Float32", Value = $"{metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture)}", Comment = "[s] Exposure duration"},
-                new { Id = "Observation:Time:Start", Type = "TimePoint", Value = $"{metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture)}", Comment = "Time of observation (UTC)"}
+                new { Id = "Observation:Time:Start", Type = "TimePoint", Value = $"{metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture)}", Comment = "Time of observation (UTC)"}
             };
 
             //Act
@@ -836,17 +836,25 @@ namespace NINA.Test {
             metaData.Observer.Latitude = 10;
             metaData.Observer.Longitude = 20;
             metaData.Observer.Elevation = 30;
+            metaData.Observer.Name = "Jon Doe";
+            metaData.Observer.Observatory = "Jon Observatory 1";
+            metaData.Observer.Site = "Jon Town";
 
             var expectedFITSKeywords = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("SITEELEV", metaData.Observer.Elevation, "[m] Observation site elevation"),
                 new FITSHeaderCard("SITELAT", metaData.Observer.Latitude, "[deg] Observation site latitude"),
-                new FITSHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude")
+                new FITSHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude"),
+                new FITSHeaderCard("OBSERVER", metaData.Observer.Name, "Observer name"),
+                new FITSHeaderCard("OBSERVAT", metaData.Observer.Observatory, "Observatory name"),
+                new FITSHeaderCard("SITENAME", metaData.Observer.Site, "Observatory site name"),
             };
 
             var expectedProperties = new[] {
                 new { Id = "Observation:Location:Latitude", Type = "Float64", Value = metaData.Observer.Latitude.ToString(CultureInfo.InvariantCulture), Comment = "[deg] Observation site latitude"},
                 new { Id = "Observation:Location:Longitude", Type = "Float64", Value = metaData.Observer.Longitude.ToString(CultureInfo.InvariantCulture), Comment = "[deg] Observation site longitude"},
                 new { Id = "Observation:Location:Elevation", Type = "Float64", Value = metaData.Observer.Elevation.ToString(CultureInfo.InvariantCulture), Comment = "[m] Observation site elevation"},
+                new { Id = "Observation:Location:Name", Type = "String", Value = metaData.Observer.Site, Comment = "Observatory site name"},
+                new { Id = "Observer:Name", Type = "String", Value = metaData.Observer.Name, Comment = "Observer name"},
             };
 
             //Act

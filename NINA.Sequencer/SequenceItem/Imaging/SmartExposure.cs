@@ -34,6 +34,8 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using System.Windows;
 using System.ComponentModel;
+using NINA.Core.Model;
+using System.Threading;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -197,6 +199,13 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         /// <returns></returns>
         public override Task Interrupt() {
             return this.Parent?.Interrupt();
+        }
+
+        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            // Ensure that the switch filter is reset before executing the sequence
+            var sw = GetSwitchFilter();
+            sw.ResetProgress();
+            return base.Execute(progress, token);
         }
     }
 }

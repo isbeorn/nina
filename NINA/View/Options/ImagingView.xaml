@@ -268,18 +268,18 @@
                 <Button
                     Grid.Row="3"
                     Grid.Column="2"
-                    Width="20"
+                    Width="40"
                     Height="20"
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Command="{Binding DataContext.OpenImageFileDiagCommand, ElementName=UC}">
                     <Path
-                        Margin="2,10,2,0"
-                        Data="{StaticResource DotsSVG}"
-                        Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform"
-                        UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                 </Button>
 
 
@@ -972,18 +972,18 @@
                             </TextBox>
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenSequenceFolderDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
-                                    Data="{StaticResource DotsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                                 <Button.ToolTip>
                                     <TextBlock Text="{ns:Loc LblDefaultSequenceFolderTooltip}" />
                                 </Button.ToolTip>
@@ -1012,18 +1012,18 @@
                             </TextBox>
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenSequenceTemplateFolderDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
-                                    Data="{StaticResource DotsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                                 <Button.ToolTip>
                                     <TextBlock Text="{ns:Loc LblSequenceTemplateFolderTooltip}" />
                                 </Button.ToolTip>
@@ -1045,25 +1045,25 @@
                                 <TextBox.Text>
                                     <Binding Path="TemplatePath" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <rules:FileExistsRule />
+                                            <rules:FileExistsOrEmptyRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenSequenceTemplateDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
-                                    Data="{StaticResource DotsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                                 <Button.ToolTip>
                                     <TextBlock Text="{ns:Loc LblSequenceTemplateTooltip}" />
                                 </Button.ToolTip>
@@ -1085,25 +1085,25 @@
                                 <TextBox.Text>
                                     <Binding Path="StartupSequenceTemplate" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <rules:FileExistsRule />
+                                            <rules:FileExistsOrEmptyRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenStartupSequenceTemplateDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
-                                    Data="{StaticResource DotsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                                 <Button.ToolTip>
                                     <TextBlock Text="{ns:Loc LblStartupSequenceTemplateTooltip}" />
                                 </Button.ToolTip>
@@ -1132,18 +1132,18 @@
                             </TextBox>
                             <Button
                                 Grid.Column="2"
-                                Width="20"
+                                Width="40"
                                 Height="20"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding DataContext.OpenTargetsFolderDiagCommand, ElementName=UC}">
                                 <Path
-                                    Margin="2,10,2,0"
-                                    Data="{StaticResource DotsSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform"
-                                    UseLayoutRounding="True" />
+                                Margin="12,10,12,0"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                                 <Button.ToolTip>
                                     <TextBlock Text="{ns:Loc LblSequencerTargetsFolderTooltip}" />
                                 </Button.ToolTip>

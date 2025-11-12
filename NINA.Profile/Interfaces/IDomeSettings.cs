@@ -18,6 +18,7 @@ namespace NINA.Profile.Interfaces {
 
     public interface IDomeSettings : ISettings {
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         double ScopePositionEastWest_mm { get; set; }
         double ScopePositionNorthSouth_mm { get; set; }
         double ScopePositionUpDown_mm { get; set; }
@@ -33,6 +34,7 @@ namespace NINA.Profile.Interfaces {
         bool CloseOnUnsafe { get; set; }
         bool ParkMountBeforeShutterMove { get; set; }
         bool RefuseUnsafeShutterMove { get; set; }
+        bool RefuseUnparkWithoutShutterOpen { get; set; }
         bool RefuseUnsafeShutterOpenSansSafetyDevice { get; set; }
         bool ParkDomeBeforeShutterMove { get; set; }
         MountTypeEnum MountType { get; set; }

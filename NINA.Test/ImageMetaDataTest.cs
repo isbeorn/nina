@@ -29,6 +29,7 @@ using Moq;
 using NINA.Equipment.Interfaces;
 using FluentAssertions;
 using NUnit.Framework.Legacy;
+using Grpc.Core;
 
 namespace NINA.Test {
 
@@ -110,7 +111,12 @@ namespace NINA.Test {
 
                 AstrometrySettings = {
                     Latitude = 10,
-                    Longitude = 20
+                    Longitude = 20,
+                    Elevation = 102.3,
+                    Observer = "Jon Doe",
+                    Observatory = "Jon Observatory 1",
+                    Site = "Jon Town"
+
                 }
             };
 
@@ -123,6 +129,10 @@ namespace NINA.Test {
             ClassicAssert.AreEqual(5, sut.Telescope.FocalRatio);
             ClassicAssert.AreEqual(10, sut.Observer.Latitude);
             ClassicAssert.AreEqual(20, sut.Observer.Longitude);
+            ClassicAssert.AreEqual(102.3, sut.Observer.Elevation);
+            ClassicAssert.AreEqual("Jon Doe", sut.Observer.Name);
+            ClassicAssert.AreEqual("Jon Observatory 1", sut.Observer.Observatory);
+            ClassicAssert.AreEqual("Jon Town", sut.Observer.Site);
         }
 
         [Test]
@@ -289,7 +299,6 @@ namespace NINA.Test {
             sut.FromTelescopeInfo(telescopeInfo);
 
             ClassicAssert.AreEqual("TestName", sut.Telescope.Name);
-            ClassicAssert.AreEqual(120.3, sut.Observer.Elevation);
             ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalLength);
             ClassicAssert.AreEqual(double.NaN, sut.Telescope.FocalRatio);
 

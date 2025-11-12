@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static NINA.Image.FileFormat.FITS.CfitsioNative;
-using System.Windows.Media.Media3D;
 using NINA.Image.ImageData;
 using System.Globalization;
 using NINA.Core.Enum;
@@ -48,6 +47,20 @@ namespace NINA.Image.FileFormat.FITS {
             CheckStatus("fits_write_img", status);
         }
 
+        public CFitsioFITS(string filePath, float[] data, int width, int height, COMPRESSION compression = COMPRESSION.NOCOMPRESS) : this(filePath, compression) {
+            CfitsioNative.fits_create_img(filePtr, CfitsioNative.BITPIX.FLOAT_IMG, 2, new int[] { width, height }, out var status);
+            CheckStatus("fits_create_img", status);
+            CfitsioNative.fits_write_img_float(filePtr, CfitsioNative.DATATYPE.TDOUBLE, 1, width * height, data, out status);
+            CheckStatus("fits_write_img", status);
+        }
+
+        public CFitsioFITS(string filePath, double[] data, int width, int height, COMPRESSION compression = COMPRESSION.NOCOMPRESS) : this(filePath, compression) {
+            CfitsioNative.fits_create_img(filePtr, CfitsioNative.BITPIX.DOUBLE_IMG, 2, new int[] { width, height }, out var status);
+            CheckStatus("fits_create_img", status);
+            CfitsioNative.fits_write_img_double(filePtr, CfitsioNative.DATATYPE.TDOUBLE, 1, width * height, data, out status);
+            CheckStatus("fits_write_img", status);
+        }
+
         public void AddHeader(string keyword, string value, string comment) {
             CfitsioNative.fits_update_key_str(filePtr, keyword, value, comment, out var status);
             LogErrorStatus("fits_update_key_str", status);
@@ -63,8 +76,13 @@ namespace NINA.Image.FileFormat.FITS {
             LogErrorStatus("fits_update_key_dbl", status);
         }
 
+        public void AddHeader(string keyword, bool value, string comment) {
+            CfitsioNative.fits_update_key_log(filePtr, keyword, value ? 1 : 0, comment, out var status);
+            LogErrorStatus("fits_update_key_log", status);
+        }
+
         public void AddHeader(string keyword, DateTime value, string comment) {
-            AddHeader(keyword, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
+            AddHeader(keyword, value.ToString("yyyy-MM-ddTHH:mm:ss.fffffff", CultureInfo.InvariantCulture), comment);
         }
 
         public void Close() {
@@ -92,12 +110,14 @@ namespace NINA.Image.FileFormat.FITS {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 AddHeader("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
                 AddHeader("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+                AddHeader("MJD-OBS", metaData.Image.ExposureStart.ToMJD(), "Modified Julian Date of observation");
             }
 
             if (metaData.Image.ExposureMidPoint > DateTime.MinValue) {
                 // Section 8.4.1 https://fits.gsfc.nasa.gov/standard40/fits_standard40aa-le.pdf
                 // Calendar date of the midpoint of the observation, expressed in the same way as the DATE-OBS keyword.
                 AddHeader("DATE-AVG", metaData.Image.ExposureMidPoint, "Averaged midpoint time (UTC)");
+                AddHeader("MJD-AVG", metaData.Image.ExposureMidPoint.ToMJD(), "Modified Julian Date of averaged midpoint time");
             }
 
             /* Camera */
@@ -208,6 +228,15 @@ namespace NINA.Image.FileFormat.FITS {
             }
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 AddHeader("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("OBSERVER", metaData.Observer.Name, "Observer name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Observatory)) {
+                AddHeader("OBSERVAT", metaData.Observer.Observatory, "Observatory name");
+            }
+            if (!string.IsNullOrEmpty(metaData.Observer.Name)) {
+                AddHeader("SITENAME", metaData.Observer.Site, "Observatory site name");
             }
 
             /* Filter Wheel */
@@ -352,7 +381,7 @@ namespace NINA.Image.FileFormat.FITS {
                         AddHeader(d.Key, d.Value, d.Comment);
                         break;
                     case BoolMetaDataHeader b:
-                        AddHeader(b.Key, b.Value ? "T" : "F", b.Comment);
+                        AddHeader(b.Key, b.Value, b.Comment);
                         break;
                     case DateTimeMetaDataHeader d:
                         AddHeader(d.Key, d.Value, d.Comment);

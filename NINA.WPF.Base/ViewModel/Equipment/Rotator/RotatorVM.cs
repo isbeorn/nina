@@ -65,7 +65,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             updateTimer = new DeviceUpdateTimer(
                 GetRotatorValues,
                 UpdateRotatorValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Rotator"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -233,7 +234,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
         }
 
         public async Task<float> MoveRelative(float offset, TimeSpan waitTime, CancellationToken ct) {
-            if (Rotator?.Connected == true) {
+            if (RotatorInfo?.Connected == true) {
                 return await MoveMechanical(Rotator.MechanicalPosition + offset, waitTime, ct);
             }
             return -1;
@@ -246,9 +247,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.Position), out o);
             RotatorInfo.Position = (float)(o ?? 0f);
-
-            rotatorValues.TryGetValue(nameof(RotatorInfo.StepSize), out o);
-            RotatorInfo.StepSize = (float)(o ?? 0f);
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);
@@ -270,7 +268,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
             rotatorValues.Add(nameof(RotatorInfo.Connected), Rotator?.Connected ?? false);
             rotatorValues.Add(nameof(RotatorInfo.Position), Rotator?.Position ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.IsMoving), Rotator?.IsMoving ?? false);
-            rotatorValues.Add(nameof(RotatorInfo.StepSize), Rotator?.StepSize ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.Reverse), Rotator?.Reverse ?? false);
             rotatorValues.Add(nameof(RotatorInfo.Synced), Rotator?.Synced ?? false);
             rotatorValues.Add(nameof(RotatorInfo.MechanicalPosition), Rotator?.MechanicalPosition ?? 0f);
@@ -344,7 +341,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.RotatorSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.RotatorSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -392,6 +394,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
 
                             TargetPosition = Rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = Rotator.Id;
+                            profileService.ActiveProfile.RotatorSettings.LastDeviceName = Rotator.DisplayName;
                             profileService.ActiveProfile.RotatorSettings.Reverse2 = this.Rotator.Reverse;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
@@ -405,6 +408,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Rotator {
                         }
                     } catch (OperationCanceledException) {
                         if (rotator?.Connected == true) { await Disconnect(); }
+                        return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (RotatorInfo.Connected) { await Disconnect(); }
+                        RotatorInfo.Connected = false;
                         return false;
                     }
                 } else {

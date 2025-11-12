@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Altair;
 using NINA.Equipment.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,13 +32,21 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return (ToupTekAlikeEvent)Enum.Parse(typeof(Nncam.eEVENT), info.ToString());
         }
 
-        public static ToupTekAlikeFrameInfo ToFrameInfo(this Nncam.FrameInfoV2 info) {
+        public static ToupTekAlikeFrameInfo ToFrameInfo(this Nncam.FrameInfoV4 info) {
             var ttInfo = new ToupTekAlikeFrameInfo();
-            ttInfo.flag = info.flag;
-            ttInfo.height = info.height;
-            ttInfo.width = info.width;
-            ttInfo.timestamp = info.timestamp;
-            ttInfo.seq = info.seq;
+            ttInfo.flag = info.v3.flag;
+            ttInfo.height = info.v3.height;
+            ttInfo.width = info.v3.width;
+            ttInfo.timestamp = info.v3.timestamp;
+            ttInfo.seq = info.v3.seq;
+            ttInfo.expotime = info.v3.expotime;
+            ttInfo.hasgps = (info.v3.flag & (uint)Nncam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.gps.utcstart = info.gps.utcstart;
+            ttInfo.gps.utcend = info.gps.utcend;
+            ttInfo.gps.longitude = info.gps.longitude;
+            ttInfo.gps.latitude = info.gps.latitude;
+            ttInfo.gps.altitude = info.gps.altitude;
+            ttInfo.gps.satellite = info.gps.satellite;
             return ttInfo;
         }
 
@@ -120,10 +129,10 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             sdk.get_Temperature(out temp);
         }
 
-        public bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            Nncam.FrameInfoV2 toupcampInfo;
-            var result = sdk.PullImageV2(data, bitDepth, out toupcampInfo);
-            info = toupcampInfo.ToFrameInfo();
+        public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+            Nncam.FrameInfoV4 frameInfoV4;
+            var result = sdk.PullImage(data, 0, bitDepth, 0, out frameInfoV4);
+            info = frameInfoV4.ToFrameInfo();
             return result;
         }
 

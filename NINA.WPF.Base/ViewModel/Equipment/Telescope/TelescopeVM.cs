@@ -36,6 +36,7 @@ using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Equipment.Equipment;
 using NINA.Core.Utility.Extensions;
 using CommunityToolkit.Mvvm.Input;
+using System.Xml.Serialization;
 
 namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
@@ -62,7 +63,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                 this.applicationStatusMediator.StatusUpdate(p);
             });
 
-            InputCoordinatesAltAz = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+            InputCoordinatesAltAz = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
 
             ConnectCommand = new AsyncCommand<bool>(() => Task.Run(ChooseTelescope), (object o) => DeviceChooserVM.SelectedDevice != null);
             CancelConnectCommand = new Core.Utility.RelayCommand(CancelChooseTelescope);
@@ -91,7 +92,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             updateTimer = new DeviceUpdateTimer(
                 GetTelescopeValues,
                 UpdateTelescopeValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "Mount"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -101,7 +103,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         private void ProfileService_LocationChanged(object sender, EventArgs e) {
-            InputCoordinatesAltAz?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+            InputCoordinatesAltAz?.SetPosition(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation);
         }
 
         public async Task<IList<string>> Rescan() {
@@ -229,9 +231,18 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             bool success = false;
             Logger.Info("Mount ordered to unpark");
 
-            if (!Telescope.Connected) {
+            if (!TelescopeInfo.Connected) {
                 Logger.Error("Mount is not connected");
                 return false;
+            }
+
+            if (profileService.ActiveProfile.DomeSettings.RefuseUnparkWithoutShutterOpen) {
+                var domeInfo = domeMediator.GetInfo();
+                if (!domeInfo.Connected || domeInfo.ShutterStatus != ShutterState.ShutterOpen) {
+                    Logger.Error($"Attempt to unpark the mount while the dome shutter or roof status is {domeInfo.ShutterStatus} or is not connected");
+                    Notification.ShowError(Loc.Instance["LblRefuseUnparkWithoutShutterOpenError"]);
+                    return false;
+                }
             }
 
             await Task.Run(async () => {
@@ -284,8 +295,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             await Task.Run(async () => {
                 IsParkingOrHoming = true;
 
-                if (Telescope.Connected) {
-                    if (Telescope.CanFindHome) {
+                if (TelescopeInfo.Connected) {
+                    if (TelescopeInfo.CanFindHome) {
                         if (!Telescope.AtHome) {
                             if (!Telescope.AtPark) {
                                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -322,9 +333,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 reason = "it is parked";
                             }
                         } else {
-                            // AtHome == true
-                            Notification.ShowWarning(Loc.Instance["LblTelescopeAtHomeWarn"]);
-                            reason = "it is already at the home position";
+                            Logger.Info("Mount ordered to home but it is already at home");
+                            success = true;
                         }
                     } else {
                         // CanFindHome == false
@@ -371,7 +381,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.TelescopeSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 this.applicationStatusMediator.StatusUpdate(
@@ -500,6 +515,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                                 IsPulseGuiding = Telescope.IsPulseGuiding,
                                 CanSetPierSide = Telescope.CanSetPierSide,
                                 CanSlew = Telescope.CanSlew,
+                                CanSlewAltAz = Telescope.CanSlewAltAz,
                                 UTCDate = Telescope.UTCDate,
                             });
 
@@ -513,6 +529,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
                             Notification.ShowSuccess(Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
+                            profileService.ActiveProfile.TelescopeSettings.LastDeviceName = Telescope.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected mount. Id: {telescope.Id} Name: {telescope.Name} DisplayName: {telescope.DisplayName} Driver Version: {telescope.DriverVersion}");
@@ -527,6 +544,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                             await Disconnect(); 
                         }
                         Notification.ShowError(ex.Message);
+                        return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (TelescopeInfo.Connected) { await Disconnect(); }
+                        TelescopeInfo.Connected = false;
                         return false;
                     }
                 } else {
@@ -605,32 +628,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.TryGetValue(nameof(TelescopeInfo.AtHome), out o);
             TelescopeInfo.AtHome = (bool)(o ?? false);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLatitude), out o);
-            TelescopeInfo.SiteLatitude = (double)(o ?? double.NaN);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLongitude), out o);
-            TelescopeInfo.SiteLongitude = (double)(o ?? double.NaN);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteElevation), out o);
-            TelescopeInfo.SiteElevation = (double)(o ?? double.NaN);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingRate), out o);
             TelescopeInfo.TrackingRate = (TrackingRate)(o ?? TrackingRate.STOPPED);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetTrackingEnabled), out o);
-            TelescopeInfo.CanSetTrackingEnabled = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetDeclinationRate), out o);
-            TelescopeInfo.CanSetDeclinationRate = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetRightAscensionRate), out o);
-            TelescopeInfo.CanSetRightAscensionRate = (bool)(o ?? false);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingEnabled), out o);
             TelescopeInfo.TrackingEnabled = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.TrackingModes), out o);
-            TelescopeInfo.TrackingModes = (IList<TrackingMode>)(o ?? ImmutableList<TrackingMode>.Empty);
 
             telescopeValues.TryGetValue(nameof(Coordinates), out o);
             TelescopeInfo.Coordinates = (Coordinates)(o ?? null);
@@ -659,20 +661,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.TryGetValue(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), out o);
             TelescopeInfo.GuideRateDeclinationArcsecPerSec = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.AlignmentMode), out o);
-            TelescopeInfo.AlignmentMode = (AlignmentMode)(o ?? AlignmentMode.GermanPolar);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanPulseGuide), out o);
-            TelescopeInfo.CanPulseGuide = (bool)(o ?? false);
-
             telescopeValues.TryGetValue(nameof(TelescopeInfo.IsPulseGuiding), out o);
             TelescopeInfo.IsPulseGuiding = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSetPierSide), out o);
-            TelescopeInfo.CanSetPierSide = (bool)(o ?? false);
-
-            telescopeValues.TryGetValue(nameof(TelescopeInfo.CanSlew), out o);
-            TelescopeInfo.CanSlew = (bool)(o ?? false);
 
             telescopeValues.TryGetValue(nameof(TelescopeInfo.UTCDate), out o);
             TelescopeInfo.UTCDate = (DateTime)(o ?? DateTime.MinValue);
@@ -682,16 +672,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
 
         private Dictionary<string, object> GetTelescopeValues() {
             Dictionary<string, object> telescopeValues = new Dictionary<string, object>();
-
             telescopeValues.Add(nameof(TelescopeInfo.Connected), _telescope?.Connected ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.AtPark), _telescope?.AtPark ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.AtHome), _telescope?.AtHome ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetTrackingEnabled), _telescope?.CanSetTrackingEnabled ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetDeclinationRate), _telescope?.CanSetDeclinationRate ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetRightAscensionRate), _telescope?.CanSetRightAscensionRate ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.TrackingRate), _telescope?.TrackingRate ?? TrackingRate.STOPPED);
             telescopeValues.Add(nameof(TelescopeInfo.TrackingEnabled), _telescope?.TrackingEnabled ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.TrackingModes), _telescope?.TrackingModes ?? ImmutableList<TrackingMode>.Empty);
             telescopeValues.Add(nameof(TelescopeInfo.Altitude), _telescope?.Altitude ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.AltitudeString), _telescope?.AltitudeString ?? string.Empty);
             telescopeValues.Add(nameof(TelescopeInfo.Azimuth), _telescope?.Azimuth ?? double.NaN);
@@ -703,9 +688,6 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Declination), _telescope?.Declination ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.SiderealTime), _telescope?.SiderealTime ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteLongitude), _telescope?.SiteLongitude ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteLatitude), _telescope?.SiteLatitude ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.SiteElevation), _telescope?.SiteElevation ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlipString), _telescope?.TimeToMeridianFlipString ?? string.Empty);
@@ -715,13 +697,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Slewing), _telescope?.Slewing ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateRightAscensionArcsecPerSec), _telescope?.GuideRateRightAscensionArcsecPerSec ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.GuideRateDeclinationArcsecPerSec), _telescope?.GuideRateDeclinationArcsecPerSec ?? double.NaN);
-            telescopeValues.Add(nameof(TelescopeInfo.AlignmentMode), _telescope?.AlignmentMode ?? null);
-            telescopeValues.Add(nameof(TelescopeInfo.CanPulseGuide), _telescope?.CanPulseGuide ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.IsPulseGuiding), _telescope?.IsPulseGuiding ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSetPierSide), _telescope?.CanSetPierSide ?? false);
-            telescopeValues.Add(nameof(TelescopeInfo.CanSlew), _telescope?.CanSlew ?? false);
             telescopeValues.Add(nameof(TelescopeInfo.UTCDate), _telescope?.UTCDate ?? null);
-
             return telescopeValues;
         }
 
@@ -888,13 +865,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }
         }
 
-        public async Task<bool> SlewToCoordinatesAsync(Coordinates coords, CancellationToken token) {
+        public Task<bool> SlewToCoordinatesAsync(Coordinates coords, CancellationToken token) {
+            return SlewAsyncInternal(new EquatorialSlewCoordinates(Telescope, profileService, coords, TelescopeInfo.EquatorialSystem), token);
+        }
+
+        public Task<bool> SlewToTopocentricCoordinates(TopocentricCoordinates coords, CancellationToken token) {
+            return SlewAsyncInternal(new TopocentricSlewCoordinates(Telescope, coords, TelescopeInfo.EquatorialSystem), token);
+        }
+
+        private async Task<bool> SlewAsyncInternal(ITelescopeSlewCoordinates coords, CancellationToken token) {
             using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
             // Add a generous timeout of 10 minutes - just to prevent the procedure being stuck
             timeoutCts.CancelAfter(TimeSpan.FromMinutes(10));
             try {
-                coords = coords.Transform(TelescopeInfo.EquatorialSystem);
-                if (Telescope?.Connected == true) {
+                if (TelescopeInfo?.Connected == true) {
                     if (Telescope?.Slewing == true && Telescope?.TrackingEnabled == false) {
                         Logger.Warning("Slew issued while telesope is possibly in the process of parking!");
                     }
@@ -923,16 +907,16 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                     );
 
                     var position = GetCurrentPosition();
-                    Logger.Info($"Slewing from {position} to {coords} - {coords.Transform(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Elevation)}");
+                    Logger.Info($"Slewing from {position} to {coords.Coordinates} - {coords.TopocentricCoordinates}");
 
                     var domeSyncTask = Task.CompletedTask;
                     var domeInfo = this.domeMediator.GetInfo();
                     if (domeInfo.Connected && domeInfo.CanSetAzimuth) {
                         if (this.domeMediator.IsFollowingScope || this.profileService.ActiveProfile.DomeSettings.SyncSlewDomeWhenMountSlews) {
-                            var targetSideOfPier = Astrometry.MeridianFlip.ExpectedPierSide(coords, Angle.ByHours(this.TelescopeInfo.SiderealTime));
+                            var targetSideOfPier = TargetSideOfPierForCoordinates(coords.Coordinates);
                             domeSyncTask = Task.Run(async () => {
                                 try {
-                                    return await this.domeMediator.SyncToScopeCoordinates(coords, targetSideOfPier, timeoutCts.Token);
+                                    return await this.domeMediator.SyncToScopeCoordinates(coords.Coordinates, targetSideOfPier, timeoutCts.Token);
                                 } catch (Exception e) {
                                     Logger.Error("Failed to sync dome when issuing a scope slew. Continuing with the scope slew", e);
                                     return false;
@@ -941,14 +925,14 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
                         }
                     }
 
-                    await Telescope.SlewToCoordinates(coords, timeoutCts.Token);
+                    await coords.Slew(timeoutCts.Token);
                     var waitForUpdate = updateTimer.WaitForNextUpdate(timeoutCts.Token);
                     await Task.WhenAll(
                         CoreUtil.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime), true, timeoutCts.Token, progress, Loc.Instance["LblSettle"]),
                         domeSyncTask,
                         waitForUpdate);
                     BroadcastTelescopeInfo();
-                    await (Slewed?.InvokeAsync(this, new MountSlewedEventArgs(from: position, to: coords)) ?? Task.CompletedTask);
+                    await (Slewed?.InvokeAsync(this, new MountSlewedEventArgs(from: position, to: coords.Coordinates)) ?? Task.CompletedTask);
                     return true;
                 } else {
                     Logger.Warning("Mount is not connected to slew");
@@ -966,9 +950,20 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             }
         }
 
+        private PierSide TargetSideOfPierForCoordinates(Coordinates coordinates) {
+            try {
+                if (Telescope?.Connected == true && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                    return Telescope.DestinationSideOfPier(coordinates);
+                }
+            } catch (Exception e) {
+                Logger.Warning($"Failed to get DestinationSideOfPier from telescope. Falling back to default calculation. Error: {e.Message}");
+            }
+            return Astrometry.MeridianFlip.ExpectedPierSide(coordinates, Angle.ByHours(this.TelescopeInfo.SiderealTime));
+        }
+
         [RelayCommand]
         private Task SlewToCoordinatesAltAz(CancellationToken token) {
-            return Task.Run(() => SlewToCoordinatesAsync(InputCoordinatesAltAz.Coordinates, token));
+            return Task.Run(() => SlewToTopocentricCoordinates(InputCoordinatesAltAz.Coordinates, token));
         }
 
         private Task<bool> SlewToCoordinatesInternal(object obj) {
@@ -997,6 +992,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
             return TelescopeInfo;
         }
 
+        [Obsolete]
         public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates, CancellationToken token) {
             var transformed = coordinates.Transform(TelescopeInfo.EquatorialSystem);
             return this.SlewToCoordinatesAsync(transformed, token);
@@ -1007,7 +1003,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public async Task WaitForSlew(CancellationToken cancellationToken) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 while (Telescope?.Slewing == true && !cancellationToken.IsCancellationRequested) {
                     await Task.Delay(1000);
                 }
@@ -1036,12 +1032,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public bool SetTrackingMode(TrackingMode trackingMode) {
-            if(Telescope?.Connected != true) {
+            if(TelescopeInfo?.Connected != true) {
                 Logger.Warning("Cannot set tracking mode as the mount is not connected");
                 return false;
             }
 
-            if(Telescope.AtPark) {
+            if(TelescopeInfo.AtPark) {
                 Logger.Warning("Cannot set tracking mode as the mount is parked");
                 return false;
             }
@@ -1065,7 +1061,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public bool SetCustomTrackingRate(SiderealShiftTrackingRate rate) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 if (rate.Enabled) {
                     Telescope.SetCustomTrackingRate(rightAscensionRate: rate.RASecondsPerSiderealSecond, declinationRate: rate.DecArcsecsPerSec);
                 } else {
@@ -1097,24 +1093,24 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Telescope {
         }
 
         public string Action(string actionName, string actionParameters = "") {
-            return Telescope?.Connected == true ? Telescope.Action(actionName, actionParameters) : null;
+            return TelescopeInfo?.Connected == true ? Telescope.Action(actionName, actionParameters) : null;
         }
 
         public string SendCommandString(string command, bool raw = true) {
-            return Telescope?.Connected == true ? Telescope.SendCommandString(command, raw) : null;
+            return TelescopeInfo?.Connected == true ? Telescope.SendCommandString(command, raw) : null;
         }
 
         public bool SendCommandBool(string command, bool raw = true) {
-            return Telescope?.Connected == true ? Telescope.SendCommandBool(command, raw) : false;
+            return TelescopeInfo?.Connected == true ? Telescope.SendCommandBool(command, raw) : false;
         }
 
         public void SendCommandBlind(string command, bool raw = true) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 Telescope.SendCommandBlind(command, raw);
             }
         }
         public PierSide DestinationSideOfPier(Coordinates coordinates) {
-            if (Telescope?.Connected == true) {
+            if (TelescopeInfo?.Connected == true) {
                 return Telescope.DestinationSideOfPier(coordinates);
             }
             return PierSide.pierUnknown;

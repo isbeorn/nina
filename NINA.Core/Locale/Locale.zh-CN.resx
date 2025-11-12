@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -522,7 +522,7 @@
     <value>相机选项</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>相机参数</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>相机状态</value>
@@ -1104,11 +1104,11 @@
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Digital 巡天图库(在线)</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>直接导星持续时间</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>支架抖动持续时间</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>导星持续时间（秒）</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>典型脉冲光持续时间（秒）</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -1122,11 +1122,11 @@
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>赤纬导星速率（角秒/秒）</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>直接导星无法连接赤道仪</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>支架抖动无法连接赤道仪</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>望远镜已断开连接。 直接导星将断开连接。抖动不再有效！</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>赤道仪已断开连接。支架抖动将断开，抖动不在生效！</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>图像保存目录未找到！</value>
@@ -1164,7 +1164,7 @@
   <data name="LblDitherPixels" xml:space="preserve">
     <value>抖动像素</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>抖动数值（像素），这个值是标准偏差，以被导星为中心执行抖动，其中67%的抖动将在这个距离内</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -1205,9 +1205,6 @@
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>在零位</value>
-  </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>顶棚正在跟随望远镜移动</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>旋转中</value>
@@ -1885,7 +1882,7 @@
     <value>加载配置文件</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>无法加载配置文件。它正被另一个 N.I.N.A. 使用！</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>加载序列</value>
@@ -2069,7 +2066,7 @@
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>从 N.I.N.A. 到望远镜</value>
+    <value>从NINA到支架</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>否</value>
@@ -2279,6 +2276,12 @@
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA OWM API 客户端</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>选项</value>
   </data>
@@ -2358,7 +2361,7 @@
     <value>PHD2 服务器端口</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>PHD2 服务器主机名</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 设置</value>
@@ -2432,7 +2435,7 @@
     <value>星图偏好设置</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>从星图软件获取坐标</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>来自选定目标的坐标</value>
@@ -3146,7 +3149,7 @@
     <value>从望远镜同步坐标</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
-    <value>从支架到NINA。</value>
+    <value>从支架到NINA</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>赤经导星速率</value>
@@ -5832,6 +5835,12 @@
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} 已与计算机断开连接。请检查其USB连接和电源</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} 已被另一个程序使用，请关闭占用程序后重新尝试连接，或重新插拔相机数据线。</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} 已被EOS Utility使用。请在尝试重新连接之前关闭EOS Utility，包括任何后台任务。</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Canon SDK 发生了内部错误。可能会导致不可靠的相机操作</value>
   </data>
@@ -6987,28 +6996,326 @@
     <value>电调移动命令在 {0} 分钟后超时。</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>无法解析 PHD2 服务器主机名： {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>PHD2 服务器主机名尚未设置</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>将当前配色方案复制到可调整的“Alternative Custom”中</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>将当前配色方案复制到可调整的“Custom”中</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>亮色</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>将当前序列保存至指定文件夹</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>保存序列</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>文件路径无效</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>没有配置 Weather Ununderground API 密钥。</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>没有配置 Weather Ununderground 站点。</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Weather Underground API 没有响应。</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Weather UndergroundAPI请求失败: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>将当前位置设置为 0</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>反转</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>设置最大步数</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>将当前位置设置为 0?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>十字准线</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>解析 {0} 主机失败： {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>在设置中没有指定主机</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>盲解析设置</value>
+  </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>警告：在中天翻转设置中禁用了“使用赤道仪方向”，这可能导致圆顶与赤道仪对齐的问题。圆顶将假定与赤道仪完全同步翻转。如果赤道仪还没有翻转，这个假定将导致误差。</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Complete duration</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Lock sequencer to prevent any manual edits or drag and drop</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Unlock sequencer to allow manual edits and drag and drop</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Disable all drag and drop in the sequencer and sidebar</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Enable all drag and drop in the sequencer and sidebar</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Invalid focal length!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>Unable to load image - please enter your telescope's effective focal length in the camera parameter section!</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Site name</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Observatory</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Observer</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Following</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Dome following via N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>via Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>World Map</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Connect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>For the selected device, the device save in the profile will be connected.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>连接</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Disconnect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Disconnects the selected device</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Connect All Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Connect to all devices that are saved in the profile</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Disconnect All Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Disconnects all currently connected devices</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Reconnect Camera On Download Failure</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Reconnect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Switch Profile</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Current fix is 2D. A 3D fix is required</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Modified Julian Date</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Open cover when done</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>Unable to connect to {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>Camera does not support 16 bit mode</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Another exposure still in progress. Cancel it to start another.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Failed to connect {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>Camera reported a generic error and needs to be reconnected!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>MetaGuide Listener Error: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Failed to post {0} message</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>Guiding is not active. Unable to dither</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Failed to communicate to MGEN during dithering</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>PHD Error: {0}
+CODE: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>PHD Error: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>There is no TheWeatherCompany API key configured.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>File {0} does not exist</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Plate solve failed. No output file found.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Plate solve failed.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Error plate solving with Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>The predicted exposure of {0}s is longer than the maximum allowed.
+Stopping sky flat acquisition.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
+Stopping sky flat acquisition.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>Skyflat correction did not work and is outside of tolerance:
+first exposure time {0:#.####}
+current exposure time {1:#.####}
+elapsed time: {2:#.##}
+mean adu: {3:#.##}.
+The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Failed to restore previous filter position: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Failed to change filter: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Set shift rate failed. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Failed to prepare image for display: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Day Rollover Time</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
   </data>
 </root>

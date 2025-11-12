@@ -24,25 +24,33 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
     public static class MallinCamEnumExtensions {
 
-        public static MallinCam.MallinCam.eOPTION ToMallinCam(this ToupTekAlikeOption option) {
-            return (MallinCam.MallinCam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
+        public static Mallincam.eOPTION ToMallinCam(this ToupTekAlikeOption option) {
+            return (Mallincam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
         }
 
-        public static ToupTekAlikeEvent ToEvent(this MallinCam.MallinCam.eEVENT info) {
-            return (ToupTekAlikeEvent)Enum.Parse(typeof(MallinCam.MallinCam.eEVENT), info.ToString());
+        public static ToupTekAlikeEvent ToEvent(this Mallincam.eEVENT info) {
+            return (ToupTekAlikeEvent)Enum.Parse(typeof(Mallincam.eEVENT), info.ToString());
         }
 
-        public static ToupTekAlikeFrameInfo ToFrameInfo(this MallinCam.MallinCam.FrameInfoV2 info) {
+        public static ToupTekAlikeFrameInfo ToFrameInfo(this Mallincam.FrameInfoV4 info) {
             var ttInfo = new ToupTekAlikeFrameInfo();
-            ttInfo.flag = info.flag;
-            ttInfo.height = info.height;
-            ttInfo.width = info.width;
-            ttInfo.timestamp = info.timestamp;
-            ttInfo.seq = info.seq;
+            ttInfo.flag = info.v3.flag;
+            ttInfo.height = info.v3.height;
+            ttInfo.width = info.v3.width;
+            ttInfo.timestamp = info.v3.timestamp;
+            ttInfo.seq = info.v3.seq;
+            ttInfo.expotime = info.v3.expotime;
+            ttInfo.hasgps = (info.v3.flag & (uint)Mallincam.eFRAMEINFO_FLAG.FRAMEINFO_FLAG_GPS) != 0;
+            ttInfo.gps.utcstart = info.gps.utcstart;
+            ttInfo.gps.utcend = info.gps.utcend;
+            ttInfo.gps.longitude = info.gps.longitude;
+            ttInfo.gps.latitude = info.gps.latitude;
+            ttInfo.gps.altitude = info.gps.altitude;
+            ttInfo.gps.satellite = info.gps.satellite;
             return ttInfo;
         }
 
-        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this MallinCam.MallinCam.DeviceV2 info) {
+        public static ToupTekAlikeDeviceInfo ToDeviceInfo(this Mallincam.DeviceV2 info) {
             var ttInfo = new ToupTekAlikeDeviceInfo();
             ttInfo.displayname = info.displayname;
             ttInfo.id = info.id;
@@ -51,7 +59,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return ttInfo;
         }
 
-        public static ToupTekAlikeModel ToModel(this MallinCam.MallinCam.ModelV2 modelV2) {
+        public static ToupTekAlikeModel ToModel(this Mallincam.ModelV2 modelV2) {
             var ttModel = new ToupTekAlikeModel();
             ttModel.flag = modelV2.flag;
             ttModel.ioctrol = modelV2.ioctrol;
@@ -71,12 +79,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
     }
 
     public class MallinCamSDKWrapper : IToupTekAlikeCameraSDK {
-        private MallinCam.MallinCam sdk;
+        private Mallincam sdk;
 
         public string Category => "MallinCam";
 
         public IToupTekAlikeCameraSDK Open(string id) {
-            this.sdk = MallinCam.MallinCam.Open(id);
+            this.sdk = Mallincam.Open(id);
             return this;
         }
 
@@ -121,10 +129,10 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             sdk.get_Temperature(out temp);
         }
 
-        public bool PullImageV2(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
-            MallinCam.MallinCam.FrameInfoV2 ToupcampInfo;
-            var result = sdk.PullImageV2(data, bitDepth, out ToupcampInfo);
-            info = ToupcampInfo.ToFrameInfo();
+        public bool PullImage(ushort[] data, int bitDepth, out ToupTekAlikeFrameInfo info) {
+            Mallincam.FrameInfoV4 frameInfoV4;
+            var result = sdk.PullImage(data, 0, bitDepth, 0, out frameInfoV4);
+            info = frameInfoV4.ToFrameInfo();
             return result;
         }
 
@@ -156,12 +164,12 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
         public bool StartPullModeWithCallback(ToupTekAlikeCallback toupTekAlikeCallback) {
             this.toupTekAlikeCallback = toupTekAlikeCallback;
-            var delegateCb = new MallinCam.MallinCam.DelegateEventCallback(EventCallback);
+            var delegateCb = new Mallincam.DelegateEventCallback(EventCallback);
 
             return sdk.StartPullModeWithCallback(delegateCb);
         }
 
-        private void EventCallback(MallinCam.MallinCam.eEVENT nEvent) {
+        private void EventCallback(Mallincam.eEVENT nEvent) {
             toupTekAlikeCallback(nEvent.ToEvent());
         }
 
@@ -170,7 +178,7 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
         }
 
         public string Version() {
-            return MallinCam.MallinCam.Version();
+            return Mallincam.Version();
         }
     }
 }

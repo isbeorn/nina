@@ -13,6 +13,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:ut="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     Title="{x:Static ut:CoreUtil.Title}"
@@ -122,9 +123,32 @@
             <Button
                 Height="40"
                 VerticalAlignment="Bottom"
-                ut:ButtonHelper.DialogResult="True">
+                Command="{Binding SelectProfileCommand}"
+                Visibility="{Binding SelectProfileCommand.IsRunning, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
             </Button>
+            <Grid
+                Height="40"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding SelectProfileCommand.IsRunning, Converter={StaticResource VisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Path
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    Data="{StaticResource HourglassSVG}"
+                    Fill="{StaticResource PrimaryBrush}"
+                    Stretch="Uniform"
+                    UseLayoutRounding="True" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblInitializing}" />
+            </Grid>
         </Grid>
     </Grid>
 </Window>

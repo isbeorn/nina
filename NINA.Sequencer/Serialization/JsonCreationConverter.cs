@@ -15,6 +15,10 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NINA.Core.Utility;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 
 namespace NINA.Sequencer.Serialization {
 
@@ -45,17 +49,35 @@ namespace NINA.Sequencer.Serialization {
             // Load JObject from stream
             JObject jObject = JObject.Load(reader);
             T target = default(T);
-            if (jObject != null) {
-                if (jObject["$ref"] != null) {
-                    string id = (jObject["$ref"] as JValue).Value as string;
-                    target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
-                } else {
-                    // Create target object based on JObject
-                    target = Create(objectType, jObject);
+            try {
 
-                    // Populate the object properties
-                    serializer.Populate(jObject.CreateReader(), target);
+                if (jObject != null) {
+                    if (jObject["$ref"] != null) {
+                        string id = (jObject["$ref"] as JValue).Value as string;
+                        target = (T)serializer.ReferenceResolver.ResolveReference(serializer, id);
+                    } else {
+                        // Create target object based on JObject
+                        target = Create(objectType, jObject);
+
+                        // Populate the object properties
+                        serializer.Populate(jObject.CreateReader(), target);
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error("Failed to deserialize sequence entity", ex);
+                var unknownEntityName = "";
+                if (jObject.TryGetValue("$type", out var token)) {
+                    unknownEntityName = token?.ToString() ?? "";
+                }
+                switch (objectType) {
+                    case ISequenceTrigger:
+                        return new UnknownSequenceTrigger(unknownEntityName);
+                    case ISequenceCondition:
+                        return new UnknownSequenceCondition(unknownEntityName);
+                    default:
+                        return new UnknownSequenceItem(unknownEntityName);
+                }
+                
             }
 
             return target;

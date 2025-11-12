@@ -23,7 +23,7 @@ using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.Core.Utility {
-
+    [Obsolete]
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
 
         private static SynchronizationContext _synchronizationContext =
@@ -53,7 +53,7 @@ namespace NINA.Core.Utility {
             RunOnSynchronizationContext(() => base.AddItem(item));
         }
     }
-
+    [Obsolete]
     public class ObservableLimitedSizedStack<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
         private int _maxSize;
 
@@ -206,12 +206,14 @@ namespace NINA.Core.Utility {
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            this.CollectionChanged?.Invoke(this, e);
+            var handler = CollectionChanged;
+            handler?.Invoke(this, e);
             OnPropertyChanged(nameof(Count));
         }
 
         private void OnPropertyChanged(string propertyname) {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyname));
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
 
         private void OnCollectionChanged(NotifyCollectionChangedAction action) {
@@ -219,7 +221,8 @@ namespace NINA.Core.Utility {
         }
 
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e) {
-            this.PropertyChanged?.Invoke(this, e);
+            var handler = PropertyChanged;
+            handler?.Invoke(this, e);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

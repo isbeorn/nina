@@ -12,28 +12,29 @@
 
 #endregion "copyright"
 
+using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Locale;
+using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Exceptions;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Model;
+using NINA.Equipment.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using QHYCCD;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Image.ImageData;
-using NINA.Core.Enum;
-using NINA.Core.Model.Equipment;
-using NINA.Core.Locale;
-using NINA.Image.Interfaces;
-using NINA.Equipment.Model;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Exceptions;
-using System.Collections;
-using NINA.Astrometry;
-using NINA.Equipment.Utility;
+using static NINA.Image.ImageAnalysis.StarDetection;
 
 namespace NINA.Equipment.Equipment.MyCamera {
 
@@ -164,6 +165,8 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 }
             }
         }
+
+        private DateTime lastExposureStartTime;
 
         public int CameraXSize { get; private set; }
         public int CameraYSize { get; private set; }
@@ -1087,6 +1090,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 while (Sdk.GetExposureRemaining() > 0) {
                     await Task.Delay(10, ct);
                 }
+                lastExposureEndTime = DateTime.UtcNow;
 
                 /*
                  * Size the image data byte array for the image
@@ -1123,6 +1127,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 // Try getting more info from the camera
                 var metaData = new ImageMetaData();
                 metaData.FromCamera(this);
+                metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
                 ExtractPreciseExposureInfo(metaData);
                 // Add gps info to the metaData
                 ExtractGpsMetaData(ImgData, metaData);
@@ -1198,6 +1203,9 @@ namespace NINA.Equipment.Equipment.MyCamera {
             return true;
         }
 
+        public void UpdateSubSampleArea() {
+            SetResolution(out var startx, out var starty, out var sizex, out var sizey);
+        }
 
         public void StartExposure(CaptureSequence sequence) {
             RaiseIfNotConnected();
@@ -1275,6 +1283,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
              */
             Logger.Debug("QHYCCD: Starting exposure...");
             CameraState = CameraStates.Exposing;
+            lastExposureStartTime = DateTime.UtcNow;
             uint ret = Sdk.ExpSingleFrame();
             if (ret == QhySdk.QHYCCD_ERROR) {
                 Logger.Error("QHYCCD: Failed to initiate the exposure!");
@@ -1426,6 +1435,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 uint numPixels = is16bit ? ImageSize / 2U : ImageSize;
                 ushort[] ImgData = new ushort[numPixels];
 
+                lastExposureStartTime = DateTime.UtcNow;
                 while (!ct.IsCancellationRequested) {
                     rv = Sdk.GetQHYCCDLiveFrame(ref width, ref height, ref bpp, ref channels, ImgData);
                     if (rv == uint.MaxValue) {
@@ -1437,6 +1447,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                         Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv}");
                         throw new CameraDownloadFailedException(Loc.Instance["LblASIImageDownloadError"]);
                     } else {
+                        lastExposureEndTime = DateTime.UtcNow;
                         break;
                     }
                 }
@@ -1445,6 +1456,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 // Try getting more info from the camera
                 var metaData = new ImageMetaData();
                 metaData.FromCamera(this);
+                metaData.Image.SetExposureTimes(lastExposureStartTime, lastExposureEndTime);
                 ExtractPreciseExposureInfo(metaData);
                 // Add gps info to the metaData
                 ExtractGpsMetaData(ImgData, metaData);
@@ -1468,6 +1480,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_EXP", actualExposureTime / 1e6, "[s] Actual exposure time"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_PP", pixelPeriod, "[ps] pixelPeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_LP", linePeriod, "[ns] linePeriod"));
+                metaData.GenericHeaders.Add(new DoubleMetaDataHeader("GPS_LP", linePeriod, "[ns] linePeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_FP", framePeriod, "[us] framePeriod"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_CPL", clocksPerLine, "clocksPerLine"));
                 metaData.GenericHeaders.Add(new DoubleMetaDataHeader("QHY_LPF", linesPerFrame, "linesPerFrame"));
@@ -1765,6 +1778,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private void DriverVersionCheck() {
             // Minimum driver versions. Key: Driver name. Value: Minimum driver version
             var driverDatabase = new Dictionary<string, string> {
+                { "QHYCameras_IO", "25.4.10.1516" },
                 { "QHY5IIISeries_IO", "21.10.18.0" },
                 { "QHY5II_IO", "0.0.9.0" },
                 { "QHY8LBASE", "0.0.9.0" },
@@ -1965,5 +1979,6 @@ namespace NINA.Equipment.Equipment.MyCamera {
         private double tempCoolerPower;
         private double tempTemperature;
         private bool tempCoolerOn;
+        private DateTime lastExposureEndTime;
     }
 }

@@ -50,9 +50,14 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 return;
             }
 
+            filterWheelAlias = GetAlias();
+
+            Logger.Debug($"EFW: Filter wheel ID/Alias: {filterWheelAlias}");
+
             Name = efwInfo.Name;
 
             CalibrateEfwCommand = new AsyncCommand<bool>(CalibrateEfw);
+            SetId();
         }
 
         public int[] FocusOffsets => Filters.Select((x) => x.FocusOffset).ToArray();
@@ -89,14 +94,19 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     var positions = efwInfo.slotNum;
 
-                    return new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
+                    return filters;
                 }
             }
         }
 
         public bool HasSetupDialog => false;
 
-        public string Id => string.IsNullOrEmpty(FilterWheelAlias) ? $"{Name} #{id}" : Name;
+        public string Id { get; private set; }
+        private void SetId() {
+            Id = $"{Category}_{Name}_{FilterWheelAlias}";
+        }
 
         public string Name { get; private set; }
         public string DisplayName => Name;
@@ -167,25 +177,10 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
         }
 
         // ZWO device alias is limited to 8 ASCII characters. Initialize with something longer to know we haven't yet asked the device for it
-        private string filterWheelAlias = "%%UNINITIALIZED%%";
+        private string filterWheelAlias;
 
         public string FilterWheelAlias {
             get {
-                if (filterWheelAlias.Equals("%%UNINITIALIZED%%")) {
-                    // We must connect to the filter wheel to get its ID. Quickly do this if we are not (such as during building the Chooser list)
-                    if (!Connected) {
-                        EFWdll.Open(efwInfo.ID);
-                    }
-
-                    filterWheelAlias = GetAlias();
-
-                    if (!Connected) {
-                        EFWdll.Close(efwInfo.ID);
-                    }
-
-                    Logger.Debug($"EFW: Filter wheel ID/Alias: {filterWheelAlias}");
-                }
-
                 return filterWheelAlias;
             }
 
@@ -199,11 +194,13 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
 
                 _ = EFWdll.GetProperty(efwInfo.ID, out efwInfo);
                 Name = efwInfo.Name;
+                SetId();
 
                 Logger.Info($"EFW: Filter wheel ID/Alias set to: {filterWheelAlias}");
 
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(DisplayName));
                 RaisePropertyChanged(nameof(Id));
                 profileService.ActiveProfile.FilterWheelSettings.Id = Id;
             }

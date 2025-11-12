@@ -16,19 +16,11 @@ using FluentAssertions;
 using Moq;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Profile.Interfaces;
-using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem.Telescope;
 using NINA.Astrometry;
 using NINA.Equipment.Interfaces.Mediator;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NINA.Test.Sequencer.SequenceItem.Telescope {
 
@@ -55,7 +47,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             sut.Name = "SomeName";
             sut.Description = "SomeDescription";
             sut.Icon = new System.Windows.Media.GeometryGroup();
-            sut.Coordinates.Coordinates = new TopocentricCoordinates(Angle.ByDegree(10), Angle.ByDegree(-10), Angle.ByDegree(1), Angle.ByDegree(5));
+            sut.Coordinates.Coordinates = new TopocentricCoordinates(Angle.ByDegree(10), Angle.ByDegree(-10), Angle.ByDegree(1), Angle.ByDegree(5), 10);
             var item2 = (SlewScopeToAltAz)sut.Clone();
 
             item2.Should().NotBeSameAs(sut);
@@ -65,6 +57,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             item2.Coordinates.Should().NotBeSameAs(sut.Coordinates);
             item2.Coordinates.Coordinates.Altitude.Should().Be(sut.Coordinates.Coordinates.Altitude);
             item2.Coordinates.Coordinates.Azimuth.Should().Be(sut.Coordinates.Coordinates.Azimuth);
+            item2.Coordinates.Coordinates.Elevation.Should().Be(10);
         }
 
         [Test]
@@ -95,10 +88,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             var referenceDate = new DateTime(2020, 01, 01);
             var latitude = 5;
             var longitude = 5;
+            var elevation = 100;
             telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, referenceDate);
-            var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude));
+            var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation);
 
             var sut = new SlewScopeToAltAz(profileServiceMock.Object, telescopeMediatorMock.Object, guiderMediatorMock.Object);
             sut.Coordinates.Coordinates = topo;
@@ -123,10 +117,11 @@ namespace NINA.Test.Sequencer.SequenceItem.Telescope {
             var referenceDate = new DateTime(2020, 01, 01);
             var latitude = 5;
             var longitude = 5;
+            var elevation = 100;
             telescopeMediatorMock.Setup(x => x.GetInfo()).Returns(new TelescopeInfo() { Connected = true });
             guiderMediatorMock.Setup(x => x.StopGuiding(It.IsAny<CancellationToken>())).Returns(Task.FromResult(false));
             var coordinates = new Coordinates(Angle.ByDegree(1), Angle.ByDegree(2), Epoch.J2000, referenceDate);
-            var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude));
+            var topo = coordinates.Transform(Angle.ByDegree(latitude), Angle.ByDegree(longitude), elevation);
 
             var sut = new SlewScopeToAltAz(profileServiceMock.Object, telescopeMediatorMock.Object, guiderMediatorMock.Object);
             sut.Coordinates.Coordinates = topo;

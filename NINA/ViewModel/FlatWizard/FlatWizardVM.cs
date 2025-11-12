@@ -164,9 +164,14 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> SlewToZenith(CancellationToken token) {
             var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
             var longitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude);
+            var elevation = profileService.ActiveProfile.AstrometrySettings.Elevation;
             var azimuth = AltitudeSite == AltitudeSite.WEST ? Angle.ByDegree(90) : Angle.ByDegree(270);
-            await telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude), token);
-            telescopeMediator.SetTrackingEnabled(false);
+            if (telescopeMediator.GetInfo().CanSlewAltAz) {
+                await telescopeMediator.SlewToTopocentricCoordinates(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude, elevation), token);
+            } else {
+                await telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude, elevation), token);
+                telescopeMediator.SetTrackingEnabled(false);
+            }
             return true;
         }
 
@@ -536,14 +541,18 @@ namespace NINA.ViewModel.FlatWizard {
 
                     SequenceContainer flatInstruction = GetInstructionForMode(filterSettings);
 
+
                     // Keep the panel closed when there are more filters to take flats with or if the user specified to take darks and the setting to open for darks is off
-                    if((filterCount < totalCount) || (!profileService.ActiveProfile.FlatWizardSettings.OpenForDarkFlats && DarkFlatCount > 0)) { 
-                        if (flatInstruction is AutoExposureFlat aef1) {
-                            aef1.KeepPanelClosed = true;
-                        }
-                        if (flatInstruction is AutoBrightnessFlat abf1) {
-                            abf1.KeepPanelClosed = true;
-                        }
+                    bool shouldKeepPanelClosed = (filterCount < totalCount) || !profileService.ActiveProfile.FlatWizardSettings.OpenWhenDone;
+                    if ((filterCount == totalCount) && profileService.ActiveProfile.FlatWizardSettings.OpenForDarkFlats && DarkFlatCount > 0) {
+                        shouldKeepPanelClosed = false;
+                    }
+
+                    if (flatInstruction is AutoExposureFlat aef) {
+                        aef.KeepPanelClosed = shouldKeepPanelClosed;
+                    }
+                    if (flatInstruction is AutoBrightnessFlat abf) {
+                        abf.KeepPanelClosed = shouldKeepPanelClosed;
                     }
 
                     var instructionProgress = new Progress<ApplicationStatus>(x => this.applicationStatusMediator.StatusUpdate(x));
@@ -555,11 +564,11 @@ namespace NINA.ViewModel.FlatWizard {
 
                         await flatInstruction.Execute(instructionProgress, flatSequenceCts.Token);
 
-                        if (flatInstruction is AutoExposureFlat aef) {
-                            timesForDarks.Add(filterSettings, (aef.GetExposureItem().ExposureTime, aef.GetSetBrightnessItem().Brightness));
+                        if (flatInstruction is AutoExposureFlat aef1) {
+                            timesForDarks.Add(filterSettings, (aef1.GetExposureItem().ExposureTime, aef1.GetSetBrightnessItem().Brightness));
                         }
-                        if (flatInstruction is AutoBrightnessFlat abf) {
-                            timesForDarks.Add(filterSettings, (abf.GetExposureItem().ExposureTime, abf.GetSetBrightnessItem().Brightness));
+                        if (flatInstruction is AutoBrightnessFlat abf1) {
+                            timesForDarks.Add(filterSettings, (abf1.GetExposureItem().ExposureTime, abf1.GetSetBrightnessItem().Brightness));
                         }
                     } catch(OperationCanceledException) {
                         throw;                    
@@ -575,7 +584,13 @@ namespace NINA.ViewModel.FlatWizard {
                     await WaitWhilePaused(pt);
                 }
 
-                await TakeDarkFlats(timesForDarks, pt);                
+                await TakeDarkFlats(timesForDarks, pt);
+
+                if (profileService.ActiveProfile.FlatWizardSettings.OpenWhenDone) {
+                    await flatDeviceMediator.OpenCover(progress, flatSequenceCts.Token);
+                } else {
+                    await flatDeviceMediator.CloseCover(progress, flatSequenceCts.Token);
+                }
             } catch (OperationCanceledException) { 
             } catch (Exception ex) {
                 Logger.Error(ex);

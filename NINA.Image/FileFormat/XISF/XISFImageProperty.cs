@@ -19,7 +19,7 @@ namespace NINA.Image.FileFormat.XISF {
         public static class Observer {
             public static readonly string Namespace = "Observer:";
             public static readonly string[] EmailAddress = { Namespace + nameof(EmailAddress), "String" };
-            public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            public static readonly string[] Name = { Namespace + nameof(Name), "String", "OBSERVER" };
             public static readonly string[] PostalAddress = { Namespace + nameof(PostalAddress), "String" };
             public static readonly string[] Website = { Namespace + nameof(Website), "String" };
         }
@@ -54,7 +54,7 @@ namespace NINA.Image.FileFormat.XISF {
                 public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64", "SITEELEV" };
                 public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64", "SITELAT" };
                 public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64", "SITELONG" };
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "SITENAME" };
             }
 
             public static class Meteorology {

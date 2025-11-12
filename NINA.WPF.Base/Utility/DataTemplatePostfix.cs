@@ -79,5 +79,9 @@ namespace NINA.WPF.Base.Utility {
         /// Weather Data settings section
         /// </summary>
         public static readonly string WeatherDataSettings = "_WeatherDataSettings";
+        /// <summary>
+        /// GNSS source settings section
+        /// </summary>
+        public static readonly string GnssSourceSettings = "_GnssSourceSettings";
     }
 }

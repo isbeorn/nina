@@ -21,6 +21,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -85,32 +86,45 @@ namespace NINA.Plugin {
                 }
 
                 try {
-                    using (WebClient client = new WebClient()) {
-                        using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                            client.Headers.Add("User-Agent", CoreUtil.UserAgent);
-                            Logger.Info($"Downloading plugin from {manifest.Installer.URL}");
-                            var data = await client.DownloadDataTaskAsync(manifest.Installer.URL);
+                    using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(CoreUtil.UserAgent);
 
-                            string contentDisposition = client.ResponseHeaders["content-disposition"];
-                            if (!string.IsNullOrEmpty(contentDisposition)) {
-                                string lookFor = "filename=";
-                                int index = contentDisposition.IndexOf(lookFor, StringComparison.CurrentCultureIgnoreCase);
-                                if (index >= 0)
-                                    tempFile = Path.Combine(Path.GetTempPath(), contentDisposition.Substring(index + lookFor.Length).Replace("\"", ""));
-                            }
+                    Logger.Info($"Downloading plugin from {manifest.Installer.URL}");
 
-                            using (var fs = new FileStream(tempFile, FileMode.Create)) {
-                                Logger.Debug($"Saving downloaded plugin to temporary path {tempFile}");
-                                await fs.WriteAsync(data, 0, data.Length);
+                    using var response = await httpClient.GetAsync(manifest.Installer.URL, HttpCompletionOption.ResponseHeadersRead, ct);
+                    response.EnsureSuccessStatusCode();
+
+                    // Extract filename from Content-Disposition header
+                    if (response.Content.Headers.ContentDisposition?.FileName != null) {
+                        tempFile = Path.Combine(Path.GetTempPath(), response.Content.Headers.ContentDisposition.FileName.Trim('"'));
+                    }
+
+                    // Fallback if ContentDisposition is not parsed correctly
+                    if (string.IsNullOrEmpty(tempFile) && response.Content.Headers.TryGetValues("Content-Disposition", out var values)) {
+                        string contentDisposition = values.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(contentDisposition)) {
+                            const string lookFor = "filename=";
+                            int index = contentDisposition.IndexOf(lookFor, StringComparison.OrdinalIgnoreCase);
+                            if (index >= 0) {
+                                string filename = contentDisposition.Substring(index + lookFor.Length).Trim('"');
+                                tempFile = Path.Combine(Path.GetTempPath(), filename);
                             }
                         }
                     }
-                } catch (WebException ex) {
-                    if (ex.Status == WebExceptionStatus.RequestCanceled) {
-                        throw new OperationCanceledException();
-                    } else {
-                        throw;
-                    }
+
+                    // Ensure a filename if header is missing
+                    tempFile ??= Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+                    using var input = await response.Content.ReadAsStreamAsync(ct);
+                    using var output = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None);
+
+                    Logger.Debug($"Saving downloaded plugin to temporary path {tempFile}");
+                    await input.CopyToAsync(output, ct);
+                } catch (OperationCanceledException) {
+                    throw;
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    throw;
                 }
 
                 if (!ValidateChecksum(tempFile, manifest)) {

@@ -59,7 +59,7 @@
                                 <TextBlock Text="{ns:Loc LblName}" />
                                 <TextBlock
                                     Margin="5,0,0,0"
-                                    Text="{Binding FocuserInfo.Name}"
+                                    Text="{Binding Focuser.Name}"
                                     TextWrapping="WrapWithOverflow" />
                             </UniformGrid>
                         </UniformGrid>
@@ -329,6 +329,74 @@
                     <DataTemplate x:Key="Default">
                         <TextBlock Text="{ns:Loc LblNone}" />
                     </DataTemplate>
+                    <DataTemplate x:Key="Zwo">
+                        <StackPanel
+                            VerticalAlignment="Top"
+                            Grid.IsSharedSizeScope="True"
+                            Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ZWOLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoDeviceId}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    MaxLength="8"
+                                    Text="{Binding FocuserAlias}">
+                                    <TextBox.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblZwoDeviceIdTooltip}" />
+                                        </ToolTip>
+                                    </TextBox.ToolTip>
+                                </TextBox>
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ZWOLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoSetMaxStep}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding TargetMaxStep}" />
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ZWOLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoReversed}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Reversed}" />
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ZWOLabelColumn" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Grid.ColumnSpan="2"
+                                    Width="200"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding ResetPositionCommand}">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblZwoResetZeroPosition}" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
                     <DataTemplate x:Key="Failed">
                         <TextBlock
                             Margin="5"
@@ -336,11 +404,12 @@
                             VerticalAlignment="Center"
                             Text="Failed to load plugin data template" />
                     </DataTemplate>
-                    <wpfutil:GenericTemplateSelector
+                    <equip:FocuserTemplateSelector
                         x:Key="ContentSelector"
                         Default="{StaticResource Default}"
                         FailedToLoadTemplate="{StaticResource Failed}"
-                        Postfix="{x:Static wpfutil:DataTemplatePostfix.FocuserSettings}" />
+                        Postfix="{x:Static wpfutil:DataTemplatePostfix.FocuserSettings}"
+                        Zwo="{StaticResource Zwo}" />
                 </Grid.Resources>
                 <!--  Binding to Focuser.Focuser as the focuser is a decorated class and needs to bind to the internal Focuser instance  -->
                 <ContentControl

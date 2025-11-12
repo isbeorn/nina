@@ -67,8 +67,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 try {
                     var asiCameras = ASICameras.Count;
                     Logger.Info($"Found {asiCameras} ASI Cameras");
-                    for (int i = 0; i < asiCameras; i++) {
-                        var cam = ASICameras.GetCamera(i, profileService, exposureDataFactory);
+                    for (int cameraIndex = 0; cameraIndex < asiCameras; cameraIndex++) {
+                        var cam = ASICameras.GetCamera(cameraIndex, profileService, exposureDataFactory);
                         if (!string.IsNullOrEmpty(cam.Name)) {
                             Logger.Trace(string.Format("Adding {0}", cam.Name));
                             devices.Add(cam);
@@ -80,7 +80,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* Altair */
                 try {
-                    var altairCameras = Altair.AltairCam.EnumV2();
+                    var altairCameras = Altair.Altaircam.EnumV2();
                     Logger.Info($"Found {altairCameras?.Length} Altair Cameras");
                     foreach (var instance in altairCameras) {
                         var cam = new ToupTekAlikeCamera(instance.ToDeviceInfo(), new AltairSDKWrapper(), profileService, exposureDataFactory);
@@ -214,7 +214,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
 
                 /* MallinCam */
                 try {
-                    var mallinCamCameras = MallinCam.MallinCam.EnumV2();
+                    var mallinCamCameras = MallinCam.Mallincam.EnumV2();
                     Logger.Info($"Found {mallinCamCameras?.Length} MallinCam Cameras");
                     foreach (var instance in mallinCamCameras) {
                         var info = instance.ToDeviceInfo();
@@ -227,7 +227,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                     Logger.Error(ex);
                 }
 
-                ///* SVBony */
+                ///* SVBony -- old sdk loaded via plugin loader */
                 //try {
                 //    var provider = new SVBonyProvider(profileService, exposureDataFactory);
                 //    var svBonyCameras = provider.GetEquipment();
@@ -236,6 +236,21 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 //} catch (Exception ex) {
                 //    Logger.Error(ex);
                 //}
+
+                /* SVBony - new touptek based sdk */
+                try {
+                    var svBonyCameras = Svbonycam.EnumV2();
+                    Logger.Info($"Found {svBonyCameras?.Length} SVBony Cameras");
+                    foreach (var instance in svBonyCameras) {
+                        var info = instance.ToDeviceInfo();
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_FILTERWHEEL) > 0) { continue; }
+                        if (((ToupTekAlikeFlag)info.model.flag & ToupTekAlikeFlag.FLAG_AUTOFOCUSER) > 0) { continue; }
+                        var cam = new ToupTekAlikeCamera(info, new SVBonySDKWrapper(), profileService, exposureDataFactory);
+                        devices.Add(cam);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
 
                 /* SBIG */
                 try {
@@ -328,7 +343,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Camera {
                 devices.Add(new FileCamera(profileService, telescopeMediator, imageDataFactory, exposureDataFactory));
                 devices.Add(new SimulatorCamera(profileService, telescopeMediator, exposureDataFactory, imageDataFactory));
 
-                DetermineSelectedDevice(devices, profileService.ActiveProfile.CameraSettings.Id);
+                DetermineSelectedDevice(devices, profileService.ActiveProfile.CameraSettings.Id, profileService.ActiveProfile.CameraSettings.LastDeviceName);
 
             } finally {
                 lockObj.Release();

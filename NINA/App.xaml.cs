@@ -94,18 +94,18 @@ namespace NINA {
             } catch (ConfigurationErrorsException configException) {
                 try {
                     userSettingsException = configException;
-                    if(configException?.Filename != null && File.Exists(configException.Filename)) {
+                    if (configException?.Filename != null && File.Exists(configException.Filename)) {
                         File.Delete(configException.Filename);
                     }
-                    if(backupWasRestored) {
+                    if (backupWasRestored) {
                         // Backup was restored but it still failed to load. Both files must be corrupted
-                        if(File.Exists(originalFileName)) {
+                        if (File.Exists(originalFileName)) {
                             File.Delete(originalFileName);
                         }
-                        if(File.Exists(backupFileName)) {
+                        if (File.Exists(backupFileName)) {
                             File.Delete(backupFileName);
                         }
-                        
+
                     }
 
                     // App restart is required, as even after deleting the configuration files the configuration manager still tries to use the old values
@@ -140,6 +140,7 @@ namespace NINA {
             }
 
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -165,6 +166,10 @@ namespace NINA {
 
             Logger.SetLogLevel(_profileService.ActiveProfile.ApplicationSettings.LogLevel);
 
+            if (e.Args.Length > 0) {
+                Logger.Info("Launched with command line arguments: " + string.Join(" ", e.Args));
+            }
+
             if (userSettingsException != null) {
                 Logger.Error("There was an issue loading the user settings and the application tried to delete the file and reload default settings.", userSettingsException);
             }
@@ -174,28 +179,45 @@ namespace NINA {
                 new RoutedEventHandler(TextBox_GotFocus));
 
 
-            if (!NINA.Properties.Settings.Default.HardwareAcceleration) {
+            if (!NINA.Properties.Settings.Default.HardwareAcceleration || _commandLineOptions.DisableHardwareAcceleration) {
                 Logger.Info("Disabling Hardware Acceleration");
+                NINA.Properties.Settings.Default.HardwareAcceleration = false;
                 RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
             }
 
+            ProfileSelectView profileSelectionWindow = null;
+            ProfileSelectVM profileSelection = null;
             if (_profileService.Profiles.Count > 1 && !NINA.Properties.Settings.Default.UseSavedProfileSelection && !_profileService.ProfileWasSpecifiedFromCommandLineArgs) {
+                profileSelectionWindow = new ProfileSelectView();
+                profileSelection = new ProfileSelectVM(_profileService);
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                var profileSelection = new ProfileSelectVM(_profileService);
-                var profileSelectionWindow = new ProfileSelectView();
                 profileSelectionWindow.DataContext = profileSelection;
-                var result = profileSelectionWindow.ShowDialog() ?? false;
-                if(!result) {
+                profileSelectionWindow.Show();
+                profileSelectionWindow.Closed +=
+                    (s, ev) => {
+                        if (!profileSelection.ProfileIsSelected) {
+                            Shutdown();
+                            return;
+                        }
+                    };
+                try {
+                    profileSelection.WaitForSelection();
+                } catch (Exception) {
                     Shutdown();
                     return;
                 }
+                profileSelectionWindow.IsEnabled = false;
+                profileSelection.Wait100msNonBlocking();
             }
-
             _mainWindowViewModel = CompositionRoot.Compose(_profileService, _commandLineOptions);
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
             mainWindow.DataContext = _mainWindowViewModel;
             mainWindow.Show();
+            if (profileSelectionWindow?.IsVisible == true) {
+                profileSelection?.Close();
+                profileSelectionWindow?.Close();
+            }
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             ProfileService.ActivateInstanceWatcher(_profileService, mainWindow);
 
@@ -229,9 +251,24 @@ namespace NINA {
 
         private static object lockObj = new object();
 
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+            Exception exception = e.ExceptionObject as Exception;
+            if (exception != null) {
+                Logger.Error($"An unhandled domain exception has occurred of type {exception.GetType()}. Application must terminate: {e.IsTerminating}");
+                if (exception.InnerException != null) {
+                    var message = $"{exception.Message}{Environment.NewLine}{exception.StackTrace}{Environment.NewLine}Inner Exception of type {exception.InnerException.GetType()}: {Environment.NewLine}{exception.InnerException}{exception.StackTrace}";
+                    Logger.Error(message);
+                } else {
+                    Logger.Error(exception);
+                }
+            } else {
+                Logger.Error($"An unhandled domain exception has occurred.");
+            }
+        }
+
         [SecurityCritical]
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
-            lock(lockObj) { 
+            lock (lockObj) {
                 Logger.Error($"An unhandled exception has occurred of type {e.Exception.GetType()}");
                 if (e.Exception.InnerException != null) {
                     var message = $"{e.Exception.Message}{Environment.NewLine}{e.Exception.StackTrace}{Environment.NewLine}Inner Exception of type {e.Exception.InnerException.GetType()}: {Environment.NewLine}{e.Exception.InnerException}{e.Exception.StackTrace}";

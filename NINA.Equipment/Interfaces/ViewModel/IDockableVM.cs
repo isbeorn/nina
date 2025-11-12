@@ -22,7 +22,6 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         bool CanClose { get; set; }
         string ContentId { get; }
         ICommand HideCommand { get; }
-        ICommand ToggleSettingsCommand { get; }
         GeometryGroup ImageGeometry { get; set; }
         bool IsClosed { get; set; }
         bool HasSettings { get; set; }
@@ -31,6 +30,5 @@ namespace NINA.Equipment.Interfaces.ViewModel {
         string Title { get; set; }
 
         void Hide(object o);
-        void ToggleSettings(object o);
     }
 }

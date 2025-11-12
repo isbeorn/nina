@@ -58,7 +58,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
             updateTimer = new DeviceUpdateTimer(
                 GetWeatherDataValues,
                 UpdateWeatherDataValues,
-                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval,
+                "WeatherData"
             );
 
             profileService.ProfileChanged += async (object sender, EventArgs e) => {
@@ -87,7 +88,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
 
                 if (DeviceChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.WeatherDataSettings.Id = DeviceChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = string.Empty;
                     return false;
+                }
+
+                if (DeviceChooserVM.SelectedDevice is OfflineDevice) {
+                    await Rescan();
                 }
 
                 applicationStatusMediator.StatusUpdate(
@@ -138,6 +144,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                             _ = updateTimer.Run();
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
+                            profileService.ActiveProfile.WeatherDataSettings.LastDeviceName = WeatherData.DisplayName;
 
                             await (Connected?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                             Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} DisplayName: {weatherdev.DisplayName} Driver Version: {weatherdev.DriverVersion}");
@@ -150,6 +157,12 @@ namespace NINA.WPF.Base.ViewModel.Equipment.WeatherData {
                         }
                     } catch (OperationCanceledException) {
                         if (weatherdev?.Connected == true) { await Disconnect(); }
+                        return false;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Logger.Error(ex);
+                        if (WeatherDataInfo.Connected) { await Disconnect(); }
+                        WeatherDataInfo.Connected = false;
                         return false;
                     }
                 } else {

@@ -115,7 +115,7 @@ namespace NINA.Sequencer.Trigger.Autofocus {
 
         public override void SequenceBlockInitialize() {
             if (!initialized) {
-                initialTime = DateTime.Now;
+                initialTime = DateTime.UtcNow;
                 initialized = true;
             }
         }
@@ -128,11 +128,11 @@ namespace NINA.Sequencer.Trigger.Autofocus {
             bool shouldTrigger = false;
             var lastAF = history.AutoFocusPoints.LastOrDefault();
             if (lastAF == null) {
-                Elapsed = Math.Round((DateTime.Now - initialTime).TotalMinutes, 2);
-                shouldTrigger = (DateTime.Now - initialTime) >= TimeSpan.FromMinutes(Amount);
+                Elapsed = Math.Round((DateTime.UtcNow - initialTime).TotalMinutes, 2);
+                shouldTrigger = (DateTime.UtcNow - initialTime) >= TimeSpan.FromMinutes(Amount);
             } else {
-                Elapsed = Math.Round((DateTime.Now - lastAF.AutoFocusPoint.Time).TotalMinutes, 2);
-                shouldTrigger = (DateTime.Now - lastAF.AutoFocusPoint.Time) >= TimeSpan.FromMinutes(Amount);
+                Elapsed = Math.Round((DateTime.UtcNow - lastAF.AutoFocusPoint.Time.ToUniversalTime()).TotalMinutes, 2);
+                shouldTrigger = (DateTime.UtcNow - lastAF.AutoFocusPoint.Time.ToUniversalTime()) >= TimeSpan.FromMinutes(Amount);
             }
 
             if (shouldTrigger) {

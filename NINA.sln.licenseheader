@@ -2,7 +2,7 @@ extensions: designer.cs generated.cs
 extensions: .cs
 #region "copyright"
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -13,7 +13,7 @@ extensions: .cs
 #endregion "copyright"
 extensions:  .xaml .xml .config .xsd .wxs
 <!--
-    Copyright (c) 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright (c) 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,7 +22,7 @@ extensions:  .xaml .xml .config .xsd .wxs
     file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 extensions: .sql
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2025 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -514,7 +514,7 @@ varyasyonları için eşitlemeyi sağlayamayabilir</value>
     <value>Kamera opsiyonları</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Kamera parametreleri</value>
+    <value>Camera Parameters</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
     <value>Kamera durumu</value>
@@ -956,7 +956,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Saat yönü aksine</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the darks.</value>
+    <value>Şimdi teleskopun kapağını kapatın ve siyah kare çekmek için OK'e basın.</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Şimdi teleskopu örtün</value>
@@ -983,7 +983,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Cygwin Dizini</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Darks to take</value>
+    <value>Çekilecek siyah kareler</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
     <value>D.A.R.V Çevirmesi</value>
@@ -1097,11 +1097,11 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   <data name="LblDigitalSkySurvey" xml:space="preserve">
     <value>Dijital gökyüzü incelemesi</value>
   </data>
-  <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Direkt takip süresi</value>
+  <data name="LblMountDitherDuration" xml:space="preserve">
+    <value>Kundak dither süresi</value>
   </data>
-  <data name="LblDirectGuideDurationTooltip" xml:space="preserve">
-    <value>Saniye cinsinden tipik takip sinyal süresi</value>
+  <data name="LblMountDitherDurationTooltip" xml:space="preserve">
+    <value>Saniye cinsinden tipik sinyal süresi</value>
   </data>
   <data name="LblRightAscensionGuideRate" xml:space="preserve">
     <value>RA takip oranı</value>
@@ -1115,11 +1115,11 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   <data name="LblDeclinationGuideRateTooltip" xml:space="preserve">
     <value>Yay-saniye cinsinden saniyelik Dec takip oranı</value>
   </data>
-  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider could not connect to Mount</value>
+  <data name="LblMountDitherConnectionFail" xml:space="preserve">
+    <value>Kundak dither kundağa bağlanamıyor</value>
   </data>
-  <data name="LblDirectGuiderMountDisconnect" xml:space="preserve">
-    <value>Mount has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</value>
+  <data name="LblMountDitherMountDisconnect" xml:space="preserve">
+    <value>Kundak bağlantısı kesildi. Kundak dither bağlantısı sonlandırılacak. Dither işlemi artık aktif değil!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Resim kayıt dizini bulunamadı!</value>
@@ -1157,7 +1157,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   <data name="LblDitherPixels" xml:space="preserve">
     <value>Dither pikselleri</value>
   </data>
-  <data name="LblDitherPixelsDirectGuiderTooltip" xml:space="preserve">
+  <data name="LblDitherPixelsMountDitherTooltip" xml:space="preserve">
     <value>Dither yapılacak tipik piksel sayısı. Dither, hedef merkezli normal bir dağılımı izler ve bu değer standart sapma olarak kabul edilir. Ditherlerin % 67'si bu mesafe içerisinde olacak</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
@@ -1170,7 +1170,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>ASCOM Dome sürücüsüne bağlanamıyor:</value>
   </data>
   <data name="LblDomeDriverCanFollow" xml:space="preserve">
-    <value>Dome can follow</value>
+    <value>Kubbe takip edebilir</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
     <value>Obtüratör durumu</value>
@@ -1198,9 +1198,6 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
     <value>Başlangıç pozisyonunda</value>
-  </data>
-  <data name="LblDomeDriverFollowing" xml:space="preserve">
-    <value>Dome following telescope</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
     <value>Çevriliyor</value>
@@ -1476,7 +1473,7 @@ Bu tetikleyici devre dışı bırakıldığında, uygulama sadece Pozlamayı Ba�
     <value>Aç</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks</value>
+    <value>Siyah kareler için kapağı çıkarın</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ayarla</value>
@@ -1659,19 +1656,19 @@ Hesaplanan HFR: {2}
     <value>Genel</value>
   </data>
   <data name="LblGnssConnectFail" xml:space="preserve">
-    <value>Failed to connect to {0}</value>
+    <value>{0} bağlantısı başarısız</value>
   </data>
   <data name="LblGnssLocationSet" xml:space="preserve">
-    <value>Location set from {0}</value>
+    <value>{0} konum seti</value>
   </data>
   <data name="LblGnssNoFix" xml:space="preserve">
-    <value>{0} reports that it does not have a fix</value>
+    <value>{0} bir düzeltme olmadığını bildiriyor</value>
   </data>
   <data name="LblGnssNotFound" xml:space="preserve">
-    <value>No {0} device detected</value>
+    <value>Hiç {0} cihazı algılanmadı</value>
   </data>
   <data name="LblGnssTooltip" xml:space="preserve">
-    <value>Import location from a GNSS device</value>
+    <value>Bir GNSS cihazından konum aktarımı</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
     <value>Takipçi</value>
@@ -1704,16 +1701,16 @@ Hesaplanan HFR: {2}
     <value>Takip pozlaması sırasında piksel bazında ana ortalama kare hatası oluştu</value>
   </data>
   <data name="LblGuidingPeakRAArcSecDescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in arc seconds</value>
+    <value>Bir yay saniyedeki pozlama boyunca en yüksek RA takip hatası</value>
   </data>
   <data name="LblGuidingPeakRADescription" xml:space="preserve">
-    <value>Peak RA guiding error during exposure in pixels</value>
+    <value>Bir pikseldeki pozlama süresince en yüksek RA takip hatası</value>
   </data>
   <data name="LblGuidingPeakDecArcSecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in arc seconds</value>
+    <value>Bir yay saniyedeki pozlama boyunca en yüksek Dec takip hatası</value>
   </data>
   <data name="LblGuidingPeakDecDescription" xml:space="preserve">
-    <value>Peak Dec guiding error during exposure in pixels</value>
+    <value>Bir pikseldeki pozlama süresince en yüksek Dec takip hatası</value>
   </data>
   <data name="LblHalt" xml:space="preserve">
     <value>Dur</value>
@@ -1878,7 +1875,7 @@ Hesaplanan HFR: {2}
     <value>Profil yükle</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Profil yüklenemiyor. Başka bir N.I.N.A oluşumunca kullanılıyor!</value>
+    <value>The selected profile is currently in use by another N.I.N.A. instance or could not be loaded due to an unknown issue. For more details, check the log file.</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
     <value>Sekans yükle</value>
@@ -1920,7 +1917,7 @@ Hesaplanan HFR: {2}
     <value>Elle kontrol</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates</value>
+    <value>Elle girilen koordinatlar</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
     <value>Manuel filtre çarkı</value>
@@ -2062,7 +2059,7 @@ Hesaplanan HFR: {2}
     <value>N.I.N.A.</value>
   </data>
   <data name="LblNINAToMount" xml:space="preserve">
-    <value>From N.I.N.A. to Mount</value>
+    <value>N.I.N.A'dan kundağa</value>
   </data>
   <data name="LblNo" xml:space="preserve">
     <value>Yok</value>
@@ -2119,10 +2116,10 @@ Hesaplanan HFR: {2}
     <value>Senkronizasyon yok</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the mount. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Etkinleştirildiğinde, uygulama kundağa asla bir senkronizasyon komutu göndermez. Bu, değiştirilmemesi gereken iyi bir işaretleem modeli varsa kullanılmalıdır.</value>
   </data>
   <data name="LblNoMount" xml:space="preserve">
-    <value>No Mount</value>
+    <value>Kundak bulunamadı</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
     <value>Bildirim hatası</value>
@@ -2272,6 +2269,12 @@ Hesaplanan HFR: {2}
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA dahili OpenWeatherMap API istemcisi</value>
   </data>
+  <data name="LblOpenMeteoClientDescription" xml:space="preserve">
+    <value>Uses OpenMeteo's Forecast Weather API. Weather data is refreshed every 10 minutes.</value>
+  </data>
+  <data name="LblOpenMeteoClientInfo" xml:space="preserve">
+    <value>NINA internal OpenMeteo API client</value>
+  </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Seçenekler</value>
   </data>
@@ -2282,7 +2285,7 @@ Hesaplanan HFR: {2}
     <value>Oryantasyon</value>
   </data>
   <data name="LblPanelOverlap" xml:space="preserve">
-    <value>Panel overlap</value>
+    <value>Panel birleşim</value>
   </data>
   <data name="LblPanel" xml:space="preserve">
     <value>Panel</value>
@@ -2351,7 +2354,7 @@ Hesaplanan HFR: {2}
     <value>PHD2 sunucu girişi</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Hostname</value>
+    <value>PHD2 Sunucu adı</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
     <value>PHD2 ayarları</value>
@@ -2429,7 +2432,7 @@ Hesaplanan HFR: {2}
     <value>Planetaryum Özellikleri</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Koordinatları Planetaryum yazılımından al</value>
+    <value>Import the currently selected planetarium object to update name and coordinates</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
     <value>Seçili objenin koordinatları</value>
@@ -2537,7 +2540,7 @@ Hesaplanan HFR: {2}
     <value>Resim hazırlanıyor</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Sequence</value>
+    <value>Siyah Kare Sekansının hazırlanması</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
     <value>Düz kare için filtre:{0}</value>
@@ -2609,7 +2612,7 @@ Hesaplanan HFR: {2}
     <value>Sekanslar için Readout modu</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT frames in sequences.</value>
+    <value>Kameranızın bu okuma modu, sekanslardaki GÖRÜNTÜ, BIAS, SİYAH, DÜZ kareler için kullanılacaktır.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Enstantane okuma modu</value>
@@ -2642,7 +2645,7 @@ Hesaplanan HFR: {2}
     <value>Lütfen odaklayıcıyı tekrar bağlayın!</value>
   </data>
   <data name="LblReconnectMount" xml:space="preserve">
-    <value>Please reconnect mount!</value>
+    <value>Lütfen kundağı tekrar bağlayın!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
     <value>Referans Tarih</value>
@@ -2738,7 +2741,7 @@ Hesaplanan HFR: {2}
     <value>Resmi şu adla kaydet</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
-    <value>This setting is ignored for DSLRs when using the native driver. The camera's RAW format will be saved instead!</value>
+    <value>DSLR kameralar kendi sürücüleri kullanıldığında bu ayar dikkate alınmaz. Onun yerine kameranın RAW formatı kaydedilir!</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
     <value>Seçili profili kaydet ve bir daha sorma</value>
@@ -2895,7 +2898,7 @@ Bu şablon, başlangıçta varsayılan şablon yerine sekansı başlatmak için 
     <value>Sky Atlas resim klasörü</value>
   </data>
   <data name="LblOfflineSkyMap" xml:space="preserve">
-    <value>Offline Sky Map</value>
+    <value>Çevrimdışı gök haritası</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
     <value>Gökyüzü parlaklığı</value>
@@ -2983,7 +2986,7 @@ Devam etmeden önce, lütfen sisteminizin şu anda iyi veya iyiye yakın odaklan
     <value>Takibe başlama başarısız</value>
   </data>
   <data name="LblRestartGuidingAfterLostShiftLockFailed" xml:space="preserve">
-    <value>Restarting guiding failed after lost shift lock</value>
+    <value>Kayma kilitlenmesi kaybının ardından takip yeniden başlatma başarısız oldu</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
     <value>İÇERİ dişli boşluğu hesaplanması başlıyor</value>
@@ -3064,15 +3067,15 @@ Devam etmeden önce, lütfen sisteminizin şu anda iyi veya iyiye yakın odaklan
     <value>Senkronize et</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Mount sync failed</value>
+    <value>Kundak senkronizasyonu başarısız</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
     <value>Yer ayarlarını senkronize et</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Mount's site settings differ from N.I.N.A.'s.
+    <value>Kundağın konum ayarları N.I.N.Adan farklı.
 
-Should the settings be synchronized?</value>
+Ayarlar senkronize edilsin mi?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
     <value>Hedef</value>
@@ -3144,7 +3147,7 @@ Should the settings be synchronized?</value>
     <value>Teleskop koordinatlara senkronize edildi</value>
   </data>
   <data name="LblMountToNINA" xml:space="preserve">
-    <value>From Mount to N.I.N.A.</value>
+    <value>Kandaktan N.I.N.A'ya.</value>
   </data>
   <data name="LblTelescopeGuideRateRA" xml:space="preserve">
     <value>RA Takip oranı</value>
@@ -3302,7 +3305,7 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>Özel</value>
   </data>
   <data name="LblTrackingCustomRate" xml:space="preserve">
-    <value>Custom ({0:0.####}, {1:0.####})</value>
+    <value>Özel ({0:0.####}, {1:0.####})</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
     <value>Kuzeye geçiş</value>
@@ -3335,7 +3338,7 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>Kamera pozlaması ayarlanamadı</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Unable to sync. Mount is not connected</value>
+    <value>Senkronize edilemiyor. Kundak bağlı değil</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
     <value>Beklenmeyen hata oluştu</value>
@@ -3996,7 +3999,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>Çevirici bağı kesilsin mi?</value>
   </data>
   <data name="LblDisconnectMount" xml:space="preserve">
-    <value>Disconnect Mount?</value>
+    <value>Kundak bağlantısı kesilsin mi?</value>
   </data>
   <data name="LblTelescopeParkedWarning" xml:space="preserve">
     <value>Teleskop park edildi. Çevirmeden önce parktan çıkarmanız gerekir.</value>
@@ -4263,7 +4266,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>Ardışık bir yönerge seti gibi çalışır, ancak içeride bir Derin Gökyüzü Objesi belirtilebilir; bu, gerektiğinde içindeki tüm yönergeleri koordinatlarla ve döndürmeyle otomatik olarak doldurur.</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_Name" xml:space="preserve">
-    <value>Deep Sky Object Instruction Set</value>
+    <value>Derin Uzay Objesi Yönerge Seti</value>
   </data>
   <data name="Lbl_SequenceContainer_ParallelContainer_Description" xml:space="preserve">
     <value>Bu yönerge setindeki tüm yönergeler paralel olarak çalıştırılır. Bu yönerge seti, tüm yönergeler tamamlanıncaya kadar herhangi bir koşulu veya tetikleyiciyi değerlendirmeyecektir.</value>
@@ -4760,13 +4763,13 @@ Yukarıdaki pozisyon, şu anda genişletilmemiş bir yönerge setiyse, o yönerg
     <value>Hedef seti aç</value>
   </data>
   <data name="Lbl_OldSequencer_Title" xml:space="preserve">
-    <value>Legacy Sequencer</value>
+    <value>Devreden sıralayıcı</value>
   </data>
   <data name="Lbl_OldSequencer_EndOfSequenceHeader" xml:space="preserve">
     <value>Sonuncu hedef seçeneklerinin sonu</value>
   </data>
   <data name="Lbl_OldSequencer_Template" xml:space="preserve">
-    <value>Legacy Sequence Template</value>
+    <value>Devreden sıralayıcı şablonu</value>
   </data>
   <data name="Lbl_OldSequencer_ImportTarget" xml:space="preserve">
     <value>Hedefi dışarıdan aktar</value>
@@ -4811,7 +4814,7 @@ Yukarıdaki pozisyon, şu anda genişletilmemiş bir yönerge setiyse, o yönerg
     <value>Belirtilen yüksekliğe ulaşılana kadar döngü yapan ve ardından mevcut yönerge setini durduran bir koşul</value>
   </data>
   <data name="Lbl_SequenceCondition_AltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Altitude Below</value>
+    <value>Yüksekliğin altında kalıncaya kadar tekrarla</value>
   </data>
   <data name="Lbl_SequenceCategory_Dome" xml:space="preserve">
     <value>Dome</value>
@@ -5031,8 +5034,8 @@ Uyarı: Bu talimat, teleskopu bir hedefe MERKEZLEMEZ, sadece mevcut yönlendiril
     <value>Gelişmiş Sekans oluşturulsun mu?</value>
   </data>
   <data name="Lbl_OldSequencer_BuildAdvanced_Text" xml:space="preserve">
-    <value>Are you sure to export the sequence to the advanced sequence?
-Note: Advanced sequences are NOT backwards compatible and it is not possible to revert to the legacy sequence!</value>
+    <value>Bu sekansı gelişmiş sekansa aktarmak istediğinizden emin misiniz?
+Not: Gelişmiş sekanslar geriye dönük uyumlu DEĞİLDİR ve eski sekansa geri döndürülemez!</value>
   </data>
   <data name="Lbl_OldSequencer_SwitchToAdvanced" xml:space="preserve">
     <value>Gelişmiş Sıralayıcı</value>
@@ -5042,10 +5045,10 @@ Note: Advanced sequences are NOT backwards compatible and it is not possible to 
 Bu modda sekans, ince ayrıntılı talimatlar, tetikleyiciler ve koşullar kullanılarak sıfırdan planlanabilir.</value>
   </data>
   <data name="LblDisableSimpleSequencer" xml:space="preserve">
-    <value>Disable Legacy Sequencer</value>
+    <value>Önceki sıralayıcıyı devre dışı bırak</value>
   </data>
   <data name="LblDisableSimpleSequencerTooltip" xml:space="preserve">
-    <value>This will disable the legacy sequencer and directly show the advanced sequencer in the sequence tab.</value>
+    <value>Önceki sıralayıcıyı devre dışı bırakır ve sekans sekmesinde gelişmiş sıralayıcıyı gösterir.</value>
   </data>
   <data name="Lbl_Sequencer_SwitchToOverview" xml:space="preserve">
     <value>Sıralayıcı kontrol paneline dön</value>
@@ -5115,13 +5118,13 @@ Bu modda sekans, ince ayrıntılı talimatlar, tetikleyiciler ve koşullar kulla
     <value>Ayın yüksekliği belirtilen parametrelerle eşleştiğinde döngüden çıkar.</value>
   </data>
   <data name="Lbl_SequenceCondition_MoonAltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Moon Altitude</value>
+    <value>Ay yüksekliğine kadar tekrarla</value>
   </data>
   <data name="Lbl_SequenceCondition_SunAltitudeCondition_Description" xml:space="preserve">
     <value>Güneşin yüksekliği belirtilen parametrelerle eşleştiğinde döngüden çıkar.</value>
   </data>
   <data name="Lbl_SequenceCondition_SunAltitudeCondition_Name" xml:space="preserve">
-    <value>Loop until Sun Altitude</value>
+    <value>Güneş yüksekliğine kadar tekrarla</value>
   </data>
   <data name="LblComparatorEquals" xml:space="preserve">
     <value>=</value>
@@ -5225,7 +5228,7 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Hedefin yüksekliği ufkun üzerinde oluncaya kadar bekler. Özel ufuk kullanılırsa, 0 yerine bu yükseklik kullanılır</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Name" xml:space="preserve">
-    <value>Wait until Above horizon</value>
+    <value>Ufuk hizasının üstüne çıkıncaya kadar bekle</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_WaitUntilAboveHorizon_Progress" xml:space="preserve">
     <value>Ufkun üzerine çıkıncaya kadar bekleniyor. Hedef yüksekliği {0}° / ufuk yüksekliği {1}°</value>
@@ -5234,7 +5237,7 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Hedef ufkun üzerindeyken döngü yapan ve ardından mevcut yönerge setini durduran koşul</value>
   </data>
   <data name="Lbl_SequenceCondition_AboveHorizonCondition_Name" xml:space="preserve">
-    <value>Loop while Altitude Above Horizon</value>
+    <value>Yükseklik ufuk hizasının üstüne çıkıncaya kadar tekrarla</value>
   </data>
   <data name="LblUnreachableAltitudeForHorizon" xml:space="preserve">
     <value>Hedef ufuk üzerine hiç çıkmayacak</value>
@@ -5246,10 +5249,10 @@ Hızla değişen koşullar için, daha küçük bir örnek boyutu, örneğin hı
     <value>Çevirici pozisyon {0} a getiriliyor</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description" xml:space="preserve">
-    <value>Looks up the trained exposure value for the specified parameters and takes dark exposures</value>
+    <value>Belirtilen parametreler için eğitilmiş poz değerini arar ve siyah kare pozları alır</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Name" xml:space="preserve">
-    <value>Trained Dark Exposure</value>
+    <value>Eğitilmiş siyah kare pozlaması</value>
   </data>
   <data name="LblLeftside" xml:space="preserve">
     <value>Sol taraf</value>
@@ -5522,7 +5525,7 @@ Yalnızca bir ASCOM kamera sürücüsü kullanıldığında geçerlidir!</value>
     <value>Güncellemeleri kontrol et</value>
   </data>
   <data name="LblPluginDllInstallDescription" xml:space="preserve">
-    <value>Install via the N.I.N.A. plugin manager or manually download and copy the DLL file into %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; from:</value>
+    <value>N.I.N.A plugin manager ile kurun ya da DLL dosyasını manuel olarak indirip bilgisayarınızın %localappdata%\NINA\Plugins\&lt;Major&gt;.&lt;Minor&gt;.&lt;Hotfix&gt; klasörüne kopyalayın. İndirilecek adres:</value>
   </data>
   <data name="LblPluginSetupInstallDescription" xml:space="preserve">
     <value>N.I.N.A. Eklenti Yöneticisiyle kurun veya şu adresten kurulum dosyasını indirip, çalıştırın:</value>
@@ -5828,6 +5831,12 @@ Bu ayarın konumu için kameranızın kılavuzuna bakın</value>
   <data name="LblCanonCameraDisconnected" xml:space="preserve">
     <value>{0} bilgisayarla bağlantısı kesildi. USB bağlantısını ve güç kaynağını kontrol edin</value>
   </data>
+  <data name="LblCanonCameraAlreadyInUse" xml:space="preserve">
+    <value>{0} zaten başka bir program tarafından kullanılıyor. Lütfen yeniden bağlanmayı denemeden önce bu programı kapatın veya kamerayı PC'ye yeniden bağlayın.</value>
+  </data>
+  <data name="LblCanonCameraAlreadyInUseEOSUtil" xml:space="preserve">
+    <value>{0} EOS Utility tarafından zaten kullanılıyor. Lütfen yeniden bağlanmayı denemeden önce tüm arka plan görevleri de dahil olmak üzere EOS Utility'yi kapatın.</value>
+  </data>
   <data name="LblCanonSdkError" xml:space="preserve">
     <value>Canon SDK dahili bir hata tespit etti. Güvenilmeyen kamera işlemleri olabilir</value>
   </data>
@@ -6022,692 +6031,692 @@ Bu seçenek, otomatik kamera dönüşü mevcut olduğunda veya her mozaik panel 
 Bu düğme mozaik modundayken görünmez.</value>
   </data>
   <data name="LblBlindSolveFailoverEnabled" xml:space="preserve">
-    <value>Use Blind Solver for Failures</value>
+    <value>Hata durumunda Blind Solver kullan</value>
   </data>
   <data name="LblASCOMDriverError" xml:space="preserve">
-    <value>ASCOM Driver Error</value>
+    <value>ASCOM sürücü hatası</value>
   </data>
   <data name="LblCanonDriverError" xml:space="preserve">
-    <value>Canon Driver Error</value>
+    <value>Canon sürücü hatası</value>
   </data>
   <data name="LblZWODriverError" xml:space="preserve">
-    <value>ZWO Driver Error</value>
+    <value>ZWO sürücü hatası</value>
   </data>
   <data name="LblASTAPWarning" xml:space="preserve">
-    <value>ASTAP Warning</value>
+    <value>ASTAP uyarısı</value>
   </data>
   <data name="LblPhd2Warning" xml:space="preserve">
-    <value>PHD2 Warning</value>
+    <value>PHD2 uyarısı</value>
   </data>
   <data name="Lbl_SequenceItem_Disable_Tooltip" xml:space="preserve">
-    <value>Disables the current instruction. A disabled instruction will not run during sequence execution.</value>
+    <value>Mevcut talimatı kapatır. Kapatılan talimst sekans sona erinceye kadar çalışmaz.</value>
   </data>
   <data name="Lbl_SequenceItem_Enable_Tooltip" xml:space="preserve">
-    <value>Enables the current instruction, to be considered again to run during sequence execution.</value>
+    <value>Mevcut talimatı, sekans sona erinceye kadar tekrar çalışmak üzere etkinleştirir.</value>
   </data>
   <data name="Lbl_SequenceContainer_DisableEnable_Tooltip" xml:space="preserve">
-    <value>Disables or enables the current instruction set and all its content.</value>
+    <value>Mevcut talimat setini ve içeriğinin tamamını devre dışı bırakır veya aktive eder.</value>
   </data>
   <data name="LblDateUTCFormatDescription" xml:space="preserve">
-    <value>UTC date with format YYYY-MM-DD</value>
+    <value>UTC tarihi YYY-AA-GG formatında</value>
   </data>
   <data name="LblTimeUTCFormatDescription" xml:space="preserve">
-    <value>UTC time with format HH-mm-ss</value>
+    <value>UTC zamanı SS-dd-ss formatında</value>
   </data>
   <data name="LblGuiderCanSetShift" xml:space="preserve">
     <value>Can Shift Tracking</value>
   </data>
   <data name="LblGuiderShiftEnabled" xml:space="preserve">
-    <value>Shift Enabled</value>
+    <value>Kayma etkinleştirildi</value>
   </data>
   <data name="LblGuiderRAShiftRate" xml:space="preserve">
-    <value>RA Shift Rate</value>
+    <value>RA kayma hızı</value>
   </data>
   <data name="LblGuiderDecShiftRate" xml:space="preserve">
-    <value>Dec Shift Rate</value>
+    <value>Dec kayma hızı</value>
   </data>
   <data name="LblPhd2GuiderShiftAxis" xml:space="preserve">
-    <value>Shift Axis</value>
+    <value>Kayma ekseni</value>
   </data>
   <data name="LblGuiderSetShiftRate" xml:space="preserve">
     <value>Set Shift</value>
   </data>
   <data name="LblGuiderStopShift" xml:space="preserve">
-    <value>Stop Shift</value>
+    <value>Kaymayı durdur</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockFailed" xml:space="preserve">
     <value>Setting shift rate after losing shift lock failed</value>
   </data>
   <data name="LblPhd2GuiderRestartShiftLockSuccess" xml:space="preserve">
-    <value>Restored shift rate after losing shift lock</value>
+    <value>Kayma kilitlenmesi kaybı ardından kayma hızı tekrar sağlandı</value>
   </data>
   <data name="LblDisplayMoonChart" xml:space="preserve">
-    <value>Display moon chart</value>
+    <value>Ay haritasını göster</value>
   </data>
   <data name="LblMoonSeparation" xml:space="preserve">
-    <value>Angular separation between moon and target</value>
+    <value>Hedefin Ay ile olan açısal aralığı</value>
   </data>
   <data name="LblPluginFailedToLoad" xml:space="preserve">
-    <value>Failed to load plugin {0} version {1}.
-Please check if there is an update available.</value>
+    <value>{0} eklentisi {1} sürümünün yüklenmesi başarısız.
+Lütfen bir güncelleme olup olmadığını kontrol edin.</value>
   </data>
   <data name="LblMoon" xml:space="preserve">
-    <value>Moon</value>
+    <value>Ay</value>
   </data>
   <data name="LblDate" xml:space="preserve">
-    <value>Date</value>
+    <value>Gün</value>
   </data>
   <data name="LblObservation" xml:space="preserve">
-    <value>Observation</value>
+    <value>Gözlem</value>
   </data>
   <data name="LblCommand" xml:space="preserve">
-    <value>Command</value>
+    <value>Komut</value>
   </data>
   <data name="LblRaw" xml:space="preserve">
-    <value>Raw</value>
+    <value>Ham</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Description" xml:space="preserve">
-    <value>Sends a command to the selected device in accordance with the ASCOM SendCommand methods. Any returned output is logged in the main N.I.N.A. log file.</value>
+    <value>Seçilen cihaza ASCOM SendCommand metoduna uyumlu komut gönderir. Dönüş yapan her hangi bir çıktı N.I.N.A asıl kayıt dosyasına keydedilir.</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SendCommand_Name" xml:space="preserve">
-    <value>Send Command</value>
+    <value>Komut Gönder</value>
   </data>
   <data name="LblBoolean" xml:space="preserve">
     <value>Boolean</value>
   </data>
   <data name="LblDevice" xml:space="preserve">
-    <value>Device</value>
+    <value>Cihaz</value>
   </data>
   <data name="LblString" xml:space="preserve">
-    <value>String</value>
+    <value>Dizi</value>
   </data>
   <data name="LblBlind" xml:space="preserve">
-    <value>Blind</value>
+    <value>Kör</value>
   </data>
   <data name="LblAction" xml:space="preserve">
-    <value>Action</value>
+    <value>Eylem</value>
   </data>
   <data name="LblParameters" xml:space="preserve">
-    <value>Parameters</value>
+    <value>Parametreler</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Description" xml:space="preserve">
-    <value>Select and execute any ASCOM (or other) Actions that may be available by the device's driver</value>
+    <value>Cihaz sürücüsünde mevcut bir ASCOM (veya diğer) eylemi seç ve yap</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_DeviceAction_Name" xml:space="preserve">
-    <value>Device Action</value>
+    <value>Cihaz eylemi</value>
   </data>
   <data name="LblNoActionsAvailable" xml:space="preserve">
-    <value>No actions are available</value>
+    <value>Mevcut eylem yok</value>
   </data>
   <data name="LblSkyGuardPath" xml:space="preserve">
-    <value>SkyGuard path</value>
+    <value>SkyGuard yolu</value>
   </data>
   <data name="LblSkyGuardServerPort" xml:space="preserve">
-    <value>SkyGuard Server Port</value>
+    <value>SkyGuard sunucu portu</value>
   </data>
   <data name="LblSkyGuardServerUrl" xml:space="preserve">
-    <value>SkyGuard Server URL</value>
+    <value>SkyGuard sunucu URL</value>
   </data>
   <data name="LblSkyGuardSetup" xml:space="preserve">
-    <value>SkyGuard Setup</value>
+    <value>SkyGuard kurulum</value>
   </data>
   <data name="LblSkyGuardCallbackPort" xml:space="preserve">
-    <value>Callback Reservation Port SkyGuard</value>
+    <value>SkyGuard callback rezervasyon portu</value>
   </data>
   <data name="LblSkyGuardTimeLapsChecked" xml:space="preserve">
-    <value>Guider Settling</value>
+    <value>Takipçi yerleşimi</value>
   </data>
   <data name="LblSkyGuardTimeLapsGuiding" xml:space="preserve">
-    <value>For a duration of</value>
+    <value>Bir süre için</value>
   </data>
   <data name="LblSkyGuardTimeOutGuiding" xml:space="preserve">
-    <value>Start guiding timeout delay</value>
+    <value>Takip başlamasında zaman aşımı gecikmesi</value>
   </data>
   <data name="LblSkyGuardValueMaxGuiding" xml:space="preserve">
-    <value>Settle at &lt;</value>
+    <value>&lt; de yerleşti</value>
   </data>
   <data name="LblDitherSkyGuardSkippedBecauseNotGuiding" xml:space="preserve">
-    <value>Dither was skipped because SkyGuard was not actively guiding</value>
+    <value>Skyguard aktif olarak takip etmediği için ditherr gözardı edildi</value>
   </data>
   <data name="LblSkyGuardNotReady" xml:space="preserve">
-    <value>SkyGuard is not ready for operations. Check logs for details.</value>
+    <value>SkyGuard işlemler için hazır değil. Ayrıntılar için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardOperationCancelled" xml:space="preserve">
-    <value>Operation cancelled.</value>
+    <value>İşlem iptal edildi.</value>
   </data>
   <data name="LblSkyGuardPathNotFound" xml:space="preserve">
-    <value>Could not start SkyGuard. Path not found.</value>
+    <value>SskyGuard başlatılamadı. Yol bulunmadı.</value>
   </data>
   <data name="LblSkyGuardStartProcessError" xml:space="preserve">
-    <value>Could not start SkyGuard. Check logs for details.</value>
+    <value>SkyGuard başlatılamadı. Ayrıntılar için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardConnectError" xml:space="preserve">
-    <value>Failed connecting to SkyGuard. View logs for more details.</value>
+    <value>SkyGuard'a bağlanma başarısız. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardDisconnectError" xml:space="preserve">
-    <value>Failed disconnecting SkyGuard. View logs for more details.</value>
+    <value>SkyGuard bağlantısının kesilmesi başarısız. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardDitheringError" xml:space="preserve">
-    <value>Error on dithering operation. View logs for more details.</value>
+    <value>Dither işleminde hata. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardEndpointNotReachable" xml:space="preserve">
-    <value>SkyGuard enpoint not reachable. View logs for more details.</value>
+    <value>SkyGuard uç noktasına erişilemiyor. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardGuidingError" xml:space="preserve">
-    <value>Error on start guiding operation. View logs for more details.</value>
+    <value>Takip işlemi başlatılmasında hata. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblSkyGuardStopGuidingError" xml:space="preserve">
-    <value>Error on stop guiding operation. View logs for more details.</value>
+    <value>Takip işlemi durdurulmasında hata. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="lblSkyGuardWrongVersion" xml:space="preserve">
-    <value>SkyGuard version is not supported by N.I.N.A. View logs for more details.</value>
+    <value>SkyGuard sürümü N.I.N.A tarafından desteklenmiyor. Daha fazla ayrıntı için kayıtlara bakın.</value>
   </data>
   <data name="LblUseCachedImages" xml:space="preserve">
-    <value>This will use the images out of the framing cache and draw them in the offline sky map for framing. Only images that are less than or equal to 10° and greater than or equal to 0.1° horizontal field of view are used.</value>
+    <value>Bu, kadraj önbelleğindeki görüntüleri kullanarak kadrajlama için çevrimdışı gökyüzü haritasında çizecektir. Yalnızca 10°'den küçük veya buna eşit ve 0,1° yatay görüş alanına eşit veya daha büyük olan görüntüler kullanılır.</value>
   </data>
   <data name="LblAny" xml:space="preserve">
-    <value>Any</value>
+    <value>Herhangi</value>
   </data>
   <data name="LblAnyDuration" xml:space="preserve">
-    <value>Any duration</value>
+    <value>Herhangi bir süre</value>
   </data>
   <data name="LblFromTime" xml:space="preserve">
-    <value>from time</value>
+    <value>başlangıç saati</value>
   </data>
   <data name="LblMinimumDistance" xml:space="preserve">
-    <value>Minimum distance</value>
+    <value>Minimum mesafe</value>
   </data>
   <data name="LblThroughTime" xml:space="preserve">
-    <value>through time</value>
+    <value>bitiş saati</value>
   </data>
   <data name="LblVisibleFor" xml:space="preserve">
-    <value>visible for</value>
+    <value>görülme süresi</value>
   </data>
   <data name="LblPegasusNativeDeprecation" xml:space="preserve">
-    <value>With the introduction of the Pegasus Astro Unity Platform and possible changes to the communication protocols the native drivers will be deprecated in future versions. Please use the ASCOM drivers instead!</value>
+    <value>Pegasus Astro Unity Platformu'nun tanıtılması ve iletişim protokollerinde yapılacak olası değişikliklerle yerel sürücüler gelecekteki sürümlerde kullanımdan kaldırılacaktır. Lütfen bunun yerine ASCOM sürücülerini kullanın!</value>
   </data>
   <data name="LblAlwaysListen" xml:space="preserve">
-    <value>Always listen to file changes</value>
+    <value>Her zaman dosya değişikliklerini izle</value>
   </data>
   <data name="LblDownloadDelay" xml:space="preserve">
-    <value>Seconds to wait before download</value>
+    <value>İndirme öncesi beklenen saniye</value>
   </data>
   <data name="LblSkySurveyUnavailable" xml:space="preserve">
-    <value>{0} is unavailable. Please select an alternative image source.
+    <value>{0} geçersiz. Lütfen alternatif bir görüntü kaynağı seçin.
 
-Reason: {1}</value>
+Sebep: {1}</value>
   </data>
   <data name="LblImageSourceError" xml:space="preserve">
-    <value>Image source error</value>
+    <value>Görüntü kaynağı hatası</value>
   </data>
   <data name="LblSaveImageQueueSize" xml:space="preserve">
-    <value>Image Save Queue Size</value>
+    <value>Görüntü Kayıt Sıra Boyut</value>
   </data>
   <data name="LblSaveImageQueueSizeTooltip" xml:space="preserve">
-    <value>Increasing this allows the application to enqueue more than one image into the processing and saving queue. This is useful for increasing the speed of short exposures during a sequence at the cost of increased memory consumption.</value>
+    <value>Bunu artırmak, uygulamanın birden fazla görüntüyü işleme ve kaydetme kuyruğuna yerleştirmesine olanak tanır. Bellek tüketimi artıyor olsa da, bir dizi sırasında kısa pozlamaların hızını artırmak için kullanışlıdır.</value>
   </data>
   <data name="LblSelectedTimeSourceInvalid" xml:space="preserve">
-    <value>Selected time source could not determine a valid time. Please select a different source.</value>
+    <value>Seçilen zaman kaynağı geçerli bir zamanı tanımlamıyor. Lütfen farklı bir kaynak seçin.</value>
   </data>
   <data name="LblLoadingPlugin" xml:space="preserve">
-    <value>Loading plugin {0} version {1} created by {2}</value>
+    <value>{2} tarafından yazılan eklenti {0} sürüm {1} yükleniyor</value>
   </data>
   <data name="LblMGENSetup" xml:space="preserve">
-    <value>MGEN Setup</value>
+    <value>MGEN Kurulumu</value>
   </data>
   <data name="LblSingleImagingLayout" xml:space="preserve">
-    <value>Single imaging tab layout</value>
+    <value>Tek görüntüleme sekme düzeni</value>
   </data>
   <data name="LblSingleImagingLayoutTooltip" xml:space="preserve">
-    <value>When enabled, the imaging tab will have only one layout for all profiles instead of being profile dependent</value>
+    <value>Etkinleştirildiğinde, görüntüleme sekmesi, profile bağımlı olmak yerine tüm profiller için yalnızca bir düzende olacaktır</value>
   </data>
   <data name="LblPlatesolve3" xml:space="preserve">
     <value>Platesolve3</value>
   </data>
   <data name="LblPlatesolve3Directory" xml:space="preserve">
-    <value>Platesolve3 Location</value>
+    <value>Platesolve3 Yeri</value>
   </data>
   <data name="LblPlatesolve3NoCoordinates" xml:space="preserve">
-    <value>No coordinates available. Platesolve3 requires coordinates to solve!</value>
+    <value>Koordinat mevcut değil. Platesolve3, tanımlama işlemi için koordinat bilgisi istiyor!</value>
   </data>
   <data name="LblPlatesolve3NotFound" xml:space="preserve">
-    <value>Platesolve3 exe not found</value>
+    <value>Platesolve3 exe bulunamadı</value>
   </data>
   <data name="LblBackupDockLayout" xml:space="preserve">
-    <value>Backup Layout</value>
+    <value>Yedek düzen</value>
   </data>
   <data name="LblBackupDockLayoutFailed" xml:space="preserve">
-    <value>Backup layout failed</value>
+    <value>Düzen yedekleme başarısız</value>
   </data>
   <data name="LblBackupDockLayoutSuccessful" xml:space="preserve">
-    <value>Imaging tab layout backed up</value>
+    <value>Tekli görüntüleme sekmesi düzeni</value>
   </data>
   <data name="LblBackupDockLayoutTooltip" xml:space="preserve">
-    <value>Backup the imaging tab layout to a file, so it can be restored at a later point</value>
+    <value>Görüntüleme sekmesi düzenini yedekleyin. Böylece daha sonra geri yükleyebilirsiniz</value>
   </data>
   <data name="LblDockLayoutReset" xml:space="preserve">
-    <value>Imaging tab layout reset</value>
+    <value>Görüntüleme sekmesi düzenini resetle</value>
   </data>
   <data name="LblDockLayoutRestored" xml:space="preserve">
-    <value>Imaging tab layout restored</value>
+    <value>Görüntüleme sekmesi düzeni onarıldı</value>
   </data>
   <data name="LblRestoreDockLayoutFromFile" xml:space="preserve">
-    <value>Restore Layout</value>
+    <value>Düzeni onar</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileFailed" xml:space="preserve">
-    <value>Restore layout failed</value>
+    <value>Düzen onarımı başarısız</value>
   </data>
   <data name="LblRestoreDockLayoutFromFileTooltip" xml:space="preserve">
-    <value>Restore imaging tab layout from a backup</value>
+    <value>Görüntüleme sekmesi düzenini bir yedeklenen düzenle onar</value>
   </data>
   <data name="LblTotal" xml:space="preserve">
-    <value>Total</value>
+    <value>Toplam</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo" xml:space="preserve">
-    <value>Exposure Info</value>
+    <value>Pozlama Bilgisi</value>
   </data>
   <data name="Lbl_SequenceContainer_DeepSkyObjectContainer_UpdateTarget" xml:space="preserve">
-    <value>UPDATE TARGET</value>
+    <value>HEDEF GÜNCELLE</value>
   </data>
   <data name="LblNoFilter" xml:space="preserve">
-    <value>No Filter</value>
+    <value>Filtresiz</value>
   </data>
   <data name="LblAtikExposureSpeed" xml:space="preserve">
-    <value>Exposure speed</value>
+    <value>Pozlama hızı</value>
   </data>
   <data name="LblAtikGainPreset" xml:space="preserve">
-    <value>Gain preset</value>
+    <value>Kazanç ön ayarı</value>
   </data>
   <data name="LblAtikWindowHeaterPowerLevel" xml:space="preserve">
-    <value>Heater power level</value>
+    <value>Isıtıcı güç seviyesi</value>
   </data>
   <data name="LblSkyGuardTimeLapsDitherChecked" xml:space="preserve">
-    <value>Dither Settling</value>
+    <value>Dither yerleşiyor</value>
   </data>
   <data name="LblAutoFocusPointLimitReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Maximum number of measurement points reached.</value>
+    <value>Otomatik odaklama tamamlanamadı. Maksimum ölçüm noktası sayısı aşıldı.</value>
   </data>
   <data name="LblAutoFocusZeroPositionReached" xml:space="preserve">
-    <value>Autofocus failed to complete. Focuser Position reached 0.</value>
+    <value>Otomatik odaklama tamamlanamadı. Odaklayıcı 0 pozisyonunu geçti.</value>
   </data>
   <data name="LblRotateImageTooltip" xml:space="preserve">
-    <value>Rotates the image by 90° clockwise. Following images will then also be rotated by the same amount. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Görüntüyü saat yönünde 90° ddürür. Sonraki görüntüler aynı değerde döndürülür. Bu işlem sadece görüntüleme amacı için olup, görüntü verisine etki etmez.</value>
   </data>
   <data name="LblFramingPlateSolvePromptText" xml:space="preserve">
-    <value>Image needs to be solved for framing.
-Please confirm the meta data to use for solving.
-Once confirmed choose which solver should be used.</value>
+    <value>Kadrajlama için görüntünün tanımlanması gerekli.
+Lütfen, tanımlama için meta datayı onaylayın.
+Onayladıktan sonra, kullanılacak tanımlayıcıyı seçin.</value>
   </data>
   <data name="LblPlateSolveRequired" xml:space="preserve">
-    <value>Platesolve required</value>
+    <value>Alan tanımlama gerekiyor</value>
   </data>
   <data name="LblFramingSolveWithBlindSolver" xml:space="preserve">
-    <value>When blind solver is selected, the coordinates will be ignored and the blind solver that is set up in the options will be used.</value>
+    <value>İkincil tanımlayıcı seçildiğinde koordinatlar dikkate alınmaz ve seçeneklerde ayarlanan ikincil tanımlayıcı kullanılır.</value>
   </data>
   <data name="LblFramingSolveWithPlateSolver" xml:space="preserve">
-    <value>When plate solver is selected, the coordinates will be used as reference coordinates and used for the plate solver that is set up in the options.</value>
+    <value>Alan tanımlayıcı seçildiğinde, koordinatlar seçeneklerde ayarlanan alan tanımlayıcı tarafından referans koordinat olarak kullanılır.</value>
   </data>
   <data name="LblGuideGraphDeclinationColor" xml:space="preserve">
-    <value>Guide Graph Dec Color</value>
+    <value>Dec takip grafik rengi</value>
   </data>
   <data name="LblGuideGraphRightAscensionColor" xml:space="preserve">
-    <value>Guide Graph RA Color</value>
+    <value>RA takip grafik rengi</value>
   </data>
   <data name="LblGuideGraphShowCorrections" xml:space="preserve">
-    <value>Guide Graph Show Corrections</value>
+    <value>Takip grafiği düzeltme görseli</value>
   </data>
   <data name="LblRotateImageAfterFlip" xml:space="preserve">
-    <value>Rotate image after flip</value>
+    <value>Geçişten sonra görüntüyü döndür</value>
   </data>
   <data name="LblRotateImageAfterFlipTooltip" xml:space="preserve">
-    <value>When enabled, this will rotate the image by 180° in the imaging tab after the flip. This is for displaying purposes only and won't affect the image data.</value>
+    <value>Etkinleştirildiğinde görüntüyü geçişten sonra 180° döndürür. Bu işlem sadece izleme amaçlıdır, görüntü verisini etkilemez.</value>
   </data>
   <data name="LblDisableGuidingOnFilterChange" xml:space="preserve">
-    <value>Disable guiding during filter change</value>
+    <value>Filtre değişimi esnasında takibi durdur</value>
   </data>
   <data name="LblDisableGuidingOnFilterChangeTooltip" xml:space="preserve">
-    <value>When this option is enabled, every time a filter is changed the guiding will be disabled while the filter is being changed and re-enabled afterwards.</value>
+    <value>Bu seçenek etkinleştirildiğinde, her filtre değişimi esnasında takip devre dışı bırakılır ve değişimden sonra tekrar etkinleştirilir.</value>
   </data>
   <data name="LblEphemerisNotFound" xml:space="preserve">
-    <value>Ephemeris file to calculate celestial trajectories not found. Please run a repair on your N.I.N.A. installation.</value>
+    <value>Göksel yörünge bulunmadığı zaman yörüngeyi hesaplamak için gökyüzü haritası. Lütfen N.I.N.A kurulum onarımını çalıştırın.</value>
   </data>
   <data name="LblPHD2InstanceNumber" xml:space="preserve">
-    <value>PHD2 instance number</value>
+    <value>PHD2 örnek numarası</value>
   </data>
   <data name="LblDomeMountGeometry" xml:space="preserve">
-    <value>Dome &amp; mount geometry</value>
+    <value>Kubbe ve kundak geometrisi</value>
   </data>
   <data name="LblDomeNotConnectedError" xml:space="preserve">
-    <value>The dome driver is not connected!</value>
+    <value>Kubbe sürücüsü bağlanmadı!</value>
   </data>
   <data name="LblDomeShutterCoordination" xml:space="preserve">
-    <value>Shutter coordination</value>
+    <value>Kapak koordinasyonu</value>
   </data>
   <data name="LblMountDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is disconnected. Mount status cannot be determined. This can be unsafe!</value>
+    <value>Kapak veya çatı hareket talimatı aldı fakat kundak bağlantısı kesildi. Kundak kararsız durumda. Güvenilmeyebilir!</value>
   </data>
   <data name="LblMountUnparkedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to move but the mount is unparked. This can be unsafe!</value>
+    <value>Kapak veya çatı hareket talimatı aldı fakat kundak park edilmedi. Güvenilmeyebilir!</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovement" xml:space="preserve">
-    <value>Park dome before shutter operation</value>
+    <value>Kapak operasyonundan önce kubbeyi park edin</value>
   </data>
   <data name="LblParkDomeBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Sends the dome to its park position before attempting to open or cloose the shutter</value>
+    <value>Kapağı açılmadan ya da kapatılmadan önce kubbeyi park pozisyonuna gönderir</value>
   </data>
   <data name="LblParkMountBeforeShutterMovement" xml:space="preserve">
-    <value>Park mount before shutter operation</value>
+    <value>Kapak operasyonundan önce kundağı park edin</value>
   </data>
   <data name="LblParkMountBeforeShutterMovementTooltip" xml:space="preserve">
-    <value>Attempt to park the mount before opening or closing the shutter</value>
+    <value>Kapağını açmadan ya da kapatmadan önce kundağı park edin</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparked" xml:space="preserve">
-    <value>Refuse open or close if mount is unparked</value>
+    <value>Kundak park halinde değilse açmayı veya kapatmayı reddet</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfMountUnparkedTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open or close the shutter or roof if the mount is in an unparked state.
-This is evaluated AFTER the "Park mount before moving the shutter" setting.</value>
+    <value>N.I.N.A'nın kapak veya çatıyı açmayı ya da kapatmayı reddetmesine neden olur.
+Bu, "Kapağı hareket ettitmeden önce kundağı park et" ayarından SONRA değerlendirilir.</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDevice" xml:space="preserve">
-    <value>Refuse open if a Safety Monitor is not connected</value>
+    <value>Bir güvenlik monitörü bağlı değilse açmayı reddet</value>
   </data>
   <data name="LblRefuseUnsafeShutterMoveIfNoSafetyDeviceTooltip" xml:space="preserve">
-    <value>Causes N.I.N.A. to refuse to open the shutter or roof if a Safety Monitor device is not connected.</value>
+    <value>Eğer bir güvenlik monitörü cihazı bağlı değilse N.I.N.A'nın kapak veya çatıyı açmayı reddetmesine neden olur.</value>
   </data>
   <data name="LblSafetyDeviceDisconnectedOnShutterMoveError" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device is disconnected. Opening has been aborted.</value>
+    <value>Kapak veya çatının açılması istendi fakat güvenlik monitörü cihaz bağlantısı kesildi. Açılma başarısız oldu.</value>
   </data>
   <data name="LblShutterSettingsWarning" xml:space="preserve">
-    <value>NOTICE: These settings relate to the safety of your equipment. They must be set with careful consideration and with the familiarity you have with your specific setup. They govern only N.I.N.A.'s control of the equipment and are NOT in effect if N.I.N.A. is not running or is not connected to the equipment in question. Dome or roof safety mechanisms should always have a hardware backup and electrical interlocks to prevent any undesired shutter or roof movement. It is your responsibility to ensure that these settings do not conflict with your dome driver's settings.</value>
+    <value>DİKKAT: Bu ayarlar, ekipmanınızın güvenliği ile ilgilidir. Dikkatli bir şekilde düşünülerek ve özel kurulumunuza aşina olduğunuz şekilde ayarlanmalıdırlar. Yalnızca N.I.N.A.'nın ekipman üzerindeki kontrolünü yönetirler ve N.I.N.A. çalışmıyorken veya söz konusu ekipmana bağlı değilken etkili değillerdir. Kubbe veya çatı güvenlik mekanizmaları, herhangi bir istenmeyen kapak veya çatı hareketini önlemek için her zaman bir donanım yedeğine ve elektrik kilitlerine sahip olmalıdır. Bu ayarların kubbe sürücünüzün ayarlarıyla çakışmamasını sağlamak sizin sorumluluğunuzdadır.</value>
   </data>
   <data name="LblCollapseSidebarTooltip" xml:space="preserve">
-    <value>Collapses the left sidebars to only show smaller icons without text</value>
+    <value>Sadece metin içermeyen daha küçük simgeleri göstermek için sol kenar çubuklarını daraltır</value>
   </data>
   <data name="LblExpandSidebarTooltip" xml:space="preserve">
-    <value>Expands the left sidebars to show larger icons with text</value>
+    <value>Metin içeren büyük simgeleri göstermek için yan çubukları genişletir</value>
   </data>
   <data name="Lbl_Sequencer_InstructionsSidebar_SettingsModeTooltip" xml:space="preserve">
-    <value>Enable settings mode. When this mode is enabled each instruction can be disabled or enabled. A disabled instruction will then not be shown inside the sidebar outside of settings mode.</value>
+    <value>Ayarlar modunu etkinleştirin. Bu mod etkinleştirildiğinde, her talimat devre dışı bırakılabilir veya etkinleştirilebilir. Devre dışı bırakılmış bir talimat, ayarlar modunun dışında kenar çubuğunun içinde gösterilmeyecektir.</value>
   </data>
   <data name="LblCollapseAll" xml:space="preserve">
-    <value>Collapse All</value>
+    <value>Hepsini daralt</value>
   </data>
   <data name="LblExpandAll" xml:space="preserve">
-    <value>Expand All</value>
+    <value>Hepsini aç</value>
   </data>
   <data name="LblRotating" xml:space="preserve">
-    <value>Rotating</value>
+    <value>Döndürülüyor</value>
   </data>
   <data name="LblASCOMTelescopeDriveRateInvalid" xml:space="preserve">
-    <value>The drive rate {0} is invalid to move the telescope axis. Please enter a different rate.</value>
+    <value>Hareket oranı {0}, teleskop eksenini hareket ettirmek için geçersiz. Lütfen farklı bir oran girin.</value>
   </data>
   <data name="LblFilterChangeFailed" xml:space="preserve">
-    <value>Failed to move filter wheel to filter {0} at position {1}</value>
+    <value>Fitre çarkı {0} filtresini {1} pozisyonuna getirmede başarısız</value>
     <comment>First parameter is filter name and second parameter is filter position number</comment>
   </data>
   <data name="LblSwitches" xml:space="preserve">
-    <value>Switches</value>
+    <value>Anahtarlar</value>
   </data>
   <data name="LblGauges" xml:space="preserve">
-    <value>Gauges</value>
+    <value>Göstergeler</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Description" xml:space="preserve">
-    <value>Sets the USB limit for the camera if available</value>
+    <value>Eğer varsa, kamera için USB limitini ayarlar</value>
   </data>
   <data name="Lbl_SequenceItem_Camera_SetUSBLimit_Name" xml:space="preserve">
-    <value>Set USB Limit</value>
+    <value>USB limitini ayarla</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_CannotSetUSBLimit" xml:space="preserve">
-    <value>Camera cannot set USB limit</value>
+    <value>Kamera USB limitini ayarlayamıyor</value>
   </data>
   <data name="Lbl_SequenceItem_Validation_InvalidUSBLimit" xml:space="preserve">
-    <value>Invalid value for USB limit for the camera</value>
+    <value>Kamera için geçersiz USB limiti</value>
   </data>
   <data name="LblHighFullwellMode" xml:space="preserve">
-    <value>High Fullwell Mode</value>
+    <value>Yüksek Fullwell modu</value>
   </data>
   <data name="LblHighFullwellModeTooltip" xml:space="preserve">
-    <value>Enables the high fullwell mode for extended fullwell</value>
+    <value>Genişletilmiş fullwell için yüksek fullwell modunu etkinleştirir</value>
   </data>
   <data name="LblDewHeaterStrength" xml:space="preserve">
-    <value>Target Dew Heater Strength</value>
+    <value>Hedeflenen çiğ ısıtıcı gücü</value>
   </data>
   <data name="LblHardwareAcceleration" xml:space="preserve">
-    <value>Hardware Acceleration</value>
+    <value>Donanım hızlandırma</value>
   </data>
   <data name="LblHardwareAccelerationTooltip" xml:space="preserve">
-    <value>This will enable or disable hardware accelerated rendering of the application.
-In case you are having rendering issues, or the application is turning blank when using a remote software while there is no monitor attached disabling hardware acceleration might be beneficial.
-Keep in mind that disabling hardware acceleration might reduce overall application performance.
+    <value>Bu, uygulamanın donanım hızlandırmalı olmasını etkinleştirecek veya devre dışı bırakacaktır.
+Oluşum sorunları yaşıyorsanız veya bağlı bir monitör yokken uzak bir yazılım kullanırken uygulama boş kalıyorsa, donanım hızlandırmayı devre dışı bırakmak faydalı olabilir.
+Donanım hızlandırmayı devre dışı bırakmanın genel uygulama performansını azaltabileceğini unutmayın.
 
-Changing the value will require an app restart to take affect.</value>
+Değerin değiştirilmesi, etkili olması için bir uygulamanın yeniden başlatılmasını gerektirecektir.</value>
   </data>
   <data name="LblProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profil</value>
     <comment>The equipment profile that is used in the application that stores all the settings</comment>
   </data>
   <data name="LblAutomaticMountSync" xml:space="preserve">
-    <value>Automatic Sync</value>
+    <value>Otomatik senkronize</value>
     <comment>The option to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblAutomaticMountSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will send a sync command to the mount during platesolve &amp; center operations. 
-This should only be disabled when having a good pointing model that must not be altered in any way. When disabled the plate solve panel in imaging tab will also not show the sync toggle.</value>
+    <value>Bu uygulama etkinleştirildiğinde, platesolve ve merkezle işlemleri sırasında kundağa bir senkronizasyon komutu gönderir.
+Yalnızca hiçbir şekilde değiştirilmemesi gereken iyi bir işaretleme modeline sahipken devre dışı bırakılmalıdır. Devre dışı bırakıldığında, görüntüleme sekmesindeki platesolving paneli de senkronizasyon geçişini göstermez.</value>
     <comment>The option tooltip to turn automatic sync of platesolving to the mount</comment>
   </data>
   <data name="LblCameraDitherPixels" xml:space="preserve">
-    <value>Camera Dither Pixels</value>
+    <value>Kamera dither pikselleri</value>
   </data>
   <data name="LblCameraPixelScale" xml:space="preserve">
-    <value>Camera Pixel Scale</value>
+    <value>Kamera dither ölçeği</value>
   </data>
   <data name="LblGuiderDitherPixels" xml:space="preserve">
-    <value>Guider Dither Pixels</value>
+    <value>Takip kamerası dither pikselleri</value>
   </data>
   <data name="LblGuiderPixelScale" xml:space="preserve">
-    <value>Guider Pixel Scale</value>
+    <value>Takip kamerası piksel ölçeği</value>
   </data>
   <data name="LblZwoDeviceId" xml:space="preserve">
-    <value>Device ID</value>
+    <value>Cihaz Kimliği</value>
   </data>
   <data name="LblZwoDeviceIdTooltip" xml:space="preserve">
-    <value>A name up to 8 ASCII characters long that you may assign to the connected ZWO device. This allows you to uniquely identify multiple pieces of the same model of device.</value>
+    <value>Bağlanmış ZWO cihazına atayabileceğiniz, en fazla 8 ASCII karakter uzunluğunda bir ad. Bu, aynı cihaz modelinin birden çok parçasını benzersiz bir şekilde tanımlamanıza olanak tanır.</value>
   </data>
   <data name="LblUnidirectional" xml:space="preserve">
-    <value>Unidirectional</value>
+    <value>Tek yönlü</value>
   </data>
   <data name="LblCalibrate" xml:space="preserve">
-    <value>Calibrate</value>
+    <value>Kalibre et</value>
   </data>
   <data name="LblNmeaSerialGnss" xml:space="preserve">
-    <value>NMEA Serial GNSS</value>
+    <value>NMEA seri GNSS</value>
   </data>
   <data name="LblPrimaLuceLabEagle" xml:space="preserve">
     <value>PrimaLuceLab Eagle</value>
   </data>
   <data name="LblGnssGgaMissingError" xml:space="preserve">
-    <value>Did not observe a GGA sentence within {0} seconds</value>
+    <value>{0} saniye içinde herhangi bir GGA bildirimi gözlenmedi</value>
   </data>
   <data name="LblGnssGgaQualityError" xml:space="preserve">
-    <value>GGA sentence indicates the fix quality is {0}</value>
+    <value>GGA gözlemi düzeltme kalitesini {0} olarak gösteriyor</value>
   </data>
   <data name="LblGnss" xml:space="preserve">
     <value>GNSS</value>
   </data>
   <data name="LblPegasusUranusNotFound" xml:space="preserve">
-    <value>PegasusAstro Uranus Meteo not found</value>
+    <value>PgasusAstro Uranus Meteo bulunmadı</value>
   </data>
   <data name="LblPegausAstroUranus" xml:space="preserve">
     <value>PegasusAstro Uranus Meteo</value>
   </data>
   <data name="LblIsValidIpPortRule" xml:space="preserve">
-    <value>Port number must be between {0} and {1}</value>
+    <value>Port numarası {0} ve {1} arasında olmalıdır</value>
   </data>
   <data name="LblMetaGuideListenAllInterfaces" xml:space="preserve">
-    <value>Use all interfaces</value>
+    <value>Tüm arayüzleri kullan</value>
   </data>
   <data name="LblMetaGuideListenAllInterfacesTooltip" xml:space="preserve">
-    <value>Listen on all interfaces for MegaGuide broadcasts. By default, N.I.N.A. will listen on loopback (127.0.0.1) only</value>
+    <value>MegaGuide yayınları için bütün arayüzlerş dinle. N.I.N.A, varsayılan olarak sadece loopback (127.0.0.1) dinler</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat exposures similar to the flat wizard for a fixed panel brightness,.</value>
+    <value>Bu yönerge, düz kare shirbazına benzer şekilde, sabit panel parlaklığına göre otomatik olarak düz kare pozlar,.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Name" xml:space="preserve">
-    <value>Auto Exposure Flat</value>
+    <value>Otomatik düz kare pozla</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Description" xml:space="preserve">
-    <value>This instruction will automatically determine flat panel brightness similar to the flat wizard for a fixed exposure time.</value>
+    <value>Bu yönerge, düz kare shirbazına benzer şekilde, sabit pozlama süresine göre otomatik olarak düz kare panel parlaklığını belirler.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Name" xml:space="preserve">
-    <value>Auto Brightness Flat</value>
+    <value>Otomatik panel parlaklığı</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Description" xml:space="preserve">
-    <value>This instruction automatically adjusts exposure times for capturing twilight sky flats, akin to the functionality of the flat wizard tool. It dynamically modifies the exposure duration after each shot, based on real-time predictions of changes in sky brightness.</value>
+    <value>Bu talimat, düz kare sihirbazı aracının işlevselliğine benzer şekilde, gökyüzü alacakaranlıkken düz kare çekebilmek için pozlama sürelerini otomatik olarak ayarlar. Gökyüzü parlaklığındaki değişikliklerin gerçek zamanlı tahminlerine dayanarak her çekimden sonra pozlama süresini dinamik olarak değiştirir.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Name" xml:space="preserve">
-    <value>Twilight Sky Flats</value>
+    <value>Alacakaranlık Gökyüzü Düz Kareleri</value>
   </data>
   <data name="LblClosingCover" xml:space="preserve">
-    <value>Closing Cover</value>
+    <value>Kapak kapatılıyor</value>
   </data>
   <data name="LblOpeningCover" xml:space="preserve">
-    <value>Opening Cover</value>
+    <value>Kapak açılıyor</value>
   </data>
   <data name="LblSettingBrightness" xml:space="preserve">
-    <value>Setting brightness to {0}</value>
+    <value>Parlaklık {0} ya ayarlanıyor</value>
   </data>
   <data name="LblToggleLight" xml:space="preserve">
-    <value>Toggling light to {0}</value>
+    <value>Işık {0} ya değiştiriliyor</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_DetermineBrightness" xml:space="preserve">
-    <value>Determining brightness using {0}. Attempt {1} / {2}.</value>
+    <value>{0} ya göre parlaklık belirleniyor. Deneme {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_FoundBrightness" xml:space="preserve">
-    <value>Found brightness at panel brightness {0}. Capturing flats.</value>
+    <value>{0} seviyesinde uygun parlaklık bulundu. Düz kareler alınıyor.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>{0} s ye göre pozlama süresi belirleniyor. Deneme {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing flats.</value>
+    <value>{0} s de uygunpozlama süresi bulundu. Düz kareler alınıyor.</value>
   </data>
   <data name="LblFlatWizardFailed" xml:space="preserve">
-    <value>Flat Wizard failed.
-Reason: {0}</value>
+    <value>Düz kare sihirbazı başarısız.
+Sebep: {0}</value>
     <comment>When flat wizard fails in single mode</comment>
   </data>
   <data name="LblFlatWizardFailedForFilter" xml:space="preserve">
-    <value>Flat Wizard failed for filter {0}.
-Reason: {1}</value>
+    <value>Düz kare sihirbazı {0} filtresinde başarısız.
+Sebep: {1}</value>
     <comment>When flat wizard fails in multi mode</comment>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too bright.
-Decrease minimum panel brightness or exposure time.</value>
+    <value>Düz kare için parlaklık belirlemesi başarısız - ışık kaynağı fazla parlak.
+Panel parlaklığını veya pozlama süresini minimum azaltın.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine brightness for flats - light source is too dim.
-Increase maximum panel brightness or exposure time.</value>
+    <value>Düz kare için parlaklık belirlemesi başarısız - ışık kaynağı fazla loş.
+Panel parlaklığını veya pozlama süresini maksimum arttırın.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too bright.
-Decrease panel brightness or minimum exposure time.</value>
+    <value>Düz kare için pozlama süre belirlemesi başarısız - ışık kaynağı fazla parlak.
+Panel parlaklığını azaltın veya pozlama süresini minimum yapın.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for flats - light source is too dim.
-Increase panel brightness or maximum exposure time.</value>
+    <value>Düz kare için pozlama süre belirlemesi başarısız - ışık kaynağı fazla loş.
+Panel parlaklığını arttırın veya pozlama süresini maksimum yapın.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_DetermineTime" xml:space="preserve">
-    <value>Determining exposure time using {0} s. Attempt {1} / {2}.</value>
+    <value>{0} s kullanılarak pozlama süresi belirleniyor. Deneme {1} / {2}.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_FoundTime" xml:space="preserve">
-    <value>Found exposure time at {0} s. Capturing sky flats.</value>
+    <value>{0} s de pozlama süresi bulundu. Gökyüzü düz kareleri alınıyor.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooBright" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too bright. 
-Decrease minimum exposure time or wait until it is darker.</value>
+    <value>Gökyüzü düz kare için pozlama süre belirlemesi başarısız - gökyüzü fazla parlak.
+Daha karanlık oluncaya kadar bekleyin veya pozlama süresini minimum yapın.</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_LightTooDim" xml:space="preserve">
-    <value>Failed to determine exposure time for sky flats - sky is too dim.
-Increase minimum exposure time or wait until it is brighter.</value>
+    <value>Düz kare için pozlama süre belirlemesi başarısız - ışık kaynağı fazla loş.
+Daha aydınlık oluncaya kadar bekleyin veya pozlama süresini maksimum yapın.</value>
   </data>
   <data name="LblFlatDeviceError" xml:space="preserve">
-    <value>Errored</value>
+    <value>Hata</value>
   </data>
   <data name="LblFlatDeviceCoverError" xml:space="preserve">
-    <value>{0} reports that the cover is in an errored state</value>
+    <value>{0} kapağın hatalı şekilde olduğunu bildiriyor</value>
   </data>
   <data name="LblFlatDeviceNotPresent" xml:space="preserve">
-    <value>Not present</value>
+    <value>Mevcut değil</value>
   </data>
   <data name="LblFlipImageTooltip" xml:space="preserve">
-    <value>Flips image horizontally</value>
+    <value>Göruntüyü yatay doğrultuda çevirir</value>
   </data>
   <data name="LblASCOMColorSensorTypeNotSupported" xml:space="preserve">
-    <value>The ASCOM Sensor Type is currently configured to return already debayered images, which is not supported. Please adjust the driver settings to return bayered images instead!</value>
+    <value>ASCOM Sensör Tipi, şu anda desteklenmeyen, debayeredilmiş görüntüleri döndürmek için yapılandırılmış durumda. Bunun yerine bayer görüntüleri döndürmek için lütfen sürücü ayarlarını yapın!</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection" xml:space="preserve">
-    <value>Location sync</value>
+    <value>Konum senkronize</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Prompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>İleti</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToApplication" xml:space="preserve">
-    <value>Sync to application</value>
+    <value>Aplikasyona senkronize et</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_ToTelescope" xml:space="preserve">
-    <value>Sync to telescope</value>
+    <value>Teleskopa senkronize et</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_NoSync" xml:space="preserve">
-    <value>No sync</value>
+    <value>Senkronizasyon yok</value>
   </data>
   <data name="Lbl_TelescopeLocationSyncDirection_Tooltip" xml:space="preserve">
-    <value>When connecting the telescope this defines the behavior how to react when the mount location and application location differs.</value>
+    <value>Teleskobu bağlarken, montaj konumu ve uygulama konumu farklı olduğunda nasıl tepki verileceğini tanımlar.</value>
   </data>
   <data name="LblPHD2PeakDec" xml:space="preserve">
-    <value>Peak Dec: {0} ({1}")</value>
+    <value>Dec Tepe Nokta: {0} ({1}")</value>
   </data>
   <data name="LblPHD2PeakRA" xml:space="preserve">
-    <value>Peak RA: {0} ({1}")</value>
+    <value>RA Tepe Nokta: {0} ({1}")</value>
   </data>
   <data name="LblPluginRepositories" xml:space="preserve">
-    <value>Plugin Repositories</value>
+    <value>Eklenti Deposu</value>
   </data>
   <data name="LblPluginRepositoryEnterUrl" xml:space="preserve">
-    <value>Enter Plugin Repository URL</value>
+    <value>Eklenti Deposu URLsini girin</value>
   </data>
   <data name="LblPluginRepositoryUrlInvalid" xml:space="preserve">
-    <value>Plugin Repository Url is invalid: {0}</value>
+    <value>Eklenti Deposu Url'si geçersiz: {0}</value>
   </data>
   <data name="LblTSXImageLink" xml:space="preserve">
-    <value>TheSkyX Imagelink</value>
+    <value>TheSkyX görüntü linki</value>
   </data>
   <data name="LblTSXHost" xml:space="preserve">
-    <value>TheSkyX Host</value>
+    <value>TheSkyX servis sağlayıcı</value>
   </data>
   <data name="LblTSXPort" xml:space="preserve">
-    <value>TheSkyX Port</value>
+    <value>TheSkyX portu</value>
   </data>
   <data name="LblZwoMonoBinMode" xml:space="preserve">
     <value>Mono bin</value>
   </data>
   <data name="LblZwoMonoBinModeTooltip" xml:space="preserve">
-    <value>When on, the camera will average binned pixels to create monochrome output</value>
+    <value>Aktifleştirildiğinde, kamera monokrom çıktı oluşturmak için pixelleri ortalama bin değerinde alır</value>
   </data>
   <data name="LblPinPoint" xml:space="preserve">
     <value>PinPoint</value>
   </data>
   <data name="LblPinPointCatalogRoot" xml:space="preserve">
-    <value>Catalog root</value>
+    <value>Kök katalog</value>
   </data>
   <data name="LblPinPointFailedInitialize" xml:space="preserve">
-    <value>Failure to initialize PinPoint Astrometric Engine</value>
+    <value>PinPoint astrometrik motor başlatılması başarısız</value>
   </data>
   <data name="LblPinPointNotInstalled" xml:space="preserve">
-    <value>Failed to initialize PinPoint Astrometric Engine. It or its 64bit component does not appear to be installed.</value>
+    <value>PinPoint astrometrik motor başlatılması başarısız. 64bit bileşeni yüklenmemiş görünüyor.</value>
   </data>
   <data name="LblPinPointReferenceCatalog" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>Referans katalog</value>
   </data>
   <data name="LblPinPointCatAtas" xml:space="preserve">
     <value>ATLAS / PanSTARRS+Gaia</value>
@@ -6719,7 +6728,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>ESA Tycho-2</value>
   </data>
   <data name="LblPinPointCatType" xml:space="preserve">
-    <value>Reference catalog</value>
+    <value>Referans katalog</value>
   </data>
   <data name="LblPinPointCatUcac2" xml:space="preserve">
     <value>USNO UCAC2</value>
@@ -6737,66 +6746,66 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>USNO B1.0</value>
   </data>
   <data name="LblPinPointExpansion" xml:space="preserve">
-    <value>Expansion</value>
+    <value>Genişleme</value>
   </data>
   <data name="LblPinPointExpansionToolTip" xml:space="preserve">
-    <value>Expansion of catalog search area outside the image dimensions (min = 0, max = 80, default = 40)</value>
+    <value>Görüntü boyutları dışındaki bölgenin genişlemiş katalog araması (en az= 0, en fazla = 80, varsayılan = 40)</value>
   </data>
   <data name="LblPinPointMaxMagnitude" xml:space="preserve">
-    <value>Max. magnitude</value>
+    <value>Maks. parlaklık</value>
   </data>
   <data name="LblPinPointMaxMagnitudeToolTip" xml:space="preserve">
-    <value>The maximum (fainter) magnitude for selection of stars from the reference catalog (min = 2.0, max = 20.0, default = 20.0)</value>
+    <value>Referans kataloğundan yıldız seçimi için maksimum (daha sönük) parlaklık</value>
   </data>
   <data name="LblPinPointAllSkyApiHost" xml:space="preserve">
-    <value>AllSky API host</value>
+    <value>AllSky API sunucusu</value>
   </data>
   <data name="LblPinPointAllSkyApiHostToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API host (default = nova.astrometry.net)</value>
+    <value>Astrometry.net/AllSky API sunucusu (varsayılan = nova.astrometry.net)</value>
   </data>
   <data name="LblPinPointAllSkyApiKey" xml:space="preserve">
-    <value>AllSky API key</value>
+    <value>AllSky API anahtarı</value>
   </data>
   <data name="LblPinPointAllSkyApiKeyToolTip" xml:space="preserve">
-    <value>Astrometry.net/AllSky API key (optional)</value>
+    <value>Astrometry.net/AllSky API anahtarı (opsiyonel)</value>
   </data>
   <data name="LblPinPointAllSkySolve" xml:space="preserve">
-    <value>PinPoint AllSky solve</value>
+    <value>PinPoint AllSky tanımlaması</value>
   </data>
   <data name="LblPinPointLocalSolve" xml:space="preserve">
-    <value>PinPoint local solve</value>
+    <value>PinPoint lokal tanımlaması</value>
   </data>
   <data name="LblPinPointErrorMessage" xml:space="preserve">
-    <value>PinPoint Error Message</value>
+    <value>PinPoint hata mesajı</value>
   </data>
   <data name="LblUnableToSetMountElevation" xml:space="preserve">
-    <value>Unable to set mount elevation to {0}!</value>
+    <value>Kundak {0} a ayarlanamıyor!</value>
   </data>
   <data name="LblSaveInCache" xml:space="preserve">
-    <value>Cache Image for Offline Use</value>
+    <value>Çevrim dışı kullanmak için saklanan görüntü</value>
     <comment>To store an image automatically in the framing assistant offline cache or not</comment>
   </data>
   <data name="LblSaveInCacheTooltip" xml:space="preserve">
-    <value>When enabled, the image will be saved to your device and can be viewed in the offline sky map</value>
+    <value>Etkinleştirildiğinde görüntü cihazınıza kaydedilir ve ve çevrim dışıyken gök haritasında görülebilir</value>
   </data>
   <data name="LblClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Kapat</value>
   </data>
   <data name="LblShowHistogram" xml:space="preserve">
-    <value>Show Histogram</value>
+    <value>Histogram'ı göster</value>
   </data>
   <data name="LblInfoOnly" xml:space="preserve">
-    <value>Info only</value>
+    <value>Sadece bilgi için</value>
   </data>
   <data name="LblInfoOnlyTooltip" xml:space="preserve">
-    <value>Toggle between displaying only informational content and showing interactive controls within the panel</value>
+    <value>Panelde sadece bilgi içeriğinin gösterilmesi ile etkileşimli kontrollerin gösterilmesi arasında geçiş yapar</value>
   </data>
   <data name="LblParked" xml:space="preserve">
-    <value>Parked</value>
+    <value>Park edildi</value>
     <comment>When mount is at park position</comment>
   </data>
   <data name="LblSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Çevriliyor</value>
   </data>
   <data name="LblCompressionGZIP1" xml:space="preserve">
     <value>GZIP 1</value>
@@ -6805,7 +6814,7 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>GZIP 2</value>
   </data>
   <data name="LblCompressionHCOMPRESS" xml:space="preserve">
-    <value>HCOMPRESS</value>
+    <value>HSIKIŞTIRMA</value>
   </data>
   <data name="LblCompressionPLIO" xml:space="preserve">
     <value>PLIO</value>
@@ -6814,197 +6823,495 @@ Increase minimum exposure time or wait until it is brighter.</value>
     <value>RICE</value>
   </data>
   <data name="LblAddFzExtension" xml:space="preserve">
-    <value>Add .fz extension</value>
+    <value>.fz uzantısı ekle</value>
   </data>
   <data name="LblAddFzExtensionTooltip" xml:space="preserve">
-    <value>Adds an additional .fz extension to the file name of compressed FITS files. Example: filename.fits.fz</value>
+    <value>Sıkıştırılmış FITZ dosyal adlarına ilave olarak .fz uzantısı ekler. Örnek: dosyaadı.fits.fz</value>
   </data>
   <data name="LblASCOMCreate32BitData" xml:space="preserve">
-    <value>Create 32-bit data</value>
+    <value>32-bit data oluştur</value>
   </data>
   <data name="LblASCOMCreate32BitDataTooltip" xml:space="preserve">
-    <value>When the feature is enabled, N.I.N.A. will generate image data with a 32-bit depth, enhancing the pixel value range. 
-However, it's crucial to note that this process will require more memory, increase processing time, and use additional disk space for each exposure.
-Keep in mind that only XISF and FITS file formats can store image data in this 32-bit format. 
-Additionally, it is essential that the ASCOM driver used also supports this 32-bit depth. If the driver does not support 32-bit depth, the increased file size resulting from this setting would only lead to wasted space without any improvement in image data.</value>
+    <value>Bu özellik etkinleştirildiğinde, N.I.N.A. 32 bit derinliğe sahip görüntü verileri oluşturarak piksel değeri aralığını geliştirir. 
+Fakat bu işlemin daha fazla bellek gerektireceğini, işlem süresini artıracağını ve her pozlama için ek disk alanı kullanacağını unutmamak çok önemlidir.
+Yalnızca XISF ve FITS dosya formatlarının görüntü verilerini bu 32 bit formatında saklayabileceğini unutmayın. 
+Ayrıca, kullanılan ASCOM sürücüsünün de bu 32 bit derinliği desteklemesi çok önemlidir. Sürücü 32 bit derinliği desteklemiyorsa, bu ayardan nedeniyle büyüyen dosya boyutu, görüntü verilerinde herhangi bir iyileşme olmaksızın yalnızca boşa alan harcanmasına neden olur.</value>
   </data>
   <data name="LblUseCfitsio" xml:space="preserve">
-    <value>Use CFITSIO</value>
+    <value>CFITSIO kullan</value>
   </data>
   <data name="LblUseCfitsioTooltip" xml:space="preserve">
-    <value>When this feature is activated, the FITS files will be created using the CFITSIO library, which is an alternative to the program's default method of writing these files. This change enables additional functionalities, such as the ability to compress FITS files for reduced file size and the option to store data in a 32-bit format for improved data precision.</value>
+    <value>Bu özellik etkinleştirildiğinde, FITS dosyaları, bu dosyaları yazmak için programın varsayılan yöntemine alternatif olan CFITSIO kütüphanesi kullanılarak oluşturulacaktır. Bu değişiklik, dosya boyutunu küçültmek için FITS dosyalarını sıkıştırma yeteneği ve gelişmiş veri hassasiyeti için verileri 32 bit formatında saklama seçeneği gibi ek işlevler sağlar.</value>
   </data>
   <data name="LblBadPixelCorrection" xml:space="preserve">
-    <value>Bad Pixel Correction</value>
+    <value>Hatalı piksel düzeltmesi</value>
   </data>
   <data name="LblBadPixelCorrectionThreshold" xml:space="preserve">
-    <value>Bad Pixel Correction Threshold</value>
+    <value>Hatalı piksel düzeltme eşiği</value>
   </data>
   <data name="LblClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Kapandı</value>
   </data>
   <data name="LblClosing" xml:space="preserve">
-    <value>Closing</value>
+    <value>Kapanıyor</value>
   </data>
   <data name="LblOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Aç</value>
   </data>
   <data name="LblOpening" xml:space="preserve">
-    <value>Opening</value>
+    <value>Açılıyor</value>
   </data>
   <data name="LblTelescopeFindHomeTimeout" xml:space="preserve">
-    <value>Telescope find home has timed out after {0} minutes</value>
+    <value>{0} dakika sonra teleskop başlangıç pozisyonunu bulma zaman aşımına uğradı</value>
   </data>
   <data name="LblTelescopeParkTimeout" xml:space="preserve">
-    <value>Telescope park has timed out after {0} minutes.</value>
+    <value>{0} dakika geçtikten sonra teleskop park etmesi zaman aşımına uğradı.</value>
   </data>
   <data name="LblTelescopeUnparkTimeout" xml:space="preserve">
-    <value>Telescope unpark has timed out after {0} minutes.</value>
+    <value>{0} dakika geçtikten sonra teleskopun park pozisyonundan çıkması zaman aşımına uğradı.</value>
   </data>
   <data name="LblTimeSync" xml:space="preserve">
-    <value>Time sync</value>
+    <value>Zaman senkronizasyonu</value>
   </data>
   <data name="LblTimeSyncTooltip" xml:space="preserve">
-    <value>When enabled, the application will update the mount time to be in sync with the system time on connection.</value>
+    <value>Etkinleştirildiğinde uygulama kundak zamanını bağlantıdaki sistem zamanına göre günceller.</value>
   </data>
   <data name="LblCoordinatesMountSync" xml:space="preserve">
-    <value>Coordinates sync</value>
+    <value>Koordinat senkronizasyon</value>
   </data>
   <data name="LblMount" xml:space="preserve">
-    <value>Mount</value>
+    <value>Kundak</value>
   </data>
   <data name="LblMountName" xml:space="preserve">
-    <value>Mount name</value>
+    <value>Kundak adı</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration" xml:space="preserve">
-    <value>Discovery duration</value>
+    <value>Buluş süresi</value>
     <comment>The duration in seconds for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryDuration_Tooltip" xml:space="preserve">
-    <value>The duration of ASCOM Alpaca device discovery attempts (Default: 2 seconds)</value>
+    <value>ASCOM Alpaca cihazının buluş girişimleri süresi (Varsayılan: 2 saniye)</value>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort" xml:space="preserve">
-    <value>Discovery Port</value>
+    <value>Buluş portu</value>
     <comment>The ASCOM Alpaca Port to discover devices</comment>
   </data>
   <data name="Lbl_Alpaca_DiscoveryPort_Tooltip" xml:space="preserve">
-    <value>ASCOM Alpaca discovery IP port number (Default: 32227)</value>
+    <value>ASCOM Alpaca buluş IP port numarası (Varsayılan 32227)</value>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts" xml:space="preserve">
-    <value># of broadcasts</value>
+    <value>Yayın sayısı</value>
     <comment>The number of broadcasts to send for ASCOM Alpaca Discovery</comment>
   </data>
   <data name="Lbl_Alpaca_NrOfBroadcasts_Tooltip" xml:space="preserve">
-    <value>Number of ASCOM Alpaca device discovery broadcasts (Default: 1)</value>
+    <value>ASCOM Alpaca cihazını keşif yayınlarının sayısı (Varsayılan: 1)</value>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName" xml:space="preserve">
-    <value>Resolve DNS name</value>
+    <value>DNS adını çözümle</value>
     <comment>ASCOM Alpaca DNS name resolution</comment>
   </data>
   <data name="Lbl_Alpaca_ResolveDnsName_Tooltip" xml:space="preserve">
-    <value>Attempt DNS name resolution for ASCOM Alpaca devices (Default: off)</value>
+    <value>ASCOM Alpaca cihazları için DNS ad çözümlemesini dene (Varsayılan: Kapalı)</value>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS" xml:space="preserve">
-    <value>Use HTTPS</value>
+    <value>HTTPS Kullan</value>
     <comment>If ASCOM Alpaca should use HTTPS instead of HTTP</comment>
   </data>
   <data name="Lbl_Alpaca_UseHTTPS_Tooltip" xml:space="preserve">
-    <value>Determines if ASCOM Alpaca device discovery should use HTTP or HTTPS (Default: off)</value>
+    <value>ASCOM Alpaca cihaz keşfinin HTTP mi yoksa HTTPS mi kullanması gerektiğini belirler (Varsayılan: Kapalı)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv4" xml:space="preserve">
-    <value>Use IPv4</value>
+    <value>IPv4 kullan</value>
     <comment>If ASCOM Alpaca should use IPv4</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv4_Tooltip" xml:space="preserve">
-    <value>Use IPv4 for ASCOM Alpaca device discovery (Default: on)</value>
+    <value>ASCOM Alpaca cihaz keşfi için IPv4 kullanın (Varsayılan: Açık)</value>
   </data>
   <data name="Lbl_Alpaca_UseIPv6" xml:space="preserve">
-    <value>Use IPv6</value>
+    <value>IPv6 Kullan</value>
     <comment>If ASCOM Alpaca should use IPv6</comment>
   </data>
   <data name="Lbl_Alpaca_UseIPv6_Tooltip" xml:space="preserve">
-    <value>Use IPv6 for device ASCOM Alpaca device discovery (Default: off)</value>
+    <value>ASCOM Alpaca cihaz keşfi için IPv6 kullanın (Varsayılan: Kapalı)</value>
   </data>
   <data name="LblToggleCatalogueDisplay" xml:space="preserve">
-    <value>Toggle Catalogue Display</value>
+    <value>Katalog görüntüsünü değiştir</value>
   </data>
   <data name="LblTargetAlt" xml:space="preserve">
-    <value>Target Alt</value>
+    <value>Hedef Alt.</value>
   </data>
   <data name="LblTargetAz" xml:space="preserve">
-    <value>Target Az</value>
+    <value>Hedef Az.</value>
   </data>
   <data name="LblGeoptikFlatFieldController" xml:space="preserve">
-    <value>Geoptik Flat Field Controller</value>
+    <value>Geoptik Düz Kare kontrol edici</value>
   </data>
   <data name="LblLEDLights" xml:space="preserve">
-    <value>LED Lights</value>
+    <value>LED Işıkları</value>
   </data>
   <data name="LblLEDLightsTooltop" xml:space="preserve">
-    <value>Turn the LED lights on the camera on or off</value>
+    <value>Kamera üzerindeki LED ışıkları aç ya da kapat</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoBrightnessFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum brightness is higher than the maximum brightness!</value>
+    <value>Minimum parlaklık maksimum parlaklıktan daha fazla!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_AutoExposureFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Minimum pozlama süresi maksimum pozlama süresinden daha uzun!</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_CannotPulseGuide" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is not capable of pulse guiding</value>
+    <value>Gökyüzü düz kare çekimi arasında dither aktive edildi fakat teleskop takip komutlarını uygulayamıyor</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountNotConnected" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but mount is not connected</value>
+    <value>Gökyüzü düz kare çekimi arasında dither aktive edildi fakat kundak bağlanmadı</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_Dither_MountParked" xml:space="preserve">
-    <value>Dither between sky flat exposures enabled but telescope is parked</value>
+    <value>Gökyüzü düz kare çekimi arasında dither aktive edildi fakat teleskop park halinde</value>
   </data>
   <data name="Lbl_SequenceItem_FlatDevice_SkyFlat_Validation_InputRangeInvalid" xml:space="preserve">
-    <value>The minimum exposure time is higher than the maximum exposure time!</value>
+    <value>Minimum pozlama süresi maksimum pozlama süresinden daha uzun!</value>
   </data>
   <data name="Lbl_SequenceItem_SkippingAfterFailedCancellation" xml:space="preserve">
-    <value>Instruction "{0}" has not responded to the cancellation request after {1} minutes. The sequence will continue and the unresponsive task will be ignored.</value>
+    <value>{0} talimatı, iptal isteğinden {1} dakika geçmesine rağmen cevap vermiyor. Sekans cevap vermeyen görev dikkate alınmaksızın devam edecek.</value>
   </data>
   <data name="Lbl_SequenceItem_WaitingForCancellation" xml:space="preserve">
-    <value>Waiting for instruction to acknowledge cancellation</value>
+    <value>İptali istenen talimatın sonlanması bekleniyor</value>
   </data>
   <data name="LblDomeRefuseOpeningWhenUnsafeWarning" xml:space="preserve">
-    <value>The shutter or roof was ordered to open but the safety monitor device reports unsafe conditions. Opening has been aborted.</value>
+    <value>Kapağın ya da çatının açılması istendi fakat güvenlik monitörü koşulların güvensiz olduğunu bildiriyor. Açma işlemi durduruldu.</value>
   </data>
   <data name="LblExternalCommand" xml:space="preserve">
-    <value>External Command</value>
+    <value>Harici komut</value>
   </data>
   <data name="LblExternalCommandFailed" xml:space="preserve">
-    <value>External command was unable to run successfully</value>
+    <value>Harici komut çalıştırılamıyor</value>
   </data>
   <data name="LblExternalCommandNotFound" xml:space="preserve">
-    <value>External command was not found at '{0}'</value>
+    <value>Harici komut {0} da bulunamadı</value>
   </data>
   <data name="LblFocuserMoveTimeout" xml:space="preserve">
-    <value>Focuser movement has timed out after {0} minutes.</value>
+    <value>Odaklayıcı hareketi {0} dakika sonra zaman aşımına uğradı.</value>
   </data>
   <data name="LblPhd2ServerHostNotResolved" xml:space="preserve">
-    <value>Failure to resolve PHD2 server hostname: {0}</value>
+    <value>PHD2 sunucu adına karar verilmesinde hata: {0}</value>
   </data>
   <data name="LblPhd2ServerHostNotSet" xml:space="preserve">
-    <value>PHD2 server hostname has not been set</value>
+    <value>PHD2 sunucu adı belirlenmedi</value>
   </data>
   <data name="LblCopyColorSchemaToAlternativeCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Alternative Custom" color schema</value>
+    <value>Mevcut renk şemasındaki renkleri ayarlanabilir "Alternatif Özel" renk şemasına kopyalar</value>
   </data>
   <data name="LblCopyColorSchemaToCustom" xml:space="preserve">
-    <value>Copies the current color schema colors to the adjustable "Custom" color schema</value>
+    <value>Mevcut renk şemasındaki renkleri ayarlanabilir "Özel" renk şemasına kopyalar</value>
   </data>
   <data name="LblLight" xml:space="preserve">
-    <value>Light</value>
+    <value>Işık</value>
     <comment>Light as in light bulb</comment>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Description" xml:space="preserve">
-    <value>Saves the current sequence at the specified file path</value>
+    <value>Mevcut sekansı belirtilen dosya yoluna kaydeder</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Name" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>Sekansı kaydet</value>
   </data>
   <data name="Lbl_SequenceItem_Utility_SaveSequence_Validation_InvalidPath" xml:space="preserve">
-    <value>File path is invalid</value>
+    <value>Dosya yolu geçersiz</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoAPIKey" xml:space="preserve">
+    <value>Tanımlanmış Weather Underground API anahtarı yok.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoStationID" xml:space="preserve">
+    <value>Tanımlanmış Weather Underground istasyonu yok.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrNoResponse" xml:space="preserve">
+    <value>Weather Underground API cevap vermiyor.</value>
+  </data>
+  <data name="LblWeatherUndergroundErrReqFailed" xml:space="preserve">
+    <value>Weather Underground API talebi başarısız: {0}</value>
+  </data>
+  <data name="LblZwoResetZeroPosition" xml:space="preserve">
+    <value>Mevcut pozisyonu sıfıra ayarla</value>
+  </data>
+  <data name="LblZwoReversed" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="LblZwoSetMaxStep" xml:space="preserve">
+    <value>Maksimum adım ayarla</value>
+  </data>
+  <data name="LblZwoResetZeroPositionPrompt" xml:space="preserve">
+    <value>Mecut poziston sıfıra ayarlansın mı?</value>
+  </data>
+  <data name="LblCrosshair" xml:space="preserve">
+    <value>Nişangah</value>
+  </data>
+  <data name="LblGpsd" xml:space="preserve">
+    <value>GPSD</value>
+  </data>
+  <data name="LblGnssInvalidHost" xml:space="preserve">
+    <value>{0} çözümlenmesi başarısız sunucu: {1}</value>
+  </data>
+  <data name="LblErrorNoHostSpecified" xml:space="preserve">
+    <value>Ayarlarda sunucu belirtilmedi</value>
+  </data>
+  <data name="LblBlindSolveSettings" xml:space="preserve">
+    <value>Blind solver ayarları</value>
+  </data>
+  <data name="LblDomeFollowingSideOfPierDisabled" xml:space="preserve">
+    <value>Uyarı: Meridyen geçişi ayarlarında "İskelenin teleskop tarafını kullan" devre dışı bırakılmıştır ve meridyene yaklaşıldığında kubbeli ekvatoryal kundaklar için hizalama sorunları yaşanabilir. Kubbe, meridyen geçişinin tam olarak meridyende gerçekleştiğini varsayacak ve kundak henüz çevrilmemişse potansiyel olarak yanlış hizalamaya yol açacaktır.</value>
+  </data>
+  <data name="LblCompleteDuration" xml:space="preserve">
+    <value>Tamamlanan süre</value>
+  </data>
+  <data name="Lbl_Sequencer_LockSequence_Tooltip" xml:space="preserve">
+    <value>Herhangi bir manuel düzenlemeyi veya sürükle-bırak işlemini önlemek için sıralayıcıyı kilitleyin</value>
+  </data>
+  <data name="Lbl_Sequencer_UnlockSequence_Tooltip" xml:space="preserve">
+    <value>Manuel düzenlemelere ve sürükle-bırak işlemlerine izin vermek için sıralayıcının kilidini açın</value>
+  </data>
+  <data name="Lbl_Sequencer_DisableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Sıralayıcı ve kenar çubuğundaki tüm sürükle-bırak işlemlerini devre dışı bırakın</value>
+  </data>
+  <data name="Lbl_Sequencer_EnableDragAndDrop_Tooltip" xml:space="preserve">
+    <value>Sıralayıcı ve kenar çubuğundaki tüm sürükle-bırak işlemlerini etkinleştirin</value>
+  </data>
+  <data name="Lbl_FramingAssistant_NoFocalLength" xml:space="preserve">
+    <value>Geçersiz odak uzaklığı!</value>
+  </data>
+  <data name="Lbl_FramingAssistant_LoadImage_NoFocalLength" xml:space="preserve">
+    <value>Görüntü yüklenemiyor - lütfen kamera parametresi bölümüne teleskobunuzun etkin odak uzaklığını girin!</value>
+  </data>
+  <data name="LblSiteName" xml:space="preserve">
+    <value>Site adı</value>
+    <comment>Observatory site</comment>
+  </data>
+  <data name="LblObservatory" xml:space="preserve">
+    <value>Gözlemevi</value>
+  </data>
+  <data name="LblObserver" xml:space="preserve">
+    <value>Gözlemci</value>
+    <comment>The person who is doing the observations</comment>
+  </data>
+  <data name="LblDomeFollowingShort" xml:space="preserve">
+    <value>Following</value>
+    <comment>Shown in imaging tab to indicate if the dome is following the mount</comment>
+  </data>
+  <data name="LblDomeFollowingViaNINA" xml:space="preserve">
+    <value>Dome following via N.I.N.A.</value>
+  </data>
+  <data name="LblDomeFollowingViaDriver" xml:space="preserve">
+    <value>via Driver</value>
+    <comment>If the dome following logic is managed by the driver</comment>
+  </data>
+  <data name="LblWorldMap" xml:space="preserve">
+    <value>World Map</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Name" xml:space="preserve">
+    <value>Connect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectEquipment_Description" xml:space="preserve">
+    <value>For the selected device, the device save in the profile will be connected.</value>
+  </data>
+  <data name="Lbl_SequenceCategory_Connect" xml:space="preserve">
+    <value>Bağla</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Name" xml:space="preserve">
+    <value>Disconnect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectEquipment_Description" xml:space="preserve">
+    <value>Disconnects the selected device</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Name" xml:space="preserve">
+    <value>Connect All Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_ConnectAllEquipment_Description" xml:space="preserve">
+    <value>Connect to all devices that are saved in the profile</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Name" xml:space="preserve">
+    <value>Disconnect All Equipment</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_DisconnectAllEquipment_Description" xml:space="preserve">
+    <value>Disconnects all currently connected devices</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Name" xml:space="preserve">
+    <value>Reconnect Camera On Download Failure</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectOnDownloadFailure_Description" xml:space="preserve">
+    <value>A trigger that will fire when the camera failed to download an exposure and will try to reconnect the camera. When reconnecting the cooler state and dew heater state will also be restored.</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Name" xml:space="preserve">
+    <value>Reconnect Equipment</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_Connector_ReconnectTrigger_Description" xml:space="preserve">
+    <value>A trigger that will fire when the selected device is disconnected and will try to reconnect to it.</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Name" xml:space="preserve">
+    <value>Switch Profile</value>
+  </data>
+  <data name="Lbl_SequenceItem_Connector_SwitchProfile_Description" xml:space="preserve">
+    <value>Disconnects all devices that are currently connected, switches to the specified profile and reconnects all devices of the specified profile.</value>
+  </data>
+  <data name="LblDomeDriverFollowing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lbl_SequenceItem_Platesolving_CenterAndRotate_FailedAfterMaxAttempts" xml:space="preserve">
+    <value>Failed to find rotation after {0} attempts. Is the reverse flag for the rotator set correctly?</value>
+  </data>
+  <data name="LblLockUnlockImagingArea" xml:space="preserve">
+    <value>Locks panels to prevent closing or rearranging, or unlocks them for adjustments.</value>
+  </data>
+  <data name="LblGnssFix2D" xml:space="preserve">
+    <value>Current fix is 2D. A 3D fix is required</value>
+  </data>
+  <data name="LblMJDFormatDescription" xml:space="preserve">
+    <value>Modified Julian Date</value>
+  </data>
+  <data name="LblFlatDeviceOpenWhenDone" xml:space="preserve">
+    <value>Open cover when done</value>
+    <comment>Open the flat panel cover after the flat wizard has finished.</comment>
+  </data>
+  <data name="LblCivilDusk" xml:space="preserve">
+    <value>Civil dusk</value>
+  </data>
+  <data name="LblCivilDawn" xml:space="preserve">
+    <value>Civil dawn</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpen" xml:space="preserve">
+    <value>Refuse mount unpark if shutter is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenError" xml:space="preserve">
+    <value>Cannot unpark the mount while the dome shutter or roof is not open</value>
+  </data>
+  <data name="LblRefuseUnparkWithoutShutterOpenTooltip" xml:space="preserve">
+    <value>Reject attempts to unpark the mount if the shutter or roof state is Closed, Closing, Opening, or Errored. Unparking the mount will be permitted only if the shutter or roof reports an Open state</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDawn" xml:space="preserve">
+    <value>There is no civil dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoCivilDusk" xml:space="preserve">
+    <value>There is no civil dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDawn" xml:space="preserve">
+    <value>There is no astronomical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoAstronomicalDusk" xml:space="preserve">
+    <value>There is no astronomical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDawn" xml:space="preserve">
+    <value>There is no nautical dawn at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoNauticalDusk" xml:space="preserve">
+    <value>There is no nautical dusk at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunrise" xml:space="preserve">
+    <value>There is no sunrise at your location today.</value>
+  </data>
+  <data name="Lbl_TimeProvider_NoSunset" xml:space="preserve">
+    <value>There is no sunset at your location today.</value>
+  </data>
+  <data name="LblUnableToConnectTo" xml:space="preserve">
+    <value>Unable to connect to {0}</value>
+    <comment>Parameters: {0}=Url or device etc</comment>
+  </data>
+  <data name="LblCameraNoSupport16bit" xml:space="preserve">
+    <value>Camera does not support 16 bit mode</value>
+  </data>
+  <data name="LblExposureInProgress" xml:space="preserve">
+    <value>Another exposure still in progress. Cancel it to start another.</value>
+  </data>
+  <data name="LblFailedToConnectDevice" xml:space="preserve">
+    <value>Failed to connect {0}, {1}</value>
+    <comment>Parameters: 0=Device ID, 1=error message</comment>
+  </data>
+  <data name="LblGenericCameraError" xml:space="preserve">
+    <value>Camera reported a generic error and needs to be reconnected!</value>
+  </data>
+  <data name="LblCameraDisconnected" xml:space="preserve">
+    <value>Camera disconnected! Maybe USB connection was interrupted.</value>
+  </data>
+  <data name="LblMetaGuideListenerError" xml:space="preserve">
+    <value>MetaGuide Listener Error: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPostFailed" xml:space="preserve">
+    <value>Failed to post {0} message</value>
+    <comment>Parameters: {0}=message type</comment>
+  </data>
+  <data name="LblGuidingNotActiveNoDither" xml:space="preserve">
+    <value>Guiding is not active. Unable to dither</value>
+  </data>
+  <data name="LblFailedCommsMGENDither" xml:space="preserve">
+    <value>Failed to communicate to MGEN during dithering</value>
+  </data>
+  <data name="LblPHDError" xml:space="preserve">
+    <value>PHD Error: {0}
+CODE: {1}</value>
+    <comment>Parameters: {0}=error message, {1}=error code</comment>
+  </data>
+  <data name="LblPHDErrorMsg" xml:space="preserve">
+    <value>PHD Error: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblTWCNoAPIKey" xml:space="preserve">
+    <value>There is no TheWeatherCompany API key configured.</value>
+  </data>
+  <data name="LblFileNotExist" xml:space="preserve">
+    <value>File {0} does not exist</value>
+    <comment>Parameters: {0}=file path</comment>
+  </data>
+  <data name="LblASTAPNoOutputFile" xml:space="preserve">
+    <value>ASTAP - Plate solve failed. No output file found.</value>
+  </data>
+  <data name="LblASTAPSolveFailed" xml:space="preserve">
+    <value>ASTAP - Plate solve failed.
+{0}
+{1}</value>
+    <comment>Parameters: {0}=warning, {1}=error</comment>
+  </data>
+  <data name="LblAstrometryNetSolveFailed" xml:space="preserve">
+    <value>Error plate solving with Astrometry.net. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblExposureOverMax" xml:space="preserve">
+    <value>The predicted exposure of {0}s is longer than the maximum allowed.
+Stopping sky flat acquisition.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblExposureUnderMin" xml:space="preserve">
+    <value>The predicted exposure of {0}s is shorter than the minimum allowed.
+Stopping sky flat acquisition.</value>
+    <comment>Parameters: {0}=exposure time</comment>
+  </data>
+  <data name="LblSkyFlatOutsideTolerance" xml:space="preserve">
+    <value>Skyflat correction did not work and is outside of tolerance:
+first exposure time {0:#.####}
+current exposure time {1:#.####}
+elapsed time: {2:#.##}
+mean adu: {3:#.##}.
+The sky flat exposure time will be determined again and the exposure will be repeated.</value>
+    <comment>Parameters: {0}=first exposure time, {1}=current exposure time, {2}=elapsed time, {3}=mean ADU</comment>
+  </data>
+  <data name="LblFailedToRestoreFilterPosition" xml:space="preserve">
+    <value>Failed to restore previous filter position: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblFailedToChangeFilter" xml:space="preserve">
+    <value>Failed to change filter: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblSetShiftRateFailed" xml:space="preserve">
+    <value>Set shift rate failed. {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblPrepareImageFailed" xml:space="preserve">
+    <value>Failed to prepare image for display: {0}</value>
+    <comment>Parameters: {0}=error message</comment>
+  </data>
+  <data name="LblDayRolloverTime" xml:space="preserve">
+    <value>Day Rollover Time</value>
+  </data>
+  <data name="LblDayRolloverTimeTooltip" xml:space="preserve">
+    <value>As there is no day attached to the instruction, the roll over for a new day happens at the displayed rollover time.</value>
+  </data>
+  <data name="LblInitializing" xml:space="preserve">
+    <value>Initializing</value>
   </data>
 </root>

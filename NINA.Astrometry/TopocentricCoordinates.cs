@@ -42,10 +42,16 @@ namespace NINA.Astrometry {
             this.Elevation = elevation;
         }
 
+        public TopocentricCoordinates(Angle azimuth, Angle altitude, Angle latitude, Angle longitude, double elevation)
+            : this(azimuth, altitude, latitude, longitude, elevation, SystemDateTime) {
+        }
+
+        [Obsolete("Use constructor that provides elevation")]
         public TopocentricCoordinates(Angle azimuth, Angle altitude, Angle latitude, Angle longitude, ICustomDateTime dateTime)
             : this(azimuth, altitude, latitude, longitude, 0.0d, dateTime) {
         }
 
+        [Obsolete("Use constructor that provides elevation")]
         public TopocentricCoordinates(Angle azimuth, Angle altitude, Angle latitude, Angle longitude)
             : this(azimuth, altitude, latitude, longitude, SystemDateTime) {
         }
@@ -58,7 +64,7 @@ namespace NINA.Astrometry {
         }
 
         public Coordinates Transform(Epoch epoch, DatabaseInteraction db = null) {
-            return Transform(epoch, 0.0d, 0.0d, 0.0d, 0.0d, db);
+            return Transform(epoch: epoch, pressurehPa: 0.0d, tempCelcius: 0.0d, relativeHumidity: 0.0d, wavelength: 0.0d, db: db);
         }
 
         /// <summary>
@@ -72,7 +78,21 @@ namespace NINA.Astrometry {
         /// <param name="db">NINA database</param>
         /// <returns>Celestial coordinates</returns>
         public Coordinates Transform(Epoch epoch, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength, DatabaseInteraction db = null) {
-            var now = DateTime.Now;
+            return Transform(now: DateTime.UtcNow, epoch: epoch, pressurehPa: pressurehPa, tempCelcius: tempCelcius, relativeHumidity: relativeHumidity, wavelength: wavelength, db: db);
+        }
+
+        /// <summary>
+        /// Transforms observed coordinates to ICRS astrometric coordinates while applying refraction correction
+        /// </summary>
+        /// <param name="now">The point in time to transform the coordinate to</param>
+        /// <param name="epoch">Epoch of resulting astrometric coordinates</param>
+        /// <param name="pressurehPa">Pressure in hecto pascals (hPa) at the observer (not at sea level)</param>
+        /// <param name="tempCelcius">Ambient temperature in Celcius</param>
+        /// <param name="relativeHumidity">Relative humidity at the ambient temperature</param>
+        /// <param name="wavelength">Wavelength of light in micrometers. 0.54 is approximately the center of a typical luminance bandpass and would be a reasonable default value to use</param>
+        /// <param name="db">NINA database</param>
+        /// <returns>Celestial coordinates</returns>
+        public Coordinates Transform(DateTime now, Epoch epoch, double pressurehPa, double tempCelcius, double relativeHumidity, double wavelength, DatabaseInteraction db = null) {
             var jdUTC = AstroUtil.GetJulianDate(now);
 
             var zenithDistance = AstroUtil.ToRadians(90d - Altitude.Degree);

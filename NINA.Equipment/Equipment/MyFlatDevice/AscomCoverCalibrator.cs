@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Equipment.Equipment.MyFlatDevice {
 
-    public class AscomCoverCalibrator : AscomDevice<ICoverCalibratorV1>, IFlatDevice, IDisposable {
+    public class AscomCoverCalibrator : AscomDevice<ICoverCalibratorV2>, IFlatDevice, IDisposable {
 
         public AscomCoverCalibrator(string id, string name) : base(id, name) {
         }
@@ -37,7 +37,7 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
 
         public CoverState CoverState {
             get {
-                var state = device.CoverState;
+                var state = GetProperty(nameof(CoverState), CoverStatus.Unknown);
                 switch (state) {
                     case ASCOM.Common.DeviceInterfaces.CoverStatus.Unknown:
                         return CoverState.Unknown;
@@ -172,8 +172,8 @@ namespace NINA.Equipment.Equipment.MyFlatDevice {
             return Task.CompletedTask;
         }
 
-        protected override ICoverCalibratorV1 GetInstance() {
-            if (deviceMeta == null) {
+        protected override ICoverCalibratorV2 GetInstance() {
+            if (!IsAlpacaDevice()) {
                 return new CoverCalibrator(Id);
             } else {
                 return new ASCOM.Alpaca.Clients.AlpacaCoverCalibrator(deviceMeta.ServiceType, deviceMeta.IpAddress, deviceMeta.IpPort, deviceMeta.AlpacaDeviceNumber, false, null);

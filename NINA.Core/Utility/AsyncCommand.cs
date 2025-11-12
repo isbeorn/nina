@@ -117,7 +117,7 @@ namespace NINA.Core.Utility {
             observable.PropertyChanged += (object sender, PropertyChangedEventArgs e) => {
                 foreach (var propertyName in propertyNames) {
                     if (e.PropertyName == propertyName) {
-                        Application.Current.Dispatcher.Invoke(value.NotifyCanExecuteChanged);
+                        Application.Current.Dispatcher.BeginInvoke(value.NotifyCanExecuteChanged);
                         return;
                     }
                 }

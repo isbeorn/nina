@@ -36,6 +36,7 @@ namespace NINA.Profile {
             darkFlatCount = 0;
             altitudeSite = AltitudeSite.EAST;
             flatWizardMode = FlatWizardMode.DYNAMICEXPOSURE;
+            openWhenDone = true;
         }
 
         private int flatCount;
@@ -123,6 +124,18 @@ namespace NINA.Profile {
             set {
                 if (flatWizardMode != value) {
                     flatWizardMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool openWhenDone;
+        [DataMember]
+        public bool OpenWhenDone {
+            get => openWhenDone;
+            set {
+                if (openWhenDone != value) {
+                    openWhenDone = value;
                     RaisePropertyChanged();
                 }
             }

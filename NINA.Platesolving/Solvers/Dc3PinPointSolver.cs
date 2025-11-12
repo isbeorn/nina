@@ -122,10 +122,10 @@ namespace NINA.PlateSolving.Solvers {
                         pinPoint.RightAscension = parameter.Coordinates.RA;
                         pinPoint.Declination = parameter.Coordinates.Dec;
 
-                        progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPinPointLocalSolve"] });
+                        progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPinPointLocalSolve"] });
                         success = pinPoint.Solve();
                     } else {
-                        progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPinPointAllSkySolve"] });
+                        progress?.Report(new ApplicationStatus() { Status = Loc.Instance["LblPinPointAllSkySolve"] });
                         success = pinPoint.SolveAllSky();
                     }
                 }, ct);
@@ -148,7 +148,7 @@ namespace NINA.PlateSolving.Solvers {
                 Logger.Error($"PinPoint failed to solve: {ex.GetType().Name}: {ex.Message}");
                 return plateSolveResult;
             } finally {
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                progress?.Report(new ApplicationStatus() { Status = string.Empty });
 
                 if (pinPoint != null) {
                     if (attached) {

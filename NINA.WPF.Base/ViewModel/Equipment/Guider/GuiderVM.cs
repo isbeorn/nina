@@ -255,10 +255,13 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 }
             } catch (OperationCanceledException) {
                 connected = false;
-            } catch(Exception ex) {
-                Logger.Error(ex);
+            } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
+                Logger.Error(ex);
+                if (GuiderInfo.Connected) { await Disconnect(); }
+                GuiderInfo.Connected = false;
                 connected = false;
+                return false;
             }
 
             if (!connected) {
@@ -300,7 +303,8 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                 foreach (RMS rms in rmsRecords) {
                     rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
                 }
-                GuideEvent?.Invoke(this, e);
+                var handler = GuideEvent;
+                handler?.Invoke(this, e);
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -494,7 +498,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Guider {
                     var shiftRate = SiderealShiftTrackingRate.Create(RAShiftRate, DecShiftRate);
                     return await SetShiftRate(shiftRate, CancellationToken.None);
                 } catch (Exception e) {
-                    Notification.ShowError($"Set shift rate failed. {e.Message}");
+                    Notification.ShowError(String.Format(Loc.Instance["LblSetShiftRateFailed"], e.Message));
                     Logger.Error("Failed to set shift rate", e);
                     return false;
                 }

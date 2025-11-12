@@ -208,11 +208,17 @@ namespace NINA.Test {
             metaData.Observer.Latitude = 10;
             metaData.Observer.Longitude = 20;
             metaData.Observer.Elevation = 30;
+            metaData.Observer.Name = "Jon Doe";
+            metaData.Observer.Observatory = "Jon Observatory 1";
+            metaData.Observer.Site = "Jon Town";
 
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("SITEELEV", metaData.Observer.Elevation, "[m] Observation site elevation"),
                 new FITSHeaderCard("SITELAT", metaData.Observer.Latitude, "[deg] Observation site latitude"),
-                new FITSHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude")
+                new FITSHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude"),
+                new FITSHeaderCard("OBSERVER", metaData.Observer.Name, "Observer name"),
+                new FITSHeaderCard("OBSERVAT", metaData.Observer.Observatory, "Observatory name"),
+                new FITSHeaderCard("SITENAME", metaData.Observer.Site, "Observatory site name"),
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -524,12 +530,12 @@ namespace NINA.Test {
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "'2012-01-10T01:20:12.111'";
+            var expectedValue = "'2012-01-10T01:20:12.1110000'";
 
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);
             sut.Comment.Should().Be(comment);
-            sut.GetHeaderString().Should().Be("SOME    = '2012-01-10T01:20:12.111' / some comment                              ");
+            sut.GetHeaderString().Should().Be("SOME    = '2012-01-10T01:20:12.1110000' / some comment                          ");
         }
 
         [Test]

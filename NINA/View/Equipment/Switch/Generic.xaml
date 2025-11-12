@@ -16,7 +16,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
-    xmlns:ts="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
     Name="UC"
@@ -198,15 +197,15 @@
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                         <Border Background="{StaticResource BackgroundBrush}" Cursor="Hand">
-                                                            <ts:HorizontalToggleSwitch IsHitTestVisible="False">
-                                                                <ts:HorizontalToggleSwitch.IsChecked>
+                                                            <CheckBox IsHitTestVisible="False">
+                                                                <CheckBox.IsChecked>
                                                                     <Binding Mode="OneWay" Path="Value">
                                                                         <Binding.Converter>
                                                                             <local:DoubleToOnOffConverter />
                                                                         </Binding.Converter>
                                                                     </Binding>
-                                                                </ts:HorizontalToggleSwitch.IsChecked>
-                                                            </ts:HorizontalToggleSwitch>
+                                                                </CheckBox.IsChecked>
+                                                            </CheckBox>
                                                         </Border>
                                                     </ControlTemplate>
                                                 </Setter.Value>

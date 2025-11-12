@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Interfaces;
 using NINA.Core.Model;
@@ -238,6 +239,7 @@ namespace NINA.Image.ImageData {
             p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToLocalTime().ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.TimeUtc, metadata.Image.ExposureStart.ToUniversalTime().ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.MJD, metadata.Image.ExposureStart.ToMJD(), precision: 8);
             p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber.ToString("0000"));
             p.Set(ImagePatternKeys.ImageType, metadata.Image.ImageType);
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
@@ -475,9 +477,9 @@ namespace NINA.Image.ImageData {
 
         private string SaveFits(FileSaveInfo fileSaveInfo) {
             string extension = ".fits";
-            Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
 
             if(fileSaveInfo.FITSUseLegacyWriter) {
+                Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
                 var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension));
                 FITS f = new FITS(
                     Data.FlatArray,
@@ -498,6 +500,8 @@ namespace NINA.Image.ImageData {
 
                 // CFitsio treats paranthesis for special logic and are thus not allowed
                 fileSaveInfo.FilePath = fileSaveInfo.FilePath.Replace("(", "_").Replace(")", "_").Replace("[", "_").Replace("]", "_");
+                Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
+
                 var uniquePath = CoreUtil.GetUniqueFilePath(fileSaveInfo.FilePath + fileSaveInfo.GetExtension(extension), "{0}_{1}");
                 
                 var compression = GetFITSCompression(fileSaveInfo.FITSCompressionType);
@@ -599,6 +603,7 @@ namespace NINA.Image.ImageData {
                     case ".dng":
                     case ".arw":
                     case ".orf":
+                    case ".rw2":
                         return await RawToImageArray(path, bitDepth, rawConverter, ct);
 
                     default:

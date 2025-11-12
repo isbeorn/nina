@@ -10,13 +10,21 @@
     x:Class="NINA.View.Sequencer.SequenceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:alt="clr-namespace:NINA.WPF.Base.View;assembly=NINA.WPF.Base"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors"
+    xmlns:cont="clr-namespace:NINA.Sequencer.Container"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:NINA.View.Sequencer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:seqItem="clr-namespace:NINA.Sequencer.SequenceItem"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:wpfbehaviors="clr-namespace:NINA.WPF.Base.Behaviors;assembly=NINA.WPF.Base"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    x:Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -60,14 +68,10 @@
             VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Standard">
             <TreeView.Resources>
-                <ResourceDictionary>
-                    <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
-                        <local:SequenceBlockView />
-                    </DataTemplate>
-                </ResourceDictionary>
-            </TreeView.Resources>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
+                <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                    <local:SequenceBlockView />
+                </DataTemplate>
+                <Style x:Key="RootStyle" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="Focusable" Value="False" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -75,7 +79,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Grid>
+                                <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" MinWidth="20" />
                                         <ColumnDefinition />
@@ -143,7 +147,766 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </TreeView.ItemContainerStyle>
+                <Style x:Key="ItemStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                <Grid IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Grid.Resources>
+                                        <ResourceDictionary>
+                                            <DataTemplate DataType="{x:Type seqItem:SequenceItem}">
+                                                <local:SequenceBlockView />
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:SequenceContainer}">
+                                                <local:SequenceContainerView />
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:ParallelContainer}">
+                                                <local:SequenceContainerView>
+                                                    <local:SequenceContainerView.SequenceContainerContent>
+                                                        <TextBlock
+                                                            Margin="5,5,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontStyle="Italic"
+                                                            Text="{ns:Loc Lbl_SequenceContainer_ParallelContainer_Description}" />
+                                                    </local:SequenceContainerView.SequenceContainerContent>
+                                                </local:SequenceContainerView>
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cont:DeepSkyObjectContainer}">
+                                                <local:SequenceContainerView>
+                                                    <local:SequenceContainerView.SequenceContainerContent>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+
+                                                            </Grid.RowDefinitions>
+
+                                                            <ninactrl:DetachingExpander IsExpanded="{Binding Target.Expanded}" Style="{StaticResource DSOExpander}">
+                                                                <ninactrl:DetachingExpander.Header>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Border MinHeight="25">
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{ns:Loc LblTarget}" />
+                                                                        </Border>
+                                                                        <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{Binding Target.TargetName}" />
+                                                                            <TextBlock
+                                                                                Margin="5,0,5,0"
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="|" />
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{Binding Target.InputCoordinates.Coordinates.RAString}" />
+                                                                            <TextBlock
+                                                                                Margin="5,0,5,0"
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="|" />
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{Binding Target.InputCoordinates.Coordinates.DecString}" />
+                                                                            <TextBlock
+                                                                                Margin="5,0,5,0"
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="|" />
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{Binding Target.PositionAngle}" />
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="°" />
+                                                                            <StackPanel.Style>
+                                                                                <Style TargetType="StackPanel">
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Expander}, Path=IsExpanded}" Value="True">
+                                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </StackPanel.Style>
+                                                                        </StackPanel>
+                                                                    </StackPanel>
+                                                                </ninactrl:DetachingExpander.Header>
+                                                                <Grid>
+                                                                    <Grid.Resources>
+                                                                        <util:BindingProxy x:Key="nighttimeProxy" Data="{Binding NighttimeData}" />
+                                                                    </Grid.Resources>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="Auto" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                        <RowDefinition Height="*" />
+                                                                    </Grid.RowDefinitions>
+
+                                                                    <Grid Grid.Row="0" Margin="0,5,0,0">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBlock
+                                                                            Width="50"
+                                                                            VerticalAlignment="Center"
+                                                                            Text="{ns:Loc LblName}"
+                                                                            TextWrapping="Wrap" />
+
+                                                                        <ninactrl:HintTextBox
+                                                                            Grid.Row="0"
+                                                                            Grid.Column="1"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            VerticalContentAlignment="Center"
+                                                                            Foreground="{StaticResource PrimaryBrush}"
+                                                                            HintText="{ns:Loc LblObjectNameHint}"
+                                                                            Text="{Binding Target.TargetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                        <StackPanel
+                                                                            Grid.Column="2"
+                                                                            Margin="5,0,0,0"
+                                                                            Orientation="Horizontal">
+                                                                            <Button
+                                                                                Width="25"
+                                                                                Height="25"
+                                                                                Margin="5,0,5,0"
+                                                                                VerticalAlignment="Center"
+                                                                                HorizontalContentAlignment="Right"
+                                                                                Command="{Binding CoordsToFramingCommand}"
+                                                                                IsEnabled="{Binding Target.InputCoordinates, Converter={StaticResource InverseNullToBooleanConverter}}"
+                                                                                Style="{StaticResource TertiaryBackgroundButton}">
+                                                                                <Button.ToolTip>
+                                                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                                                        <TextBlock Text="{ns:Loc LblCoordinatesToFramingTooltip}" />
+                                                                                    </ToolTip>
+                                                                                </Button.ToolTip>
+                                                                                <Grid>
+                                                                                    <Path
+                                                                                        Margin="5"
+                                                                                        Data="{StaticResource FocusAssistantSVG}"
+                                                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                                                        Stretch="Uniform"
+                                                                                        UseLayoutRounding="True" />
+                                                                                </Grid>
+                                                                            </Button>
+                                                                            <Button
+                                                                                Width="25"
+                                                                                Height="25"
+                                                                                Margin="5,0,5,0"
+                                                                                VerticalAlignment="Center"
+                                                                                HorizontalContentAlignment="Right"
+                                                                                Command="{Binding CoordsFromPlanetariumCommand}"
+                                                                                IsEnabled="{Binding Target.InputCoordinates, Converter={StaticResource InverseNullToBooleanConverter}}"
+                                                                                Style="{StaticResource TertiaryBackgroundButton}">
+                                                                                <Button.ToolTip>
+                                                                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                                                        <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                                                                    </ToolTip>
+                                                                                </Button.ToolTip>
+                                                                                <Grid>
+                                                                                    <Path
+                                                                                        Margin="5"
+                                                                                        Data="{StaticResource GetCoordsSVG}"
+                                                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                                                        Stretch="Uniform"
+                                                                                        UseLayoutRounding="True" />
+                                                                                </Grid>
+                                                                            </Button>
+                                                                        </StackPanel>
+                                                                    </Grid>
+
+                                                                    <StackPanel
+                                                                        Grid.Row="1"
+                                                                        Grid.Column="0"
+                                                                        Margin="0,5,0,0"
+                                                                        DataContext="{Binding Target.InputCoordinates}"
+                                                                        Orientation="Horizontal">
+                                                                        <TextBlock
+                                                                            Width="50"
+                                                                            VerticalAlignment="Center"
+                                                                            Text="{ns:Loc LblRA}" />
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:HoursRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">h</TextBlock>
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:MinutesRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding
+                                                                                    Path="RASeconds"
+                                                                                    StringFormat="N1"
+                                                                                    UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:SecondsRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                                                    </StackPanel>
+                                                                    <StackPanel
+                                                                        Grid.Row="2"
+                                                                        Grid.Column="0"
+                                                                        Margin="0,5,0,0"
+                                                                        VerticalAlignment="Center"
+                                                                        DataContext="{Binding Target.InputCoordinates}"
+                                                                        Orientation="Horizontal">
+                                                                        <TextBlock
+                                                                            Width="50"
+                                                                            VerticalAlignment="Center"
+                                                                            Text="{ns:Loc LblDec}" />
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding Path="NegativeDec" />
+                                                                                    <Binding Path="DecDegrees">
+                                                                                        <Binding.ValidationRules>
+                                                                                            <rules:DegreesRule />
+                                                                                        </Binding.ValidationRules>
+                                                                                    </Binding>
+                                                                                </MultiBinding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">d</TextBlock>
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:MinutesRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            DataObject.Pasting="UnitTextBox_Pasting"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding
+                                                                                    Path="DecSeconds"
+                                                                                    StringFormat="N1"
+                                                                                    UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:SecondsRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                                                    </StackPanel>
+                                                                    <StackPanel
+                                                                        Grid.Row="3"
+                                                                        Grid.Column="0"
+                                                                        Margin="0,5,0,0"
+                                                                        VerticalAlignment="Center"
+                                                                        Orientation="Horizontal">
+                                                                        <TextBlock
+                                                                            Width="50"
+                                                                            VerticalAlignment="Center"
+                                                                            Text="{ns:Loc LblRotation}" />
+                                                                        <TextBox
+                                                                            Width="40"
+                                                                            Margin="5,0,0,0"
+                                                                            DataContext="{Binding Target}"
+                                                                            TextAlignment="Right">
+                                                                            <TextBox.Text>
+                                                                                <Binding Path="PositionAngle" UpdateSourceTrigger="LostFocus">
+                                                                                    <Binding.ValidationRules>
+                                                                                        <rules:FullCircleDegreesRule />
+                                                                                    </Binding.ValidationRules>
+                                                                                </Binding>
+                                                                            </TextBox.Text>
+                                                                        </TextBox>
+                                                                        <TextBlock VerticalAlignment="Center">°</TextBlock>
+                                                                    </StackPanel>
+
+                                                                    <alt:AltitudeChart
+                                                                        Grid.Row="0"
+                                                                        Grid.RowSpan="5"
+                                                                        Grid.Column="1"
+                                                                        MinWidth="400"
+                                                                        MinHeight="120"
+                                                                        Margin="10,0,0,0"
+                                                                        HorizontalAlignment="Stretch"
+                                                                        HorizontalContentAlignment="Stretch"
+                                                                        AnnotateAltitudeAxis="False"
+                                                                        DataContext="{Binding Target.DeepSkyObject}"
+                                                                        NighttimeData="{Binding Source={StaticResource nighttimeProxy}, Path=Data}" />
+                                                                </Grid>
+                                                            </ninactrl:DetachingExpander>
+
+                                                            <ninactrl:DetachingExpander
+                                                                Grid.Row="1"
+                                                                IsExpanded="{Binding ExposureInfoListExpanded}"
+                                                                Style="{StaticResource ExposureInfoExpander}">
+                                                                <ninactrl:DetachingExpander.Header>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Border MinHeight="25">
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{ns:Loc Lbl_SequenceContainer_DeepSkyObjectContainer_ExposureInfo}" />
+                                                                        </Border>
+                                                                        <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                                            <TextBlock
+                                                                                VerticalAlignment="Center"
+                                                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                                                Text="{Binding ExposureInfoSummary}" />
+                                                                            <StackPanel.Style>
+                                                                                <Style TargetType="StackPanel">
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Expander}, Path=IsExpanded}" Value="True">
+                                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </StackPanel.Style>
+                                                                        </StackPanel>
+                                                                    </StackPanel>
+                                                                </ninactrl:DetachingExpander.Header>
+                                                                <DataGrid
+                                                                    Grid.ColumnSpan="2"
+                                                                    AutoGenerateColumns="False"
+                                                                    CanUserAddRows="False"
+                                                                    ItemsSource="{Binding ExposureInfoList}"
+                                                                    SelectionMode="Single">
+                                                                    <i:Interaction.Behaviors>
+                                                                        <wpfbehaviors:BubbleScrollEvent />
+                                                                    </i:Interaction.Behaviors>
+                                                                    <DataGrid.Columns>
+
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblFilter}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding Filter, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblTotalNo}"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellEditingTemplate>
+                                                                                <DataTemplate>
+                                                                                    <ninactrl:IntStepperControl
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        MinValue="0"
+                                                                                        Value="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellEditingTemplate>
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding Count, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblTotal}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding TotalTime, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblTime}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <StackPanel
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Orientation="Horizontal">
+                                                                                        <TextBlock Text="{Binding ExposureTime, Mode=OneWay}" />
+                                                                                        <TextBlock Text=" s" />
+                                                                                    </StackPanel>
+
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblType}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding ImageType, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblBinning}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <StackPanel
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Orientation="Horizontal">
+                                                                                        <TextBlock Text="{Binding BinningX, Mode=OneWay}" />
+                                                                                        <TextBlock Text="x" />
+                                                                                        <TextBlock Text="{Binding BinningY, Mode=OneWay}" />
+                                                                                    </StackPanel>
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblGain}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblOffset}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Text="{Binding Offset, Converter={StaticResource MinusOneToEmptyStringConverter}, Mode=OneWay}" />
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="*"
+                                                                            Header="{ns:Loc LblROI}"
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <StackPanel
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Orientation="Horizontal">
+                                                                                        <TextBlock Text="{Binding ROI, Converter={StaticResource PercentageConverter}, Mode=OneWay}" />
+                                                                                        <TextBlock Text="%" />
+                                                                                    </StackPanel>
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                        <DataGridTemplateColumn
+                                                                            Width="30"
+                                                                            Header=""
+                                                                            IsReadOnly="True"
+                                                                            SortDirection="Ascending">
+                                                                            <DataGridTemplateColumn.CellTemplate>
+                                                                                <DataTemplate>
+                                                                                    <Button
+                                                                                        Width="25"
+                                                                                        Height="25"
+                                                                                        Margin="5,0,5,0"
+                                                                                        HorizontalAlignment="Center"
+                                                                                        VerticalAlignment="Center"
+                                                                                        Command="{Binding DataContext.DeleteExposureInfoCommand, RelativeSource={RelativeSource AncestorType={x:Type local:SequenceContainerView}}}"
+                                                                                        CommandParameter="{Binding}"
+                                                                                        Style="{StaticResource BackgroundButton}">
+                                                                                        <Grid>
+                                                                                            <Path
+                                                                                                Margin="5"
+                                                                                                Data="{StaticResource TrashCanSVG}"
+                                                                                                Fill="{StaticResource PrimaryBrush}"
+                                                                                                Stretch="Uniform"
+                                                                                                UseLayoutRounding="True" />
+                                                                                        </Grid>
+                                                                                    </Button>
+                                                                                </DataTemplate>
+                                                                            </DataGridTemplateColumn.CellTemplate>
+                                                                        </DataGridTemplateColumn>
+                                                                    </DataGrid.Columns>
+                                                                </DataGrid>
+                                                            </ninactrl:DetachingExpander>
+                                                        </Grid>
+                                                    </local:SequenceContainerView.SequenceContainerContent>
+                                                </local:SequenceContainerView>
+                                            </DataTemplate>
+                                        </ResourceDictionary>
+                                    </Grid.Resources>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="20" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Border
+                                        x:Name="Bd"
+                                        Grid.Column="1"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter
+                                            x:Name="PART_Header"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            ContentSource="Header"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                    <ItemsPresenter
+                                        x:Name="ItemsHost"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="-21,0,0,0"
+                                        HorizontalAlignment="Stretch">
+                                        <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                        </i:Interaction.Behaviors>
+                                    </ItemsPresenter>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true" />
+                                            <Condition Property="IsSelectionActive" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+                            <Setter Property="ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="ContainerStyle" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                <Grid Margin="0,5,0,5" IsEnabled="{Binding DataContext.IsLocked, ElementName=UC, Converter={StaticResource InverseBooleanConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MinWidth="20" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border
+                                        x:Name="Bd"
+                                        Grid.Column="1"
+                                        Margin="0,0,0,0"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="0,0,0,0"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter
+                                            x:Name="PART_Header"
+                                            Margin="-1,-5,0,-5"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            ContentSource="Header"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                    <Border
+                                        x:Name="ContainerSideBorder"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,0,0,0"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,0">
+                                        <ItemsPresenter
+                                            x:Name="ItemsHost"
+                                            Margin="0,0,0,15"
+                                            HorizontalAlignment="Stretch">
+                                            <!--  This will allow drops into the start, target and end areas when items are inside with containers - without it some drops are lost into the void  -->
+                                            <i:Interaction.Behaviors>
+                                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TargetSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                            </i:Interaction.Behaviors>
+                                        </ItemsPresenter>
+                                    </Border>
+                                    <Border
+                                        x:Name="ContainerBottomBorder"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,0,0,5"
+                                        BorderBrush="{StaticResource SecondaryBackgroundBrush}"
+                                        BorderThickness="10,0,0,15">
+                                        <i:Interaction.Behaviors>
+                                            <!--  Drop area above and below the Sequence Container  -->
+                                            <behaviors:DragOverBehavior
+                                                AllowDragAbove="False"
+                                                AllowDragBelow="{Binding IsExpanded}"
+                                                AllowDragCenter="False"
+                                                DragBelowSize="15"
+                                                Enabled="{Binding IsExpanded}" />
+                                        </i:Interaction.Behaviors>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+
+                                    <DataTrigger Binding="{Binding IsExpanded}" Value="false">
+                                        <Setter TargetName="ContainerSideBorder" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="ContainerBottomBorder" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true" />
+                                            <Condition Property="IsSelectionActive" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
+                            <Setter Property="ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Resources>
+            <TreeView.Style>
+                <Style TargetType="TreeView">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <!--  Set the same brush to keep the background consistent  -->
+                            <Setter Property="Background" Value="Red" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
+            <TreeView.ItemContainerStyleSelector>
+                <local:SequenceTreeViewItemStyleSelector
+                    ContainerStyle="{StaticResource ContainerStyle}"
+                    DefaultStyle="{StaticResource RootStyle}"
+                    ItemStyle="{StaticResource ItemStyle}" />
+            </TreeView.ItemContainerStyleSelector>
         </TreeView>
         <!--  ******* Available Sequence Items and Templates *******  -->
         <GridSplitter

@@ -21,6 +21,7 @@ namespace NINA.Profile.Interfaces {
         double BitDepth { get; set; }
         CameraBulbModeEnum BulbMode { get; set; }
         string Id { get; set; }
+        string LastDeviceName { get; set; }
         double PixelSize { get; set; }
         RawConverterEnum RawConverter { get; set; }
         string SerialPort { get; set; }
