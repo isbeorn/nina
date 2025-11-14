@@ -4450,6 +4450,14 @@ W przypadku gdy potrzebny jest dłuższy czas, można go określić i aplikacja 
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>Autofocus po zwiększeniu HFR</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>Trend zmian HFR dla filtra</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>Gdy wyłączone, trend zmian HFR jest oceniany łącznie dla wszystkich filtrów. 
+Może to pomóc w wcześniejszym uruchamianiu autofocusa, szczególnie podczas pracy z częstymi zmianami filtrów oraz przy optyce wrażliwej na temperaturę w warunkach szybko zmieniających się. 
+Uwaga: Ten tryb wymaga, aby różnice HFR między filtrami w Twoim zestawie były niewielkie.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Uruchomienie autofokusa, jeśli temperatura zmieniła się o kilka stopni od ostatniego ustawienia ostrości lub początku sekwencji</value>
   </data>
@@ -7315,20 +7323,20 @@ Czas ekspozycji flatów zostanie określony ponownie, a ekspozycja zostanie powt
     <value>Inicjalizacja</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>Ustawienia IP ASCOM Alpaca</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Typ usługi</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>Adres IP</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>Port</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Numer urządzenia</value>
   </data>
 </root>

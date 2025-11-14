@@ -4448,6 +4448,15 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>HFR artışı sonrası AF</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>HFR trend per filter</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>When disabled, the HFR trend is evaluated across all filters combined. 
+This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
+and a temperature sensitive optics on a quickly changing ambient temperature. 
+Note: This mode requires that HFR differences between filters in your setup are small.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Son otomatik netleme çalışmasından veya sekans başlangıcından bu yana sıcaklık, derece olarak belirtilen miktarda değiştikten sonra bir otomatik netleme çalışmasını başlatmak için tetikleyici</value>
   </data>

@@ -4460,6 +4460,15 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>Incrementar AutoFoco Tras HFR</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>HFR trend per filter</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>When disabled, the HFR trend is evaluated across all filters combined. 
+This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
+and a temperature sensitive optics on a quickly changing ambient temperature. 
+Note: This mode requires that HFR differences between filters in your setup are small.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Un desencadeante para iniciar o enfoque automático despois de que a temperatura cambiase nunha cantidade dada en graos dende a última execución de enfoque automático ou o inicio da secuencia</value>
   </data>

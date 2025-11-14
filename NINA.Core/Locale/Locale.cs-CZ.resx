@@ -4453,6 +4453,15 @@ V případě, že je požadována delší doba trvání, lze dobu trvání speci
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>AutoOstření Po Změně HFR</value>
   </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+<value>Trend HFR podle filtru</value>
+</data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+<value>Pokud je tato funkce vypnuta, trend HFR se hodnotí napříč všemi filtry dohromady. 
+To může pomoci spustit automatické zaostřování dříve, zejména při snímání s častými změnami filtrů
+a optikou citlivou na teplotu v rychle se měnící okolní teplotě. 
+Poznámka: Tento režim vyžaduje, aby rozdíly HFR mezi filtry ve vašem nastavení byly malé.</value>
+</data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>Spouštěč, který spouští auto-ostření po změně teploty o danou částku ve stupních od posledního automatického spuštění nebo zahájení sekvence</value>
   </data>
@@ -7320,20 +7329,20 @@ Znovu se určí doba expozice flat oblohy a expozice se zopakuje.</value>
     <value>Inicializace</value>
   </data>
   <data name="LblAlpacaDirectIPSetup" xml:space="preserve">
-    <value>ASCOM Alpaca IP Setup</value>
+    <value>ASCOM Alpaca IP Nastavení</value>
   </data>
   <data name="LblAlpacaDirectServiceType" xml:space="preserve">
-    <value>Service Type</value>
+    <value>Typ Služby</value>
     <comment>The service type for alpaca devices - e.g. http or https</comment>
   </data>
   <data name="LblAlpacaDirectIpAddress" xml:space="preserve">
-    <value>IP Address</value>
+    <value>IP Adresa</value>
   </data>
   <data name="LblAlpacaDirectPort" xml:space="preserve">
     <value>Port</value>
     <comment>The IP Port to use for an alpaca direct device</comment>
   </data>
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
-    <value>Device Number</value>
+    <value>Číslo Zařízení</value>
   </data>
 </root>
