@@ -102,8 +102,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Data.Coordinates.Coordinates = coordinates;
             sut.Data.Offset = 0;
 
-            using (var cts = new CancellationTokenSource()) {
-                cts.CancelAfter(1000);
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
                 await sut.Run(default, cts.Token);
             }
 
@@ -123,8 +122,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Data.Coordinates.Coordinates = coordinates;
             sut.Data.Offset = 0;
 
-            using (var cts = new CancellationTokenSource()) {
-                cts.CancelAfter(1000);
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
                 await sut.Run(default, cts.Token);
             }
 
@@ -148,8 +146,7 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Coordinates = sut.Data.Coordinates;
             sut.Data.Offset = 0;
 
-            using (var cts = new CancellationTokenSource()) {
-                cts.CancelAfter(1000);
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1))) { 
                 await sut.Run(default, cts.Token);
             }
 
@@ -175,7 +172,9 @@ namespace NINA.Test.Sequencer.SequenceItem.Utility {
             sut.Data.Coordinates.Coordinates = coordinates;
             sut.Data.Offset = 0;
 
-            await sut.Run(default, default);
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
+                await sut.Run(default, cts.Token);
+            }
 
             sut.Status.Should().Be(SequenceEntityStatus.FINISHED);
             mockDateProvider.VerifyGet(x => x.Now, Times.Exactly(4));
