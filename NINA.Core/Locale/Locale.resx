@@ -7351,4 +7351,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Device Number</value>
   </data>
+  <data name="LblFilterUndefinedError" xml:space="preserve">
+    <value>Please define filters before connecting to the filter wheel.</value>
+  </data>
 </root>

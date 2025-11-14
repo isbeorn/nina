@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
+using NINA.Core.Locale;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -74,6 +75,17 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             }
         }
 
+        private int slotNum;
+        public int SlotNum {
+            get => slotNum;
+            set {
+                if (slotNum != value) {
+                    slotNum = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public IList<string> SupportedActions => new List<string>();
 
         private object lockObj = new object();
@@ -81,9 +93,7 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
             get {
                 lock (lockObj) {
                     var filtersList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                    sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_SLOT, out var positions);
-
-                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, positions);
+                    var filters = new FilterManager().SyncFiltersWithPositions(filtersList, SlotNum);
                     profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = filters;
                     return filters;
                 }
@@ -152,26 +162,35 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                 try {
                     SupportedActions.Clear();
 
+                    // Fetch profile settings
+                    var profile = profileService.ActiveProfile.FilterWheelSettings;
+                    Unidirectional = profile.Unidirectional;
+
+                    // Filters must be defined in order to connect to the filter wheel
+                    if (profile.FilterWheelFilters.Count < 1) {
+                        Notification.ShowError(Loc.Instance["LblFilterUndefinedError"]);
+                        Logger.Error("Please define filters before connecting to the filter wheel.");
+                        return false;
+                    }
+
+                    // Open connection
                     sdk = sdk.Open(this.internalId);
 
-                    // Read number of positions
-                    sdk.get_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_SLOT, out var slotNum);
+                    // Older filter wheels do not internally store the number of slots
+                    // so we fetch it from the filters list
+                    slotNum = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count;
 
                     // Initialize filter wheel with number of positions
                     sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_SLOT, slotNum);
 
-                    // Initially reset filter wheel
-                    sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, -1);
-
-                    // Wait for calibration to finish
+                    // Wait for filter wheel to reach ready state
+                    // Due to a firmware bug in older filter wheels (reporting ready while they are not),
+                    // it may happen that control returns before the filter wheel is actually ready
                     await WaitForReadyState(ct);
 
                     // Connected flag
                     Connected = true;
-
                     success = true;
-                    var profile = profileService.ActiveProfile.FilterWheelSettings;
-                    Unidirectional = profile.Unidirectional;
 
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {
@@ -201,6 +220,14 @@ namespace NINA.Equipment.Equipment.MyFilterWheel {
                     var ct = cts.Token;
 
                     try {
+                        // On older filter wheels, IsMoving status can be wrong when calibration is trigged from slot 0
+                        // In order to avoid this issue, we first move to slot 1 if we are currently at slot 0
+                        if (currentPostion == 0) {
+                            Position = 1;
+                            await WaitForReadyState(ct);
+                        }
+
+                        // Trigger calibration
                         sdk.put_Option(ToupTekAlikeOption.OPTION_FILTERWHEEL_POSITION, -1);
 
                         // Wait for calibration to finish

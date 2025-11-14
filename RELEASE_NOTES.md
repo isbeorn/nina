@@ -11,6 +11,7 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 ## Bugfixes
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
+- ToupTek based filter wheels number of slots will now be based on the filter list to support different filter configurations and calibration should no longer return control before the filter wheel is in ready state.
 
 ## Improvements
 - **Autofocus after HFR Increase Trigger**
