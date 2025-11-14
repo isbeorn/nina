@@ -1,5 +1,5 @@
 ﻿<Project>
-  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.2" />
+  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="6.0.2" />
   <PropertyGroup>
     <OutputName>NINASetupBundle</OutputName>
     <OutputType>Bundle</OutputType>
@@ -28,9 +28,9 @@
     <SignOutput>True</SignOutput>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.6" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6" />
-    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.2" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="6.0.2" />
+    <PackageReference Include="WixToolset.Bal.wixext" Version="6.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NINASetupBundle.wax" />

@@ -5,6 +5,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.3
 
+## General
+- The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
+
 ## Bugfixes
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
@@ -41,6 +44,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 - In Legacy Sequencer, when interrupting the start or end actions, the sequence will now properly re-run these when starting again
 - Fixed an issue causing ToupTek camera LEDs to remain on after connection, regardless of the profile setting.
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
+- Fixed an issue where the rotation imported from planetarium software was overwritten by the previous target rotation when pressing the “Load Image” button in the Framing Assistant.
+- Homing the mount while already at home will no longer raise a warning
+- When having an autofocus step size of 1 the fine focus buttons will now move by 1 step instead of rounding it to 0
 
 ## Features
  
