@@ -72,6 +72,7 @@
     </PackageReference>
     <PackageReference Include="NJsonSchema" Version="11.5.2" />
     <PackageReference Include="SharpGIS.NmeaParser" Version="2.2.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SDK\CameraSDKs\ToupTekAlike\SVBonySDK\" />

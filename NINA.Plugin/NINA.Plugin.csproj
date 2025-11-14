@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NJsonSchema" Version="11.5.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="Trinet.Core.IO.Ntfs" Version="4.1.2" />
   </ItemGroup>
   <PropertyGroup>

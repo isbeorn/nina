@@ -637,6 +637,9 @@
       <Component Id="System.ComponentModel.Composition.dll" Guid="d8c08164-ef91-4cbf-8a10-a6087e40f4a1">
         <File Id="System.ComponentModel.Composition.dll" Name="System.ComponentModel.Composition.dll" Source="$(var.NINA_TargetDir)System.ComponentModel.Composition.dll" />
       </Component>
+      <Component Id="System.Data.SqlClient.dll" Guid="4fd7f091-3586-4e5d-8f96-1c3f0d3ddf59">
+        <File Id="System.Data.SqlClient.dll" Name="System.Data.SqlClient.dll" Source="$(var.NINA_TargetDir)System.Data.SqlClient.dll" />
+      </Component>
       <Component Id="System.Data.SQLite.dll" Guid="eb9db954-aaef-4c84-8401-91b12688b243" Bitness="$(var.Win64)">
         <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.dll" />
       </Component>

@@ -50,6 +50,9 @@
     <ProjectReference Include="..\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj" />
     <ProjectReference Include="..\NINA.WPF.Base\NINA.WPF.Base.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+  </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>

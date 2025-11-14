@@ -61,6 +61,7 @@
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>

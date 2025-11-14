@@ -68,6 +68,7 @@
     </PackageReference>
     <PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />
     <PackageReference Include="System.ComponentModel.Composition" Version="10.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="System.Data.SQLite">
       <Version>2.0.2</Version>
     </PackageReference>

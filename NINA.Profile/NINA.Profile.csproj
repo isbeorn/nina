@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="PluginSettingsTemplate.cs">
