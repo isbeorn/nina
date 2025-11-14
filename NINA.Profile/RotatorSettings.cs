@@ -62,13 +62,6 @@ namespace NINA.Profile {
             }
         }
 
-        [Obsolete("Use Reverse2 instead")]
-        [DataMember]
-        public bool Reverse {
-            get => !reverse2;
-            set => reverse2 = !value;
-        }
-
         private bool reverse2;
         [DataMember]
         /// <summary>
