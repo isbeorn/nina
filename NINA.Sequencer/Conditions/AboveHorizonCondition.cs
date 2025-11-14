@@ -13,16 +13,19 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
-using NINA.Profile.Interfaces;
-using NINA.Sequencer.SequenceItem;
 using NINA.Astrometry;
+using NINA.Core.Enum;
+using NINA.Core.Utility;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.SequenceItem.Utility;
+using NINA.Sequencer.Utility;
 using System;
 using System.ComponentModel.Composition;
-using NINA.Sequencer.SequenceItem.Utility;
+using System.Runtime.Serialization;
 using static NINA.Sequencer.Utility.ItemUtility;
-using NINA.Core.Utility;
-using NINA.Core.Enum;
-using NINA.Sequencer.Utility;
 
 namespace NINA.Sequencer.Conditions {
 
@@ -32,8 +35,10 @@ namespace NINA.Sequencer.Conditions {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class AboveHorizonCondition : LoopForAltitudeBase {
-
+    [UsesExpressions]
+    public partial class AboveHorizonCondition : LoopForAltitudeBase {
+        private double lastRA;
+        private double lastDec;
         private bool hasDsoParent;
 
         [ImportingConstructor]
@@ -49,16 +54,57 @@ namespace NINA.Sequencer.Conditions {
 
         public ICustomDateTime DateTime { get; set; }
 
-        public override object Clone() {
-            return new AboveHorizonCondition(this) {
-                Data = Data.Clone()
-            };
+        partial void AfterClone(AboveHorizonCondition clone) {
+            clone.Data = Data.Clone();
+            clone.Data.Coordinates = Data.Coordinates?.Clone();
+        }
+
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
+            // Fix up Ra and Dec Expressions (auto-update to existing sequences)
+            if (Data != null) {
+                Coordinates c = Data.Coordinates.Coordinates;
+                if (c.RA != 0 || c.Dec != 0) {
+                    // Fix up decimals
+                    RaExpression.Definition = Math.Round(c.RA, 7).ToString();
+                    DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+                    OffsetExpression.Definition = Data.Offset.ToString();
+                }
+            }
+            if (OffsetExpression.Definition.Length == 0 && Data.Offset != OffsetExpression.Default) {
+                OffsetExpression.Definition = Data.Offset.ToString();
+            }
+        }
+
+        [IsExpression(Default = 0, Range = [-90, 90], Proxy = "Data.Offset", HasValidator = true)]
+        private double offset;
+
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                if (Data != null) {                    
+                    Data.Offset = expr.Value;
+                }
+            }
         }
 
         private void Coordinates_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            // When coordinates change, we change the decimal value
+            InputCoordinates ic = (InputCoordinates)sender;
+            Coordinates c = ic.Coordinates;
+
+            if (Protect) return;
+
+            if (c.RA != lastRA) {
+                RaExpression.Definition = Math.Round(c.RA, 7).ToString();
+            } else if (c.Dec != lastDec) {
+                DecExpression.Definition = Math.Round(c.Dec, 7).ToString();
+            }
+
+            lastRA = c.RA;
+            lastDec = c.Dec;
             CalculateExpectedTime();
         }
-
 
         [JsonProperty]
         public bool HasDsoParent {
@@ -70,21 +116,31 @@ namespace NINA.Sequencer.Conditions {
         }
 
         public override void AfterParentChanged() {
-            var contextCoordinates = RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
+            var coordinates = RetrieveContextCoordinates(this.Parent);
+            if (coordinates != null) {
+                Data.Coordinates.Coordinates = coordinates.Coordinates;
+                PositionAngle = coordinates.PositionAngle;
                 HasDsoParent = true;
             } else {
                 HasDsoParent = false;
             }
+
+            if (Data.Coordinates != null) {
+                Data.Coordinates.PropertyChanged += Coordinates_PropertyChanged;
+            }
+            RaExpression.Context = this;
+            DecExpression.Context = this;
+            PositionAngleExpression.Context = this;
+            OffsetExpression.Context = this;
+            Validate();
             RunWatchdogIfInsideSequenceRoot();
         }
 
         public override string ToString() {
-            return $"Condition: {nameof(AboveHorizonCondition)}";
+            return $"Condition: {nameof(AboveHorizonCondition)}, Offset = {OffsetExpression.ValueString}";
         }
 
-         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
+        public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
             CalculateExpectedTime();
             var targetAltitude = Data.GetTargetAltitudeWithHorizon(DateTime.Now);
             var check = Data.CurrentAltitude >= targetAltitude;
@@ -107,6 +163,65 @@ namespace NINA.Sequencer.Conditions {
         public void CalculateExpectedTime(DateTime time) {
             Data.CurrentAltitude = GetCurrentAltitude(time, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: false, 90, GetCurrentAltitude);
+        }
+
+        protected bool Protect = false;
+
+        [JsonProperty(propertyName: "Coordinates")]
+        private InputCoordinates DeprecatedCoordinates {
+            set => coordinates = value;
+        }
+
+        private InputCoordinates coordinates = new InputCoordinates();
+
+        [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
+        private double ra = 0;
+
+        partial void RaExpressionValidator(Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputCoordinates ic = new InputCoordinates();
+            Protect = true;
+            ic.Coordinates.RA = RaExpression.Value;
+            Data.Coordinates.RAHours = ic.RAHours;
+            Data.Coordinates.RAMinutes = ic.RAMinutes;
+            Data.Coordinates.RASeconds = ic.RASeconds;
+            Protect = false;
+        }
+
+        [IsExpression(Default = 0, Range = [-90, 90], HasValidator = true)]
+        private double dec = 0;
+
+        partial void DecExpressionValidator(Expression expr) {
+            // When the decimal value changes, we update the HMS values
+            InputCoordinates ic = new InputCoordinates();
+            Protect = true;
+            ic.Coordinates.Dec = DecExpression.Value;
+            Data.Coordinates.DecDegrees = ic.DecDegrees;
+            Data.Coordinates.DecMinutes = ic.DecMinutes;
+            Data.Coordinates.DecSeconds = ic.DecSeconds;
+            Protect = false;
+        }
+
+        [JsonProperty]
+        private bool usesRotation = false;
+        public bool UsesRotation {
+            get { return usesRotation; }
+            set { usesRotation = value; }
+        }
+
+        [IsExpression(Default = 0, Range = [0, 360], HasValidator = true)]
+        private double positionAngle = 0;
+
+        partial void PositionAngleExpressionValidator(Expression expr) {
+            if (expr.Error == null) {
+                expr.Value = AstroUtil.EuclidianModulus(expr.Value, 360);
+            }
+        }
+
+        public bool Validate() {
+            Expression.ValidateExpressions(Issues, RaExpression, DecExpression, PositionAngleExpression, OffsetExpression);
+            RaisePropertyChanged(nameof(Issues));
+            return Issues.Count == 0;
         }
     }
 }

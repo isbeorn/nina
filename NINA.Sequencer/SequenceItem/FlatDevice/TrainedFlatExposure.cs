@@ -38,6 +38,7 @@ using NINA.Profile;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
@@ -61,7 +62,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         private bool keepPanelClosed;
 
         [ImportingConstructor]
-        public TrainedFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+        public TrainedFlatExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator,
+            IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -187,6 +189,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             return (Items[6] as OpenCover);
         }
 
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
+        }
+
         public override object Clone() {
             var clone = new TrainedFlatExposure(
                 this,
@@ -262,7 +268,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             var issues = new List<string>();
 
             if (valid) {
-                var filter = switchFilter?.Filter;
+              var filter = switchFilter?.Filter;
                 var binning = takeExposure.Binning;
                 var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
                 var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;

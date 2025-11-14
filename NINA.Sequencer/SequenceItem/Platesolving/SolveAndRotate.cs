@@ -25,6 +25,8 @@ using NINA.Equipment.Model;
 using NINA.PlateSolving;
 using NINA.PlateSolving.Interfaces;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using NINA.WPF.Base.ViewModel;
@@ -42,7 +44,9 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Rotator")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SolveAndRotate : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SolveAndRotate : SequenceItem, IValidatable {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
         protected IImagingMediator imagingMediator;
@@ -83,12 +87,6 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SolveAndRotate(this) {
-                PositionAngle = PositionAngle
-            };
-        }
-
         private bool inherited;
 
         [JsonProperty]
@@ -110,23 +108,11 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
             }
         }
 
-        /// <summary>
-        /// Backwards compatibility property that will migrate to position angle
-        /// </summary>
-        [JsonProperty(propertyName: "Rotation")]
-        public double DeprecatedRotation { set => PositionAngle = 360 - value; }
-
+        [IsExpression(Default = 0, Range = [0, 360])]
         private double positionAngle = 0;
-        [JsonProperty]
-        public double PositionAngle {
-            get => positionAngle;
-            set {
-                positionAngle = AstroUtil.EuclidianModulus(value, 360);
-                RaisePropertyChanged();
-            }
-        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            PositionAngleExpression.Evaluate();
             var service = windowServiceFactory.Create();
             progress = PlateSolveStatusVM.CreateLinkedProgress(progress);
             service.Show(PlateSolveStatusVM, Loc.Instance["Lbl_SequenceItem_Platesolving_SolveAndRotate_Name"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
@@ -249,7 +235,9 @@ namespace NINA.Sequencer.SequenceItem.Platesolving {
                 i.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
 
+            Expression.ValidateExpressions(i, PositionAngleExpression);
             Issues = i;
+            RaisePropertyChanged("Issues");
             return Issues.Count == 0;
         }
 

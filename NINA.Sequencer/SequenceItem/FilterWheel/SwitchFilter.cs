@@ -30,6 +30,10 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using System.Windows;
 using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Profile;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using Accord.Statistics.Models.Regression.Fitting;
 
 namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
@@ -39,12 +43,29 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
     [ExportMetadata("Category", "Lbl_SequenceCategory_FilterWheel")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SwitchFilter : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class SwitchFilter : SequenceItem, IValidatable {
 
         [OnDeserialized]
         public void OnDeserialized(StreamingContext context) {
             MatchFilter();
+            if (Filter != null) {
+                ComboBoxText = Filter.Name;
+            } else {
+                ComboBoxText = "(Current)";
+            }
         }
+
+        [OnSerialized]
+        public void Serialized(StreamingContext context) {
+        }
+
+        [OnSerializing]
+        public void Serializing(StreamingContext context) {
+            Filter = null;
+        }
+
 
         [ImportingConstructor]
         public SwitchFilter(IProfileService profileservice, IFilterWheelMediator filterWheelMediator) {
@@ -57,9 +78,9 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
         private void MatchFilter() {
             try {
                 var idx = this.Filter?.Position ?? -1;
-                this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
+                this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == this.Filter?.Name);
                 if (this.Filter == null && idx >= 0) {
-                    this.Filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
+                    this.filter = this.profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Position == idx);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -74,11 +95,13 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new SwitchFilter(this) {
-                Filter = Filter
-            };
+        partial void AfterClone(SwitchFilter clone) {
+            clone.ComboBoxText = this.ComboBoxText;
+            clone.filter = filter;
         }
+
+        [IsExpression]
+        private int xfilter;
 
         private IProfileService profileService;
         private IFilterWheelMediator filterWheelMediator;
@@ -104,6 +127,62 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
             }
         }
 
+        private int selectedFilter;
+
+        public int SelectedFilter {
+            get => selectedFilter;
+            set {
+                if (value == 0) {
+                    Filter = null;
+                    ComboBoxText = "(Current)";
+                } else {
+                    Filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters[value - 1];
+                    ComboBoxText = Filter.Name;
+                }
+            }
+        }
+
+
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
+            }
+        }
+
+        private string comboBoxText = "";
+
+        [JsonProperty]
+        public string ComboBoxText {
+            get {
+                return comboBoxText;
+            }
+            set {
+                comboBoxText = value;
+
+                if (comboBoxText == "(Current)") {
+                    FilterWheelInfo info = filterWheelMediator.GetInfo();
+                    if (info.Connected) {
+                        Filter = info.SelectedFilter;
+                    }
+                } else {
+                    Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Name == comboBoxText);
+                    if (Filter == null) {
+                        XfilterExpression.Definition = comboBoxText;
+                        if (xfilterExpression.Error == null) {
+                            Filter = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters?.FirstOrDefault(x => x.Position == xfilterExpression.Value);
+                        }
+                    } else {
+                        xfilterExpression.Definition = "";
+                    }
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+        
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             return Filter == null
                 ? throw new SequenceItemSkippedException("Skipping SwitchFilter - No Filter was selected")
@@ -112,11 +191,26 @@ namespace NINA.Sequencer.SequenceItem.FilterWheel {
 
         public bool Validate() {
             var i = new List<string>();
+
             if (filter != null && !filterWheelMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
+            } else {
+                if (FilterNames.Count == 0) {
+                    var fwi = profileService.ActiveProfile?.FilterWheelSettings?.FilterWheelFilters;
+                    if (fwi != null) {
+                        foreach (var fw in fwi) {
+                            FilterNames.Add(fw.Name);
+                        }
+                        RaisePropertyChanged("FilterNames");
+                    }
+                }
             }
+
+            Logic.Expression.ValidateExpressions(i, XfilterExpression);
+
             Issues = i;
-            return i.Count == 0;
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
 
         public override void AfterParentChanged() {            

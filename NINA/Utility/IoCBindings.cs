@@ -43,6 +43,7 @@ using NINA.Plugin.Messaging;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.Mediator;
 using NINA.ViewModel;
 using NINA.ViewModel.FlatWizard;
@@ -97,6 +98,8 @@ namespace NINA.Utility {
                 services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
 
                 services.AddSingleton<IMessageBroker, MessageBroker>();
+                
+                services.AddSingleton<ISymbolBroker, SymbolBroker>();
 
                 services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 

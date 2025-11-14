@@ -40,6 +40,9 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.Interfaces;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using System.Data.Entity.Core.Common.CommandTrees;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -49,7 +52,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Camera")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeSubframeExposure : SequenceItem, IExposureItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class TakeSubframeExposure : SequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
@@ -59,9 +64,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [ImportingConstructor]
         public TakeSubframeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
-            Gain = -1;
-            Offset = -1;
-            ROI = 1;
             ImageType = CaptureSequence.ImageTypes.LIGHT;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
@@ -75,22 +77,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            var clone = new TakeSubframeExposure(this) {
-                ExposureTime = ExposureTime,
-                ExposureCount = 0,
-                Binning = Binning,
-                Gain = Gain,
-                Offset = Offset,
-                ImageType = ImageType,
-                ROI = ROI
-            };
+        partial void AfterClone(TakeSubframeExposure clone) {
+            clone.ExposureCount = 0;
+            clone.Binning = Binning;
+            clone.ImageType = ImageType;
 
             if (clone.Binning == null) {
                 clone.Binning = new BinningMode(1, 1);
             }
-
-            return clone;
         }
 
         private IList<string> issues = new List<string>();
@@ -103,39 +97,30 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        private double roi;
+        [IsExpression (Default = 1, Range = [0, 1])]
+        private double rOI;
 
-        [JsonProperty]
-        public double ROI {
-            get => roi;
-            set {
-                if(value <= 0) { value = 1; }
-                if(value > 1) { value = 1; }
-                roi = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        [IsExpression(Default = 60, Range = [0, 3600])]
         private double exposureTime;
 
-        [JsonProperty]
-        public double ExposureTime {
-            get => exposureTime;
-            set {
-                exposureTime = value;
-                RaisePropertyChanged();
+
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
+        private int gain;
+
+        partial void GainExpressionValidator(Expression expr) {
+            if (CameraInfo != null && CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
+                expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain);
             }
         }
 
-        private int gain;
-
-        [JsonProperty]
-        public int Gain { get => gain; set { gain = value; RaisePropertyChanged(); } }
-
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
         private int offset;
 
-        [JsonProperty]
-        public int Offset { get => offset; set { offset = value; RaisePropertyChanged(); } }
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (CameraInfo != null && CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
+                expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset);
+            }
+        }
 
         private BinningMode binning;
 
@@ -193,7 +178,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
             var info = cameraMediator.GetInfo();
             ObservableRectangle rect = null;
-            if(info.CanSubSample && ROI < 1) {
+            if(info.CanSubSample && ROI < 1 && ROI > 0) {
                 var centerX = info.XSize / 2d;
                 var centerY = info.YSize / 2d;
                 var subWidth = info.XSize * ROI;
@@ -202,7 +187,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 var startY = centerY - subHeight / 2d;
                 rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
             }
-            if(!info.CanSubSample && ROI < 1) {
+            if (!info.CanSubSample && ROI < 1) {
                 Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
             }
 
@@ -276,6 +261,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 
@@ -313,6 +299,18 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             } else if (!Directory.Exists(fileSettings.FilePath)) {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeSubframeExposure_Validation_FilePathInvalid"]);
             }
+            if (GainExpression.Default != CameraInfo.DefaultGain) {
+                GainExpression.Default = CameraInfo.DefaultGain;
+            }
+
+            if (OffsetExpression.Default != CameraInfo.DefaultOffset) {
+                OffsetExpression.Default = CameraInfo.DefaultOffset;
+            }
+
+            Expression.ValidateExpressions(i, ExposureTimeExpression, GainExpression, OffsetExpression);
+
+            GainExpression.Range = CameraInfo.CanSetGain ? new double[] { CameraInfo.GainMin, CameraInfo.GainMax, 0 } : null;
+            OffsetExpression.Range = CameraInfo.CanSetOffset ? new double[] { CameraInfo.OffsetMin, CameraInfo.OffsetMax, 0 } : null;
 
             Issues = i;
             return i.Count == 0;

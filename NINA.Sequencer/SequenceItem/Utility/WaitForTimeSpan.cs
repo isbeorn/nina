@@ -12,11 +12,18 @@
 
 #endregion "copyright"
 
+using Accord.Math;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -30,35 +37,34 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitForTimeSpan : SequenceItem {
+    [UsesExpressions]
+
+    public partial class WaitForTimeSpan : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public WaitForTimeSpan() {
-            Time = 1;
         }
 
         private WaitForTimeSpan(WaitForTimeSpan cloneMe) : base(cloneMe) {
         }
 
-        public override object Clone() {
-            return new WaitForTimeSpan(this) {
-                Time = Time
-            };
-        }
-
+        [IsExpression(Default = 60, Range = [1, ExpressionRange.NO_MAXIMUM])]
         private double time;
 
-        [JsonProperty]
-        public double Time {
-            get => time;
+        private IList<string> issues = new List<string>();
+
+
+        public IList<string> Issues {
+            get => issues;
             set {
-                time = value;
+                issues = value;
                 RaisePropertyChanged();
             }
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");
+            TimeExpression.Evaluate();
+            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");            
         }
 
         public override TimeSpan GetEstimatedDuration() {
@@ -67,6 +73,18 @@ namespace NINA.Sequencer.SequenceItem.Utility {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(WaitForTimeSpan)}, Time: {Time}s";
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
+        public bool Validate() {
+            Issues.Clear();
+            Expression.ValidateExpressions(Issues, TimeExpression);
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
     }
 }

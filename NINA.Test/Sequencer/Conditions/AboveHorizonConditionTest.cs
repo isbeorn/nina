@@ -169,8 +169,9 @@ namespace NINA.Test.Sequencer.Conditions {
         [Test]
         public void AboveHorizonCondition_ToString() {
             var sut = new AboveHorizonCondition(profileServiceMock.Object);
+            sut.Offset = 30;
 
-            sut.ToString().Should().Be("Condition: AboveHorizonCondition");
+            sut.ToString().Should().Be("Condition: AboveHorizonCondition, Offset = 30");
         }
 
         [Test]

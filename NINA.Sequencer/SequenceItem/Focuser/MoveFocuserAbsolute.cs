@@ -25,6 +25,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
 namespace NINA.Sequencer.SequenceItem.Focuser {
 
@@ -34,7 +36,9 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoveFocuserAbsolute : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class MoveFocuserAbsolute : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public MoveFocuserAbsolute(IFocuserMediator focuserMediator) {
@@ -45,24 +49,13 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoveFocuserAbsolute(this) {
-                Position = Position
-            };
+        partial void AfterClone(MoveFocuserAbsolute clone) {
         }
 
         private IFocuserMediator focuserMediator;
 
+        [IsExpression]
         private int position = 0;
-
-        [JsonProperty]
-        public int Position {
-            get => position;
-            set {
-                position = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private IList<string> issues = new List<string>();
 
@@ -76,7 +69,7 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // todo - Interface lacks progress
-            return focuserMediator.MoveFocuser(Position, token);
+            return focuserMediator.MoveFocuser((int)PositionExpression.Value, token);
         }
 
         public bool Validate() {
@@ -84,11 +77,13 @@ namespace NINA.Sequencer.SequenceItem.Focuser {
             if (!focuserMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
+            Expression.ValidateExpressions(i, PositionExpression);
             Issues = i;
             return i.Count == 0;
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

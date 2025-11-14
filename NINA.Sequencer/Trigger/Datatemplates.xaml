@@ -15,6 +15,7 @@
     xmlns:d="clr-namespace:NINA.Sequencer.Trigger.Dome"
     xmlns:g="clr-namespace:NINA.Sequencer.Trigger.Guider"
     xmlns:local="clr-namespace:NINA.Sequencer.Trigger"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mf="clr-namespace:NINA.Sequencer.Trigger.MeridianFlip"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
@@ -102,47 +103,14 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        TextAlignment="Right">
-                        <TextBox.Text>
-                            <Binding Path="SampleSize">
-                                <Binding.ValidationRules>
-                                    <rules:IntRangeRule>
-                                        <rules:IntRangeRule.ValidRange>
-                                            <rules:IntRangeChecker Maximum="99999" Minimum="3" />
-                                        </rules:IntRangeRule.ValidRange>
-                                    </rules:IntRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                        <TextBox.ToolTip>
+                    <logic:ExprControl Label="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSize}" Exp="{Binding SampleSizeExpression}"/>
+                        <!--<TextBox.ToolTip>
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_SampleSizeTooltip}"
                                 TextAlignment="Left" />
-                        </TextBox.ToolTip>
-                    </TextBox>
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblAmount}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Amount}"
-                        TextAlignment="Right"
-                        Unit="%" />
-                    <TextBlock
-                        Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter}" />
+                        </TextBox.ToolTip>-->
+                    <logic:ExprControl Label="{ns:Loc LblAmount}" Exp="{Binding AmountExpression}" Unit="%"/>
                     <CheckBox
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -314,15 +282,7 @@
     <DataTemplate DataType="{x:Type af:AutofocusAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -357,15 +317,7 @@
     <DataTemplate DataType="{x:Type g:DitherAfterExposures}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblAfterExposures}" Exp="{Binding AfterExposuresExpression}" />
             </view:SequenceBlockView.SequenceItemContent>
             <view:SequenceBlockView.SequenceItemProgressContent>
                 <StackPanel Orientation="Horizontal">
@@ -375,7 +327,8 @@
                         VerticalAlignment="Center"
                         Text="{Binding ProgressExposures}" />
                     <TextBlock Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                    <!--Because we're not bound to an Expression, changing the Definition won't trigger PropertyChanged on the old AfterExposures property-->
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposuresExpression.Value}" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemProgressContent>
         </view:SequenceBlockView>
@@ -442,36 +395,10 @@
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEvaluteAfterExposures}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="AfterExposures">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Label="{ns:Loc LblEvaluteAfterExposures}" Exp="{Binding AfterExposuresExpression}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMaxArcmin}" />
-                        <TextBox
-                            MinWidth="40"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="DistanceArcMinutes" StringFormat="{}{0:0.00}">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <logic:ExprControl Label="{ns:Loc LblMaxArcmin}" Exp="{Binding DistanceArcMinutesExpression}"/>
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"

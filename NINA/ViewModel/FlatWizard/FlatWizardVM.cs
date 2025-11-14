@@ -60,7 +60,6 @@ using NINA.Sequencer.Container;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NINA.ViewModel.FlatWizard {
-    
     internal partial class FlatWizardVM : DockableVM, IFlatWizardVM {
         private readonly IImageSaveMediator imageSaveMediator;
         private readonly IApplicationStatusMediator applicationStatusMediator;

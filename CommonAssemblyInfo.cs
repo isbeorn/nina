@@ -51,7 +51,7 @@ using System.Reflection;
 //Develop: 1.8.0.1022 (Displayed as "1.8 NIGHTLY #022")
 [assembly: AssemblyVersion("3.3.0.1000")]
 [assembly: AssemblyFileVersion("3.3.0.1000")]
-[assembly: AssemblyInformationalVersion("3.3.0.1000-nightly")]
+[assembly: AssemblyInformationalVersion("3.3.0.1000-preview2")]
 
 // The PluginMinimumApplicationVersion specifies the minimum application version the plugin needs to specify in order to be compatible
 // Plugins that have a version specified that is below this version are marked as incompatible

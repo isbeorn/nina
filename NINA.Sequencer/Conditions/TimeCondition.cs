@@ -52,7 +52,7 @@ namespace NINA.Sequencer.Conditions {
             DateTime = new SystemDateTime();
             this.DateTimeProviders = dateTimeProviders;
             this.SelectedProvider = selectedProvider;
-            ConditionWatchdog = new ConditionWatchdog(InterruptWhenTimeIsUp, TimeSpan.FromSeconds(1));
+
         }
 
         private async Task InterruptWhenTimeIsUp() {

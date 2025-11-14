@@ -24,6 +24,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Rotator {
 
@@ -33,7 +35,9 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Rotator")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoveRotatorMechanical : SequenceItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class MoveRotatorMechanical : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public MoveRotatorMechanical(IRotatorMediator RotatorMediator) {
@@ -44,24 +48,11 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            return new MoveRotatorMechanical(this) {
-                MechanicalPosition = MechanicalPosition
-            };
-        }
 
         private IRotatorMediator rotatorMediator;
 
+        [IsExpression (Default = 0, Range = [0, 359.99])]
         private float mechanicalPosition = 0;
-
-        [JsonProperty]
-        public float MechanicalPosition {
-            get => mechanicalPosition;
-            set {
-                mechanicalPosition = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private IList<string> issues = new List<string>();
 
@@ -82,11 +73,13 @@ namespace NINA.Sequencer.SequenceItem.Rotator {
             if (!rotatorMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
+            Expression.ValidateExpressions(i, MechanicalPositionExpression);
             Issues = i;
             return i.Count == 0;
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 

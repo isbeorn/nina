@@ -30,6 +30,9 @@ using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
+using NINA.Core.Utility;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -40,7 +43,8 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeManyExposures : SequentialContainer, IImmutableContainer {
+    [UsesExpressions]
+    public partial class TakeManyExposures : SequentialContainer, IImmutableContainer, IValidatable {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -53,8 +57,20 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         public TakeManyExposures(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) :
                 this(
                     null,
-                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
-                    new LoopCondition() { Iterations = 1 }) {
+                    new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { Name = "Take Exposure" },
+                    new LoopCondition() { Name = "Loop for Iterations", Iterations = 1 }) {
+        }
+
+        private TakeManyExposures(
+                TakeManyExposures cloneMe, TakeExposure takeExposure, LoopCondition loopCondition) {
+            this.Add(takeExposure);
+            this.Add(loopCondition);
+
+            IsExpanded = false;
+
+            if (cloneMe != null) {
+                CopyMetaData(cloneMe);
+            }
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
@@ -70,6 +86,16 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 RaisePropertyChanged();
             }
         }
+
+        [IsExpression(Default = 1, HasValidator = true)]
+        private int iterations;
+        partial void IterationsExpressionValidator(Expression expr) {
+            if (Conditions.Count > 0) {
+                GetLoopCondition().Iterations = (int)expr.Value;
+                RaisePropertyChanged("Iterations");
+            }
+        }
+
 
         private int attempts = 1;
 
@@ -87,13 +113,12 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
-        /// <summary>
-        /// Clone Constructor
-        /// </summary>
-        private TakeManyExposures(
-                TakeManyExposures cloneMe, TakeExposure takeExposure, LoopCondition loopCondition) {
-            this.Add(takeExposure);
-            this.Add(loopCondition);
+        partial void AfterClone(TakeManyExposures clone) {
+            clone.Add((TakeExposure)GetTakeExposure().Clone());
+            clone.Add((LoopCondition)GetLoopCondition().Clone());
+        }
+
+        private TakeManyExposures(TakeManyExposures cloneMe) {
 
             IsExpanded = false;
 
@@ -110,30 +135,27 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             return Conditions[0] as LoopCondition;
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         public override bool Validate() {
             var item = GetTakeExposure();
             var valid = item.Validate();
+
+
             Issues = item.Issues;
+            Expression.ValidateExpressions(Issues, IterationsExpression);
+
             RaisePropertyChanged(nameof(Issues));
             return valid;
-        }
-
-        public override object Clone() {
-            var clone = new TakeManyExposures(
-                    this,
-                    (TakeExposure)this.GetTakeExposure().Clone(),
-                    (LoopCondition)this.GetLoopCondition().Clone());
-            return clone;
         }
 
         public override TimeSpan GetEstimatedDuration() {
             return GetTakeExposure().GetEstimatedDuration();
         }
 
-        /// <summary>
-        /// When an inner instruction interrupts this set, it should reroute the interrupt to the real parent set
-        /// </summary>
-        /// <returns></returns>
         public override Task Interrupt() {
             return this.Parent?.Interrupt();
         }

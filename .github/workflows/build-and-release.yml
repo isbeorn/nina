@@ -217,6 +217,7 @@ jobs:
           "NINA.Platesolving.pdb",
           "NINA.Profile.pdb",
           "NINA.Sequencer.pdb",
+          "NINA.Sequencer.Generators.pdb",
           "NINA.WPF.Base.pdb",
           "NINA.CustomControlLibrary.pdb",
           "NINA.Plugin.pdb"
@@ -238,6 +239,7 @@ jobs:
         dotnet pack .\NINA.PlateSolving\NINA.PlateSolving.csproj -c ${{ env.BUILD_CONFIG }} --output publish
         dotnet pack .\NINA.Profile\NINA.Profile.csproj -c ${{ env.BUILD_CONFIG }} --output publish
         dotnet pack .\NINA.Sequencer\NINA.Sequencer.csproj -c ${{ env.BUILD_CONFIG }} --output publish
+        dotnet pack .\NINA.Sequencer.Generators\NINA.Sequencer.Generators.csproj -c ${{ env.BUILD_CONFIG }} --output publish
         dotnet pack .\NINA.WPF.Base\NINA.WPF.Base.csproj -c ${{ env.BUILD_CONFIG }} --output publish
         dotnet pack .\NINA.CustomControlLibrary\NINA.CustomControlLibrary.csproj -c ${{ env.BUILD_CONFIG }} --output publish
         dotnet pack .\NINA.Plugin\NINA.Plugin.csproj -c ${{ env.BUILD_CONFIG }} --output publish

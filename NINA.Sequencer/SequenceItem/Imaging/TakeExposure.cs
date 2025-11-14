@@ -19,27 +19,24 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.Validations;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using NINA.Equipment.Model;
-using NINA.Astrometry;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Image.Interfaces;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Imaging {
 
@@ -49,7 +46,9 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Camera")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeExposure : SequenceItem, IExposureItem, IValidatable {
+    [UsesExpressions]
+
+    public partial class TakeExposure : SequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
@@ -59,8 +58,6 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
 
         [ImportingConstructor]
         public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
-            Gain = -1;
-            Offset = -1;
             ImageType = CaptureSequence.ImageTypes.LIGHT;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
@@ -74,21 +71,14 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             CopyMetaData(cloneMe);
         }
 
-        public override object Clone() {
-            var clone = new TakeExposure(this) {
-                ExposureTime = ExposureTime,
-                ExposureCount = 0,
-                Binning = Binning,
-                Gain = Gain,
-                Offset = Offset,
-                ImageType = ImageType,
-            };
+        partial void AfterClone(TakeExposure clone) {
+            clone.ExposureCount = 0;
+            clone.Binning = Binning;
+            clone.ImageType = ImageType;
 
             if (clone.Binning == null) {
                 clone.Binning = new BinningMode(1, 1);
             }
-
-            return clone;
         }
 
         private IList<string> issues = new List<string>();
@@ -101,26 +91,27 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
             }
         }
 
+        [IsExpression(Default = 60, Range = [0, 3600])]
         private double exposureTime;
 
-        [JsonProperty]
-        public double ExposureTime {
-            get => exposureTime;
-            set {
-                exposureTime = value;
-                RaisePropertyChanged();
+
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
+        private int gain;
+
+        partial void GainExpressionValidator(Expression expr) {
+            if (CameraInfo != null && CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
+                expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain);
             }
         }
 
-        private int gain;
-
-        [JsonProperty]
-        public int Gain { get => gain; set { gain = value; RaisePropertyChanged(); } }
-
+        [IsExpression(Default = -1, DefaultString = "LblCamera", HasValidator = true)]
         private int offset;
 
-        [JsonProperty]
-        public int Offset { get => offset; set { offset = value; RaisePropertyChanged(); } }
+        partial void OffsetExpressionValidator(Expression expr) {
+            if (CameraInfo != null && CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
+                expr.Error = string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset);
+            }
+        }
 
         private BinningMode binning;
 
@@ -245,6 +236,7 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 
@@ -283,12 +275,25 @@ namespace NINA.Sequencer.SequenceItem.Imaging {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
+            if (GainExpression.Default != CameraInfo.DefaultGain) {
+                GainExpression.Default = CameraInfo.DefaultGain;
+            }
+
+            if (OffsetExpression.Default != CameraInfo.DefaultOffset) {
+                OffsetExpression.Default = CameraInfo.DefaultOffset;
+            }
+
+            Expression.ValidateExpressions(i, ExposureTimeExpression, GainExpression, OffsetExpression);
+
+            GainExpression.Range = CameraInfo.CanSetGain ? new double[] { CameraInfo.GainMin, CameraInfo.GainMax, 0 } : null;
+            OffsetExpression.Range = CameraInfo.CanSetOffset ? new double[] { CameraInfo.OffsetMin, CameraInfo.OffsetMax, 0 } : null;
+
             Issues = i;
             return i.Count == 0;
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(this.ExposureTime);
+            return TimeSpan.FromSeconds(ExposureTime);
         }
 
         public override string ToString() {

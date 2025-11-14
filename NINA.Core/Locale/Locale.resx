@@ -7351,4 +7351,22 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblAlpacaDeviceNumber" xml:space="preserve">
     <value>Device Number</value>
   </data>
+  <data name="LblSymbols" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="Lbl_SymbolBroker_NoCategoryData" xml:space="preserve">
+    <value>No other data for {0}</value>
+    <comment>{0} will be filled with the category name</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_AdditionalData" xml:space="preserve">
+    <value>Additional Symbols:</value>
+    <comment>The prefix for additional data rows for symbol tooltips</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_SymbolOptions" xml:space="preserve">
+    <value>Options:</value>
+    <comment>The prefix per symbol for additional options</comment>
+  </data>
+  <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
+    <value>Click any symbol to copy it to the clipboard.</value>
+  </data>
 </root>

@@ -25,6 +25,9 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
 using static NINA.Sequencer.Utility.ItemUtility;
+using NINA.Sequencer.SequenceItem.Telescope;
+using NINA.Sequencer.Logic;
+using System.Runtime.Serialization;
 
 namespace NINA.Sequencer.SequenceItem.Utility {
 
@@ -34,12 +37,15 @@ namespace NINA.Sequencer.SequenceItem.Utility {
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class WaitUntilAboveHorizon : WaitForAltitudeBase, IValidatable {
 
-        private bool hasDsoParent;
-   
+    public class WaitUntilAboveHorizon : CoordinatesInstruction, IValidatable {
+
+        private IProfileService ProfileService;
+
         [ImportingConstructor]
-        public WaitUntilAboveHorizon(IProfileService profileService) : base(profileService, useCustomHorizon: true) {
+        public WaitUntilAboveHorizon(IProfileService profileService) : base() {
+            Data = new WaitLoopData(profileService, true, GetType().Name);
+            Data.Offset = 30;
             ProfileService = profileService;
         }
 
@@ -48,18 +54,17 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public override object Clone() {
-            return new WaitUntilAboveHorizon(this) {
-                Data = Data.Clone()
-            };
+            WaitUntilAboveHorizon clone = new WaitUntilAboveHorizon(this);
+            UpdateExpressions(clone, this);
+            clone.Data = Data.Clone();
+            return clone;
         }
-
-
-        [JsonProperty]
-        public bool HasDsoParent {
-            get => hasDsoParent;
-            set {
-                hasDsoParent = value;
-                RaisePropertyChanged();
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext context) {
+            base.OnDeserialized(context);
+            Coordinates = Data.Coordinates.Clone();
+            if (OffsetExpression.Definition.Length == 0) {
+                OffsetExpression.Definition = Data.Offset.ToString();
             }
         }
 
@@ -89,20 +94,16 @@ namespace NINA.Sequencer.SequenceItem.Utility {
             return altaz.Altitude.Degree;
         }
 
-        public override void CalculateExpectedTime() {
+        public void CalculateExpectedTime() {
             Data.CurrentAltitude = GetCurrentAltitude(DateTime.Now, Data.Observer);
             CalculateExpectedTimeCommon(Data, until: true, 90, GetCurrentAltitude);
         }
 
 
         public override void AfterParentChanged() {
-            var contextCoordinates = RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Data.Coordinates.Coordinates = contextCoordinates.Coordinates;
-                HasDsoParent = true;
-            } else {
-                HasDsoParent = false;
-            }
+            base.AfterParentChanged();
+            Data.Coordinates = Coordinates;
+            Offset = Data.Offset;
             Validate();
         }
 
@@ -111,19 +112,22 @@ namespace NINA.Sequencer.SequenceItem.Utility {
         }
 
         public bool Validate() {
-            var issues = new List<string>();
+            Issues.Clear();
+
             var maxAlt = AstroUtil.GetAltitude(0, Data.Latitude, Data.Coordinates.DecDegrees);
             var minHorizonAlt = (Data.Horizon?.GetMinAltitude() ?? 0) + Data.Offset;
 
             if (maxAlt < minHorizonAlt) {
-                issues.Add(Loc.Instance["LblUnreachableAltitudeForHorizon"]);
+                Issues.Add(Loc.Instance["LblUnreachableAltitudeForHorizon"]);
                 Data.ExpectedTime = "--";
             } else {
                 CalculateExpectedTime();
             }
 
-            Issues = issues;
-            return issues.Count == 0;
+            Expression.ValidateExpressions(Issues, OffsetExpression, RaExpression, DecExpression);
+
+            RaisePropertyChanged("Issues");
+            return Issues.Count == 0;
         }
     }
 }

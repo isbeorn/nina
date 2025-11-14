@@ -11,6 +11,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:NINA.Sequencer.SequenceItem.Camera"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -30,27 +31,13 @@
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Temperature}"
-                        TextAlignment="Right"
-                        Unit="°C" />
+                    <logic:ExprControl Label="{ns:Loc LblTemperature}" Exp="{Binding TemperatureExpression}" Unit="°C" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Duration}"
-                        TextAlignment="Right"
-                        Unit="min" />
+                    <logic:ExprControl Label="{ns:Loc LblMinDuration}" Exp="{Binding DurationExpression}" Unit="min" />
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
@@ -59,16 +46,7 @@
     <DataTemplate DataType="{x:Type local:WarmCamera}">
         <view:SequenceBlockView>
             <view:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Duration}"
-                        TextAlignment="Right"
-                        Unit="min" />
-                </StackPanel>
+                <logic:ExprControl Label="{ns:Loc LblMinDuration}" Exp="{Binding DurationExpression}" Unit="min" />
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
     </DataTemplate>

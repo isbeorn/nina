@@ -2,26 +2,25 @@
 using Newtonsoft.Json;
 using NINA.Core.Locale;
 using NINA.Core.Model;
-using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.ImageAnalysis;
 using NINA.Image.ImageData;
-using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.FilterWheel;
 using NINA.Sequencer.SequenceItem.Imaging;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
@@ -37,9 +36,12 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer {
+    [UsesExpressions]
+
+    public partial class AutoBrightnessFlat : SequentialContainer, IImmutableContainer, IValidatable {
         private IProfileService profileService;
         private IImagingMediator imagingMediator;
+        private ISymbolBroker symbolBroker;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -49,7 +51,8 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         [ImportingConstructor]
-        public AutoBrightnessFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
+        public AutoBrightnessFlat(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, 
+            IImageHistoryVM imageHistoryVM, IFilterWheelMediator filterWheelMediator, IFlatDeviceMediator flatDeviceMediator) :
             this(
                 null,
                 profileService,
@@ -68,8 +71,6 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
             HistogramTargetPercentage = 0.5;
             HistogramTolerancePercentage = 0.1;
-            MaxBrightness = 100;
-            MinBrightness = 20;
             GetExposureItem().ExposureTime = 1;
         }
 
@@ -110,6 +111,27 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        partial void AfterClone(AutoBrightnessFlat clone) {
+            // The order of these matters!
+            clone.profileService = profileService;
+            clone.imagingMediator = imagingMediator;
+            clone.imageSaveMediator = imageSaveMediator;
+
+            clone.Add((CloseCover)GetCloseCoverItem().Clone());
+            clone.Add((ToggleLight)GetToggleLightItem().Clone());
+            clone.Add((SwitchFilter)GetSwitchFilterItem().Clone());
+            clone.Add((SetBrightness)GetSetBrightnessItem().Clone());
+            clone.Add((SequenceContainer)GetImagingContainer().Clone());
+            clone.Add((ToggleLight)GetToggleLightOffItem().Clone());
+            clone.Add((OpenCover)GetOpenCoverItem().Clone());
+
+            clone.HistogramTargetPercentage = HistogramTargetPercentage;
+            clone.HistogramTolerancePercentage = HistogramTolerancePercentage;
+            clone.KeepPanelClosed = KeepPanelClosed;
+           clone.IsExpanded = false;
+        }
+
+
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
 
         [JsonProperty]
@@ -140,29 +162,12 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
-        public override object Clone() {
-            var clone = new AutoBrightnessFlat(
-                this,
-                profileService,
-                imagingMediator,
-                imageSaveMediator,
-                (CloseCover)this.GetCloseCoverItem().Clone(),
-                (ToggleLight)this.GetToggleLightItem().Clone(),
-                (SwitchFilter)this.GetSwitchFilterItem().Clone(),
-                (SetBrightness)this.GetSetBrightnessItem().Clone(),
-                (TakeExposure)this.GetExposureItem().Clone(),
-                (LoopCondition)this.GetIterations().Clone(),
-                (ToggleLight)this.GetToggleLightOffItem().Clone(),
-                (OpenCover)this.GetOpenCoverItem().Clone()
-            ) {
-                MaxBrightness = this.MaxBrightness,
-                MinBrightness = this.MinBrightness,
-                HistogramTargetPercentage = this.HistogramTargetPercentage,
-                HistogramTolerancePercentage = this.HistogramTolerancePercentage,
-                KeepPanelClosed = this.KeepPanelClosed
-            };
-            return clone;
+        private AutoBrightnessFlat(AutoBrightnessFlat cloneMe) {
+            if (cloneMe != null) {
+                CopyMetaData(cloneMe);
+            }
         }
+
 
         public CloseCover GetCloseCoverItem() {
             return (Items[0] as CloseCover);
@@ -198,6 +203,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
 
         public OpenCover GetOpenCoverItem() {
             return (Items[6] as OpenCover);
+        }
+
+        public SequentialContainer ImagingContainer {
+            get => GetImagingContainer();
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -418,27 +427,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
         }
 
+        [IsExpression (Default = 20, Range = [1, 100])]
         private int minBrightness;
 
-        [JsonProperty]
-        public int MinBrightness {
-            get => minBrightness;
-            set {
-                minBrightness = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        [IsExpression (Default = 100, Range = [1, 100])]
         private int maxBrightness;
-
-        [JsonProperty]
-        public int MaxBrightness {
-            get => maxBrightness;
-            set {
-                maxBrightness = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private double histogramTargetPercentage;
 
@@ -458,7 +451,7 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
         }
 
         private double histogramTolerancePercentage;
-        private readonly IImageSaveMediator imageSaveMediator;
+        private IImageSaveMediator imageSaveMediator;
 
         [JsonProperty]
         public double HistogramTolerancePercentage {
@@ -473,6 +466,11 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
                 histogramTolerancePercentage = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
 
@@ -490,9 +488,10 @@ namespace NINA.Sequencer.SequenceItem.FlatDevice {
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
+            NINA.Sequencer.Logic.Expression.ValidateExpressions(Issues, MinBrightnessExpression, MaxBrightnessExpression);
             RaisePropertyChanged(nameof(Issues));
 
-            return valid;
+            return Issues.Count == 0;
         }
     }
 }
