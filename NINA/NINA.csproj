@@ -392,7 +392,6 @@
     <PackageReference Include="OxyPlot.Contrib" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Contrib.Wpf" Version="2.1.2" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
