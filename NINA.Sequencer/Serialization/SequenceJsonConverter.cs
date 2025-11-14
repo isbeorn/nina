@@ -13,12 +13,15 @@
 #endregion "copyright"
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Generators;
 using NINA.Sequencer.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,10 +54,12 @@ namespace NINA.Sequencer.Serialization {
 
         public ISequenceContainer Deserialize(string sequenceJSON) {
             var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
+                ContractResolver = new GetOnlyContractResolver(),
                 Converters = converters
             });
 
             return container;
         }
+
     }
 }

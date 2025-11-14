@@ -15,13 +15,15 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NINA.Sequencer.Generators;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace NINA.Sequencer.Generators {
     [Generator]
@@ -253,6 +255,7 @@ namespace NINA.Sequencer.Generators {
                 } else {
                     propertiesSource += $@"
         [JsonProperty]
+        [GetOnlyJsonProperty]
         public {fieldType} {propName} {{
             get {{ 
                 {propNameExpression}.Evaluate(true); 
@@ -279,6 +282,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
 namespace {namespaceName}
 {{
@@ -360,4 +364,21 @@ namespace {namespaceName}
         public UsesExpressionsAttribute() {
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public sealed class GetOnlyJsonPropertyAttribute : Attribute {
+    }
+
+    public class GetOnlyContractResolver : DefaultContractResolver {
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
+            var property = base.CreateProperty(member, memberSerialization);
+            if (property != null && property.Writable) {
+                var attributes = property.AttributeProvider.GetAttributes(typeof(GetOnlyJsonPropertyAttribute), true);
+                if (attributes != null && attributes.Count > 0)
+                    property.Writable = false;
+            }
+            return property;
+        }
+    }
+
 }
