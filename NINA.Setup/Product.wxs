@@ -364,6 +364,9 @@
   <Fragment>
 
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="e_sqlite3.dll" Guid="2498761c-837d-4c24-a049-7bc0bc8aae98">
+        <File Id="e_sqlite3.dll" Name="e_sqlite3.dll" Source="$(var.NINA_TargetDir)e_sqlite3.dll" />
+      </Component>
       <Component Id="Accord.dll" Guid="2ea6a34b-6c9a-42da-bb4c-24dcf06e9ef2" Bitness="$(var.Win64)">
         <File Id="Accord.dll" Name="Accord.dll" Source="$(var.NINA_TargetDir)Accord.dll" />
       </Component>
@@ -631,9 +634,6 @@
       <Component Id="sni.dll" Guid="0E0DB3D2-E282-4C15-9B29-13D1E513EF8D">
         <File Id="sni.dll" Name="sni.dll" Source="$(var.NINA_TargetDir)sni.dll" />
       </Component>
-      <Component Id="SQLite.Interop.dll_x64_native" Guid="A217249B-AF5A-4128-B4D0-336B111B5995">
-        <File Id="SQLite.Interop.dll_x64_native" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)SQLite.Interop.dll" />
-      </Component>
       <Component Id="System.ComponentModel.Composition.dll" Guid="d8c08164-ef91-4cbf-8a10-a6087e40f4a1">
         <File Id="System.ComponentModel.Composition.dll" Name="System.ComponentModel.Composition.dll" Source="$(var.NINA_TargetDir)System.ComponentModel.Composition.dll" />
       </Component>
@@ -709,6 +709,9 @@
       <Component Id="clrgc.dll" Guid="e4e9717a-6e64-48ef-a4d9-9ff3362cfb8c">
         <File Id="clrgc.dll" Name="clrgc.dll" Source="$(var.NINA_TargetDir)clrgc.dll" />
       </Component>
+      <Component Id="clrgcexp.dll" Guid="1309a375-450e-4ae8-aa48-8b87f81af8e1">
+        <File Id="clrgcexp.dll" Name="clrgcexp.dll" Source="$(var.NINA_TargetDir)clrgcexp.dll" />
+      </Component>
       <Component Id="clrjit.dll" Guid="385ef05e-ff72-4a36-bb3b-d9cae41748ad">
         <File Id="clrjit.dll" Name="clrjit.dll" Source="$(var.NINA_TargetDir)clrjit.dll" />
       </Component>
@@ -766,8 +769,8 @@
       <Component Id="mscordaccore.dll" Guid="336d6d9f-0a67-4a83-83e7-2158c417b7dc">
         <File Id="mscordaccore.dll" Name="mscordaccore.dll" Source="$(var.NINA_TargetDir)mscordaccore.dll" />
       </Component>
-      <Component Id="mscordaccore_amd64_amd64_8.0.2025.41914.dll" Guid="10c9d792-7f75-4389-9f7d-84ea827e033c">
-        <File Id="mscordaccore_amd64_amd64_8.0.2025.41914.dll" Name="mscordaccore_amd64_amd64_8.0.2025.41914.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_8.0.2025.41914.dll" />
+      <Component Id="mscordaccore_amd64_amd64_10.0.25.52411.dll" Guid="f611e6eb-f88f-44c6-ab1a-c59348aff390">
+        <File Id="mscordaccore_amd64_amd64_10.0.25.52411.dll" Name="mscordaccore_amd64_amd64_10.0.25.52411.dll" Source="$(var.NINA_TargetDir)mscordaccore_amd64_amd64_10.0.25.52411.dll" />
       </Component>
       <Component Id="mscordbi.dll" Guid="b6776634-a994-46a1-a11f-03b938bf02de">
         <File Id="mscordbi.dll" Name="mscordbi.dll" Source="$(var.NINA_TargetDir)mscordbi.dll" />
@@ -819,6 +822,9 @@
       </Component>
       <Component Id="PresentationFramework.dll" Guid="6059b1e3-b587-424f-ad94-fe23536b93fe">
         <File Id="PresentationFramework.dll" Name="PresentationFramework.dll" Source="$(var.NINA_TargetDir)PresentationFramework.dll" />
+      </Component>
+      <Component Id="PresentationFramework.Fluent.dll" Guid="f1fdba3b-0aee-4fea-9b86-b2345fdc4717">
+        <File Id="PresentationFramework.Fluent.dll" Name="PresentationFramework.Fluent.dll" Source="$(var.NINA_TargetDir)PresentationFramework.Fluent.dll" />
       </Component>
       <Component Id="PresentationFramework.Luna.dll" Guid="a99341b7-b0e0-4abc-9f3e-594492f5a85d">
         <File Id="PresentationFramework.Luna.dll" Name="PresentationFramework.Luna.dll" Source="$(var.NINA_TargetDir)PresentationFramework.Luna.dll" />
@@ -964,6 +970,9 @@
       <Component Id="System.Formats.Asn1.dll" Guid="8693fd3d-3a1b-4423-a0ee-dc8e264cdcf8">
         <File Id="System.Formats.Asn1.dll" Name="System.Formats.Asn1.dll" Source="$(var.NINA_TargetDir)System.Formats.Asn1.dll" />
       </Component>
+      <Component Id="System.Formats.Nrbf.dll" Guid="70279a5b-5e79-45ba-803c-9e6382247a0c">
+        <File Id="System.Formats.Nrbf.dll" Name="System.Formats.Nrbf.dll" Source="$(var.NINA_TargetDir)System.Formats.Nrbf.dll" />
+      </Component>
       <Component Id="System.Formats.Tar.dll" Guid="ad85c921-c445-4c36-97e2-2a36c7c9b370">
         <File Id="System.Formats.Tar.dll" Name="System.Formats.Tar.dll" Source="$(var.NINA_TargetDir)System.Formats.Tar.dll" />
       </Component>
@@ -1030,6 +1039,9 @@
       <Component Id="System.Linq.dll" Guid="7be7f75b-77bf-44df-bd69-65859fd40463">
         <File Id="System.Linq.dll" Name="System.Linq.dll" Source="$(var.NINA_TargetDir)System.Linq.dll" />
       </Component>
+      <Component Id="System.Linq.AsyncEnumerable.dll" Guid="10532390-772b-4a1c-9fab-274a59240146">
+        <File Id="System.Linq.AsyncEnumerable.dll" Name="System.Linq.AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)System.Linq.AsyncEnumerable.dll" />
+      </Component>
       <Component Id="System.Linq.Expressions.dll" Guid="67ea549d-123c-40ab-8686-0be128cc15d5">
         <File Id="System.Linq.Expressions.dll" Name="System.Linq.Expressions.dll" Source="$(var.NINA_TargetDir)System.Linq.Expressions.dll" />
       </Component>
@@ -1078,6 +1090,9 @@
       <Component Id="System.Net.Security.dll" Guid="a8fd03e0-9c06-44ea-9bd2-6e0fdd7d123d">
         <File Id="System.Net.Security.dll" Name="System.Net.Security.dll" Source="$(var.NINA_TargetDir)System.Net.Security.dll" />
       </Component>
+      <Component Id="System.Net.ServerSentEvents.dll" Guid="fb7c1c62-8588-40a5-87a7-ad61ff5de028">
+        <File Id="System.Net.ServerSentEvents.dll" Name="System.Net.ServerSentEvents.dll" Source="$(var.NINA_TargetDir)System.Net.ServerSentEvents.dll" />
+      </Component>
       <Component Id="System.Net.ServicePoint.dll" Guid="f5f053d8-d3f7-440f-bef3-be6810383c50">
         <File Id="System.Net.ServicePoint.dll" Name="System.Net.ServicePoint.dll" Source="$(var.NINA_TargetDir)System.Net.ServicePoint.dll" />
       </Component>
@@ -1119,6 +1134,15 @@
       </Component>
       <Component Id="System.Private.Uri.dll" Guid="ee8fb911-0af3-48ab-9673-90a31910bdb0">
         <File Id="System.Private.Uri.dll" Name="System.Private.Uri.dll" Source="$(var.NINA_TargetDir)System.Private.Uri.dll" />
+      </Component>
+      <Component Id="System.Private.Windows.Core.dll" Guid="e91fc21c-2d60-4e99-b695-391b98829185">
+        <File Id="System.Private.Windows.Core.dll" Name="System.Private.Windows.Core.dll" Source="$(var.NINA_TargetDir)System.Private.Windows.Core.dll" />
+      </Component>
+      <Component Id="System.Private.Windows.GdiPlus.dll" Guid="4c32e1f5-41b7-46b1-b7f8-d3624d338465">
+        <File Id="System.Private.Windows.GdiPlus.dll" Name="System.Private.Windows.GdiPlus.dll" Source="$(var.NINA_TargetDir)System.Private.Windows.GdiPlus.dll" />
+      </Component>
+      <Component Id="System.Windows.Primitives.dll" Guid="4ac06eb7-0f43-4a24-88e7-b6a07cc216bb">
+        <File Id="System.Windows.Primitives.dll" Name="System.Windows.Primitives.dll" Source="$(var.NINA_TargetDir)System.Windows.Primitives.dll" />
       </Component>
       <Component Id="System.Private.Xml.dll" Guid="514898e5-dbda-44a8-b70c-8b0fc7656233">
         <File Id="System.Private.Xml.dll" Name="System.Private.Xml.dll" Source="$(var.NINA_TargetDir)System.Private.Xml.dll" />

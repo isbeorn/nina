@@ -197,7 +197,7 @@ namespace NINA.Equipment.Equipment.MyWeatherData {
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
 
-            var parameter = "current=temperature_2m,relative_humidity_2m,precipitation,cloud_cover,surface_pressure,wind_direction_10m,wind_speed_10m,wind_gusts_10m&models=icon_eu";
+            var parameter = "current=temperature_2m,relative_humidity_2m,precipitation,cloud_cover,surface_pressure,wind_direction_10m,wind_speed_10m,wind_gusts_10m";
             var url = $"{_currentWeatherBaseURL}?latitude={latitude}&longitude={longitude}&{parameter}";
 
             var request = new HttpGetRequest(url);

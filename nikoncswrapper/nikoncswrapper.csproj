@@ -7,9 +7,16 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>NINA.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>
-    <Version>3.2.0.3012-rc</Version>
+    <Version>3.2.0.9001</Version>
     <Description>A patched version for N.I.N.A. of the original module</Description>
     <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSource>true</IncludeSource>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -35,7 +42,6 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>
