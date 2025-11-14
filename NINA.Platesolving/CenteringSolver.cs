@@ -30,6 +30,7 @@ using System.Collections.Generic;
 namespace NINA.PlateSolving {
 
     public class CenteringSolver : ICenteringSolver {
+        private const double MAX_OFFSET_DEGREES = 2.0d;
         private readonly ITelescopeMediator telescopeMediator;
         private readonly IFilterWheelMediator filterWheelMediator;
         private readonly IDomeMediator domeMediator;
@@ -107,6 +108,16 @@ namespace NINA.PlateSolving {
                         if (parameter.NoSync || !await telescopeMediator.Sync(resultCoordinates)) {
                             var oldOffset = offset;
                             offset = position - resultCoordinates;
+
+                            if (offset.Distance.Degree > MAX_OFFSET_DEGREES) {
+                                // If the offset is now more than MAX_OFFSET_DEGREES degrees without the ability to sync, something is wrong with the mount pointing.
+                                // Additionally the offset logic will be problematic beyond these distances - Abort centering
+                                Notification.ShowError(string.Format(Loc.Instance["LblPlateSolveSyncFailureTooLargeOffset"], MAX_OFFSET_DEGREES, offset.Distance.Degree));
+                                Logger.Error($"Aborting centering - sync is unavailable and calculated offset is too large: {offset} / {MAX_OFFSET_DEGREES}");
+                                centeringAttempt.Stop();
+                                result.Success = false;
+                                break;
+                            }
 
                             Logger.Info($"Sync {(parameter.NoSync ? "disabled" : "failed")} - calculating offset instead to compensate.  Original: {positionWithOffset}; Original Offset {oldOffset}; Solved: {resultCoordinates}; New Offset: {offset}");
                         } else {
