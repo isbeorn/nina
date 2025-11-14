@@ -254,8 +254,7 @@ namespace NINA.Sequencer.Generators {
 ";
                 } else {
                     propertiesSource += $@"
-        [JsonProperty]
-        [GetOnlyJsonProperty]
+        [JsonProperty (Order = 0)]
         public {fieldType} {propName} {{
             get {{ 
                 {propNameExpression}.Evaluate(true); 
@@ -271,6 +270,14 @@ namespace NINA.Sequencer.Generators {
                 {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
             }}
         }}
+        [JsonProperty (Order = 1)]
+        public string {propName}Definition {{
+            get => {propNameExpression}.Definition;
+            set {{
+                {propNameExpression}.Definition = value;
+            }}
+        }}
+
 ";
                 }
 
@@ -364,21 +371,4 @@ namespace {namespaceName}
         public UsesExpressionsAttribute() {
         }
     }
-
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class GetOnlyJsonPropertyAttribute : Attribute {
-    }
-
-    public class GetOnlyContractResolver : DefaultContractResolver {
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
-            var property = base.CreateProperty(member, memberSerialization);
-            if (property != null && property.Writable) {
-                var attributes = property.AttributeProvider.GetAttributes(typeof(GetOnlyJsonPropertyAttribute), true);
-                if (attributes != null && attributes.Count > 0)
-                    property.Writable = false;
-            }
-            return property;
-        }
-    }
-
 }

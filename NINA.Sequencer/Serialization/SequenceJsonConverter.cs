@@ -54,7 +54,6 @@ namespace NINA.Sequencer.Serialization {
 
         public ISequenceContainer Deserialize(string sequenceJSON) {
             var container = JsonConvert.DeserializeObject<ISequenceContainer>(sequenceJSON, new JsonSerializerSettings() {
-                ContractResolver = new GetOnlyContractResolver(),
                 Converters = converters
             });
 
