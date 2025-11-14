@@ -324,7 +324,7 @@ namespace NINA.Plugin {
                     }
 
                     initialized = true;
-                    Debug.Print($"Time to load all plugins {sw.Elapsed}");
+                    Logger.Debug($"Time to load all plugins {sw.Elapsed}");
                 } catch (Exception ex) {
                     Logger.Error(ex);
                 } finally {
@@ -455,7 +455,7 @@ namespace NINA.Plugin {
                 //This should only happen for non plugin assemblies, that are not even targeting .NET
                 Logger.Trace($"The dll inside the plugins folder failed to load. Most likely it is not a pugin but an external non .NET dependency. File: {file}, Error: {ex}");
             } finally {
-                Debug.Print($"Time to load plugin {Path.GetFileNameWithoutExtension(file)} {sw.Elapsed}");
+                Logger.Debug($"Time to load plugin {Path.GetFileNameWithoutExtension(file)} {sw.Elapsed}");
             }
         }
 

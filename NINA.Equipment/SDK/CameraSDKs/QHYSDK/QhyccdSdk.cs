@@ -305,10 +305,10 @@ namespace QHYCCD {
 
             if (GetQHYCCDFWVersion(handle, buf) != QHYCCD_ERROR) {
                 int ver = buf[0] >> 4;
-                if (ver < 9) {
-                    version = Convert.ToString(ver + 16) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
+                if (ver <= 9) {
+                    version = Convert.ToString(ver + 16) + "-" + Convert.ToString(buf[0] & 0x0F) + "-" + Convert.ToString(buf[1]);
                 } else {
-                    version = Convert.ToString(ver) + "-" + Convert.ToString(buf[0] & -241) + "-" + Convert.ToString(buf[1]);
+                    version = Convert.ToString(ver) + "-" + Convert.ToString(buf[0] & 0x0F) + "-" + Convert.ToString(buf[1]);
                 }
             }
 
