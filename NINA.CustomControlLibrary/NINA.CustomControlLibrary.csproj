@@ -46,9 +46,6 @@
   <ItemGroup>
     <ProjectReference Include="..\NINA.Core\NINA.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
   <PropertyGroup>
     <Version>3.2.0.9001</Version>
     <Title>N.I.N.A. Custom Control Library</Title>

@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fastenshtein" Version="1.0.11" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Nito.AsyncEx.Context" Version="5.1.2" />
     <PackageReference Include="Nito.Disposables" Version="2.5.0" />
   </ItemGroup>
