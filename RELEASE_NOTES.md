@@ -5,6 +5,9 @@ More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">n
 
 # Version 3.3
 
+## General
+- The application now runs on .NET 10, bringing performance improvements and access to the latest runtime features.
+
 ## Bugfixes
 - Autofocus after HFR Increase HFRTrendPercentage is now calculated correctly and will no longer underestimate the change on large HFR drift
 - ToupTek based filter wheels and focusers will no longer be listed in the camera connector.
