@@ -285,6 +285,35 @@
                             </Grid>
 
                             <Grid>
+                                <!--  SKYATLAS (Offline Sky Map) Specific UI  -->
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="{x:Static enum:SkySurveySource.SKYATLAS}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+    
+                                <Grid Margin="0,5,0,0" 
+                                      VerticalAlignment="Center"
+                                      Visibility="{Binding AvailableCacheSources, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="FramingLabel"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Text="Cache source" />
+                                    <ComboBox
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        ItemsSource="{Binding AvailableCacheSources}"
+                                        SelectedItem="{Binding SelectedCacheSource}" />
+                                </Grid>
+                            </Grid>
+
+                            <Grid>
                                 <!--  Cache Specific UI  -->
                                 <Grid.Style>
                                     <Style TargetType="{x:Type Grid}">

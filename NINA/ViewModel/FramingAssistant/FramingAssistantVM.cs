@@ -445,6 +445,15 @@ namespace NINA.ViewModel.FramingAssistant {
                 Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
                 ImageCacheInfo = Cache.Cache;
                 _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
+
+                // Load available cache sources
+                var sources = Cache.GetAvailableCacheSources();
+                if (!sources.SequenceEqual(new[] { CacheSkySurvey.Default }))
+                    AvailableCacheSources = sources;
+                else
+                    AvailableCacheSources = null;
+                SelectedCacheSource = CacheSkySurvey.Default;
+
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -622,8 +631,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     SkyMapAnnotator.ClearImagesForViewport();
 
                     Cache.Clear();
-                    ImageCacheInfo = Cache.Cache;
-                    RaisePropertyChanged(nameof(ImageCacheInfo));
+                    InitializeCache();
                 }
             }
         }
@@ -900,6 +908,37 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private List<string> _availableCacheSources;
+
+        public List<string> AvailableCacheSources {
+            get => _availableCacheSources;
+            set {
+                _availableCacheSources = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _selectedCacheSource = CacheSkySurvey.Default;
+
+        public string SelectedCacheSource {
+            get => _selectedCacheSource;
+            set {
+                if (_selectedCacheSource != value) {
+                    _selectedCacheSource = value;
+                    if (Cache != null) {
+                        Cache.LoadCacheSource(value);
+                        ImageCacheInfo = Cache.GetActiveCacheElement();
+                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                        try {
+                            SkyMapAnnotator?.ClearImagesForViewport();
+                            SkyMapAnnotator?.UpdateSkyMap();
+                        } catch { }
+                    }
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private double _cameraPixelSize;
 
         public double CameraPixelSize {
@@ -1100,6 +1139,11 @@ namespace NINA.ViewModel.FramingAssistant {
                         SkyMapAnnotator.UseCachedImages = IsX64;
                     } else {
                         SkyMapAnnotator.UseCachedImages = false;
+                    }
+
+                    // Load cache from selected source if SKYATLAS is selected
+                    if (FramingAssistantSource == SkySurveySource.SKYATLAS && Cache != null) {
+                        Cache.LoadCacheSource(SelectedCacheSource);
                     }
 
                     if (Cache != null && DSO != null) {
