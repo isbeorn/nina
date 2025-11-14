@@ -254,7 +254,16 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             int samePositionCount = 0;
             var lastMovementTime = DateTime.Now;
             while (position != Position && !ct.IsCancellationRequested) {
-                ASIEAF.Move(id, position);
+                // Issue move command
+                if (ASIEAF.Move(id, position) != ASIEAF.EAF_ERROR_CODE.EAF_SUCCESS) {
+                    Logger.Error("EAF failed to issue move command");
+                    throw new Exception("Failed to move focuser");
+                }
+
+                await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), ct);
+                while (IsMoving && !ct.IsCancellationRequested) {
+                    await CoreUtil.Wait(TimeSpan.FromMilliseconds(100), ct);
+                }
 
                 if (lastPosition == Position) {
                     ++samePositionCount;
