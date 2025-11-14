@@ -28,8 +28,6 @@ namespace NINA.Sequencer.Logic {
 
         public static Dictionary<ISequenceEntity, bool> ValidityCache = new Dictionary<ISequenceEntity, bool>();
 
-        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
-
         private const int VALUE_EXP = 0;              // The expression to be evaluated
         private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
