@@ -1,7 +1,10 @@
 ﻿using NCalc;
 using NCalc.Handlers;
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Core.Utility.ColorSchema;
+using NINA.Profile.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
 using OxyPlot;
@@ -18,10 +21,11 @@ using static NINA.Sequencer.Logic.UserSymbol;
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-        /// <summary>
-        /// Used by the JSON serializer
-        /// </summary>
+
+        private static IProfileService ProfileService = null;
+
         public Expression() { }
+        
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
             SymbolBroker = cloneMe.SymbolBroker;
@@ -31,6 +35,9 @@ namespace NINA.Sequencer.Logic {
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
+            if (ProfileService == null) {
+                ProfileService = (IProfileService)System.Windows.Application.Current.Resources["ProfileService"];
+            }
         }
 
         public Expression(string definition, ISequenceEntity context) {
@@ -130,7 +137,7 @@ namespace NINA.Sequencer.Logic {
                 if (value != _value) {
                     if ("int".Equals(Type)) {
                         if (StringValue != null) {
-                            Error = "Value must be an Integer";
+                            Error = Loc.Instance["LblMustBeInteger"];
                         }
                         ForceAnnotated = false;
                         if (Definition.Length > 0 && Double.Floor(value) != value) {
@@ -163,20 +170,25 @@ namespace NINA.Sequencer.Logic {
             if (value < min || (max != 0 && value > max)) {
                 if (r == 0) {
                     if (max == 0) {
-                        Error = "Range: >= " + min;
+                        Error = Loc.Instance["LblRange"] + ": >= " + min;
                     } else {
-                        Error = "Range: " + min + " < value < " + max;
+                        Error = Loc.Instance["LblRange"] +  ":" + min + " < " + "value" + " < " + max;
                     }
                 } else {
-                    Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and less than " + (((r & 2) == 2) ? "" : "or equal to ") + Range[1];
+                    Error = "Value must be" + " " + (((r & 1) == 1) ? "greater than" : "between") + " " + Range[0] + " " + "and less than" + " " + (((r & 2) == 2) ? "" : "or equal to" + " ") + Range[1];
                 }
             }
         }
-
+        
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
-                return JustWarnings(Error) ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.Red);
+                return JustWarnings(Error) ?
+                    // Don't like existing notification colors - they are hard to see.  Maybe add new ones to profiles?
+                    new SolidColorBrush(Colors.Orange) :
+                    new SolidColorBrush(Colors.Red);
+                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningColor) : 
+                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorColor);
             }
             set { }
         }
@@ -186,7 +198,8 @@ namespace NINA.Sequencer.Logic {
             bool red = false;
             bool orange = false;
             foreach (string e in errors) {
-                if (e.Contains("Not evaluated") || e.Contains("External")) {
+                // Note "External" not used currently
+                if (e.Contains(Loc.Instance["LblNotEvaluated"]) || e.Contains("External")) {
                     orange = true; ;
                 } else {
                     red = true;
@@ -198,11 +211,11 @@ namespace NINA.Sequencer.Logic {
         public string ExprErrors {
             get {
                 if (Error == null) {
-                    return "No errors in Expression";
+                    return Loc.Instance["NoErrors"];
                 } else if (JustWarnings(Error)) {
-                    return "Warning(s): " + Error;
+                    return string.Format(Loc.Instance["LblWarnings"], Error);
                 } else {
-                    return "Error(s): " + Error;
+                    return string.Format(Loc.Instance["LblErrors"], Error);
                 }
             }
             set { }
@@ -223,7 +236,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             } else if (double.IsNaN(Value) && Definition?.Length > 0) {
-                Error = "Not evaluated";
+                Error = Loc.Instance["LblNotEvaluated"];
             } else if (Resolved.Count != References.Count) {
                 // Why would this happen... track down?
                 Evaluate();
@@ -262,9 +275,9 @@ namespace NINA.Sequencer.Logic {
                     var local = ConvertFromUnixTimestamp(Value).ToLocalTime();
                     var today = DateTime.Today;
                     if (local.Date == today.AddDays(1)) {
-                        return local.ToShortTimeString() + " tomorrow";
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblTomorrow"];
                     } else if (local.Date == today.AddDays(-1)) {
-                        return local.ToShortTimeString() + " yesterday";
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblYesterday"];
                     } else if (local.Date == today) {
                         return local.ToShortTimeString();
                     } else
@@ -364,7 +377,7 @@ namespace NINA.Sequencer.Logic {
                         e.Evaluate();
                     } catch (NCalc.Exceptions.NCalcParserException) {
                         // We should expect this, since we're just trying to find the parameters used
-                        Error = "Syntax Error";
+                        Error = Loc.Instance["LblSyntaxError"];
                         return;
                     } catch (Exception) {
                         // That's ok
@@ -541,7 +554,7 @@ namespace NINA.Sequencer.Logic {
             e.Parameters = parameters;
 
             if (e.HasErrors()) {
-                Error = "Syntax Error";
+                Error = Loc.Instance["LblSyntaxError"];
                 return;
             }
 
@@ -554,14 +567,14 @@ namespace NINA.Sequencer.Logic {
                             // Not defined or evaluated
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is Variable sv && !sv.Executed) {
-                                AddError("Not evaluated: " + r);
-                            } else if (r.StartsWith("_")) {
-                                AddError("Reference: " + r);
+                                AddError(Loc.Instance["LblNotEvaluated"] + r);
+//                           } else if (r.StartsWith("_")) {
+//                               AddError("Reference: " + r);
                             } else {
-//                                if (r.StartsWith('$') && ext && validateOnly) {
-//                                    AddError("External: " + symReference);
-//                                } else {
-                                    AddError("Undefined: " + r);
+                                //                                if (r.StartsWith('$') && ext && validateOnly) {
+                                //                                    AddError("External: " + symReference);
+                                //                                } else {
+                                AddError(Loc.Instance["LblUndefined"] + ": " + r);
 //                                }
                             }
                         }
@@ -586,10 +599,11 @@ namespace NINA.Sequencer.Logic {
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
                                 } else {
-                                    Error = "Syntax error";
+                                    Error = Loc.Instance["LblSyntaxError"];
                                 }
                             } else {
-                                Error = (str != null) ? "Strings are now allowed as values" : "Syntax error";
+                                // This can't happen as we allow strings.  Don't localize.  But don't delete the if just in case...
+                                Error = (str != null) ? "Strings are now allowed as values" : Loc.Instance["LblSyntaxError"];
                             }
                         }
                     }
@@ -600,13 +614,13 @@ namespace NINA.Sequencer.Logic {
                 }
 
             } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
-                Error = "Undefined: " + ex.ParameterName;
+                Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
             } catch (Exception ex) {
                 if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
-                    Error = "Syntax Error";
+                    Error = Loc.Instance["LblSyntaxError"];
                     return;
                 } else {
-                    Error = "Error: " + ex.Message; // "Unknown Error; see log";
+                    Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
                     Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
                 }
             }

@@ -46,7 +46,7 @@ namespace NINA.Sequencer.Serialization {
             var method = itemFactory.GetType().GetMethod(nameof(itemFactory.GetItem)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(itemFactory, null);
             ISequenceItem newItem = (ISequenceItem)newObj;
-            newItem.Name += "[" + item.Name + " Powerups=>NINA";
+            newItem.Name += "[" + item.Name + " =>NINA";
             newItem.Attempts = item.Attempts;
             newItem.ErrorBehavior = item.ErrorBehavior;
             return newObj;
@@ -54,21 +54,21 @@ namespace NINA.Sequencer.Serialization {
         private static T CreateNewContainer<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(containerFactory.GetContainer)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(containerFactory, null);
-            ((ISequenceContainer)newObj).Name += "[" + oldName + " Powerups=>NINA";
+            ((ISequenceContainer)newObj).Name += "[" + oldName + " =>NINA";
             return newObj;
         }
 
         private static T CreateNewCondition<T>(string oldName) {
             var method = containerFactory.GetType().GetMethod(nameof(conditionFactory.GetCondition)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(conditionFactory, null);
-            ((ISequenceCondition)newObj).Name += "[" + oldName + " Powerups=>NINA";
+            ((ISequenceCondition)newObj).Name += "[" + oldName + " =>NINA";
             return newObj;
         }
 
         private static T CreateNewTrigger<T>(string oldName) {
             var method = triggerFactory.GetType().GetMethod(nameof(triggerFactory.GetTrigger)).MakeGenericMethod(new Type[] { typeof(T) });
             T newObj = (T)method.Invoke(triggerFactory, null);
-            ((ISequenceTrigger)newObj).Name += "[" + oldName + " Powerups=>NINA";
+            ((ISequenceTrigger)newObj).Name += "[" + oldName + " =>NINA";
             return newObj;
         }
 

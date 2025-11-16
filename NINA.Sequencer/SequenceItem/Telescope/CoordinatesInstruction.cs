@@ -80,7 +80,7 @@ namespace NINA.Sequencer.SequenceItem.Telescope {
 
         [IsExpression(Default = 0, Range = [0, 24], HasValidator = true)]
         private double ra = 0;
-
+        
         partial void RaExpressionValidator(Expression expr) {
             // When the decimal value changes, we update the HMS values
             InputCoordinates ic = new InputCoordinates();
