@@ -7423,4 +7423,21 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblAnd" xml:space="preserve">
     <value>and</value>
   </data>
+  <data name="LblAlreadyDefined" xml:space="preserve">
+    <value>is already defined</value>
+    <comment>As in &lt;variable&gt; is already defined</comment>
+  </data>
+  <data name="LblConstantVariable" xml:space="preserve">
+    <value>The Constant/Variable</value>
+    <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
+  </data>
+  <data name="LblNoSymbols" xml:space="preserve">
+    <value>No defined Constant/Variable is used in this expression</value>
+  </data>
+  <data name="LblNotYetDefined" xml:space="preserve">
+    <value> The Constant/Variable is not yet defined</value>
+  </data>
+  <data name="LblValueBetween" xml:space="preserve">
+    <value>Value must be between {0} and {1}</value>
+  </data>
 </root>

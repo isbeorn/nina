@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NCalc;
 using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Core.Locale;
@@ -640,6 +641,7 @@ namespace NINA.Sequencer.Logic {
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
+            string str;
             try {
                 if (args.Parameters.Length > 0) {
                     try {
@@ -651,59 +653,75 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     dt = DateTime.Now;
                 }
-                if (name == "now") {
-                    args.Result = UnixTimeNow();
-                } else if (name == "hour") {
-                    args.Result = (int)dt.Hour;
-                } else if (name == "minute") {
-                    args.Result = (int)dt.Minute;
-                } else if (name == "day") {
-                    args.Result = (int)dt.Day;
-                } else if (name == "month") {
-                    args.Result = (int)dt.Month;
-                } else if (name == "year") {
-                    args.Result = (int)dt.Year;
-                } else if (name == "dow") {
-                    args.Result = (int)dt.DayOfWeek;
-                } else if (name == "dateString") {
-                    if (args.Parameters.Length < 2) {
-                        throw new ArgumentException();
-                    }
-                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
-                } else if (name == "defined") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate());
-                    args.Result = SymbolBroker.TryGetValue(str, out _);
-                    // Always check again on validation
-                    GlobalVolatile = true;
-                } else if (name == "startsWith") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                    string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
-                    args.Result = str.StartsWith(f, StringComparison.Ordinal);
-                } else if (name == "strLength") {
-                    var e = args.Parameters[0].Evaluate();
-                    if (e is string es) {
-                        args.Result = es.Length;
-                    } else {
-                        args.Result = -1;
-                    }
-                } else if (name == "strConcat") {
-                    var e = args.Parameters[0].Evaluate().ToString();
-                    var i = args.Parameters[1].Evaluate().ToString();
-                    if (e is string es && i is string iss) {
-                        args.Result = String.Concat(es, iss);
-                    } else {
-                        args.Result = "";
-                    }
-                } else if (name == "strAtPos") {
-                    var e = args.Parameters[0].Evaluate();
-                    var i = args.Parameters[1].Evaluate();
-                    if (e is string es && i is int iint && iint >= 0 && iint < es.Length) {
-                        args.Result = Convert.ToString(es[iint]);
-                    } else {
-                        args.Result = "";
-                    }
-                } else if (name == "random") {
-                    args.Result = RNG.NextDouble();
+
+                switch (name) {
+                    case "now":
+                        args.Result = UnixTimeNow();
+                        break;
+                    case "hour":
+                        args.Result = (int)dt.Hour;
+                        break;
+                    case "minute":
+                        args.Result = (int)dt.Minute;
+                        break;
+                    case "day":
+                        args.Result = (int)dt.Day;
+                        break;
+                    case "month":
+                        args.Result = (int)dt.Month;
+                        break;
+                    case "year":
+                        args.Result = (int)dt.Year;
+                        break;
+                    case "dow":
+                        args.Result = (int)dt.DayOfWeek;
+                        break;
+                    case "dateString":
+                        if (args.Parameters.Length < 2) {
+                            throw new ArgumentException();
+                        }
+                        args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                        break;
+                    case "defined":
+                        str = Convert.ToString(args.Parameters[0].Evaluate());
+                        args.Result = SymbolBroker.TryGetValue(str, out _);
+                        // Always check again on validation
+                        GlobalVolatile = true;
+                        break;
+                    case "startsWith":
+                        str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        args.Result = str.StartsWith(f, StringComparison.Ordinal);
+                        break;
+                    case "strLength":
+                        var e = args.Parameters[0].Evaluate();
+                        if (e is string es) {
+                            args.Result = es.Length;
+                        } else {
+                            args.Result = -1;
+                        }
+                        break;
+                    case "strConcat":
+                        var e1 = args.Parameters[0].Evaluate().ToString();
+                        var i1 = args.Parameters[1].Evaluate().ToString();
+                        if (e1 is string es1 && i1 is string iss) {
+                            args.Result = String.Concat(es1, iss);
+                        } else {
+                            args.Result = "";
+                        }
+                        break;
+                    case "strAtPos":
+                        var e2 = args.Parameters[0].Evaluate();
+                        var i2 = args.Parameters[1].Evaluate();
+                        if (e2 is string es2 && i2 is int iint && iint >= 0 && iint < es2.Length) {
+                            args.Result = Convert.ToString(es2[iint]);
+                        } else {
+                            args.Result = "";
+                        }
+                        break;
+                    case "random":
+                        args.Result = RNG.NextDouble();
+                        break;
                 }
             } catch (Exception ex) {
                 Logger.Error("Error evaluating function " + name + ": " + ex.Message);
