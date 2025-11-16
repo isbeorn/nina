@@ -32,7 +32,7 @@ namespace NINA.Sequencer.Logic {
         private const int VALUE_EXP = 0;              // The expression to be evaluated
         private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
-
+        private const int VALUE_DATE = 3;
         private long NowInSeconds = 0;
         private long NowPlusOneYear;
         private long NowMinusOneYear;

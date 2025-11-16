@@ -172,10 +172,10 @@ namespace NINA.Sequencer.Logic {
                     if (max == 0) {
                         Error = Loc.Instance["LblRange"] + ": >= " + min;
                     } else {
-                        Error = Loc.Instance["LblRange"] +  ":" + min + " < " + "value" + " < " + max;
+                        Error = Loc.Instance["LblRange"] +  ":" + min + " < " + Loc.Instance["LblValue"] + " < " + max;
                     }
                 } else {
-                    Error = "Value must be" + " " + (((r & 1) == 1) ? "greater than" : "between") + " " + Range[0] + " " + "and less than" + " " + (((r & 2) == 2) ? "" : "or equal to" + " ") + Range[1];
+                    Error = Loc.Instance["ValueMustBe"] + " " + (((r & 1) == 1) ? ">" : Loc.Instance["LblBetween"]) + " " + Range[0] + " " + Loc.Instance["LblAnd"] + " <" + " " + (((r & 2) == 2) ? " < " : " <=" + " ") + Range[1];
                 }
             }
         }

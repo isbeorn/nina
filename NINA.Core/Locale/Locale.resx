@@ -7420,4 +7420,7 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblMustBeInteger" xml:space="preserve">
     <value>Value must be an Integer</value>
   </data>
+  <data name="LblAnd" xml:space="preserve">
+    <value>and</value>
+  </data>
 </root>
