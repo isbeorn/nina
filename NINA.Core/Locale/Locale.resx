@@ -7440,4 +7440,13 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblValueBetween" xml:space="preserve">
     <value>Value must be between {0} and {1}</value>
   </data>
+  <data name="LblVariable" xml:space="preserve">
+    <value>Variable:</value>
+  </data>
+  <data name="LblInitially" xml:space="preserve">
+    <value>Initially</value>
+  </data>
+  <data name="LblNewValue" xml:space="preserve">
+    <value>New Value</value>
+  </data>
 </root>

@@ -22,7 +22,7 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+					<TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
                     <TextBox
                       MinWidth="40"
                       Margin="5,-1,10,-2"
@@ -39,14 +39,14 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+					<TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
                     <TextBox
                       MinWidth="40"
                       Height="20"
                       Margin="5,-1,10,-2"
                       Text="{Binding Identifier}"
                       TextAlignment="Center" />
-                    <logic:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
+					<logic:ExprControl Label="{ns:Loc LblInitially}" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
                     <logic:ExprControlVariable Margin="10,0,0,0" Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
@@ -57,14 +57,14 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+					<TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVariable}" />
                     <TextBox
                       Height="20" 
                       MinWidth="40"
                       Margin="5,-1,10,-2"
                       Text="{Binding Variable}"
                       TextAlignment="Center" />
-                    <logic:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
+					<logic:ExprControl Label="{ns:Loc LblNewValue}" Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
         </view:SequenceBlockView>
@@ -74,7 +74,7 @@
         <view:SequenceBlockView DataContext="{Binding}">
             <view:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVariable}" />
                     <TextBox
                        Height="20"
                        MinWidth="40"
@@ -168,9 +168,9 @@
                                Text="{Binding MinutesOffset}" />
                             <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center">m</TextBlock>
                         </StackPanel>
-                        <TextBlock Margin="10,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}{" />
-                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{Binding TimeString}" />
-                        <TextBlock Margin="0,-2,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}}" />
+						<TextBlock Margin="10,-2,0,0" Foreground="{StaticResource ButtonBackgroundSelectedBrush}" VerticalAlignment="Center" Text="{}{" />
+						<TextBlock Margin="0,-2,0,0" Foreground="{StaticResource ButtonBackgroundSelectedBrush}" VerticalAlignment="Center" Text="{Binding TimeString}" />
+						<TextBlock Margin="0,-2,0,0" Foreground="{StaticResource ButtonBackgroundSelectedBrush}" VerticalAlignment="Center" Text="{}}" />
                     </StackPanel>
                 </StackPanel>
             </view:SequenceBlockView.SequenceItemContent>
