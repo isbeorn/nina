@@ -7449,4 +7449,10 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblNewValue" xml:space="preserve">
     <value>New Value</value>
   </data>
+  <data name="Lbl_SequenceItem_Logic_DefineConstant_Name" xml:space="preserve">
+    <value>Define Constant</value>
+  </data>
+  <data name="Lbl_SequenceItem_Logic_DefineConstant_Description" xml:space="preserve">
+    <value>Creates a Global Constant whose value can be used in Expressions</value>
+  </data>
 </root>
