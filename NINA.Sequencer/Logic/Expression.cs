@@ -533,7 +533,7 @@ namespace NINA.Sequencer.Logic {
                             AddParameter(symReference, val);
                             Volatile = true;
                         } else if (val is AmbiguousSymbol a) {
-                            StringBuilder sb = new StringBuilder("The variable '" + a.Key + "' is ambiguous, use one of");
+                            StringBuilder sb = new StringBuilder("'" + a.Key + "' " + Loc.Instance["LblIsAmbiguous"]);
                             Symbol[] symbols = a.Symbols;
                             for (int i = 0; i < symbols.Length; i++) {
                                 sb.Append(" " + symbols[i].Category + '_' + symReference);

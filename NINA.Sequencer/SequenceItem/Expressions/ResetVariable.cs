@@ -12,10 +12,10 @@ using System.Text.RegularExpressions;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Set Variable")]
-    [ExportMetadata("Description", "If the Variable has been previously defined, its value will become the result of the Expression")]
+    [ExportMetadata("Name", "Lbl_SequenceItem_Symbols_SetVariable_Name")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Symbols_SetVariable_Description")]
     [ExportMetadata("Icon", "VariableSVG")]
-    [ExportMetadata("Category", "Expressions")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetVariable : SequenceItem, IValidatable {

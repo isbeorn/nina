@@ -30,7 +30,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Local Constant")]
     [ExportMetadata("Description", "Creates a Constant whose value can be used in Expressions")]
     [ExportMetadata("Icon", "ConstantSVG")]
-    [ExportMetadata("Category", "Expressions")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

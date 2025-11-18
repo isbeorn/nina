@@ -3,10 +3,10 @@ using System.ComponentModel.Composition;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Lbl_SequenceItemDefineConstant")]
-    [ExportMetadata("Description", "Creates a Global Constant whose value can be used in Expressions")]
+    [ExportMetadata("Name", "Lbl_SequenceItem_Symbols_DefineConstant_Name")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Symbols_DefineConstant_Description")]
     [ExportMetadata("Icon", "VariableSVG")]
-    [ExportMetadata("Category", "Expressions")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

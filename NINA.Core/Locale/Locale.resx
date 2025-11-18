@@ -7449,10 +7449,35 @@ The sky flat exposure time will be determined again and the exposure will be rep
   <data name="LblNewValue" xml:space="preserve">
     <value>New Value</value>
   </data>
-  <data name="Lbl_SequenceItem_Logic_DefineConstant_Name" xml:space="preserve">
+  <data name="LblIsAmbiguous" xml:space="preserve">
+    <value>is ambiguous, use one of</value>
+    <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
+  </data>
+  <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
+    <value>Creates a Variable whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
+    <value>Define Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
+    <value>Creates a Constant whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
     <value>Define Constant</value>
   </data>
-  <data name="Lbl_SequenceItem_Logic_DefineConstant_Description" xml:space="preserve">
-    <value>Creates a Global Constant whose value can be used in Expressions</value>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
+    <value>Set Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
+    <value>Set Variable to Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
   </data>
 </root>
