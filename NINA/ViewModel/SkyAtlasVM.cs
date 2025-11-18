@@ -535,17 +535,11 @@ namespace NINA.ViewModel {
 
                         var transitTimes = new ConcurrentDictionary<DeepSkyObject, DateTime>();
 
-                        const double halfSiderealHours = 11.96;
+                        TimeSpan siderealDay = TimeSpan.FromHours(23.9344696);
+                        TimeSpan halfSiderealDay = TimeSpan.FromTicks(siderealDay.Ticks / 2);
 
                         double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
                         Angle lstRefAngle = Angle.ByHours(lstRef);
-                        TimeSpan halfSiderealDay = TimeSpan.FromHours(halfSiderealHours);
-
-                        double GetAltitudeAt(DateTime time, Coordinates coords, double latitudeDeg, double longitudeDeg) {
-                            double lst = AstroUtil.GetLocalSiderealTime(time, longitudeDeg);
-                            double ha = AstroUtil.GetHourAngle(lst, coords.RA);
-                            return AstroUtil.GetAltitude(ha, latitudeDeg, coords.Dec);
-                        }
 
                         Parallel.ForEach(resultList, dso => {
                             var coords = dso.Coordinates?.Transform(Epoch.JNOW);
@@ -555,13 +549,13 @@ namespace NINA.ViewModel {
 
                             TimeSpan timeToNextMeridian = MeridianFlip.TimeToMeridian(coords, lstRefAngle);
 
-                            DateTime t1 = NighttimeData.ReferenceDate + timeToNextMeridian;
-                            DateTime t2 = t1 + halfSiderealDay;
+                            DateTime t1 = NighttimeData.ReferenceDate + timeToNextMeridian; // first meridian pass
+                            DateTime t2 = t1 + halfSiderealDay;                             // second meridian pass
 
-                            double alt1 = GetAltitudeAt(t1, coords, latitude, longitude);
-                            double alt2 = GetAltitudeAt(t2, coords, latitude, longitude);
+                            double alt1 = GetAltitudeAtTime(t1, coords, latitude, longitude);
+                            double alt2 = GetAltitudeAtTime(t2, coords, latitude, longitude);
 
-                            DateTime tUpper = alt1 >= alt2 ? t1 : t2;
+                            DateTime tUpper = alt1 >= alt2 ? t1 : t2;   // we are only interested in the upper culmination
                             transitTimes[dso] = tUpper;
                             _searchTokenSource.Token.ThrowIfCancellationRequested();
                         });
@@ -778,13 +772,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private static double GetAltitudeAtTime(DateTime t, Coordinates coords, double latitude, double longitude) {
-
-            double lstHours = AstroUtil.GetLocalSiderealTime(t, longitude);
-            double haHours = lstHours - coords.RA;
-            double haDegrees = haHours * 15.0;
-
-            return AstroUtil.GetAltitude(haDegrees, latitude, coords.Dec);
+        private double GetAltitudeAtTime(DateTime time, Coordinates coords, double latitudeDeg, double longitudeDeg) {
+            double lst = AstroUtil.GetLocalSiderealTime(time, longitudeDeg);
+            double ha = AstroUtil.GetHourAngle(lst, coords.RA);
+            return AstroUtil.GetAltitude(ha, latitudeDeg, coords.Dec);
         }
 
         private string _searchObjectName;
@@ -870,7 +861,7 @@ namespace NINA.ViewModel {
         public DateTime SelectedAltitudeTimeFrom {
             get => _selectedAltitudeTimeFrom;
             set {
-                if (value != _selectedAltitudeTimeThrough) {
+                if (value != _selectedAltitudeTimeFrom) {
                     _selectedAltitudeTimeFrom = value;
                     RaisePropertyChanged();
                 }
