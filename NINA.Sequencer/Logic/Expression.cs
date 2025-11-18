@@ -23,7 +23,7 @@ namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
 
-        private static IProfileService ProfileService = null;
+        //private static IProfileService ProfileService = null;
 
         public Expression() { }
         
@@ -36,9 +36,9 @@ namespace NINA.Sequencer.Logic {
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
-            if (ProfileService == null) {
-                ProfileService = (IProfileService)System.Windows.Application.Current.Resources["ProfileService"];
-            }
+            //if (ProfileService == null) {
+            //    ProfileService = (IProfileService)System.Windows.Application.Current.Resources["ProfileService"];
+            //}
         }
 
         public Expression(string definition, ISequenceEntity context) {
