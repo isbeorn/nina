@@ -16,7 +16,7 @@ using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace NINA.Sequencer.Conditions {
-    [ExportMetadata("Name", "Loop While")]
+    [ExportMetadata("Name", "Lbl_SequenceCondition_LoopWhile_Name")]
     [ExportMetadata("Description", "Loops while the Expression is not false.")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
