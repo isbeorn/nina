@@ -542,24 +542,27 @@ namespace NINA.ViewModel {
                         Angle lstRefAngle = Angle.ByHours(lstRef);
 
                         Parallel.ForEach(resultList, dso => {
-                            var coords = dso.Coordinates?.Transform(Epoch.JNOW);
+
+                            var coords = dso.Coordinates;
                             if (coords == null) {
                                 return;
                             }
 
-                            TimeSpan timeToNextMeridian = MeridianFlip.TimeToMeridian(coords, lstRefAngle);
+                            double lstRef = AstroUtil.GetLocalSiderealTime(NighttimeData.ReferenceDate, longitude);
+                            double ra = coords.RA; // in hours
 
-                            DateTime t1 = NighttimeData.ReferenceDate + timeToNextMeridian; // first meridian pass
-                            DateTime t2 = t1 + halfSiderealDay;                             // second meridian pass
+                            // time to next hour angle H = 0 (upper culmination) - must be within next 24 hrs
+                            double hoursToUpperTransit = (ra - lstRef) % 24.0;
+                            if (hoursToUpperTransit < 0) {
+                                hoursToUpperTransit += 24.0;
+                            }
 
-                            double alt1 = GetAltitudeAtTime(t1, coords, latitude, longitude);
-                            double alt2 = GetAltitudeAtTime(t2, coords, latitude, longitude);
-
-                            DateTime tUpper = alt1 >= alt2 ? t1 : t2;   // we are only interested in the upper culmination
+                            DateTime tUpper = NighttimeData.ReferenceDate + TimeSpan.FromHours(hoursToUpperTransit);
                             transitTimes[dso] = tUpper;
+
                             _searchTokenSource.Token.ThrowIfCancellationRequested();
                         });
-                        
+
                         DateTime transitFromDate;
                         DateTime transitThroughDate;
 
@@ -770,12 +773,6 @@ namespace NINA.ViewModel {
             } else {
                 return new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, date.Hour, date.Minute, date.Second) + TimeSpan.FromDays(1);
             }
-        }
-
-        private double GetAltitudeAtTime(DateTime time, Coordinates coords, double latitudeDeg, double longitudeDeg) {
-            double lst = AstroUtil.GetLocalSiderealTime(time, longitudeDeg);
-            double ha = AstroUtil.GetHourAngle(lst, coords.RA);
-            return AstroUtil.GetAltitude(ha, latitudeDeg, coords.Dec);
         }
 
         private string _searchObjectName;
