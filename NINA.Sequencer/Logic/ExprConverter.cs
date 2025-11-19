@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Locale;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.SequenceItem.Expressions;
@@ -28,12 +29,10 @@ namespace NINA.Sequencer.Logic {
 
         public static Dictionary<ISequenceEntity, bool> ValidityCache = new Dictionary<ISequenceEntity, bool>();
 
-        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
-
         private const int VALUE_EXP = 0;              // The expression to be evaluated
         private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
-
+        private const int VALUE_DATE = 3;
         private long NowInSeconds = 0;
         private long NowPlusOneYear;
         private long NowMinusOneYear;
@@ -56,15 +55,16 @@ namespace NINA.Sequencer.Logic {
                     } else if (expr.Definition.Length == 0) {
                         return "";
                     }  else if (!expr.IsExpression && !expr.ForceAnnotated) {
+                        // Never seen; don't localize yet
                         return "{Not an Expression}";
                     }
                     string txt;
                     if (expr.Error == null) {
                         if (expr.Context is ITrueFalse) {
                             if (expr.Value == 0) {
-                                txt = "False";
+                                txt = Loc.Instance["LblFalse"];
                             } else {
-                                txt = "True";
+                                txt = Loc.Instance["LblTrue"];
                             }
                         } else {
                             if (expr.Value == double.NegativeInfinity) {
@@ -80,7 +80,7 @@ namespace NINA.Sequencer.Logic {
                                     IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                     int i = (int)expr.Value;
                                     if (i >= 0 && i < combo.Count) {
-                                        txt = "Filter: " + combo[i];
+                                        txt = Loc.Instance["LblFilter"] + ": " + combo[i];
                                     }
                                 }
                             }
@@ -99,6 +99,7 @@ namespace NINA.Sequencer.Logic {
             } catch (Exception ex) {
                 Logger.Error("ExprConverter: " + ex.Message);
                 Logger.Error(ex.StackTrace);
+                // Never seen; don't localize yet...
                 return "{Exception}";
             }
         }

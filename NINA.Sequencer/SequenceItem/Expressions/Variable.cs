@@ -13,7 +13,7 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Name", "Define Local Variable")]
     [ExportMetadata("Description", "Creates a Variable whose value can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
-    [ExportMetadata("Category", "Expressions")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

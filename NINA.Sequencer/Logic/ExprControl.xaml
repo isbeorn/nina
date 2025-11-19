@@ -39,7 +39,7 @@
             VerticalAlignment="Center"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
-            Foreground="GreenYellow"
+            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
             HintTextMargin="0,-2,0,0"
             HintTextOpacity="0.65"
             TextAlignment="Center"
@@ -59,7 +59,8 @@
         <TextBlock
             Margin="2,2,0,0"
             VerticalAlignment="Center"
-            Foreground="GreenYellow"
+            Foreground="{StaticResource ButtonBackgroundSelectedBrush}"
+            Opacity=".8"
             Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             >
             <TextBlock.Text>

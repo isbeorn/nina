@@ -1,7 +1,11 @@
-﻿using NCalc;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NCalc;
 using NCalc.Handlers;
 using Newtonsoft.Json;
+using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Core.Utility.ColorSchema;
+using NINA.Profile.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.Expressions;
 using OxyPlot;
@@ -18,10 +22,11 @@ using static NINA.Sequencer.Logic.UserSymbol;
 namespace NINA.Sequencer.Logic {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expression : BaseINPC {
-        /// <summary>
-        /// Used by the JSON serializer
-        /// </summary>
+
+        //private static IProfileService ProfileService = null;
+
         public Expression() { }
+        
         public Expression (Expression cloneMe, ISequenceEntity context, Action<Expression> validator = null) {
             Definition = cloneMe.Definition;
             SymbolBroker = cloneMe.SymbolBroker;
@@ -31,6 +36,9 @@ namespace NINA.Sequencer.Logic {
             DefaultString = cloneMe.DefaultString;
             Validator = validator;
             Context = context;
+            //if (ProfileService == null) {
+            //    ProfileService = (IProfileService)System.Windows.Application.Current.Resources["ProfileService"];
+            //}
         }
 
         public Expression(string definition, ISequenceEntity context) {
@@ -130,7 +138,7 @@ namespace NINA.Sequencer.Logic {
                 if (value != _value) {
                     if ("int".Equals(Type)) {
                         if (StringValue != null) {
-                            Error = "Value must be an Integer";
+                            Error = Loc.Instance["LblMustBeInteger"];
                         }
                         ForceAnnotated = false;
                         if (Definition.Length > 0 && Double.Floor(value) != value) {
@@ -163,20 +171,25 @@ namespace NINA.Sequencer.Logic {
             if (value < min || (max != 0 && value > max)) {
                 if (r == 0) {
                     if (max == 0) {
-                        Error = "Range: >= " + min;
+                        Error = Loc.Instance["LblRange"] + ": >= " + min;
                     } else {
-                        Error = "Range: " + min + " < value < " + max;
+                        Error = Loc.Instance["LblRange"] +  ":" + min + " < " + Loc.Instance["LblValue"] + " < " + max;
                     }
                 } else {
-                    Error = "Value must be " + (((r & 1) == 1) ? "greater than " : "between ") + Range[0] + " and less than " + (((r & 2) == 2) ? "" : "or equal to ") + Range[1];
+                    Error = Loc.Instance["ValueMustBe"] + " " + (((r & 1) == 1) ? ">" : Loc.Instance["LblBetween"]) + " " + Range[0] + " " + Loc.Instance["LblAnd"] + " <" + " " + (((r & 2) == 2) ? " < " : " <=" + " ") + Range[1];
                 }
             }
         }
-
+        
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
-                return JustWarnings(Error) ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.Red);
+                return JustWarnings(Error) ?
+                    // Don't like existing notification colors - they are hard to see.  Maybe add new ones to profiles?
+                    new SolidColorBrush(Colors.Orange) :
+                    new SolidColorBrush(Colors.Red);
+                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningColor) : 
+                    //new SolidColorBrush(ProfileService.ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorColor);
             }
             set { }
         }
@@ -186,7 +199,8 @@ namespace NINA.Sequencer.Logic {
             bool red = false;
             bool orange = false;
             foreach (string e in errors) {
-                if (e.Contains("Not evaluated") || e.Contains("External")) {
+                // Note "External" not used currently
+                if (e.Contains(Loc.Instance["LblNotEvaluated"]) || e.Contains("External")) {
                     orange = true; ;
                 } else {
                     red = true;
@@ -198,11 +212,11 @@ namespace NINA.Sequencer.Logic {
         public string ExprErrors {
             get {
                 if (Error == null) {
-                    return "No errors in Expression";
+                    return Loc.Instance["NoErrors"];
                 } else if (JustWarnings(Error)) {
-                    return "Warning(s): " + Error;
+                    return string.Format(Loc.Instance["LblWarnings"], Error);
                 } else {
-                    return "Error(s): " + Error;
+                    return string.Format(Loc.Instance["LblErrors"], Error);
                 }
             }
             set { }
@@ -223,7 +237,7 @@ namespace NINA.Sequencer.Logic {
                     }
                 }
             } else if (double.IsNaN(Value) && Definition?.Length > 0) {
-                Error = "Not evaluated";
+                Error = Loc.Instance["LblNotEvaluated"];
             } else if (Resolved.Count != References.Count) {
                 // Why would this happen... track down?
                 Evaluate();
@@ -262,9 +276,9 @@ namespace NINA.Sequencer.Logic {
                     var local = ConvertFromUnixTimestamp(Value).ToLocalTime();
                     var today = DateTime.Today;
                     if (local.Date == today.AddDays(1)) {
-                        return local.ToShortTimeString() + " tomorrow";
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblTomorrow"];
                     } else if (local.Date == today.AddDays(-1)) {
-                        return local.ToShortTimeString() + " yesterday";
+                        return local.ToShortTimeString() + " " + Loc.Instance["LblYesterday"];
                     } else if (local.Date == today) {
                         return local.ToShortTimeString();
                     } else
@@ -364,7 +378,7 @@ namespace NINA.Sequencer.Logic {
                         e.Evaluate();
                     } catch (NCalc.Exceptions.NCalcParserException) {
                         // We should expect this, since we're just trying to find the parameters used
-                        Error = "Syntax Error";
+                        Error = Loc.Instance["LblSyntaxError"];
                         return;
                     } catch (Exception) {
                         // That's ok
@@ -440,7 +454,7 @@ namespace NINA.Sequencer.Logic {
             Evaluate(false);
         }
 
-        public void Evaluate(bool validateOnly) {
+        public void Evaluate(bool ignoreRoot) {
             if (!IsExpression) {
                 //Error = null;
                 return;
@@ -454,7 +468,7 @@ namespace NINA.Sequencer.Logic {
                 return;
             }
             if (Context == null) return;
-            if (!UserSymbol.IsAttachedToRoot(Context)) {
+            if (!ignoreRoot && !UserSymbol.IsAttachedToRoot(Context)) {
                 return;
             }
 
@@ -519,7 +533,7 @@ namespace NINA.Sequencer.Logic {
                             AddParameter(symReference, val);
                             Volatile = true;
                         } else if (val is AmbiguousSymbol a) {
-                            StringBuilder sb = new StringBuilder("The variable '" + a.Key + "' is ambiguous, use one of");
+                            StringBuilder sb = new StringBuilder("'" + a.Key + "' " + Loc.Instance["LblIsAmbiguous"]);
                             Symbol[] symbols = a.Symbols;
                             for (int i = 0; i < symbols.Length; i++) {
                                 sb.Append(" " + symbols[i].Category + '_' + symReference);
@@ -541,7 +555,7 @@ namespace NINA.Sequencer.Logic {
             e.Parameters = parameters;
 
             if (e.HasErrors()) {
-                Error = "Syntax Error";
+                Error = Loc.Instance["LblSyntaxError"];
                 return;
             }
 
@@ -554,15 +568,15 @@ namespace NINA.Sequencer.Logic {
                             // Not defined or evaluated
                             UserSymbol s = FindSymbol(symReference, Symbol?.Parent ?? Context.Parent);
                             if (s is Variable sv && !sv.Executed) {
-                                AddError("Not evaluated: " + r);
-                            } else if (r.StartsWith("_")) {
-                                AddError("Reference: " + r);
+                                AddError(Loc.Instance["LblNotEvaluated"] + r);
+//                           } else if (r.StartsWith("_")) {
+//                               AddError("Reference: " + r);
                             } else {
-                                if (r.StartsWith('$') && ext && validateOnly) {
-                                    AddError("External: " + symReference);
-                                } else {
-                                    AddError("Undefined: " + r);
-                                }
+                                //                                if (r.StartsWith('$') && ext && validateOnly) {
+                                //                                    AddError("External: " + symReference);
+                                //                                } else {
+                                AddError(Loc.Instance["LblUndefined"] + ": " + r);
+//                                }
                             }
                         }
                     }
@@ -586,10 +600,11 @@ namespace NINA.Sequencer.Logic {
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
                                 } else {
-                                    Error = "Syntax error";
+                                    Error = Loc.Instance["LblSyntaxError"];
                                 }
                             } else {
-                                Error = (str != null) ? "Strings are now allowed as values" : "Syntax error";
+                                // This can't happen as we allow strings.  Don't localize.  But don't delete the if just in case...
+                                Error = (str != null) ? "Strings are now allowed as values" : Loc.Instance["LblSyntaxError"];
                             }
                         }
                     }
@@ -600,13 +615,13 @@ namespace NINA.Sequencer.Logic {
                 }
 
             } catch (NCalc.Exceptions.NCalcParameterNotDefinedException ex) {
-                Error = "Undefined: " + ex.ParameterName;
+                Error = Loc.Instance["LblUndefined"] + ": " + ex.ParameterName;
             } catch (Exception ex) {
                 if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
-                    Error = "Syntax Error";
+                    Error = Loc.Instance["LblSyntaxError"];
                     return;
                 } else {
-                    Error = "Error: " + ex.Message; // "Unknown Error; see log";
+                    Error = Loc.Instance["LblError"] + ": " + ex.Message; // "Unknown Error; see log";
                     Logger.Warning("Exception evaluating " + Definition + ": " + ex.Message);
                 }
             }
@@ -626,6 +641,7 @@ namespace NINA.Sequencer.Logic {
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
+            string str;
             try {
                 if (args.Parameters.Length > 0) {
                     try {
@@ -637,59 +653,75 @@ namespace NINA.Sequencer.Logic {
                 } else {
                     dt = DateTime.Now;
                 }
-                if (name == "now") {
-                    args.Result = UnixTimeNow();
-                } else if (name == "hour") {
-                    args.Result = (int)dt.Hour;
-                } else if (name == "minute") {
-                    args.Result = (int)dt.Minute;
-                } else if (name == "day") {
-                    args.Result = (int)dt.Day;
-                } else if (name == "month") {
-                    args.Result = (int)dt.Month;
-                } else if (name == "year") {
-                    args.Result = (int)dt.Year;
-                } else if (name == "dow") {
-                    args.Result = (int)dt.DayOfWeek;
-                } else if (name == "dateString") {
-                    if (args.Parameters.Length < 2) {
-                        throw new ArgumentException();
-                    }
-                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
-                } else if (name == "defined") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate());
-                    args.Result = SymbolBroker.TryGetValue(str, out _);
-                    // Always check again on validation
-                    GlobalVolatile = true;
-                } else if (name == "startsWith") {
-                    string str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
-                    string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
-                    args.Result = str.StartsWith(f, StringComparison.Ordinal);
-                } else if (name == "strLength") {
-                    var e = args.Parameters[0].Evaluate();
-                    if (e is string es) {
-                        args.Result = es.Length;
-                    } else {
-                        args.Result = -1;
-                    }
-                } else if (name == "strConcat") {
-                    var e = args.Parameters[0].Evaluate().ToString();
-                    var i = args.Parameters[1].Evaluate().ToString();
-                    if (e is string es && i is string iss) {
-                        args.Result = String.Concat(es, iss);
-                    } else {
-                        args.Result = "";
-                    }
-                } else if (name == "strAtPos") {
-                    var e = args.Parameters[0].Evaluate();
-                    var i = args.Parameters[1].Evaluate();
-                    if (e is string es && i is int iint && iint >= 0 && iint < es.Length) {
-                        args.Result = Convert.ToString(es[iint]);
-                    } else {
-                        args.Result = "";
-                    }
-                } else if (name == "random") {
-                    args.Result = RNG.NextDouble();
+
+                switch (name) {
+                    case "now":
+                        args.Result = UnixTimeNow();
+                        break;
+                    case "hour":
+                        args.Result = (int)dt.Hour;
+                        break;
+                    case "minute":
+                        args.Result = (int)dt.Minute;
+                        break;
+                    case "day":
+                        args.Result = (int)dt.Day;
+                        break;
+                    case "month":
+                        args.Result = (int)dt.Month;
+                        break;
+                    case "year":
+                        args.Result = (int)dt.Year;
+                        break;
+                    case "dow":
+                        args.Result = (int)dt.DayOfWeek;
+                        break;
+                    case "dateString":
+                        if (args.Parameters.Length < 2) {
+                            throw new ArgumentException();
+                        }
+                        args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                        break;
+                    case "defined":
+                        str = Convert.ToString(args.Parameters[0].Evaluate());
+                        args.Result = SymbolBroker.TryGetValue(str, out _);
+                        // Always check again on validation
+                        GlobalVolatile = true;
+                        break;
+                    case "startsWith":
+                        str = Convert.ToString(args.Parameters[0].Evaluate(), CultureInfo.InvariantCulture);
+                        string f = Convert.ToString(args.Parameters[1].Evaluate(), CultureInfo.InvariantCulture);
+                        args.Result = str.StartsWith(f, StringComparison.Ordinal);
+                        break;
+                    case "strLength":
+                        var e = args.Parameters[0].Evaluate();
+                        if (e is string es) {
+                            args.Result = es.Length;
+                        } else {
+                            args.Result = -1;
+                        }
+                        break;
+                    case "strConcat":
+                        var e1 = args.Parameters[0].Evaluate().ToString();
+                        var i1 = args.Parameters[1].Evaluate().ToString();
+                        if (e1 is string es1 && i1 is string iss) {
+                            args.Result = String.Concat(es1, iss);
+                        } else {
+                            args.Result = "";
+                        }
+                        break;
+                    case "strAtPos":
+                        var e2 = args.Parameters[0].Evaluate();
+                        var i2 = args.Parameters[1].Evaluate();
+                        if (e2 is string es2 && i2 is int iint && iint >= 0 && iint < es2.Length) {
+                            args.Result = Convert.ToString(es2[iint]);
+                        } else {
+                            args.Result = "";
+                        }
+                        break;
+                    case "random":
+                        args.Result = RNG.NextDouble();
+                        break;
                 }
             } catch (Exception ex) {
                 Logger.Error("Error evaluating function " + name + ": " + ex.Message);

@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem.Expressions;
 using System.Windows.Documents;
+using NINA.Core.Locale;
 
 namespace NINA.Sequencer.Logic {
 
@@ -136,7 +137,7 @@ namespace NINA.Sequencer.Logic {
                 dict[id] = this;
                 return id;
             }
-            Notification.ShowWarning("The Constant/Variable " + id + " is already defined");
+            Notification.ShowWarning(Loc.Instance["LblConstantVariable"] + " " + id + " " + Loc.Instance["LblAlreadyDefined"]);
             return "";
         }
 
@@ -394,7 +395,7 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (exp.Definition?.Length == 0 && exp.Range != null) {
-                tb.ToolTip = "Value must be between " + exp.Range[0] + " and " + exp.Range[1];
+                tb.ToolTip = string.Format(Loc.Instance["LblValueBetween"], exp.Range[0], exp.Range[1]);
                 return;
             }
 
@@ -402,19 +403,19 @@ namespace NINA.Sequencer.Logic {
             int cnt = syms.Count;
             if (cnt == 0) {
                 if (exp.References.Count == 1) {
-                    tb.ToolTip = "The symbol is not yet defined";
+                    tb.ToolTip = Loc.Instance["LblNotYetDefined"]; 
                 } else {
-                    tb.ToolTip = "No defined symbols used in this expression";
+                    tb.ToolTip = Loc.Instance["LblNoSymbols"];
                 }
                 return;
             }
-            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
+            StringBuilder sb = new StringBuilder();
 
             foreach (var kvp in syms) {
                 UserSymbol sym = kvp.Value as UserSymbol;
                 sb.Append(kvp.Key.ToString());
                 if (sym != null) {
-                    sb.Append(" (in ");
+                    sb.Append(" (");
                     sb.Append(sym.SParent().Name);
                     ISequenceContainer sParent = sym.SParent();
                     sb.Append(") = ");
@@ -448,8 +449,8 @@ namespace NINA.Sequencer.Logic {
             try {
                 return $"Symbol: Identifier {Identifier}, in {SParent()?.Name} with value {Expr.Value}";
             } catch (Exception ex) {
-                Logger.Error("Foo");
-                return "Foo";
+                Logger.Error("Exception: " + ex.Message);
+                return "{Exception in UserSymbol}";
             }
         }
 

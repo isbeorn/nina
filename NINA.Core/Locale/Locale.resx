@@ -4459,15 +4459,15 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_Name" xml:space="preserve">
     <value>AF After HFR Increase</value>
   </data>
-<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
-<value>HFR trend per filter</value>
-</data>
-<data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
-<value>When disabled, the HFR trend is evaluated across all filters combined. 
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilter" xml:space="preserve">
+    <value>HFR trend per filter</value>
+  </data>
+  <data name="Lbl_SequenceTrigger_AutofocusAfterHFRIncreaseTrigger_TrendPerFilterTooltip" xml:space="preserve">
+    <value>When disabled, the HFR trend is evaluated across all filters combined. 
 This can help to trigger autofocus runs earlier, particular when imaging with frequent filter changes
 and a temperature sensitive optics on a quickly changing ambient temperature. 
 Note: This mode requires that HFR differences between filters in your setup are small.</value>
-</data>
+  </data>
   <data name="Lbl_SequenceTrigger_AutofocusAfterTemperatureChangeTrigger_Description" xml:space="preserve">
     <value>A trigger to initiate an autofocus run after the temperature has changed by the given amount in degrees since the last autofocus run or start of sequence</value>
   </data>
@@ -7368,5 +7368,116 @@ The sky flat exposure time will be determined again and the exposure will be rep
   </data>
   <data name="Lbl_SymbolBroker_ClickOnSymbolToCopyToClipboard" xml:space="preserve">
     <value>Click any symbol to copy it to the clipboard.</value>
+  </data>
+  <data name="LblTrue" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="LblFalse" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="LblDecimal" xml:space="preserve">
+    <value>(Decimal: </value>
+    <comment>Note space after the colon; this is for showing the decimal representation of HMS/DMS coords</comment>
+  </data>
+  <data name="LblWarnings" xml:space="preserve">
+    <value>Warning(s): {0}</value>
+  </data>
+  <data name="LblNoErrors" xml:space="preserve">
+    <value>No errors</value>
+  </data>
+  <data name="LblErrors" xml:space="preserve">
+    <value>Error(s): {0}</value>
+  </data>
+  <data name="LblRange" xml:space="preserve">
+    <value>Range</value>
+  </data>
+  <data name="LblValueMustBe" xml:space="preserve">
+    <value>Value must be</value>
+    <comment>Value must be between x and y</comment>
+  </data>
+  <data name="LblBetween" xml:space="preserve">
+    <value>between</value>
+    <comment>[Value must be] between [x and y]</comment>
+  </data>
+  <data name="LblNotEvaluated" xml:space="preserve">
+    <value>Not Evaluated</value>
+    <comment>As in, a variable is not yet evaluated</comment>
+  </data>
+  <data name="LblTomorrow" xml:space="preserve">
+    <value>tomorrow</value>
+  </data>
+  <data name="LblYesterday" xml:space="preserve">
+    <value>yesterday</value>
+  </data>
+  <data name="LblUndefined" xml:space="preserve">
+    <value>Undefined</value>
+    <comment>As in "Undefined: &lt;variable name&gt;"</comment>
+  </data>
+  <data name="LblSyntaxError" xml:space="preserve">
+    <value>Syntax error</value>
+    <comment>Used when an Expression can't be parsed</comment>
+  </data>
+  <data name="LblMustBeInteger" xml:space="preserve">
+    <value>Value must be an Integer</value>
+  </data>
+  <data name="LblAnd" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="LblAlreadyDefined" xml:space="preserve">
+    <value>is already defined</value>
+    <comment>As in &lt;variable&gt; is already defined</comment>
+  </data>
+  <data name="LblConstantVariable" xml:space="preserve">
+    <value>The Constant/Variable</value>
+    <comment>As in "The Constant/Variable &lt;name&gt; is not defined"</comment>
+  </data>
+  <data name="LblNoSymbols" xml:space="preserve">
+    <value>No defined Constant/Variable is used in this expression</value>
+  </data>
+  <data name="LblNotYetDefined" xml:space="preserve">
+    <value> The Constant/Variable is not yet defined</value>
+  </data>
+  <data name="LblValueBetween" xml:space="preserve">
+    <value>Value must be between {0} and {1}</value>
+  </data>
+  <data name="LblVariable" xml:space="preserve">
+    <value>Variable:</value>
+  </data>
+  <data name="LblInitially" xml:space="preserve">
+    <value>Initially</value>
+  </data>
+  <data name="LblNewValue" xml:space="preserve">
+    <value>New Value</value>
+  </data>
+  <data name="LblIsAmbiguous" xml:space="preserve">
+    <value>is ambiguous, use one of</value>
+    <comment>As in &lt;variable name&gt; is ambiguous, use one of &lt;option 1&gt;; &lt;option 2&gt; ...</comment>
+  </data>
+  <data name="Lbl_SequenceCategory_Symbol" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Description" xml:space="preserve">
+    <value>Creates a Variable whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineVariable_Name" xml:space="preserve">
+    <value>Define Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Description" xml:space="preserve">
+    <value>Creates a Constant whose value can be used in Expressions</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_DefineConstant_Name" xml:space="preserve">
+    <value>Define Constant</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Name" xml:space="preserve">
+    <value>Set Variable</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariable_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the result of the Expression</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name" xml:space="preserve">
+    <value>Set Variable to Date/Time</value>
+  </data>
+  <data name="Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description" xml:space="preserve">
+    <value>If the Variable has been previously defined, its value will become the specified Date/Time</value>
   </data>
 </root>

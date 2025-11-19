@@ -16,10 +16,10 @@ using System.Linq;
 using NINA.Sequencer.Logic;
 
 namespace NINA.Sequencer.SequenceItem.Expressions {
-    [ExportMetadata("Name", "Set Variable to Date/Time")]
-    [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
+    [ExportMetadata("Name", "Lbl_SequenceItem_Symbols_SetVariableToDateTime_Name")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Symbols_SetVariableToDateTime_Description")]
     [ExportMetadata("Icon", "VariableSVG")]
-    [ExportMetadata("Category", "Expressions")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetVariableToDate : SequenceItem, IValidatable {

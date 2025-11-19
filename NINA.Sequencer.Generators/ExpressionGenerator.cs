@@ -15,13 +15,15 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NINA.Sequencer.Generators;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace NINA.Sequencer.Generators {
     [Generator]
@@ -175,45 +177,45 @@ namespace NINA.Sequencer.Generators {
                 propertiesSource += $@"
 
         private Expression {fieldNameExpression};
-        [JsonProperty]
+        [JsonProperty (Order = -1)]
         public Expression {propNameExpression} {{
             get {{
                 if ({fieldNameExpression} == null) {{
                     {fieldNameExpression} = new Expression(null, null);
-                    {propNameExpression}.Context = this;
-                    {propNameExpression}.Type = ""{fieldType}"";
-                    {propNameExpression}.SymbolBroker = SymbolBroker;";
-                    foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
+                    {fieldNameExpression}.Context = this;
+                    {fieldNameExpression}.Type = ""{fieldType}"";
+                    {fieldNameExpression}.SymbolBroker = SymbolBroker;";
+                foreach (KeyValuePair<string, TypedConstant> kvp in prop.Args) {
 
-                        if (kvp.Key == "HasValidator") {
-                            hasValidator = true;
-                        } else if (kvp.Key == "Proxy") {
-                            proxy = (string)kvp.Value.Value;
-                            jsonIgnore = true;
-                        } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
-                            var values = kvp.Value.Values;
-                            double min = Convert.ToDouble(values[0].Value, CultureInfo.InvariantCulture);
-                            double max = Convert.ToDouble(values[1].Value, CultureInfo.InvariantCulture);
+                    if (kvp.Key == "HasValidator") {
+                        hasValidator = true;
+                    } else if (kvp.Key == "Proxy") {
+                        proxy = (string)kvp.Value.Value;
+                        jsonIgnore = true;
+                    } else if (kvp.Value.Type?.TypeKind == TypeKind.Array) {
+                        var values = kvp.Value.Values;
+                        double min = Convert.ToDouble(values[0].Value, CultureInfo.InvariantCulture);
+                        double max = Convert.ToDouble(values[1].Value, CultureInfo.InvariantCulture);
                         double r = 0;
-                            if (values.Length > 2) {
-                                r = Convert.ToDouble(values[2].Value, CultureInfo.InvariantCulture);
-                            }
-                            propertiesSource += $@"
-                    {propNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
-                        } else if (kvp.Key == "Default") {
-                            propertiesSource += $@"
-                    {propNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
-                            hasDefault = true;
-                        } else if (kvp.Key == "DefaultString") {
-                            propertiesSource += $@"
-                    {propNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
+                        if (values.Length > 2) {
+                            r = Convert.ToDouble(values[2].Value, CultureInfo.InvariantCulture);
                         }
-                    }
-
-                    if (hasValidator) {
                         propertiesSource += $@"
-                {propNameExpression}.Validator = {propNameExpression}Validator;";
+                    {fieldNameExpression}.{kvp.Key} = new double[] {{{min.ToString(CultureInfo.InvariantCulture)}, {max.ToString(CultureInfo.InvariantCulture)}, {r.ToString(CultureInfo.InvariantCulture)}}};";
+                    } else if (kvp.Key == "Default") {
+                        propertiesSource += $@"
+                    {fieldNameExpression}.{kvp.Key} = {Convert.ToString(kvp.Value.Value, CultureInfo.InvariantCulture)};";
+                        hasDefault = true;
+                    } else if (kvp.Key == "DefaultString") {
+                        propertiesSource += $@"
+                    {fieldNameExpression}.{kvp.Key} = ""{kvp.Value.Value}"";";
                     }
+                }
+
+                if (hasValidator) {
+                    propertiesSource += $@"
+                {fieldNameExpression}.Validator = {propNameExpression}Validator;";
+                }
 
                 expressionClones += $@"
                 clone.{propNameExpression} = new Expression (this.{propNameExpression}, clone, {(hasValidator ? $"{propNameExpression}Validator" : "null")});";
@@ -252,34 +254,30 @@ namespace NINA.Sequencer.Generators {
 ";
                 } else {
                     propertiesSource += $@"
-        
-        [JsonProperty(propertyName: ""{propName}"")]
-        private {fieldType} Deprecated{propName} {{ 
-            set {{
-                ";
-                    if (!hasDefault) {
-                        propertiesSource += $@"{propNameExpression}.Definition = (value == null) ? """" : Convert.ToString(value, CultureInfo.InvariantCulture); 
-            }}
-        }}";
-                    } else {
-                        propertiesSource += $@"if (value != {propNameExpression}.Default) {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture); 
-            }}
-        }}";
-                    }
-                    propertiesSource += $@"
-        [JsonIgnore]
+        [JsonProperty (Order = 0)]
         public {fieldType} {propName} {{
-            get => ({fieldType}) {propNameExpression}.";
+            get {{ 
+                {propNameExpression}.Evaluate(true); 
+                return ({fieldType}) {propNameExpression}.";
                     if (fieldType == "String") {
                         propertiesSource += "Definition";
                     } else {
                         propertiesSource += "Value";
                     }
                     propertiesSource += $@";
+                        }}
             set {{
                 {propNameExpression}.Definition = Convert.ToString(value, CultureInfo.InvariantCulture);
             }}
         }}
+        [JsonProperty (Order = 1)]
+        public string {propName}Definition {{
+            get => {propNameExpression}.Definition;
+            set {{
+                {propNameExpression}.Definition = value;
+            }}
+        }}
+
 ";
                 }
 
@@ -291,6 +289,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
 namespace {namespaceName}
 {{
