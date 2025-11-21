@@ -107,8 +107,8 @@ namespace NINA.Sequencer {
                 var key = (cur.Category, cur.Key);
 
                 if (latestByCatKey.TryGetValue(key, out var src)) {
-                    if (!Equals(cur.Value, src.Value))
-                        cur.Value = src.Value;
+                    if (!Equals(cur.ValueName, src.ValueName))
+                        cur.ValueName = src.ValueName;
                 } else {
                     // Not present in latest -> remove
                     DataSymbols.RemoveAt(i);

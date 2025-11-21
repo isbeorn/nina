@@ -115,7 +115,7 @@ namespace NINA.Test.Sequencer.Logic {
             sut.RemoveSymbol("B").Should().BeTrue();
             broker.TryGetSymbol("B", out sym).Should().BeFalse();
         }
-        
+
         [Test]
         public void TestAmbiguousSymbols() {
             var broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
@@ -133,7 +133,7 @@ namespace NINA.Test.Sequencer.Logic {
             sym.Should().NotBeNull();
             sym.GetType().Should().Be(typeof(AmbiguousSymbol));
             Symbol[] symbols = sym.Constants;
-            symbols.Count().Should().Be(2);
+            symbols.Length.Should().Be(2);
 
             broker.TryGetSymbol("Plugin1_A", out sym).Should().BeTrue();
             sym.Value.Should().Be(10);
@@ -141,6 +141,32 @@ namespace NINA.Test.Sequencer.Logic {
             sym.Value.Should().Be("String value");
 
             broker.TryGetSymbol("Plugin3_A", out sym).Should().BeFalse();
+        }
+
+        [Test]
+        public void TestHiddenSymbols() {
+            var broker = new SymbolBroker(profileServiceMock.Object, switchMediatorMock.Object, weatherDataMediatorMock.Object, cameraMediatorMock.Object, domeMediatorMock.Object,
+                flatDeviceMediatorMock.Object, filterWheelMediatorMock.Object, rotatorMediatorMock.Object, safetyMonitorMediatorMock.Object, focuserMediatorMock.Object,
+                telescopeMediatorMock.Object, guiderMediatorMock.Object, imagingMediatorMock.Object);
+            var sut1 = broker.RegisterSymbolProvider("Plugin1");
+            sut1.Should().GetType().Should().NotBeNull();
+
+            Symbol[] pierConstants = new Symbol[] { new Symbol("PierUnknown", -1), new Symbol("PierEast", 0), new Symbol("PierWest", 1) };
+
+            sut1.AddOrUpdateSymbol("PierStatus", 1, pierConstants);
+
+            Symbol sym;
+            broker.TryGetSymbol("PierStatus", out sym).Should().BeTrue();
+            //sym.Value.Should().Be(1);
+
+            broker.TryGetSymbol("PierUnknown", out sym).Should().BeTrue();
+            sym.Value.Should().Be(-1);
+            broker.TryGetSymbol("PierEast", out sym).Should().BeTrue();
+            sym.Value.Should().Be(0);
+            broker.TryGetSymbol("PierWest", out sym).Should().BeTrue();
+            sym.Value.Should().Be(1);
+            broker.TryGetSymbol("Plugin1_PierWest", out sym).Should().BeTrue();
+            sym.Value.Should().Be(1);
         }
     }
 }

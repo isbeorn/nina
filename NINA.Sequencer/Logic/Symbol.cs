@@ -26,6 +26,8 @@ namespace NINA.Sequencer.Logic {
         private string key;
         // The Symbol's current value
         private object value;
+        // The Symbol's current value or (if available) the constant for that value (for the Symbols sidebar)
+        private object valueName;
         // Category of this Symbol (typically, the source - device - of the data)
         private string category;
         // Constants used with this Symbol (or null)
@@ -38,6 +40,7 @@ namespace NINA.Sequencer.Logic {
         public Symbol(string key, object value, string category, Symbol[] constants, SymbolType type) {
             this.key = key;
             this.value = value;
+            this.valueName = value;
             this.category = category;
             this.constants = constants;
             this.type = type;
@@ -47,11 +50,19 @@ namespace NINA.Sequencer.Logic {
 
             this.key = key;
             this.value = value;
+            this.valueName = value;
             this.category = null;
         }
 
         public string Key { get { return key; } }
         public object Value {
+            get => value;
+            set {
+                this.value = (object)value;
+                RaisePropertyChanged(nameof(Value));
+            }
+        }
+        public object ValueName {
             get {
                 if (constants == null) {
                     return value;
@@ -66,9 +77,10 @@ namespace NINA.Sequencer.Logic {
             }
             set {
                 this.value = (object)value;
-                RaisePropertyChanged(nameof(Value));
+                RaisePropertyChanged(nameof(ValueName));
             }
         }
+
         public SymbolType Type { get { return type; } }
         public string Category { get { return category; } }
         public Symbol[] Constants { get { return constants; } }
