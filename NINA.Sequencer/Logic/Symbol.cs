@@ -74,7 +74,7 @@ namespace NINA.Sequencer.Logic {
         public Symbol[] Constants { get { return constants; } }
 
         public override string ToString() {
-            return $"{key} : {value}";
+            return $"{key} : {category} : {value} ";
         }
     }
 
