@@ -40,7 +40,6 @@ namespace NINA.Sequencer.Logic {
         public Symbol(string key, object value, string category, Symbol[] constants, SymbolType type) {
             this.key = key;
             this.value = value;
-            this.valueName = value;
             this.category = category;
             this.constants = constants;
             this.type = type;
@@ -50,7 +49,6 @@ namespace NINA.Sequencer.Logic {
 
             this.key = key;
             this.value = value;
-            this.valueName = value;
             this.category = null;
         }
 
@@ -62,6 +60,8 @@ namespace NINA.Sequencer.Logic {
                 RaisePropertyChanged(nameof(Value));
             }
         }
+        
+        // This is used by the Symbols sidebar to show a constant name, if one exists
         public object ValueName {
             get {
                 if (constants == null) {
