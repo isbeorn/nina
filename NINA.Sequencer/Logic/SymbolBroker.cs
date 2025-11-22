@@ -313,7 +313,11 @@ namespace NINA.Sequencer.Logic {
             }
 
             if (list.Count == 1) {
-                DataSymbols.Remove(key, out _);
+                if (list[0].Category == source) {
+                    DataSymbols.Remove(key, out _);
+                    return true;
+                }
+                return false;
             }
 
             Symbol toRemove = null;
