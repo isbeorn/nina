@@ -316,9 +316,17 @@ namespace NINA.Sequencer.Serialization {
                             newObj.AttachNewParent(item.Parent);
                             return newObj;
                         }
-                    case "SetGlobalVariable":
-                    case "SetVariable": {
+                    case "SetGlobalVariable": {
                             GlobalVariable newObj = CreateNewItem<GlobalVariable>(item);
+                            PropertyInfo pi = t.GetProperty("OriginalDefinition");
+                            newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
+                            pi = t.GetProperty("Identifier");
+                            newObj.Identifier = (string)pi.GetValue(item);
+                            newObj.AttachNewParent(item.Parent);
+                            return newObj;
+                        }
+                    case "SetVariable": {
+                            Variable newObj = CreateNewItem<Variable>(item);
                             PropertyInfo pi = t.GetProperty("OriginalDefinition");
                             newObj.OriginalExpr.Definition = (string)pi.GetValue(item);
                             pi = t.GetProperty("Identifier");
