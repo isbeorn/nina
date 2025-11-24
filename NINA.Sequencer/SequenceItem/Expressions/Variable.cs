@@ -14,7 +14,11 @@ namespace NINA.Sequencer.SequenceItem.Expressions {
     [ExportMetadata("Description", "Creates a Scoped Variable which can be used in Expressions")]
     [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Symbol")]
+<<<<<<< HEAD
     [Export(typeof(ISequenceItem))]
+=======
+    //[Export(typeof(ISequenceItem))]
+>>>>>>> a8d66a2a29455991d43d762d6396c74c02108a29
     [JsonObject(MemberSerialization.OptIn)]
 
     public partial class Variable : UserSymbol {
