@@ -4,3 +4,15 @@
 [submodule "Touch-N-Stars"]
 	path = Touch-N-Stars
 	url = git@pins:Touch-N-Stars/Touch-N-Stars.git
+[submodule "NINA.Plugins/ninaAPI"]
+	path = NINA.Plugins/ninaAPI
+	url = git@pins:nitr57/ninaAPI.git
+[submodule "NINA.Plugins/Touch-N-Stars"]
+	path = NINA.Plugins/Touch-N-Stars
+	url = git@pins:nitr57/N.I.N.A-Plugin-for-Touch-N-Stars.git
+[submodule "NINA.Plugins/LiveStack"]
+	path = NINA.Plugins/LiveStack
+	url = git@pins:nitr57/nina.plugin.livestack
+[submodule "NINA.Plugins/PolarAlignment"]
+	path = NINA.Plugins/PolarAlignment
+	url = git@pins:nitr57/nina.plugin.polaralignment.git
