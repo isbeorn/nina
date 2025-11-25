@@ -1,0 +1,3 @@
+[submodule "NINA/External"]
+	path = NINA/External
+	url = git@pins:nitr57/pins.external.git
