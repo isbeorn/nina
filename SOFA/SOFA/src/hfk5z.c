@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauHfk5z(double rh, double dh, double date1, double date2,
               double *r5, double *d5, double *dr5, double *dd5)
@@ -11,7 +12,7 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
 **  zero Hipparcos proper motion.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  support function.
 **
@@ -23,7 +24,7 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
 **  Returned (all FK5, equinox J2000.0, date date1+date2):
 **     r5            double    RA (radians)
 **     d5            double    Dec (radians)
-**     dr5           double    FK5 RA proper motion (rad/year, Note 4)
+**     dr5           double    RA proper motion (rad/year, Note 4)
 **     dd5           double    Dec proper motion (rad/year, Note 4)
 **
 **  Notes:
@@ -50,7 +51,7 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
 **  2) The proper motion in RA is dRA/dt rather than cos(Dec)*dRA/dt.
 **
 **  3) The FK5 to Hipparcos transformation is modeled as a pure rotation
-**     and spin;  zonal errors in the FK5 catalogue are not taken into
+**     and spin;  zonal errors in the FK5 catalog are not taken into
 **     account.
 **
 **  4) It was the intention that Hipparcos should be a close
@@ -62,7 +63,7 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
 **  5) The position returned by this function is in the FK5 J2000.0
 **     reference system but at date date1+date2.
 **
-**  6) See also iauFk52h, iauH2fk5, iauFk5zhz.
+**  6) See also iauFk52h, iauH2fk5, iauFk5hz.
 **
 **  Called:
 **     iauS2c       spherical coordinates to unit vector
@@ -79,11 +80,11 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
 **
 **     F.Mignard & M.Froeschle, 2000, Astron.Astrophys. 354, 732-739.
 **
-**  This revision:  2013 June 18
+**  This revision:  2023 March 7
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double t, ph[3], r5h[3][3], s5h[3], sh[3], vst[3],
@@ -125,12 +126,12 @@ void iauHfk5z(double rh, double dh, double date1, double date2,
    iauPv2s(pv5e, &w, d5, &r, dr5, dd5, &v);
    *r5 = iauAnp(w);
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

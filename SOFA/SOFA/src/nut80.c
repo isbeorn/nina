@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 void iauNut80(double date1, double date2, double *dpsi, double *deps)
 /*
@@ -9,7 +10,7 @@ void iauNut80(double date1, double date2, double *dpsi, double *deps)
 **  Nutation, IAU 1980 model.
 **
 **  This function is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Status:  canonical model.
 **
@@ -53,11 +54,11 @@ void iauNut80(double date1, double date2, double *dpsi, double *deps)
 **     P. Kenneth Seidelmann (ed), University Science Books (1992),
 **     Section 3.222 (p111).
 **
-**  This revision:  2019 June 23
+**  This revision:  2021 May 11
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    double t, el, elp, f, d, om, dp, de, arg, s, c;
@@ -275,12 +276,12 @@ void iauNut80(double date1, double date2, double *dpsi, double *deps)
    *dpsi = dp * U2R;
    *deps = de * U2R;
 
-   return;
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

@@ -33,7 +33,7 @@
 #      make distclean     delete all generated binaries
 #      make realclean     same as distclean
 #
-# Last revision:   2019 July 22
+# Last revision:   2021 April 18
 #
 # Copyright International Astronomical Union.  All rights reserved.
 #
@@ -64,8 +64,8 @@ SOFA_INC_DIR = $(INSTALL_DIR)/include/
 # for functions, CFLAGX for executables) here.
 
 CCOMPC = gcc
-CFLAGF = -c -pedantic -Wall -W -O
-CFLAGX = -pedantic -Wall -W -O
+CFLAGF = -c -pedantic -Wall -O
+CFLAGX = -pedantic -Wall -O
 
 #----YOU SHOULDN'T HAVE TO MODIFY ANYTHING BELOW THIS LINE---------
 
@@ -111,6 +111,8 @@ SOFA_OBS = iauA2af.o \
            iauAper13.o \
            iauApio.o \
            iauApio13.o \
+           iauAtcc13.o \
+           iauAtccq.o \
            iauAtci13.o \
            iauAtciq.o \
            iauAtciqn.o \
@@ -223,6 +225,7 @@ SOFA_OBS = iauA2af.o \
            iauLtpb.o \
            iauLtpecl.o \
            iauLtpequ.o \
+           iauMoon98.o \
            iauNum00a.o \
            iauNum00b.o \
            iauNum06a.o \
@@ -344,7 +347,9 @@ SOFA_OBS = iauA2af.o \
 #-----------------------------------------------------------------------
 
 # Build (but do not install) the library.
-all : $(SOFA_LIB_NAME)
+
+# Build both the static archive and the shared object by default
+all : $(SOFA_LIB_NAME) libsofa_c.so install-server
 	-@ echo ""
 	-@ echo "*** Now type 'make test'" \
                 " to install the library and run tests ***"
@@ -361,7 +366,7 @@ uninstall:
 # Test the build.
 check: $(SOFA_TEST_NAME) $(SOFA_INC_NAMES) $(SOFA_LIB_NAME)
 	$(CCOMPC) $(CFLAGX) $(SOFA_TEST_NAME) $(SOFA_LIB_NAME) \
-        -lm -o $(SOFA_TEST)
+        -I. -lm -o $(SOFA_TEST)
 	./$(SOFA_TEST)
 
 # Test the installed library.
@@ -382,9 +387,29 @@ realclean distclean : clean
 $(INSTALL_DIRS):
 	mkdir -p $@
 
-# Build the library.
+# Build the static archive.
 $(SOFA_LIB_NAME): $(SOFA_OBS)
 	ar ru $(SOFA_LIB_NAME) $?
+
+# Build the shared library (position-independent objects required)
+# Generate PIC objects first (picobjs target), then link
+libsofa_c.so: picobjs $(SOFA_PIC_OBS)
+	$(CCOMPC) -shared -o $@ $(SOFA_PIC_OBS) -lm
+
+# Compile all PIC objects from the C sources. The source file names
+# are derived from the object names by stripping the leading 'iau' and
+# lowercasing the remainder (e.g. iauA2af.o -> a2af.c).
+.PHONY: picobjs
+picobjs:
+	@echo "Building PIC objects for shared library..."
+	@for obj in $(SOFA_OBS); do \
+		name=$${obj#iau}; \
+		src=`echo $$name | tr 'A-Z' 'a-z' | sed 's/\.o$$/.c/'`; \
+		out=iau$${name%%.o}.pic.o; \
+		if [ ! -f "$$out" ] || [ "$$src" -nt "$$out" ]; then \
+			$(CCOMPC) $(CFLAGF) -fPIC -o $$out $$src || exit 1; \
+		fi; \
+	done
 
 # Install the header files.
 $(SOFA_INC) : $(INSTALL_DIRS) $(SOFA_INC_NAMES)
@@ -432,6 +457,10 @@ iauApio.o   : apio.c   sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ apio.c
 iauApio13.o : apio13.c sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ apio13.c
+iauAtcc13.o : atcc13.c sofa.h sofam.h
+	$(CCOMPC) $(CFLAGF) -o $@ atcc13.c
+iauAtccq.o  : atccq.c  sofa.h sofam.h
+	$(CCOMPC) $(CFLAGF) -o $@ atccq.c
 iauAtci13.o : atci13.c sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ atci13.c
 iauAtciq.o  : atciq.c  sofa.h sofam.h
@@ -656,6 +685,8 @@ iauLtpecl.o : ltpecl.c sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ ltpecl.c
 iauLtpequ.o : ltpequ.c sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ ltpequ.c
+iauMoon98.o : moon98.c sofa.h sofam.h
+	$(CCOMPC) $(CFLAGF) -o $@ moon98.c
 iauNum00a.o : num00a.c sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ num00a.c
 iauNum00b.o : num00b.c sofa.h sofam.h
@@ -882,5 +913,24 @@ iauZpv.o    : zpv.c    sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ zpv.c
 iauZr.o     : zr.c     sofa.h sofam.h
 	$(CCOMPC) $(CFLAGF) -o $@ zr.c
+
+# Position-independent object files for shared library
+SOFA_PIC_OBS = $(patsubst %.o,%.pic.o,$(SOFA_OBS))
+
+# Rule to create PIC object files (used for building shared library)
+%.pic.o: %.c
+	$(CCOMPC) $(CFLAGF) -fPIC -o $@ $<
+
+# Destination inside the repository where the server expects native libs.
+# From SOFA/src this path targets NINA/External/linux-x64/SOFA
+SERVER_SOFA_DIR = ../../NINA/External/linux-x64/SOFA/
+
+.PHONY: install-server
+install-server: libsofa_c.so
+	@echo "Installing libsofa_c.so to $(SERVER_SOFA_DIR)"
+	@mkdir -p $(SERVER_SOFA_DIR)
+	@cp libsofa_c.so $(SERVER_SOFA_DIR)
+	@chmod 755 $(SERVER_SOFA_DIR)/libsofa_c.so || true
+	@echo "Installed: $(SERVER_SOFA_DIR)/libsofa_c.so"
 
 #-----------------------------------------------------------------------

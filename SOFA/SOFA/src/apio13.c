@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 
 int iauApio13(double utc1, double utc2, double dut1,
               double elong, double phi, double hm, double xp, double yp,
@@ -167,11 +168,11 @@ int iauApio13(double utc1, double utc2, double dut1,
 **     iauRefco     refraction constants for given ambient conditions
 **     iauApio      astrometry parameters, CIRS-observed
 **
-**  This revision:   2013 October 9
+**  This revision:   2021 February 24
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
 {
    int j;
@@ -204,8 +205,8 @@ int iauApio13(double utc1, double utc2, double dut1,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================

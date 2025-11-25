@@ -9,47 +9,18 @@
 **  Macros used by SOFA library.
 **
 **  This file is part of the International Astronomical Union's
-**  SOFA (Standards Of Fundamental Astronomy) software collection.
+**  SOFA (Standards of Fundamental Astronomy) software collection.
 **
 **  Please note that the constants defined below are to be used only in
 **  the context of the SOFA software, and have no other official IAU
 **  status.  In addition, self consistency is not guaranteed.
 **
-**  This revision:   2020 June 16
+**  This revision:   2021 February 24
 **
-**  SOFA release 2020-07-21
+**  SOFA release 2023-10-11
 **
-**  Copyright (C) 2020 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2023 IAU SOFA Board.  See notes at end.
 */
-
-/* Star-independent astrometry parameters */
-typedef struct {
-   double pmt;        /* PM time interval (SSB, Julian years) */
-   double eb[3];      /* SSB to observer (vector, au) */
-   double eh[3];      /* Sun to observer (unit vector) */
-   double em;         /* distance from Sun to observer (au) */
-   double v[3];       /* barycentric observer velocity (vector, c) */
-   double bm1;        /* sqrt(1-|v|^2): reciprocal of Lorenz factor */
-   double bpn[3][3];  /* bias-precession-nutation matrix */
-   double along;      /* longitude + s' + dERA(DUT) (radians) */
-   double phi;        /* geodetic latitude (radians) */
-   double xpl;        /* polar motion xp wrt local meridian (radians) */
-   double ypl;        /* polar motion yp wrt local meridian (radians) */
-   double sphi;       /* sine of geodetic latitude */
-   double cphi;       /* cosine of geodetic latitude */
-   double diurab;     /* magnitude of diurnal aberration vector */
-   double eral;       /* "local" Earth rotation angle (radians) */
-   double refa;       /* refraction constant A (radians) */
-   double refb;       /* refraction constant B (radians) */
-} iauASTROM;
-/* (Vectors eb, eh, em and v are all with respect to BCRS axes.) */
-
-/* Body parameters for light deflection */
-typedef struct {
-   double bm;         /* mass of the body (solar masses) */
-   double dl;         /* deflection limiter (radians^2/2) */
-   double pv[2][3];   /* barycentric PV of the body (au, au/day) */
-} iauLDBODY;
 
 /* Pi */
 #define DPI (3.141592653589793238462643)
@@ -156,8 +127,8 @@ typedef struct {
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2020
-**  Standards Of Fundamental Astronomy Board
+**  Copyright (C) 2023
+**  Standards of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
 **  =====================
