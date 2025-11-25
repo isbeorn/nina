@@ -23,9 +23,13 @@ namespace NINA.Astrometry {
     /// http://www.iausofa.org/current_C.html#Downloads
     /// </summary>
     public static class SOFA {
-        private const string DLLNAME = "SOFAlib.dll";
+        private const string DLLNAME = "libsofa_c.so";
 
         static SOFA() {
+            // Ensure the DLL import resolver is set up
+            NativeLibraryResolver.EnsureResolverSet();
+
+            // Preload the library
             DllLoader.LoadDll(Path.Combine("SOFA", DLLNAME));
         }
 
