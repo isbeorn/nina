@@ -923,7 +923,7 @@ SOFA_PIC_OBS = $(patsubst %.o,%.pic.o,$(SOFA_OBS))
 
 # Destination inside the repository where the server expects native libs.
 # From SOFA/src this path targets NINA/External/linux-x64/SOFA
-SERVER_SOFA_DIR = ../../NINA/External/linux-x64/SOFA/
+SERVER_SOFA_DIR = ../../../NINA/External/linux-x64/SOFA/
 
 .PHONY: install-server
 install-server: libsofa_c.so
