@@ -54,7 +54,7 @@
     <Content Include="Database\Migration\10.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\ZWO\libEAFFocuser.so">
+    <Content Include="External\linux-x64\ASI\libEAFFocuser.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\linux-x64\Oasis\liboasisfocuser.so">
