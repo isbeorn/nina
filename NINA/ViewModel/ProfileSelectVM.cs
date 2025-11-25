@@ -71,14 +71,6 @@ namespace NINA.ViewModel {
         public string Focuser => ActiveProfile.FocuserSettings.Id;
 
         public string Telescope => ActiveProfile.TelescopeSettings.Id;
-        public bool UseSavedProfile {
-            get => Properties.Settings.Default.UseSavedProfileSelection;
-            set {
-                Properties.Settings.Default.UseSavedProfileSelection = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-            }
-        }
-
 
         private TaskCompletionSource<bool> selectProfileTCS = new TaskCompletionSource<bool>();
         private TaskCompletionSource<bool> initializeAppTCS = new TaskCompletionSource<bool>();
@@ -87,30 +79,6 @@ namespace NINA.ViewModel {
 
         [ObservableProperty]
         private string selectProfileText = Loc.Instance["LblLoadProfile"];
-
-        public void WaitForSelection() {
-            if (selectProfileTCS.Task.IsCompleted) return;
-
-            var frame = new DispatcherFrame();
-            selectProfileTCS.Task.ContinueWith(
-                _ => frame.Continue = false,
-                TaskScheduler.FromCurrentSynchronizationContext());
-
-            Dispatcher.PushFrame(frame);
-        }
-
-        public void Wait100msNonBlocking() {
-            var frame = new DispatcherFrame();
-            var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100),
-                DispatcherPriority.Background,
-                (s, e) => {
-                    ((DispatcherTimer)s).Stop();
-                    frame.Continue = false;
-                },
-                Dispatcher.CurrentDispatcher);
-
-            Dispatcher.PushFrame(frame);
-        }
 
         public void Close() {
             initializeAppTCS.TrySetResult(true);

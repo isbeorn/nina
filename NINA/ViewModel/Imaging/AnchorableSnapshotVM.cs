@@ -32,7 +32,6 @@ using NINA.Equipment.Equipment;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.WPF.Base.ViewModel;
 using NINA.Astrometry;
-using NINA.WPF.Base.Behaviors;
 using System.ComponentModel;
 using NINA.Equipment.Exceptions;
 using System.Windows.Media.Imaging;
@@ -104,7 +103,6 @@ namespace NINA.ViewModel.Imaging {
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 SnapFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == profileService.ActiveProfile.SnapShotControlSettings.Filter?.Name);
             };
-            SubSampleRectangleMoveCommand = new RelayCommand(SubSampleRectangleMove);
         }
 
         /// <summary>
@@ -223,89 +221,9 @@ namespace NINA.ViewModel.Imaging {
         public ObservableRectangle SubSampleRectangle {
             get => subSampleRectangle;
             set {
-                if (subSampleRectangle != null) {
-                    subSampleRectangle.PropertyChanged -= SubSampleRectangle_PropertyChangedSizeValidation;
-                }
                 subSampleRectangle = value;
-                if (subSampleRectangle != null) {
-                    subSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChangedSizeValidation;
-                }
                 RaisePropertyChanged();
             }
-        }
-
-        private void SubSampleRectangleMove(object obj) {
-            var dragResult = (DragResult)obj;
-            if (SubSampleRectangle != null) {
-                var mode = dragResult.Mode;
-                var delta = dragResult.Delta;
-                if (mode == DragMode.Move) {
-                    if (SubSampleRectangle.X + delta.X < 0) {
-                        delta.X = 0;
-                    } else if (SubSampleRectangle.X + SubSampleRectangle.Width + delta.X > CameraInfo.XSize) {
-                        delta.X = (int)(CameraInfo.XSize - SubSampleRectangle.Width - SubSampleRectangle.X);
-                    }
-
-                    if (SubSampleRectangle.Y + delta.Y < 0) {
-                        delta.Y = 0;
-                    } else if (SubSampleRectangle.Y + SubSampleRectangle.Height + delta.Y > CameraInfo.YSize) {
-                        delta.Y = (int)(CameraInfo.YSize - SubSampleRectangle.Height - SubSampleRectangle.Y);
-                    }
-
-                    var x = (int)(SubSampleRectangle.X + delta.X);
-                    var y = (int)(SubSampleRectangle.Y + delta.Y);
-                    SubSampleRectangle = new ObservableRectangle(x, y, SubSampleRectangle.Width, SubSampleRectangle.Height);
-                } else {
-                    var x = (int)SubSampleRectangle.X;
-                    var y = (int)SubSampleRectangle.Y;
-                    var width = (int)SubSampleRectangle.Width;
-                    var height = (int)SubSampleRectangle.Height;
-
-                    if (mode == DragMode.Resize_Top_Left) {
-                        x += (int)delta.X;
-                        y += (int)delta.Y;
-                        width -= (int)delta.X;
-                        height -= (int)delta.Y;
-                    } else if (mode == DragMode.Resize_Top_Right) {
-                        y += (int)delta.Y;
-                        width += (int)delta.X;
-                        height -= (int)delta.Y;
-                    } else if (mode == DragMode.Resize_Bottom_Left) {
-                        x += (int)delta.X;
-                        width -= (int)delta.X;
-                        height += (int)delta.Y;
-                    } else if (mode == DragMode.Resize_Left) {
-                        x += (int)delta.X;
-                        width -= (int)delta.X;
-                    } else if (mode == DragMode.Resize_Right) {
-                        width += (int)delta.X;
-                    } else if (mode == DragMode.Resize_Top) {
-                        y += (int)delta.Y;
-                        height -= (int)delta.Y;
-                    } else if (mode == DragMode.Resize_Bottom) {
-                        height += (int)delta.Y;
-                    } else {
-                        width += (int)delta.X;
-                        height += (int)delta.Y;
-                    }
-                    /* Validate and adjust total boundaries */
-                    if (x < 0) { x = 0; }
-                    if (y < 0) { y = 0; }
-                    if (width < 1) { width = 1; }
-                    if (height < 1) { height = 1; }
-                    if (x >= CameraInfo.XSize) { x = CameraInfo.XSize - 1; }
-                    if (y >= CameraInfo.YSize) { y = CameraInfo.YSize - 1; }
-
-                    if (x + width > CameraInfo.XSize) { width = CameraInfo.XSize - x; }
-                    if (y + height > CameraInfo.YSize) { height = CameraInfo.YSize - y; }
-
-                    SubSampleRectangle = new ObservableRectangle(x, y, width, height);
-                }
-            }
-        }
-
-        private void SubSampleRectangle_PropertyChangedSizeValidation(object sender, PropertyChangedEventArgs e) {
-            SubSampleRectangleMove(new DragResult() { Delta = new System.Windows.Vector(), Mode = DragMode.Move });
         }
 
         public ICommand SubSampleRectangleMoveCommand { get; private set; }

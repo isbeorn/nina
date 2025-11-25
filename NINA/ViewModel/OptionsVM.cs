@@ -30,7 +30,6 @@ using NINA.Image.ImageAnalysis;
 using NINA.Plugin;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
-using NINA.WPF.Base.InputBox;
 using NINA.WPF.Base.Interfaces;
 using NINA.WPF.Base.Interfaces.Utility;
 using NINA.WPF.Base.Interfaces.ViewModel;
@@ -81,8 +80,6 @@ namespace NINA.ViewModel {
                 // We enforce that the main plugin repository is always present
                 PluginRepositories.Insert(0, Constants.MainPluginRepository);
             }
-            CopyToCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
-            CopyToAlternativeCustomSchemaCommand = new Core.Utility.RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.AltColorSchema?.Name != "Alternative Custom");
 
             RecreatePatterns();
 
@@ -110,15 +107,6 @@ namespace NINA.ViewModel {
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
                     || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternFLAT);
             };
-
-            var typeFace = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch) ?? ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(); ;
-            if (typeFace != null) {
-                FamilyTypeface = ApplicationFontFamily.FamilyTypefaces.FirstOrDefault(x => x.Weight == FontWeight && x.Style == FontStyle && x.Stretch == FontStretch);
-            }
-
-            Profiles = CollectionViewSource.GetDefaultView(profileService.Profiles);
-            Profiles.SortDescriptions.Add(new SortDescription("IsActive", ListSortDirection.Descending));
-            Profiles.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
 
             FilePatternsExpanded = !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternBIAS)
                 || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.ImageFileSettings.FilePatternDARK)
@@ -318,27 +306,7 @@ namespace NINA.ViewModel {
         private void CopyToAlternativeCustomSchema(object obj) {
             ActiveProfile.ColorSchemaSettings.CopyToAltCustom();
         }
-        [RelayCommand(CanExecute = nameof(CanCloneProfile))]
-        private void CloneProfile(object obj) {
-            if (!profileService.Clone(SelectedProfile)) {
-                Notification.ShowWarning(Loc.Instance["LblLoadProfileInUseWarning"]);
-            } else {
-                if (!Properties.Settings.Default.SingleDockLayout) {
-                    try {
-                        var currentProfileId = profileService.ActiveProfile.Id;
-                        var dockPath = DockManagerVM.GetDockConfigPath(currentProfileId);
 
-                        var newProfile = profileService.Profiles.Last();
-
-                        if (File.Exists(dockPath)) {
-                            File.Copy(dockPath, Path.Combine(Path.GetDirectoryName(dockPath), $"{newProfile.Id}.dock.config"));
-                        }
-                    } catch (Exception e) {
-                        Logger.Error("Failed to clone dock config", e);
-                    }
-                }
-            }
-        }
         [RelayCommand(CanExecute = nameof(CanRemoveProfile))]
         private void RemoveProfile(object obj) {
             if (MyMessageBox.Show(string.Format(Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
@@ -537,53 +505,7 @@ namespace NINA.ViewModel {
         [ObservableProperty]
         private ObservableCollection<string> _indexFiles = new ObservableCollection<string>();
 
-        [RelayCommand]
-        private void AddPluginRepository(object obj) {
-            var box = new InputBox(Loc.Instance["LblPluginRepositoryEnterUrl"], "https://<repository url>");
-            box.Owner = System.Windows.Application.Current.MainWindow;
-            box.Width = 350;
-            box.Height = 150;
-            box.Show();
-            box.Closing += (sender, e) => {
-                var d = sender as InputBox;
-                if (d.Canceled) {
-                    return;
-                }
-                var url = box.InputText;
-                bool isValidUrl = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-                if (!isValidUrl) {
-                    Notification.ShowError(string.Format(Loc.Instance["LblPluginRepositoryUrlInvalid"], url));
-                    Logger.Error($"Plugin Repository Url is invalid: {url}");
-                    return;
-                }
-                try {
-                    this.PluginRepositories.Add(url);
-                    Properties.Settings.Default.PluginRepositories = CoreUtil.SerializeList<string>(this.PluginRepositories.ToList());
-                    CoreUtil.SaveSettings(Properties.Settings.Default);
-                } catch (Exception ex) {
-                    Notification.ShowError(ex.Message);
-                    Logger.Error(ex);
-                }
-            };
-        }
 
-        [RelayCommand]
-        private void RemovePluginRepository(object obj) {
-            if (obj is string url) {
-                try {
-                    if (url == Constants.MainPluginRepository) {
-                        // Removing the main repository is ignored
-                        return;
-                    }
-                    this.PluginRepositories.Remove(url);
-                    Properties.Settings.Default.PluginRepositories = CoreUtil.SerializeList<string>(this.PluginRepositories.ToList());
-                    CoreUtil.SaveSettings(Properties.Settings.Default);
-                } catch (Exception ex) {
-                    Notification.ShowError(ex.Message);
-                    Logger.Error(ex);
-                }
-            }
-        }
 
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
@@ -621,73 +543,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public FontFamily ApplicationFontFamily {
-            get => NINA.Properties.Settings.Default.ApplicationFontFamily;
-            set {
-                NINA.Properties.Settings.Default.ApplicationFontFamily = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-
-                FamilyTypeface = value.FamilyTypefaces.FirstOrDefault(x => (x.AdjustedFaceNames.First().Value == "Regular") || (x.AdjustedFaceNames.First().Value == "Normal")) ?? value.FamilyTypefaces.FirstOrDefault();
-                if (FamilyTypeface != null) {
-                    FontStretch = FamilyTypeface.Stretch;
-                    FontStyle = FamilyTypeface.Style;
-                    FontWeight = FamilyTypeface.Weight;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
-        private FamilyTypeface familyTypeface;
-
-        public FamilyTypeface FamilyTypeface {
-            get => familyTypeface;
-            set {
-                familyTypeface = value;
-                if(familyTypeface != null) {
-                    FontStretch = familyTypeface.Stretch;
-                    FontStyle = familyTypeface.Style;
-                    FontWeight = familyTypeface.Weight;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public bool SingleDockLayout {
-            get => NINA.Properties.Settings.Default.SingleDockLayout;
-            set {
-                NINA.Properties.Settings.Default.SingleDockLayout = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-                RequiresRestart = true;
-            }
-        }
-
-        public FontStretch FontStretch {
-            get => NINA.Properties.Settings.Default.FontStretch;
-            set {
-                NINA.Properties.Settings.Default.FontStretch = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-            }
-        }
-
-        public FontStyle FontStyle {
-            get => NINA.Properties.Settings.Default.FontStyle;
-            set {
-                NINA.Properties.Settings.Default.FontStyle = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-            }
-        }
-
-        public FontWeight FontWeight {
-            get => NINA.Properties.Settings.Default.FontWeight;
-            set {
-                NINA.Properties.Settings.Default.FontWeight = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-            }
-        }
         [RelayCommand]
         private void ToggleColors(object o) {
             ActiveProfile.ColorSchemaSettings.ToggleSchema();
@@ -704,12 +559,6 @@ namespace NINA.ViewModel {
                     .Where(p => p != FileTypeEnum.RAW)
                     .Where(p => p != FileTypeEnum.TIFF_LZW)
                     .Where(p => p != FileTypeEnum.TIFF_ZIP)
-                    .ToArray();
-
-#pragma warning restore CS0612 // Type or member is obsolete
-
-        public static TIFFCompressionTypeEnum[] TIFFCompressionTypes => Enum.GetValues(typeof(TIFFCompressionTypeEnum))
-                    .Cast<TIFFCompressionTypeEnum>()
                     .ToArray();
 
         public static XISFCompressionTypeEnum[] XISFCompressionTypes => Enum.GetValues(typeof(XISFCompressionTypeEnum))
@@ -759,49 +608,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AutoUpdateSourceEnum AutoUpdateSource {
-            get => (AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource;
-            set {
-                NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                versionCheckVM.CheckUpdate();
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool UseSavedProfileSelection {
-            get => Properties.Settings.Default.UseSavedProfileSelection;
-            set {
-                NINA.Properties.Settings.Default.UseSavedProfileSelection = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-            }
-        }
-
-
-        public int SaveQueueSize {
-            get => Properties.Settings.Default.SaveQueueSize;
-            set {
-                if (value < 1) { value = 1; }
-                if (value != SaveQueueSize) {
-                    NINA.Properties.Settings.Default.SaveQueueSize = value;
-                    CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                    RaisePropertyChanged();
-                    RequiresRestart = true;
-                }
-            }
-        }
-
-        public bool HardwareAcceleration {
-            get => NINA.Properties.Settings.Default.HardwareAcceleration;
-            set {
-                NINA.Properties.Settings.Default.HardwareAcceleration = value;
-                CoreUtil.SaveSettings(NINA.Properties.Settings.Default);
-                RaisePropertyChanged();
-                RequiresRestart = true;
-            }
-        }
-
         public LogLevelEnum LogLevel {
             get => profileService.ActiveProfile.ApplicationSettings.LogLevel;
             set {
@@ -821,9 +627,9 @@ namespace NINA.ViewModel {
         private readonly IPlanetariumFactory planetariumFactory;
         private readonly IGnssFactory gnssFactory;
 
-        [NotifyCanExecuteChangedFor(nameof(CloneProfileCommand))]
-        [NotifyCanExecuteChangedFor(nameof(RemoveProfileCommand))]
-        [NotifyCanExecuteChangedFor(nameof(SelectProfileCommand))]
+//        [NotifyCanExecuteChangedFor(nameof(CloneProfileCommand))]
+//        [NotifyCanExecuteChangedFor(nameof(RemoveProfileCommand))]
+//        [NotifyCanExecuteChangedFor(nameof(SelectProfileCommand))]
         [ObservableProperty]
         private ProfileMeta selectedProfile;
 

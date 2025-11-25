@@ -13,64 +13,62 @@
 #endregion "copyright"
 
 using Microsoft.Extensions.DependencyInjection;
-using NINA.Astrometry;
-using NINA.Astrometry.Interfaces;
-using NINA.Core.Interfaces;
-using NINA.Core.Interfaces.Utility;
-using NINA.Core.Model;
-using NINA.Core.MyMessageBox;
 using NINA.Core.Utility;
-using NINA.Core.Utility.WindowService;
-using NINA.Equipment.Equipment;
-using NINA.Equipment.Equipment.MyDome;
-using NINA.Equipment.Equipment.MyGPS;
-using NINA.Equipment.Equipment.MyPlanetarium;
-using NINA.Equipment.Interfaces;
-using NINA.Equipment.Interfaces.Mediator;
+using System;
 using NINA.Equipment.Interfaces.ViewModel;
-using NINA.Equipment.SDK.CameraSDKs.SBIGSDK;
-using NINA.Equipment.Utility;
-using NINA.Image.ImageAnalysis;
-using NINA.Image.ImageData;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Image.Interfaces;
-using NINA.Imaging.ViewModel.Imaging;
-using NINA.Interfaces;
-using NINA.PlateSolving;
-using NINA.PlateSolving.Interfaces;
-using NINA.Plugin;
-using NINA.Plugin.Interfaces;
-using NINA.Plugin.Messaging;
-using NINA.Profile;
+using NINA.Image.ImageData;
 using NINA.Profile.Interfaces;
-using NINA.Sequencer.Interfaces.Mediator;
-using NINA.Sequencer.Mediator;
+using NINA.Profile;
+using NINA.Image.ImageAnalysis;
+using NINA.PlateSolving.Interfaces;
+using NINA.PlateSolving;
 using NINA.ViewModel;
-using NINA.ViewModel.FlatWizard;
-using NINA.ViewModel.FramingAssistant;
-using NINA.ViewModel.ImageHistory;
-using NINA.ViewModel.Imaging;
-using NINA.ViewModel.Interfaces;
-using NINA.ViewModel.Plugins;
-using NINA.ViewModel.Sequencer;
-using NINA.WPF.Base.Interfaces;
+using NINA.WPF.Base.Interfaces.ViewModel;
+using NINA.WPF.Base.ViewModel.Equipment.Camera;
+using NINA.WPF.Base.ViewModel.Equipment.Focuser;
+using NINA.WPF.Base.ViewModel.Equipment.Telescope;
+using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Utility;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.Utility;
-using NINA.WPF.Base.ViewModel;
-using NINA.WPF.Base.ViewModel.Equipment.Camera;
-using NINA.WPF.Base.ViewModel.Equipment.Dome;
 using NINA.WPF.Base.ViewModel.Equipment.FilterWheel;
-using NINA.WPF.Base.ViewModel.Equipment.FlatDevice;
-using NINA.WPF.Base.ViewModel.Equipment.Focuser;
+using NINA.Core.Interfaces;
+using NINA.WPF.Base.Interfaces;
+using NINA.Astrometry.Interfaces;
+using NINA.Astrometry;
 using NINA.WPF.Base.ViewModel.Equipment.Guider;
+using NINA.ViewModel.ImageHistory;
+using NINA.WPF.Base.ViewModel;
+using NINA.Equipment.Interfaces;
+using NINA.Equipment.Utility;
+using NINA.Imaging.ViewModel.Imaging;
+using NINA.Core.Interfaces.Utility;
 using NINA.WPF.Base.ViewModel.Equipment.Rotator;
-using NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor;
 using NINA.WPF.Base.ViewModel.Equipment.Switch;
-using NINA.WPF.Base.ViewModel.Equipment.Telescope;
+using NINA.WPF.Base.ViewModel.Equipment.FlatDevice;
 using NINA.WPF.Base.ViewModel.Equipment.WeatherData;
-using System;
+using NINA.Plugin;
+using NINA.Plugin.Interfaces;
+using NINA.Sequencer.Mediator;
+using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Plugin.Messaging;
+using NINA.Equipment.Equipment.MyGPS;
+using NINA.Interfaces;
+using NINA.ViewModel.Plugins;
+using NINA.WPF.Base.ViewModel.Equipment.Dome;
+using NINA.Equipment.Equipment.MyDome;
+using NINA.WPF.Base.ViewModel.Equipment.SafetyMonitor;
+using NINA.Core.Model;
+using NINA.Core.Utility.WindowService;
+using NINA.Equipment.Equipment.MyPlanetarium;
+using NINA.ViewModel.FramingAssistant;
+using NINA.ViewModel.Imaging;
+using NINA.ViewModel.Interfaces;
+using NINA.ViewModel.FlatWizard;
+using NINA.ViewModel.Sequencer;
+using NINA.Core.MyMessageBox;
 
 namespace NINA.Utility {
 
@@ -83,35 +81,37 @@ namespace NINA.Utility {
             _commandLineArguments = commandLineOptions;
         }
 
-        public IServiceProvider Load() {
+        public void Load(IServiceCollection services) {
             try {
-                var services = new ServiceCollection();
+                // Load system libraries globally before any other initialization
+                DllLoader.LoadDll("libudev.so.1");
+                DllLoader.LoadDll("libhidapi-hidraw.so");
 
-                services.AddSingleton<ProjectVersion>(f => new ProjectVersion(NINA.Core.Utility.CoreUtil.Version));
+                services.AddSingleton(f => new ProjectVersion(CoreUtil.Version));
 
-                services.AddSingleton<IProfileService>(f => _profileService);
-                services.AddSingleton<IProfile>(f => f.GetService<ProfileService>().ActiveProfile);
+                services.AddSingleton(f => _profileService);
+                services.AddSingleton(f => f.GetService<ProfileService>().ActiveProfile);
 
                 services.AddSingleton<IApplicationVM, ApplicationVM>();
 
-                services.AddSingleton<ICommandLineOptions>(f => _commandLineArguments);
+                services.AddSingleton(f => _commandLineArguments);
 
                 services.AddSingleton<IMessageBroker, MessageBroker>();
 
                 services.AddTransient<IUsbDeviceWatcher, UsbDeviceWatcher>();
 
                 // Equipment Providers
-                services.AddScoped<IEquipmentProviders<ICamera>, PluginEquipmentProviders<ICamera>>();
-                services.AddScoped<IEquipmentProviders<IFilterWheel>, PluginEquipmentProviders<IFilterWheel>>();
-                services.AddScoped<IEquipmentProviders<IFocuser>, PluginEquipmentProviders<IFocuser>>();
-                services.AddScoped<IEquipmentProviders<IRotator>, PluginEquipmentProviders<IRotator>>();
-                services.AddScoped<IEquipmentProviders<ITelescope>, PluginEquipmentProviders<ITelescope>>();
-                services.AddScoped<IEquipmentProviders<IGuider>, PluginEquipmentProviders<IGuider>>();
-                services.AddScoped<IEquipmentProviders<ISwitchHub>, PluginEquipmentProviders<ISwitchHub>>();
-                services.AddScoped<IEquipmentProviders<IFlatDevice>, PluginEquipmentProviders<IFlatDevice>>();
-                services.AddScoped<IEquipmentProviders<IWeatherData>, PluginEquipmentProviders<IWeatherData>>();
-                services.AddScoped<IEquipmentProviders<IDome>, PluginEquipmentProviders<IDome>>();
-                services.AddScoped<IEquipmentProviders<ISafetyMonitor>, PluginEquipmentProviders<ISafetyMonitor>>();
+                services.AddSingleton<IEquipmentProviders<ICamera>, PluginEquipmentProviders<ICamera>>();
+                services.AddSingleton<IEquipmentProviders<IFilterWheel>, PluginEquipmentProviders<IFilterWheel>>();
+                services.AddSingleton<IEquipmentProviders<IFocuser>, PluginEquipmentProviders<IFocuser>>();
+                services.AddSingleton<IEquipmentProviders<IRotator>, PluginEquipmentProviders<IRotator>>();
+                services.AddSingleton<IEquipmentProviders<ITelescope>, PluginEquipmentProviders<ITelescope>>();
+                services.AddSingleton<IEquipmentProviders<IGuider>, PluginEquipmentProviders<IGuider>>();
+                services.AddSingleton<IEquipmentProviders<ISwitchHub>, PluginEquipmentProviders<ISwitchHub>>();
+                services.AddSingleton<IEquipmentProviders<IFlatDevice>, PluginEquipmentProviders<IFlatDevice>>();
+                services.AddSingleton<IEquipmentProviders<IWeatherData>, PluginEquipmentProviders<IWeatherData>>();
+                services.AddSingleton<IEquipmentProviders<IDome>, PluginEquipmentProviders<IDome>>();
+                services.AddSingleton<IEquipmentProviders<ISafetyMonitor>, PluginEquipmentProviders<ISafetyMonitor>>();
                 services.AddSingleton<IEquipmentProviders[]>(f =>
                     new IEquipmentProviders[] {
                         f.GetService<IEquipmentProviders<ICamera>>(),
@@ -245,7 +245,6 @@ namespace NINA.Utility {
                 services.AddSingleton<IFocusTargetsVM, FocusTargetsVM>();
                 services.AddSingleton<IAutoFocusToolVM, AutoFocusToolVM>();
                 services.AddSingleton<IThumbnailVM, ThumbnailVM>();
-                services.AddSingleton<IDockManagerVM, DockManagerVM>();
                 services.AddSingleton<IApplicationStatusVM, ApplicationStatusVM>();
                 services.AddSingleton<IVersionCheckVM, VersionCheckVM>();
                 services.AddSingleton<IImageControlVM, ImageControlVM>();
@@ -254,7 +253,6 @@ namespace NINA.Utility {
 
                 services.AddSingleton<ITwilightCalculator, TwilightCalculator>();
                 services.AddSingleton<IMicroCacheFactory, DefaultMicroCacheFactory>();
-                services.AddSingleton<ISbigSdk, SbigSdk>();
 
                 // Pluggable Instances
                 services.AddSingleton<StarDetection>();
@@ -296,13 +294,7 @@ namespace NINA.Utility {
                 services.AddSingleton<IDomeSynchronization, DomeSynchronization>();
                 services.AddSingleton<IDomeFollower, DomeFollower>();
                 services.AddSingleton<IDeviceUpdateTimerFactory, DefaultDeviceUpateTimerFactory>();
-
-                if (DllLoader.IsX86()) {
-                    services.AddSingleton<IImageSaveMediator, ImageSaveMediatorX86>();
-                } else {
-                    services.AddSingleton<IImageSaveMediator, ImageSaveMediator>();
-                }
-
+                services.AddSingleton<IImageSaveMediator, ImageSaveMediator>();
                 services.AddSingleton<IFlatWizardVM>(f => new FlatWizardVM(f.GetService<IProfileService>(),
                     new ImagingVM(f.GetService<IProfileService>(),
                                   new ImagingMediator(),
@@ -333,8 +325,6 @@ namespace NINA.Utility {
                 services.AddSingleton<IPlateSolverFactory, PlateSolverFactoryProxy>();
                 services.AddSingleton<IPluginLoader, PluginLoader>();
                 services.AddSingleton<IPluginsVM, PluginsVM>();
-
-                return services.BuildServiceProvider();
             } catch (Exception e) {
                 Logger.Error(e);
                 throw;

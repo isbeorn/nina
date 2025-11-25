@@ -166,21 +166,6 @@ namespace NINA.AstrometryIndexDownloader {
         public static void Show(string cygwinlocation) {
             var destinationfolder = cygwinlocation + "\\usr\\share\\astrometry\\data\\";
             AstrometryIndexDownloaderVM vm = new AstrometryIndexDownloaderVM(destinationfolder);
-
-            CustomWindow win = new AstrometryIndexDownloader {
-                DataContext = vm,
-                Title = "Astrometry Index Downloader"
-            };
-
-            win.CloseCommand = new RelayCommand((object o) => win.Close());
-
-            var mainwindow = System.Windows.Application.Current.MainWindow;
-            mainwindow.Opacity = 0.8;
-            win.Left = mainwindow.Left + (mainwindow.Width - win.Width) / 2; ;
-            win.Top = mainwindow.Top + (mainwindow.Height - win.Height) / 2;
-
-            win.ShowDialog();
-            mainwindow.Opacity = 1;
         }
 
         private int _focalLength;

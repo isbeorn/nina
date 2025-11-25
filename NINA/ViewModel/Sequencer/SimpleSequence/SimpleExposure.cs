@@ -61,7 +61,7 @@ namespace NINA.ViewModel.Sequencer.SimpleSequence {
             this.Add(takeExposure);
             this.Add(loopCondition);
 
-            WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(switchFilter, nameof(switchFilter.PropertyChanged), SwitchFilter_PropertyChanged);
+            //WeakEventManager<SwitchFilter, PropertyChangedEventArgs>.AddHandler(switchFilter, nameof(switchFilter.PropertyChanged), SwitchFilter_PropertyChanged);
 
             loopCondition.PropertyChanged += LoopCondition_PropertyChanged;
 
@@ -194,7 +194,6 @@ namespace NINA.ViewModel.Sequencer.SimpleSequence {
 
         public override object Clone() {
             var clone = new SimpleExposure(factory) {
-                Icon = Icon,
                 Name = Name,
                 Category = Category,
                 Description = Description,

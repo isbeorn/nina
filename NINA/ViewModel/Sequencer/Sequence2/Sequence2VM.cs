@@ -90,15 +90,7 @@ namespace NINA.ViewModel.Sequencer {
             SequencerFactory = factory;
 
             StartSequenceCommand = new AsyncCommand<bool>(StartSequence, (object o) => cameraMediator.IsFreeToCapture(this));
-            CancelSequenceCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(CancelSequence);
-            SaveAsSequenceCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(SaveAsSequence);
-            SaveSequenceCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(SaveSequence);
-            AddTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(AddTemplate);
-            AddTargetToControllerCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(AddTargetToController);
-            LoadSequenceCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(LoadSequence);
-            SwitchToOverviewCommand = new GalaSoft.MvvmLight.Command.RelayCommand(sequenceMediator.SwitchToOverview, IsSimpleSequencerEnabled);
 
-            DetachCommand = new GalaSoft.MvvmLight.Command.RelayCommand<object>(Detach);
             SkipCurrentItemCommand = new AsyncCommand<bool>(SkipCurrentItem);
             SkipToEndOfSequenceCommand = new AsyncCommand<bool>(SkipToEndOfSequence);
         }
@@ -493,16 +485,6 @@ namespace NINA.ViewModel.Sequencer {
             }
         }
 
-        private TaskbarItemProgressState taskBarProgressState = TaskbarItemProgressState.None;
-
-        public TaskbarItemProgressState TaskBarProgressState {
-            get => taskBarProgressState;
-            set {
-                taskBarProgressState = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private ApplicationStatus _status;
 
         public ApplicationStatus Status {
@@ -530,7 +512,6 @@ namespace NINA.ViewModel.Sequencer {
             cts = new CancellationTokenSource();
             var token = cts.Token;
             IsRunning = true;
-            TaskBarProgressState = TaskbarItemProgressState.Normal;
             try {
                 cameraMediator.RegisterCaptureBlock(this);
 
@@ -547,7 +528,6 @@ namespace NINA.ViewModel.Sequencer {
             } finally {
                 Logger.Info("Advanced Sequence finished");
                 cameraMediator.ReleaseCaptureBlock(this);
-                TaskBarProgressState = TaskbarItemProgressState.None;
                 IsRunning = false;
                 await (SequenceFinished?.InvokeAsync(this, new EventArgs()) ?? Task.CompletedTask);
                 if (commandLineOptions.ExitAfterSequence) {

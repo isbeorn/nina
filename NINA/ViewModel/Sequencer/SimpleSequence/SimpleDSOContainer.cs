@@ -111,8 +111,6 @@ namespace NINA.Sequencer.Container {
             CameraInfo = this.cameraMediator.GetInfo();
             Task.Run(() => NighttimeData = nighttimeCalculator.Calculate());
             Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
-            CoordsToFramingCommand = new AsyncCommand<bool>(() => Task.Run(CoordsToFraming));
-            CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
 
             AddSimpleExposureCommand = new RelayCommand((object o) => AddSimpleExposure());
             RemoveSimpleExposureCommand = new RelayCommand(RemoveSimpleExposure);
@@ -128,16 +126,8 @@ namespace NINA.Sequencer.Container {
 
             this.rotateLoopCondition = factory.GetCondition<LoopCondition>();
             this.rotateLoopCondition.Iterations = 1;
-            WeakEventManager<INighttimeCalculator, EventArgs>.AddHandler(nighttimeCalculator, nameof(nighttimeCalculator.OnReferenceDayChanged), NighttimeCalculator_OnReferenceDayChanged);
+            //WeakEventManager<INighttimeCalculator, EventArgs>.AddHandler(nighttimeCalculator, nameof(nighttimeCalculator.OnReferenceDayChanged), NighttimeCalculator_OnReferenceDayChanged);
         }
-
-        public override ICommand ResetProgressCommand => new RelayCommand(
-           (o) => {
-               if (MyMessageBox.Show(Loc.Instance["Lbl_OldSequencer_ResetTargetRows"], Loc.Instance["Lbl_OldSequencer_ResetTarget"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes) == System.Windows.MessageBoxResult.Yes) {
-                   base.ResetProgressCommand.Execute(o);
-               }
-           }
-       );
 
         public ISimpleExposure ActiveExposure {
             get => activeExposure;
@@ -735,52 +725,6 @@ namespace NINA.Sequencer.Container {
 
         private void Target_OnCoordinatesChanged(object sender, EventArgs e) {
             AfterParentChanged();
-        }
-
-        private async Task<bool> CoordsToFraming() {
-            if (Target.DeepSkyObject?.Coordinates != null) {
-                var dso = new DeepSkyObject(Target.DeepSkyObject.Name, Target.DeepSkyObject.Coordinates, profileService.ActiveProfile.AstrometrySettings.Horizon);
-                dso.RotationPositionAngle = Target.PositionAngle;
-                applicationMediator.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
-                return await framingAssistantVM.SetCoordinates(dso);
-            }
-            return false;
-        }
-
-        private async Task<bool> CoordsFromPlanetarium() {
-            IPlanetarium s = planetariumFactory.GetPlanetarium();
-            DeepSkyObject resp = null;
-
-            try {
-                resp = await s.GetTarget();
-
-                if (resp != null) {
-                    Target.InputCoordinates.Coordinates = resp.Coordinates;
-                    Target.TargetName = resp.Name;
-                    this.Name = resp.Name;
-                    Target.PositionAngle = 0;
-
-                    if (s.CanGetRotationAngle) {
-                        double rotationAngle = await s.GetRotationAngle();
-
-                        if (!double.IsNaN(rotationAngle)) {
-                            Target.PositionAngle = rotationAngle;
-                        }
-                    }
-                    Notification.ShowSuccess(string.Format(Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-                }
-            } catch (PlanetariumObjectNotSelectedException) {
-                Logger.Error($"Attempted to get coordinates from {s.Name} when no object was selected");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumObjectNotSelected"], s.Name));
-            } catch (PlanetariumFailedToConnect ex) {
-                Logger.Error($"Unable to connect to {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
-            } catch (Exception ex) {
-                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
-                Notification.ShowError(string.Format(Loc.Instance["LblPlanetariumCoordsError"], s.Name));
-            }
-
-            return (resp != null);
         }
 
         public override string ToString() {

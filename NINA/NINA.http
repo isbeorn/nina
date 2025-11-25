@@ -1,0 +1,6 @@
+@NINA_HostAddress = http://0.0.0.0:5154
+
+GET {{NINA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
