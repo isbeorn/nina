@@ -28,6 +28,10 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
             return (Nncam.eOPTION)Enum.Parse(typeof(ToupTekAlikeOption), option.ToString());
         }
 
+        public static Nncam.eAAF ToRisingcam(this ToupTekAlikeAAF action) {
+            return (Nncam.eAAF)Enum.Parse(typeof(ToupTekAlikeAAF), action.ToString());
+        }
+
         public static ToupTekAlikeEvent ToEvent(this Nncam.eEVENT info) {
             return (ToupTekAlikeEvent)Enum.Parse(typeof(Nncam.eEVENT), info.ToString());
         }
@@ -158,6 +162,14 @@ namespace NINA.Equipment.Equipment.MyCamera.ToupTekAlike {
 
         public bool put_Speed(ushort value) {
             return sdk.put_Speed(value);
+        }
+
+        public bool AAF(ToupTekAlikeAAF action, int outVal, out int inVal) {
+            return sdk.AAF(action.ToRisingcam(), outVal, out inVal);
+        }
+
+        public bool AAF(ToupTekAlikeAAF action, int outVal) {
+            return sdk.AAF(action.ToRisingcam(), outVal);
         }
 
         private ToupTekAlikeCallback toupTekAlikeCallback;

@@ -29,7 +29,7 @@ using System.IO;
 namespace Omegon {
 
     public class Omegonprocam : IDisposable {
-        private const string DLLNAME = "omegonprocam.dll";
+        private const string DLLNAME = "libomegonprocam.so";
 
         static Omegonprocam() {
             DllLoader.LoadDll(Path.Combine("Omegon", DLLNAME));

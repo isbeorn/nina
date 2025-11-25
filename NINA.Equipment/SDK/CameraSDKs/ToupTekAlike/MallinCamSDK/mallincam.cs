@@ -24,7 +24,7 @@ namespace MallinCam {
            (2) hans.html, Simplified Chinese
     */
     public class Mallincam : IDisposable {
-        private const string DLLNAME = "mallincam.dll";
+        private const string DLLNAME = "libmallincam.so";
         static Mallincam() {
             DllLoader.LoadDll(Path.Combine("MallinCam", DLLNAME));
         }

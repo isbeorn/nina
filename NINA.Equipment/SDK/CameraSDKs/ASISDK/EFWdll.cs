@@ -1,5 +1,4 @@
-﻿using Accessibility;
-using NINA.Core.Utility;
+﻿using NINA.Core.Utility;
 using System;
 using System.IO;
 using System.Reflection;
@@ -11,7 +10,8 @@ using System.Text;
 namespace ZWOptical.EFWSDK {
 
     public class EFWdll {
-        private const string DLLNAME = "EFW_filter.dll";
+        private const string DLLNAME = "libEFWFilter.so";
+
 
         static EFWdll() {
             DllLoader.LoadDll(Path.Combine("ASI", DLLNAME));

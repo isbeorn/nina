@@ -23,7 +23,7 @@ using System.IO;
        (2) hans.html, Simplified Chinese
 */
 public class Svbonycam : IDisposable {
-    private const string DLLNAME = "svbonycam.dll";
+    private const string DLLNAME = "libsvbonycam.so";
 
     static Svbonycam() {
         DllLoader.LoadDll(Path.Combine("SVBony", DLLNAME));

@@ -23,7 +23,7 @@ using System.Runtime.ConstrainedExecution;
        (2) hans.html, Simplified Chinese
 */
 public class Ogmacam : IDisposable {
-    private const string DLLNAME = "ogmacam.dll";
+    private const string DLLNAME = "libogmacam.so";
     static Ogmacam() {
         DllLoader.LoadDll(Path.Combine("OGMA", DLLNAME));
     }

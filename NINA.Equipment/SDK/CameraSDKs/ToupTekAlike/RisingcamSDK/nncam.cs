@@ -27,7 +27,7 @@ using NINA.Core.Utility;
 */
 
 public class Nncam : IDisposable {
-    private const string DLLNAME = "nncam.dll";
+    private const string DLLNAME = "libnncam.so";
 
     static Nncam() {
         DllLoader.LoadDll(Path.Combine("Risingcam", DLLNAME));

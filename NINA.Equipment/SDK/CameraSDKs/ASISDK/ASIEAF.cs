@@ -10,7 +10,7 @@ using System.Text;
 
 namespace ZWOptical.ASISDK {
     public class ASIEAF {
-        private const string DLLNAME = "EAF_focuser.dll";
+        private const string DLLNAME = "libEAFFocuser.so";
 
         static ASIEAF() {
             DllLoader.LoadDll(Path.Combine("ASI", DLLNAME));

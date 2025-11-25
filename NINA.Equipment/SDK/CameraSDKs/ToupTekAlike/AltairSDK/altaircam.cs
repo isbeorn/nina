@@ -30,7 +30,7 @@ using System.Runtime.ExceptionServices;
 namespace Altair {
 
     public class Altaircam : IDisposable {
-        private const string DLLNAME = "altaircam.dll";
+        private const string DLLNAME = "libaltaircam.so";
 
         static Altaircam() {
             DllLoader.LoadDll(Path.Combine("Altair", DLLNAME));
