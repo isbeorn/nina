@@ -55,12 +55,12 @@ namespace NINA.PlateSolving {
         private static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings, PlateSolverEnum solver) {
             return solver switch {
                 PlateSolverEnum.ASTROMETRY_NET => new AstrometryPlateSolver(plateSolveSettings.AstrometryURL, plateSolveSettings.AstrometryAPIKey),
-                PlateSolverEnum.LOCAL => new LocalPlateSolver(plateSolveSettings.CygwinLocation),
-                PlateSolverEnum.PLATESOLVE2 => new Platesolve2Solver(plateSolveSettings.PS2Location),
-                PlateSolverEnum.PLATESOLVE3 => new Platesolve3Solver(plateSolveSettings.PS3Location),
-                PlateSolverEnum.ASPS => new AllSkyPlateSolver(plateSolveSettings.AspsLocation),
-                PlateSolverEnum.TSX_IMAGELINK => new TheSkyXImageLinkSolver(plateSolveSettings.TheSkyXHost, plateSolveSettings.TheSkyXPort),
-                PlateSolverEnum.PINPONT => new Dc3PinPointSolver(plateSolveSettings),
+//                PlateSolverEnum.LOCAL => new LocalPlateSolver(plateSolveSettings.CygwinLocation),
+//                PlateSolverEnum.PLATESOLVE2 => new Platesolve2Solver(plateSolveSettings.PS2Location),
+//                PlateSolverEnum.PLATESOLVE3 => new Platesolve3Solver(plateSolveSettings.PS3Location),
+//                PlateSolverEnum.ASPS => new AllSkyPlateSolver(plateSolveSettings.AspsLocation),
+//                PlateSolverEnum.TSX_IMAGELINK => new TheSkyXImageLinkSolver(plateSolveSettings.TheSkyXHost, plateSolveSettings.TheSkyXPort),
+//                PlateSolverEnum.PINPONT => new Dc3PinPointSolver(plateSolveSettings),
                 _ => new ASTAPSolver(plateSolveSettings.ASTAPLocation),
             };
         }
