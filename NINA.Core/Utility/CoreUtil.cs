@@ -302,6 +302,24 @@ namespace NINA.Core.Utility {
             }
         }
 
+        public static void SaveSettings(object settings, [CallerMemberName] string memberName = "") {
+            if (settings == null) return;
+
+            // Try to call Save() method via reflection (works for any settings class)
+            var saveMethod = settings.GetType().GetMethod("Save", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            if (saveMethod != null) {
+                try {
+                    saveMethod.Invoke(settings, null);
+                } catch (Exception ex) {
+                    Logger.Error($"Settings failed to save from {memberName}", ex);
+
+                    // Try Reload if it exists
+                    var reloadMethod = settings.GetType().GetMethod("Reload", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                    reloadMethod?.Invoke(settings, null);
+                }
+            }
+        }
+
         public static void CopyDirectory(string source, string target) {            
             var diSource = new DirectoryInfo(source);
             var diTarget = new DirectoryInfo(target);

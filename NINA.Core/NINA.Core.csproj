@@ -1,39 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Configurations>Debug;Release;SignedRelease</Configurations>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSource>true</IncludeSource>
     <Deterministic>true</Deterministic>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
-    <OutputPath>bin\SignedRelease\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="publish\**" />
-    <EmbeddedResource Remove="publish\**" />
-    <None Remove="publish\**" />
-    <Page Remove="publish\**" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Protobuf Include="Protos\API\ASCOM\Camera\CameraService.proto" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
@@ -76,32 +56,14 @@
     <PackageReference Include="System.IO.Ports" Version="10.0.0" />
     <PackageReference Include="System.Management" Version="10.0.0" />
     <PackageReference Include="System.Runtime.Caching" Version="10.0.0" />
-    <PackageReference Include="ToastNotifications">
-      <Version>2.5.1</Version>
-    </PackageReference>
+    <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Windows.Compat\System.Windows.Compat.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Logo_Nina.png" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="Locale\Locale.ar-SA.resx" />
-    <EmbeddedResource Remove="Locale\Locale.sv-SE.resx" />
-  </ItemGroup>
-  <PropertyGroup>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>N.I.N.A. Core Library</Title>
-    <Version>3.2.0.9001</Version>
-    <Authors>Stefan Berg and the N.I.N.A. Contributors</Authors>
-    <Product>N.I.N.A. - Nighttime Imaging 'N' Astronomy</Product>
-    <Description>This assembly contains the core components of N.I.N.A.</Description>
-    <Copyright>Copyright ©  2016 - 2025 Stefan Berg and the N.I.N.A. contributors</Copyright>
-    <PackageProjectUrl>https://nighttime-imaging.eu/</PackageProjectUrl>
-    <PackageIcon>ninasplash.png</PackageIcon>
-    <RepositoryUrl>https://github.com/isbeorn/nina.git</RepositoryUrl>
-    <PackageOutputPath>$(SolutionDir)publish</PackageOutputPath>
-    <IncludeSymbols>False</IncludeSymbols>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
@@ -121,7 +83,4 @@
   <ItemGroup>
     <Folder Include="Interfaces\Utility\" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec IgnoreExitCode="true" Command="if $(Configuration) == SignedRelease signtool sign /t http://timestamp.sectigo.com /i Sectigo /v /a /fd SHA256 $(TargetPath)" />
-  </Target>
 </Project>
