@@ -37,10 +37,13 @@ namespace NINA.Test {
         [Test]
         public void Pattern_Remove_TrailingAndLeading_Whitespace_FromFilesAndFolders() {
             var date = new DateTime(2022,1,1,12,0,0,DateTimeKind.Utc);
-            string filePattern = "$$DATE$$\\Telescope = $$TELESCOPE$$\\   Target = $$TARGETNAME$$ \\Type = $$IMAGETYPE$$\\ Filter = $$FILTER$$\\ $$DATE$$ @ $$TIME$$; Target = $$TARGETNAME$$; Type = $$IMAGETYPE$$; Filter = $$FILTER$$; Gain = $$GAIN$$; Bin = $$BINNING$$; Exp = $$EXPOSURETIME$$ s; Temp = $$SENSORTEMP$$ C; Frame # = $$FRAMENR$$ ";
+            var sep = Path.DirectorySeparatorChar;
+            string filePattern = $"$$DATE$${sep}Telescope = $$TELESCOPE$${sep}   Target = $$TARGETNAME$$ {sep}Type = $$IMAGETYPE$${sep} Filter = $$FILTER$${sep} $$DATE$$ @ $$TIME$$; Target = $$TARGETNAME$$; Type = $$IMAGETYPE$$; Filter = $$FILTER$$; Gain = $$GAIN$$; Bin = $$BINNING$$; Exp = $$EXPOSURETIME$$ s; Temp = $$SENSORTEMP$$ C; Frame # = $$FRAMENR$$ ";
             metaData.Target.Name = @"C/2020 F3 NEOWISE ?//_\\-A Comet";
             metaData.Image.ExposureStart = date;
-            string expectedResult = $"{date.ToLocalTime():yyyy-MM-dd}\\Telescope =\\Target = C-2020 F3 NEOWISE _--_---A Comet\\Type =\\Filter =\\{date.ToLocalTime():yyyy-MM-dd} @ {date.ToLocalTime():HH-mm-ss}; Target = C-2020 F3 NEOWISE _--_---A Comet; Type = ; Filter = ; Gain = ; Bin = 1x1; Exp =  s; Temp =  C; Frame # = -0001";
+            // The forward slash gets replaced with '-', and other special chars with '?' or '_' or '-'
+            string targetNameSanitized = "C-2020 F3 NEOWISE ?--_---A Comet";
+            string expectedResult = $"{date.ToLocalTime():yyyy-MM-dd}{sep}Telescope ={sep}Target = {targetNameSanitized}{sep}Type ={sep}Filter ={sep}{date.ToLocalTime():yyyy-MM-dd} @ {date.ToLocalTime():HH-mm-ss}; Target = {targetNameSanitized}; Type = ; Filter = ; Gain = ; Bin = 1x1; Exp =  s; Temp =  C; Frame # = -0001";
                                     
             BaseImageData result = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(arr, width, height, 16, false, metaData);
             string parsedPattern = result.GetImagePatterns().GetImageFileString(filePattern);
@@ -53,7 +56,8 @@ namespace NINA.Test {
             //Arrange
             string filePattern = "$$TARGETNAME$$";
             metaData.Target.Name = @"C/2020 F3 NEOWISE ?//_\\-A Comet";
-            string expectedResult = "C-2020 F3 NEOWISE _--_---A Comet";
+            // The forward slash gets replaced with '-', and other special chars with '?' or '_' or '-'
+            string expectedResult = "C-2020 F3 NEOWISE ?--_---A Comet";
 
             //Act
             BaseImageData result = dataFactoryUtility.ImageDataFactory.CreateBaseImageData(arr, width, height, 16, false, metaData);

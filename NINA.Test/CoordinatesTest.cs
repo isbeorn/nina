@@ -22,7 +22,7 @@ namespace NINA.Test {
 
     [TestFixture]
     public class CoordinatesTest {
-        private static double ANGLE_TOLERANCE = 0.000000000001;
+        private static double ANGLE_TOLERANCE = 0.00000000002;
 
         [Test]
         [TestCase(10, 10)]

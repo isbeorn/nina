@@ -281,7 +281,7 @@ namespace NINA.Equipment.Equipment.MyCamera {
                 while (true) {
                     tries++;
                     try {
-                        var image = await imageDataFactory.CreateFromFile("/home/nico/Hobby/apo/simulator.fits", 16, false, profileService.ActiveProfile.CameraSettings.RawConverter, token);
+                        var image = await imageDataFactory.CreateFromFile("/tmp/simulator.fits", 16, false, profileService.ActiveProfile.CameraSettings.RawConverter, token);
                         return exposureDataFactory.CreateCachedExposureData(image);
                     } catch (Exception ex) {
                         if (tries > 3) {

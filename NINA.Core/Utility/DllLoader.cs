@@ -34,7 +34,8 @@ namespace NINA.Core.Utility {
         private static object lockobj = new object();
 
         public static void LoadDll(string dllSubPath) {
-            var platformFolder = IsX86() ? "linux-x86" : "linux-x64";
+            var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLower();
+            var platformFolder = IsX86() ? $"linux-{arch}" : $"linux-{arch}";
             var extension = ".so";
 
             // Add extension if not present
@@ -79,7 +80,8 @@ namespace NINA.Core.Utility {
         }
 
         public static FileVersionInfo DllVersion(string dllSubPath) {
-            var platformFolder = IsX86() ? "linux-x86" : "linux-x64";
+            var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLower();
+            var platformFolder = IsX86() ? $"linux-{arch}" : $"linux-{arch}";
             var extension = ".so";
 
             // Add extension if not present

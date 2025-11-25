@@ -20,7 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NINA.Core.Utility;
 using System.Drawing;
-using NINA.Equipment.SDK.CameraSDKs.SBIGSDK.SbigSharp;
 using NUnit.Framework.Legacy;
 
 namespace NINA.Test.Utility {
@@ -48,24 +47,12 @@ namespace NINA.Test.Utility {
         public void Struct_and_Class_with_layout_Blittable() {
             // Both classes and structs (reference and value) are blittable if they are laid out property, with StructLayout if necessary
             ClassicAssert.IsTrue(Blittable<Point>.IsBlittable);
-            ClassicAssert.IsTrue(Blittable<SBIG.QueryCommandStatusParams>.IsBlittable);
         }
 
         [Test]
         public void Array_of_Struct_with_layout_Blittable() {
             // An array of blittable value types is also blittable
             ClassicAssert.IsTrue(Blittable<Point[]>.IsBlittable);
-        }
-
-        [Test]
-        public void Array_of_Class_with_layout_Not_Blittable() {
-            // However, an array of reference types is not blittable, even if the element type is
-            ClassicAssert.IsFalse(Blittable<SBIG.QueryCommandStatusParams[]>.IsBlittable);
-        }
-
-        [Test]
-        public void Managed_Class_Not_Blittable() {
-            ClassicAssert.IsFalse(Blittable<SBIG.FailedOperation>.IsBlittable);
         }
     }
 }

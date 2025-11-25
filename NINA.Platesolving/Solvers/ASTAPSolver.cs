@@ -37,7 +37,7 @@ namespace NINA.PlateSolving.Solvers {
             : base(executableLocation) {
             // Fallback to default location if not set
             if (string.IsNullOrWhiteSpace(this.executableLocation)) {
-                var defaultLocation = "/usr/local/bin/astap";
+                var defaultLocation = "/usr/local/bin/astap_cli";
                 if (File.Exists(defaultLocation)) {
                     this.executableLocation = defaultLocation;
                     Logger.Info($"ASTAP location not configured, using default: {defaultLocation}");

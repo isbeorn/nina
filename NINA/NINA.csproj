@@ -3,11 +3,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)'==''">$(RuntimeIdentifier)</RuntimeIdentifier>
     <Deterministic>true</Deterministic>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(OS)'=='Linux' and '$(PROCESSOR_ARCHITECTURE)'=='x64'">linux-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(OS)'=='Linux' and '$(PROCESSOR_ARCHITECTURE)'=='ARM64'">linux-arm64</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
@@ -54,22 +58,22 @@
     <Content Include="Database\Migration\10.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\ASI\libEAFFocuser.so">
+    <Content Include="External\$(RuntimeIdentifier)\ASI\libEAFFocuser.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\Oasis\liboasisfocuser.so">
+    <Content Include="External\$(RuntimeIdentifier)\Oasis\liboasisfocuser.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\ToupTek\libtoupcam.so">
+    <Content Include="External\$(RuntimeIdentifier)\ToupTek\libtoupcam.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\SOFA\libsofa_c.so">
+    <Content Include="External\$(RuntimeIdentifier)\SOFA\libsofa_c.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\NOVAS\libnovas_c.so">
+    <Content Include="External\$(RuntimeIdentifier)\NOVAS\libnovas_c.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\linux-x64\NOVAS\cio_ra.bin">
+    <Content Include="External\$(RuntimeIdentifier)\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\JPLEPH">
@@ -107,7 +111,7 @@
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.21" />
     <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
-    <PackageReference Include="OpenCvSharp4.runtime.linux-x64" Version="4.10.0.20240717" />
+    <PackageReference Include="OpenCvSharp4.runtime.$(RuntimeIdentifier)" Version="4.10.0.20240717" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,8 @@ namespace NINA.Astrometry {
         }
 
         private static IntPtr ResolveLibrary(string libraryName, System.Reflection.Assembly assembly, DllImportSearchPath? searchPath) {
-            var platformFolder = Environment.Is64BitProcess ? "linux-x64" : "linux-x86";
+            var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLower();
+            var platformFolder = Environment.Is64BitProcess ? $"linux-{arch}" : $"linux-{arch}";
             string subfolder = null;
 
             // Determine which library and subfolder
